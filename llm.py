@@ -1,5 +1,6 @@
 import openai
 import re
+import time
 from config import LLMConfig
 from abc import ABC, abstractmethod
 
@@ -34,28 +35,31 @@ class OpenAILLM(BaseChatModel):
         self.temperature = self.config.api_temperature
 
     def generate_response(self, user_input: str) -> str:
-        try:
-            # Add user input to message history
-            self.messages.append({"role": "user", "content": user_input})
+        # Add user input to message history once, then retry the same request if the upstream is saturated.
+        self.messages.append({"role": "user", "content": user_input})
+        max_attempts = 12
+        for attempt in range(1, max_attempts + 1):
+            try:
+                response = self.client.chat.completions.create(
+                    model=self.model_name,
+                    messages=self.messages,
+                    temperature=self.temperature,
+                )
 
-            # Call OpenAI API
-            response = self.client.chat.completions.create(
-                model=self.model_name,
-                messages=self.messages,
-                temperature=self.temperature,
-            )
-
-            assistant_response = response.choices[0].message.content
-            
-            self.messages.append({"role": "assistant", "content": assistant_response})  # Add original response to history to maintain complete context
-
-            return assistant_response
-
-        except Exception as e:
-            # Remove failed user input from history to avoid resending next time
-            if self.messages and self.messages[-1]["role"] == "user":
-                self.messages.pop()
-            raise RuntimeError(f"OpenAI API call failed: {e}") from e
+                assistant_response = response.choices[0].message.content
+                self.messages.append({"role": "assistant", "content": assistant_response})
+                return assistant_response
+            except Exception as e:
+                is_retryable = isinstance(e, openai.RateLimitError)
+                status_code = getattr(e, "status_code", None)
+                if status_code == 429:
+                    is_retryable = True
+                if is_retryable and attempt < max_attempts:
+                    time.sleep(min(2 ** attempt, 60))
+                    continue
+                if self.messages and self.messages[-1]["role"] == "user":
+                    self.messages.pop()
+                raise RuntimeError(f"OpenAI API call failed: {e}") from e
 
 
 # Main control class that selects LLM implementation based on configuration

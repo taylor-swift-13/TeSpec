@@ -64,9 +64,41 @@ def build_output_dirs(input_root: Path, output_root: Path, model_name: str):
     return out_input, out_output
 
 
-def extract_prompt_info(prompt: str):
+def resolve_run_dirs(input_root: Path, output_root: Path, model_name: str, run_name: str | None):
+    if run_name:
+        out_input = input_root / run_name
+        out_output = output_root / run_name
+        if out_input.exists() != out_output.exists():
+            raise FileNotFoundError(
+                f"Resume run requires both directories to exist or both to be absent: {out_input}, {out_output}"
+            )
+        if not out_input.exists():
+            out_input.mkdir(parents=True, exist_ok=False)
+            out_output.mkdir(parents=True, exist_ok=False)
+        return out_input, out_output
+    return build_output_dirs(input_root, output_root, model_name)
+
+
+def filter_missing_indices(indices: list[int], output_dir: Path):
+    remaining = []
+    for idx in indices:
+        task_name = f"HumanEval_{idx}.py"
+        if not (output_dir / task_name).exists():
+            remaining.append(idx)
+    return remaining
+
+
+def extract_prompt_info(prompt: str, entry_point: str | None = None):
     mod = ast.parse(prompt)
-    func = next(node for node in mod.body if isinstance(node, ast.FunctionDef))
+    funcs = [node for node in mod.body if isinstance(node, ast.FunctionDef)]
+    if not funcs:
+        raise ValueError("No function definitions found in prompt")
+    if entry_point:
+        func = next((node for node in funcs if node.name == entry_point), None)
+        if func is None:
+            raise ValueError(f"Entry point {entry_point!r} not found in prompt")
+    else:
+        func = funcs[0]
     doc = ast.get_docstring(func) or ""
     doc_lines = [ln for ln in doc.splitlines() if not ln.strip().startswith(">>>")]
     doc = "\n".join(doc_lines).strip()
@@ -79,8 +111,9 @@ def extract_prompt_info(prompt: str):
 
     def_sig_line = None
     for line in prompt.splitlines():
-        if line.strip().startswith("def "):
-            def_sig_line = line.strip()
+        stripped = line.strip()
+        if stripped.startswith(f"def {func.name}("):
+            def_sig_line = stripped
             break
     if not def_sig_line:
         raise ValueError("Function signature not found in prompt")
@@ -276,6 +309,7 @@ def main():
     ap.add_argument("--api-model", default=API_MODEL_DEFAULT)
     ap.add_argument("--api-key", default=API_KEY_DEFAULT)
     ap.add_argument("--base-url", default=BASE_URL_DEFAULT)
+    ap.add_argument("--run-name")
     args = ap.parse_args()
 
     in_path = Path(args.input_jsonl)
@@ -290,18 +324,20 @@ def main():
     indices = select_indices(len(lines), args.range, args.idx)
     cfg = LLMConfig()
     model_name = args.api_model or cfg.api_model
-    out_input, out_output = build_output_dirs(
+    out_input, out_output = resolve_run_dirs(
         Path(args.out_input_root),
         Path(args.out_output_root),
         model_name,
+        args.run_name,
     )
+    indices = filter_missing_indices(indices, out_output)
     for idx in indices:
         item = json.loads(lines[idx])
         task_id = item["task_id"].replace("/", "_")
         prompt = item["prompt"]
         canonical = item["canonical_solution"]
 
-        info = extract_prompt_info(prompt)
+        info = extract_prompt_info(prompt, item.get("entry_point"))
         nl_sig = describe_signature_nl(info)
         description = (info["doc"] + "\n\n" + nl_sig).strip()
 
