@@ -1,0 +1,43 @@
+
+def precondition(input):
+    if not isinstance(input, tuple) or len(input) != 1:
+        return False
+    lst = input[0]
+    if not isinstance(lst, list):
+        return False
+    if len(lst) == 0:
+        return False
+    for x in lst:
+        if not isinstance(x, int):
+            return False
+    return True
+
+def postcondition(input, output):
+    if not isinstance(input, tuple) or len(input) != 1:
+        return False
+    lst = input[0]
+    if not isinstance(lst, list) or len(lst) == 0 or any(not isinstance(x, int) for x in lst):
+        return False
+    if not isinstance(output, int):
+        return False
+    expected = sum(x for idx, x in enumerate(lst) if (idx % 2 == 1) and (x % 2 == 0))
+    return output == expected
+
+def _impl(lst):
+    """Given a non-empty list of integers lst. add the even elements that are at odd indices..
+
+
+    Examples:
+        add([4, 2, 6, 7]) ==> 2"""
+    s = 0
+    for i in range(1, len(lst), 2):
+        if lst[i] % 2 == 0:
+            s += lst[i]
+    return s
+
+def add(lst):
+    _input = (lst,)
+    assert precondition(_input)
+    _output = _impl(lst)
+    assert postcondition(_input, _output)
+    return _output

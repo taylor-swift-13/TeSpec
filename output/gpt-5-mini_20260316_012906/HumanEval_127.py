@@ -1,0 +1,80 @@
+
+def precondition(input):
+    # input is a tuple of positional args: (interval1, interval2)
+    if not isinstance(input, tuple):
+        return False
+    if len(input) != 2:
+        return False
+    for interval in input:
+        if not isinstance(interval, (tuple, list)):
+            return False
+        if len(interval) != 2:
+            return False
+        a, b = interval
+        if not isinstance(a, int) or not isinstance(b, int):
+            return False
+        if a > b:
+            return False
+    return True
+
+def postcondition(input, output):
+    # Only enforce when precondition holds
+    if not precondition(input):
+        return True
+    if not isinstance(output, str):
+        return False
+    if output not in ("YES", "NO"):
+        return False
+    (s1, e1), (s2, e2) = input
+    start = s1 if s1 >= s2 else s2
+    end = e1 if e1 <= e2 else e2
+    if start > end:
+        length = 0
+    else:
+        length = end - start + 1
+    # check primality
+    def is_prime(n):
+        if n < 2:
+            return False
+        if n % 2 == 0:
+            return n == 2
+        i = 3
+        while i * i <= n:
+            if n % i == 0:
+                return False
+            i += 2
+        return True
+    should_yes = is_prime(length)
+    return (output == "YES") == should_yes
+
+def _impl(interval1, interval2):
+    """You are given two intervals,
+    where each interval is a pair of integers. For example, interval = (start, end) = (1, 2).
+    The given intervals are closed which means that the interval (start, end)
+    includes both start and end.
+    For each given interval, it is assumed that its start is less or equal its end.
+    Your task is to determine whether the length of intersection of these two 
+    intervals is a prime number.
+    Example, the intersection of the intervals (1, 3), (2, 4) is (2, 3)
+    which its length is 1, which not a prime number.
+    If the length of the intersection is a prime number, return "YES",
+    otherwise, return "NO".
+    If the two intervals don't intersect, return "NO".
+
+
+    [input/output] samples:
+    intersection((1, 2), (2, 3)) ==> "NO"
+    intersection((-1, 1), (0, 4)) ==> "NO"
+    intersection((-3, -1), (-5, 5)) ==> "YES""""
+    def is_prime(a):
+        return not (a < 2 or any(a % x == 0 for x in range(2, int(a ** 0.5) + 1)))
+    if interval1[0] > interval2[0]: interval1, interval2 = interval2, interval1
+    l, r = interval2[0], min(interval1[1], interval2[1])
+    return "YES" if is_prime(r - l) else "NO"
+
+def intersection(interval1, interval2):
+    _input = (interval1, interval2)
+    assert precondition(_input)
+    _output = _impl(interval1, interval2)
+    assert postcondition(_input, _output)
+    return _output

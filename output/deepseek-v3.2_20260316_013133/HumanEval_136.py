@@ -1,0 +1,60 @@
+
+def precondition(input):
+    lst, = input
+    return isinstance(lst, list)
+
+def postcondition(input, output):
+    lst, = input
+    a, b = output
+    if not isinstance(output, tuple) or len(output) != 2:
+        return False
+    if a is not None:
+        if not isinstance(a, int):
+            return False
+        if a >= 0:
+            return False
+        if a not in lst:
+            return False
+        for x in lst:
+            if isinstance(x, int) and x < 0 and x > a:
+                return False
+    else:
+        for x in lst:
+            if isinstance(x, int) and x < 0:
+                return False
+    if b is not None:
+        if not isinstance(b, int):
+            return False
+        if b <= 0:
+            return False
+        if b not in lst:
+            return False
+        for x in lst:
+            if isinstance(x, int) and x > 0 and x < b:
+                return False
+    else:
+        for x in lst:
+            if isinstance(x, int) and x > 0:
+                return False
+    return True
+
+def _impl(lst):
+    """Create a function that returns a tuple (a, b), where 'a' is
+    the largest of negative integers, and 'b' is the smallest
+    of positive integers in a list.
+    If there is no negative or positive integers, return them as None.
+
+    Examples:
+    largest_smallest_integers([2, 4, 1, 3, 5, 7]) == (None, 1)
+    largest_smallest_integers([]) == (None, None)
+    largest_smallest_integers([0]) == (None, None)"""
+    neg = list(filter(lambda x: x < 0, lst))
+    pos = list(filter(lambda x: x > 0, lst))
+    return None if neg == [] else max(neg), None if pos == [] else min(pos)
+
+def largest_smallest_integers(lst):
+    _input = (lst,)
+    assert precondition(_input)
+    _output = _impl(lst)
+    assert postcondition(_input, _output)
+    return _output

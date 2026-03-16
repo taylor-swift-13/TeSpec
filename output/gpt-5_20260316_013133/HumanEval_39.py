@@ -1,0 +1,92 @@
+
+def precondition(input) -> bool:
+    if not isinstance(input, tuple) or len(input) != 1:
+        return False
+    n = input[0]
+    return isinstance(n, int) and n >= 1
+
+def postcondition(input, output) -> bool:
+    if not isinstance(input, tuple) or len(input) != 1:
+        return False
+    n = input[0]
+    if not (isinstance(n, int) and n >= 1):
+        return False
+    if not isinstance(output, int):
+        return False
+
+    def is_prime(x: int) -> bool:
+        if not isinstance(x, int) or x < 2:
+            return False
+        if x % 2 == 0:
+            return x == 2
+        r = int(x ** 0.5)
+        d = 3
+        while d <= r:
+            if x % d == 0:
+                return False
+            d += 2
+        return True
+
+    count = 0
+    a, b = 1, 1
+    while True:
+        if is_prime(a):
+            count += 1
+            if count == n:
+                expected = a
+                break
+        a, b = b, a + b
+
+    return output == expected
+
+def _impl(n: int):
+    """prime_fib returns n-th number that is a Fibonacci number and it's also prime.
+    2
+    3
+    5
+    13
+    89"""
+    import random
+    def miller_rabin(n, k=10):
+        """Test if n is prime using the Miller-Rabin primality test."""
+        if n < 2:
+            return False
+        if n == 2 or n == 3:
+            return True
+        if n % 2 == 0:
+            return False
+
+        r = 0
+        d = n - 1
+        while d % 2 == 0:
+            r += 1
+            d //= 2
+
+        for _ in range(k):
+            a = random.randint(2, n - 2)
+            x = pow(a, d, n)
+            if x == 1 or x == n - 1:
+                continue
+            for _ in range(r - 1):
+                x = pow(x, 2, n)
+                if x == n - 1:
+                    break
+            else:
+                return False
+
+        return True
+
+    c_prime = 0
+    a, b = 0, 1
+    while c_prime < n:
+        a, b = b, a + b
+        if miller_rabin(b):
+            c_prime += 1
+    return b
+
+def prime_fib(n: int):
+    _input = (n,)
+    assert precondition(_input)
+    _output = _impl(n)
+    assert postcondition(_input, _output)
+    return _output
