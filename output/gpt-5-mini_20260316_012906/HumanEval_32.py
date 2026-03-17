@@ -1,75 +1,64 @@
 import math
 
-import math
-
 def precondition(input):
     if not isinstance(input, tuple):
         return False
-    if len(input) != 2:
+    if len(input) != 1:
         return False
-    xs, x = input
-    if not isinstance(xs, list):
+    xs = input[0]
+    if not isinstance(xs, (list, tuple)):
         return False
-    # coefficients may be empty list
-    for a in xs:
-        # reject booleans
-        if isinstance(a, bool):
-            return False
-        if not isinstance(a, (int, float)):
-            return False
-        # finite numeric values only
-        try:
-            if not math.isfinite(float(a)):
-                return False
-        except Exception:
-            return False
-    # check x
-    if isinstance(x, bool):
+    n = len(xs)
+    # require at least two coefficients and an even number of them
+    if n < 2 or (n % 2) != 0:
         return False
-    if not isinstance(x, (int, float)):
-        return False
+    # coefficients must be real finite numbers
     try:
-        if not math.isfinite(float(x)):
-            return False
+        import math
+        for c in xs:
+            if not isinstance(c, (int, float)):
+                return False
+            if not math.isfinite(c):
+                return False
     except Exception:
+        return False
+    # leading (highest-degree) coefficient must be non-zero to ensure degree = n-1
+    if xs[-1] == 0:
         return False
     return True
 
 def postcondition(input, output):
-    if not isinstance(input, tuple) or len(input) != 2:
-        return False
+    # only check postcondition when precondition holds
     if not precondition(input):
-        return False
-    xs, x = input
-    # output must be numeric (not bool)
-    if isinstance(output, bool):
-        return False
+        return True
+    xs = input[0]
+    # output must be a real finite number
     if not isinstance(output, (int, float)):
         return False
+    import math
+    if not math.isfinite(output):
+        return False
+    x = float(output)
+    # evaluate polynomial at x using Horner's method (coeffs assumed [a0, a1, ..., an])
     try:
-        fo = float(output)
+        val = 0.0
+        for a in reversed(xs):
+            val = val * x + float(a)
     except Exception:
         return False
-    # compute expected value using float arithmetic
-    fx = float(x)
-    expected = 0.0
-    try:
-        for i, a in enumerate(xs):
-            expected += float(a) * (fx ** i)
-    except Exception:
-        return False
-    # NaNs are not accepted
-    if math.isnan(expected) or math.isnan(fo):
-        return False
-    # handle infinities: must match sign
-    if math.isinf(expected) or math.isinf(fo):
-        return math.isinf(expected) and math.isinf(fo) and (math.copysign(1.0, expected) == math.copysign(1.0, fo))
-    # finite values: allow small floating point error
-    return math.isclose(fo, expected, rel_tol=1e-9, abs_tol=1e-12)
+    # accept small numerical error
+    return abs(val) <= 1e-7
 
-def _impl(xs: list, x: float):
-    """Evaluates polynomial with coefficients xs at point x.
-    return xs[0] + xs[1] * x + xs[1] * x^2 + .... xs[n] * x^n"""
+def _impl(xs: list):
+    """xs are coefficients of a polynomial.
+    find_zero find x such that poly(x) = 0.
+    find_zero returns only only zero point, even if there are many.
+    Moreover, find_zero only takes list xs having even number of coefficients
+    and largest non zero coefficient as it guarantees
+    a solution.
+    -0.5
+    1.0
+    """
     dxs = [xs[i] * i for i in range(1, len(xs))]
     def func(x):
         return poly(xs, x)
@@ -85,9 +74,9 @@ def _impl(xs: list, x: float):
 
     return x
 
-def poly(xs: list, x: float):
-    _input = (xs, x)
+def find_zero(xs: list):
+    _input = (xs,)
     assert precondition(_input)
-    _output = _impl(xs, x)
+    _output = _impl(xs)
     assert postcondition(_input, _output)
     return _output

@@ -159,18 +159,29 @@ test_reports/<模型>_<时间戳>/_summary.json
 - `claude-opus-4-5-20251101`：[test_reports/claude-opus-4-5-20251101_20260316_143850/_summary.json](/home/yangfp/TeSpec/test_reports/claude-opus-4-5-20251101_20260316_143850/_summary.json)
 - `claude-sonnet-4-6`：[test_reports/claude-sonnet-4-6_20260316_143850/_summary.json](/home/yangfp/TeSpec/test_reports/claude-sonnet-4-6_20260316_143850/_summary.json)
 - `claude-opus-4-6`：[test_reports/claude-opus-4-6_20260316_143850/_summary.json](/home/yangfp/TeSpec/test_reports/claude-opus-4-6_20260316_143850/_summary.json)
+- `gemini-3-pro-preview`：[test_reports/gemini-3-pro-preview_20260317_120447/_summary.json](/home/yangfp/TeSpec/test_reports/gemini-3-pro-preview_20260317_120447/_summary.json)
+- `gemini-3.1-pro-preview`：[test_reports/gemini-3.1-pro-preview_20260317_120447/_summary.json](/home/yangfp/TeSpec/test_reports/gemini-3.1-pro-preview_20260317_120447/_summary.json)
+- `gemini-3.1-flash-lite-preview`：[test_reports/gemini-3.1-flash-lite-preview_20260317_120447/_summary.json](/home/yangfp/TeSpec/test_reports/gemini-3.1-flash-lite-preview_20260317_120447/_summary.json)
+
+当前仍未完成的模型：
+
+- `claude-3-7-sonnet-20250219`：由于上游 `429` 饱和，当前仍没有完整结果目录
+- `gemini-3-flash-preview`：目录 [output/gemini-3-flash-preview_20260317_120447](/home/yangfp/TeSpec/output/gemini-3-flash-preview_20260317_120447) 已创建，但当前还没有完整结果
 
 任务级指标对比：
 
 | 模型 | 语法正确率 | 规约正确率 | 不限制前条件的后条件正确率 |
 |---|---:|---:|---:|
-| `gpt-5-nano` | `157/164` | `130/164` | `153/164` |
-| `gpt-5-mini` | `157/164` | `117/164` | `152/164` |
-| `gpt-5` | `156/164` | `129/164` | `152/164` |
-| `deepseek-v3.2` | `157/164` | `113/164` | `151/164` |
-| `claude-opus-4-5-20251101` | `157/164` | `127/164` | `152/164` |
-| `claude-sonnet-4-6` | `157/164` | `127/164` | `154/164` |
-| `claude-opus-4-6` | `157/164` | `127/164` | `154/164` |
+| `gpt-5-nano` | `164/164` | `138/164` | `162/164` |
+| `gpt-5-mini` | `164/164` | `125/164` | `161/164` |
+| `gpt-5` | `163/164` | `138/164` | `161/164` |
+| `deepseek-v3.2` | `164/164` | `120/164` | `160/164` |
+| `claude-opus-4-5-20251101` | `164/164` | `134/164` | `161/164` |
+| `claude-sonnet-4-6` | `164/164` | `134/164` | `161/164` |
+| `claude-opus-4-6` | `164/164` | `133/164` | `161/164` |
+| `gemini-3-pro-preview` | `164/164` | `142/164` | `161/164` |
+| `gemini-3.1-pro-preview` | `164/164` | `147/164` | `161/164` |
+| `gemini-3.1-flash-lite-preview` | `164/164` | `132/164` | `160/164` |
 
 这里三列分别表示：
 
@@ -188,13 +199,16 @@ test_reports/<模型>_<时间戳>/_summary.json
 
 | 模型 | 语法正确 | 正例前后条件都正确 | 正例前后条件都正确且负例也正确 |
 |---|---:|---:|---:|
-| `gpt-5-nano` | `157/164` | `130/164` | `112/164` |
-| `gpt-5-mini` | `157/164` | `117/164` | `101/164` |
-| `gpt-5` | `156/164` | `129/164` | `102/164` |
-| `deepseek-v3.2` | `157/164` | `113/164` | `69/164` |
-| `claude-opus-4-5-20251101` | `157/164` | `127/164` | `109/164` |
-| `claude-sonnet-4-6` | `157/164` | `127/164` | `96/164` |
-| `claude-opus-4-6` | `157/164` | `127/164` | `109/164` |
+| `gpt-5-nano` | `164/164` | `138/164` | `118/164` |
+| `gpt-5-mini` | `164/164` | `125/164` | `107/164` |
+| `gpt-5` | `163/164` | `138/164` | `108/164` |
+| `deepseek-v3.2` | `164/164` | `120/164` | `73/164` |
+| `claude-opus-4-5-20251101` | `164/164` | `134/164` | `114/164` |
+| `claude-sonnet-4-6` | `164/164` | `134/164` | `101/164` |
+| `claude-opus-4-6` | `164/164` | `133/164` | `113/164` |
+| `gemini-3-pro-preview` | `164/164` | `142/164` | `114/164` |
+| `gemini-3.1-pro-preview` | `164/164` | `147/164` | `91/164` |
+| `gemini-3.1-flash-lite-preview` | `164/164` | `132/164` | `86/164` |
 
 逐层收缩表 2：忽略前条件，其他保持不变
 
@@ -206,13 +220,16 @@ test_reports/<模型>_<时间戳>/_summary.json
 
 | 模型 | 语法正确 | 正例忽略前条件后后条件正确 | 正例忽略前条件后正确且负例也正确 |
 |---|---:|---:|---:|
-| `gpt-5-nano` | `157/164` | `153/164` | `126/164` |
-| `gpt-5-mini` | `157/164` | `152/164` | `119/164` |
-| `gpt-5` | `156/164` | `152/164` | `116/164` |
-| `deepseek-v3.2` | `157/164` | `151/164` | `91/164` |
-| `claude-opus-4-5-20251101` | `157/164` | `152/164` | `126/164` |
-| `claude-sonnet-4-6` | `157/164` | `154/164` | `113/164` |
-| `claude-opus-4-6` | `157/164` | `154/164` | `126/164` |
+| `gpt-5-nano` | `164/164` | `162/164` | `127/164` |
+| `gpt-5-mini` | `164/164` | `161/164` | `120/164` |
+| `gpt-5` | `163/164` | `161/164` | `120/164` |
+| `deepseek-v3.2` | `164/164` | `160/164` | `85/164` |
+| `claude-opus-4-5-20251101` | `164/164` | `161/164` | `123/164` |
+| `claude-sonnet-4-6` | `164/164` | `161/164` | `109/164` |
+| `claude-opus-4-6` | `164/164` | `161/164` | `122/164` |
+| `gemini-3-pro-preview` | `164/164` | `161/164` | `121/164` |
+| `gemini-3.1-pro-preview` | `164/164` | `161/164` | `95/164` |
+| `gemini-3.1-flash-lite-preview` | `164/164` | `160/164` | `94/164` |
 
 ## 反例测试结果
 
@@ -225,22 +242,29 @@ test_reports/<模型>_<时间戳>/_summary.json
 - `claude-opus-4-5-20251101`：[negative_report/claude-opus-4-5-20251101_20260316_143850/_summary.json](/home/yangfp/TeSpec/negative_report/claude-opus-4-5-20251101_20260316_143850/_summary.json)
 - `claude-sonnet-4-6`：[negative_report/claude-sonnet-4-6_20260316_143850/_summary.json](/home/yangfp/TeSpec/negative_report/claude-sonnet-4-6_20260316_143850/_summary.json)
 - `claude-opus-4-6`：[negative_report/claude-opus-4-6_20260316_143850/_summary.json](/home/yangfp/TeSpec/negative_report/claude-opus-4-6_20260316_143850/_summary.json)
+- `gemini-3-pro-preview`：[negative_report/gemini-3-pro-preview_20260317_120447/_summary.json](/home/yangfp/TeSpec/negative_report/gemini-3-pro-preview_20260317_120447/_summary.json)
+- `gemini-3.1-pro-preview`：[negative_report/gemini-3.1-pro-preview_20260317_120447/_summary.json](/home/yangfp/TeSpec/negative_report/gemini-3.1-pro-preview_20260317_120447/_summary.json)
+- `gemini-3.1-flash-lite-preview`：[negative_report/gemini-3.1-flash-lite-preview_20260317_120447/_summary.json](/home/yangfp/TeSpec/negative_report/gemini-3.1-flash-lite-preview_20260317_120447/_summary.json)
 
-尚未完成反例测试的 Claude 模型：
+尚未完成反例测试的模型：
 
 - `claude-3-7-sonnet-20250219`
+- `gemini-3-flash-preview`
 
 任务级与变异体级指标对比：
 
 | 模型 | 负向任务通过率 | 负样例正确率 | 变异体通过率 |
 |---|---:|---:|---:|
-| `gpt-5-nano` | `121/164` | `266247/270234 = 0.9852` | `609/654 = 0.9312` |
-| `gpt-5-mini` | `114/164` | `261044/269742 = 0.9678` | `581/649 = 0.8952` |
-| `gpt-5` | `114/164` | `261009/270233 = 0.9659` | `582/654 = 0.8899` |
-| `deepseek-v3.2` | `81/164` | `219561/264333 = 0.8306` | `468/650 = 0.7200` |
-| `claude-opus-4-5-20251101` | `117/164` | `257646/270865 = 0.9512` | `595/659 = 0.9029` |
-| `claude-sonnet-4-6` | `104/164` | `247778/270378 = 0.9164` | `557/654 = 0.8517` |
-| `claude-opus-4-6` | `117/164` | `264306/270374 = 0.9776` | `596/654 = 0.9113` |
+| `gpt-5-nano` | `127/164` | `269784/281529 = 0.9583` | `627/678 = 0.9248` |
+| `gpt-5-mini` | `120/164` | `269329/281037 = 0.9583` | `607/673 = 0.9019` |
+| `gpt-5` | `120/164` | `268654/281528 = 0.9543` | `606/678 = 0.8938` |
+| `deepseek-v3.2` | `86/164` | `228300/282163 = 0.8091` | `491/683 = 0.7189` |
+| `claude-opus-4-5-20251101` | `123/164` | `264683/282160 = 0.9381` | `614/683 = 0.8990` |
+| `claude-sonnet-4-6` | `109/164` | `257608/281673 = 0.9146` | `577/678 = 0.8510` |
+| `claude-opus-4-6` | `122/164` | `275413/281669 = 0.9778` | `618/678 = 0.9115` |
+| `gemini-3-pro-preview` | `121/164` | `270423/282165 = 0.9584` | `614/683 = 0.8990` |
+| `gemini-3.1-pro-preview` | `95/164` | `222723/281673 = 0.7907` | `514/678 = 0.7581` |
+| `gemini-3.1-flash-lite-preview` | `94/164` | `229906/281036 = 0.8181` | `505/673 = 0.7504` |
 
 这里三列分别表示：
 
@@ -252,13 +276,16 @@ test_reports/<模型>_<时间戳>/_summary.json
 
 | 模型 | 正向规约正确率 | 负向任务通过率 | 负向变异体通过率 |
 |---|---:|---:|---:|
-| `gpt-5-nano` | `130/164` | `121/164` | `609/654` |
-| `gpt-5-mini` | `117/164` | `114/164` | `581/649` |
-| `gpt-5` | `129/164` | `114/164` | `582/654` |
-| `deepseek-v3.2` | `113/164` | `81/164` | `468/650` |
-| `claude-opus-4-5-20251101` | `127/164` | `117/164` | `595/659` |
-| `claude-sonnet-4-6` | `127/164` | `104/164` | `557/654` |
-| `claude-opus-4-6` | `127/164` | `117/164` | `596/654` |
+| `gpt-5-nano` | `138/164` | `127/164` | `627/678` |
+| `gpt-5-mini` | `125/164` | `120/164` | `607/673` |
+| `gpt-5` | `138/164` | `120/164` | `606/678` |
+| `deepseek-v3.2` | `120/164` | `86/164` | `491/683` |
+| `claude-opus-4-5-20251101` | `134/164` | `123/164` | `614/683` |
+| `claude-sonnet-4-6` | `134/164` | `109/164` | `577/678` |
+| `claude-opus-4-6` | `133/164` | `122/164` | `618/678` |
+| `gemini-3-pro-preview` | `142/164` | `121/164` | `614/683` |
+| `gemini-3.1-pro-preview` | `147/164` | `95/164` | `514/678` |
+| `gemini-3.1-flash-lite-preview` | `132/164` | `94/164` | `505/673` |
 
 这说明正向测试通过并不代表规约足够强。很多题在官方测试上是对的，但一旦换成错误实现，`postcondition` 仍可能放行。
 
@@ -321,23 +348,29 @@ test_reports/<模型>_<时间戳>/_summary.json
 [HumanEval_8.json](/home/yangfp/TeSpec/test_reports/claude-opus-4-5-20251101_20260316_143850/HumanEval_8.json)
 [HumanEval_8.json](/home/yangfp/TeSpec/test_reports/claude-sonnet-4-6_20260316_143850/HumanEval_8.json)
 [HumanEval_8.json](/home/yangfp/TeSpec/test_reports/claude-opus-4-6_20260316_143850/HumanEval_8.json)
+[HumanEval_8.json](/home/yangfp/TeSpec/test_reports/gemini-3-pro-preview_20260317_120447/HumanEval_8.json)
+[HumanEval_8.json](/home/yangfp/TeSpec/test_reports/gemini-3.1-pro-preview_20260317_120447/HumanEval_8.json)
+[HumanEval_8.json](/home/yangfp/TeSpec/test_reports/gemini-3.1-flash-lite-preview_20260317_120447/HumanEval_8.json)
 
-这题在 7 个模型上都是 `precondition_failed`。  
+这题在 10 个模型上都是 `precondition_failed`。  
 它说明：只靠自然语言写前条件时，模型很容易把输入域收得过窄。
 
 例子 B：
-[HumanEval_65.json](/home/yangfp/TeSpec/test_reports/gpt-5-nano_20260315_031120/HumanEval_65.json)
-[HumanEval_65.json](/home/yangfp/TeSpec/test_reports/gpt-5-mini_20260316_012906/HumanEval_65.json)
-[HumanEval_65.json](/home/yangfp/TeSpec/test_reports/gpt-5_20260316_013133/HumanEval_65.json)
-[HumanEval_65.json](/home/yangfp/TeSpec/test_reports/deepseek-v3.2_20260316_013133/HumanEval_65.json)
-[HumanEval_65.json](/home/yangfp/TeSpec/test_reports/claude-opus-4-5-20251101_20260316_143850/HumanEval_65.json)
-[HumanEval_65.json](/home/yangfp/TeSpec/test_reports/claude-sonnet-4-6_20260316_143850/HumanEval_65.json)
-[HumanEval_65.json](/home/yangfp/TeSpec/test_reports/claude-opus-4-6_20260316_143850/HumanEval_65.json)
+[HumanEval_145.json](/home/yangfp/TeSpec/test_reports/gpt-5-nano_20260315_031120/HumanEval_145.json)
+[HumanEval_145.json](/home/yangfp/TeSpec/test_reports/gpt-5-mini_20260316_012906/HumanEval_145.json)
+[HumanEval_145.json](/home/yangfp/TeSpec/test_reports/gpt-5_20260316_013133/HumanEval_145.json)
+[HumanEval_145.json](/home/yangfp/TeSpec/test_reports/deepseek-v3.2_20260316_013133/HumanEval_145.json)
+[HumanEval_145.json](/home/yangfp/TeSpec/test_reports/claude-opus-4-5-20251101_20260316_143850/HumanEval_145.json)
+[HumanEval_145.json](/home/yangfp/TeSpec/test_reports/claude-sonnet-4-6_20260316_143850/HumanEval_145.json)
+[HumanEval_145.json](/home/yangfp/TeSpec/test_reports/claude-opus-4-6_20260316_143850/HumanEval_145.json)
+[HumanEval_145.json](/home/yangfp/TeSpec/test_reports/gemini-3-pro-preview_20260317_120447/HumanEval_145.json)
+[HumanEval_145.json](/home/yangfp/TeSpec/test_reports/gemini-3.1-pro-preview_20260317_120447/HumanEval_145.json)
+[HumanEval_145.json](/home/yangfp/TeSpec/test_reports/gemini-3.1-flash-lite-preview_20260317_120447/HumanEval_145.json)
 
-这题在 7 个模型上都是 `syntax_error`。  
-它说明：docstring / 引号边界这类机械性代码生成错误，不是单个模型的问题，而是这一类生成任务的共同薄弱点。
+这题在 10 个模型上都是 `postcondition_failed`。  
+它说明：有些题即使前条件没写坏，`postcondition` 仍会系统性地把正确实现错杀。
 
-#### 0.5 同一题，不同模型会以不同方式失败
+#### 0.5 修掉机械性错误后，会暴露出更真实的模型错误
 
 例子：
 [HumanEval_10.py](/home/yangfp/TeSpec/output/gpt-5-nano_20260315_031120/HumanEval_10.py)
@@ -346,15 +379,8 @@ test_reports/<模型>_<时间戳>/_summary.json
 
 任务是 `make_palindrome(string)`。
 
-这题在不同模型上出现了两种完全不同的失败：
-
-- 旧一批模型如 `gpt-5-nano` / `gpt-5-mini` / `gpt-5` / `deepseek-v3.2` / `claude-opus-4-5-20251101`
-  - 失败类型主要是 `missing_entry_point`
-  - 根因是早期生成结果里把辅助函数名当成了入口函数
-
-- 新一批 Claude 模型如 `claude-sonnet-4-6` / `claude-opus-4-6`
-  - 失败类型变成了 `runtime_error`
-  - 例如 [HumanEval_10.json](/home/yangfp/TeSpec/test_reports/claude-sonnet-4-6_20260316_143850/HumanEval_10.json) 里第一条失败就是：
+这题在当前 10 个模型上都收敛成了同一种失败：`runtime_error`。  
+例如 [HumanEval_10.json](/home/yangfp/TeSpec/test_reports/claude-sonnet-4-6_20260316_143850/HumanEval_10.json) 里第一条失败就是：
 
 ```json
 {
@@ -365,13 +391,14 @@ test_reports/<模型>_<时间戳>/_summary.json
 
 也就是说：
 
-- 旧模型是“包装错了”
-- 新模型是“代码跑起来以后引用了不存在的辅助函数”
+- 入口函数名现在已经正确写成了 `make_palindrome`
+- 但 `_impl` 内部依赖的辅助函数 `is_palindrome` 没有一起被带进输出文件
+- 所以包装函数一执行就会触发 `NameError`
 
-这类题非常适合做跨模型案例，因为它说明：
+这类题非常适合做修复前后对照案例，因为它说明：
 
-- 同一题并不是只有一种失败方式
-- 统计分数相近，不等于错误机制相同
+- `entry_point` 后处理 bug 修掉之后，旧的机械性失败会暴露出新的真实错误
+- 入口函数名修对了，不代表实现依赖也会自动补齐
 
 #### 1. `postcondition` 和实现语义不一致
 
@@ -439,10 +466,6 @@ def _impl(l: list):
 例子：
 [HumanEval_49.json](/home/yangfp/TeSpec/test_reports/gpt-5_20260316_013133/HumanEval_49.json)
 [HumanEval_49.py](/home/yangfp/TeSpec/output/gpt-5_20260316_013133/HumanEval_49.py)
-[HumanEval_65.json](/home/yangfp/TeSpec/test_reports/gpt-5-nano_20260315_031120/HumanEval_65.json)
-[HumanEval_65.py](/home/yangfp/TeSpec/output/gpt-5-nano_20260315_031120/HumanEval_65.py)
-[HumanEval_140.json](/home/yangfp/TeSpec/test_reports/gpt-5-nano_20260315_031120/HumanEval_140.json)
-[HumanEval_140.py](/home/yangfp/TeSpec/output/gpt-5-nano_20260315_031120/HumanEval_140.py)
 
 这些例子里，语法错误并不是一个模糊概念，而是能精确指出“哪一行坏了、怎么坏了”。
 
@@ -462,36 +485,12 @@ def postcondition(input, output) -> bool:
 
 也就是说这里不是“逻辑上有点问题”，而是 `try:` 这一行连 Python 语法都没写对。
 
-`gpt-5-nano` 在 `HumanEval_65` 上的错误则是另一种：
-
-```python
-def _impl(x, shift):
-    """Circular shift the digits of the integer x, shift the digits right by shift
-    and return the result as a string.
-    If shift > number of digits, return digits reversed.
-    "21"
-    "12""""
-```
-
-这里 docstring 末尾多了一个引号，变成了 `""""`，会直接把后面的解析搞坏。
-
-`gpt-5-nano` 在 `HumanEval_140` 上也是同类问题：
-
-```python
-def _impl(text):
-    """Given a string text, replace all spaces in it with underscores,
-    ...
-    fix_spaces(" Example   3") == "_Example-3""""
-```
-
-这里同样是 docstring 尾部多出一个引号，导致整个文件不再是合法 Python。
-
-所以“语法错误”这类问题在本项目里主要有两种具体来源：
+目前仓库里仍然保留、且会影响结果统计的语法错误代表例子主要是这一类：
 
 1. 控制结构写坏了
    例子：`try` 后面缺少 `:`
-2. docstring / 引号转义坏了
-   例子：结尾出现 `""""`，把字符串边界弄错
+
+之前另外一类 `docstring` / 引号边界问题，例如 `HumanEval/65`、`68`、`140`、`142` 里出现的 `""""`，已经确认是后处理 bug，不是题面或模型提示本身的语法问题，并且已经在当前生成脚本里修复。现在这些题在最新结果目录中已经不再以 `syntax_error` 出现。
 
 这类错误的共同特点是：
 
@@ -499,11 +498,42 @@ def _impl(text):
 - 直接记为 `syntax_error`
 - 正负例测试都无法正常展开
 
-可以把它看成最直接的模型失败：
+`HumanEval/49` 这种情况可以看成最直接的模型失败：
 
 - 自然语言描述本身没有歧义
 - 不是规约太弱或太强
 - 就是生成出来的 Python 代码本身不合法
+
+#### 2.5 后处理引入的 `docstring` 错误已经修复
+
+例子：
+[HumanEval_68.py](/home/yangfp/TeSpec/output/gpt-5-nano_20260315_031120/HumanEval_68.py)
+[HumanEval_142.py](/home/yangfp/TeSpec/output/gpt-5-nano_20260315_031120/HumanEval_142.py)
+
+这两题以前会出现两种典型坏形式：
+
+```python
+""""Given ...
+```
+
+和
+
+```python
+""""
+This function will ...
+```
+
+它们的共同根因不是模型把 Python 语法写错，而是生成器在重建 `_impl` 的 docstring 时，把清洗后的正文直接和三引号拼在了一起：
+
+- 如果正文最后一行以引号结尾，就会产生结尾 `""""`
+- 如果正文第一行本身以引号开头，就会产生开头 `""""`
+
+当前 [generate_specs.py](/home/yangfp/TeSpec/generate_specs.py) 已经修成：
+
+- docstring 正文总是在下一行开始
+- 结尾总是在单独一行闭合
+
+所以这类问题现在已经从结果目录里清掉了。它更适合被归类为“后处理 bug 已修复”，而不是“模型仍在犯的语法错误”。
 
 #### 3. `postcondition` 太慢，复杂度明显失配
 

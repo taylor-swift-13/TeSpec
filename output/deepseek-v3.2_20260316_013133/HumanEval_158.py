@@ -27,7 +27,8 @@ def _impl(words):
 
     find_max(["name", "of", "string"]) == "string"
     find_max(["name", "enam", "game"]) == "enam"
-    find_max(["aaaaaaa", "bb" ,"cc"]) == ""aaaaaaa""""
+    find_max(["aaaaaaa", "bb" ,"cc"]) == ""aaaaaaa"
+    """
     mx_ch_cnt, ans = 0, ""
     for word in words:
         ch_cnt = len(set(word)) 

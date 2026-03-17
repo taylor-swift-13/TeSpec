@@ -498,6 +498,65 @@ def write_report(report_dir: Path, report: dict):
     )
 
 
+def report_filename_for_index(idx: int) -> str:
+    return f"HumanEval_{idx}.json"
+
+
+def aggregate_reports(report_dir: Path):
+    report_paths = sorted(report_dir.glob("HumanEval_*.json"))
+    passed = 0
+    failed = 0
+    failed_tasks = []
+    total_cases = 0
+    passed_cases = 0
+    unrestricted_passed_cases = 0
+    syntax_correct_tasks = 0
+    spec_correct_tasks = 0
+    postcondition_correct_without_precondition_tasks = 0
+
+    for report_path in report_paths:
+        report = json.loads(report_path.read_text(encoding="utf-8"))
+        total_cases += report.get("total_cases", 0)
+        passed_cases += report.get("passed_cases", 0)
+        unrestricted_passed_cases += report.get("unrestricted_passed_cases", 0)
+        syntax_correct_tasks += int(report.get("syntax_correct", False))
+        spec_correct_tasks += int(report.get("spec_correct", report.get("status") == "passed"))
+        postcondition_correct_without_precondition_tasks += int(
+            report.get("postcondition_correct_without_precondition", False)
+        )
+        if report.get("status") == "passed":
+            passed += 1
+        else:
+            failed += 1
+            failed_tasks.append(
+                {
+                    "task_id": report["task_id"],
+                    "task_name": report["task_name"],
+                    "failure_type": report.get("failure_type", "unknown"),
+                    "report_file": str(report_path),
+                }
+            )
+
+    return {
+        "passed": passed,
+        "failed": failed,
+        "total": passed + failed,
+        "syntax_correct_tasks": syntax_correct_tasks,
+        "spec_correct_tasks": spec_correct_tasks,
+        "postcondition_correct_without_precondition_tasks": (
+            postcondition_correct_without_precondition_tasks
+        ),
+        "case_accuracy": (passed_cases / total_cases) if total_cases else 0.0,
+        "unrestricted_case_accuracy": (
+            unrestricted_passed_cases / total_cases
+        ) if total_cases else 0.0,
+        "passed_cases": passed_cases,
+        "total_cases": total_cases,
+        "unrestricted_passed_cases": unrestricted_passed_cases,
+        "failed_tasks": failed_tasks,
+    }
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--input-jsonl", default="HumanEvalPlus.jsonl")
@@ -515,26 +574,22 @@ def main():
     output_dir = Path(args.output_dir) if args.output_dir else infer_latest_output_dir(Path(args.output_root))
     report_dir = Path(args.report_dir) if args.report_dir else infer_report_dir(Path(args.report_root), output_dir)
     report_dir.mkdir(parents=True, exist_ok=True)
-    for old_report in report_dir.glob("HumanEval_*.json"):
-        old_report.unlink()
-    summary_path = report_dir / "_summary.json"
-    if summary_path.exists():
-        summary_path.unlink()
 
     with jsonl_path.open(encoding="utf-8") as fh:
         lines = fh.readlines()
 
     indices = select_indices(len(lines), args.range, args.idx)
+    if len(indices) == len(lines):
+        for old_report in report_dir.glob("HumanEval_*.json"):
+            old_report.unlink()
+    else:
+        for idx in indices:
+            report_path = report_dir / report_filename_for_index(idx)
+            if report_path.exists():
+                report_path.unlink()
 
     passed = 0
     failed = 0
-    failed_tasks = []
-    total_cases = 0
-    passed_cases = 0
-    unrestricted_passed_cases = 0
-    syntax_correct_tasks = 0
-    spec_correct_tasks = 0
-    postcondition_correct_without_precondition_tasks = 0
 
     for idx in indices:
         task = json.loads(lines[idx])
@@ -543,28 +598,11 @@ def main():
         report.setdefault("spec_correct", report["status"] == "passed")
         report.setdefault("postcondition_correct_without_precondition", False)
         write_report(report_dir, report)
-        if "total_cases" in report:
-            total_cases += report["total_cases"]
-            passed_cases += report.get("passed_cases", 0)
-            unrestricted_passed_cases += report.get("unrestricted_passed_cases", 0)
-        syntax_correct_tasks += int(report.get("syntax_correct", False))
-        spec_correct_tasks += int(report.get("spec_correct", False))
-        postcondition_correct_without_precondition_tasks += int(
-            report.get("postcondition_correct_without_precondition", False)
-        )
         if report["status"] == "passed":
             passed += 1
             print(f"PASS {report['task_id']}")
         else:
             failed += 1
-            failed_tasks.append(
-                {
-                    "task_id": report["task_id"],
-                    "task_name": report["task_name"],
-                    "failure_type": report.get("failure_type", "unknown"),
-                    "report_file": str(report_dir / f"{report['task_name']}.json"),
-                }
-            )
             print(f"FAIL {report['task_id']}: {report.get('failure_type', 'unknown')}")
             if args.fail_fast:
                 break
@@ -572,22 +610,7 @@ def main():
     summary = {
         "output_dir": str(output_dir),
         "report_dir": str(report_dir),
-        "passed": passed,
-        "failed": failed,
-        "total": passed + failed,
-        "syntax_correct_tasks": syntax_correct_tasks,
-        "spec_correct_tasks": spec_correct_tasks,
-        "postcondition_correct_without_precondition_tasks": (
-            postcondition_correct_without_precondition_tasks
-        ),
-        "case_accuracy": (passed_cases / total_cases) if total_cases else 0.0,
-        "unrestricted_case_accuracy": (
-            unrestricted_passed_cases / total_cases
-        ) if total_cases else 0.0,
-        "passed_cases": passed_cases,
-        "total_cases": total_cases,
-        "unrestricted_passed_cases": unrestricted_passed_cases,
-        "failed_tasks": failed_tasks,
+        **aggregate_reports(report_dir),
     }
     (report_dir / "_summary.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2) + "\n",

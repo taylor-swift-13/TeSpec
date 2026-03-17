@@ -1,42 +1,52 @@
 import math
 
+import numbers
+
 def precondition(input) -> bool:
-    if not isinstance(input, tuple) or len(input) != 2:
-        return False
-    xs, x = input
-    if not isinstance(xs, (list, tuple)):
-        return False
-    if len(xs) == 0:
-        return False
-    for coef in xs:
-        if not isinstance(coef, (int, float)):
+    try:
+        if not isinstance(input, tuple) or len(input) != 1:
             return False
-    if not isinstance(x, (int, float)):
+        xs = input[0]
+        if not isinstance(xs, list):
+            return False
+        if len(xs) == 0 or len(xs) % 2 != 0:
+            return False
+        for c in xs:
+            if not isinstance(c, numbers.Real) or isinstance(c, bool):
+                return False
+        if xs[-1] == 0:
+            return False
+        return True
+    except Exception:
         return False
-    return True
 
 def postcondition(input, output) -> bool:
-    if not isinstance(input, tuple) or len(input) != 2:
-        return False
-    xs, x = input
-    if not isinstance(xs, (list, tuple)) or len(xs) == 0:
-        return False
-    for coef in xs:
-        if not isinstance(coef, (int, float)):
+    try:
+        if not isinstance(input, tuple) or len(input) != 1:
             return False
-    if not isinstance(x, (int, float)):
+        xs = input[0]
+        if not isinstance(xs, list) or len(xs) == 0 or len(xs) % 2 != 0:
+            return False
+        if not isinstance(output, numbers.Real) or isinstance(output, bool):
+            return False
+        x = output
+        total = 0.0
+        for i, coeff in enumerate(xs):
+            total += float(coeff) * (x ** i)
+        return abs(total) <= 1e-6
+    except Exception:
         return False
-    if not isinstance(output, (int, float)):
-        return False
-    expected = 0.0
-    for i, coef in enumerate(xs):
-        expected += coef * (x ** i)
-    tol = 1e-9 * max(1.0, abs(expected))
-    return abs(output - expected) <= tol
 
-def _impl(xs: list, x: float):
-    """Evaluates polynomial with coefficients xs at point x.
-    return xs[0] + xs[1] * x + xs[1] * x^2 + .... xs[n] * x^n"""
+def _impl(xs: list):
+    """xs are coefficients of a polynomial.
+    find_zero find x such that poly(x) = 0.
+    find_zero returns only only zero point, even if there are many.
+    Moreover, find_zero only takes list xs having even number of coefficients
+    and largest non zero coefficient as it guarantees
+    a solution.
+    -0.5
+    1.0
+    """
     dxs = [xs[i] * i for i in range(1, len(xs))]
     def func(x):
         return poly(xs, x)
@@ -52,9 +62,9 @@ def _impl(xs: list, x: float):
 
     return x
 
-def poly(xs: list, x: float):
-    _input = (xs, x)
+def find_zero(xs: list):
+    _input = (xs,)
     assert precondition(_input)
-    _output = _impl(xs, x)
+    _output = _impl(xs)
     assert postcondition(_input, _output)
     return _output

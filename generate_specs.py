@@ -265,7 +265,12 @@ def call_llm(description: str, api_model: str | None, api_key: str | None, base_
 def render_function(def_sig_line: str, doc: str, body: str):
     lines = [def_sig_line]
     if doc:
-        doc_block = '"""' + doc.replace('"""', '"""') + '"""'
+        doc_text = doc.replace('"""', '\\"\\"\\"')
+        if not doc_text.startswith("\n"):
+            doc_text = "\n" + doc_text
+        if not doc_text.endswith("\n"):
+            doc_text += "\n"
+        doc_block = '"""' + doc_text + '"""'
         lines.append(textwrap.indent(doc_block, "    "))
     body = textwrap.dedent(body).strip("\n")
     if body:

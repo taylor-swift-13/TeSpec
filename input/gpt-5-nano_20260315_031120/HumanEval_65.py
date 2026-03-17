@@ -4,7 +4,8 @@ def circular_shift(x, shift):
     and return the result as a string.
     If shift > number of digits, return digits reversed.
     "21"
-    "12""""
+    "12"
+    """
     s = str(x)
     if shift > len(s): return s[::-1]
     shift %= len(s)

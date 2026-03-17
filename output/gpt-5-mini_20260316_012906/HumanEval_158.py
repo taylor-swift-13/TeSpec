@@ -5,41 +5,36 @@ def precondition(input):
     if len(input) != 1:
         return False
     words = input[0]
-    if not isinstance(words, (list, tuple)):
+    if not isinstance(words, list):
+        return False
+    if len(words) == 0:
         return False
     for w in words:
         if not isinstance(w, str):
             return False
+    try:
+        if len(set(words)) != len(words):
+            return False
+    except TypeError:
+        return False
     return True
 
 def postcondition(input, output):
     if not precondition(input):
         return False
     words = input[0]
-    # If there are no words, accept any string output (implementation-defined)
-    if len(words) == 0:
-        return isinstance(output, str)
     if not isinstance(output, str):
         return False
-    # output must be one of the input words
     if output not in words:
         return False
-    # compute maximum number of unique characters among words
-    try:
-        uniques = [len(set(w)) for w in words]
-    except Exception:
+    counts = [len(set(w)) for w in words]
+    maxcount = max(counts)
+    if len(set(output)) != maxcount:
         return False
-    if len(set(output)) != max(uniques):
+    candidates = [w for w, c in zip(words, counts) if c == maxcount]
+    if output != min(candidates):
         return False
-    # if other words tie with the same max unique count, output must be
-    # the lexicographically smallest among those tied words
-    maxu = max(uniques)
-    tied = [w for w, u in zip(words, uniques) if u == maxu]
-    if not tied:
-        return False
-    # find lexicographically smallest tied word
-    smallest = min(tied)
-    return output == smallest
+    return True
 
 def _impl(words):
     """Write a function that accepts a list of strings.
@@ -49,7 +44,8 @@ def _impl(words):
 
     find_max(["name", "of", "string"]) == "string"
     find_max(["name", "enam", "game"]) == "enam"
-    find_max(["aaaaaaa", "bb" ,"cc"]) == ""aaaaaaa""""
+    find_max(["aaaaaaa", "bb" ,"cc"]) == ""aaaaaaa"
+    """
     mx_ch_cnt, ans = 0, ""
     for word in words:
         ch_cnt = len(set(word)) 

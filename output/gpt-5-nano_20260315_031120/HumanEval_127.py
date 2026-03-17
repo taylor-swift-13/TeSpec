@@ -2,6 +2,8 @@
 def precondition(input):
     if not isinstance(input, tuple) or len(input) != 2:
         return False
+    i1, i2 = input
+
     def valid_interval(iv):
         if not isinstance(iv, (tuple, list)) or len(iv) != 2:
             return False
@@ -11,41 +13,37 @@ def precondition(input):
         if a > b:
             return False
         return True
-    int1, int2 = input
-    return valid_interval(int1) and valid_interval(int2)
+
+    return valid_interval(i1) and valid_interval(i2)
 
 def postcondition(input, output):
     if not precondition(input):
         return False
-    if not isinstance(output, str):
-        return False
-    if output not in ("YES", "NO"):
-        return False
 
-    interval1, interval2 = input
-    a1, b1 = interval1
-    a2, b2 = interval2
+    i1, i2 = input
+    a1, b1 = i1
+    a2, b2 = i2
 
     start = max(a1, a2)
     end = min(b1, b2)
+    inter_len = (end - start + 1) if end >= start else 0
 
-    if start > end:
-        expected = "NO"
-    else:
-        length = end - start
-        def is_prime(n):
-            if n < 2:
+    def is_prime(n):
+        if n < 2:
+            return False
+        if n % 2 == 0:
+            return n == 2
+        p = 3
+        while p * p <= n:
+            if n % p == 0:
                 return False
-            if n % 2 == 0:
-                return n == 2
-            i = 3
-            while i * i <= n:
-                if n % i == 0:
-                    return False
-                i += 2
-            return True
-        expected = "YES" if is_prime(length) else "NO"
+            p += 2
+        return True
 
+    expected = "YES" if is_prime(inter_len) else "NO"
+
+    if not isinstance(output, str):
+        return False
     return output == expected
 
 def _impl(interval1, interval2):
@@ -66,7 +64,8 @@ def _impl(interval1, interval2):
     [input/output] samples:
     intersection((1, 2), (2, 3)) ==> "NO"
     intersection((-1, 1), (0, 4)) ==> "NO"
-    intersection((-3, -1), (-5, 5)) ==> "YES""""
+    intersection((-3, -1), (-5, 5)) ==> "YES"
+    """
     def is_prime(a):
         return not (a < 2 or any(a % x == 0 for x in range(2, int(a ** 0.5) + 1)))
     if interval1[0] > interval2[0]: interval1, interval2 = interval2, interval1

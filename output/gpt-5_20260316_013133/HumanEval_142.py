@@ -6,7 +6,7 @@ def precondition(input):
     if not isinstance(lst, list):
         return False
     for x in lst:
-        if not isinstance(x, int) or isinstance(x, bool):
+        if not isinstance(x, int):
             return False
     return True
 
@@ -14,46 +14,54 @@ def postcondition(input, output):
     if not precondition(input):
         return True
     lst = input[0]
-    if not isinstance(output, int):
+    if type(output) is not int:
         return False
-    try:
-        total = sum(lst)
-    except Exception:
+    if output != sum(lst):
         return False
-    if output != total:
-        return False
+
     import math
+
     def is_perfect_square(n):
+        if not isinstance(n, int):
+            return False
         if n < 0:
             return False
         r = math.isqrt(n)
         return r * r == n
+
     def is_perfect_cube(n):
-        m = -n if n < 0 else n
+        if not isinstance(n, int):
+            return False
+        a = n if n >= 0 else -n
         lo, hi = 0, 1
-        while hi * hi * hi < m:
-            hi <<= 1
+        while hi * hi * hi < a:
+            hi *= 2
         while lo <= hi:
             mid = (lo + hi) // 2
-            c = mid * mid * mid
-            if c == m:
+            m3 = mid * mid * mid
+            if m3 == a:
                 return True
-            if c < m:
+            if m3 < a:
                 lo = mid + 1
             else:
                 hi = mid - 1
         return False
-    for i, v in enumerate(lst):
+
+    for i, val in enumerate(lst):
+        if not isinstance(val, int):
+            return False
         if i % 3 == 0:
-            if not is_perfect_square(v):
+            if not is_perfect_square(val):
                 return False
         elif i % 4 == 0:
-            if not is_perfect_cube(v):
+            if not is_perfect_cube(val):
                 return False
+
     return True
 
 def _impl(lst):
-    """"
+    """
+    "
     This function will take a list of integers. For all entries in the list, the function shall square the integer entry if its index is a 
     multiple of 3 and will cube the integer entry if its index is a multiple of 4 and not a multiple of 3. The function will not 
     change the entries in the list whose indexes are not a multiple of 3 or 4. The function shall then return the sum of all entries. 
@@ -61,7 +69,8 @@ def _impl(lst):
     Examples:
     For lst = [1,2,3] the output should be 6
     For lst = []  the output should be 0
-    For lst = [-1,-5,2,-1,-5]  the output should be -126"""
+    For lst = [-1,-5,2,-1,-5]  the output should be -126
+    """
     ans = 0
     for i, num in enumerate(lst):
         if i % 3 == 0:

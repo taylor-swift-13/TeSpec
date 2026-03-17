@@ -1,32 +1,31 @@
 
-def precondition(input) -> bool:
+def precondition(input):
     if not isinstance(input, tuple) or len(input) != 1:
         return False
     word = input[0]
     if not isinstance(word, str):
         return False
     for ch in word:
-        if not (('a' <= ch <= 'z') or ('A' <= ch <= 'Z')):
+        if not (ch.isascii() and ch.isalpha()):
             return False
     return True
 
-def postcondition(input, output) -> bool:
+def postcondition(input, output):
+    if not precondition(input):
+        return True
     if not isinstance(output, str):
         return False
-    if len(output) not in (0, 1):
-        return False
     word = input[0]
-    vowels = set("aeiouAEIOU")
+    vowels = set("AEIOUaeiou")
+    def is_consonant(c):
+        return c.isascii() and c.isalpha() and c not in vowels
+    expected = ""
     n = len(word)
-    valid_indices = []
-    for i in range(1, n - 1):
-        if (word[i] in vowels) and (word[i - 1] not in vowels) and (word[i + 1] not in vowels):
-            valid_indices.append(i)
-    if valid_indices:
-        expected = word[valid_indices[-1]]
-        return output == expected
-    else:
-        return output == ""
+    for i in range(n - 2, 0, -1):
+        if word[i] in vowels and is_consonant(word[i - 1]) and is_consonant(word[i + 1]):
+            expected = word[i]
+            break
+    return output == expected
 
 def _impl(word):
     """You are given a word. Your task is to find the closest vowel that stands between 
@@ -41,7 +40,8 @@ def _impl(word):
     get_closest_vowel("yogurt") ==> "u"
     get_closest_vowel("FULL") ==> "U"
     get_closest_vowel("quick") ==> ""
-    get_closest_vowel("ab") ==> """""
+    get_closest_vowel("ab") ==> ""
+    """
     def is_vowel(ch: str) -> bool:
         return ch in "aeiouAEIOU"
     for i in range(len(word) - 2, 0, -1):

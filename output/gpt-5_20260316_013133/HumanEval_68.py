@@ -1,6 +1,6 @@
 
 def precondition(input):
-    if not isinstance(input, tuple) or len(input) != 1:
+    if not (isinstance(input, tuple) and len(input) == 1):
         return False
     arr = input[0]
     if not isinstance(arr, (list, tuple)):
@@ -16,18 +16,30 @@ def postcondition(input, output):
     if not precondition(input):
         return True
     arr = input[0]
-    # Compute expected result
-    evens = [(i, v) for i, v in enumerate(arr) if v % 2 == 0]
+    if not isinstance(output, list):
+        return False
+    evens = [x for x in arr if x % 2 == 0]
     if not evens:
-        expected = []
-    else:
-        min_val = min(v for _, v in evens)
-        min_idx = next(i for i, v in evens if v == min_val)
-        expected = [min_val, min_idx]
-    return output == expected
+        return output == []
+    mn = min(evens)
+    idx = None
+    for i, v in enumerate(arr):
+        if v == mn:
+            idx = i
+            break
+    if idx is None:
+        return False
+    if not (len(output) == 2 and isinstance(output[0], int) and isinstance(output[1], int)):
+        return False
+    if not (0 <= output[1] < len(arr)):
+        return False
+    if output[0] != mn or output[1] != idx:
+        return False
+    return True
 
 def _impl(arr):
-    """"Given an array representing a branch of a tree that has non-negative integer nodes
+    """
+    "Given an array representing a branch of a tree that has non-negative integer nodes
     your task is to pluck one of the nodes and return it.
     The plucked node should be the node with the smallest even value.
     If multiple nodes with the same smallest even value are found return the node that has smallest index.
@@ -57,7 +69,8 @@ def _impl(arr):
 
     Constraints:
         * 1 <= nodes.length <= 10000
-        * 0 <= node.value"""
+        * 0 <= node.value
+    """
     if all(val % 2 == 1 for val in arr): return []
     min_even = min(filter(lambda x: x % 2 == 0, arr))
     for i in range(len(arr)):

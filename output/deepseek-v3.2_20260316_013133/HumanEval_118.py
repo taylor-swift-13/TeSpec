@@ -1,6 +1,6 @@
 
-def precondition(args):
-    word = args[0]
+def precondition(input):
+    word, = input
     if not isinstance(word, str):
         return False
     if not word:
@@ -10,32 +10,23 @@ def precondition(args):
             return False
     return True
 
-def postcondition(args, result):
-    word = args[0]
-    if not isinstance(result, str):
+def postcondition(input, output):
+    word, = input
+    if not isinstance(output, str):
         return False
-    if result == "":
+    if output == "":
         return True
-    if len(result) != 1:
+    if len(output) != 1:
         return False
-    if result not in "AEIOUaeiou":
+    if output not in "AEIOUaeiou":
         return False
-    idx = word.rfind(result)
-    if idx == -1:
+    if len(word) < 3:
         return False
-    if idx == 0 or idx == len(word) - 1:
+    output_idx = word.rfind(output)
+    if output_idx == -1:
         return False
-    left_ok = idx > 0 and word[idx-1] not in "AEIOUaeiou"
-    right_ok = idx < len(word) - 1 and word[idx+1] not in "AEIOUaeiou"
-    if not (left_ok and right_ok):
+    if output_idx == 0 or output_idx == len(word) - 1:
         return False
-    for i in range(idx + 1, len(word) - 1):
-        ch = word[i]
-        if ch in "AEIOUaeiou":
-            left_ok2 = i > 0 and word[i-1] not in "AEIOUaeiou"
-            right_ok2 = i < len(word) - 1 and word[i+1] not in "AEIOUaeiou"
-            if left_ok2 and right_ok2:
-                return False
     return True
 
 def _impl(word):
@@ -51,7 +42,8 @@ def _impl(word):
     get_closest_vowel("yogurt") ==> "u"
     get_closest_vowel("FULL") ==> "U"
     get_closest_vowel("quick") ==> ""
-    get_closest_vowel("ab") ==> """""
+    get_closest_vowel("ab") ==> ""
+    """
     def is_vowel(ch: str) -> bool:
         return ch in "aeiouAEIOU"
     for i in range(len(word) - 2, 0, -1):

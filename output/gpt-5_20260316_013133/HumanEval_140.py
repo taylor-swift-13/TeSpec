@@ -1,29 +1,40 @@
 
 def precondition(input):
-    return isinstance(input, tuple) and len(input) == 1 and isinstance(input[0], str)
+    if not isinstance(input, tuple):
+        return False
+    if len(input) != 1:
+        return False
+    return isinstance(input[0], str)
 
 def postcondition(input, output):
-    if not (isinstance(input, tuple) and len(input) == 1 and isinstance(input[0], str) and isinstance(output, str)):
+    if not precondition(input):
+        return True
+    if not isinstance(output, str):
         return False
-    s = input[0]
-    res = []
-    i = 0
-    n = len(s)
-    while i < n:
-        if s[i] == ' ':
-            j = i
-            while j < n and s[j] == ' ':
-                j += 1
-            runlen = j - i
-            if runlen >= 3:
-                res.append('-')
+
+    text = input[0]
+
+    def transform(s):
+        res = []
+        i = 0
+        n = len(s)
+        while i < n:
+            if s[i] == ' ':
+                j = i
+                while j < n and s[j] == ' ':
+                    j += 1
+                count = j - i
+                if count >= 3:
+                    res.append('-')
+                else:
+                    res.append('_' * count)
+                i = j
             else:
-                res.append('_' * runlen)
-            i = j
-        else:
-            res.append(s[i])
-            i += 1
-    expected = ''.join(res)
+                res.append(s[i])
+                i += 1
+        return ''.join(res)
+
+    expected = transform(text)
     return output == expected
 
 def _impl(text):
@@ -34,7 +45,8 @@ def _impl(text):
     fix_spaces("Example") == "Example"
     fix_spaces("Example 1") == "Example_1"
     fix_spaces(" Example 2") == "_Example_2"
-    fix_spaces(" Example   3") == "_Example-3""""
+    fix_spaces(" Example   3") == "_Example-3"
+    """
     ans = text
     for i in range(len(text), 2, -1):
         ans = ans.replace(" " * i, "-")

@@ -7,7 +7,8 @@ def fix_spaces(text):
     fix_spaces("Example") == "Example"
     fix_spaces("Example 1") == "Example_1"
     fix_spaces(" Example 2") == "_Example_2"
-    fix_spaces(" Example   3") == "_Example-3""""
+    fix_spaces(" Example   3") == "_Example-3"
+    """
     ans = text
     for i in range(len(text), 2, -1):
         ans = ans.replace(" " * i, "-")

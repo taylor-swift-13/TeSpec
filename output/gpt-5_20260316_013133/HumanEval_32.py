@@ -1,74 +1,75 @@
 import math
 
-def precondition(input) -> bool:
-    if not isinstance(input, tuple) or len(input) != 2:
+def precondition(input):
+    # Expect a single positional argument: xs (list of coefficients)
+    if not isinstance(input, tuple) or len(input) != 1:
         return False
-    xs, x = input
+    xs = input[0]
     if not isinstance(xs, list):
         return False
-    if len(xs) < 1:
+    n = len(xs)
+    # Even number of coefficients and at least 2 to ensure odd degree >= 1
+    if n < 2 or (n % 2) != 0:
         return False
-    try:
-        import numbers
-    except Exception:
-        return False
-    if not isinstance(x, numbers.Real):
-        return False
-    for c in xs:
-        if not isinstance(c, numbers.Real):
+    # Helper to check finite real numbers without imports
+    def is_finite_number(v):
+        if not isinstance(v, (int, float)):
             return False
+        # NaN check: v != v is True for NaN
+        if v != v:
+            return False
+        # Infinity checks
+        if v == float('inf') or v == float('-inf'):
+            return False
+        return True
+    # All coefficients must be finite real numbers
+    for c in xs:
+        if not is_finite_number(c):
+            return False
+    # Leading (highest-degree) coefficient must be non-zero
+    if xs[-1] == 0:
+        return False
     return True
 
-def postcondition(input, output) -> bool:
-    if not isinstance(input, tuple) or len(input) != 2:
-        return False
-    xs, x = input
-    try:
-        import numbers, math
-    except Exception:
-        return False
-    if not isinstance(output, numbers.Real):
-        return False
-    try:
-        expected = 0
-        for i, c in enumerate(xs):
-            expected = expected + c * (x ** i)
-    except Exception:
-        return False
-    # NaN handling
-    try:
-        exp_is_nan = expected != expected
-    except Exception:
-        exp_is_nan = False
-    try:
-        out_is_nan = output != output
-    except Exception:
-        out_is_nan = False
-    if exp_is_nan or out_is_nan:
-        return exp_is_nan and out_is_nan
-    # Infinity handling
-    e_float = None
-    o_float = None
-    try:
-        e_float = float(expected)
-        o_float = float(output)
-    except Exception:
-        pass
-    if e_float is not None and o_float is not None:
-        if math.isinf(e_float) or math.isinf(o_float):
-            return e_float == o_float
-    # Numeric closeness
-    try:
-        return math.isclose(expected, output, rel_tol=1e-9, abs_tol=1e-9)
-    except Exception:
-        try:
-            return expected == output
-        except Exception:
+def postcondition(input, output):
+    # If precondition doesn't hold, do not enforce postconditions
+    if not precondition(input):
+        return True
+    xs = input[0]
+    # Helper to check finite real numbers without imports
+    def is_finite_number(v):
+        if not isinstance(v, (int, float)):
             return False
+        if v != v:
+            return False
+        if v == float('inf') or v == float('-inf'):
+            return False
+        return True
+    # Output should be a single finite real number
+    if not is_finite_number(output):
+        return False
+    x = float(output)
+    # Evaluate polynomial using Horner's method and accumulate a scale for tolerance
+    val = 0.0
+    scale = 0.0
+    ax = abs(x)
+    for c in reversed(xs):
+        val = val * x + float(c)
+        scale = scale * ax + abs(float(c))
+    # Tolerance scaled by polynomial magnitude at |x|
+    tol = 1e-7 * (1.0 + scale)
+    return abs(val) <= tol
 
-def _impl(xs: list, x: float):
-    """Evaluates polynomial with coefficients xs at point x.
-    return xs[0] + xs[1] * x + xs[1] * x^2 + .... xs[n] * x^n"""
+def _impl(xs: list):
+    """xs are coefficients of a polynomial.
+    find_zero find x such that poly(x) = 0.
+    find_zero returns only only zero point, even if there are many.
+    Moreover, find_zero only takes list xs having even number of coefficients
+    and largest non zero coefficient as it guarantees
+    a solution.
+    -0.5
+    1.0
+    """
     dxs = [xs[i] * i for i in range(1, len(xs))]
     def func(x):
         return poly(xs, x)
@@ -84,9 +85,9 @@ def _impl(xs: list, x: float):
 
     return x
 
-def poly(xs: list, x: float):
-    _input = (xs, x)
+def find_zero(xs: list):
+    _input = (xs,)
     assert precondition(_input)
-    _output = _impl(xs, x)
+    _output = _impl(xs)
     assert postcondition(_input, _output)
     return _output

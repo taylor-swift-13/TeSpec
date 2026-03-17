@@ -1,19 +1,14 @@
 
-def precondition(input) -> bool:
+def precondition(input):
     return isinstance(input, tuple) and len(input) == 1 and isinstance(input[0], str)
 
-def postcondition(input, output) -> bool:
-    if not (isinstance(input, tuple) and len(input) == 1 and isinstance(input[0], str)):
-        return False
+def postcondition(input, output):
     if not isinstance(output, str):
         return False
     s = input[0]
-    has_letter = any(c.isalpha() for c in s)
-    if has_letter:
-        expected = "".join(c.swapcase() if c.isalpha() else c for c in s)
-    else:
-        expected = s[::-1]
-    return output == expected
+    contains_letter = any(ch.isalpha() for ch in s)
+    expected_output = s.swapcase() if contains_letter else s[::-1]
+    return output == expected_output
 
 def _impl(s):
     """You are given a string s.
@@ -24,7 +19,8 @@ def _impl(s):
     Examples
     solve("1234") = "4321"
     solve("ab") = "AB"
-    solve("#a@C") = "#A@c""""
+    solve("#a@C") = "#A@c"
+    """
     ans, has_letter = "", False
     for ch in s:
         if ch.isalpha():

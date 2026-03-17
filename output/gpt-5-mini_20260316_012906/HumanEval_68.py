@@ -1,47 +1,82 @@
 
 def precondition(input):
-    if not isinstance(input, tuple):
-        return False
-    if len(input) != 1:
-        return False
-    arr = input[0]
-    if not isinstance(arr, (list, tuple)):
-        return False
-    for x in arr:
-        if not isinstance(x, int):
-            return False
-        if x < 0:
-            return False
-    return True
-
-def postcondition(input, output):
-    # If precondition does not hold, do not enforce postcondition here.
-    if not precondition(input):
-        return True
-    arr = input[0]
-    # Output must be a list or tuple
-    if not isinstance(output, (list, tuple)):
-        return False
-    # Compute expected result
-    evens = [(v, i) for i, v in enumerate(arr) if v % 2 == 0]
-    if not evens:
-        expected = []
-    else:
-        min_value = min(v for v, _ in evens)
-        # find smallest index with that value
-        for i, v in enumerate(arr):
-            if v == min_value and v % 2 == 0:
-                expected = [min_value, i]
-                break
-    # Compare output to expected (allow tuple or list)
     try:
-        out_list = list(output)
+        if not isinstance(input, tuple):
+            return False
+        if len(input) != 1:
+            return False
+        arr = input[0]
+        if not isinstance(arr, (list, tuple)):
+            return False
+        if len(arr) > 10000:
+            return False
+        # allow empty list
+        for x in arr:
+            # reject booleans explicitly
+            if isinstance(x, bool):
+                return False
+            if not isinstance(x, int):
+                return False
+            if x < 0:
+                return False
+        return True
     except Exception:
         return False
-    return out_list == expected
+
+def postcondition(input, output):
+    try:
+        # Basic input validation
+        if not (isinstance(input, tuple) and len(input) == 1):
+            return False
+        arr = input[0]
+        if not isinstance(arr, (list, tuple)):
+            return False
+
+        # Compute expected result
+        min_even = None
+        min_index = None
+        for i, v in enumerate(arr):
+            # skip non-ints or negatives (should be ruled out by precondition)
+            if not isinstance(v, int):
+                return False
+            if v % 2 == 0:
+                if min_even is None or v < min_even:
+                    min_even = v
+                    min_index = i
+
+        if min_even is None:
+            # expected empty list
+            return output == []
+        # expected a list [min_even, min_index]
+        if not isinstance(output, list):
+            return False
+        if len(output) != 2:
+            return False
+        val, idx = output[0], output[1]
+        # types and bounds
+        if not isinstance(val, int) or isinstance(val, bool):
+            return False
+        if not isinstance(idx, int) or isinstance(idx, bool):
+            return False
+        if idx < 0 or idx >= len(arr):
+            return False
+        if val != arr[idx]:
+            return False
+        if val % 2 != 0:
+            return False
+        if val != min_even:
+            return False
+        # ensure that the reported index is the first occurrence of that minimal even value
+        for i in range(0, idx):
+            if arr[i] == min_even:
+                return False
+        return True
+    except Exception:
+        return False
 
 def _impl(arr):
-    """"Given an array representing a branch of a tree that has non-negative integer nodes
+    """
+    "Given an array representing a branch of a tree that has non-negative integer nodes
     your task is to pluck one of the nodes and return it.
     The plucked node should be the node with the smallest even value.
     If multiple nodes with the same smallest even value are found return the node that has smallest index.
@@ -71,7 +106,8 @@ def _impl(arr):
 
     Constraints:
         * 1 <= nodes.length <= 10000
-        * 0 <= node.value"""
+        * 0 <= node.value
+    """
     if all(val % 2 == 1 for val in arr): return []
     min_even = min(filter(lambda x: x % 2 == 0, arr))
     for i in range(len(arr)):

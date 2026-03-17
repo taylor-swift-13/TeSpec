@@ -10,10 +10,10 @@ def postcondition(input, output):
     if not output.startswith('db') or not output.endswith('db'):
         return False
     binary_part = output[2:-2]
+    if not binary_part:
+        return decimal == 0
     if not all(c in '01' for c in binary_part):
         return False
-    if binary_part == '':
-        return decimal == 0
     try:
         return int(binary_part, 2) == decimal
     except ValueError:
@@ -29,7 +29,8 @@ def _impl(decimal):
 
     Examples:
     decimal_to_binary(15)   # returns "db1111db"
-    decimal_to_binary(32)   # returns "db100000db""""
+    decimal_to_binary(32)   # returns "db100000db"
+    """
     return "db" + bin(decimal)[2:] + "db"
 
 def decimal_to_binary(decimal):

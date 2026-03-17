@@ -1,0 +1,59 @@
+
+def precondition(input):
+    # input is a tuple with one argument: words
+    if len(input) != 1:
+        return False
+    words = input[0]
+    if not isinstance(words, list):
+        return False
+    if len(words) == 0:
+        return False
+    for w in words:
+        if not isinstance(w, str):
+            return False
+    return True
+
+
+def postcondition(input, output):
+    words = input[0]
+    # output must be a string
+    if not isinstance(output, str):
+        return False
+    # output must be one of the words in the list
+    if output not in words:
+        return False
+    # compute max number of unique characters
+    max_unique = max(len(set(w)) for w in words)
+    # output must have that max number of unique characters
+    if len(set(output)) != max_unique:
+        return False
+    # among all words with max unique characters, output must be lexicographically first
+    candidates = [w for w in words if len(set(w)) == max_unique]
+    expected = min(candidates)
+    if output != expected:
+        return False
+    return True
+
+def _impl(words):
+    """Write a function that accepts a list of strings.
+    The list contains different words. Return the word with maximum number
+    of unique characters. If multiple strings have maximum number of unique
+    characters, return the one which comes first in lexicographical order.
+
+    find_max(["name", "of", "string"]) == "string"
+    find_max(["name", "enam", "game"]) == "enam"
+    find_max(["aaaaaaa", "bb" ,"cc"]) == ""aaaaaaa"
+    """
+    mx_ch_cnt, ans = 0, ""
+    for word in words:
+        ch_cnt = len(set(word)) 
+        if ch_cnt > mx_ch_cnt or (ch_cnt == mx_ch_cnt and word < ans):
+            mx_ch_cnt, ans = ch_cnt, word
+    return ans
+
+def find_max(words):
+    _input = (words,)
+    assert precondition(_input)
+    _output = _impl(words)
+    assert postcondition(_input, _output)
+    return _output

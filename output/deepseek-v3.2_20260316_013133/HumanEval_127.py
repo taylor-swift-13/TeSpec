@@ -3,11 +3,9 @@ def precondition(input):
     interval1, interval2 = input
     a1, b1 = interval1
     a2, b2 = interval2
-    if not isinstance(a1, int) or not isinstance(b1, int):
+    if not (isinstance(a1, int) and isinstance(b1, int) and isinstance(a2, int) and isinstance(b2, int)):
         return False
-    if not isinstance(a2, int) or not isinstance(b2, int):
-        return False
-    if a1 > b1 or a2 > b2:
+    if not (a1 <= b1 and a2 <= b2):
         return False
     return True
 
@@ -17,19 +15,22 @@ def postcondition(input, output):
     interval1, interval2 = input
     a1, b1 = interval1
     a2, b2 = interval2
-    start = max(a1, a2)
-    end = min(b1, b2)
-    if start > end:
+    left = max(a1, a2)
+    right = min(b1, b2)
+    if left > right:
         return output == "NO"
-    length = end - start
+    length = right - left
     if length < 0:
         return False
     if length < 2:
-        return output == "NO"
-    for i in range(2, int(length**0.5) + 1):
-        if length % i == 0:
-            return output == "NO"
-    return output == "YES"
+        is_prime = False
+    else:
+        is_prime = True
+        for i in range(2, int(length**0.5) + 1):
+            if length % i == 0:
+                is_prime = False
+                break
+    return output == ("YES" if is_prime else "NO")
 
 def _impl(interval1, interval2):
     """You are given two intervals,
@@ -49,7 +50,8 @@ def _impl(interval1, interval2):
     [input/output] samples:
     intersection((1, 2), (2, 3)) ==> "NO"
     intersection((-1, 1), (0, 4)) ==> "NO"
-    intersection((-3, -1), (-5, 5)) ==> "YES""""
+    intersection((-3, -1), (-5, 5)) ==> "YES"
+    """
     def is_prime(a):
         return not (a < 2 or any(a % x == 0 for x in range(2, int(a ** 0.5) + 1)))
     if interval1[0] > interval2[0]: interval1, interval2 = interval2, interval1

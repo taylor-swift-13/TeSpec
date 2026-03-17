@@ -15,28 +15,19 @@ def precondition(input):
     return True
 
 def postcondition(input, output):
-    if not isinstance(input, tuple) or len(input) != 1:
-        return False
+    if not precondition(input):
+        return True
     words = input[0]
-    if not isinstance(words, list) or len(words) == 0:
-        return False
     if not isinstance(output, str):
         return False
     if output not in words:
         return False
-    # Compute max unique character count
-    try:
-        unique_counts = [len(set(w)) for w in words]
-    except Exception:
-        return False
-    max_unique = max(unique_counts)
-    if len(set(output)) != max_unique:
-        return False
-    # Tie-breaker: output should be lexicographically smallest among those with max_unique
-    for w in words:
-        if len(set(w)) == max_unique and output > w:
-            return False
-    return True
+    def uniq_count(s):
+        return len(set(s))
+    max_count = max(uniq_count(w) for w in words)
+    tied = [w for w in words if uniq_count(w) == max_count]
+    expected = min(tied)
+    return output == expected
 
 def _impl(words):
     """Write a function that accepts a list of strings.
@@ -46,7 +37,8 @@ def _impl(words):
 
     find_max(["name", "of", "string"]) == "string"
     find_max(["name", "enam", "game"]) == "enam"
-    find_max(["aaaaaaa", "bb" ,"cc"]) == ""aaaaaaa""""
+    find_max(["aaaaaaa", "bb" ,"cc"]) == ""aaaaaaa"
+    """
     mx_ch_cnt, ans = 0, ""
     for word in words:
         ch_cnt = len(set(word)) 

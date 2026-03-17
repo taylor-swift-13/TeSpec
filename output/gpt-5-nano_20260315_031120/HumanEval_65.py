@@ -1,43 +1,44 @@
 
 def precondition(input):
-    # input should be a tuple (x, shift)
     if not isinstance(input, tuple) or len(input) != 2:
         return False
     x, shift = input
     if not isinstance(x, int) or not isinstance(shift, int):
         return False
-    if shift < 0:
+    if x < 0 or shift < 0:
         return False
     return True
 
 def postcondition(input, output):
-    # output should be a string representing the rotated digits of abs(x)
     if not isinstance(input, tuple) or len(input) != 2:
         return False
-    if not isinstance(output, str):
-        return False
     x, shift = input
-    if not isinstance(x, int) or not isinstance(shift, int) or shift < 0:
+    if not isinstance(x, int) or not isinstance(shift, int):
         return False
-    digits = str(abs(x))
-    n = len(digits)
+    if x < 0 or shift < 0:
+        return False
+    s = str(x)
+    n = len(s)
     if n == 0:
-        return output == ""
-    if shift > n:
-        expected = digits[::-1]
+        expected = ""
     else:
-        if shift == 0:
-            expected = digits
+        if shift > n:
+            expected = s[::-1]
         else:
-            expected = digits[-shift:] + digits[:-shift]
-    return output == expected
+            k = shift % n
+            if k == 0:
+                expected = s
+            else:
+                expected = s[-k:] + s[:-k]
+    return isinstance(output, str) and output == expected
 
 def _impl(x, shift):
     """Circular shift the digits of the integer x, shift the digits right by shift
     and return the result as a string.
     If shift > number of digits, return digits reversed.
     "21"
-    "12""""
+    "12"
+    """
     s = str(x)
     if shift > len(s): return s[::-1]
     shift %= len(s)

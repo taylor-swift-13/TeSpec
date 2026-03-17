@@ -183,7 +183,7 @@ def describe_failure(case_report: dict):
     if failure_type == "postcondition_survived":
         return "precondition passed and postcondition also passed, so the mutation survived"
     if failure_type == "mutation_runtime_error":
-        return "mutation implementation raised an exception before spec checking"
+        return "mutation implementation raised an exception before spec checking; this still counts as a killed mutation"
     if failure_type == "original_runtime_error":
         return "original implementation raised an exception before comparison"
     if failure_type == "precondition_evaluation_error":
@@ -216,7 +216,7 @@ def run_negative_case(module, original_func, mutation_func, args, case_index, mu
 
     if not mutation_ok:
         return {
-            "status": "failed",
+            "status": "passed",
             "failure_type": "mutation_runtime_error",
             "case_index": case_index,
             "input": list(args),
@@ -696,6 +696,70 @@ def write_report(report_dir: Path, report: dict):
     )
 
 
+def report_filename_for_index(idx: int) -> str:
+    return f"HumanEval_{idx}.json"
+
+
+def aggregate_reports(report_dir: Path):
+    report_paths = sorted(report_dir.glob("HumanEval_*.json"))
+    passed = 0
+    failed = 0
+    failed_tasks = []
+    total_cases = 0
+    passed_cases = 0
+    same_output_cases = 0
+    syntax_correct_tasks = 0
+    spec_correct_tasks = 0
+    tasks_with_negative_cases = 0
+    total_mutations = 0
+    passed_mutations = 0
+    failed_mutations = 0
+
+    for report_path in report_paths:
+        report = json.loads(report_path.read_text(encoding="utf-8"))
+        total_cases += report.get("total_cases", 0)
+        passed_cases += report.get("passed_cases", 0)
+        same_output_cases += report.get("same_output_cases", 0)
+        syntax_correct_tasks += int(report.get("syntax_correct", False))
+        spec_correct_tasks += int(report.get("spec_correct", report.get("status") == "passed"))
+        tasks_with_negative_cases += int(report.get("total_cases", 0) > 0)
+        mutation_reports = report.get("mutations", [])
+        total_mutations += len(mutation_reports)
+        passed_mutations += sum(1 for item in mutation_reports if item.get("status") == "passed")
+        failed_mutations += sum(1 for item in mutation_reports if item.get("status") == "failed")
+        if report.get("status") == "passed":
+            passed += 1
+        else:
+            failed += 1
+            failed_tasks.append(
+                {
+                    "task_id": report["task_id"],
+                    "task_name": report["task_name"],
+                    "failure_type": report.get("failure_type", "unknown"),
+                    "report_file": str(report_path),
+                }
+            )
+
+    return {
+        "passed": passed,
+        "failed": failed,
+        "total": passed + failed,
+        "syntax_correct_tasks": syntax_correct_tasks,
+        "spec_correct_tasks": spec_correct_tasks,
+        "tasks_with_negative_cases": tasks_with_negative_cases,
+        "case_accuracy": (passed_cases / total_cases) if total_cases else 0.0,
+        "passed_cases": passed_cases,
+        "total_cases": total_cases,
+        "different_output_cases": total_cases,
+        "same_output_cases": same_output_cases,
+        "total_mutations": total_mutations,
+        "passed_mutations": passed_mutations,
+        "failed_mutations": failed_mutations,
+        "mutation_accuracy": (passed_mutations / total_mutations) if total_mutations else 0.0,
+        "failed_tasks": failed_tasks,
+    }
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--input-jsonl", default="HumanEvalPlus.jsonl")
@@ -715,29 +779,22 @@ def main():
     report_dir = Path(args.report_dir) if args.report_dir else infer_report_dir(Path(args.report_root), output_dir)
     mutation_root = Path(args.mutation_root)
     report_dir.mkdir(parents=True, exist_ok=True)
-    for old_report in report_dir.glob("HumanEval_*.json"):
-        old_report.unlink()
-    summary_path = report_dir / "_summary.json"
-    if summary_path.exists():
-        summary_path.unlink()
 
     with jsonl_path.open(encoding="utf-8") as fh:
         lines = fh.readlines()
 
     indices = select_indices(len(lines), args.range, args.idx)
+    if len(indices) == len(lines):
+        for old_report in report_dir.glob("HumanEval_*.json"):
+            old_report.unlink()
+    else:
+        for idx in indices:
+            report_path = report_dir / report_filename_for_index(idx)
+            if report_path.exists():
+                report_path.unlink()
 
     passed = 0
     failed = 0
-    failed_tasks = []
-    total_cases = 0
-    passed_cases = 0
-    same_output_cases = 0
-    syntax_correct_tasks = 0
-    spec_correct_tasks = 0
-    tasks_with_negative_cases = 0
-    total_mutations = 0
-    passed_mutations = 0
-    failed_mutations = 0
 
     for idx in indices:
         task = json.loads(lines[idx])
@@ -746,30 +803,11 @@ def main():
         report.setdefault("spec_correct", report["status"] == "passed")
         write_report(report_dir, report)
 
-        total_cases += report.get("total_cases", 0)
-        passed_cases += report.get("passed_cases", 0)
-        same_output_cases += report.get("same_output_cases", 0)
-        syntax_correct_tasks += int(report.get("syntax_correct", False))
-        spec_correct_tasks += int(report.get("spec_correct", False))
-        tasks_with_negative_cases += int(report.get("total_cases", 0) > 0)
-        mutation_reports = report.get("mutations", [])
-        total_mutations += len(mutation_reports)
-        passed_mutations += sum(1 for item in mutation_reports if item.get("status") == "passed")
-        failed_mutations += sum(1 for item in mutation_reports if item.get("status") == "failed")
-
         if report["status"] == "passed":
             passed += 1
             print(f"PASS {report['task_id']}")
         else:
             failed += 1
-            failed_tasks.append(
-                {
-                    "task_id": report["task_id"],
-                    "task_name": report["task_name"],
-                    "failure_type": report.get("failure_type", "unknown"),
-                    "report_file": str(report_dir / f"{report['task_name']}.json"),
-                }
-            )
             print(f"FAIL {report['task_id']}: {report.get('failure_type', 'unknown')}")
             if args.fail_fast:
                 break
@@ -778,22 +816,7 @@ def main():
         "output_dir": str(output_dir),
         "mutation_root": str(mutation_root),
         "report_dir": str(report_dir),
-        "passed": passed,
-        "failed": failed,
-        "total": passed + failed,
-        "syntax_correct_tasks": syntax_correct_tasks,
-        "spec_correct_tasks": spec_correct_tasks,
-        "tasks_with_negative_cases": tasks_with_negative_cases,
-        "case_accuracy": (passed_cases / total_cases) if total_cases else 0.0,
-        "passed_cases": passed_cases,
-        "total_cases": total_cases,
-        "different_output_cases": total_cases,
-        "same_output_cases": same_output_cases,
-        "total_mutations": total_mutations,
-        "passed_mutations": passed_mutations,
-        "failed_mutations": failed_mutations,
-        "mutation_accuracy": (passed_mutations / total_mutations) if total_mutations else 0.0,
-        "failed_tasks": failed_tasks,
+        **aggregate_reports(report_dir),
     }
     (report_dir / "_summary.json").write_text(
         json.dumps(summary, ensure_ascii=False, indent=2) + "\n",

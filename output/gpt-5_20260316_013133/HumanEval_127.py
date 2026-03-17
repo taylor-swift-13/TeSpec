@@ -1,12 +1,12 @@
 
 def precondition(input):
-    if not isinstance(input, tuple) or len(input) != 2:
+    if not (isinstance(input, tuple) and len(input) == 2):
         return False
-    for iv in input:
-        if not isinstance(iv, (tuple, list)) or len(iv) != 2:
+    for interval in input:
+        if not (isinstance(interval, (tuple, list)) and len(interval) == 2):
             return False
-        a, b = iv[0], iv[1]
-        if not isinstance(a, int) or not isinstance(b, int):
+        a, b = interval
+        if not (type(a) is int and type(b) is int):
             return False
         if a > b:
             return False
@@ -15,30 +15,26 @@ def precondition(input):
 def postcondition(input, output):
     if not precondition(input):
         return True
-    if not isinstance(output, str) or output not in ("YES", "NO"):
+    if not (isinstance(output, str) and output in ("YES", "NO")):
         return False
-
-    (a1, b1), (a2, b2) = input
-    l = max(a1, a2)
-    r = min(b1, b2)
-    length = r - l if l <= r else 0
-
+    (a, b), (c, d) = input
+    s = max(a, c)
+    e = min(b, d)
+    if s > e:
+        return output == "NO"
+    L = e - s
     def is_prime(n):
         if n < 2:
             return False
-        if n == 2:
-            return True
         if n % 2 == 0:
-            return False
+            return n == 2
         i = 3
         while i * i <= n:
             if n % i == 0:
                 return False
             i += 2
         return True
-
-    expected = "YES" if is_prime(length) else "NO"
-    return output == expected
+    return (output == "YES") == is_prime(L)
 
 def _impl(interval1, interval2):
     """You are given two intervals,
@@ -58,7 +54,8 @@ def _impl(interval1, interval2):
     [input/output] samples:
     intersection((1, 2), (2, 3)) ==> "NO"
     intersection((-1, 1), (0, 4)) ==> "NO"
-    intersection((-3, -1), (-5, 5)) ==> "YES""""
+    intersection((-3, -1), (-5, 5)) ==> "YES"
+    """
     def is_prime(a):
         return not (a < 2 or any(a % x == 0 for x in range(2, int(a ** 0.5) + 1)))
     if interval1[0] > interval2[0]: interval1, interval2 = interval2, interval1

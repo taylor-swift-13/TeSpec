@@ -1,6 +1,5 @@
 
-def precondition(input):
-    # input must be a tuple with one positional argument which is a string
+def precondition(input) -> bool:
     if not isinstance(input, tuple):
         return False
     if len(input) != 1:
@@ -8,37 +7,32 @@ def precondition(input):
     text = input[0]
     return isinstance(text, str)
 
-def postcondition(input, output):
-    # If precondition does not hold, do not enforce postcondition here
+def postcondition(input, output) -> bool:
     if not precondition(input):
-        return True
+        return False
     text = input[0]
-    # output must be a string
     if not isinstance(output, str):
         return False
-    # Build expected output according to specification:
-    # - sequences of spaces of length > 2 are replaced by a single '-'
-    # - other spaces are replaced by the same number of underscores
-    expected_parts = []
-    i = 0
+    # build expected output: runs of spaces of length >=3 -> '-' else each space -> '_'
     n = len(text)
+    i = 0
+    parts = []
     while i < n:
         ch = text[i]
         if ch == ' ':
-            j = i
+            j = i + 1
             while j < n and text[j] == ' ':
                 j += 1
             run_len = j - i
-            if run_len > 2:
-                expected_parts.append('-')
+            if run_len >= 3:
+                parts.append('-')
             else:
-                expected_parts.append('_' * run_len)
+                parts.append('_' * run_len)
             i = j
         else:
-            expected_parts.append(ch)
+            parts.append(ch)
             i += 1
-    expected = ''.join(expected_parts)
-    # The output must exactly match the expected transformation
+    expected = ''.join(parts)
     return output == expected
 
 def _impl(text):
@@ -49,7 +43,8 @@ def _impl(text):
     fix_spaces("Example") == "Example"
     fix_spaces("Example 1") == "Example_1"
     fix_spaces(" Example 2") == "_Example_2"
-    fix_spaces(" Example   3") == "_Example-3""""
+    fix_spaces(" Example   3") == "_Example-3"
+    """
     ans = text
     for i in range(len(text), 2, -1):
         ans = ans.replace(" " * i, "-")

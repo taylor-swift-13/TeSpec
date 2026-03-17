@@ -8,7 +8,8 @@ def solve(s):
     Examples
     solve("1234") = "4321"
     solve("ab") = "AB"
-    solve("#a@C") = "#A@c""""
+    solve("#a@C") = "#A@c"
+    """
     ans, has_letter = "", False
     for ch in s:
         if ch.isalpha():

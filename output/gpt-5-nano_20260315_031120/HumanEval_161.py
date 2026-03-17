@@ -1,18 +1,21 @@
 
-def precondition(input) -> bool:
+def precondition(input):
     if not isinstance(input, tuple) or len(input) != 1:
         return False
     s = input[0]
-    return isinstance(s, str)
-
-def postcondition(input, output) -> bool:
-    if not precondition(input):
+    if not isinstance(s, str):
         return False
-    s = input[0]
+    return True
+
+def postcondition(input, output):
+    if not isinstance(input, tuple) or len(input) != 1:
+        return False
     if not isinstance(output, str):
         return False
-    has_letter = any(ch.isalpha() for ch in s)
-    if has_letter:
+    s = input[0]
+    if not isinstance(s, str):
+        return False
+    if any(ch.isalpha() for ch in s):
         expected = ''.join(ch.swapcase() if ch.isalpha() else ch for ch in s)
     else:
         expected = s[::-1]
@@ -27,7 +30,8 @@ def _impl(s):
     Examples
     solve("1234") = "4321"
     solve("ab") = "AB"
-    solve("#a@C") = "#A@c""""
+    solve("#a@C") = "#A@c"
+    """
     ans, has_letter = "", False
     for ch in s:
         if ch.isalpha():

@@ -5,25 +5,34 @@ def precondition(input):
 
 def postcondition(input, output):
     string, = input
-    if not isinstance(output, bool):
+    if not isinstance(output, str):
         return False
-    if not isinstance(string, str):
+    if not output.startswith(string):
         return False
-    # output must be True iff string reads same forwards and backwards
-    # ignoring case for consistency with typical palindrome definition
-    normalized = ''.join(c.lower() for c in string if c.isalnum())
-    is_pal = normalized == normalized[::-1]
-    return output == is_pal
+    if output != output[::-1]:
+        return False
+    for i in range(len(string)):
+        candidate = string + string[:i][::-1]
+        if candidate == candidate[::-1]:
+            return len(output) <= len(candidate)
+    return True
 
-def _impl(string: str) -> bool:
-    """Test if given string is a palindrome"""
+def _impl(string: str) -> str:
+    """Find the shortest palindrome that begins with a supplied string.
+    Algorithm idea is simple:
+    - Find the longest postfix of supplied string that is a palindrome.
+    - Append to the end of the string reverse of a string prefix that comes before the palindromic suffix.
+    ''
+    'catac'
+    'catac'
+    """
     if is_palindrome(string):
         return string
     for i in range(len(string)):
         if is_palindrome(string[i:]):
             return string + string[i-1::-1]
 
-def is_palindrome(string: str) -> bool:
+def make_palindrome(string: str) -> str:
     _input = (string,)
     assert precondition(_input)
     _output = _impl(string)

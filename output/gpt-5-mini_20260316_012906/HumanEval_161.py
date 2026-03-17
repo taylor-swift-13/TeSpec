@@ -8,28 +8,26 @@ def precondition(input):
     return isinstance(s, str)
 
 def postcondition(input, output):
-    if not isinstance(input, tuple) or len(input) < 1:
+    if not precondition(input):
         return False
     s = input[0]
-    if not isinstance(s, str):
-        return False
     if not isinstance(output, str):
         return False
-    has_letter = any(ch.isalpha() for ch in s)
-    if not has_letter:
-        expected = s[::-1]
-    else:
-        parts = []
-        for ch in s:
-            if ch.isalpha():
-                if ch.islower():
-                    parts.append(ch.upper())
-                else:
-                    parts.append(ch.lower())
-            else:
-                parts.append(ch)
-        expected = "".join(parts)
-    return output == expected
+    # If there are no letters in s, output must be the reversed s
+    if not any(ch.isalpha() for ch in s):
+        return output == s[::-1]
+    # Otherwise, output must have same length and each letter must have flipped case,
+    # non-letters must remain unchanged in the same positions.
+    if len(output) != len(s):
+        return False
+    for a, b in zip(s, output):
+        if a.isalpha():
+            if b != a.swapcase():
+                return False
+        else:
+            if b != a:
+                return False
+    return True
 
 def _impl(s):
     """You are given a string s.
@@ -40,7 +38,8 @@ def _impl(s):
     Examples
     solve("1234") = "4321"
     solve("ab") = "AB"
-    solve("#a@C") = "#A@c""""
+    solve("#a@C") = "#A@c"
+    """
     ans, has_letter = "", False
     for ch in s:
         if ch.isalpha():

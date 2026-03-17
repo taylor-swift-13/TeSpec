@@ -1,6 +1,9 @@
 
 def precondition(input) -> bool:
-    if not isinstance(input, tuple) or len(input) != 2:
+    try:
+        if len(input) != 2:
+            return False
+    except Exception:
         return False
     n, m = input
     if not isinstance(n, int) or not isinstance(m, int):
@@ -10,34 +13,47 @@ def precondition(input) -> bool:
     return True
 
 def postcondition(input, output) -> bool:
-    if not isinstance(input, tuple) or len(input) != 2:
+    try:
+        if len(input) != 2:
+            return False
+    except Exception:
         return False
     n, m = input
     if not isinstance(n, int) or not isinstance(m, int):
+        return False
+    if n <= 0 or m <= 0:
         return False
 
     if n > m:
         return output == -1
 
+    # Expect a binary string with 0b prefix
     if not isinstance(output, str):
         return False
     if not output.startswith("0b"):
         return False
-    bits = output[2:]
-    if bits == "":
+    bin_part = output[2:]
+    if bin_part == "":
         return False
-    if any(ch not in "01" for ch in bits):
+    if any(ch not in '01' for ch in bin_part):
+        return False
+
+    try:
+        value = int(bin_part, 2)
+    except Exception:
         return False
 
     s = n + m
-    a = s // 2
     if s % 2 == 0:
-        rounded = a
+        expected = s // 2
     else:
-        rounded = a if (a % 2 == 0) else a + 1
+        k = s // 2
+        if k % 2 == 0:
+            expected = k
+        else:
+            expected = k + 1
 
-    expected = bin(rounded)
-    return output == expected
+    return value == expected
 
 def _impl(n, m):
     """You are given two positive integers n and m, and your task is to compute the
@@ -48,7 +64,8 @@ def _impl(n, m):
     rounded_avg(1, 5) => "0b11"
     rounded_avg(7, 5) => -1
     rounded_avg(10, 20) => "0b1111"
-    rounded_avg(20, 33) => "0b11010""""
+    rounded_avg(20, 33) => "0b11010"
+    """
     if n > m: return -1
     avg = round((n + m) / 2)
     return bin(avg)

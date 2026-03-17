@@ -17,7 +17,8 @@ def intersection(interval1, interval2):
     [input/output] samples:
     intersection((1, 2), (2, 3)) ==> "NO"
     intersection((-1, 1), (0, 4)) ==> "NO"
-    intersection((-3, -1), (-5, 5)) ==> "YES""""
+    intersection((-3, -1), (-5, 5)) ==> "YES"
+    """
     def is_prime(a):
         return not (a < 2 or any(a % x == 0 for x in range(2, int(a ** 0.5) + 1)))
     if interval1[0] > interval2[0]: interval1, interval2 = interval2, interval1

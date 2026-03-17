@@ -13,14 +13,13 @@ def postcondition(input, output):
         if not output.startswith('0b'):
             return False
         binary_part = output[2:]
-        if not binary_part:
-            return False
         if not all(c in '01' for c in binary_part):
+            return False
+        if binary_part == '':
             return False
         avg = (n + m) / 2
         rounded = round(avg)
-        expected_binary = bin(rounded)
-        return output == expected_binary
+        return int(output, 2) == rounded
 
 def _impl(n, m):
     """You are given two positive integers n and m, and your task is to compute the
@@ -31,7 +30,8 @@ def _impl(n, m):
     rounded_avg(1, 5) => "0b11"
     rounded_avg(7, 5) => -1
     rounded_avg(10, 20) => "0b1111"
-    rounded_avg(20, 33) => "0b11010""""
+    rounded_avg(20, 33) => "0b11010"
+    """
     if n > m: return -1
     avg = round((n + m) / 2)
     return bin(avg)

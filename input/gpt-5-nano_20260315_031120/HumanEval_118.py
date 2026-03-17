@@ -12,7 +12,8 @@ def get_closest_vowel(word):
     get_closest_vowel("yogurt") ==> "u"
     get_closest_vowel("FULL") ==> "U"
     get_closest_vowel("quick") ==> ""
-    get_closest_vowel("ab") ==> """""
+    get_closest_vowel("ab") ==> ""
+    """
     def is_vowel(ch: str) -> bool:
         return ch in "aeiouAEIOU"
     for i in range(len(word) - 2, 0, -1):

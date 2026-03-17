@@ -1,33 +1,26 @@
 
-def precondition(input) -> bool:
+def precondition(input):
     if not isinstance(input, tuple) or len(input) != 1:
         return False
     words = input[0]
-    if not isinstance(words, list) or len(words) == 0:
+    if not isinstance(words, list) or len(words) < 1:
         return False
     for w in words:
         if not isinstance(w, str):
             return False
     return True
 
-def postcondition(input, output) -> bool:
+def postcondition(input, output):
     if not isinstance(input, tuple) or len(input) != 1:
         return False
     words = input[0]
-    if not isinstance(words, list) or len(words) == 0:
+    if not isinstance(words, list) or len(words) < 1:
         return False
     if not isinstance(output, str):
         return False
-    max_unique = -1
-    best = None
-    for w in words:
-        uniq = len(set(w))
-        if uniq > max_unique:
-            max_unique = uniq
-            best = w
-        elif uniq == max_unique:
-            if best is None or w < best:
-                best = w
+    max_unique = max(len(set(w)) for w in words)
+    candidates = [w for w in words if len(set(w)) == max_unique]
+    best = min(candidates)
     return output == best
 
 def _impl(words):
@@ -38,7 +31,8 @@ def _impl(words):
 
     find_max(["name", "of", "string"]) == "string"
     find_max(["name", "enam", "game"]) == "enam"
-    find_max(["aaaaaaa", "bb" ,"cc"]) == ""aaaaaaa""""
+    find_max(["aaaaaaa", "bb" ,"cc"]) == ""aaaaaaa"
+    """
     mx_ch_cnt, ans = 0, ""
     for word in words:
         ch_cnt = len(set(word)) 

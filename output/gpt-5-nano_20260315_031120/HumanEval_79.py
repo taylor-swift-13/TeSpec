@@ -1,6 +1,5 @@
 
 def precondition(input):
-    # input is a tuple of positional arguments
     if not isinstance(input, tuple):
         return False
     if len(input) != 1:
@@ -33,7 +32,8 @@ def _impl(decimal):
 
     Examples:
     decimal_to_binary(15)   # returns "db1111db"
-    decimal_to_binary(32)   # returns "db100000db""""
+    decimal_to_binary(32)   # returns "db100000db"
+    """
     return "db" + bin(decimal)[2:] + "db"
 
 def decimal_to_binary(decimal):
