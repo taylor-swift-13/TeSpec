@@ -1,4 +1,10 @@
 
+def encode_shift(s: str):
+    """
+    returns encoded string by shifting every character by 5 in the alphabet.
+    """
+    return "".join([chr(((ord(ch) + 5 - ord("a")) % 26) + ord("a")) for ch in s])
+
 def precondition(input):
     if not isinstance(input, tuple):
         return False
@@ -8,16 +14,20 @@ def precondition(input):
     return isinstance(s, str)
 
 def postcondition(input, output):
-    if not precondition(input):
+    if not isinstance(input, tuple) or len(input) != 1:
         return False
     s = input[0]
+    if not isinstance(s, str):
+        return False
     if not isinstance(output, str):
         return False
-    # Decoding should produce a string of the same length as the encoded input.
-    return len(output) == len(s)
+    if len(output) != len(s):
+        return False
+    return True
 
 def _impl(s: str):
-    """takes as input string encoded with encode_shift function. Returns decoded string.
+    """
+    takes as input string encoded with encode_shift function. Returns decoded string.
     """
     return "".join([chr((ord(ch) - ord("a") - 5 + 26) % 26 + ord("a")) for ch in s])
 

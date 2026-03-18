@@ -1,43 +1,32 @@
 
+def is_palindrome(string: str) -> bool:
+    """ Test if given string is a palindrome """
+    return string == string[::-1]
+
 def precondition(input):
-    if not isinstance(input, tuple):
-        return False
-    if len(input) != 1:
-        return False
-    s = input[0]
-    if not isinstance(s, str):
-        return False
-    return True
+    return isinstance(input, tuple) and len(input) == 1 and isinstance(input[0], str)
 
 def postcondition(input, output):
-    if not isinstance(input, tuple) or len(input) != 1:
-        return False
-    s = input[0]
-    if not isinstance(s, str):
+    if not (isinstance(input, tuple) and len(input) == 1 and isinstance(input[0], str)):
         return False
     if not isinstance(output, str):
         return False
-    if not output.startswith(s):
+    s = input[0]
+    o = output
+    if not o.startswith(s):
         return False
-    if output != output[::-1]:
+    if o != o[::-1]:
         return False
-    m = len(s)
-    o = len(output)
-    def exists_pal_starting_with_len(L):
-        if L < m:
-            return False
-        start = max(0, L - m)
-        for i in range(start, m):
-            if s[i] != s[L - 1 - i]:
-                return False
-        return True
-    for L in range(m, o):
-        if exists_pal_starting_with_len(L):
+    for l in range(len(s), len(o)):
+        k = l - len(s)
+        cand = s + s[:k][::-1]
+        if cand == cand[::-1]:
             return False
     return True
 
 def _impl(string: str) -> str:
-    """Find the shortest palindrome that begins with a supplied string.
+    """
+    Find the shortest palindrome that begins with a supplied string.
     Algorithm idea is simple:
     - Find the longest postfix of supplied string that is a palindrome.
     - Append to the end of the string reverse of a string prefix that comes before the palindromic suffix.

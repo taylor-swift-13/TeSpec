@@ -109,6 +109,17 @@ def extract_prompt_info(prompt: str, entry_point: str | None = None):
             import_lines.append(line)
     import_block = "\n".join(import_lines).strip()
 
+    helper_blocks = []
+    for node in mod.body:
+        if isinstance(node, (ast.Import, ast.ImportFrom)):
+            continue
+        if isinstance(node, ast.FunctionDef) and node.name == func.name:
+            continue
+        source = ast.get_source_segment(prompt, node)
+        if source:
+            helper_blocks.append(source.strip("\n"))
+    helper_block = "\n\n".join(block for block in helper_blocks if block.strip())
+
     def_sig_line = None
     for line in prompt.splitlines():
         stripped = line.strip()
@@ -137,6 +148,7 @@ def extract_prompt_info(prompt: str, entry_point: str | None = None):
         "func_name": func.name,
         "doc": doc,
         "import_block": import_block,
+        "helper_block": helper_block,
         "def_sig_line": def_sig_line,
         "pos_args": pos_args,
         "kwonly_args": kwonly_args,
@@ -355,12 +367,16 @@ def main():
         input_code = []
         if info["import_block"]:
             input_code.append(info["import_block"])
+        if info["helper_block"]:
+            input_code.extend(["", info["helper_block"]])
         input_code.append("")
         input_code.append(render_function(def_sig_line, info["doc"], canonical))
 
         output_code = []
         if info["import_block"]:
             output_code.append(info["import_block"])
+        if info["helper_block"]:
+            output_code.extend(["", info["helper_block"]])
         output_code.append("")
         output_code.append(spec.strip())
         output_code.append("")

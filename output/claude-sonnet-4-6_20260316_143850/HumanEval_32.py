@@ -1,21 +1,27 @@
 import math
 
-def precondition(input) -> bool:
+def poly(xs: list, x: float):
+    """
+    Evaluates polynomial with coefficients xs at point x.
+    return xs[0] + xs[1] * x + xs[1] * x^2 + .... xs[n] * x^n
+    """
+    return sum([coeff * math.pow(x, i) for i, coeff in enumerate(xs)])
+
+def precondition(input):
     try:
         xs = input[0]
         if not isinstance(xs, list):
             return False
         if len(xs) == 0:
             return False
-        # Must have even number of coefficients
+        # even number of coefficients
         if len(xs) % 2 != 0:
             return False
-        # All elements must be numeric
-        for x in xs:
-            if not isinstance(x, (int, float)):
+        # all elements are numbers
+        for c in xs:
+            if not isinstance(c, (int, float)):
                 return False
-        # Largest non-zero coefficient must be the last one (guarantees a solution)
-        # Check that the last coefficient is non-zero
+        # largest non-zero coefficient (last one) must be non-zero
         if xs[-1] == 0:
             return False
         return True
@@ -23,15 +29,15 @@ def precondition(input) -> bool:
         return False
 
 
-def postcondition(input, output) -> bool:
+def postcondition(input, output):
     try:
         xs = input[0]
         if not isinstance(output, (int, float)):
             return False
-        # Verify that poly(output) is approximately 0
+        # verify poly(output) ~ 0
         result = 0.0
-        for i, coef in enumerate(xs):
-            result += coef * (output ** i)
+        for i, c in enumerate(xs):
+            result += c * (output ** i)
         if abs(result) > 1e-3:
             return False
         return True
@@ -39,14 +45,16 @@ def postcondition(input, output) -> bool:
         return False
 
 def _impl(xs: list):
-    """xs are coefficients of a polynomial.
+    """
+    xs are coefficients of a polynomial.
     find_zero find x such that poly(x) = 0.
     find_zero returns only only zero point, even if there are many.
     Moreover, find_zero only takes list xs having even number of coefficients
     and largest non zero coefficient as it guarantees
     a solution.
     -0.5
-    1.0"""
+    1.0
+    """
     dxs = [xs[i] * i for i in range(1, len(xs))]
     def func(x):
         return poly(xs, x)

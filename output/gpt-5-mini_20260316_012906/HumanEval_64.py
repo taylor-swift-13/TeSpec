@@ -1,4 +1,8 @@
 
+FIX = """
+Add more test cases.
+"""
+
 def precondition(input):
     if not isinstance(input, tuple):
         return False
@@ -8,32 +12,39 @@ def precondition(input):
     return isinstance(s, str)
 
 def postcondition(input, output):
-    # Only check postcondition when precondition holds
-    if not precondition(input):
-        return True
+    if not isinstance(input, tuple):
+        return False
+    if len(input) != 1:
+        return False
     s = input[0]
-    # output should be an int (but not a bool)
+    if not isinstance(s, str):
+        return False
     if not isinstance(output, int) or isinstance(output, bool):
         return False
-    vowels = set("aeiou")
-    expected = 0
+    if output < 0 or output > len(s):
+        return False
+    vowels = set('aeiou')
+    exp = 0
+    L = len(s)
     for i, ch in enumerate(s):
         cl = ch.lower()
         if cl in vowels:
-            expected += 1
-        elif cl == "y" and i == len(s) - 1:
-            expected += 1
-    return output == expected
+            exp += 1
+        elif cl == 'y' and i == L - 1 and L > 0:
+            exp += 1
+    return output == exp
 
 def _impl(s):
-    """Write a function vowels_count which takes a string representing
+    """
+    Write a function vowels_count which takes a string representing
     a word as input and returns the number of vowels in the string.
     Vowels in this case are 'a', 'e', 'i', 'o', 'u'. Here, 'y' is also a
     vowel, but only when it is at the end of the given word.
 
     Example:
     2
-    3"""
+    3
+    """
     if s == "": return 0
     cnt = len(list(filter(lambda ch: ch in "aeiouAEIOU", s)))
     if s[-1] in "yY": cnt += 1

@@ -1,36 +1,39 @@
 import math
 
-def precondition(input):
-    xs, = input
+def poly(xs: list, x: float):
+    """
+    Evaluates polynomial with coefficients xs at point x.
+    return xs[0] + xs[1] * x + xs[1] * x^2 + .... xs[n] * x^n
+    """
+    return sum([coeff * math.pow(x, i) for i, coeff in enumerate(xs)])
+
+def precondition(args):
+    xs = args[0]
     if not isinstance(xs, list):
         return False
     if len(xs) == 0:
         return False
     if len(xs) % 2 != 0:
         return False
-    non_zero_found = False
-    for coeff in xs:
-        if not isinstance(coeff, (int, float)):
-            return False
-        if coeff != 0.0:
-            non_zero_found = True
-    return non_zero_found
+    if not all(isinstance(c, (int, float)) for c in xs):
+        return False
+    if xs[-1] == 0:
+        return False
+    return True
 
-def postcondition(input, output):
-    xs, = input
-    if not isinstance(output, (int, float)):
+def postcondition(args, result):
+    xs = args[0]
+    x = result
+    if not isinstance(x, (int, float)):
         return False
-    if not isinstance(xs, list):
-        return False
-    if len(xs) == 0:
-        return False
-    poly_val = 0.0
+    poly_val = 0
     for i, coeff in enumerate(xs):
-        poly_val += coeff * (output ** i)
-    return abs(poly_val) < 1e-9
+        poly_val += coeff * (x ** i)
+    return abs(poly_val) <= 1e-10
 
 def _impl(xs: list):
-    """xs are coefficients of a polynomial.
+    """
+    xs are coefficients of a polynomial.
     find_zero find x such that poly(x) = 0.
     find_zero returns only only zero point, even if there are many.
     Moreover, find_zero only takes list xs having even number of coefficients

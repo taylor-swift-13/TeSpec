@@ -1,10 +1,16 @@
 
+def encode_shift(s: str):
+    """
+    returns encoded string by shifting every character by 5 in the alphabet.
+    """
+    return "".join([chr(((ord(ch) + 5 - ord("a")) % 26) + ord("a")) for ch in s])
+
 def precondition(input):
     s = input[0]
     if not isinstance(s, str):
         return False
-    # The string should only contain lowercase ASCII letters since encode_shift
-    # produces lowercase letters by shifting lowercase letters
+    # The string should only contain lowercase letters since encode_shift
+    # produces lowercase letters (shifting lowercase letters wraps within a-z)
     for c in s:
         if not ('a' <= c <= 'z'):
             return False
@@ -16,7 +22,7 @@ def postcondition(input, output):
         return False
     if len(output) != len(s):
         return False
-    # Output should only contain lowercase letters
+    # All output characters should be lowercase letters
     for c in output:
         if not ('a' <= c <= 'z'):
             return False
@@ -30,7 +36,9 @@ def postcondition(input, output):
     return True
 
 def _impl(s: str):
-    """takes as input string encoded with encode_shift function. Returns decoded string."""
+    """
+    takes as input string encoded with encode_shift function. Returns decoded string.
+    """
     return "".join([chr((ord(ch) - ord("a") - 5 + 26) % 26 + ord("a")) for ch in s])
 
 def decode_shift(s: str):

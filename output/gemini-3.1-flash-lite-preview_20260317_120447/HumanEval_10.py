@@ -1,4 +1,8 @@
 
+def is_palindrome(string: str) -> bool:
+    """ Test if given string is a palindrome """
+    return string == string[::-1]
+
 def precondition(input):
     args = input
     return len(args) == 1 and isinstance(args[0], str)
@@ -14,13 +18,15 @@ def postcondition(input, output):
     return True
 
 def _impl(string: str) -> str:
-    """Find the shortest palindrome that begins with a supplied string.
+    """
+    Find the shortest palindrome that begins with a supplied string.
     Algorithm idea is simple:
     - Find the longest postfix of supplied string that is a palindrome.
     - Append to the end of the string reverse of a string prefix that comes before the palindromic suffix.
     ''
     'catac'
-    'catac'"""
+    'catac'
+    """
     if is_palindrome(string):
         return string
     for i in range(len(string)):

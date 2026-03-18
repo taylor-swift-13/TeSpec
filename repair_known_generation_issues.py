@@ -63,6 +63,10 @@ def find_entry_point_indices(report_dir: Path) -> set[int]:
     return indices
 
 
+def helper_dependency_indices() -> set[int]:
+    return {10, 32, 38, 50, 64}
+
+
 def unlink_if_exists(path: Path):
     if path.exists():
         path.unlink()
@@ -81,7 +85,8 @@ def affected_runs():
         run_name = output_dir.name
         quote_indices = find_quote_indices(output_dir)
         entry_indices = find_entry_point_indices(TEST_REPORT_ROOT / run_name)
-        indices = sorted(quote_indices | entry_indices)
+        helper_indices = helper_dependency_indices()
+        indices = sorted(quote_indices | entry_indices | helper_indices)
         if not indices:
             continue
         runs.append(
@@ -91,6 +96,7 @@ def affected_runs():
                 "indices": indices,
                 "quote_indices": sorted(quote_indices),
                 "entry_indices": sorted(entry_indices),
+                "helper_indices": sorted(helper_indices),
             }
         )
     return runs
@@ -106,6 +112,7 @@ def repair_run(run: dict):
     print(f"   model: {model_name}")
     print(f"   quote indices: {run['quote_indices']}")
     print(f"   entry indices: {run['entry_indices']}")
+    print(f"   helper indices: {run['helper_indices']}")
 
     input_dir = INPUT_ROOT / run_name
     output_dir = OUTPUT_ROOT / run_name
@@ -167,7 +174,7 @@ def main():
     for run in runs:
         print(
             f"- {run['run_name']}: idx={run['indices']} "
-            f"(quotes={run['quote_indices']}, entry={run['entry_indices']})"
+            f"(quotes={run['quote_indices']}, entry={run['entry_indices']}, helper={run['helper_indices']})"
         )
 
     for run in runs:

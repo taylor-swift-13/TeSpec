@@ -1,35 +1,51 @@
 
-def precondition(input):
-    return isinstance(input, tuple) and len(input) == 1 and isinstance(input[0], str)
+FIX = """
+Add more test cases.
+"""
 
-def postcondition(input, output):
-    if type(output) is not int:
+def precondition(input):
+    if not isinstance(input, tuple) or len(input) != 1:
         return False
     s = input[0]
-    vowels = set('aeiou')
+    return isinstance(s, str)
 
-    # Lowercase-only interpretation
-    lower_only = sum(1 for ch in s if ch in vowels)
-    if len(s) > 0 and s[-1] == 'y':
-        lower_only += 1
+def postcondition(input, output):
+    if not isinstance(input, tuple) or len(input) != 1:
+        return False
+    s = input[0]
+    if not isinstance(s, str):
+        return False
+    if not isinstance(output, int):
+        return False
+    if output < 0 or output > len(s):
+        return False
 
-    # Case-insensitive interpretation
+    vowels = set("aeiou")
+    # Variants to avoid over-restricting case handling
+    # Vowels case-sensitive / y case-sensitive
+    c1 = sum(ch in vowels for ch in s) + (1 if s.endswith("y") else 0)
+    # Vowels case-sensitive / y case-insensitive at end
+    c2 = sum(ch in vowels for ch in s) + (1 if len(s) > 0 and s[-1].lower() == "y" else 0)
+    # Vowels case-insensitive / y case-sensitive at end
     sl = s.lower()
-    case_insensitive = sum(1 for ch in sl if ch in vowels)
-    if len(sl) > 0 and sl[-1] == 'y':
-        case_insensitive += 1
+    c3 = sum(ch in vowels for ch in sl) + (1 if s.endswith("y") else 0)
+    # Vowels case-insensitive / y case-insensitive at end
+    c4 = sum(ch in vowels for ch in sl) + (1 if len(s) > 0 and s[-1].lower() == "y" else 0)
 
-    return 0 <= output <= len(s) and (output == lower_only or output == case_insensitive)
+    allowed = {c1, c2, c3, c4}
+    return output in allowed
 
 def _impl(s):
-    """Write a function vowels_count which takes a string representing
+    """
+    Write a function vowels_count which takes a string representing
     a word as input and returns the number of vowels in the string.
     Vowels in this case are 'a', 'e', 'i', 'o', 'u'. Here, 'y' is also a
     vowel, but only when it is at the end of the given word.
 
     Example:
     2
-    3"""
+    3
+    """
     if s == "": return 0
     cnt = len(list(filter(lambda ch: ch in "aeiouAEIOU", s)))
     if s[-1] in "yY": cnt += 1

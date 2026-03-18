@@ -1,44 +1,48 @@
 import math
 
-import numbers
+def poly(xs: list, x: float):
+    """
+    Evaluates polynomial with coefficients xs at point x.
+    return xs[0] + xs[1] * x + xs[1] * x^2 + .... xs[n] * x^n
+    """
+    return sum([coeff * math.pow(x, i) for i, coeff in enumerate(xs)])
 
-def precondition(input) -> bool:
-    try:
-        if not isinstance(input, tuple) or len(input) != 1:
-            return False
-        xs = input[0]
-        if not isinstance(xs, list):
-            return False
-        if len(xs) == 0 or len(xs) % 2 != 0:
-            return False
-        for c in xs:
-            if not isinstance(c, numbers.Real) or isinstance(c, bool):
-                return False
-        if xs[-1] == 0:
-            return False
-        return True
-    except Exception:
+def precondition(input):
+    # input should be a tuple with a single element: xs
+    if not isinstance(input, tuple) or len(input) != 1:
         return False
+    xs = input[0]
+    if not isinstance(xs, (list, tuple)):
+        return False
+    n = len(xs)
+    if n == 0 or n % 2 != 0:
+        return False
+    for v in xs:
+        if not isinstance(v, (int, float)):
+            return False
+    # leading coefficient should be non-zero
+    if xs[0] == 0:
+        return False
+    return True
 
-def postcondition(input, output) -> bool:
+def postcondition(input, output):
     try:
-        if not isinstance(input, tuple) or len(input) != 1:
-            return False
         xs = input[0]
-        if not isinstance(xs, list) or len(xs) == 0 or len(xs) % 2 != 0:
+        if not isinstance(xs, (list, tuple)) or len(xs) == 0 or len(xs) % 2 != 0:
             return False
-        if not isinstance(output, numbers.Real) or isinstance(output, bool):
-            return False
-        x = output
-        total = 0.0
-        for i, coeff in enumerate(xs):
-            total += float(coeff) * (x ** i)
-        return abs(total) <= 1e-6
+        x = float(output)
+        deg = len(xs) - 1
+        val = 0.0
+        for i, a in enumerate(xs):
+            val += float(a) * (x ** (deg - i))
+        tol = 1e-6
+        return abs(val) <= tol
     except Exception:
         return False
 
 def _impl(xs: list):
-    """xs are coefficients of a polynomial.
+    """
+    xs are coefficients of a polynomial.
     find_zero find x such that poly(x) = 0.
     find_zero returns only only zero point, even if there are many.
     Moreover, find_zero only takes list xs having even number of coefficients
