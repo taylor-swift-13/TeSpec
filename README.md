@@ -152,7 +152,7 @@ test_reports/<模型>_<时间戳>/_summary.json
 
 当前已经测试过的结果：
 
-- `gpt-5-nano`：[test_reports/gpt-5-nano_20260315_031120/_summary.json](/home/yangfp/TeSpec/test_reports/gpt-5-nano_20260315_031120/_summary.json)
+- `gpt-5-nano`：[test_reports/gpt-5-nano_20260318_151556/_summary.json](/home/yangfp/TeSpec/test_reports/gpt-5-nano_20260318_151556/_summary.json)
 - `gpt-5-mini`：[test_reports/gpt-5-mini_20260316_012906/_summary.json](/home/yangfp/TeSpec/test_reports/gpt-5-mini_20260316_012906/_summary.json)
 - `gpt-5`：[test_reports/gpt-5_20260316_013133/_summary.json](/home/yangfp/TeSpec/test_reports/gpt-5_20260316_013133/_summary.json)
 - `deepseek-v3.2`：[test_reports/deepseek-v3.2_20260316_013133/_summary.json](/home/yangfp/TeSpec/test_reports/deepseek-v3.2_20260316_013133/_summary.json)
@@ -175,7 +175,7 @@ test_reports/<模型>_<时间戳>/_summary.json
 
 | 模型 | 语法正确率 | 规约正确率 | 不限制前条件的后条件正确率 |
 |---|---:|---:|---:|
-| `gpt-5-nano` | `164/164` | `138/164` | `163/164` |
+| `gpt-5-nano` | `164/164` | `137/164` | `162/164` |
 | `gpt-5-mini` | `164/164` | `126/164` | `162/164` |
 | `gpt-5` | `163/164` | `139/164` | `162/164` |
 | `deepseek-v3.2` | `164/164` | `120/164` | `161/164` |
@@ -202,7 +202,7 @@ test_reports/<模型>_<时间戳>/_summary.json
 
 | 模型 | 语法正确 | 正例前后条件都正确 | 正例前后条件都正确且负例也正确 |
 |---|---:|---:|---:|
-| `gpt-5-nano` | `164/164` | `138/164` | `119/164` |
+| `gpt-5-nano` | `164/164` | `137/164` | `113/164` |
 | `gpt-5-mini` | `164/164` | `126/164` | `107/164` |
 | `gpt-5` | `163/164` | `139/164` | `108/164` |
 | `deepseek-v3.2` | `164/164` | `120/164` | `73/164` |
@@ -223,7 +223,7 @@ test_reports/<模型>_<时间戳>/_summary.json
 
 | 模型 | 语法正确 | 正例忽略前条件后后条件正确 | 正例忽略前条件后正确且负例也正确 |
 |---|---:|---:|---:|
-| `gpt-5-nano` | `164/164` | `163/164` | `133/164` |
+| `gpt-5-nano` | `164/164` | `162/164` | `131/164` |
 | `gpt-5-mini` | `164/164` | `162/164` | `125/164` |
 | `gpt-5` | `163/164` | `162/164` | `121/164` |
 | `deepseek-v3.2` | `164/164` | `161/164` | `95/164` |
@@ -238,7 +238,7 @@ test_reports/<模型>_<时间戳>/_summary.json
 
 当前已经完成的反例测试结果：
 
-- `gpt-5-nano`：[negative_report/gpt-5-nano_20260315_031120/_summary.json](/home/yangfp/TeSpec/negative_report/gpt-5-nano_20260315_031120/_summary.json)
+- `gpt-5-nano`：[negative_report/gpt-5-nano_20260318_151556/_summary.json](/home/yangfp/TeSpec/negative_report/gpt-5-nano_20260318_151556/_summary.json)
 - `gpt-5-mini`：[negative_report/gpt-5-mini_20260316_012906/_summary.json](/home/yangfp/TeSpec/negative_report/gpt-5-mini_20260316_012906/_summary.json)
 - `gpt-5`：[negative_report/gpt-5_20260316_013133/_summary.json](/home/yangfp/TeSpec/negative_report/gpt-5_20260316_013133/_summary.json)
 - `deepseek-v3.2`：[negative_report/deepseek-v3.2_20260316_013133/_summary.json](/home/yangfp/TeSpec/negative_report/deepseek-v3.2_20260316_013133/_summary.json)
@@ -258,7 +258,7 @@ test_reports/<模型>_<时间戳>/_summary.json
 
 | 模型 | 负向任务通过率 | 负样例正确率 | 变异体通过率 |
 |---|---:|---:|---:|
-| `gpt-5-nano` | `129/164` | `279616/281529 = 0.9932` | `637/678 = 0.9395` |
+| `gpt-5-nano` | `124/164` | `272195/281036 = 0.9685` | `619/673 = 0.9198` |
 | `gpt-5-mini` | `120/164` | `269329/281037 = 0.9583` | `607/673 = 0.9019` |
 | `gpt-5` | `120/164` | `268276/281528 = 0.9529` | `605/678 = 0.8923` |
 | `deepseek-v3.2` | `86/164` | `228300/282163 = 0.8091` | `491/683 = 0.7189` |
@@ -279,7 +279,7 @@ test_reports/<模型>_<时间戳>/_summary.json
 
 | 模型 | 正向规约正确率 | 负向任务通过率 | 负向变异体通过率 |
 |---|---:|---:|---:|
-| `gpt-5-nano` | `138/164` | `129/164` | `637/678` |
+| `gpt-5-nano` | `137/164` | `124/164` | `619/673` |
 | `gpt-5-mini` | `126/164` | `120/164` | `607/673` |
 | `gpt-5` | `139/164` | `120/164` | `605/678` |
 | `deepseek-v3.2` | `120/164` | `86/164` | `491/683` |
@@ -344,7 +344,7 @@ test_reports/<模型>_<时间戳>/_summary.json
 有些题几乎所有模型都会在同一个地方失败，这更像是“系统性错误模式”。
 
 例子 A：
-[HumanEval_8.json](/home/yangfp/TeSpec/test_reports/gpt-5-nano_20260315_031120/HumanEval_8.json)
+[HumanEval_8.json](/home/yangfp/TeSpec/test_reports/gpt-5-nano_20260318_151556/HumanEval_8.json)
 [HumanEval_8.json](/home/yangfp/TeSpec/test_reports/gpt-5-mini_20260316_012906/HumanEval_8.json)
 [HumanEval_8.json](/home/yangfp/TeSpec/test_reports/gpt-5_20260316_013133/HumanEval_8.json)
 [HumanEval_8.json](/home/yangfp/TeSpec/test_reports/deepseek-v3.2_20260316_013133/HumanEval_8.json)
@@ -359,7 +359,7 @@ test_reports/<模型>_<时间戳>/_summary.json
 它说明：只靠自然语言写前条件时，模型很容易把输入域收得过窄。
 
 例子 B：
-[HumanEval_145.json](/home/yangfp/TeSpec/test_reports/gpt-5-nano_20260315_031120/HumanEval_145.json)
+[HumanEval_145.json](/home/yangfp/TeSpec/test_reports/gpt-5-nano_20260318_151556/HumanEval_145.json)
 [HumanEval_145.json](/home/yangfp/TeSpec/test_reports/gpt-5-mini_20260316_012906/HumanEval_145.json)
 [HumanEval_145.json](/home/yangfp/TeSpec/test_reports/gpt-5_20260316_013133/HumanEval_145.json)
 [HumanEval_145.json](/home/yangfp/TeSpec/test_reports/deepseek-v3.2_20260316_013133/HumanEval_145.json)
@@ -571,8 +571,8 @@ generate_integers(987654321, 123456789)
 下面给几个更具体的例子。
 
 例子 A：`gpt-5-nano` 在 `HumanEval/4` 上把数值容差放得过宽
-[HumanEval_4.py](/home/yangfp/TeSpec/output/gpt-5-nano_20260315_031120/HumanEval_4.py)
-[HumanEval_4.json](/home/yangfp/TeSpec/negative_report/gpt-5-nano_20260315_031120/HumanEval_4.json)
+[HumanEval_4.py](/home/yangfp/TeSpec/output/gpt-5-nano_20260318_151556/HumanEval_4.py)
+[HumanEval_4.json](/home/yangfp/TeSpec/negative_report/gpt-5-nano_20260318_151556/HumanEval_4.json)
 
 任务是 `mean_absolute_deviation(numbers)`。
 
@@ -837,8 +837,8 @@ return True
 这个错误是 `gpt-5-mini` 很典型的一类：把布尔规格写成“只约束一种返回值”。
 
 例子 F：`gpt-5-nano` 在 `HumanEval/22` 上混淆了 `int`、`bool` 和 `float`
-[HumanEval_22.py](/home/yangfp/TeSpec/output/gpt-5-nano_20260315_031120/HumanEval_22.py)
-[HumanEval_22.json](/home/yangfp/TeSpec/negative_report/gpt-5-nano_20260315_031120/HumanEval_22.json)
+[HumanEval_22.py](/home/yangfp/TeSpec/output/gpt-5-nano_20260318_151556/HumanEval_22.py)
+[HumanEval_22.json](/home/yangfp/TeSpec/negative_report/gpt-5-nano_20260318_151556/HumanEval_22.json)
 
 任务是 `filter_integers(values)`。
 
@@ -891,8 +891,8 @@ return output == expected
 #### 1. `precondition` 过强，边界很难从自然语言恢复
 
 例子：
-[HumanEval_8.json](/home/yangfp/TeSpec/test_reports/gpt-5-nano_20260315_031120/HumanEval_8.json)
-[HumanEval_8.py](/home/yangfp/TeSpec/output/gpt-5-nano_20260315_031120/HumanEval_8.py)
+[HumanEval_8.json](/home/yangfp/TeSpec/test_reports/gpt-5-nano_20260318_151556/HumanEval_8.json)
+[HumanEval_8.py](/home/yangfp/TeSpec/output/gpt-5-nano_20260318_151556/HumanEval_8.py)
 
 任务是 `sum_product(numbers)`。
 
@@ -966,8 +966,8 @@ sum_product("")
 这类情况很常见，也很难完全避免，尤其是简单函数。
 
 例子：
-[HumanEval_8.py](/home/yangfp/TeSpec/output/gpt-5-nano_20260315_031120/HumanEval_8.py)
-[HumanEval_0.py](/home/yangfp/TeSpec/output/gpt-5-nano_20260315_031120/HumanEval_0.py)
+[HumanEval_8.py](/home/yangfp/TeSpec/output/gpt-5-nano_20260318_151556/HumanEval_8.py)
+[HumanEval_0.py](/home/yangfp/TeSpec/output/gpt-5-nano_20260318_151556/HumanEval_0.py)
 [HumanEval_97.py](/home/yangfp/TeSpec/output/gpt-5-mini_20260316_012906/HumanEval_97.py)
 
 `HumanEval_8` 的 `postcondition` 直接重算和与积：
@@ -1023,7 +1023,7 @@ return isinstance(output, int) and output == (a % 10) * (b % 10)
 #### 3. 负例上前条件通过与否，本身也可能很难从题面判断
 
 例子：
-[HumanEval_8.json](/home/yangfp/TeSpec/negative_report/gpt-5-nano_20260315_031120/HumanEval_8.json)
+[HumanEval_8.json](/home/yangfp/TeSpec/negative_report/gpt-5-nano_20260318_151556/HumanEval_8.json)
 [HumanEval_43.json](/home/yangfp/TeSpec/negative_report/gpt-5_20260316_013133/HumanEval_43.json)
 
 这类题在负例里常见两种失败：
@@ -1034,7 +1034,7 @@ return isinstance(output, int) and output == (a % 10) * (b % 10)
 它们都说明：变异输出确实错了，但模型给出的前条件并没有把“哪些输入应该让规约开始判定”说清楚。  
 这不是单纯的实现错误，而是自然语言没有明确给出一个可执行的输入域边界。
 
-例如在 [HumanEval_8.json](/home/yangfp/TeSpec/negative_report/gpt-5-nano_20260315_031120/HumanEval_8.json) 里：
+例如在 [HumanEval_8.json](/home/yangfp/TeSpec/negative_report/gpt-5-nano_20260318_151556/HumanEval_8.json) 里：
 
 ```json
 {
