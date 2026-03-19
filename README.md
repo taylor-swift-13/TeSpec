@@ -965,6 +965,44 @@ sum_product("")
 
 这类情况很常见，也很难完全避免，尤其是简单函数。
 
+这里可以做一个粗统计。为了避免主观判断，这里采用一个偏保守的结构口径：
+
+- `postcondition` 明确先根据输入重算 `expected / result / target`
+- 或者直接写成 `output == expr(inputs)`
+- 也就是说，规约不是在检查抽象性质，而是在重新求值后做精确相等比较
+
+这不是严格的“语义等价证明”，但足以统计“规约已经明显滑向另一份实现”的题数。
+
+按这个口径，10 个模型里的计数如下：
+
+| 模型 | `postcondition` 明显接近另一份实现的题数 |
+|---|---:|
+| `gpt-5-nano` | `122/164` |
+| `gpt-5-mini` | `99/164` |
+| `gpt-5` | `99/164` |
+| `deepseek-v3.2` | `40/164` |
+| `claude-opus-4-5-20251101` | `53/164` |
+| `claude-sonnet-4-6` | `62/164` |
+| `claude-opus-4-6` | `65/164` |
+| `gemini-3-pro-preview` | `94/164` |
+| `gemini-3.1-pro-preview` | `38/164` |
+| `gemini-3.1-flash-lite-preview` | `80/164` |
+
+再看跨模型汇总：
+
+- 10 个模型的并集是 `142/164`
+- 10 个模型的交集是 `6/164`
+- 也就是说，从“至少有一个模型把规约写成重实现”这个角度看，这几乎覆盖了绝大多数题；但从“所有模型都会这么写”看，真正稳定重合的只有少数题
+
+这 6 个交集题是：
+
+- `HumanEval/53`
+- `HumanEval/74`
+- `HumanEval/121`
+- `HumanEval/128`
+- `HumanEval/133`
+- `HumanEval/154`
+
 例子：
 [HumanEval_8.py](/home/yangfp/TeSpec/output/gpt-5-nano_20260318_151556/HumanEval_8.py)
 [HumanEval_0.py](/home/yangfp/TeSpec/output/gpt-5-nano_20260318_151556/HumanEval_0.py)
