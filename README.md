@@ -1,24 +1,33 @@
 # TeSpec
 
-当前分支只保留 Coq `spec` 到 Python 的翻译与组合输出链路，不再保留测试脚本、测试报告和 mutation 数据。
+这个分支面向 Coq spec 到可执行 Python checker/oracle 的生成与测试。
+
+目标不是形式上的 Coq/Python 完全等价，而是：
+
+- 对所有具体输入，Python 返回与 Coq 相同的结果或判断
+- Python 无法自然表达的 Coq 结构可以忽略
+- 最终产物用于正例/负例测试链路
 
 ## 当前目录
 
 - [translate_coq_input.py](/home/yangfp/TeSpec/translate_coq_input.py)
   - 读取 `spec/<model>/input/*.v`
-  - 调用 LLM 把 Coq spec 翻成同目录下的 `*.py`
+  - 生成同目录下的 `*.py`
+  - 使用多模型投票验证这份 Python 是否在具体输入上与 Coq 一致
+  - 如果不一致，使用自然语言原因回灌给 `gemini-3-pro-preview` 迭代修复
 - [compose_coq_output.py](/home/yangfp/TeSpec/compose_coq_output.py)
-  - 读取已经翻译好的 `spec/<model>/input/*.py`
-  - 统一补出：
-    - `def precondition(input) -> bool:`
-    - `def postcondition(input, output) -> bool:`
-  - 输出到 `spec/<model>/output/<model>_<timestamp>/`
+  - 读取已经生成好的 `spec/<model>/input/*.py`
+  - 组合出统一接口文件到 `spec/<model>/output/<run_name>/HumanEval_<idx>.py`
+- [run_tests.py](/home/yangfp/TeSpec/run_tests.py)
+  - 正例测试
+- [run_negative_tests.py](/home/yangfp/TeSpec/run_negative_tests.py)
+  - 负例测试
+- [run_coq_pipeline.py](/home/yangfp/TeSpec/run_coq_pipeline.py)
+  - 一键串联翻译、修复、compose、正例测试、负例测试
 - [HumanEvalPlus.jsonl](/home/yangfp/TeSpec/HumanEvalPlus.jsonl)
-  - 仅用于恢复题目的 `entry_point`、辅助定义和参考实现签名
-- [llm.py](/home/yangfp/TeSpec/llm.py)
-  - OpenAI-compatible API 调用封装
-- [config.py](/home/yangfp/TeSpec/config.py)
-  - 默认 API 配置
+  - 用于恢复题目的 `entry_point`、辅助定义和参考实现签名
+- [humaneval_mutations](/home/yangfp/TeSpec/humaneval_mutations)
+  - 负例测试使用的 mutation 数据
 - [spec](/home/yangfp/TeSpec/spec)
   - 各模型来源的 Coq 输入目录
 
@@ -27,38 +36,123 @@
 - `*_spec` 视为后条件
 - `*_pre` 视为前条件
 - 其他 `Definition` / `Fixpoint` / `Inductive` 都视为辅助函数
-- 如果没有 `*_pre`，则统一生成：
+- 如果没有 `*_pre`，组合阶段统一生成：
   - `precondition(input) -> True`
 
-## 翻译
+## Prompt
 
-从某个输入目录读取 `.v`，实际统一调用 `gemini-3-pro-preview`：
+### 生成 Prompt
+
+`translate_coq_input.py` 当前使用的生成 prompt 核心是：
+
+```text
+Produce executable Python code from the following Coq spec.
+
+Goal:
+The Python code does not need to be formally equivalent to the Coq code.
+The only requirement is: for all concrete inputs, the Python code must return the same result or judgment as the Coq code/spec.
+```
+
+它的约束重点是：
+
+- 保留顶层函数名
+- `*_spec` / `*_pre` 生成 bool 函数
+- 关注具体输入上的行为
+- Python 表达不了的 Coq 结构可以忽略
+- 最高优先级是“具体输入上结果一致”
+
+### 判定 Prompt
+
+投票模型当前使用的判断 prompt 核心是：
+
+```text
+You are checking whether the Python code agrees with the Coq code/spec on concrete inputs.
+
+Important:
+Do not require full formal equivalence.
+Do not reject the Python code merely because it does not preserve Coq proof structure, Prop structure, or quantifier structure exactly.
+The only question is whether, for all concrete inputs, the Python code is likely to return the same result or judgment as the Coq code/spec.
+```
+
+输出格式固定为：
+
+```json
+{"equivalent": true_or_false, "reason": "short natural language explanation"}
+```
+
+这里的 `equivalent` 已经不表示“形式等价”，而表示：
+
+- 这份 Python 在所有具体输入上是否很可能与 Coq 返回相同结果
+
+### 修复 Prompt
+
+修复 prompt 核心是：
+
+```text
+Revise the Python code so that it agrees with the Coq code/spec on concrete inputs.
+
+Goal:
+Do not aim for full formal equivalence.
+The only requirement is: for all concrete inputs, the revised Python code should return the same result or judgment as the Coq code/spec.
+```
+
+也就是说，修复阶段不是去补全 Coq 的逻辑结构，而是只修“具体输入上结果不一致”的问题。
+
+## 翻译流程
+
+`translate_coq_input.py` 当前流程如下：
+
+1. 读取 `spec/<model>/input/<idx>.v`
+2. 使用 `gemini-3-pro-preview` 生成 `spec/<model>/input/<idx>.py`
+3. 如果生成结果有 Python 语法错误：
+   - 不触发投票
+   - 直接把编译器错误当作反馈
+   - 继续让 `gemini-3-pro-preview` 修复
+4. 如果语法正确：
+   - 用 `gemini-3-pro-preview`
+   - `claude-opus-4-5-20251101`
+   - `gpt-5`
+   各自独立判断 3 次
+5. 如果多数票认为不一致：
+   - 收集 `reason`
+   - 把这些自然语言原因回灌给 `gemini-3-pro-preview`
+   - 继续迭代修复
+6. 整个过程共用一个上限：
+   - `--max-iterations`
+
+翻译结果会写到：
+
+- `spec/<model>/input/<idx>.py`
+- `spec/<model>/input/<idx>.equiv.json`
+
+其中 `.equiv.json` 记录：
+
+- 每个 judge model 的 3 次判断
+- 多数票结果
+- 不一致原因
+- 当前是第几轮修复
+
+## 使用方式
+
+### 只跑翻译与投票修复
 
 ```bash
-python3 translate_coq_input.py --model gpt-5 --api-model gemini-3-pro-preview --idx 10
+python3 translate_coq_input.py --model gpt-5 --idx 10
 ```
 
-这条命令会把：
-
-```text
-spec/gpt-5/input/10.v
-```
-
-翻成：
-
-```text
-spec/gpt-5/input/10.py
-```
-
-注意：
+说明：
 
 - `--model` 只表示读哪个 `spec/<model>/input`
-- `--api-model` 才是实际调用的模型
-- 当前默认 `--api-model` 已经是 `gemini-3-pro-preview`
+- `--api-model` 才是实际生成用的模型
+- 当前默认 `--api-model = gemini-3-pro-preview`
 
-## 组合输出
+例如：
 
-把已经翻译好的 Python spec 统一包装成标准接口：
+```bash
+python3 translate_coq_input.py --model gpt-5 --api-model gemini-3-pro-preview --idx 10 --max-iterations 2
+```
+
+### 组合输出
 
 ```bash
 python3 compose_coq_output.py --model gpt-5 --idx 10
@@ -70,7 +164,7 @@ python3 compose_coq_output.py --model gpt-5 --idx 10
 spec/gpt-5/output/gpt-5_<timestamp>/HumanEval_10.py
 ```
 
-输出文件里会统一带：
+组合后的文件会统一带：
 
 ```python
 def precondition(input) -> bool:
@@ -80,13 +174,65 @@ def postcondition(input, output) -> bool:
     ...
 ```
 
-## 当前状态
+### 单独跑正例测试
 
-仓库已经删除：
+```bash
+python3 run_tests.py --output-dir spec/gpt-5/output/<run_name> --idx 10
+```
 
-- 旧实验报告
-- 旧生成脚本
-- 旧正负例测试脚本
-- 旧 mutation 数据
+### 单独跑负例测试
 
-现在只保留 Coq→Python 翻译与组合输出相关内容。
+```bash
+python3 run_negative_tests.py --output-dir spec/gpt-5/output/<run_name> --idx 10
+```
+
+### 一键跑完整流水线
+
+```bash
+python3 run_coq_pipeline.py --model gpt-5
+```
+
+或者单题 smoke：
+
+```bash
+python3 run_coq_pipeline.py --model gpt-5 --idx 26 --run-name gpt-5_pipeline_smoke
+```
+
+默认会顺序执行：
+
+1. `translate_coq_input.py`
+2. `compose_coq_output.py`
+3. `run_tests.py`
+4. `run_negative_tests.py`
+
+最终会生成：
+
+- `spec/<model>/output/<run_name>/`
+- `test_reports/<run_name>/`
+- `negative_report/<run_name>/`
+- `spec/<model>/output/<run_name>/_pipeline_summary.json`
+
+## 默认配置
+
+- 实际生成模型默认是：
+  - `gemini-3-pro-preview`
+- 投票模型默认是：
+  - `gemini-3-pro-preview`
+  - `claude-opus-4-5-20251101`
+  - `gpt-5`
+- 每个投票模型默认判断：
+  - `3` 次
+- 语法修复与行为修复共用：
+  - `--max-iterations`
+
+## 当前语义
+
+这套链路里，“equivalent” 的含义是：
+
+- Python 与 Coq 在所有具体输入上返回相同结果
+
+它不表示：
+
+- 形式逻辑上的完全等价
+- 证明结构保真
+- 量词结构完整保留

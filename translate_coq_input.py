@@ -74,21 +74,25 @@ def extract_json_object(text: str) -> dict:
 def build_prompt(coq_source: str, stem: str) -> str:
     return textwrap.dedent(
         f"""
-        Translate the following Coq input spec into executable Python.
+        Produce executable Python code from the following Coq spec.
+
+        Goal:
+        The Python code does not need to be formally equivalent to the Coq code.
+        The only requirement is: for all concrete inputs, the Python code must return the same result or judgment as the Coq code/spec.
 
         Requirements:
         1. Output only valid Python code.
         2. Preserve every top-level function/spec name exactly.
-        3. Translate logical propositions into Python boolean-returning functions.
-        4. Keep helper functions executable in Python.
-        5. Do not add markdown fences or explanations.
-        6. Use ASCII only.
-        7. For any Coq definition named *_spec, generate a Python function with the same arguments that returns bool.
-        8. Keep the argument order unchanged.
-        9. Encode Coq logical connectives exactly with Python boolean logic as closely as possible.
-        10. If a Coq relation is inductive, translate it into an executable boolean predicate or recognizer with the same name.
-        11. If a Coq definition is named *_pre, generate a Python function with the same arguments that returns bool.
-        12. Keep all non-spec, non-pre helper functions available for later calls from *_pre and *_spec.
+        3. Keep helper functions executable in Python.
+        4. For any Coq definition named *_spec, generate a Python function with the same arguments that returns bool.
+        5. For any Coq definition named *_pre, generate a Python function with the same arguments that returns bool.
+        6. Keep the argument order unchanged.
+        7. Use ASCII only.
+        8. Focus on executable behavior on concrete inputs, not on proof structure.
+        9. If some Coq construct cannot be naturally represented in executable Python, ignore the non-executable part and preserve the concrete input-output behavior as well as possible.
+        10. For forall / exists / Prop-style logic, implement executable checks that make the Python code return the same result as the Coq code/spec on concrete inputs whenever possible.
+        11. Do not try to preserve proof terms, proof obligations, or full formal semantics.
+        12. The highest priority is: same result as Coq on all concrete inputs.
 
         File index: {stem}
 
@@ -102,7 +106,11 @@ def build_repair_prompt(coq_source: str, python_source: str, stem: str, reasons:
     reason_block = "\n".join(f"- {reason}" for reason in reasons) if reasons else "- No reasons provided."
     return textwrap.dedent(
         f"""
-        Revise the Python translation so it becomes semantically equivalent to the Coq spec.
+        Revise the Python code so that it agrees with the Coq code/spec on concrete inputs.
+
+        Goal:
+        Do not aim for full formal equivalence.
+        The only requirement is: for all concrete inputs, the revised Python code should return the same result or judgment as the Coq code/spec.
 
         Requirements:
         1. Output only valid Python code.
@@ -110,9 +118,11 @@ def build_repair_prompt(coq_source: str, python_source: str, stem: str, reasons:
         3. Keep helper functions executable in Python.
         4. For any Coq definition named *_spec, generate a Python function with the same arguments that returns bool.
         5. For any Coq definition named *_pre, generate a Python function with the same arguments that returns bool.
-        6. Use the feedback below to fix semantic mismatches.
-        7. Do not add markdown fences or explanations.
-        8. Use ASCII only.
+        6. Use the feedback below to fix concrete behavioral mismatches.
+        7. If some Coq construct cannot be naturally represented in executable Python, ignore the non-executable part and prioritize matching the concrete result on inputs.
+        8. Do not add markdown fences or explanations.
+        9. Use ASCII only.
+        10. The highest priority is: same result as Coq on all concrete inputs.
 
         File index: {stem}
 
@@ -131,17 +141,24 @@ def build_repair_prompt(coq_source: str, python_source: str, stem: str, reasons:
 def build_equivalence_prompt(coq_source: str, python_source: str, stem: str) -> str:
     return textwrap.dedent(
         f"""
-        You are checking whether a Python translation is semantically equivalent to a Coq spec.
+        You are checking whether the Python code agrees with the Coq code/spec on concrete inputs.
+
+        Important:
+        Do not require full formal equivalence.
+        Do not reject the Python code merely because it does not preserve Coq proof structure, Prop structure, or quantifier structure exactly.
+        The only question is whether, for all concrete inputs, the Python code is likely to return the same result or judgment as the Coq code/spec.
+
+        Output only a JSON object with this exact schema:
+        {{"equivalent": true_or_false, "reason": "short natural language explanation"}}
 
         Requirements:
-        1. Output only a JSON object.
-        2. Use this exact schema:
-           {{"equivalent": true_or_false, "reason": "short natural language explanation"}}
-        3. "equivalent" should be true only if the Python code preserves the meaning of the Coq definitions closely enough to be used as an executable equivalent.
-        4. Focus on semantic equivalence of *_pre, *_spec, and helper definitions.
-        5. If you think they are not equivalent, "reason" must clearly explain the mismatch in natural language.
-        6. If you think they are equivalent, keep "reason" brief.
-        7. Do not include markdown fences or extra text.
+        1. equivalent = true if the Python code is likely to return the same result as the Coq code/spec on all concrete inputs.
+        2. equivalent = false only if there is a likely mismatch in concrete behavior or returned judgment.
+        3. Ignore non-executable Coq semantics that Python cannot naturally express, unless they would change the concrete result.
+        4. Focus on whether *_pre, *_spec, and helper definitions produce the same concrete results as Coq.
+        5. If you output false, the reason must explain the likely concrete mismatch in natural language.
+        6. If you output true, keep the reason brief.
+        7. Do not output markdown fences or any extra text.
 
         File index: {stem}
 
