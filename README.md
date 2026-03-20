@@ -1,4 +1,4 @@
-# TestSpec
+# TeSpec
 
 这个项目做两件事：
 
@@ -99,6 +99,19 @@ negative_report/gpt-5_20260316_013133/
 5. 如果变异实现本身运行时报错，会记为 `mutation_runtime_error`，并按“该变异体已被杀死”处理，不再算规约错误
 6. 每个变异体单独记分，分母是它自己的 `different_output_cases`
 
+## Prompt
+
+```
+ You write Python contracts. Output only Python code with two functions: precondition(input) -> bool and
+  postcondition(input, output) -> bool. No extra text. Use ASCII only.
+
+Write precondition and postcondition for the function described below. The input to precondition/
+  postcondition is a tuple of positional arguments in order. Be conservative and avoid over-restricting.
+  
+   Description:
+  {description}
+```
+
 ## 报告格式
 
 每道题一个 JSON 文件，例如：
@@ -191,6 +204,35 @@ test_reports/<模型>_<时间戳>/_summary.json
 - 语法正确率：生成文件能否正常导入
 - 规约正确率：包装后的完整函数是否通过整题测试
 - 不限制前条件的后条件正确率：忽略 `precondition` 后，只看 `_impl` 输出是否满足 `postcondition`
+
+正例计时统计：
+
+下面再补一组只基于正例的时间统计。统计方式是：
+
+- 对每个模型的每道题，取官方正例测试集的前 `10` 个 case
+- 分别计 `_impl(*args)` 的平均耗时，以及 `postcondition(args, _impl(*args))` 的平均耗时
+- 再对题目做平均
+- 另外统计“`postcondition` 比 `_impl` 更快”的题数
+
+之所以用前 `10` 个正例 case，而不是整套 case，是因为有些题的官方测试非常大；这里更适合看跨模型的相对趋势，而不是追求绝对纳秒级精度。
+
+| 模型 | 可计时题数 | `_impl` 平均耗时 | `postcondition` 平均耗时 | 验证/实现比值 | 验证更快题数 |
+|---|---:|---:|---:|---:|---:|
+| `gpt-5-nano` | `162/164` | `12.125 us` | `8.071 us` | `0.666` | `52/164` |
+| `gpt-5-mini` | `162/164` | `16.969 us` | `12.537 us` | `0.739` | `38/164` |
+| `gpt-5` | `162/164` | `11.958 us` | `7.918 us` | `0.662` | `44/164` |
+| `deepseek-v3.2` | `160/164` | `11.725 us` | `2.260 us` | `0.193` | `83/164` |
+| `claude-opus-4-5-20251101` | `162/164` | `11.305 us` | `16.305 us` | `1.442` | `67/164` |
+| `claude-sonnet-4-6` | `162/164` | `15.564 us` | `14.879 us` | `0.956` | `62/164` |
+| `claude-opus-4-6` | `162/164` | `11.630 us` | `15.989 us` | `1.375` | `68/164` |
+| `gemini-3-pro-preview` | `162/164` | `11.003 us` | `5.984 us` | `0.544` | `89/164` |
+| `gemini-3.1-pro-preview` | `162/164` | `12.431 us` | `2.187 us` | `0.176` | `100/164` |
+| `gemini-3.1-flash-lite-preview` | `161/164` | `11.916 us` | `3.099 us` | `0.260` | `94/164` |
+
+这个表有两个很直接的现象：
+
+- `gemini-3.1-pro-preview` 和 `deepseek-v3.2` 的 `postcondition` 很快，但这不代表规约更强；它更多说明它们经常只做很轻的类型、长度或范围检查
+- `claude-opus-4-5-20251101` 和 `claude-opus-4-6` 的 `postcondition` 平均上已经比 `_impl` 更慢，这更符合“规约在认真检查语义”的直觉，但也更容易写出高开销约束
 
 逐层收缩表 1：严格要求前条件和后条件
 
