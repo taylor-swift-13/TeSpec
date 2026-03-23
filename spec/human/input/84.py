@@ -23,8 +23,14 @@ def nat_to_binary_string(n: int) -> str:
 def solve_impl(N: int) -> str:
     return nat_to_binary_string(sum_decimal_digits(N))
 
-def problem_84_pre(N: int) -> bool:
+def _orig_problem_84_pre(N: int) -> bool:
     return 0 <= N <= 10000
 
-def problem_84_spec(N: int, output: str) -> bool:
+def _orig_problem_84_spec(N: int, output: str) -> bool:
     return output == solve_impl(N)
+
+def problem_84_pre(N):
+    return bool(_orig_problem_84_pre(N))
+
+def problem_84_spec(N, output):
+    return bool(_orig_problem_84_spec(N, output))

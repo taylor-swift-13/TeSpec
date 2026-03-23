@@ -26,8 +26,14 @@ def move_one_ball_impl(arr):
         return True
     return check_all_shifts(arr, len(arr))
 
-def problem_109_pre(arr):
+def _orig_problem_109_pre(arr):
     return len(set(arr)) == len(arr)
 
-def problem_109_spec(arr, result):
-    return result == move_one_ball_impl(arr)
+def _orig_problem_109_spec(arr, output):
+    return output == move_one_ball_impl(arr)
+
+def problem_109_pre(arr):
+    return bool(_orig_problem_109_pre(arr))
+
+def problem_109_spec(arr, output):
+    return bool(_orig_problem_109_spec(arr, output))

@@ -56,6 +56,9 @@ def valid_file_name(s: str) -> bool:
         
     return True
 
-def file_name_check_spec(file_name: str, result: str) -> bool:
+def _orig_file_name_check_spec(file_name: str, output: str) -> bool:
     is_valid = valid_file_name(file_name)
-    return (is_valid and result == "Yes") or (not is_valid and result == "No")
+    return is_valid and output == 'Yes' or (not is_valid and output == 'No')
+
+def file_name_check_spec(file_name, output):
+    return bool(_orig_file_name_check_spec(file_name, output))

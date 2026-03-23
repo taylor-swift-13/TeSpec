@@ -40,9 +40,12 @@ def signed_digits_sum(n):
     else:
         return hd + sum_rest
 
-def count_nums_spec(arr, res):
+def _orig_count_nums_spec(arr, output):
     count = 0
     for x in arr:
         if signed_digits_sum(x) > 0:
             count += 1
-    return res == count
+    return output == count
+
+def count_nums_spec(arr, output):
+    return bool(_orig_count_nums_spec(arr, output))

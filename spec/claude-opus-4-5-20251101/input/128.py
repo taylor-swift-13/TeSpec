@@ -45,19 +45,20 @@ def contains_zero(arr):
             return True
     return False
 
-def prod_signs_spec(arr, result):
+def _orig_prod_signs_spec(arr, output):
     """
-    Specifies the expected result for the product of signs logic.
-    If arr is empty, result must be None.
+    Specifies the expected output for the product of signs logic.
+    If arr is empty, output must be None.
     If arr is not empty:
-        - If arr contains 0, result must be 0.
-        - Otherwise, result must be the product of sum_magnitudes and product_signs.
+        - If arr contains 0, output must be 0.
+        - Otherwise, output must be the product of sum_magnitudes and product_signs.
     """
     if not arr:
-        return result is None
+        return output is None
+    elif contains_zero(arr):
+        return output == 0
     else:
-        if contains_zero(arr):
-            return result == 0
-        else:
-            # result is expected to be an integer representing 'Some Z'
-            return result == (sum_magnitudes(arr) * product_signs(arr))
+        return output == sum_magnitudes(arr) * product_signs(arr)
+
+def prod_signs_spec(arr, output):
+    return bool(_orig_prod_signs_spec(arr, output))

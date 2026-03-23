@@ -1,7 +1,5 @@
-def largest_smallest_integers_spec(lst, result):
-    neg_res, pos_res = result
-    
-    # Check specification for the largest negative integer
+def _orig_largest_smallest_integers_spec(lst, output):
+    (neg_res, pos_res) = output
     if neg_res is not None:
         if neg_res not in lst:
             return False
@@ -14,8 +12,6 @@ def largest_smallest_integers_spec(lst, result):
         for x in lst:
             if x < 0:
                 return False
-                
-    # Check specification for the smallest positive integer
     if pos_res is not None:
         if pos_res not in lst:
             return False
@@ -28,5 +24,7 @@ def largest_smallest_integers_spec(lst, result):
         for x in lst:
             if x > 0:
                 return False
-                
     return True
+
+def largest_smallest_integers_spec(lst, output):
+    return bool(_orig_largest_smallest_integers_spec(lst, output))

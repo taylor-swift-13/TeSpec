@@ -32,18 +32,19 @@ def no_valid_vowel_after(word: str, i: int) -> bool:
             return False
     return True
 
-def get_closest_vowel_spec(word: str, result: str) -> bool:
+def _orig_get_closest_vowel_spec(word: str, output: str) -> bool:
     length = string_length(word)
     if length < 3:
-        return result == ""
-    
+        return output == ''
     last_valid_i = -1
     for i in range(1, length - 1):
         if valid_vowel_position(word, i):
             last_valid_i = i
-            
     if last_valid_i != -1:
         ch = nth_char(word, last_valid_i)
-        return result == ch
+        return output == ch
     else:
-        return result == ""
+        return output == ''
+
+def get_closest_vowel_spec(word, output):
+    return bool(_orig_get_closest_vowel_spec(word, output))

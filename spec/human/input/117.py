@@ -34,16 +34,22 @@ def select_words(s: str, n: int) -> list:
     res = select_words_impl(l, n)
     return ["".join(w) for w in res]
 
-def problem_117_pre(s: str) -> bool:
+def _orig_problem_117_pre(s: str) -> bool:
     l = list(s)
     for c in l:
         if c == ' ':
             continue
         n = ord(c)
-        if (65 <= n <= 90) or (97 <= n <= 122):
+        if 65 <= n <= 90 or 97 <= n <= 122:
             continue
         return False
     return True
 
-def problem_117_spec(s: str, n: int, output: list) -> bool:
+def _orig_problem_117_spec(s: str, n: int, output: list) -> bool:
     return output == select_words(s, n)
+
+def problem_117_pre(s, n):
+    return bool(_orig_problem_117_pre(s))
+
+def problem_117_spec(s, n, output):
+    return bool(_orig_problem_117_spec(s, n, output))

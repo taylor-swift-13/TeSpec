@@ -21,8 +21,14 @@ def digits_impl(n):
         return 0
     return product(ds)
 
-def problem_131_pre(n):
+def _orig_problem_131_pre(n):
     return n > 0
 
-def problem_131_spec(n, output):
+def _orig_problem_131_spec(n, output):
     return output == digits_impl(n)
+
+def problem_131_pre(n):
+    return bool(_orig_problem_131_pre(n))
+
+def problem_131_spec(n, output):
+    return bool(_orig_problem_131_spec(n, output))

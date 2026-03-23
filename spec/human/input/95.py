@@ -22,13 +22,13 @@ def is_uppercase(s):
             return False
     return True
 
-def problem_95_pre(d):
+def _orig_problem_95_pre(d):
     """
     Precondition for the problem. Always True as per Coq spec.
     """
     return True
 
-def problem_95_spec(d, output):
+def _orig_problem_95_spec(d, output):
     """
     Specification for check_dict_case.
     d: dictionary (represented as a Python dict)
@@ -41,20 +41,21 @@ def problem_95_spec(d, output):
     """
     if not d:
         return output is False
-
-    # Check if all keys are strings and satisfy is_lowercase
     all_lower = True
     for k in d:
         if not isinstance(k, str) or not is_lowercase(k):
             all_lower = False
             break
-
-    # Check if all keys are strings and satisfy is_uppercase
     all_upper = True
     for k in d:
         if not isinstance(k, str) or not is_uppercase(k):
             all_upper = False
             break
-
     expected = all_lower or all_upper
     return output == expected
+
+def problem_95_pre(dict):
+    return bool(_orig_problem_95_pre(dict))
+
+def problem_95_spec(dict, output):
+    return bool(_orig_problem_95_spec(dict, output))

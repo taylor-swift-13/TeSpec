@@ -12,16 +12,22 @@ def filter_by_substring_impl(input, sub):
     """
     return [h for h in input if contains_substring(h, sub)]
 
-def problem_7_pre():
+def _orig_problem_7_pre():
     """
     Pre-condition for problem 7.
     Always returns True as per Coq definition.
     """
     return True
 
-def problem_7_spec(input, output, sub):
+def _orig_problem_7_spec(input, output, sub):
     """
     Specification for problem 7.
     Checks if 'output' is the result of filtering 'input' by 'sub'.
     """
     return output == filter_by_substring_impl(input, sub)
+
+def problem_7_pre(strings, substring):
+    return bool(_orig_problem_7_pre())
+
+def problem_7_spec(strings, substring, output):
+    return bool(_orig_problem_7_spec(strings, substring, output))

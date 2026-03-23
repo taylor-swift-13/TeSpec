@@ -12,24 +12,18 @@ def is_prime(n):
         d += 2
     return True
 
-def problem_96_pre(n):
+def _orig_problem_96_pre(n):
     return True
 
-def problem_96_spec(n, result):
+def _orig_problem_96_spec(n, output):
     expected = []
-    # Generate all primes less than n in increasing order
     for i in range(2, n):
         if is_prime(i):
             expected.append(i)
-            
-    # The Coq spec requires:
-    # 1. All elements in result are prime
-    # 2. All elements in result are < n
-    # 3. All primes < n are in result
-    # 4. result is sorted strictly ascending (Sorted lt)
-    # 5. result has no duplicates (NoDup)
-    #
-    # The list 'expected' satisfies all these properties by construction.
-    # Since the set of primes < n is unique and the order is fixed (strictly ascending),
-    # 'result' must be exactly equal to 'expected'.
-    return result == expected
+    return output == expected
+
+def problem_96_pre(n):
+    return bool(_orig_problem_96_pre(n))
+
+def problem_96_spec(n, output):
+    return bool(_orig_problem_96_spec(n, output))

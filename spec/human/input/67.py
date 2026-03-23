@@ -35,36 +35,33 @@ def parse_fruit_string(s, apples, oranges):
         
     return False
 
-def problem_67_pre(s, n):
+def _orig_problem_67_pre(s, n):
     return True
 
-def problem_67_spec(s, n, ret):
-    sep = " apples and "
-    suffix = " oranges"
-    
+def _orig_problem_67_spec(s, n, output):
+    sep = ' apples and '
+    suffix = ' oranges'
     if not s.endswith(suffix):
         return False
-        
     rem = s[:-len(suffix)]
     start = 0
-    
     while True:
         idx = rem.find(sep, start)
         if idx == -1:
             break
-            
         s_apples = rem[:idx]
         s_oranges = rem[idx + len(sep):]
-        
         apples = string_to_nat(s_apples)
         oranges = string_to_nat(s_oranges)
-        
         total_fruits = apples + oranges
         expected = n - total_fruits if n >= total_fruits else 0
-        
-        if ret == expected:
+        if output == expected:
             return True
-            
         start = idx + 1
-        
     return False
+
+def problem_67_pre(s, n):
+    return bool(_orig_problem_67_pre(s, n))
+
+def problem_67_spec(s, n, output):
+    return bool(_orig_problem_67_spec(s, n, output))

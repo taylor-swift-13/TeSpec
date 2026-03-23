@@ -22,6 +22,9 @@ def replace_i(s, replacement):
             res += char
     return res
 
-def odd_count_spec(lst, ans):
+def _orig_odd_count_spec(lst, output):
     expected = [replace_i(template, string_of_nat(count_odd_digits(s))) for s in lst]
-    return ans == expected
+    return output == expected
+
+def odd_count_spec(lst, output):
+    return bool(_orig_odd_count_spec(lst, output))

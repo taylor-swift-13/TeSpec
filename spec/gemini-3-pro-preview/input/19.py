@@ -53,24 +53,19 @@ def join_with_space(l: list) -> str:
         return l[0]
     return l[0] + " " + join_with_space(l[1:])
 
-def sort_numbers_spec(numbers: str, result: str) -> bool:
-    if numbers == "":
-        return result == ""
-    
+def _orig_sort_numbers_spec(numbers: str, output: str) -> bool:
+    if numbers == '':
+        return output == ''
     input_tokens = tokenize(numbers)
-    result_tokens = tokenize(result)
-    
-    # The result tokens must be a permutation of input tokens
+    result_tokens = tokenize(output)
     if sorted(input_tokens) != sorted(result_tokens):
         return False
-        
-    # The result tokens must be sorted according to their numeric value
     for i in range(len(result_tokens) - 1):
-        if not str_le(result_tokens[i], result_tokens[i+1]):
+        if not str_le(result_tokens[i], result_tokens[i + 1]):
             return False
-            
-    # The result string must be the joined representation of the sorted tokens
-    if result != join_with_space(result_tokens):
+    if output != join_with_space(result_tokens):
         return False
-        
     return True
+
+def sort_numbers_spec(numbers, output):
+    return bool(_orig_sort_numbers_spec(numbers, output))

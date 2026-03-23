@@ -55,8 +55,14 @@ def sort_list(l: list) -> list:
 def unique_digits_impl(x: list) -> list:
     return sort_list(filter_odd_digits(x))
 
-def problem_104_pre(x: list) -> bool:
-    return all(n > 0 for n in x)
+def _orig_problem_104_pre(x: list) -> bool:
+    return all((n > 0 for n in x))
 
-def problem_104_spec(x: list, y: list) -> bool:
+def _orig_problem_104_spec(x: list, y: list) -> bool:
     return y == unique_digits_impl(x)
+
+def problem_104_pre(x):
+    return bool(_orig_problem_104_pre(x))
+
+def problem_104_spec(x, output):
+    return bool(_orig_problem_104_spec(x, output))

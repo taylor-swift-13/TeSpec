@@ -1,10 +1,5 @@
 import math
 
-# def up(r: float) -> int:
-#     # In Coq, `up r` is the unique integer z such that z - 1 <= r < z.
-#     # This is mathematically equivalent to math.floor(r) + 1.
-#     return math.floor(r) + 1
-
 def up(r: float) -> int:
     return math.ceil(r)
 
@@ -46,8 +41,11 @@ def standard_round(r: float) -> int:
     else:
         return truncate(r) + 1
 
-def closest_integer_spec(value: float, result: int) -> bool:
+def _orig_closest_integer_spec(value: float, output: int) -> bool:
     if is_equidistant(value):
-        return result == round_away_from_zero(value)
+        return output == round_away_from_zero(value)
     else:
-        return result == standard_round(value)
+        return output == standard_round(value)
+
+def closest_integer_spec(value, output):
+    return bool(_orig_closest_integer_spec(value, output))

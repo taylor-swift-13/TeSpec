@@ -45,25 +45,15 @@ def get_largest_prime_factor(n):
         
     return max_p
 
-def largest_prime_factor_spec(n, result):
-    # 1. result must be prime
-    if not is_prime(result):
+def _orig_largest_prime_factor_spec(n, output):
+    if not is_prime(output):
         return False
-    
-    # 2. result must divide n
-    # In Coq, (result | n) means exists c, n = result * c.
-    # Since result is prime (positive), n % result == 0 works for all n.
-    if n % result != 0:
+    if n % output != 0:
         return False
-    
-    # 3. result must be the largest prime factor
-    # If n is 0, every prime k divides n. Since there are infinitely many primes,
-    # there is no 'result' such that forall k, prime k -> k <= result.
     if n == 0:
         return False
-    
-    # For non-zero n, the set of prime factors is finite and non-empty (if |n| > 1).
-    # We calculate the actual largest prime factor and compare.
     actual_largest = get_largest_prime_factor(n)
-    
-    return actual_largest == result
+    return actual_largest == output
+
+def largest_prime_factor_spec(n, output):
+    return bool(_orig_largest_prime_factor_spec(n, output))

@@ -16,5 +16,8 @@ def words_string_aux(s: str, acc: str) -> list:
         res.append(acc)
     return res
 
-def words_string_spec(s: str, result: list) -> bool:
-    return result == words_string_aux(s, "")
+def _orig_words_string_spec(s: str, output: list) -> bool:
+    return output == words_string_aux(s, '')
+
+def words_string_spec(s, output):
+    return bool(_orig_words_string_spec(s, output))

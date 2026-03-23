@@ -4,7 +4,7 @@ def is_substring(part: str, whole: str) -> bool:
 def is_rotation(s: str, r: str) -> bool:
     return len(s) == len(r) and s in r + r
 
-def cycpattern_check_spec(a: str, b: str, res: bool) -> bool:
+def _orig_cycpattern_check_spec(a: str, b: str, output: bool) -> bool:
     has_rot_substr = False
     if len(b) == 0:
         has_rot_substr = True
@@ -14,5 +14,7 @@ def cycpattern_check_spec(a: str, b: str, res: bool) -> bool:
             if is_substring(r, a):
                 has_rot_substr = True
                 break
-                
-    return res == has_rot_substr
+    return output == has_rot_substr
+
+def cycpattern_check_spec(a, b, output):
+    return bool(_orig_cycpattern_check_spec(a, b, output))

@@ -16,8 +16,14 @@ def special_number_b(n: int) -> bool:
 def specialFilter_impl(nums: list) -> int:
     return sum(1 for n in nums if special_number_b(n))
 
-def problem_146_pre(nums: list) -> bool:
+def _orig_problem_146_pre(nums: list) -> bool:
     return True
 
-def problem_146_spec(nums: list, output: int) -> bool:
+def _orig_problem_146_spec(nums: list, output: int) -> bool:
     return output == specialFilter_impl(nums)
+
+def problem_146_pre(nums):
+    return bool(_orig_problem_146_pre(nums))
+
+def problem_146_spec(nums, output):
+    return bool(_orig_problem_146_spec(nums, output))

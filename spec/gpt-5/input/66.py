@@ -6,5 +6,8 @@ def digitSum_fun(s: str) -> int:
             total += code
     return total
 
-def digitSum_spec(s: str, sum: int) -> bool:
+def _orig_digitSum_spec(s: str, sum: int) -> bool:
     return sum == digitSum_fun(s)
+
+def digitSum_spec(s, output):
+    return bool(_orig_digitSum_spec(s, output))

@@ -1,5 +1,7 @@
 lparen = "("
+
 rparen = ")"
+
 space = " "
 
 def IsBalanced_aux(s, count):
@@ -69,8 +71,14 @@ def separate_paren_groups_aux(s, count, current, acc):
 def separate_paren_groups_impl(input_str):
     return separate_paren_groups_aux(remove_spaces(input_str), 0, [], [])
 
-def problem_1_pre(input_str):
+def _orig_problem_1_pre(input_str):
     return ForallChars(is_paren_or_space, input_str) and IsBalanced(remove_spaces(input_str))
 
-def problem_1_spec(input_str, output):
+def _orig_problem_1_spec(input_str, output):
     return output == separate_paren_groups_impl(input_str)
+
+def problem_1_pre(paren_string):
+    return bool(_orig_problem_1_pre(paren_string))
+
+def problem_1_spec(paren_string, output):
+    return bool(_orig_problem_1_spec(paren_string, output))

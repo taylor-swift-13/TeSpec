@@ -11,8 +11,14 @@ def correct_bracketing_aux(s: str, depth: int) -> bool:
 def correct_bracketing(s: str) -> bool:
     return correct_bracketing_aux(s, 0)
 
-def problem_56_pre(brackets: str) -> bool:
-    return all(c == '<' or c == '>' for c in brackets)
+def _orig_problem_56_pre(brackets: str) -> bool:
+    return all((c == '<' or c == '>' for c in brackets))
 
-def problem_56_spec(brackets: str, b: bool) -> bool:
+def _orig_problem_56_spec(brackets: str, b: bool) -> bool:
     return b == correct_bracketing(brackets)
+
+def problem_56_pre(brackets):
+    return bool(_orig_problem_56_pre(brackets))
+
+def problem_56_spec(brackets, output):
+    return bool(_orig_problem_56_spec(brackets, output))

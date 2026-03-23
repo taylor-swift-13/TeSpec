@@ -80,24 +80,26 @@ def IsBalanced(l: str) -> bool:
     """
     return IsBalanced_aux(l, 0)
 
-def problem_6_pre(input_str: str) -> bool:
-    """
-    Precondition: All characters are valid and parentheses are balanced.
-    """
-    return ForallChars(input_str) and IsBalanced(input_str)
-
-def problem_6_spec(input_str: str, output: list) -> bool:
-    """
-    Specification: The output must match the result of the implementation.
-    """
-    return output == parse_nested_parens_impl(input_str)
-
 def parse_nested_parens(input_str: str) -> list:
     """
     The main function as described in the docstring.
     """
     return parse_nested_parens_impl(input_str)
 
-# Example usage:
-# print(parse_nested_parens('(()()) ((())) () ((())()())'))
-# Output: [2, 3, 1, 3]
+def _orig_problem_6_pre(input_str: str) -> bool:
+    """
+    Precondition: All characters are valid and parentheses are balanced.
+    """
+    return ForallChars(input_str) and IsBalanced(input_str)
+
+def _orig_problem_6_spec(input_str: str, output: list) -> bool:
+    """
+    Specification: The output must match the result of the implementation.
+    """
+    return output == parse_nested_parens_impl(input_str)
+
+def problem_6_pre(paren_string):
+    return bool(_orig_problem_6_pre(paren_string))
+
+def problem_6_spec(paren_string, output):
+    return bool(_orig_problem_6_spec(paren_string, output))

@@ -19,5 +19,8 @@ def string_to_list(s: str) -> list:
 def list_to_string(l: list) -> str:
     return "".join(l)
 
-def encrypt_spec(s: str, result: str) -> bool:
-    return result == list_to_string(encrypt_aux(string_to_list(s)))
+def _orig_encrypt_spec(s: str, output: str) -> bool:
+    return output == list_to_string(encrypt_aux(string_to_list(s)))
+
+def encrypt_spec(s, output):
+    return bool(_orig_encrypt_spec(s, output))

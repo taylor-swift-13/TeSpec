@@ -7,19 +7,20 @@ def is_sorted_descending(l):
 def is_permutation(l1, l2):
     return sorted(l1) == sorted(l2)
 
-def sort_array_spec(array, result):
+def _orig_sort_array_spec(array, output):
     if len(array) == 0:
-        return result == []
+        return output == []
     elif len(array) == 1:
-        return result == [array[0]]
+        return output == [array[0]]
     else:
         first = array[0]
         last = array[-1]
-        
-        if not is_permutation(array, result):
+        if not is_permutation(array, output):
             return False
-            
         if (first + last) % 2 == 0:
-            return is_sorted_descending(result)
+            return is_sorted_descending(output)
         else:
-            return is_sorted_ascending(result)
+            return is_sorted_ascending(output)
+
+def sort_array_spec(array, output):
+    return bool(_orig_sort_array_spec(array, output))

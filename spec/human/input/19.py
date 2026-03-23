@@ -42,20 +42,22 @@ def SplitOnSpaces_aux(current_group: list, S: str) -> list:
 def SplitOnSpaces(S: str) -> list:
     return SplitOnSpaces_aux([], S)
 
-def problem_19_pre(input: str) -> bool:
+def _orig_problem_19_pre(input: str) -> bool:
     return True
 
-def problem_19_spec(input: str, output: str) -> bool:
+def _orig_problem_19_spec(input: str, output: str) -> bool:
     input_list = SplitOnSpaces(input)
     output_list = SplitOnSpaces(output)
-    
-    if not all(is_valid_word(w) for w in input_list):
+    if not all((is_valid_word(w) for w in input_list)):
         return False
-        
     if sorted(input_list) != sorted(output_list):
         return False
-        
     if not IsSorted(output_list):
         return False
-        
     return True
+
+def problem_19_pre(numbers):
+    return bool(_orig_problem_19_pre(numbers))
+
+def problem_19_spec(numbers, output):
+    return bool(_orig_problem_19_spec(numbers, output))

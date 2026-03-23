@@ -8,5 +8,8 @@ def correct_bracketing_aux(l, cnt):
             return False
     return cnt == 0
 
-def correct_bracketing_spec(brackets, res):
-    return res == correct_bracketing_aux(list(brackets), 0)
+def _orig_correct_bracketing_spec(brackets, output):
+    return output == correct_bracketing_aux(list(brackets), 0)
+
+def correct_bracketing_spec(brackets, output):
+    return bool(_orig_correct_bracketing_spec(brackets, output))

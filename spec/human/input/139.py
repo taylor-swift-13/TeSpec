@@ -13,8 +13,14 @@ def brazilian_factorial_impl(n):
         result *= fact(i)
     return result
 
-def problem_139_pre(n):
+def _orig_problem_139_pre(n):
     return n > 0
 
-def problem_139_spec(n, output):
+def _orig_problem_139_spec(n, output):
     return output == brazilian_factorial_impl(n)
+
+def problem_139_pre(n):
+    return bool(_orig_problem_139_pre(n))
+
+def problem_139_spec(n, output):
+    return bool(_orig_problem_139_spec(n, output))

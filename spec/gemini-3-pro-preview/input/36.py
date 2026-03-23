@@ -23,5 +23,8 @@ def fizz_buzz_sum(n: int) -> int:
             res += count_sevens(p)
     return res
 
-def fizz_buzz_spec(n: int, cnt: int) -> bool:
+def _orig_fizz_buzz_spec(n: int, cnt: int) -> bool:
     return cnt == fizz_buzz_sum(max(0, n))
+
+def fizz_buzz_spec(n, output):
+    return bool(_orig_fizz_buzz_spec(n, output))

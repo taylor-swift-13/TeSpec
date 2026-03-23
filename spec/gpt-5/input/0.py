@@ -1,8 +1,4 @@
-def has_close_elements_spec(numbers, threshold, result):
-    # The Coq spec defines P as the existence of two distinct indices i < j
-    # such that |numbers[i] - numbers[j]| < threshold.
-    # The spec asserts that 'result' is equivalent to P.
-    
+def _orig_has_close_elements_spec(numbers, threshold, output):
     p_holds = False
     n = len(numbers)
     for i in range(n):
@@ -12,5 +8,7 @@ def has_close_elements_spec(numbers, threshold, result):
                 break
         if p_holds:
             break
-            
-    return result == p_holds
+    return output == p_holds
+
+def has_close_elements_spec(numbers, threshold, output):
+    return bool(_orig_has_close_elements_spec(numbers, threshold, output))

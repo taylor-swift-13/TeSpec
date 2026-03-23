@@ -38,8 +38,14 @@ def solve_impl(s: str) -> str:
     else:
         return "".join(reversed(l))
 
-def problem_161_pre(s: str) -> bool:
+def _orig_problem_161_pre(s: str) -> bool:
     return True
 
-def problem_161_spec(s: str, s_prime: str) -> bool:
+def _orig_problem_161_spec(s: str, s_prime: str) -> bool:
     return s_prime == solve_impl(s)
+
+def problem_161_pre(s):
+    return bool(_orig_problem_161_pre(s))
+
+def problem_161_spec(s, output):
+    return bool(_orig_problem_161_spec(s, output))

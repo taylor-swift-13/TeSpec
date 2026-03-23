@@ -30,39 +30,27 @@ def join_space(l: list) -> str:
 def word_transform(input_word: str, output_word: str) -> bool:
     return is_permutation_string(input_word, output_word) and is_sorted_string(output_word)
 
-def anti_shuffle_spec(s: str, result: str) -> bool:
-    # The join_space function in Coq implies that words are separated by exactly one space.
-    # If s is empty, words must be [].
-    # If s is not empty, words must be s.split(" ").
-    
-    if s == "":
+def _orig_anti_shuffle_spec(s: str, output: str) -> bool:
+    if s == '':
         words = []
     else:
-        words = s.split(" ")
-        
-    if result == "":
+        words = s.split(' ')
+    if output == '':
         ordered_words = []
     else:
-        ordered_words = result.split(" ")
-        
-    # Verify s = join_space words
+        ordered_words = output.split(' ')
     if join_space(words) != s:
         return False
-        
-    # Verify result = join_space ordered_words
-    if join_space(ordered_words) != result:
+    if join_space(ordered_words) != output:
         return False
-        
-    # Verify Forall word_has_no_space words
-    if not all(word_has_no_space(w) for w in words):
+    if not all((word_has_no_space(w) for w in words)):
         return False
-        
-    # Verify Forall2 word_transform words ordered_words
     if len(words) != len(ordered_words):
         return False
-        
-    for w1, w2 in zip(words, ordered_words):
+    for (w1, w2) in zip(words, ordered_words):
         if not word_transform(w1, w2):
             return False
-            
     return True
+
+def anti_shuffle_spec(s, output):
+    return bool(_orig_anti_shuffle_spec(s, output))

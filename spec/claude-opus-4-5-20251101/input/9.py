@@ -46,23 +46,18 @@ def rolling_max(numbers):
     """
     return rolling_max_aux(numbers, len(numbers))
 
-def rolling_max_spec(numbers, result):
+def _orig_rolling_max_spec(numbers, output):
     """
-    Definition rolling_max_spec (numbers : list Z) (result : list Z) : Prop
+    Definition rolling_max_spec (numbers : list Z) (output : list Z) : Prop
     """
-    if len(result) != len(numbers):
+    if len(output) != len(numbers):
         return False
-    
     for i in range(len(numbers)):
-        # nth i result 0
-        # Since we checked lengths, result[i] is valid.
-        val_at_i = result[i]
-        
-        # max_list (firstn (S i) numbers) 0
-        # S i is i+1
+        val_at_i = output[i]
         expected = max_list(firstn(i + 1, numbers), 0)
-        
         if val_at_i != expected:
             return False
-            
     return True
+
+def rolling_max_spec(numbers, output):
+    return bool(_orig_rolling_max_spec(numbers, output))

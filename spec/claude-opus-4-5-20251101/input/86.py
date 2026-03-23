@@ -63,21 +63,20 @@ def join_with_space(words):
 def sort_word(w):
     return list_to_string(sorted_by_ascii(string_to_list(w)))
 
-def anti_shuffle_spec(s, result):
+def _orig_anti_shuffle_spec(s, output):
     input_words = split_by_space(s)
-    output_words = split_by_space(result)
-
+    output_words = split_by_space(output)
     if len(input_words) != len(output_words):
         return False
-
     for i in range(len(input_words)):
         in_word = input_words[i]
         out_word = output_words[i]
-
         if not is_permutation(string_to_list(in_word), string_to_list(out_word)):
             return False
         if not is_sorted_by_ascii(string_to_list(out_word)):
             return False
-
     expected = join_with_space([sort_word(w) for w in input_words])
-    return result == expected
+    return output == expected
+
+def anti_shuffle_spec(s, output):
+    return bool(_orig_anti_shuffle_spec(s, output))

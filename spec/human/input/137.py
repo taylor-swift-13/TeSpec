@@ -1,4 +1,5 @@
 from fractions import Fraction
+
 from decimal import Decimal
 
 class VInt:
@@ -128,8 +129,14 @@ def compare_one_impl(a, b):
             return None
     return None
 
-def problem_137_pre(a, b):
+def _orig_problem_137_pre(a, b):
     return True
 
-def problem_137_spec(a, b, res):
-    return res == compare_one_impl(a, b)
+def _orig_problem_137_spec(a, b, output):
+    return output == compare_one_impl(a, b)
+
+def problem_137_pre(a, b):
+    return bool(_orig_problem_137_pre(a, b))
+
+def problem_137_spec(a, b, output):
+    return bool(_orig_problem_137_spec(a, b, output))

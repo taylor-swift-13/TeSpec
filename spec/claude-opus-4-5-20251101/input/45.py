@@ -15,11 +15,14 @@ def _to_frac(x):
     except Exception:
         return Fraction(float(x))
 
-def triangle_area_spec(a, h, area):
+def _orig_triangle_area_spec(a, h, area):
     try:
         fa = _to_frac(a)
         fh = _to_frac(h)
         farea = _to_frac(area)
-        return farea == (fa * fh) / 2
+        return farea == fa * fh / 2
     except Exception:
         return False
+
+def triangle_area_spec(a, h, output):
+    return bool(_orig_triangle_area_spec(a, h, output))

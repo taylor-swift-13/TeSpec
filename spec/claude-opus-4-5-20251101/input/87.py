@@ -12,5 +12,8 @@ def get_row_helper(lst, x, row_idx):
         res.extend(find_in_row_desc(row, x, row_idx + i, 0))
     return res
 
-def get_row_spec(lst, x, result):
-    return result == get_row_helper(lst, x, 0)
+def _orig_get_row_spec(lst, x, output):
+    return output == get_row_helper(lst, x, 0)
+
+def get_row_spec(lst, x, output):
+    return bool(_orig_get_row_spec(lst, x, output))

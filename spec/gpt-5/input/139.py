@@ -10,5 +10,8 @@ def brazilian_factorial(n):
         res *= fact(i)
     return res
 
-def special_factorial_spec(n, ans):
-    return ans == brazilian_factorial(n)
+def _orig_special_factorial_spec(n, output):
+    return output == brazilian_factorial(n)
+
+def special_factorial_spec(n, output):
+    return bool(_orig_special_factorial_spec(n, output))

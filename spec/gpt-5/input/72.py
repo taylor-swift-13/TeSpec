@@ -5,18 +5,16 @@ def sum_Z(l):
     """
     return sum(l)
 
-def will_it_fly_spec(q, w, res):
+def _orig_will_it_fly_spec(q, w, output):
     """
-    Checks the specification: res is True if and only if q is a palindrome 
+    Checks the specification: output is True if and only if q is a palindrome 
     and the sum of its elements is less than or equal to w.
     """
-    # q = rev q
-    is_palindrome = (q == q[::-1])
-    
-    # sum_Z q <= w
+    is_palindrome = q == q[::-1]
     sum_val = sum_Z(q)
-    sum_ok = (sum_val <= w)
-    
-    # res = true <-> (is_palindrome /\ sum_ok)
+    sum_ok = sum_val <= w
     condition = is_palindrome and sum_ok
-    return res == condition
+    return output == condition
+
+def will_it_fly_spec(q, w, output):
+    return bool(_orig_will_it_fly_spec(q, w, output))

@@ -1,6 +1,5 @@
 import sys
 
-# Increase recursion limit to handle deep recursion if necessary.
 sys.setrecursionlimit(5000)
 
 def nth_error(lst, n):
@@ -126,7 +125,7 @@ def find_minimum_path_impl(grid, k):
     cand = extend_paths(grid, k, fuel, starts)
     return best_by_lex(grid, cand)
 
-def problem_129_pre(grid, k):
+def _orig_problem_129_pre(grid, k):
     if k < 1:
         return False
     if not grid:
@@ -136,5 +135,11 @@ def problem_129_pre(grid, k):
             return False
     return True
 
-def problem_129_spec(grid, k, output):
+def _orig_problem_129_spec(grid, k, output):
     return output == find_minimum_path_impl(grid, k)
+
+def problem_129_pre(grid, k):
+    return bool(_orig_problem_129_pre(grid, k))
+
+def problem_129_spec(grid, k, output):
+    return bool(_orig_problem_129_spec(grid, k, output))

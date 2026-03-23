@@ -22,10 +22,13 @@ def digit_counts(n, e, o):
 
     return calc_e == e and calc_o == o
 
-def even_odd_count_spec(num, res):
+def _orig_even_odd_count_spec(num, output):
     """
-    Specification function that checks if 'res' (a tuple of (even_count, odd_count))
+    Specification function that checks if 'output' (a tuple of (even_count, odd_count))
     matches the digit counts of the absolute value of 'num'.
     """
-    even, odd = res
+    (even, odd) = output
     return digit_counts(abs(num), even, odd)
+
+def even_odd_count_spec(num, output):
+    return bool(_orig_even_odd_count_spec(num, output))

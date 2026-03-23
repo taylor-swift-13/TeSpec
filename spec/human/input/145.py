@@ -61,8 +61,14 @@ def order_by_points_impl(l_in):
     sorted_list = stable_sort(indexed)
     return [z for z, i in sorted_list]
 
-def problem_145_pre(l_in) -> bool:
+def _orig_problem_145_pre(l_in) -> bool:
     return True
 
-def problem_145_spec(l_in, output) -> bool:
+def _orig_problem_145_spec(l_in, output) -> bool:
     return output == order_by_points_impl(l_in)
+
+def problem_145_pre(nums):
+    return bool(_orig_problem_145_pre(nums))
+
+def problem_145_spec(nums, output):
+    return bool(_orig_problem_145_spec(nums, output))

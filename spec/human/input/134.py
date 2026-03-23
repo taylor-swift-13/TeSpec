@@ -19,8 +19,14 @@ def ends_with_single_letter_pred(s):
         
     return pre[-1] == space
 
-def problem_134_pre(s):
+def _orig_problem_134_pre(s):
     return True
 
-def problem_134_spec(s, b):
+def _orig_problem_134_spec(s, b):
     return b == ends_with_single_letter_pred(s)
+
+def problem_134_pre(txt):
+    return bool(_orig_problem_134_pre(txt))
+
+def problem_134_spec(txt, output):
+    return bool(_orig_problem_134_spec(txt, output))

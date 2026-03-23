@@ -12,8 +12,14 @@ def contains_subseq(s: list, target: list) -> bool:
 def is_nested(s: str) -> bool:
     return contains_subseq(list(s), ['[', '[', ']', ']'])
 
-def problem_132_pre(s: str) -> bool:
-    return all(c == '[' or c == ']' for c in s)
+def _orig_problem_132_pre(s: str) -> bool:
+    return all((c == '[' or c == ']' for c in s))
 
-def problem_132_spec(s: str, output: bool) -> bool:
+def _orig_problem_132_spec(s: str, output: bool) -> bool:
     return output == is_nested(s)
+
+def problem_132_pre(string):
+    return bool(_orig_problem_132_pre(string))
+
+def problem_132_spec(string, output):
+    return bool(_orig_problem_132_spec(string, output))

@@ -8,8 +8,11 @@ def is_prime(n):
         d += 1
     return True
 
-def x_or_y_spec(n, x, y, result):
+def _orig_x_or_y_spec(n, x, y, output):
     if is_prime(n):
-        return result == x
+        return output == x
     else:
-        return result == y
+        return output == y
+
+def x_or_y_spec(n, x, y, output):
+    return bool(_orig_x_or_y_spec(n, x, y, output))

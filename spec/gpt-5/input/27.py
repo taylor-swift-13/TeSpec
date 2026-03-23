@@ -16,5 +16,8 @@ def swap_ascii(c):
 def map_string(f, s):
     return "".join(f(c) for c in s)
 
-def flip_case_spec(s, res):
-    return res == map_string(swap_ascii, s)
+def _orig_flip_case_spec(s, output):
+    return output == map_string(swap_ascii, s)
+
+def flip_case_spec(string, output):
+    return bool(_orig_flip_case_spec(string, output))

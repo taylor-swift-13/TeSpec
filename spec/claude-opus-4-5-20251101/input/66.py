@@ -15,5 +15,8 @@ def sum_upper_ascii(chars: list) -> int:
             acc = ascii_to_Z(c) + acc
     return acc
 
-def digitSum_spec(s: str, result: int) -> bool:
-    return result == sum_upper_ascii(string_to_list(s))
+def _orig_digitSum_spec(s: str, output: int) -> bool:
+    return output == sum_upper_ascii(string_to_list(s))
+
+def digitSum_spec(s, output):
+    return bool(_orig_digitSum_spec(s, output))

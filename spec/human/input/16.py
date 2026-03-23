@@ -7,11 +7,17 @@ def lower(a: str) -> str:
         return chr(ord(a) + 32)
     return a
 
-def problem_16_pre(s: str) -> bool:
+def _orig_problem_16_pre(s: str) -> bool:
     return True
 
-def problem_16_spec(s: str, output: int) -> bool:
+def _orig_problem_16_spec(s: str, output: int) -> bool:
     D = set()
     for char in s:
         D.add(lower(char))
     return output == len(D)
+
+def problem_16_pre(string):
+    return bool(_orig_problem_16_pre(string))
+
+def problem_16_spec(string, output):
+    return bool(_orig_problem_16_spec(string, output))

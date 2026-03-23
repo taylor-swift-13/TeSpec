@@ -13,6 +13,9 @@ def is_ascending(lst):
             return False
     return True
 
-def is_sorted_spec(lst, result):
+def _orig_is_sorted_spec(lst, output):
     expected = is_ascending(lst) and no_more_than_two_duplicates(lst)
-    return bool(result) == expected
+    return bool(output) == expected
+
+def is_sorted_spec(lst, output):
+    return bool(_orig_is_sorted_spec(lst, output))

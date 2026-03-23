@@ -78,15 +78,11 @@ def roman_i(d: int) -> str:
     else:
         return ""
 
-def int_to_mini_roman_spec(number: int, res: str) -> bool:
-    if not (1 <= number <= 1000):
+def _orig_int_to_mini_roman_spec(number: int, output: str) -> bool:
+    if not 1 <= number <= 1000:
         return False
-    
-    expected = (
-        roman_m(number // 1000) +
-        roman_c((number % 1000) // 100) +
-        roman_x((number % 100) // 10) +
-        roman_i(number % 10)
-    )
-    
-    return res == expected
+    expected = roman_m(number // 1000) + roman_c(number % 1000 // 100) + roman_x(number % 100 // 10) + roman_i(number % 10)
+    return output == expected
+
+def int_to_mini_roman_spec(number, output):
+    return bool(_orig_int_to_mini_roman_spec(number, output))

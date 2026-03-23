@@ -46,8 +46,14 @@ def circular_shift_impl(x, shift):
                 new_tail = digits[:split_point]
                 return from_digits_to_string(new_head + new_tail)
 
-def problem_65_pre(x, shift):
+def _orig_problem_65_pre(x, shift):
     return True
 
-def problem_65_spec(x, shift, result):
-    return result == circular_shift_impl(x, shift)
+def _orig_problem_65_spec(x, shift, output):
+    return output == circular_shift_impl(x, shift)
+
+def problem_65_pre(x, shift):
+    return bool(_orig_problem_65_pre(x, shift))
+
+def problem_65_spec(x, shift, output):
+    return bool(_orig_problem_65_spec(x, shift, output))

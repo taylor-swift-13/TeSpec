@@ -1,7 +1,7 @@
-def problem_0_pre(threshold):
+def _orig_problem_0_pre(threshold):
     return threshold >= 0
 
-def problem_0_spec(numbers, threshold, output):
+def _orig_problem_0_spec(numbers, threshold, output):
     exists_close = False
     n = len(numbers)
     for i in range(n):
@@ -12,3 +12,9 @@ def problem_0_spec(numbers, threshold, output):
         if exists_close:
             break
     return exists_close == output
+
+def problem_0_pre(numbers, threshold):
+    return bool(_orig_problem_0_pre(threshold))
+
+def problem_0_spec(numbers, threshold, output):
+    return bool(_orig_problem_0_spec(numbers, threshold, output))

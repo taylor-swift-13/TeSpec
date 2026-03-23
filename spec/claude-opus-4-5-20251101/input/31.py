@@ -1,8 +1,4 @@
-def is_prime_spec(n, result):
-    # Calculate whether n is actually prime based on the logic:
-    # (forall d : Z, 2 <= d -> d < n -> Z.rem n d <> 0)
-    # Note: For n > 1, Z.rem n d is equivalent to n % d in Python since n and d are positive.
-    
+def _orig_is_prime_spec(n, output):
     if n <= 1:
         is_prime = False
     elif n == 2:
@@ -17,9 +13,7 @@ def is_prime_spec(n, result):
                 is_prime = False
                 break
             d += 2
+    return output == is_prime
 
-    # The spec states:
-    # 1. (n <= 1 -> result = false)
-    # 2. (n > 1 -> (result = true <-> is_prime))
-    # Both cases are satisfied if result == is_prime
-    return result == is_prime
+def is_prime_spec(n, output):
+    return bool(_orig_is_prime_spec(n, output))

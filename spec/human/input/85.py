@@ -18,14 +18,20 @@ def add_impl(lst):
     """
     return sum_even_at_odd_indices(lst, 0)
 
-def problem_85_pre(lst):
+def _orig_problem_85_pre(lst):
     """
     Precondition: the list must not be empty.
     """
     return lst != []
 
-def problem_85_spec(lst, output):
+def _orig_problem_85_spec(lst, output):
     """
     Specification: the output must match the result of add_impl.
     """
     return output == add_impl(lst)
+
+def problem_85_pre(lst):
+    return bool(_orig_problem_85_pre(lst))
+
+def problem_85_spec(lst, output):
+    return bool(_orig_problem_85_spec(lst, output))

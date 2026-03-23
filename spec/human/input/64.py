@@ -21,8 +21,14 @@ def vowels_count_func(s: str) -> int:
 def vowels_count_impl(s: str) -> int:
     return vowels_count_func(s)
 
-def problem_64_pre(s: str) -> bool:
+def _orig_problem_64_pre(s: str) -> bool:
     return True
 
-def problem_64_spec(s: str, output: int) -> bool:
+def _orig_problem_64_spec(s: str, output: int) -> bool:
     return output == vowels_count_impl(s)
+
+def problem_64_pre(s):
+    return bool(_orig_problem_64_pre(s))
+
+def problem_64_spec(s, output):
+    return bool(_orig_problem_64_spec(s, output))

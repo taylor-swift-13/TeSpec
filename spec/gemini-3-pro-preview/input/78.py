@@ -21,5 +21,8 @@ def count_primes(s: str) -> int:
             count += 1
     return count
 
-def hex_key_spec(num: str, count: int) -> bool:
+def _orig_hex_key_spec(num: str, count: int) -> bool:
     return count == count_primes(num)
+
+def hex_key_spec(num, output):
+    return bool(_orig_hex_key_spec(num, output))

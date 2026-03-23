@@ -8,8 +8,11 @@ def is_prime(p):
         d += 1
     return True
 
-def count_up_to_spec(n, result):
+def _orig_count_up_to_spec(n, output):
     if n < 0:
         return False
     expected = [x for x in range(2, n) if is_prime(x)]
-    return result == expected
+    return output == expected
+
+def count_up_to_spec(n, output):
+    return bool(_orig_count_up_to_spec(n, output))

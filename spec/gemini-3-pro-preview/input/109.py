@@ -6,12 +6,15 @@ def is_cyclic_shift(l1, l2):
             return True
     return False
 
-def move_one_ball_spec(arr, result):
+def _orig_move_one_ball_spec(arr, output):
     exists_sorted_shift = False
     for i in range(len(arr) + 1):
         l_prime = arr[i:] + arr[:i]
-        is_sorted = all(l_prime[j] <= l_prime[j+1] for j in range(len(l_prime) - 1))
+        is_sorted = all((l_prime[j] <= l_prime[j + 1] for j in range(len(l_prime) - 1)))
         if is_sorted:
             exists_sorted_shift = True
             break
-    return bool(result) == exists_sorted_shift
+    return bool(output) == exists_sorted_shift
+
+def move_one_ball_spec(arr, output):
+    return bool(_orig_move_one_ball_spec(arr, output))

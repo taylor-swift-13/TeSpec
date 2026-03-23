@@ -23,5 +23,8 @@ def distinct(l):
     else:
         return [c] + distinct(rest)
 
-def count_distinct_characters_spec(s, count):
+def _orig_count_distinct_characters_spec(s, count):
     return count == len(distinct(list_to_lower(string_to_list(s))))
+
+def count_distinct_characters_spec(string, output):
+    return bool(_orig_count_distinct_characters_spec(string, output))

@@ -10,5 +10,8 @@ def sum_squares_aux(lst, idx):
         idx += 1
     return total
 
-def sum_squares_spec(lst, result):
-    return result == sum_squares_aux(lst, 0)
+def _orig_sum_squares_spec(lst, output):
+    return output == sum_squares_aux(lst, 0)
+
+def sum_squares_spec(lst, output):
+    return bool(_orig_sum_squares_spec(lst, output))

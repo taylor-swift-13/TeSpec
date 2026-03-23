@@ -2,6 +2,7 @@ def string_to_list(s: str) -> list:
     return list(s)
 
 LBracket = '['
+
 RBracket = ']'
 
 def balanced_depth(s: list, d: int) -> bool:
@@ -32,11 +33,10 @@ def is_substring(sub: list, s: list) -> bool:
             return True
     return False
 
-def is_nested_spec(string: str, result: bool) -> bool:
+def _orig_is_nested_spec(string: str, output: bool) -> bool:
     chars = string_to_list(string)
     n = len(chars)
     has_nested = False
-    
     for i in range(n):
         for j in range(i, n + 1):
             sub = chars[i:j]
@@ -56,11 +56,12 @@ def is_nested_spec(string: str, result: bool) -> bool:
                 else:
                     valid = False
                     break
-            
-            if valid and depth == 0 and max_depth >= 2:
+            if valid and depth == 0 and (max_depth >= 2):
                 has_nested = True
                 break
         if has_nested:
             break
-            
-    return result == has_nested
+    return output == has_nested
+
+def is_nested_spec(string, output):
+    return bool(_orig_is_nested_spec(string, output))

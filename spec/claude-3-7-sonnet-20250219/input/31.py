@@ -3,7 +3,7 @@ def divides(d, n):
         return n == 0
     return n % d == 0
 
-def is_prime_spec(n, b):
+def _orig_is_prime_spec(n, b):
     if n <= 1:
         is_p = False
     else:
@@ -13,3 +13,6 @@ def is_prime_spec(n, b):
                 is_p = False
                 break
     return b == is_p
+
+def is_prime_spec(n, output):
+    return bool(_orig_is_prime_spec(n, output))

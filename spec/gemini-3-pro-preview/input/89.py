@@ -12,5 +12,8 @@ def rotate_char(c: str) -> str:
 def encrypt_model(s: str) -> str:
     return "".join(rotate_char(c) for c in s)
 
-def encrypt_spec(s: str, result: str) -> bool:
-    return result == encrypt_model(s)
+def _orig_encrypt_spec(s: str, output: str) -> bool:
+    return output == encrypt_model(s)
+
+def encrypt_spec(s, output):
+    return bool(_orig_encrypt_spec(s, output))

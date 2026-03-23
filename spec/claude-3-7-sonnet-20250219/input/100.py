@@ -1,22 +1,16 @@
-def make_a_pile_spec(n, res):
+def _orig_make_a_pile_spec(n, output):
     """
-    Definition make_a_pile_spec (n : nat) (res : list nat) : Prop :=
-      n > 0 /\
-      length res = n /\
-      (forall i, i < n -> nth i res 0 = n + 2 * i).
+    Definition make_a_pile_spec (n : nat) (output : list nat) : Prop :=
+      n > 0 /      length output = n /      (forall i, i < n -> nth i output 0 = n + 2 * i).
     """
-    # n > 0
     if not (isinstance(n, int) and n > 0):
         return False
-    
-    # length res = n
-    if not (isinstance(res, list) and len(res) == n):
+    if not (isinstance(output, list) and len(output) == n):
         return False
-    
-    # forall i, i < n -> nth i res 0 = n + 2 * i
-    # Since len(res) == n, for all i < n, nth i res 0 is simply res[i].
     for i in range(n):
-        if res[i] != n + 2 * i:
+        if output[i] != n + 2 * i:
             return False
-            
     return True
+
+def make_a_pile_spec(n, output):
+    return bool(_orig_make_a_pile_spec(n, output))

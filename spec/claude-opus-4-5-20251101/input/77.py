@@ -1,4 +1,4 @@
-def iscube_spec(a: int, result: bool) -> bool:
+def _orig_iscube_spec(a: int, output: bool) -> bool:
     abs_a = abs(a)
     low = 0
     high = abs_a
@@ -13,4 +13,7 @@ def iscube_spec(a: int, result: bool) -> bool:
             low = mid + 1
         else:
             high = mid - 1
-    return is_c == result
+    return is_c == output
+
+def iscube_spec(a, output):
+    return bool(_orig_iscube_spec(a, output))

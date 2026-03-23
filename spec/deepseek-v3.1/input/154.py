@@ -10,9 +10,9 @@ def string_eq(s1: str, s2: str) -> bool:
 def string_length(s: str) -> int:
     return len(s)
 
-def cycpattern_check_spec(a: str, b: str, result: bool) -> bool:
+def _orig_cycpattern_check_spec(a: str, b: str, output: bool) -> bool:
     expected = False
-    if string_eq(b, ""):
+    if string_eq(b, ''):
         expected = True
     elif string_eq(a, b):
         expected = True
@@ -22,5 +22,7 @@ def cycpattern_check_spec(a: str, b: str, result: bool) -> bool:
             if string_in(shifted, a):
                 expected = True
                 break
-                
-    return result == expected
+    return output == expected
+
+def cycpattern_check_spec(a, b, output):
+    return bool(_orig_cycpattern_check_spec(a, b, output))

@@ -11,8 +11,14 @@ def smallest_change_impl(arr):
     second_half = arr[length - half_len:]
     return count_diff(first_half, list(reversed(second_half)), 0)
 
-def problem_73_pre(arr):
+def _orig_problem_73_pre(arr):
     return True
 
-def problem_73_spec(arr, n):
+def _orig_problem_73_spec(arr, n):
     return n == smallest_change_impl(arr)
+
+def problem_73_pre(arr):
+    return bool(_orig_problem_73_pre(arr))
+
+def problem_73_spec(arr, output):
+    return bool(_orig_problem_73_spec(arr, output))

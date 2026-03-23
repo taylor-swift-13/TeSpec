@@ -22,15 +22,14 @@ def brazilian_factorial(n):
         res *= factorial(i)
     return res
 
-def special_factorial_spec(n, result):
+def _orig_special_factorial_spec(n, output):
     """
-    Checks if n > 0 and result is equal to the brazilian_factorial of n.
-    Coq: Definition special_factorial_spec (n : Z) (result : Z) : Prop
+    Checks if n > 0 and output is equal to the brazilian_factorial of n.
+    Coq: Definition special_factorial_spec (n : Z) (output : Z) : Prop
     """
-    # n > 0 /\ result = brazilian_factorial (Z.to_nat n)
-    if not (n > 0):
+    if not n > 0:
         return False
-    
-    # In Coq, Z.to_nat n for n > 0 is the natural number representation of n.
-    # We use int(n) in Python to represent the nat argument.
-    return result == brazilian_factorial(int(n))
+    return output == brazilian_factorial(int(n))
+
+def special_factorial_spec(n, output):
+    return bool(_orig_special_factorial_spec(n, output))

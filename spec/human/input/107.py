@@ -38,8 +38,14 @@ def count_in_range(P, k):
 def count_palindromes_impl(n):
     return (count_in_range(is_even_pal, n), count_in_range(is_odd_pal, n))
 
-def problem_107_pre(n):
+def _orig_problem_107_pre(n):
     return n > 0
 
-def problem_107_spec(n, output):
+def _orig_problem_107_spec(n, output):
     return output == count_palindromes_impl(n)
+
+def problem_107_pre(n):
+    return bool(_orig_problem_107_pre(n))
+
+def problem_107_spec(n, output):
+    return bool(_orig_problem_107_spec(n, output))

@@ -11,5 +11,8 @@ def correct_bracketing_aux(s: str, cnt: int) -> bool:
 def correct_bracketing_fun(brackets: str) -> bool:
     return correct_bracketing_aux(brackets, 0)
 
-def correct_bracketing_spec(brackets: str, res: bool) -> bool:
-    return res == correct_bracketing_fun(brackets)
+def _orig_correct_bracketing_spec(brackets: str, output: bool) -> bool:
+    return output == correct_bracketing_fun(brackets)
+
+def correct_bracketing_spec(brackets, output):
+    return bool(_orig_correct_bracketing_spec(brackets, output))

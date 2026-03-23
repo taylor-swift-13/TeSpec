@@ -1,6 +1,6 @@
 import math
 
-def is_prime_spec(a: int, result: bool) -> bool:
+def is_prime_spec(a: int, output: bool) -> bool:
     if a < 0:
         a = 0
 
@@ -15,7 +15,10 @@ def is_prime_spec(a: int, result: bool) -> bool:
             break
 
     expected = not (lt_2 or exists_divisible)
-    return result == expected
+    return output == expected
 
-def prime_length_spec(string: list, result: bool) -> bool:
-    return is_prime_spec(len(string), result)
+def _orig_prime_length_spec(string: list, output: bool) -> bool:
+    return is_prime_spec(len(string), output)
+
+def prime_length_spec(string, output):
+    return bool(_orig_prime_length_spec(string, output))

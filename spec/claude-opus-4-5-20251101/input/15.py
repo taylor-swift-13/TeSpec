@@ -52,14 +52,14 @@ def join_with_space(l):
         return ""
     return " ".join(l)
 
-def string_sequence_spec(n, result):
+def _orig_string_sequence_spec(n, output):
     """
     Equivalent to the Coq Definition string_sequence_spec.
-    Checks if the result matches the space-separated string of numbers from 0 to n.
+    Checks if the output matches the space-separated string of numbers from 0 to n.
     """
-    # map nat_to_string (range_inclusive n)
     mapped_list = [nat_to_string(x) for x in range_inclusive(n)]
-    # join_with_space (...)
     expected_result = join_with_space(mapped_list)
-    # result = ...
-    return result == expected_result
+    return output == expected_result
+
+def string_sequence_spec(n, output):
+    return bool(_orig_string_sequence_spec(n, output))

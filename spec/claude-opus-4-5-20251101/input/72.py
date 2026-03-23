@@ -13,11 +13,14 @@ def is_palindrome(l):
     """
     return l == l[::-1]
 
-def will_it_fly_spec(q, w, result):
+def _orig_will_it_fly_spec(q, w, output):
     """
     Specification for will_it_fly.
-    Returns True if the boolean 'result' correctly reflects whether 
+    Returns True if the boolean 'output' correctly reflects whether 
     the list 'q' is a palindrome and its sum is less than or equal to 'w'.
     """
     condition = is_palindrome(q) and sum_list(q) <= w
-    return result == condition
+    return output == condition
+
+def will_it_fly_spec(q, w, output):
+    return bool(_orig_will_it_fly_spec(q, w, output))

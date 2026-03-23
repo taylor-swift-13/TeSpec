@@ -7,14 +7,20 @@ def below_threshold(l: list, t: int) -> bool:
     """
     return all(x < t for x in l)
 
-def problem_52_pre(l: list) -> bool:
+def _orig_problem_52_pre(l: list) -> bool:
     """
     Precondition: no special constraints for `below_threshold`.
     """
     return True
 
-def problem_52_spec(l: list, t: int, output: bool) -> bool:
+def _orig_problem_52_spec(l: list, t: int, output: bool) -> bool:
     """
     Specification: (forall x, In x l -> x < t) <-> (output = true)
     """
-    return all(x < t for x in l) == output
+    return all((x < t for x in l)) == output
+
+def problem_52_pre(l, t):
+    return bool(_orig_problem_52_pre(l))
+
+def problem_52_spec(l, t, output):
+    return bool(_orig_problem_52_spec(l, t, output))

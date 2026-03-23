@@ -23,12 +23,18 @@ def digit_to_word(z: int) -> str:
     else:
         return ""
 
-def problem_105_pre(l_in: list) -> bool:
+def _orig_problem_105_pre(l_in: list) -> bool:
     return True
 
-def problem_105_spec(l_in: list, l_out: list) -> bool:
+def _orig_problem_105_spec(l_in: list, l_out: list) -> bool:
     l_filtered = [z for z in l_in if is_target_digit(z)]
     l_sorted = sorted(l_filtered)
     l_reversed = l_sorted[::-1]
     expected_out = [digit_to_word(z) for z in l_reversed]
     return l_out == expected_out
+
+def problem_105_pre(arr):
+    return bool(_orig_problem_105_pre(arr))
+
+def problem_105_spec(arr, output):
+    return bool(_orig_problem_105_spec(arr, output))

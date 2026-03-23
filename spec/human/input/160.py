@@ -72,7 +72,7 @@ def eval(ops, nums):
 def do_algebra_impl(operators, operands):
     return eval(list(operators), operands)
 
-def problem_160_pre(operators, operands):
+def _orig_problem_160_pre(operators, operands):
     ops = list(operators)
     if len(ops) + 1 != len(operands):
         return False
@@ -80,11 +80,17 @@ def problem_160_pre(operators, operands):
         return False
     if len(operands) < 2:
         return False
-    if not all(z >= 0 for z in operands):
+    if not all((z >= 0 for z in operands)):
         return False
-    if not all(c in ['+', '-', '*', '/', '^'] for c in ops):
+    if not all((c in ['+', '-', '*', '/', '^'] for c in ops)):
         return False
     return True
 
-def problem_160_spec(operators, operands, result):
-    return result == do_algebra_impl(operators, operands)
+def _orig_problem_160_spec(operators, operands, output):
+    return output == do_algebra_impl(operators, operands)
+
+def problem_160_pre(operator, operand):
+    return bool(_orig_problem_160_pre(operator, operand))
+
+def problem_160_spec(operator, operand, output):
+    return bool(_orig_problem_160_spec(operator, operand, output))

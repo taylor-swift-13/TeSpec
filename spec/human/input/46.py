@@ -13,8 +13,14 @@ def fib4(n: int) -> int:
         a, b, c, d = b, c, d, a + b + c + d
     return d
 
-def problem_46_pre(input: int) -> bool:
+def _orig_problem_46_pre(input: int) -> bool:
     return True
 
-def problem_46_spec(input: int, output: int) -> bool:
+def _orig_problem_46_spec(input: int, output: int) -> bool:
     return output == fib4(input)
+
+def problem_46_pre(n):
+    return bool(_orig_problem_46_pre(n))
+
+def problem_46_spec(n, output):
+    return bool(_orig_problem_46_spec(n, output))

@@ -4,14 +4,11 @@ def count_occurrences(n, lst):
 def valid_candidate(n, lst):
     return n > 0 and n in lst and count_occurrences(n, lst) >= n
 
-# def search_spec(lst, result):
-#     valid_candidates = [n for n in set(lst) if valid_candidate(n, lst)]
-#     if valid_candidates:
-#         return result == max(valid_candidates)
-#     return True
-
-def search_spec(lst, result):
+def _orig_search_spec(lst, output):
     valid_candidates = [n for n in set(lst) if valid_candidate(n, lst)]
     if valid_candidates:
-        return result == max(valid_candidates)
-    return result == -1
+        return output == max(valid_candidates)
+    return output == -1
+
+def search_spec(lst, output):
+    return bool(_orig_search_spec(lst, output))

@@ -14,14 +14,14 @@ def match_pos(lst, x, i, j):
             return r[j] == x
     return False
 
-def get_row_spec(lst, x, res):
+def _orig_get_row_spec(lst, x, output):
     expected = []
-    for i, r in enumerate(lst):
-        for j, v in enumerate(r):
+    for (i, r) in enumerate(lst):
+        for (j, v) in enumerate(r):
             if v == x:
                 expected.append((i, j))
-    
-    # Sort expected according to pair_order: row ascending, col descending
     expected.sort(key=lambda p: (p[0], -p[1]))
-    
-    return res == expected
+    return output == expected
+
+def get_row_spec(lst, x, output):
+    return bool(_orig_get_row_spec(lst, x, output))

@@ -33,8 +33,14 @@ def strange_sort_aux(l, fuel, is_min):
 def strange_sort_list(l):
     return strange_sort_aux(l, len(l), True)
 
-def problem_70_pre(l_in):
+def _orig_problem_70_pre(l_in):
     return True
 
-def problem_70_spec(l_in, l_out):
+def _orig_problem_70_spec(l_in, l_out):
     return l_out == strange_sort_list(l_in)
+
+def problem_70_pre(lst):
+    return bool(_orig_problem_70_pre(lst))
+
+def problem_70_spec(lst, output):
+    return bool(_orig_problem_70_spec(lst, output))

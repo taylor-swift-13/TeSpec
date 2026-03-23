@@ -24,7 +24,7 @@ def match_parens_impl(inputs):
 def match_parens(inputs):
     return match_parens_impl([list(s) for s in inputs])
 
-def problem_119_pre(inputs):
+def _orig_problem_119_pre(inputs):
     if len(inputs) != 2:
         return False
     for s in inputs:
@@ -33,5 +33,11 @@ def problem_119_pre(inputs):
                 return False
     return True
 
-def problem_119_spec(inputs, output):
+def _orig_problem_119_spec(inputs, output):
     return output == match_parens(inputs)
+
+def problem_119_pre(lst):
+    return bool(_orig_problem_119_pre(lst))
+
+def problem_119_spec(lst, output):
+    return bool(_orig_problem_119_spec(lst, output))

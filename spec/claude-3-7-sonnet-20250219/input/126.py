@@ -12,6 +12,9 @@ def ascending_sorted(lst):
             return False
     return True
 
-def is_sorted_spec(lst, b):
+def _orig_is_sorted_spec(lst, b):
     is_valid = no_more_than_two_duplicates(lst) and ascending_sorted(lst)
     return b == is_valid
+
+def is_sorted_spec(lst, output):
+    return bool(_orig_is_sorted_spec(lst, output))

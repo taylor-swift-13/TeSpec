@@ -1,4 +1,5 @@
 import math
+
 from fractions import Fraction
 
 class value:
@@ -69,14 +70,16 @@ def num_of(v: value) -> Fraction:
         return R_of_string(replace_commas_with_dots(v.s))
     return Fraction(0)
 
-def compare_one_spec(a: value, b: value, res) -> bool:
+def _orig_compare_one_spec(a: value, b: value, output) -> bool:
     ra = num_of(a)
     rb = num_of(b)
-
     if ra == rb:
-        return res is None
+        return output is None
     elif rb < ra:
-        return res == Some(a)
+        return output == Some(a)
     elif ra < rb:
-        return res == Some(b)
+        return output == Some(b)
     return False
+
+def compare_one_spec(a, b, output):
+    return bool(_orig_compare_one_spec(a, b, output))

@@ -50,37 +50,33 @@ def min_neighbor_value(grid, N, x, y, mn):
         return False
     return min(neighbors) == mn
 
-def minPath_spec(grid, k, result):
+def _orig_minPath_spec(grid, k, output):
     N = len(grid)
     if not is_valid_grid(grid, N):
         return True
     if k < 1:
         return True
-
-    if len(result) != k:
+    if len(output) != k:
         return False
-
     for x in range(N):
         for y in range(N):
             if find_one_pos(grid, N, x, y):
                 neighbors = []
-                for i, j in [(x-1, y), (x+1, y), (x, y-1), (x, y+1)]:
+                for (i, j) in [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]:
                     if is_neighbor(N, x, y, i, j):
                         neighbors.append(get_cell(grid, i, j))
-
                 if not neighbors:
                     continue
-
                 mn = min(neighbors)
-
                 match = True
                 for idx in range(int(k)):
                     expected = 1 if idx % 2 == 0 else mn
-                    if result[idx] != expected:
+                    if output[idx] != expected:
                         match = False
                         break
-
                 if match:
                     return True
-
     return False
+
+def minPath_spec(grid, k, output):
+    return bool(_orig_minPath_spec(grid, k, output))

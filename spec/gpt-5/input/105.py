@@ -21,8 +21,11 @@ def to_word(x):
     else:
         return "Nine"
 
-def by_length_spec(arr, ans):
+def _orig_by_length_spec(arr, output):
     digits = [x for x in arr if is_digit(x)]
     digits_desc = sorted(digits, reverse=True)
     expected_ans = [to_word(x) for x in digits_desc]
-    return ans == expected_ans
+    return output == expected_ans
+
+def by_length_spec(arr, output):
+    return bool(_orig_by_length_spec(arr, output))

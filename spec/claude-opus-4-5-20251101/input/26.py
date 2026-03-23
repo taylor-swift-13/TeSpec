@@ -12,12 +12,15 @@ def occurs_once(n: int, l: list) -> bool:
     """
     return count_occurrences(n, l) == 1
 
-def remove_duplicates_spec(numbers: list, result: list) -> bool:
+def _orig_remove_duplicates_spec(numbers: list, output: list) -> bool:
     """
-    Checks if result is equal to the list of elements from numbers that appear exactly once.
+    Checks if output is equal to the list of elements from numbers that appear exactly once.
     Equivalent to Coq's remove_duplicates_spec.
     Note: Despite the name 'remove_duplicates', the Coq spec specifically filters 
     for elements that have a count of exactly 1.
     """
     expected = [n for n in numbers if count_occurrences(n, numbers) == 1]
-    return result == expected
+    return output == expected
+
+def remove_duplicates_spec(numbers, output):
+    return bool(_orig_remove_duplicates_spec(numbers, output))

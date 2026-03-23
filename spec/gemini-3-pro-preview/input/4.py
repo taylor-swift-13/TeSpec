@@ -13,23 +13,19 @@ def Rdiv(x, y):
         return Fraction(0)
     return x / y
 
-def mean_absolute_deviation_spec(numbers, result):
+def _orig_mean_absolute_deviation_spec(numbers, output):
+
     def to_frac(x):
         if isinstance(x, float):
-            # Convert float to string first to recover exact decimal representation
-            # (e.g., 0.1 becomes 1/10 instead of its binary float approximation).
             return Fraction(str(x))
         return Fraction(x)
-
     f_numbers = [to_frac(x) for x in numbers]
-    f_result = to_frac(result)
-    
+    f_result = to_frac(output)
     f_len = Fraction(len(f_numbers))
-    
     mean = Rdiv(sum_R(f_numbers), f_len)
-    
     diffs = [abs(x - mean) for x in f_numbers]
-    
     expected = Rdiv(sum_R(diffs), f_len)
-    
     return f_result == expected
+
+def mean_absolute_deviation_spec(numbers, output):
+    return bool(_orig_mean_absolute_deviation_spec(numbers, output))

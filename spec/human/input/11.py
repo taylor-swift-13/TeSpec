@@ -1,4 +1,4 @@
-def problem_11_pre(a: str, b: str) -> bool:
+def _orig_problem_11_pre(a: str, b: str) -> bool:
     if len(a) != len(b):
         return False
     for i in range(len(a)):
@@ -6,7 +6,7 @@ def problem_11_pre(a: str, b: str) -> bool:
             return False
     return True
 
-def problem_11_spec(a: str, b: str, output: str) -> bool:
+def _orig_problem_11_spec(a: str, b: str, output: str) -> bool:
     if len(a) != len(b):
         return False
     if len(output) != len(a):
@@ -15,7 +15,12 @@ def problem_11_spec(a: str, b: str, output: str) -> bool:
         if a[i] == b[i]:
             if output[i] != '0':
                 return False
-        else:
-            if output[i] != '1':
-                return False
+        elif output[i] != '1':
+            return False
     return True
+
+def problem_11_pre(a, b):
+    return bool(_orig_problem_11_pre(a, b))
+
+def problem_11_spec(a, b, output):
+    return bool(_orig_problem_11_spec(a, b, output))

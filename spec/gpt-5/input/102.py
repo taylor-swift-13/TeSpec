@@ -1,4 +1,4 @@
-def choose_num_spec(x: int, y: int, r: int) -> bool:
+def _orig_choose_num_spec(x: int, y: int, r: int) -> bool:
     if x > y:
         return r == -1
     else:
@@ -7,3 +7,6 @@ def choose_num_spec(x: int, y: int, r: int) -> bool:
             return r == max_even
         else:
             return r == -1
+
+def choose_num_spec(x, y, output):
+    return bool(_orig_choose_num_spec(x, y, output))

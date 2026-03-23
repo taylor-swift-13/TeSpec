@@ -1,18 +1,14 @@
-def largest_divisor_spec(n: int, res: int) -> bool:
+def _orig_largest_divisor_spec(n: int, output: int) -> bool:
     if n <= 1:
-        return res == 1
-        
-    if res < 1 or res >= n:
+        return output == 1
+    if output < 1 or output >= n:
         return False
-        
-    if n % res != 0:
+    if n % output != 0:
         return False
-        
-    # Directly implement the forall condition:
-    # forall m : Z, 1 <= m < n -> Z.divide m n -> m <= res
-    # This means there is no m in (res < m < n) that divides n.
-    for m in range(res + 1, n):
+    for m in range(output + 1, n):
         if n % m == 0:
             return False
-            
     return True
+
+def largest_divisor_spec(n, output):
+    return bool(_orig_largest_divisor_spec(n, output))

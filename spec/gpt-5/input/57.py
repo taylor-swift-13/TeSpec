@@ -10,6 +10,9 @@ def adj_ge(l):
             return False
     return True
 
-def monotonic_spec(l, res):
+def _orig_monotonic_spec(l, output):
     is_monotonic = adj_le(l) or adj_ge(l)
-    return res == is_monotonic
+    return output == is_monotonic
+
+def monotonic_spec(l, output):
+    return bool(_orig_monotonic_spec(l, output))

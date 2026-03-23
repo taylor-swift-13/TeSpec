@@ -21,7 +21,10 @@ def ends_with_y(s: str) -> bool:
         return False
     return is_y(c)
 
-def vowels_count_spec(s: str, result: int) -> bool:
+def _orig_vowels_count_spec(s: str, output: int) -> bool:
     base_count = count_vowels_in_list(string_to_list(s))
     y_bonus = 1 if ends_with_y(s) else 0
-    return result == base_count + y_bonus
+    return output == base_count + y_bonus
+
+def vowels_count_spec(s, output):
+    return bool(_orig_vowels_count_spec(s, output))

@@ -18,5 +18,8 @@ def filter_integers_model(l):
             res.append(item.v)
     return res
 
-def filter_integers_spec(values, result):
-    return result == filter_integers_model(values)
+def _orig_filter_integers_spec(values, output):
+    return output == filter_integers_model(values)
+
+def filter_integers_spec(values, output):
+    return bool(_orig_filter_integers_spec(values, output))

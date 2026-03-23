@@ -7,5 +7,8 @@ def fib_nat(n):
         m = n - 1
         return fib_nat(m) + fib_nat(m - 1)
 
-def fib_spec(n, result):
-    return n >= 0 and result == fib_nat(n)
+def _orig_fib_spec(n, output):
+    return n >= 0 and output == fib_nat(n)
+
+def fib_spec(n, output):
+    return bool(_orig_fib_spec(n, output))

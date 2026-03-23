@@ -1,10 +1,11 @@
 import sys
 
-# Increase recursion depth just in case of long strings
 sys.setrecursionlimit(10000)
 
 space = " "
+
 underscore = "_"
+
 dash = "-"
 
 def skip_spaces(l):
@@ -43,8 +44,14 @@ def fix_spaces(s: str) -> str:
     res = fix_spaces_func(len(l) + 1, l)
     return "".join(res)
 
-def problem_140_pre(s: str) -> bool:
+def _orig_problem_140_pre(s: str) -> bool:
     return True
 
-def problem_140_spec(s: str, output: str) -> bool:
+def _orig_problem_140_spec(s: str, output: str) -> bool:
     return output == fix_spaces(s)
+
+def problem_140_pre(text):
+    return bool(_orig_problem_140_pre(text))
+
+def problem_140_spec(text, output):
+    return bool(_orig_problem_140_spec(text, output))

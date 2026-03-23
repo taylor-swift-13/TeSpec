@@ -8,9 +8,12 @@ def z_div(a, b):
         return a // b
     return (-a - b - 1) // (-b)
 
-def max_fill_spec(grid, capacity, ans):
+def _orig_max_fill_spec(grid, capacity, output):
     expected = 0
     for row in grid:
         val = z_div(sum_list(row) + capacity - 1, capacity)
         expected += val
-    return ans == expected
+    return output == expected
+
+def max_fill_spec(grid, capacity, output):
+    return bool(_orig_max_fill_spec(grid, capacity, output))

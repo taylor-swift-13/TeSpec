@@ -39,29 +39,25 @@ def components(comps: list, words: list) -> bool:
 def concat(xs: list) -> str:
     return "".join(xs)
 
-def words_string_spec(s: str, out: list) -> bool:
+def _orig_words_string_spec(s: str, out: list) -> bool:
     for w in out:
         if not word(w):
             return False
-            
     comps = []
     current_s = s
-    
     for w in out:
         sep_len = 0
         while sep_len < len(current_s) and sep_char(current_s[sep_len]):
             sep_len += 1
-            
         sep = current_s[:sep_len]
         comps.append(sep)
         current_s = current_s[sep_len:]
-        
         if not current_s.startswith(w):
             return False
-            
         comps.append(w)
         current_s = current_s[len(w):]
-        
     comps.append(current_s)
-    
     return components(comps, out) and concat(comps) == s
+
+def words_string_spec(s, output):
+    return bool(_orig_words_string_spec(s, output))

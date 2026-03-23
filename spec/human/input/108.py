@@ -30,8 +30,14 @@ def sum_digits(z: int) -> int:
 def count_nums_impl(l: list) -> int:
     return sum(1 for z in l if sum_digits(z) > 0)
 
-def problem_108_pre(l: list) -> bool:
+def _orig_problem_108_pre(l: list) -> bool:
     return True
 
-def problem_108_spec(l: list, output: int) -> bool:
+def _orig_problem_108_spec(l: list, output: int) -> bool:
     return output == count_nums_impl(l)
+
+def problem_108_pre(arr):
+    return bool(_orig_problem_108_pre(arr))
+
+def problem_108_spec(arr, output):
+    return bool(_orig_problem_108_spec(arr, output))

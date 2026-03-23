@@ -12,5 +12,8 @@ def last_char_is_y(s: str) -> bool:
         return False
     return is_y(s[-1])
 
-def vowels_count_spec(s: str, cnt: int) -> bool:
+def _orig_vowels_count_spec(s: str, cnt: int) -> bool:
     return cnt == count_standard_vowels(s) + (1 if last_char_is_y(s) else 0)
+
+def vowels_count_spec(s, output):
+    return bool(_orig_vowels_count_spec(s, output))

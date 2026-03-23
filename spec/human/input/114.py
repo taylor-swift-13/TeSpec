@@ -5,14 +5,14 @@ def list_sum(l):
     """
     return sum(l)
 
-def problem_114_pre(nums):
+def _orig_problem_114_pre(nums):
     """
     Precondition: nums is not empty.
     Coq: nums <> []
     """
     return nums != []
 
-def problem_114_spec(nums, min_sum):
+def _orig_problem_114_spec(nums, min_sum):
     """
     Specification:
     1. Existence: There exists a non-empty sub-array with sum equal to min_sum.
@@ -23,18 +23,15 @@ def problem_114_spec(nums, min_sum):
     """
     if not nums:
         return False
-
-    # To verify the spec efficiently, we calculate the actual minimum subarray sum
-    # using a variation of Kadane's algorithm and compare it to min_sum.
-    
     current_min = nums[0]
     global_min = nums[0]
-    
     for x in nums[1:]:
-        # At each step, we decide whether to start a new subarray at x
-        # or extend the existing subarray ending at the previous position.
-        # We choose the one that gives a smaller sum.
         current_min = min(x, current_min + x)
         global_min = min(global_min, current_min)
-        
     return global_min == min_sum
+
+def problem_114_pre(nums):
+    return bool(_orig_problem_114_pre(nums))
+
+def problem_114_spec(nums, output):
+    return bool(_orig_problem_114_spec(nums, output))

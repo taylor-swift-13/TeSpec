@@ -16,19 +16,12 @@ def bits_value_fold(bits, acc):
 def bits_value(bits):
     return bits_value_fold(bits, 0)
 
-def decimal_to_binary_spec(decimal, res):
-    # Check if res starts and ends with "db"
-    if not (res.startswith("db") and res.endswith("db")):
+def _orig_decimal_to_binary_spec(decimal, output):
+    if not (output.startswith('db') and output.endswith('db')):
         return False
-    
-    # Ensure the string is long enough to contain the delimiters (min "dbdb")
-    if len(res) < 4:
+    if len(output) < 4:
         return False
-        
-    # Extract the inner string representing the bits
-    inner = res[2:-2]
-    
-    # Convert the inner string back to a list of booleans
+    inner = output[2:-2]
     bits = []
     for char in inner:
         if char == '1':
@@ -36,20 +29,14 @@ def decimal_to_binary_spec(decimal, res):
         elif char == '0':
             bits.append(False)
         else:
-            # If there are characters other than '0' or '1', no list of bools matches
             return False
-            
-    # Check 1: bits_value bits = decimal
     if bits_value(bits) != decimal:
         return False
-        
-    # Check 2: Canonical representation constraints
-    # (decimal = 0 /\ bits = false :: nil) \/ (decimal > 0 /\ exists bs, bits = true :: bs)
     if decimal == 0:
         return bits == [False]
     elif decimal > 0:
-        # Must start with True (no leading zeros)
         return len(bits) > 0 and bits[0] == True
-    
-    # If decimal < 0, it cannot be represented by bits_value (which is always >= 0)
     return False
+
+def decimal_to_binary_spec(decimal, output):
+    return bool(_orig_decimal_to_binary_spec(decimal, output))

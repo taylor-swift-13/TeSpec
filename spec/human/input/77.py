@@ -1,7 +1,7 @@
-def problem_77_pre(a: int) -> bool:
+def _orig_problem_77_pre(a: int) -> bool:
     return True
 
-def problem_77_spec(a: int, b: bool) -> bool:
+def _orig_problem_77_spec(a: int, b: bool) -> bool:
     abs_a = abs(a)
     low = 0
     high = abs_a
@@ -17,3 +17,9 @@ def problem_77_spec(a: int, b: bool) -> bool:
         else:
             high = mid - 1
     return b == is_c
+
+def problem_77_pre(a):
+    return bool(_orig_problem_77_pre(a))
+
+def problem_77_spec(a, output):
+    return bool(_orig_problem_77_spec(a, output))

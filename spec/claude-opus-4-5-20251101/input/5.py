@@ -8,5 +8,8 @@ def intersperse_spec_aux(numbers, delimiter):
     res.append(numbers[-1])
     return res
 
-def intersperse_spec(numbers, delimiter, result):
-    return result == intersperse_spec_aux(numbers, delimiter)
+def _orig_intersperse_spec(numbers, delimiter, output):
+    return output == intersperse_spec_aux(numbers, delimiter)
+
+def intersperse_spec(numbers, delimeter, output):
+    return bool(_orig_intersperse_spec(numbers, delimeter, output))

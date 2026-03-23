@@ -27,16 +27,21 @@ def IsFib(n):
 def IsPrimeFib(n):
     return IsPrime(n) and IsFib(n)
 
-def problem_39_pre(n):
+def _orig_problem_39_pre(n):
     return n >= 1
 
-def problem_39_spec(n, r):
+def _orig_problem_39_spec(n, r):
     if not IsPrimeFib(r):
         return False
     count = 0
     for y in range(r):
         if IsPrimeFib(y):
             count += 1
-    # Coq nat subtraction is saturating: 0 - 1 = 0
     target = n - 1 if n > 0 else 0
     return count == target
+
+def problem_39_pre(n):
+    return bool(_orig_problem_39_pre(n))
+
+def problem_39_spec(n, output):
+    return bool(_orig_problem_39_spec(n, output))

@@ -12,14 +12,16 @@ def is_prime(n):
         i += 6
     return True
 
-def intersection_spec(interval1, interval2, result):
-    s1, e1 = interval1
-    s2, e2 = interval2
+def _orig_intersection_spec(interval1, interval2, output):
+    (s1, e1) = interval1
+    (s2, e2) = interval2
     inter_l = max(s1, s2)
     inter_r = min(e1, e2)
     length = inter_r - inter_l
-    
     if is_prime(length):
-        return result == "YES"
+        return output == 'YES'
     else:
-        return result == "NO"
+        return output == 'NO'
+
+def intersection_spec(interval1, interval2, output):
+    return bool(_orig_intersection_spec(interval1, interval2, output))

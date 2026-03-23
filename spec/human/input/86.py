@@ -26,8 +26,14 @@ def anti_shuffle_aux(s, acc):
 def anti_shuffle_impl(s):
     return anti_shuffle_aux(s, "")
 
-def problem_86_pre(s):
+def _orig_problem_86_pre(s):
     return True
 
-def problem_86_spec(s, s_out):
+def _orig_problem_86_spec(s, s_out):
     return s_out == anti_shuffle_impl(s)
+
+def problem_86_pre(s):
+    return bool(_orig_problem_86_pre(s))
+
+def problem_86_spec(s, output):
+    return bool(_orig_problem_86_spec(s, output))

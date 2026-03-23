@@ -10,6 +10,9 @@ def sorted_dec(l):
             return False
     return True
 
-def monotonic_spec(l, res):
+def _orig_monotonic_spec(l, output):
     is_monotonic = sorted_inc(l) or sorted_dec(l)
-    return res == is_monotonic
+    return output == is_monotonic
+
+def monotonic_spec(l, output):
+    return bool(_orig_monotonic_spec(l, output))

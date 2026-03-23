@@ -19,12 +19,18 @@ def process_string(s: str) -> str:
 def odd_count_impl(input: list) -> list:
     return [process_string(s) for s in input]
 
-def problem_113_pre(input: list) -> bool:
+def _orig_problem_113_pre(input: list) -> bool:
     for s in input:
         for ch in s:
-            if not ('0' <= ch <= '9'):
+            if not '0' <= ch <= '9':
                 return False
     return True
 
-def problem_113_spec(input: list, output: list) -> bool:
+def _orig_problem_113_spec(input: list, output: list) -> bool:
     return output == odd_count_impl(input)
+
+def problem_113_pre(lst):
+    return bool(_orig_problem_113_pre(lst))
+
+def problem_113_spec(lst, output):
+    return bool(_orig_problem_113_spec(lst, output))

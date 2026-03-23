@@ -35,18 +35,17 @@ def no_valid_index(arr):
             return False
     return True
 
-def can_arrange_spec(arr, result):
+def _orig_can_arrange_spec(arr, output):
     """
-    Returns True if result is the largest valid index i, or -1 if no valid index exists.
+    Returns True if output is the largest valid index i, or -1 if no valid index exists.
     """
-    # Case 1: exists i such that is_valid_index arr i /\ no_larger_valid_index arr i /\ result = i
     for i in range(1, len(arr)):
         if is_valid_index(arr, i) and no_larger_valid_index(arr, i):
-            if result == i:
+            if output == i:
                 return True
-    
-    # Case 2: no_valid_index arr /\ result = -1
-    if no_valid_index(arr) and result == -1:
+    if no_valid_index(arr) and output == -1:
         return True
-        
     return False
+
+def can_arrange_spec(arr, output):
+    return bool(_orig_can_arrange_spec(arr, output))

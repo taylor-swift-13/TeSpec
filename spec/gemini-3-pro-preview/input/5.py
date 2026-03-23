@@ -16,5 +16,8 @@ def intersperse(numbers, delimeter):
         
     return result
 
-def intersperse_spec(numbers, delimeter, res):
-    return res == intersperse(numbers, delimeter)
+def _orig_intersperse_spec(numbers, delimeter, output):
+    return output == intersperse(numbers, delimeter)
+
+def intersperse_spec(numbers, delimeter, output):
+    return bool(_orig_intersperse_spec(numbers, delimeter, output))

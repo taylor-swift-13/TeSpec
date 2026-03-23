@@ -27,10 +27,16 @@ def grade_relation(gpa: float, grade: str) -> bool:
         return True
     return False
 
-def problem_81_pre(gpas: list) -> bool:
-    return all(0 <= g <= 4 for g in gpas)
+def _orig_problem_81_pre(gpas: list) -> bool:
+    return all((0 <= g <= 4 for g in gpas))
 
-def problem_81_spec(gpas: list, grades: list) -> bool:
+def _orig_problem_81_spec(gpas: list, grades: list) -> bool:
     if len(gpas) != len(grades):
         return False
-    return all(grade_relation(g, gr) for g, gr in zip(gpas, grades))
+    return all((grade_relation(g, gr) for (g, gr) in zip(gpas, grades)))
+
+def problem_81_pre(grades):
+    return bool(_orig_problem_81_pre(grades))
+
+def problem_81_spec(grades, output):
+    return bool(_orig_problem_81_spec(grades, output))

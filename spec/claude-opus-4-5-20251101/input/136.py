@@ -16,15 +16,15 @@ def smallest_positive(lst):
         return None
     return min(positives)
 
-def largest_smallest_integers_spec(lst, result):
+def _orig_largest_smallest_integers_spec(lst, output):
     expected_fst = largest_negative(lst)
     expected_snd = smallest_positive(lst)
-    
-    fst_result, snd_result = result
-    
+    (fst_result, snd_result) = output
     if fst_result != expected_fst:
         return False
     if snd_result != expected_snd:
         return False
-        
     return True
+
+def largest_smallest_integers_spec(lst, output):
+    return bool(_orig_largest_smallest_integers_spec(lst, output))

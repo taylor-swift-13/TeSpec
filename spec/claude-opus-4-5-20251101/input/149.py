@@ -25,16 +25,14 @@ def is_permutation_of_filtered(original: list, filtered: list) -> bool:
     filtered_set = set(filtered)
     return expected_set == filtered_set
 
-# def sorted_list_sum_spec(lst: list, result: list) -> bool:
-#     expected_set = {s for s in lst if has_even_length(s)}
-#     result_set = set(result)
-#     return expected_set == result_set and is_sorted_by(cmp_strings, result)
-
-def sorted_list_sum_spec(lst: list, result: list) -> bool:
-    for s in result:
+def _orig_sorted_list_sum_spec(lst: list, output: list) -> bool:
+    for s in output:
         if s not in lst or not has_even_length(s):
             return False
     for s in lst:
-        if has_even_length(s) and s not in result:
+        if has_even_length(s) and s not in output:
             return False
-    return is_sorted_by(cmp_strings, result)
+    return is_sorted_by(cmp_strings, output)
+
+def sorted_list_sum_spec(lst, output):
+    return bool(_orig_sorted_list_sum_spec(lst, output))

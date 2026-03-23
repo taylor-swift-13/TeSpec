@@ -1,11 +1,3 @@
-# def prefix_max(l):
-#     res = []
-#     current_max = 0
-#     for x in l:
-#         current_max = max(current_max, x)
-#         res.append(current_max)
-#     return res
-
 def prefix_max(numbers):
     """
     Coq 的 prefix_max 递归语义：
@@ -23,14 +15,17 @@ def prefix_max(numbers):
     else:
         return [max(head, tail_result[0])]
 
-def rolling_max_spec(numbers, result):
-    if len(result) != len(numbers):
+def _orig_rolling_max_spec(numbers, output):
+    if len(output) != len(numbers):
         return False
     for i in range(len(numbers)):
         prefix = numbers[:i + 1]
         expected = 0
         for n in prefix:
             expected = max(expected, n)
-        if result[i] != expected:
+        if output[i] != expected:
             return False
     return True
+
+def rolling_max_spec(numbers, output):
+    return bool(_orig_rolling_max_spec(numbers, output))

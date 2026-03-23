@@ -62,7 +62,7 @@ def join_by_space(words):
     """
     return " ".join(words)
 
-def sort_numbers_spec(input, output):
+def _orig_sort_numbers_spec(input, output):
     """
     Specification for sorting number words in a string.
     Returns True if the output string correctly represents the sorted version of the input string,
@@ -70,18 +70,14 @@ def sort_numbers_spec(input, output):
     """
     input_words = split_by_space(input)
     output_words = split_by_space(output)
-
-    # (input = EmptyString -> output = EmptyString)
     cond1 = True
-    if input == "":
-        cond1 = (output == "")
-
-    # (input <> EmptyString -> all_valid_words input_words -> 
-    #  is_permutation input_words output_words /\ sorted_by_value output_words)
+    if input == '':
+        cond1 = output == ''
     cond2 = True
-    if input != "":
+    if input != '':
         if all_valid_words(input_words):
-            cond2 = is_permutation(input_words, output_words) and \
-                    sorted_by_value(output_words)
-
+            cond2 = is_permutation(input_words, output_words) and sorted_by_value(output_words)
     return cond1 and cond2
+
+def sort_numbers_spec(numbers, output):
+    return bool(_orig_sort_numbers_spec(numbers, output))

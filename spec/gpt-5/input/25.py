@@ -31,28 +31,22 @@ def list_prod(l):
         res *= x
     return res
 
-def factorize_spec(n, fact):
+def _orig_factorize_spec(n, fact):
     """
     Definition factorize_spec (n : Z) (fact : list Z) : Prop :=
-      1 <= n /\ Sorted Z.le fact /\ Forall is_prime fact /\ list_prod fact = n.
+      1 <= n /\\ Sorted Z.le fact /\\ Forall is_prime fact /\\ list_prod fact = n.
     """
-    # 1 <= n
-    if not (1 <= n):
+    if not 1 <= n:
         return False
-    
-    # Sorted Z.le fact
-    # Z.le is <=. The list must be sorted in non-decreasing order.
     for i in range(len(fact) - 1):
-        if not (fact[i] <= fact[i+1]):
+        if not fact[i] <= fact[i + 1]:
             return False
-            
-    # Forall is_prime fact
     for x in fact:
         if not is_prime(x):
             return False
-            
-    # list_prod fact = n
     if list_prod(fact) != n:
         return False
-        
     return True
+
+def factorize_spec(n, output):
+    return bool(_orig_factorize_spec(n, output))

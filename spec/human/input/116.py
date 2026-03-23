@@ -38,8 +38,14 @@ def sort_array_impl(input):
         res = insert_sorted(h, res)
     return res
 
-def problem_116_pre(input):
+def _orig_problem_116_pre(input):
     return True
 
-def problem_116_spec(input, output):
+def _orig_problem_116_spec(input, output):
     return list(output) == sort_array_impl(input)
+
+def problem_116_pre(arr):
+    return bool(_orig_problem_116_pre(arr))
+
+def problem_116_spec(arr, output):
+    return bool(_orig_problem_116_spec(arr, output))

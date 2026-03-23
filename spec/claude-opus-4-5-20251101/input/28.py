@@ -3,14 +3,17 @@ def concatenate(strings):
     Concatenates a list of strings into a single string.
     Equivalent to the Coq Fixpoint concatenate.
     """
-    result = ""
+    output = ""
     for s in strings:
-        result += s
-    return result
+        output += s
+    return output
 
-def concatenate_spec(strings, result):
+def _orig_concatenate_spec(strings, output):
     """
-    Returns True if the result is equal to the concatenation of the strings.
+    Returns True if the output is equal to the concatenation of the strings.
     Equivalent to the Coq Definition concatenate_spec.
     """
-    return result == concatenate(strings)
+    return output == concatenate(strings)
+
+def concatenate_spec(strings, output):
+    return bool(_orig_concatenate_spec(strings, output))

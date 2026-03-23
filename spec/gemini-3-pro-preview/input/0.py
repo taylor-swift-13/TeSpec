@@ -1,6 +1,6 @@
-def has_close_elements_spec(numbers, threshold, result):
+def _orig_has_close_elements_spec(numbers, threshold, output):
     """
-    Checks if the given result matches the condition that there exist two 
+    Checks if the given output matches the condition that there exist two 
     distinct elements in the numbers list whose absolute difference is 
     less than the threshold.
     """
@@ -9,14 +9,12 @@ def has_close_elements_spec(numbers, threshold, result):
     for i in range(n):
         for j in range(n):
             if i != j:
-                # nth i numbers 0 in Coq is numbers[i] in Python
-                # Rabs is abs
                 if abs(numbers[i] - numbers[j]) < threshold:
                     has_close = True
                     break
         if has_close:
             break
-    
-    # result = true <-> exists ...
-    # This is implemented as result == has_close
-    return result == has_close
+    return output == has_close
+
+def has_close_elements_spec(numbers, threshold, output):
+    return bool(_orig_has_close_elements_spec(numbers, threshold, output))

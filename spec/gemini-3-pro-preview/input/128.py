@@ -1,7 +1,6 @@
-def prod_signs_spec(arr, res):
+def _orig_prod_signs_spec(arr, output):
     if len(arr) == 0:
-        return res is None
-    
+        return output is None
     sum_magnitudes = 0
     prod_signs = 1
     for x in arr:
@@ -12,5 +11,7 @@ def prod_signs_spec(arr, res):
             prod_signs *= -1
         else:
             prod_signs *= 0
-            
-    return res == (sum_magnitudes * prod_signs)
+    return output == sum_magnitudes * prod_signs
+
+def prod_signs_spec(arr, output):
+    return bool(_orig_prod_signs_spec(arr, output))

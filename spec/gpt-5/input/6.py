@@ -47,7 +47,10 @@ def count_depth(s: str) -> int:
     res = count_depth_z_aux(s, 0, 0)
     return res if res >= 0 else 0
 
-def parse_nested_parens_spec(paren_string: str, depths: list) -> bool:
-    groups = [g for g in paren_string.split(" ") if g]
+def _orig_parse_nested_parens_spec(paren_string: str, depths: list) -> bool:
+    groups = [g for g in paren_string.split(' ') if g]
     expected_depths = [count_depth(g) for g in groups]
     return depths == expected_depths
+
+def parse_nested_parens_spec(paren_string, output):
+    return bool(_orig_parse_nested_parens_spec(paren_string, output))

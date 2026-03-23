@@ -24,9 +24,12 @@ def sum_squares_helper(lst, idx):
         current_idx += 1
     return total
 
-def sum_squares_spec(lst, result):
+def _orig_sum_squares_spec(lst, output):
     """
-    Checks if the provided result matches the sum_squares_helper 
+    Checks if the provided output matches the sum_squares_helper 
     calculation starting from index 0.
     """
-    return result == sum_squares_helper(lst, 0)
+    return output == sum_squares_helper(lst, 0)
+
+def sum_squares_spec(lst, output):
+    return bool(_orig_sum_squares_spec(lst, output))

@@ -1,9 +1,13 @@
 import math
 
-def problem_13_pre(a: int, b: int) -> bool:
+def _orig_problem_13_pre(a: int, b: int) -> bool:
     return a != 0 or b != 0
 
-def problem_13_spec(a: int, b: int, output: int) -> bool:
-    # Based on the latest feedback, the Coq spec behaves as a Greatest Common Divisor check
-    # (checking 'a mod output = 0' etc.), despite the text in the prompt suggesting otherwise.
+def _orig_problem_13_spec(a: int, b: int, output: int) -> bool:
     return output == math.gcd(a, b)
+
+def problem_13_pre(a, b):
+    return bool(_orig_problem_13_pre(a, b))
+
+def problem_13_spec(a, b, output):
+    return bool(_orig_problem_13_spec(a, b, output))

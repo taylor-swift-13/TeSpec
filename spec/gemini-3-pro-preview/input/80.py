@@ -1,4 +1,4 @@
-def is_happy_spec(s: str, res: bool) -> bool:
+def _orig_is_happy_spec(s: str, output: bool) -> bool:
     if len(s) < 3:
         expected = False
     else:
@@ -10,4 +10,7 @@ def is_happy_spec(s: str, res: bool) -> bool:
             if c1 == c2 or c1 == c3 or c2 == c3:
                 expected = False
                 break
-    return res == expected
+    return output == expected
+
+def is_happy_spec(s, output):
+    return bool(_orig_is_happy_spec(s, output))

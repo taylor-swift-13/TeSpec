@@ -1,7 +1,7 @@
-def problem_102_pre(x: int, y: int) -> bool:
+def _orig_problem_102_pre(x: int, y: int) -> bool:
     return x > 0 and y > 0
 
-def problem_102_spec(x: int, y: int, res: int) -> bool:
+def _orig_problem_102_spec(x: int, y: int, output: int) -> bool:
     if x > y:
         expected = -1
     else:
@@ -10,4 +10,10 @@ def problem_102_spec(x: int, y: int, res: int) -> bool:
             expected = largest_even
         else:
             expected = -1
-    return res == expected
+    return output == expected
+
+def problem_102_pre(x, y):
+    return bool(_orig_problem_102_pre(x, y))
+
+def problem_102_spec(x, y, output):
+    return bool(_orig_problem_102_spec(x, y, output))

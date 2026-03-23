@@ -14,5 +14,8 @@ def is_prime_pred(n):
             return False
     return True
 
-def is_prime_spec(n, b):
+def _orig_is_prime_spec(n, b):
     return b == is_prime_pred(n)
+
+def is_prime_spec(n, output):
+    return bool(_orig_is_prime_spec(n, output))

@@ -15,8 +15,14 @@ def is_prime(n: int) -> bool:
 def IsPrime(n: int) -> bool:
     return is_prime(n)
 
-def problem_31_pre(n: int) -> bool:
+def _orig_problem_31_pre(n: int) -> bool:
     return True
 
-def problem_31_spec(n: int, output: bool) -> bool:
+def _orig_problem_31_spec(n: int, output: bool) -> bool:
     return is_prime(n) == output
+
+def problem_31_pre(n):
+    return bool(_orig_problem_31_pre(n))
+
+def problem_31_spec(n, output):
+    return bool(_orig_problem_31_spec(n, output))

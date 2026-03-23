@@ -40,16 +40,20 @@ def is_strongest(best: str, exts: list) -> bool:
             
     return True
 
-def problem_153_pre(class_name: str, extensions: list) -> bool:
+def _orig_problem_153_pre(class_name: str, extensions: list) -> bool:
     return len(extensions) > 0
 
-def problem_153_spec(class_name: str, extensions: list, res: str) -> bool:
+def _orig_problem_153_spec(class_name: str, extensions: list, output: str) -> bool:
     if not extensions:
         return False
-        
     for ext in extensions:
         if is_strongest(ext, extensions):
-            if res == class_name + "." + ext:
+            if output == class_name + '.' + ext:
                 return True
-                
     return False
+
+def problem_153_pre(class_name, extensions):
+    return bool(_orig_problem_153_pre(class_name, extensions))
+
+def problem_153_spec(class_name, extensions, output):
+    return bool(_orig_problem_153_spec(class_name, extensions, output))

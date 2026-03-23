@@ -51,27 +51,21 @@ def filter_integers_impl(values: list) -> list:
     """
     return [v.n for v in values if isinstance(v, PyInt)]
 
-def filter_integers_spec(values: list, result: list) -> bool:
+def _orig_filter_integers_spec(values: list, output: list) -> bool:
     """
     Specification for filter_integers_impl.
-    Returns True if result matches the implementation and satisfies the membership property.
+    Returns True if output matches the implementation and satisfies the membership property.
     """
-    # result = filter_integers_impl values
-    if result != filter_integers_impl(values):
+    if output != filter_integers_impl(values):
         return False
-    
-    # (forall z, In z result <-> exists v, In v values /\ v = PyInt z)
-    
-    # Check: In z result -> exists v, In v values /\ v = PyInt z
-    for z in result:
-        if not any(isinstance(v, PyInt) and v.n == z for v in values):
+    for z in output:
+        if not any((isinstance(v, PyInt) and v.n == z for v in values)):
             return False
-            
-    # Check: (exists v, In v values /\ v = PyInt z) -> In z result
     for v in values:
         if isinstance(v, PyInt):
-            # Here, z is v.n
-            if v.n not in result:
+            if v.n not in output:
                 return False
-                
     return True
+
+def filter_integers_spec(values, output):
+    return bool(_orig_filter_integers_spec(values, output))

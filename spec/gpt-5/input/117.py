@@ -29,6 +29,9 @@ def split_spaces_nonempty_acc(s: str, acc_rev: str) -> list:
 def split_spaces_nonempty(s: str) -> list:
     return split_spaces_nonempty_acc(s, "")
 
-def select_words_spec(s: str, n: int, ans: list) -> bool:
+def _orig_select_words_spec(s: str, n: int, output: list) -> bool:
     expected = [w for w in split_spaces_nonempty(s) if count_consonants(w) == n]
-    return ans == expected
+    return output == expected
+
+def select_words_spec(s, n, output):
+    return bool(_orig_select_words_spec(s, n, output))

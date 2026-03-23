@@ -12,30 +12,24 @@ def find_first_with_length(strings, length):
             return s
     return None
 
-def longest_spec(strings, result):
+def _orig_longest_spec(strings, output):
     if not strings:
-        return result is None
-    
+        return output is None
     maxlen = max_length(strings)
-    
-    if result is None:
+    if output is None:
         return False
-        
-    s = result
+    s = output
     if s not in strings:
         return False
     if string_length(s) != maxlen:
         return False
-        
-    # Check the condition:
-    # forall s'' idx1 idx2, In s'' strings -> string_length s'' = maxlen ->
-    # nth_error strings idx1 = Some s -> nth_error strings idx2 = Some s'' -> idx1 <= idx2
-    idx1_list = [i for i, x in enumerate(strings) if x == s]
-    idx2_list = [i for i, x in enumerate(strings) if string_length(x) == maxlen]
-    
+    idx1_list = [i for (i, x) in enumerate(strings) if x == s]
+    idx2_list = [i for (i, x) in enumerate(strings) if string_length(x) == maxlen]
     for idx1 in idx1_list:
         for idx2 in idx2_list:
-            if not (idx1 <= idx2):
+            if not idx1 <= idx2:
                 return False
-                
     return True
+
+def longest_spec(strings, output):
+    return bool(_orig_longest_spec(strings, output))

@@ -28,19 +28,18 @@ def is_sorted(l):
                 return False
     return True
 
-def sort_third_spec(l, l_prime):
+def _orig_sort_third_spec(l, l_prime):
     thirds = get_indices_div_by_three(l, 0)
     sorted_thirds = sorted(thirds)
-    
     if len(l) != len(l_prime):
         return False
-        
     for i in range(len(l)):
         if i % 3 == 0:
             if nth_default(0, l_prime, i) != nth_default(0, sorted_thirds, i // 3):
                 return False
-        else:
-            if nth_default(0, l_prime, i) != nth_default(0, l, i):
-                return False
-                
+        elif nth_default(0, l_prime, i) != nth_default(0, l, i):
+            return False
     return True
+
+def sort_third_spec(l, output):
+    return bool(_orig_sort_third_spec(l, output))

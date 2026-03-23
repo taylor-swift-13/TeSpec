@@ -8,20 +8,19 @@ def is_prime(p):
         d += 1
     return True
 
-def factorize_spec(n, factors):
+def _orig_factorize_spec(n, factors):
     prod = 1
     for f in factors:
         prod *= f
-
     if prod != n:
         return False
-
     for f in factors:
         if not is_prime(f):
             return False
-
     for i in range(len(factors) - 1):
-        if factors[i] > factors[i+1]:
+        if factors[i] > factors[i + 1]:
             return False
-
     return True
+
+def factorize_spec(n, output):
+    return bool(_orig_factorize_spec(n, output))

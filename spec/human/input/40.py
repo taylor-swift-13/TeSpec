@@ -30,14 +30,14 @@ def triples_sum_to_zero(input: List[int]) -> bool:
                     return True
     return False
 
-def problem_40_pre(input: List[int]) -> bool:
+def _orig_problem_40_pre(input: List[int]) -> bool:
     """
     Precondition for problem_40.
     In the Coq spec, this is defined as True.
     """
     return True
 
-def problem_40_spec(input: List[int], output: bool) -> bool:
+def _orig_problem_40_spec(input: List[int], output: bool) -> bool:
     """
     Specification for problem_40.
     Returns True if the output matches the existence of three distinct indices
@@ -45,15 +45,10 @@ def problem_40_spec(input: List[int], output: bool) -> bool:
     """
     n = len(input)
     exists_triple = False
-    
-    # The spec uses i <> j /\ i <> k /\ j <> k and i, j, k < length input
     for i in range(n):
         for j in range(n):
             for k in range(n):
-                # Ensure indices are distinct
-                if i != j and i != k and j != k:
-                    # nth i input 0 + nth j input 0 + nth k input 0 = 0
-                    # Since i, j, k are within range(n), input[i] is safe.
+                if i != j and i != k and (j != k):
                     if input[i] + input[j] + input[k] == 0:
                         exists_triple = True
                         break
@@ -61,6 +56,10 @@ def problem_40_spec(input: List[int], output: bool) -> bool:
                 break
         if exists_triple:
             break
-            
-    # The spec says (exists ...) <-> (output = true)
     return exists_triple == output
+
+def problem_40_pre(l):
+    return bool(_orig_problem_40_pre(l))
+
+def problem_40_spec(l, output):
+    return bool(_orig_problem_40_spec(l, output))

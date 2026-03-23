@@ -7,22 +7,24 @@ def signZ(x):
         return 1
 
 def sum_abs(l):
-    res = 0
+    output = 0
     for x in l:
-        res += abs(x)
-    return res
+        output += abs(x)
+    return output
 
 def prod_sign(l):
-    res = 1
+    output = 1
     for x in l:
-        res *= signZ(x)
-    return res
+        output *= signZ(x)
+    return output
 
-def prod_signs_spec(arr, res):
+def _orig_prod_signs_spec(arr, output):
     if len(arr) == 0:
-        return res is None
+        return output is None
     if 0 in arr:
-        return res is not None and res == 0
-    
+        return output is not None and output == 0
     expected = sum_abs(arr) * prod_sign(arr)
-    return res is not None and res == expected
+    return output is not None and output == expected
+
+def prod_signs_spec(arr, output):
+    return bool(_orig_prod_signs_spec(arr, output))

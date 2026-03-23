@@ -1,13 +1,14 @@
-def remove_duplicates_spec(numbers, result):
+def _orig_remove_duplicates_spec(numbers, output):
     """
     Implements the logic for:
-    Definition remove_duplicates_spec (numbers : list Z) (result : list Z) : Prop :=
-      result = filter (fun x => Nat.eqb (count_occ Z.eq_dec numbers x) 1) numbers.
+    Definition remove_duplicates_spec (numbers : list Z) (output : list Z) : Prop :=
+      output = filter (fun x => Nat.eqb (count_occ Z.eq_dec numbers x) 1) numbers.
       
-    This specification asserts that 'result' is equal to the list 'numbers' filtered
+    This specification asserts that 'output' is equal to the list 'numbers' filtered
     to keep only those elements that occur exactly once.
     """
-    # In Python, list comprehensions preserve order, similar to Coq's filter.
-    # numbers.count(x) corresponds to count_occ.
     expected = [x for x in numbers if numbers.count(x) == 1]
-    return result == expected
+    return output == expected
+
+def remove_duplicates_spec(numbers, output):
+    return bool(_orig_remove_duplicates_spec(numbers, output))

@@ -17,15 +17,10 @@ def CollatzSeq(start: int, x: int) -> bool:
         visited.add(curr)
         curr = collatz_next(curr)
 
-def get_odd_collatz_spec(n: int, l: list) -> bool:
-    # Check Sorted Z.le l
+def _orig_get_odd_collatz_spec(n: int, l: list) -> bool:
     for i in range(len(l) - 1):
-        if l[i] > l[i+1]:
+        if l[i] > l[i + 1]:
             return False
-    
-    # Collect all x such that (CollatzSeq n x /\ Z.odd x)
-    # The inductive definition of CollatzSeq n x means x is in the sequence 
-    # starting at n and stopping at 1.
     reachable_odds = set()
     curr = n
     visited = set()
@@ -35,11 +30,10 @@ def get_odd_collatz_spec(n: int, l: list) -> bool:
         if curr == 1:
             break
         if curr in visited:
-            # Cycle detected in a sequence that doesn't reach 1
             break
         visited.add(curr)
         curr = collatz_next(curr)
-        
-    # Check (forall x, In x l <-> (CollatzSeq n x /\ Z.odd x))
-    # This is equivalent to checking if the set of elements in l is reachable_odds.
     return set(l) == reachable_odds
+
+def get_odd_collatz_spec(n, output):
+    return bool(_orig_get_odd_collatz_spec(n, output))

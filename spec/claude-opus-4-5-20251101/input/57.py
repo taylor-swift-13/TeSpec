@@ -10,5 +10,8 @@ def is_decreasing(l):
             return False
     return True
 
-def monotonic_spec(l, result):
-    return bool(result) == (is_increasing(l) or is_decreasing(l))
+def _orig_monotonic_spec(l, output):
+    return bool(output) == (is_increasing(l) or is_decreasing(l))
+
+def monotonic_spec(l, output):
+    return bool(_orig_monotonic_spec(l, output))

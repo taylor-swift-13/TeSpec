@@ -20,18 +20,18 @@ def is_canonical(s: str) -> bool:
         return False
     return True
 
-def change_base_spec(x: int, base: int, ret: str) -> bool:
-    if not (2 <= base < 10):
+def _orig_change_base_spec(x: int, base: int, output: str) -> bool:
+    if not 2 <= base < 10:
         return True
-    if not (x >= 0):
+    if not x >= 0:
         return True
-    
     cond1 = True
     if x == 0:
-        cond1 = (ret == "0")
-        
+        cond1 = output == '0'
     cond2 = True
     if x > 0:
-        cond2 = valid_digits(ret, base) and (string_to_val(ret, base) == x) and is_canonical(ret)
-        
+        cond2 = valid_digits(output, base) and string_to_val(output, base) == x and is_canonical(output)
     return cond1 and cond2
+
+def change_base_spec(x, base, output):
+    return bool(_orig_change_base_spec(x, base, output))

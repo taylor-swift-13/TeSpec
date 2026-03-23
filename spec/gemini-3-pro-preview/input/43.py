@@ -1,4 +1,4 @@
-def pairs_sum_to_zero_spec(l, res):
+def _orig_pairs_sum_to_zero_spec(l, output):
     has_pair = False
     n = len(l)
     for i in range(n):
@@ -8,4 +8,7 @@ def pairs_sum_to_zero_spec(l, res):
                 break
         if has_pair:
             break
-    return res == has_pair
+    return output == has_pair
+
+def pairs_sum_to_zero_spec(l, output):
+    return bool(_orig_pairs_sum_to_zero_spec(l, output))

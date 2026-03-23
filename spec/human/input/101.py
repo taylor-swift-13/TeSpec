@@ -21,12 +21,18 @@ def words_string_list_impl(s: list) -> list:
 def words_string(s: str) -> list:
     return ["".join(chars) for chars in words_string_list_impl(list(s))]
 
-def problem_101_pre(s: str) -> bool:
+def _orig_problem_101_pre(s: str) -> bool:
     for c in s:
         n = ord(c)
-        if not ((65 <= n <= 90) or (97 <= n <= 122) or c == ',' or c == ' '):
+        if not (65 <= n <= 90 or 97 <= n <= 122 or c == ',' or (c == ' ')):
             return False
     return True
 
-def problem_101_spec(s: str, output: list) -> bool:
+def _orig_problem_101_spec(s: str, output: list) -> bool:
     return output == words_string(s)
+
+def problem_101_pre(s):
+    return bool(_orig_problem_101_pre(s))
+
+def problem_101_spec(s, output):
+    return bool(_orig_problem_101_spec(s, output))

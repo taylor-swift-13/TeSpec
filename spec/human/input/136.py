@@ -24,20 +24,6 @@ def is_smallest_positive(lst, b):
         # b is None: forall x, In x lst -> ~(x > 0)
         return all(not (x > 0) for x in lst)
 
-def problem_136_pre(lst):
-    """
-    Precondition for problem 136: Any integer list is valid.
-    """
-    return True
-
-def problem_136_spec(lst, res):
-    """
-    Spec for problem 136: res = (a, b) satisfies the largest negative
-    and smallest positive integer conditions.
-    """
-    a, b = res
-    return is_largest_negative(lst, a) and is_smallest_positive(lst, b)
-
 def largest_smallest_integers(lst):
     """
     Implementation of the function described in the docstring.
@@ -52,3 +38,23 @@ def largest_smallest_integers(lst):
     b = min(positives) if positives else None
     
     return (a, b)
+
+def _orig_problem_136_pre(lst):
+    """
+    Precondition for problem 136: Any integer list is valid.
+    """
+    return True
+
+def _orig_problem_136_spec(lst, output):
+    """
+    Spec for problem 136: output = (a, b) satisfies the largest negative
+    and smallest positive integer conditions.
+    """
+    (a, b) = output
+    return is_largest_negative(lst, a) and is_smallest_positive(lst, b)
+
+def problem_136_pre(lst):
+    return bool(_orig_problem_136_pre(lst))
+
+def problem_136_spec(lst, output):
+    return bool(_orig_problem_136_spec(lst, output))

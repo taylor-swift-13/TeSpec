@@ -15,40 +15,37 @@ def get_max_count(letters: list) -> int:
     counts.append(0)
     return max(counts)
 
-def problem_111_pre(s: str) -> bool:
+def _orig_problem_111_pre(s: str) -> bool:
     for c in s:
-        if not (c == ' ' or (97 <= ord(c) <= 122)):
+        if not (c == ' ' or 97 <= ord(c) <= 122):
             return False
     return True
 
-def problem_111_spec(s: str, res: list) -> bool:
+def _orig_problem_111_spec(s: str, output: list) -> bool:
     raw_letters = list(s)
     letters = filter_spaces(raw_letters)
-    
-    # Coq's nodup keeps unique elements. The order doesn't affect the logic here.
     unique_letters = []
     for c in letters:
         if c not in unique_letters:
             unique_letters.append(c)
-            
     if not unique_letters:
-        return res == []
-        
+        return output == []
     max_count = get_max_count(letters)
-    
-    # 1. "Soundness": Every element in res must be correct.
-    for p in res:
+    for p in output:
         try:
-            c, n = p
+            (c, n) = p
         except (ValueError, TypeError):
             return False
         if n != max_count or count_char(letters, c) != max_count:
             return False
-            
-    # 2. "Completeness": Every valid character must be in res.
     for c in unique_letters:
         if count_char(letters, c) == max_count:
-            if (c, max_count) not in res:
+            if (c, max_count) not in output:
                 return False
-                
     return True
+
+def problem_111_pre(test):
+    return bool(_orig_problem_111_pre(test))
+
+def problem_111_spec(test, output):
+    return bool(_orig_problem_111_spec(test, output))

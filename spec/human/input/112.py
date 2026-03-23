@@ -58,20 +58,26 @@ def reverse_delete(s, c):
     r, b = del_and_pal_impl(ls, lc)
     return ("".join(r), b)
 
-def problem_112_pre(s, c):
+def _orig_problem_112_pre(s, c):
     """
     Precondition: s and c only contain lowercase letters (ASCII 97-122).
     Equivalent to Coq's problem_112_pre.
     """
     ls = [ord(ch) for ch in s]
     lc = [ord(ch) for ch in c]
-    cond_s = all(97 <= n <= 122 for n in ls)
-    cond_c = all(97 <= n <= 122 for n in lc)
+    cond_s = all((97 <= n <= 122 for n in ls))
+    cond_c = all((97 <= n <= 122 for n in lc))
     return cond_s and cond_c
 
-def problem_112_spec(s, c, output):
+def _orig_problem_112_spec(s, c, output):
     """
     Specification: output must match the result of reverse_delete(s, c).
     Equivalent to Coq's problem_112_spec.
     """
     return output == reverse_delete(s, c)
+
+def problem_112_pre(s, c):
+    return bool(_orig_problem_112_pre(s, c))
+
+def problem_112_spec(s, c, output):
+    return bool(_orig_problem_112_spec(s, c, output))

@@ -58,9 +58,12 @@ def max_prime_in_list(lst, p):
     # Since p is in lst and prime_Z(p) is true, primes is not empty
     return p == max(primes)
 
-def skjkasdkd_spec(lst, res):
+def _orig_skjkasdkd_spec(lst, output):
     primes = [x for x in lst if prime_Z(x)]
     if not primes:
         return False
     p = max(primes)
-    return sum_digits_10(p, res)
+    return sum_digits_10(p, output)
+
+def skjkasdkd_spec(lst, output):
+    return bool(_orig_skjkasdkd_spec(lst, output))

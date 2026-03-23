@@ -6,27 +6,25 @@ def is_subsequence(l1, l2):
         j += 1
     return i == len(l1)
 
-def problem_29_pre(input):
+def _orig_problem_29_pre(input):
     return True
 
-def problem_29_spec(input, substring, output):
-    # 1. output is a subsequence of input
+def _orig_problem_29_spec(input, substring, output):
     if not is_subsequence(output, input):
         return False
-
-    # 2. (forall s, In s output <-> (In s input /\ String.prefix substring s = true))
-    
-    # Check: forall s in output, s in input and has prefix
     for s in output:
         if s not in input:
             return False
         if not s.startswith(substring):
             return False
-
-    # Check: forall s in input, if s has prefix, then s must be in output
     for s in input:
         if s.startswith(substring):
             if s not in output:
                 return False
-
     return True
+
+def problem_29_pre(strings, prefix):
+    return bool(_orig_problem_29_pre((strings, prefix)))
+
+def problem_29_spec(strings, prefix, output):
+    return bool(_orig_problem_29_spec(strings, prefix, output))

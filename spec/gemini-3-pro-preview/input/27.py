@@ -17,5 +17,8 @@ def flip_char(c: str) -> str:
 def flip_case_model(s: str) -> str:
     return "".join(flip_char(c) for c in s)
 
-def flip_case_spec(s: str, res: str) -> bool:
-    return res == flip_case_model(s)
+def _orig_flip_case_spec(s: str, output: str) -> bool:
+    return output == flip_case_model(s)
+
+def flip_case_spec(string, output):
+    return bool(_orig_flip_case_spec(string, output))

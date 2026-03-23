@@ -1,4 +1,4 @@
-def fib4_spec(n: int, result: int) -> bool:
+def _orig_fib4_spec(n: int, output: int) -> bool:
     """
     Python implementation of the Coq fib4_spec.
     
@@ -12,17 +12,16 @@ def fib4_spec(n: int, result: int) -> bool:
     Therefore, the specification is unsatisfiable (always False) for n >= 4.
     """
     if n == 0:
-        return result == 0
+        return output == 0
     if n == 1:
-        return result == 0
+        return output == 0
     if n == 2:
-        return result == 2
+        return output == 2
     if n == 3:
-        return result == 0
-    
-    # For n >= 4, the spec is always False due to the contradiction described above.
+        return output == 0
     if n >= 4:
         return False
-        
-    # For n < 0, the spec is not defined (False).
     return False
+
+def fib4_spec(n, output):
+    return bool(_orig_fib4_spec(n, output))

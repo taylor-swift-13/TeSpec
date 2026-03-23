@@ -15,8 +15,11 @@ def Z_to_binary(n):
     fuel = max(0, int(n)) + 1
     return Z_to_binary_aux(n, fuel)
 
-def decimal_to_binary_spec(decimal, result):
+def _orig_decimal_to_binary_spec(decimal, output):
     if decimal < 0:
         return False
-    expected = "db" + Z_to_binary(decimal) + "db"
-    return result == expected
+    expected = 'db' + Z_to_binary(decimal) + 'db'
+    return output == expected
+
+def decimal_to_binary_spec(decimal, output):
+    return bool(_orig_decimal_to_binary_spec(decimal, output))

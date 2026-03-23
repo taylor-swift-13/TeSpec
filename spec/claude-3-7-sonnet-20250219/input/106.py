@@ -10,7 +10,7 @@ def sum_1_to_i(i):
         res += j
     return res
 
-def f_spec(n, l):
+def _orig_f_spec(n, l):
     if len(l) != n:
         return False
     for i in range(1, n + 1):
@@ -18,7 +18,9 @@ def f_spec(n, l):
             expected = factorial(i)
         else:
             expected = sum_1_to_i(i)
-            
         if l[i - 1] != expected:
             return False
     return True
+
+def f_spec(n, output):
+    return bool(_orig_f_spec(n, output))

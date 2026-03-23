@@ -9,6 +9,9 @@ def is_prefixb(t, u):
         return True
     return u[:n] == t
 
-def how_many_times_spec(s, substring, res):
+def _orig_how_many_times_spec(s, substring, output):
     matches = [i for i in range(len(s)) if is_prefixb(substring, drop(i, s))]
-    return res == len(matches)
+    return output == len(matches)
+
+def how_many_times_spec(string, substring, output):
+    return bool(_orig_how_many_times_spec(string, substring, output))

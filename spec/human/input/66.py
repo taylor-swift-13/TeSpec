@@ -24,22 +24,20 @@ def digitSum_impl(s: str) -> int:
     """
     return sum_uppercase_ascii(s)
 
-def problem_66_pre(s: str) -> bool:
+def _orig_problem_66_pre(s: str) -> bool:
     """
     Precondition for problem 66.
     """
     return True
 
-def problem_66_spec(s: str, output: int) -> bool:
+def _orig_problem_66_spec(s: str, output: int) -> bool:
     """
     Specification for problem 66: the output must match the result of digitSum_impl.
     """
     return output == digitSum_impl(s)
 
-# Examples and verification based on the prompt:
-# digitSum_impl("") => 0
-# digitSum_impl("abAB") => 131
-# digitSum_impl("abcCd") => 67
-# digitSum_impl("helloE") => 69
-# digitSum_impl("woArBld") => 131
-# digitSum_impl("aAaaaXa") => 153
+def problem_66_pre(s):
+    return bool(_orig_problem_66_pre(s))
+
+def problem_66_spec(s, output):
+    return bool(_orig_problem_66_spec(s, output))

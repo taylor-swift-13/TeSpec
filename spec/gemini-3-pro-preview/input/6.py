@@ -17,7 +17,7 @@ def count_depth(s):
 def split_and_filter(l, acc):
     # l is a list of characters
     # acc is a list of characters (representing the reversed accumulator)
-    result = []
+    output = []
     current_acc = list(acc)
     
     for c in l:
@@ -30,7 +30,7 @@ def split_and_filter(l, acc):
                 # current_acc is [c_n, ..., c_1]
                 # We want [c_1, ..., c_n]
                 word = "".join(current_acc[::-1])
-                result.append(word)
+                output.append(word)
                 current_acc = []
         else:
             # In Coq: split_and_filter cs (c :: acc)
@@ -40,12 +40,14 @@ def split_and_filter(l, acc):
     # Base case: match l with []
     if current_acc:
         word = "".join(current_acc[::-1])
-        result.append(word)
+        output.append(word)
         
-    return result
+    return output
 
-def parse_nested_parens_spec(paren_string, result):
-    # result is a list of integers (Z)
+def _orig_parse_nested_parens_spec(paren_string, output):
     words = split_and_filter(list(paren_string), [])
     calculated_depths = [count_depth(w) for w in words]
-    return result == calculated_depths
+    return output == calculated_depths
+
+def parse_nested_parens_spec(paren_string, output):
+    return bool(_orig_parse_nested_parens_spec(paren_string, output))

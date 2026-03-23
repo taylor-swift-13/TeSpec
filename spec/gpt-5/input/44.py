@@ -19,51 +19,30 @@ def string_of_digits(ds):
 def digits_range(base, ds):
     return all(0 <= t < base for t in ds)
 
-def change_base_spec(x, base, ret):
-    # 0 <= x /\ 2 <= base /\ base <= 9
-    if not (0 <= x):
+def _orig_change_base_spec(x, base, output):
+    if not 0 <= x:
         return False
-    if not (2 <= base <= 9):
+    if not 2 <= base <= 9:
         return False
-    
     if x == 0:
-        # ret = String (ascii_of_nat 48) EmptyString
-        return ret == "0"
+        return output == '0'
     else:
-        # x <> 0
-        # exists d ds, ret = string_of_digits (d :: ds) /\ ...
-        
-        if not ret:
+        if not output:
             return False
-            
-        # Reconstruct d and ds from ret
-        # Since base <= 9, valid digits are 0..8.
-        # The mapping d -> char(48+d) is injective for d in 0..8.
-        # We parse ret assuming this mapping.
-        
         digits = []
-        for c in ret:
+        for c in output:
             digits.append(ord(c) - 48)
-            
         if not digits:
             return False
-            
         d = digits[0]
         ds = digits[1:]
-        
-        # Check 1: ret = string_of_digits (d :: ds)
-        # Implicitly checked by parsing logic + range checks below.
-        
-        # Check 2: 1 <= d < base
-        if not (1 <= d < base):
+        if not 1 <= d < base:
             return False
-            
-        # Check 3: digits_range base ds
         if not digits_range(base, ds):
             return False
-            
-        # Check 4: eval_digits base (d :: ds) = x
         if eval_digits(base, digits) != x:
             return False
-            
         return True
+
+def change_base_spec(x, base, output):
+    return bool(_orig_change_base_spec(x, base, output))

@@ -1,6 +1,9 @@
-def max_element_spec(l, result):
+def _orig_max_element_spec(l, output):
     if not l:
         return False
-    if result not in l:
+    if output not in l:
         return False
-    return all(x <= result for x in l)
+    return all((x <= output for x in l))
+
+def max_element_spec(l, output):
+    return bool(_orig_max_element_spec(l, output))

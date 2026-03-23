@@ -9,5 +9,8 @@ def digitSum_calc(s):
             total += ord(c)
     return total
 
-def digitSum_spec(s, result):
-    return result == digitSum_calc(s)
+def _orig_digitSum_spec(s, output):
+    return output == digitSum_calc(s)
+
+def digitSum_spec(s, output):
+    return bool(_orig_digitSum_spec(s, output))

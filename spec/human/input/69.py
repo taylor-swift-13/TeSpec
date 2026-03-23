@@ -21,7 +21,7 @@ def search_impl(lst):
     else:
         return max_val
 
-def problem_69_pre(lst):
+def _orig_problem_69_pre(lst):
     if not lst:
         return False
     for x in lst:
@@ -29,5 +29,11 @@ def problem_69_pre(lst):
             return False
     return True
 
-def problem_69_spec(lst, y):
+def _orig_problem_69_spec(lst, y):
     return y == search_impl(lst)
+
+def problem_69_pre(lst):
+    return bool(_orig_problem_69_pre(lst))
+
+def problem_69_spec(lst, output):
+    return bool(_orig_problem_69_spec(lst, output))

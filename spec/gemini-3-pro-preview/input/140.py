@@ -10,7 +10,7 @@ def count_consecutive_spaces(s: str) -> int:
 def skip_n(n: int, s: str) -> str:
     return s[n:]
 
-def fix_spaces_rel(text: str, ans: str) -> bool:
+def fix_spaces_rel(text: str, output: str) -> bool:
     expected = []
     i = 0
     n = len(text)
@@ -31,7 +31,10 @@ def fix_spaces_rel(text: str, ans: str) -> bool:
                 expected.append('-')
                 i += count
                 
-    return "".join(expected) == ans
+    return "".join(expected) == output
 
-def fix_spaces_spec(text: str, ans: str) -> bool:
-    return fix_spaces_rel(text, ans)
+def _orig_fix_spaces_spec(text: str, output: str) -> bool:
+    return fix_spaces_rel(text, output)
+
+def fix_spaces_spec(text, output):
+    return bool(_orig_fix_spaces_spec(text, output))

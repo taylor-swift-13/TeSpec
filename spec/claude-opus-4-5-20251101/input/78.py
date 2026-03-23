@@ -11,5 +11,8 @@ def count_prime_hex_digits(chars):
             count += 1
     return count
 
-def hex_key_spec(num, result):
-    return result == count_prime_hex_digits(string_to_list(num))
+def _orig_hex_key_spec(num, output):
+    return output == count_prime_hex_digits(string_to_list(num))
+
+def hex_key_spec(num, output):
+    return bool(_orig_hex_key_spec(num, output))

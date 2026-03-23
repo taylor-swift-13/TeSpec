@@ -6,8 +6,14 @@ def is_prime(n: int) -> bool:
             return False
     return True
 
-def problem_82_pre(s: str) -> bool:
+def _orig_problem_82_pre(s: str) -> bool:
     return True
 
-def problem_82_spec(s: str, b: bool) -> bool:
+def _orig_problem_82_spec(s: str, b: bool) -> bool:
     return b == is_prime(len(s))
+
+def problem_82_pre(string):
+    return bool(_orig_problem_82_pre(string))
+
+def problem_82_spec(string, output):
+    return bool(_orig_problem_82_spec(string, output))

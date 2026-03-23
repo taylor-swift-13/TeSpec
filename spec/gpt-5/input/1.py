@@ -60,5 +60,8 @@ def process_string(s, cnt, group, acc, final):
     # process_nil:
     return current_acc == final
 
-def separate_paren_groups_spec(paren_string, results):
-    return process_string(paren_string, 0, "", [], results)
+def _orig_separate_paren_groups_spec(paren_string, results):
+    return process_string(paren_string, 0, '', [], results)
+
+def separate_paren_groups_spec(paren_string, output):
+    return bool(_orig_separate_paren_groups_spec(paren_string, output))

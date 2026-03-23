@@ -11,15 +11,21 @@ def eval_poly(coeffs, x):
         res = Fraction(c) + x_frac * res
     return res
 
-def problem_32_pre(input):
+def _orig_problem_32_pre(input):
     """
     Precondition: input list must be non-empty and have even length.
     """
     return len(input) > 0 and len(input) % 2 == 0
 
-def problem_32_spec(input, output):
+def _orig_problem_32_spec(input, output):
     """
     Postcondition: output must be a root of the polynomial defined by input.
     Checks exact equality to 0 to match Coq's exact Real equality.
     """
     return eval_poly(input, output) == 0
+
+def problem_32_pre(xs):
+    return bool(_orig_problem_32_pre(xs))
+
+def problem_32_spec(xs, output):
+    return bool(_orig_problem_32_spec(xs, output))

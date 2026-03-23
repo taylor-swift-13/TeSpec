@@ -1,20 +1,22 @@
-def problem_5_pre(input, output):
+def _orig_problem_5_pre(input, output):
     return True
 
-def problem_5_spec(input, output, d):
+def _orig_problem_5_spec(input, output, d):
     if not input:
         return output == []
-
     n = len(input)
     if len(output) != 2 * n - 1:
         return False
-
     for i in range(len(output)):
         if i % 2 == 0:
             if output[i] != input[i // 2]:
                 return False
-        else:
-            if output[i] != d:
-                return False
-                
+        elif output[i] != d:
+            return False
     return True
+
+def problem_5_pre(numbers, delimeter):
+    return bool(_orig_problem_5_pre(numbers, delimeter))
+
+def problem_5_spec(numbers, delimeter, output):
+    return bool(_orig_problem_5_spec(numbers, delimeter, output))

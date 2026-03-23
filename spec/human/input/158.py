@@ -7,17 +7,21 @@ def string_contains(c: str, s: str) -> bool:
 def count_unique_chars(s: str) -> int:
     return len(set(s))
 
-def problem_158_pre(words: list) -> bool:
+def _orig_problem_158_pre(words: list) -> bool:
     return len(words) > 0
 
-def problem_158_spec(words: list, result: str) -> bool:
-    if result not in words:
+def _orig_problem_158_spec(words: list, output: str) -> bool:
+    if output not in words:
         return False
-    
-    c_res = count_unique_chars(result)
+    c_res = count_unique_chars(output)
     for w in words:
         c_w = count_unique_chars(w)
-        if not (c_res > c_w or (c_res == c_w and string_le(result, w))):
+        if not (c_res > c_w or (c_res == c_w and string_le(output, w))):
             return False
-            
     return True
+
+def problem_158_pre(words):
+    return bool(_orig_problem_158_pre(words))
+
+def problem_158_spec(words, output):
+    return bool(_orig_problem_158_spec(words, output))

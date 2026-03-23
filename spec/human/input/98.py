@@ -8,8 +8,14 @@ def count_upper_impl(s):
             count += 1
     return count
 
-def problem_98_pre(s):
+def _orig_problem_98_pre(s):
     return True
 
-def problem_98_spec(s, output):
+def _orig_problem_98_spec(s, output):
     return output == count_upper_impl(s)
+
+def problem_98_pre(s):
+    return bool(_orig_problem_98_pre(s))
+
+def problem_98_spec(s, output):
+    return bool(_orig_problem_98_spec(s, output))

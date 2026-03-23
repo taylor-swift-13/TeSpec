@@ -8,5 +8,8 @@ def is_prime(n):
         d += 1
     return True
 
-def prime_length_spec(s, result):
-    return result == is_prime(len(s))
+def _orig_prime_length_spec(s, output):
+    return output == is_prime(len(s))
+
+def prime_length_spec(string, output):
+    return bool(_orig_prime_length_spec(string, output))

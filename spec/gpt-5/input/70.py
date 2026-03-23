@@ -4,16 +4,19 @@ def index_strange(n, k):
     else:
         return n - 1 - (k // 2)
 
-def ans_of_sorted(s, ans):
-    if len(ans) != len(s):
+def ans_of_sorted(s, output):
+    if len(output) != len(s):
         return False
     n = len(s)
     for k in range(n):
         idx = index_strange(n, k)
-        if ans[k] != s[idx]:
+        if output[k] != s[idx]:
             return False
     return True
 
-def strange_sort_list_spec(lst, ans):
+def _orig_strange_sort_list_spec(lst, output):
     s = sorted(lst)
-    return ans_of_sorted(s, ans)
+    return ans_of_sorted(s, output)
+
+def strange_sort_list_spec(lst, output):
+    return bool(_orig_strange_sort_list_spec(lst, output))

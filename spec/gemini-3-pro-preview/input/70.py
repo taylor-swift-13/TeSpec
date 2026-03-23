@@ -12,6 +12,9 @@ def strange_interleave(lst1, lst2):
         right -= 1
     return expected_lst2 == lst2
 
-def strange_sort_list_spec(lst, ans):
+def _orig_strange_sort_list_spec(lst, output):
     sorted_lst = sorted(lst)
-    return strange_interleave(sorted_lst, ans)
+    return strange_interleave(sorted_lst, output)
+
+def strange_sort_list_spec(lst, output):
+    return bool(_orig_strange_sort_list_spec(lst, output))

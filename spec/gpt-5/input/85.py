@@ -8,5 +8,8 @@ def sum_even_at_odd_from(i, l):
 def sum_even_at_odd(l):
     return sum_even_at_odd_from(0, l)
 
-def add_spec(lst, s):
+def _orig_add_spec(lst, s):
     return s == sum_even_at_odd(lst)
+
+def add_spec(lst, output):
+    return bool(_orig_add_spec(lst, output))

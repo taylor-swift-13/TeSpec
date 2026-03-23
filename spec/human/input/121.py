@@ -22,15 +22,21 @@ def sum_odd_in_even_pos_impl(l):
     """
     return sum_odd_in_even_pos_aux(l, 0)
 
-def problem_121_pre(l):
+def _orig_problem_121_pre(l):
     """
     Definition problem_121_pre (l : list nat) : Prop := l <> [].
     """
     return l != []
 
-def problem_121_spec(l, output):
+def _orig_problem_121_spec(l, output):
     """
     Definition problem_121_spec (l : list nat) (output : nat) : Prop :=
       output = sum_odd_in_even_pos_impl l.
     """
     return output == sum_odd_in_even_pos_impl(l)
+
+def problem_121_pre(lst):
+    return bool(_orig_problem_121_pre(lst))
+
+def problem_121_spec(lst, output):
+    return bool(_orig_problem_121_spec(lst, output))

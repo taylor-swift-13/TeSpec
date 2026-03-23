@@ -6,5 +6,8 @@ def add_sum(lst, is_odd_idx):
         is_odd_idx = not is_odd_idx
     return total
 
-def add_spec(lst, res):
-    return res == add_sum(lst, False)
+def _orig_add_spec(lst, output):
+    return output == add_sum(lst, False)
+
+def add_spec(lst, output):
+    return bool(_orig_add_spec(lst, output))

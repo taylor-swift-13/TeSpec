@@ -19,26 +19,22 @@ def prime(p):
             return False
     return True
 
-def count_up_to_spec(n, ans):
+def _orig_count_up_to_spec(n, output):
     """
-    Checks if ans is a list of all prime numbers less than n with no duplicates.
-    In Coq: Definition count_up_to_spec (n : nat) (ans : list nat) : Prop :=
-            NoDup ans /\ forall p, In p ans <-> prime p /\ p < n.
+    Checks if output is a list of all prime numbers less than n with no duplicates.
+    In Coq: Definition count_up_to_spec (n : nat) (output : list nat) : Prop :=
+            NoDup output /\\ forall p, In p output <-> prime p /\\ p < n.
     """
-    # Check NoDup ans: No duplicates in the list ans
-    if len(ans) != len(set(ans)):
+    if len(output) != len(set(output)):
         return False
-    
-    # Check forall p, In p ans -> prime p /\ p < n
-    for p in ans:
+    for p in output:
         if not (prime(p) and p < n):
             return False
-            
-    # Check forall p, prime p /\ p < n -> In p ans
-    # Since p < n and p must be a natural number, we only need to check p in range(n)
     for p in range(n):
         if prime(p):
-            if p not in ans:
+            if p not in output:
                 return False
-                
     return True
+
+def count_up_to_spec(n, output):
+    return bool(_orig_count_up_to_spec(n, output))

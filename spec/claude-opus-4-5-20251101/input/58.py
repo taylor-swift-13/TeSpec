@@ -12,15 +12,18 @@ def no_duplicates(l):
         seen.append(x)
     return True
 
-def is_intersection(l1, l2, result):
-    for x in result:
+def is_intersection(l1, l2, output):
+    for x in output:
         if not (x in l1 and x in l2):
             return False
     for x in l1:
         if x in l2:
-            if x not in result:
+            if x not in output:
                 return False
     return True
 
-def common_spec(l1, l2, result):
-    return is_intersection(l1, l2, result) and no_duplicates(result) and is_sorted(result)
+def _orig_common_spec(l1, l2, output):
+    return is_intersection(l1, l2, output) and no_duplicates(output) and is_sorted(output)
+
+def common_spec(l1, l2, output):
+    return bool(_orig_common_spec(l1, l2, output))

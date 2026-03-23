@@ -15,7 +15,7 @@ def is_alpha(c: str) -> bool:
 def is_space(c: str) -> bool:
     return ord(c) == 32
 
-def check_if_last_char_is_a_letter_spec(txt: str, res: bool) -> bool:
+def _orig_check_if_last_char_is_a_letter_spec(txt: str, output: bool) -> bool:
     n = len(txt)
     if n == 0:
         expected = False
@@ -32,5 +32,7 @@ def check_if_last_char_is_a_letter_spec(txt: str, res: bool) -> bool:
             expected = is_alpha(c) and is_space(p)
         else:
             expected = False
-            
-    return res == expected
+    return output == expected
+
+def check_if_last_char_is_a_letter_spec(txt, output):
+    return bool(_orig_check_if_last_char_is_a_letter_spec(txt, output))

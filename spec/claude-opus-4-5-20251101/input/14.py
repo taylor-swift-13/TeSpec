@@ -10,18 +10,17 @@ def all_prefixes_helper(s: str, n: int) -> list:
         res.append(prefix(s, i))
     return res
 
-def all_prefixes_spec(s: str, result: list) -> bool:
+def _orig_all_prefixes_spec(s: str, output: list) -> bool:
     length = len(s)
-    
-    if result != all_prefixes_helper(s, length):
+    if output != all_prefixes_helper(s, length):
         return False
-        
-    if len(result) != length:
+    if len(output) != length:
         return False
-        
     for i in range(length):
-        val = result[i] if i < len(result) else ""
+        val = output[i] if i < len(output) else ''
         if val != prefix(s, i + 1):
             return False
-            
     return True
+
+def all_prefixes_spec(string, output):
+    return bool(_orig_all_prefixes_spec(string, output))

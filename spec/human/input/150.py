@@ -18,22 +18,27 @@ def is_prime(n):
             return False
     return True
 
-def problem_150_pre(n, x, y):
+def _orig_problem_150_pre(n, x, y):
     """
     Precondition for the problem.
     Corresponds to: Definition problem_150_pre (n x y : nat) : Prop := True.
     """
     return True
 
-def problem_150_spec(n, x, y, res):
+def _orig_problem_150_spec(n, x, y, output):
     """
     Specification for the problem.
     Corresponds to:
-    Definition problem_150_spec (n x y res : nat) : Prop :=
-      (prime (Z.of_nat n) -> res = x) /\
-      (~ prime (Z.of_nat n) -> res = y).
+    Definition problem_150_spec (n x y output : nat) : Prop :=
+      (prime (Z.of_nat n) -> output = x) /      (~ prime (Z.of_nat n) -> output = y).
     """
     if is_prime(n):
-        return res == x
+        return output == x
     else:
-        return res == y
+        return output == y
+
+def problem_150_pre(n, x, y):
+    return bool(_orig_problem_150_pre(n, x, y))
+
+def problem_150_spec(n, x, y, output):
+    return bool(_orig_problem_150_spec(n, x, y, output))

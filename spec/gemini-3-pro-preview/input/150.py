@@ -16,16 +16,16 @@ def is_prime(n):
         d += 2
     return True
 
-def x_or_y_spec(n, x, y, res):
+def _orig_x_or_y_spec(n, x, y, output):
     """
     Implements the specification:
-    Definition x_or_y_spec (n x y res : Z) : Prop :=
-      (prime n -> res = x) /\
-      (~ prime n -> res = y).
+    Definition x_or_y_spec (n x y output : Z) : Prop :=
+      (prime n -> output = x) /      (~ prime n -> output = y).
     """
     if is_prime(n):
-        # If n is prime, res must equal x
-        return res == x
+        return output == x
     else:
-        # If n is not prime, res must equal y
-        return res == y
+        return output == y
+
+def x_or_y_spec(n, x, y, output):
+    return bool(_orig_x_or_y_spec(n, x, y, output))

@@ -58,7 +58,10 @@ def count_sat(parts: list, n: int) -> bool:
     count = sum(1 for p in parts if boredom_on_part(p))
     return count == n
 
-def is_bored_spec(S: str, count: int) -> bool:
+def _orig_is_bored_spec(S: str, count: int) -> bool:
     S1 = S.replace('?', '.').replace('!', '.')
     parts = S1.split('.')
     return replace_rel(S, S1) and split_on_dot(parts, S1) and count_sat(parts, count)
+
+def is_bored_spec(S, output):
+    return bool(_orig_is_bored_spec(S, output))

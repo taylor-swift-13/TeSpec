@@ -19,16 +19,22 @@ def fibfib(n: int) -> int:
         a, b, c = b, c, a + b + c
     return c
 
-def problem_63_pre(n: int) -> bool:
+def _orig_problem_63_pre(n: int) -> bool:
     """
     Precondition for problem_63.
     In the Coq specification, this is defined as True.
     """
     return True
 
-def problem_63_spec(n: int, res: int) -> bool:
+def _orig_problem_63_spec(n: int, output: int) -> bool:
     """
     Specification for problem_63.
-    Checks if the provided result 'res' is equal to fibfib(n).
+    Checks if the provided result 'output' is equal to fibfib(n).
     """
-    return res == fibfib(n)
+    return output == fibfib(n)
+
+def problem_63_pre(n):
+    return bool(_orig_problem_63_pre(n))
+
+def problem_63_spec(n, output):
+    return bool(_orig_problem_63_spec(n, output))

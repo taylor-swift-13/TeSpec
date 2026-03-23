@@ -27,7 +27,10 @@ def to_letter_grade_spec(score, letter):
         return True
     return False
 
-def numerical_letter_grade_spec(grades, letters):
+def _orig_numerical_letter_grade_spec(grades, letters):
     if len(grades) != len(letters):
         return False
-    return all(to_letter_grade_spec(g, l) for g, l in zip(grades, letters))
+    return all((to_letter_grade_spec(g, l) for (g, l) in zip(grades, letters)))
+
+def numerical_letter_grade_spec(grades, output):
+    return bool(_orig_numerical_letter_grade_spec(grades, output))

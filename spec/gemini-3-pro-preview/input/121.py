@@ -1,9 +1,12 @@
 def sum_odd_at_even_pos(lst):
-    res = 0
+    output = 0
     for i in range(0, len(lst), 2):
         if lst[i] % 2 != 0:
-            res += lst[i]
-    return res
+            output += lst[i]
+    return output
 
-def solution_spec(lst, res):
-    return res == sum_odd_at_even_pos(lst)
+def _orig_solution_spec(lst, output):
+    return output == sum_odd_at_even_pos(lst)
+
+def solution_spec(lst, output):
+    return bool(_orig_solution_spec(lst, output))

@@ -39,15 +39,21 @@ def words_in_sentence_impl(sentence):
     sel = [w for w in words if is_prime_bool(len(w))]
     return "".join(join_words(sel))
 
-def problem_143_pre(sentence):
+def _orig_problem_143_pre(sentence):
     l = len(sentence)
-    if not (1 <= l <= 100):
+    if not 1 <= l <= 100:
         return False
     for c in sentence:
         n = ord(c)
-        if not (c == ' ' or (65 <= n <= 90) or (97 <= n <= 122)):
+        if not (c == ' ' or 65 <= n <= 90 or 97 <= n <= 122):
             return False
     return True
 
-def problem_143_spec(sentence, output):
+def _orig_problem_143_spec(sentence, output):
     return output == words_in_sentence_impl(sentence)
+
+def problem_143_pre(sentence):
+    return bool(_orig_problem_143_pre(sentence))
+
+def problem_143_spec(sentence, output):
+    return bool(_orig_problem_143_spec(sentence, output))

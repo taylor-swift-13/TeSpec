@@ -29,29 +29,28 @@ def days_in_month(m):
     else:
         return 0
 
-def problem_124_pre(s):
+def _orig_problem_124_pre(s):
     return True
 
-def problem_124_spec(s):
+def _orig_problem_124_spec(s):
     if len(s) != 10:
         return False
-    
-    m1, m2, sep1, d1, d2, sep2, y1, y2, y3, y4 = s
-    
+    (m1, m2, sep1, d1, d2, sep2, y1, y2, y3, y4) = s
     if sep1 != '-' or sep2 != '-':
         return False
-    
     m = nat_of_2_digits(m1, m2)
     d = nat_of_2_digits(d1, d2)
     y = nat_of_4_digits(y1, y2, y3, y4)
-    
     if m is None or d is None or y is None:
         return False
-    
-    if not (1 <= m <= 12):
+    if not 1 <= m <= 12:
         return False
-    
-    if not (1 <= d <= days_in_month(m)):
+    if not 1 <= d <= days_in_month(m):
         return False
-        
     return True
+
+def problem_124_pre(date):
+    return bool(_orig_problem_124_pre(date))
+
+def problem_124_spec(date, output):
+    return _orig_problem_124_spec(date) == output

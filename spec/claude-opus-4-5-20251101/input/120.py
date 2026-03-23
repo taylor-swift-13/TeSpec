@@ -4,32 +4,35 @@ def is_sorted(l):
 def count_occ_Z(l, x):
     return l.count(x)
 
-def is_permutation_of_sublist(result, original):
-    return all(result.count(x) <= original.count(x) for x in set(result))
+def is_permutation_of_sublist(output, original):
+    return all(output.count(x) <= original.count(x) for x in set(output))
 
-def are_top_k_elements(result, original, k):
-    for x in result:
+def are_top_k_elements(output, original, k):
+    for x in output:
         for y in original:
-            if y not in result and result.count(y) == 0:
+            if y not in output and output.count(y) == 0:
                 if not (x >= y):
                     return False
     return True
 
-def maximum_spec(arr, k, result):
-    if len(result) != k:
+def _orig_maximum_spec(arr, k, output):
+    if len(output) != k:
         return False
-    if not is_sorted(result):
+    if not is_sorted(output):
         return False
-    if not is_permutation_of_sublist(result, arr):
+    if not is_permutation_of_sublist(output, arr):
         return False
     if k > len(arr):
         return False
-    for x in result:
+    for x in output:
         if x not in arr:
             return False
     for dropped in arr:
-        if arr.count(dropped) > result.count(dropped):
-            for kept in result:
-                if not (kept >= dropped):
+        if arr.count(dropped) > output.count(dropped):
+            for kept in output:
+                if not kept >= dropped:
                     return False
     return True
+
+def maximum_spec(arr, k, output):
+    return bool(_orig_maximum_spec(arr, k, output))

@@ -7,6 +7,8 @@ def filtered(P, l, l_prime):
     expected = [x for x in l if P(x)]
     return expected == l_prime
 
-def filter_by_substring_spec(strings, substring, res):
-    # Checks if 'res' is the result of filtering 'strings' to keep only those containing 'substring'.
-    return filtered(lambda s: contains_substring(substring, s), strings, res)
+def _orig_filter_by_substring_spec(strings, substring, output):
+    return filtered(lambda s: contains_substring(substring, s), strings, output)
+
+def filter_by_substring_spec(strings, substring, output):
+    return bool(_orig_filter_by_substring_spec(strings, substring, output))

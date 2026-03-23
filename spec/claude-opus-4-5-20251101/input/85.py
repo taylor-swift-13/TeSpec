@@ -18,5 +18,8 @@ def add_even_at_odd_indices_aux(lst, idx):
 def add_even_at_odd_indices(lst):
     return add_even_at_odd_indices_aux(lst, 0)
 
-def add_spec(lst, result):
-    return result == add_even_at_odd_indices(lst)
+def _orig_add_spec(lst, output):
+    return output == add_even_at_odd_indices(lst)
+
+def add_spec(lst, output):
+    return bool(_orig_add_spec(lst, output))

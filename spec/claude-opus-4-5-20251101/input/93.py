@@ -31,7 +31,10 @@ def encode_char(ch: str) -> str:
 def encode_list(l: list) -> list:
     return [encode_char(ch) for ch in l]
 
-def encode_spec(message: str, encoded: str) -> bool:
+def _orig_encode_spec(message: str, encoded: str) -> bool:
     message_list = list(message)
     encoded_list = encode_list(message_list)
-    return encoded == "".join(encoded_list)
+    return encoded == ''.join(encoded_list)
+
+def encode_spec(message, output):
+    return bool(_orig_encode_spec(message, output))

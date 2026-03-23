@@ -18,5 +18,8 @@ def sum_odd_at_even_positions_aux(lst: list, idx: int) -> int:
 def sum_odd_at_even_positions(lst: list) -> int:
     return sum_odd_at_even_positions_aux(lst, 0)
 
-def solution_spec(lst: list, result: int) -> bool:
-    return result == sum_odd_at_even_positions(lst)
+def _orig_solution_spec(lst: list, output: int) -> bool:
+    return output == sum_odd_at_even_positions(lst)
+
+def solution_spec(lst, output):
+    return bool(_orig_solution_spec(lst, output))

@@ -39,40 +39,32 @@ def is_first_index_of(arr, v, idx):
             return False
     return True
 
-def pluck_spec(arr, result):
+def _orig_pluck_spec(arr, output):
     """
-    Returns True if result satisfies the pluck specification for arr.
+    Returns True if output satisfies the pluck specification for arr.
     The spec states:
-    1. If arr is empty, result must be empty.
-    2. If arr is not empty and all elements are odd, result must be empty.
-    3. If arr is not empty and has an even element, result must be [min_even, first_index_of_min_even].
+    1. If arr is empty, output must be empty.
+    2. If arr is not empty and all elements are odd, output must be empty.
+    3. If arr is not empty and has an even element, output must be [min_even, first_index_of_min_even].
     """
-    # Condition 1: (arr = [] -> result = [])
     if arr == []:
-        if result != []:
+        if output != []:
             return False
-    
-    # Condition 2: (arr <> [] -> all_odd arr -> result = [])
     if arr != []:
         if all_odd(arr):
-            if result != []:
+            if output != []:
                 return False
-    
-    # Condition 3: (arr <> [] -> has_even arr -> exists min_even idx, ...)
     if arr != []:
         if has_even(arr):
-            # The spec requires result to be exactly [min_even, idx]
-            # where min_even is the smallest even and idx is its first index.
-            if not isinstance(result, list) or len(result) != 2:
+            if not isinstance(output, list) or len(output) != 2:
                 return False
-            
-            min_even_candidate = result[0]
-            idx_candidate = result[1]
-            
-            # Check if the candidate values satisfy the required properties
+            min_even_candidate = output[0]
+            idx_candidate = output[1]
             if not is_smallest_even(arr, min_even_candidate):
                 return False
             if not is_first_index_of(arr, min_even_candidate, idx_candidate):
                 return False
-            
     return True
+
+def pluck_spec(arr, output):
+    return bool(_orig_pluck_spec(arr, output))

@@ -19,13 +19,16 @@ def f_list(n: int) -> list:
         return []
     return f_list(n - 1) + [f_element(n)]
 
-def f_spec(n: int, result: list) -> bool:
-    if result != f_list(n):
+def _orig_f_spec(n: int, output: list) -> bool:
+    if output != f_list(n):
         return False
-    if len(result) != n:
+    if len(output) != n:
         return False
     for i in range(1, n + 1):
-        val = result[i - 1] if 0 <= i - 1 < len(result) else 0
+        val = output[i - 1] if 0 <= i - 1 < len(output) else 0
         if val != f_element(i):
             return False
     return True
+
+def f_spec(n, output):
+    return bool(_orig_f_spec(n, output))

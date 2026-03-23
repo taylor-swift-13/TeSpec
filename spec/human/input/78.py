@@ -7,8 +7,14 @@ def count_prime_hex(s):
 def hex_key_impl(s):
     return count_prime_hex(s)
 
-def problem_78_pre(s):
+def _orig_problem_78_pre(s):
     return True
 
-def problem_78_spec(s, output):
+def _orig_problem_78_spec(s, output):
     return output == hex_key_impl(s)
+
+def problem_78_pre(num):
+    return bool(_orig_problem_78_pre(num))
+
+def problem_78_spec(num, output):
+    return bool(_orig_problem_78_spec(num, output))

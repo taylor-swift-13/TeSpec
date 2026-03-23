@@ -1,12 +1,12 @@
 def nat_to_digits_rev(n, fuel):
-    res = []
+    output = []
     while fuel > 0:
         if n == 0:
             break
-        res.append(n % 10)
+        output.append(n % 10)
         n //= 10
         fuel -= 1
-    return res
+    return output
 
 def get_digits(z):
     if z == 0:
@@ -33,9 +33,9 @@ def weight_index_le(p1, p2):
     w2 = weight(v2)
     return w1 < w2 or (w1 == w2 and i1 <= i2)
 
-def order_by_points_spec(nums, res):
-    # Python's built-in sorted function is guaranteed to be stable,
-    # which perfectly matches the weight_index_le sorting logic
-    # (sorting by weight first, then preserving original index order).
+def _orig_order_by_points_spec(nums, output):
     expected = sorted(nums, key=weight)
-    return res == expected
+    return output == expected
+
+def order_by_points_spec(nums, output):
+    return bool(_orig_order_by_points_spec(nums, output))

@@ -1,14 +1,11 @@
-def unique_spec(l, res):
-    # Check if res is sorted in ascending order
-    if res != sorted(res):
+def _orig_unique_spec(l, output):
+    if output != sorted(output):
         return False
-    
-    # Check if res has no duplicates
-    if len(res) != len(set(res)):
+    if len(output) != len(set(output)):
         return False
-    
-    # Check if the elements in res are exactly the elements in l
-    if set(res) != set(l):
+    if set(output) != set(l):
         return False
-    
     return True
+
+def unique_spec(l, output):
+    return bool(_orig_unique_spec(l, output))

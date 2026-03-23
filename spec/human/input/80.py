@@ -1,7 +1,7 @@
-def problem_80_pre(s: str) -> bool:
+def _orig_problem_80_pre(s: str) -> bool:
     return True
 
-def problem_80_spec(s: str, output: bool) -> bool:
+def _orig_problem_80_spec(s: str, output: bool) -> bool:
     if len(s) < 3:
         is_happy = False
     else:
@@ -13,5 +13,10 @@ def problem_80_spec(s: str, output: bool) -> bool:
             if c1 == c2 or c1 == c3 or c2 == c3:
                 is_happy = False
                 break
-                
     return is_happy == output
+
+def problem_80_pre(s):
+    return bool(_orig_problem_80_pre(s))
+
+def problem_80_spec(s, output):
+    return bool(_orig_problem_80_spec(s, output))

@@ -28,8 +28,14 @@ def list_sort_impl(lst_in: list) -> list:
     filtered = [s for s in lst_in if has_even_length(s)]
     return sort_by(string_le, filtered)
 
-def problem_149_pre(input: list) -> bool:
+def _orig_problem_149_pre(input: list) -> bool:
     return True
 
-def problem_149_spec(input: list, output: list) -> bool:
+def _orig_problem_149_spec(input: list, output: list) -> bool:
     return output == list_sort_impl(input)
+
+def problem_149_pre(lst):
+    return bool(_orig_problem_149_pre(lst))
+
+def problem_149_spec(lst, output):
+    return bool(_orig_problem_149_spec(lst, output))

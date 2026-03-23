@@ -38,18 +38,18 @@ def between_consonants(w, i, ch):
 
     return True
 
-def get_closest_vowel_spec(word, res):
-    if type(word) is not str or type(res) is not str:
+def _orig_get_closest_vowel_spec(word, output):
+    if type(word) is not str or type(output) is not str:
         return False
-
     best_ch = None
-    # Find the largest index i that satisfies between_consonants
     for i in range(len(word)):
         ch = word[i]
         if between_consonants(word, i, ch):
             best_ch = ch
-
     if best_ch is not None:
-        return res == best_ch
+        return output == best_ch
     else:
-        return res == ""
+        return output == ''
+
+def get_closest_vowel_spec(word, output):
+    return bool(_orig_get_closest_vowel_spec(word, output))

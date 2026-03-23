@@ -25,5 +25,8 @@ def string_xor_prefix(a: str, b: str, r: str) -> bool:
             return False
     return True
 
-def string_xor_spec(a: str, b: str, r: str) -> bool:
+def _orig_string_xor_spec(a: str, b: str, r: str) -> bool:
     return string_xor_prefix(a, b, r)
+
+def string_xor_spec(a, b, output):
+    return bool(_orig_string_xor_spec(a, b, output))

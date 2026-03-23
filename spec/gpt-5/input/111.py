@@ -11,51 +11,35 @@ def join_space(l: list) -> str:
 def occ(x: str, l: list) -> int:
     return l.count(x)
 
-def histogram_spec(test: str, ans: list) -> bool:
-    if test == "" and ans == []:
+def _orig_histogram_spec(test: str, output: list) -> bool:
+    if test == '' and output == []:
         return True
-    if test == "":
+    if test == '':
         return False
-
-    # Since join_space joins with a single space, splitting by ' ' 
-    # uniquely recovers the tokens list.
     tokens = test.split(' ')
-
-    # Verify Forall nospace tokens
-    if any(not nospace(t) for t in tokens):
+    if any((not nospace(t) for t in tokens)):
         return False
-
-    # Verify test = join_space tokens
     if join_space(tokens) != test:
         return False
-
-    # The Coq spec requires the existence of a non-empty string s0 in tokens
-    non_empty_tokens = [t for t in tokens if t != ""]
+    non_empty_tokens = [t for t in tokens if t != '']
     if not non_empty_tokens:
         return False
-
-    # m is the maximum occurrence count among non-empty tokens.
-    # We count occurrences in the full tokens list to exactly match Coq's occ behavior.
-    m = max(occ(t, tokens) for t in non_empty_tokens)
-
-    # Check NoDup (map fst ans)
-    ans_keys = [k for k, v in ans]
+    m = max((occ(t, tokens) for t in non_empty_tokens))
+    ans_keys = [k for (k, v) in output]
     if len(ans_keys) != len(set(ans_keys)):
         return False
-
-    # Check that every element in ans is valid and has max occurrences
-    for s, n in ans:
+    for (s, n) in output:
         if n != m:
             return False
-        if s == "":
+        if s == '':
             return False
         if occ(s, tokens) != m:
             return False
-
-    # Check that every non-empty token with max occurrences is in ans
     for s in set(non_empty_tokens):
         if occ(s, tokens) == m:
-            if not any(k == s and v == m for k, v in ans):
+            if not any((k == s and v == m for (k, v) in output)):
                 return False
-
     return True
+
+def histogram_spec(test, output):
+    return bool(_orig_histogram_spec(test, output))

@@ -33,8 +33,11 @@ def string_rev_aux(s: str, acc: str) -> str:
 def string_rev(s: str) -> str:
     return string_rev_aux(s, "")
 
-def solve_spec(s: str, r: str) -> bool:
+def _orig_solve_spec(s: str, r: str) -> bool:
     if has_letter(s):
         return r == string_map(swapcase_char, s)
     else:
         return r == string_rev(s)
+
+def solve_spec(s, output):
+    return bool(_orig_solve_spec(s, output))

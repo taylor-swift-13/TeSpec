@@ -8,5 +8,8 @@ def sum_of_squares_of_positive_odd_integers(lst):
             total += x * x
     return total
 
-def double_the_difference_spec(lst, result):
-    return result == sum_of_squares_of_positive_odd_integers(lst)
+def _orig_double_the_difference_spec(lst, output):
+    return output == sum_of_squares_of_positive_odd_integers(lst)
+
+def double_the_difference_spec(lst, output):
+    return bool(_orig_double_the_difference_spec(lst, output))

@@ -25,7 +25,7 @@ def digits10(n, l):
     digits.reverse()
     return l == digits
 
-def even_odd_count_spec(num, res):
+def _orig_even_odd_count_spec(num, output):
     n = abs(num)
     if n == 0:
         digits = [0]
@@ -36,5 +36,7 @@ def even_odd_count_spec(num, res):
             digits.append(temp % 10)
             temp //= 10
         digits.reverse()
-    
-    return tuple(res) == (count_even(digits), count_odd(digits))
+    return tuple(output) == (count_even(digits), count_odd(digits))
+
+def even_odd_count_spec(num, output):
+    return bool(_orig_even_odd_count_spec(num, output))

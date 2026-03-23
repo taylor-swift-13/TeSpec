@@ -23,8 +23,14 @@ def nat_to_binary_string(n: int) -> str:
 def decimal_to_binary_impl(decimal: int) -> str:
     return "db" + nat_to_binary_string(decimal) + "db"
 
-def problem_79_pre(decimal: int) -> bool:
+def _orig_problem_79_pre(decimal: int) -> bool:
     return True
 
-def problem_79_spec(decimal: int, output: str) -> bool:
+def _orig_problem_79_spec(decimal: int, output: str) -> bool:
     return output == decimal_to_binary_impl(decimal)
+
+def problem_79_pre(decimal):
+    return bool(_orig_problem_79_pre(decimal))
+
+def problem_79_spec(decimal, output):
+    return bool(_orig_problem_79_spec(decimal, output))

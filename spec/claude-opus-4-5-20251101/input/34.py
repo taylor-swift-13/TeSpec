@@ -4,8 +4,11 @@ def is_sorted(l):
 def no_duplicates(l):
     return len(set(l)) == len(l)
 
-def all_elements_from(result, original):
-    return set(result) == set(original)
+def all_elements_from(output, original):
+    return set(output) == set(original)
 
-def unique_spec(l, result):
-    return is_sorted(result) and no_duplicates(result) and all_elements_from(result, l)
+def _orig_unique_spec(l, output):
+    return is_sorted(output) and no_duplicates(output) and all_elements_from(output, l)
+
+def unique_spec(l, output):
+    return bool(_orig_unique_spec(l, output))

@@ -22,5 +22,8 @@ def count_odd_digits(s: list) -> int:
     rest = s[1:]
     return (1 if is_odd_digit(c) else 0) + count_odd_digits(rest)
 
-def even_odd_count_spec(num: int, even_count: int, odd_count: int) -> bool:
+def _orig_even_odd_count_spec(num: int, even_count: int, odd_count: int) -> bool:
     return False
+
+def even_odd_count_spec(num, output):
+    return bool(_orig_even_odd_count_spec(num, output[0], output[1]))

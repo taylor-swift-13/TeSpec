@@ -20,15 +20,18 @@ def is_factor(f, n):
 def is_prime_factor(f, n):
     return is_prime(f) and is_factor(f, n)
 
-def largest_prime_factor_spec(n, result):
+def _orig_largest_prime_factor_spec(n, output):
     if n <= 1:
         return False
     if is_prime(n):
         return False
-    if not is_prime_factor(result, n):
+    if not is_prime_factor(output, n):
         return False
     for f in range(2, n + 1):
         if is_prime_factor(f, n):
-            if f > result:
+            if f > output:
                 return False
     return True
+
+def largest_prime_factor_spec(n, output):
+    return bool(_orig_largest_prime_factor_spec(n, output))

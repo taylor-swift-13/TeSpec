@@ -9,9 +9,9 @@ def rotation_of(b: str, rot: str) -> bool:
             return True
     return False
 
-def cycpattern_check_spec(a: str, b: str, res: bool) -> bool:
+def _orig_cycpattern_check_spec(a: str, b: str, output: bool) -> bool:
     expected = False
-    if a == b or b == "":
+    if a == b or b == '':
         expected = True
     else:
         for i in range(len(b) + 1):
@@ -19,4 +19,7 @@ def cycpattern_check_spec(a: str, b: str, res: bool) -> bool:
             if substring(a, rot):
                 expected = True
                 break
-    return res == expected
+    return output == expected
+
+def cycpattern_check_spec(a, b, output):
+    return bool(_orig_cycpattern_check_spec(a, b, output))

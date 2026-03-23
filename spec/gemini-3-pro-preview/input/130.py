@@ -11,6 +11,9 @@ def tri_elem(n: int) -> int:
         else:
             return tri_elem(p) + tri_elem(q) + (1 + (n + 1) // 2)
 
-def tri_spec(n: int, l: list) -> bool:
+def _orig_tri_spec(n: int, l: list) -> bool:
     expected = [tri_elem(i) for i in range(n + 1)]
     return l == expected
+
+def tri_spec(n, output):
+    return bool(_orig_tri_spec(n, output))

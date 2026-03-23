@@ -11,13 +11,19 @@ def tri(n: int) -> int:
             t_next = 1 + (n + 1) // 2
             return t_prev + tri(n - 2) + t_next
 
-def problem_130_pre(n: int) -> bool:
+def _orig_problem_130_pre(n: int) -> bool:
     return True
 
-def problem_130_spec(n: int, l: list) -> bool:
+def _orig_problem_130_spec(n: int, l: list) -> bool:
     if len(l) != n + 1:
         return False
     for i in range(n + 1):
         if l[i] != tri(i):
             return False
     return True
+
+def problem_130_pre(n):
+    return bool(_orig_problem_130_pre(n))
+
+def problem_130_spec(n, output):
+    return bool(_orig_problem_130_spec(n, output))

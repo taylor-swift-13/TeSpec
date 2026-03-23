@@ -26,5 +26,8 @@ def happy_prop(s):
             
     return True
 
-def is_happy_spec(s, r):
+def _orig_is_happy_spec(s, r):
     return r == happy_prop(s)
+
+def is_happy_spec(s, output):
+    return bool(_orig_is_happy_spec(s, output))

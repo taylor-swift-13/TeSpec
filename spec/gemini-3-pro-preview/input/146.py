@@ -21,12 +21,15 @@ def SpecialCondition(n):
     
     return IsOddDigit(d)
 
-def CountSpecial(nums, ans):
+def CountSpecial(nums, output):
     count = 0
     for x in nums:
         if SpecialCondition(x):
             count += 1
-    return count == ans
+    return count == output
 
-def specialFilter_spec(nums, ans):
-    return CountSpecial(nums, ans)
+def _orig_specialFilter_spec(nums, output):
+    return CountSpecial(nums, output)
+
+def specialFilter_spec(nums, output):
+    return bool(_orig_specialFilter_spec(nums, output))

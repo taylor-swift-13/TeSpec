@@ -1,7 +1,7 @@
-def problem_43_pre(input):
+def _orig_problem_43_pre(input):
     return True
 
-def problem_43_spec(input, output):
+def _orig_problem_43_spec(input, output):
     has_pair = False
     n = len(input)
     for i in range(n):
@@ -12,3 +12,9 @@ def problem_43_spec(input, output):
         if has_pair:
             break
     return output == has_pair
+
+def problem_43_pre(l):
+    return bool(_orig_problem_43_pre(l))
+
+def problem_43_spec(l, output):
+    return bool(_orig_problem_43_spec(l, output))

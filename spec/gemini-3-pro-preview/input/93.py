@@ -34,5 +34,8 @@ def vowel_change_char(c: str) -> str:
 def encode_process(l: list) -> list:
     return [vowel_change_char(switch_case_char(c)) for c in l]
 
-def encode_spec(message: str, result: str) -> bool:
-    return result == list_to_string(encode_process(string_to_list(message)))
+def _orig_encode_spec(message: str, output: str) -> bool:
+    return output == list_to_string(encode_process(string_to_list(message)))
+
+def encode_spec(message, output):
+    return bool(_orig_encode_spec(message, output))

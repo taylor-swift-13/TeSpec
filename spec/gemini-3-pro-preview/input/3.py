@@ -1,4 +1,4 @@
-def below_zero_spec(operations, result):
+def _orig_below_zero_spec(operations, output):
     exists_n = False
     current_sum = 0
     for op in operations:
@@ -6,4 +6,7 @@ def below_zero_spec(operations, result):
         if current_sum < 0:
             exists_n = True
             break
-    return result == exists_n
+    return output == exists_n
+
+def below_zero_spec(operations, output):
+    return bool(_orig_below_zero_spec(operations, output))

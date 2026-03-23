@@ -10,8 +10,11 @@ def count_valid_triples(n):
     return (one_cnt * (one_cnt - 1) * (one_cnt - 2)) // 6 + \
            (zero_cnt * (zero_cnt - 1) * (zero_cnt - 2)) // 6
 
-def get_max_triples_spec(n, result):
+def _orig_get_max_triples_spec(n, output):
     if n <= 2:
-        return result == 0
+        return output == 0
     else:
-        return result == count_valid_triples(n)
+        return output == count_valid_triples(n)
+
+def get_max_triples_spec(n, output):
+    return bool(_orig_get_max_triples_spec(n, output))

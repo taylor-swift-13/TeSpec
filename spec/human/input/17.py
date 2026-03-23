@@ -38,8 +38,14 @@ def parse_music_impl_aux(notes):
 def parse_music_impl(input_str):
     return parse_music_impl_aux(SplitOnSpaces(input_str))
 
-def problem_17_pre(input_str):
+def _orig_problem_17_pre(input_str):
     return True
 
-def problem_17_spec(input_str, output):
+def _orig_problem_17_spec(input_str, output):
     return output == parse_music_impl(input_str)
+
+def problem_17_pre(music_string):
+    return bool(_orig_problem_17_pre(music_string))
+
+def problem_17_spec(music_string, output):
+    return bool(_orig_problem_17_spec(music_string, output))

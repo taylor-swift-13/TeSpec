@@ -20,15 +20,17 @@ def orderR(s, t):
         return string_lex_le(s, t)
     return False
 
-def sorted_list_sum_spec(lst, res):
-    for s in set(lst + res):
+def _orig_sorted_list_sum_spec(lst, output):
+    for s in set(lst + output):
         if even_length(s):
-            if count(s, res) != count(s, lst):
+            if count(s, output) != count(s, lst):
                 return False
-        else:
-            if count(s, res) != 0:
-                return False
-    for i in range(len(res) - 1):
-        if not orderR(res[i], res[i+1]):
+        elif count(s, output) != 0:
+            return False
+    for i in range(len(output) - 1):
+        if not orderR(output[i], output[i + 1]):
             return False
     return True
+
+def sorted_list_sum_spec(lst, output):
+    return bool(_orig_sorted_list_sum_spec(lst, output))

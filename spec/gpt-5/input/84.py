@@ -35,14 +35,15 @@ def binary_string_of(s, out):
         return out == "0"
     return out == bin(s)[2:]
 
-def solve_spec(N, out):
-    if not (0 <= N <= 10000):
+def _orig_solve_spec(N, out):
+    if not 0 <= N <= 10000:
         return False
-    
     if N == 0:
         ds = [0]
     else:
         ds = [int(c) for c in str(N)]
-        
     s = sum_list_Z(ds)
     return binary_string_of(s, out)
+
+def solve_spec(N, output):
+    return bool(_orig_solve_spec(N, output))

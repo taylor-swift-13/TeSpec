@@ -7,12 +7,12 @@ def nat_to_string(n):
     """
     return str(n)
 
-def string_sequence_spec(n, result):
+def _orig_string_sequence_spec(n, output):
     """
     Python implementation of the Coq string_sequence_spec.
     
     Coq definition:
-      result = String.concat " " (map nat_to_string (seq 0 (S n)))
+      output = String.concat " " (map nat_to_string (seq 0 (S n)))
       
     Logic:
       1. (seq 0 (S n)) generates a list of natural numbers starting at 0 with length n+1.
@@ -20,12 +20,9 @@ def string_sequence_spec(n, result):
       2. map nat_to_string converts each number to a string.
       3. String.concat " " joins the strings with a space separator.
     """
-    # Generate the sequence 0 to n (inclusive)
-    # We use the global nat_to_string to allow for external overriding (mocking)
-    # if a different behavior for the abstract parameter is required.
     sequence_strings = (nat_to_string(i) for i in range(n + 1))
-    
-    # Join with space
-    expected_result = " ".join(sequence_strings)
-    
-    return result == expected_result
+    expected_result = ' '.join(sequence_strings)
+    return output == expected_result
+
+def string_sequence_spec(n, output):
+    return bool(_orig_string_sequence_spec(n, output))

@@ -22,5 +22,8 @@ def firstn_Z(n: int, l: list) -> list:
 def filter_sum(f, l: list) -> int:
     return sum(x for x in l if f(x))
 
-def add_elements_spec(arr: list, k: int, result: int) -> bool:
-    return result == filter_sum(has_at_most_two_digits, firstn_Z(k, arr))
+def _orig_add_elements_spec(arr: list, k: int, output: int) -> bool:
+    return output == filter_sum(has_at_most_two_digits, firstn_Z(k, arr))
+
+def add_elements_spec(arr, k, output):
+    return bool(_orig_add_elements_spec(arr, k, output))

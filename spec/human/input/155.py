@@ -22,8 +22,14 @@ def even_odd_count_impl(num):
     l = to_digits_fuel(fuel, num)
     return count_digits_acc(l, (0, 0))
 
-def problem_155_pre(num):
+def _orig_problem_155_pre(num):
     return True
 
-def problem_155_spec(num, output):
+def _orig_problem_155_spec(num, output):
     return output == even_odd_count_impl(num)
+
+def problem_155_pre(num):
+    return bool(_orig_problem_155_pre(num))
+
+def problem_155_spec(num, output):
+    return bool(_orig_problem_155_spec(num, output))

@@ -18,8 +18,14 @@ def fizz_buzz_impl(n):
             acc += count_digit_7(i)
     return acc
 
-def problem_36_pre(n):
+def _orig_problem_36_pre(n):
     return True
 
-def problem_36_spec(n, output):
+def _orig_problem_36_spec(n, output):
     return output == fizz_buzz_impl(n)
+
+def problem_36_pre(n):
+    return bool(_orig_problem_36_pre(n))
+
+def problem_36_spec(n, output):
+    return bool(_orig_problem_36_spec(n, output))

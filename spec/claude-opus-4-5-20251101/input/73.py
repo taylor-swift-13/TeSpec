@@ -8,7 +8,10 @@ def count_mismatches(l1, l2, n):
             mismatches += 1
     return mismatches
 
-def smallest_change_spec(arr, result):
+def _orig_smallest_change_spec(arr, output):
     arr_reversed = arr[::-1]
     half_len = len(arr) // 2
-    return result == count_mismatches(arr, arr_reversed, half_len)
+    return output == count_mismatches(arr, arr_reversed, half_len)
+
+def smallest_change_spec(arr, output):
+    return bool(_orig_smallest_change_spec(arr, output))

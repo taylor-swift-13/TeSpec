@@ -1,7 +1,7 @@
-def problem_14_pre(input: str) -> bool:
+def _orig_problem_14_pre(input: str) -> bool:
     return True
 
-def problem_14_spec(input: str, output: list) -> bool:
+def _orig_problem_14_spec(input: str, output: list) -> bool:
     if len(input) == 0:
         return output == []
     else:
@@ -13,3 +13,9 @@ def problem_14_spec(input: str, output: list) -> bool:
             if not input.startswith(output[i]):
                 return False
         return True
+
+def problem_14_pre(string):
+    return bool(_orig_problem_14_pre(string))
+
+def problem_14_spec(string, output):
+    return bool(_orig_problem_14_spec(string, output))

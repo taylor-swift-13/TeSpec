@@ -6,7 +6,7 @@ def three_consecutive_distinct(s, i):
     c3 = s[i + 2]
     return c1 != c2 and c1 != c3 and c2 != c3
 
-def is_happy_spec(s, result):
+def _orig_is_happy_spec(s, output):
     if len(s) < 3:
         expected = False
     else:
@@ -15,4 +15,7 @@ def is_happy_spec(s, result):
             if not three_consecutive_distinct(s, i):
                 expected = False
                 break
-    return expected == result
+    return expected == output
+
+def is_happy_spec(s, output):
+    return bool(_orig_is_happy_spec(s, output))

@@ -18,8 +18,11 @@ def count_prime_hex(s):
             count += 0
     return count
 
-def hex_key_spec(num, count):
+def _orig_hex_key_spec(num, count):
     """
     Returns True if the provided count matches the number of prime hex digits in num.
     """
     return count == count_prime_hex(num)
+
+def hex_key_spec(num, output):
+    return bool(_orig_hex_key_spec(num, output))

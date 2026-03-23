@@ -13,13 +13,19 @@ def char_relation(c_in: str, c_out: str) -> bool:
     else:
         return c_out == c_in
 
-def problem_89_pre(s: str) -> bool:
+def _orig_problem_89_pre(s: str) -> bool:
     return True
 
-def problem_89_spec(s: str, output: str) -> bool:
+def _orig_problem_89_spec(s: str, output: str) -> bool:
     if len(s) != len(output):
         return False
     for i in range(len(s)):
         if not char_relation(s[i], output[i]):
             return False
     return True
+
+def problem_89_pre(s):
+    return bool(_orig_problem_89_pre(s))
+
+def problem_89_spec(s, output):
+    return bool(_orig_problem_89_spec(s, output))

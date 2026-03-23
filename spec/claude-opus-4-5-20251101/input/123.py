@@ -34,10 +34,9 @@ def sorted_ascending(l):
 def is_permutation(l1, l2):
     return sorted(l1) == sorted(l2)
 
-def get_odd_collatz_spec(n, result):
+def _orig_get_odd_collatz_spec(n, output):
     if n <= 0:
         return False
-    
     collatz_seq = []
     curr = n
     seen = set()
@@ -48,6 +47,8 @@ def get_odd_collatz_spec(n, result):
         collatz_seq.append(curr)
         curr = collatz_next(curr)
     collatz_seq.append(1)
-    
     odds = filter_odds(collatz_seq)
-    return is_permutation(odds, result) and sorted_ascending(result)
+    return is_permutation(odds, output) and sorted_ascending(output)
+
+def get_odd_collatz_spec(n, output):
+    return bool(_orig_get_odd_collatz_spec(n, output))

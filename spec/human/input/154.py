@@ -16,18 +16,22 @@ def is_rotation_of(r: list, b: list) -> bool:
             return True
     return False
 
-def problem_154_pre(a: str, b: str) -> bool:
+def _orig_problem_154_pre(a: str, b: str) -> bool:
     return True
 
-def problem_154_spec(a: str, b: str, res: bool) -> bool:
+def _orig_problem_154_spec(a: str, b: str, output: bool) -> bool:
     la = list_ascii_of_string(a)
     lb = list_ascii_of_string(b)
-    
     exists_b_prime = False
     for i in range(len(lb) + 1):
         b_prime = lb[i:] + lb[:i]
         if is_substring(b_prime, la):
             exists_b_prime = True
             break
-            
-    return res == exists_b_prime
+    return output == exists_b_prime
+
+def problem_154_pre(a, b):
+    return bool(_orig_problem_154_pre(a, b))
+
+def problem_154_spec(a, b, output):
+    return bool(_orig_problem_154_spec(a, b, output))

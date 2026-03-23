@@ -1,16 +1,16 @@
 def split_aux(s, acc):
-    result = []
+    output = []
     current_acc = acc
     for c in s:
         if c == " ":
             if current_acc != "":
-                result.append(current_acc)
+                output.append(current_acc)
             current_acc = ""
         else:
             current_acc += c
     if current_acc != "":
-        result.append(current_acc)
-    return result
+        output.append(current_acc)
+    return output
 
 def split_spaces(s):
     return split_aux(s, "")
@@ -29,29 +29,24 @@ def lookup(k, l):
             return val
     return None
 
-def histogram_spec(test, result):
+def _orig_histogram_spec(test, output):
     words = split_spaces(test)
     mx = get_max_count(words)
-    
     if not words:
-        return result == []
-    
-    # Check NoDup (map fst result)
-    keys = [k for (k, v) in result]
+        return output == []
+    keys = [k for (k, v) in output]
     if len(keys) != len(set(keys)):
         return False
-        
-    # Check: forall k v, lookup k result = Some v -> v = mx /\ count_occurrences k words = mx
-    for (k, v) in result:
+    for (k, v) in output:
         if v != mx:
             return False
         if count_occurrences(k, words) != mx:
             return False
-            
-    # Check: forall k, In k words -> count_occurrences k words = mx -> lookup k result = Some mx
     for k in words:
         if count_occurrences(k, words) == mx:
-            if lookup(k, result) != mx:
+            if lookup(k, output) != mx:
                 return False
-                
     return True
+
+def histogram_spec(test, output):
+    return bool(_orig_histogram_spec(test, output))

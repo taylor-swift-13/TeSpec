@@ -1,9 +1,9 @@
-def problem_90_pre(l):
+def _orig_problem_90_pre(l):
     return True
 
-def problem_90_spec(l, res):
-    if res is not None:
-        z = res
+def _orig_problem_90_spec(l, output):
+    if output is not None:
+        z = output
         if not l:
             return False
         s1 = min(l)
@@ -23,3 +23,9 @@ def problem_90_spec(l, res):
             if x != first:
                 return False
         return True
+
+def problem_90_pre(lst):
+    return bool(_orig_problem_90_pre(lst))
+
+def problem_90_spec(lst, output):
+    return bool(_orig_problem_90_spec(lst, output))

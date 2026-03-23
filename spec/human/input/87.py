@@ -1,4 +1,5 @@
 import sys
+
 sys.setrecursionlimit(10000)
 
 def coord_order(c1, c2):
@@ -55,8 +56,14 @@ def sort_coords(coords):
 def get_row_impl(lst, x):
     return sort_coords(collect_all_coords(lst, 0, x))
 
-def problem_87_pre(lst, x):
+def _orig_problem_87_pre(lst, x):
     return True
 
-def problem_87_spec(lst, x, res):
-    return res == get_row_impl(lst, x)
+def _orig_problem_87_spec(lst, x, output):
+    return output == get_row_impl(lst, x)
+
+def problem_87_pre(lst, x):
+    return bool(_orig_problem_87_pre(lst, x))
+
+def problem_87_spec(lst, x, output):
+    return bool(_orig_problem_87_spec(lst, x, output))

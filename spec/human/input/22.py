@@ -32,22 +32,25 @@ def is_subsequence(l1: List[Any], l2: List[Any]) -> bool:
 def strict_in(v: Any, lst: List[Any]) -> bool:
     return any(strict_eq(v, x) for x in lst)
 
-def problem_22_pre(input_list: List[Any]) -> bool:
+def filter_integers(values: List[Any]) -> List[int]:
+    return [v for v in values if is_int(v)]
+
+def _orig_problem_22_pre(input_list: List[Any]) -> bool:
     return True
 
-def problem_22_spec(input_list: List[Any], output_list: List[Any]) -> bool:
+def _orig_problem_22_spec(input_list: List[Any], output_list: List[Any]) -> bool:
     if not is_subsequence(output_list, input_list):
         return False
-
     for v in output_list:
         if not (strict_in(v, input_list) and is_int(v)):
             return False
-
     for v in input_list:
-        if is_int(v) and not strict_in(v, output_list):
+        if is_int(v) and (not strict_in(v, output_list)):
             return False
-
     return True
 
-def filter_integers(values: List[Any]) -> List[int]:
-    return [v for v in values if is_int(v)]
+def problem_22_pre(values):
+    return bool(_orig_problem_22_pre(values))
+
+def problem_22_spec(values, output):
+    return bool(_orig_problem_22_spec(values, output))

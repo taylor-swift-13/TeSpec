@@ -43,8 +43,10 @@ def split_words_aux(s, acc):
 def get_words(s):
     return split_words_aux(s, "")
 
-def select_words_spec(s, n, ans):
-    # ans = filter (fun w => Nat.eqb (count_consonants w) n) (get_words s)
+def _orig_select_words_spec(s, n, output):
     words = get_words(s)
     filtered_words = [w for w in words if count_consonants(w) == n]
-    return ans == filtered_words
+    return output == filtered_words
+
+def select_words_spec(s, n, output):
+    return bool(_orig_select_words_spec(s, n, output))

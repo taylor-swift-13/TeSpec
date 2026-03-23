@@ -26,11 +26,14 @@ def le_by_cmp(x: int, y: int) -> bool:
 def lt_by_cmp(x: int, y: int) -> bool:
     return cmp(x, y) == "Lt"
 
-def sort_array_spec(arr: list, result: list) -> bool:
-    if sorted(arr) != sorted(result):
+def _orig_sort_array_spec(arr: list, output: list) -> bool:
+    if sorted(arr) != sorted(output):
         return False
-    for i in range(len(result)):
-        for j in range(i + 1, len(result)):
-            if not le_by_cmp(result[i], result[j]):
+    for i in range(len(output)):
+        for j in range(i + 1, len(output)):
+            if not le_by_cmp(output[i], output[j]):
                 return False
     return True
+
+def sort_array_spec(arr, output):
+    return bool(_orig_sort_array_spec(arr, output))

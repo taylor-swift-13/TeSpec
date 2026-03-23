@@ -41,17 +41,15 @@ def prime_factorization(n, factors):
     # After all factors, we must reach 1 (pf_one).
     return current_n == 1
 
-def is_multiply_prime_spec(a, result):
+def _orig_is_multiply_prime_spec(a, output):
     """
-    Checks if 'result' correctly indicates whether 'a' is a product of exactly three primes.
+    Checks if 'output' correctly indicates whether 'a' is a product of exactly three primes.
     Coq definition:
-    (result = true <-> (a > 1 /\ exists p1 p2 p3 : Z, is_prime p1 /\ is_prime p2 /\ is_prime p3 /\ a = p1 * p2 * p3))
+    (output = true <-> (a > 1 /\\ exists p1 p2 p3 : Z, is_prime p1 /\\ is_prime p2 /\\ is_prime p3 /\\ a = p1 * p2 * p3))
     """
     if a <= 1:
         condition = False
     else:
-        # Find the count of prime factors with multiplicity.
-        # If a = p1 * p2 * p3, the count must be exactly 3.
         factors_count = 0
         temp = a
         d = 2
@@ -62,7 +60,8 @@ def is_multiply_prime_spec(a, result):
             d += 1
         if temp > 1:
             factors_count += 1
-        
-        condition = (factors_count == 3)
-    
-    return result == condition
+        condition = factors_count == 3
+    return output == condition
+
+def is_multiply_prime_spec(a, output):
+    return bool(_orig_is_multiply_prime_spec(a, output))

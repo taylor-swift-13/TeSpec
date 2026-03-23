@@ -1,7 +1,7 @@
-def largest_divisor_spec(n: int, d: int) -> bool:
+def _orig_largest_divisor_spec(n: int, d: int) -> bool:
     if n <= 1:
         return True
-    if not (1 < d < n):
+    if not 1 < d < n:
         return False
     if n % d != 0:
         return False
@@ -10,3 +10,6 @@ def largest_divisor_spec(n: int, d: int) -> bool:
             if d > k:
                 return False
     return True
+
+def largest_divisor_spec(n, output):
+    return bool(_orig_largest_divisor_spec(n, output))

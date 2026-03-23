@@ -14,8 +14,14 @@ def sum_transformed(l, n):
 def sum_squares_impl(lst):
     return sum_transformed(lst, 0)
 
-def problem_142_pre(lst):
+def _orig_problem_142_pre(lst):
     return True
 
-def problem_142_spec(lst, output):
+def _orig_problem_142_spec(lst, output):
     return output == sum_squares_impl(lst)
+
+def problem_142_pre(lst):
+    return bool(_orig_problem_142_pre(lst))
+
+def problem_142_spec(lst, output):
+    return bool(_orig_problem_142_spec(lst, output))

@@ -19,14 +19,12 @@ def collatz_list(n, l):
     # its length is exactly the minimum fuel required to generate it.
     return collatz_aux(n, len(l)) == l
 
-def problem_123_pre(n):
+def _orig_problem_123_pre(n):
     return n > 0
 
-def problem_123_spec(n, result):
+def _orig_problem_123_spec(n, output):
     if n <= 0:
-        # For n <= 0, the sequence never reaches 1, so collatz_list is always False.
         return False
-        
     seq = []
     curr = n
     while True:
@@ -37,8 +35,12 @@ def problem_123_spec(n, result):
             curr = curr // 2
         else:
             curr = 3 * curr + 1
-            
     odds = [x for x in seq if x % 2 != 0]
     expected = sorted(odds)
-    
-    return result == expected
+    return output == expected
+
+def problem_123_pre(n):
+    return bool(_orig_problem_123_pre(n))
+
+def problem_123_spec(n, output):
+    return bool(_orig_problem_123_spec(n, output))

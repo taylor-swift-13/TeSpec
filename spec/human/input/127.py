@@ -10,23 +10,27 @@ def is_prime(n):
             return False
     return True
 
-def problem_127_pre(i1, i2):
-    s1, e1 = i1
-    s2, e2 = i2
+def _orig_problem_127_pre(i1, i2):
+    (s1, e1) = i1
+    (s2, e2) = i2
     return s1 <= e1 and s2 <= e2
 
-def problem_127_spec(i1, i2, output):
-    s1, e1 = i1
-    s2, e2 = i2
-    
+def _orig_problem_127_spec(i1, i2, output):
+    (s1, e1) = i1
+    (s2, e2) = i2
     s_inter = max(s1, s2)
     e_inter = min(e1, e2)
-    
     if s_inter <= e_inter:
         length = e_inter - s_inter
         if is_prime(length):
-            return output == "YES"
+            return output == 'YES'
         else:
-            return output == "NO"
+            return output == 'NO'
     else:
-        return output == "NO"
+        return output == 'NO'
+
+def problem_127_pre(interval1, interval2):
+    return bool(_orig_problem_127_pre(interval1, interval2))
+
+def problem_127_spec(interval1, interval2, output):
+    return bool(_orig_problem_127_spec(interval1, interval2, output))

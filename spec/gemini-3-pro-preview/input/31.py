@@ -12,5 +12,8 @@ def is_prime(n):
         i += 2
     return True
 
-def is_prime_spec(n, result):
-    return result == is_prime(n)
+def _orig_is_prime_spec(n, output):
+    return output == is_prime(n)
+
+def is_prime_spec(n, output):
+    return bool(_orig_is_prime_spec(n, output))

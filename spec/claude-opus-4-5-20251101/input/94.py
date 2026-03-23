@@ -28,9 +28,12 @@ def is_largest_prime(x: int, lst: list) -> bool:
             return False
     return True
 
-def skjkasdkd_spec(lst: list, result: int) -> bool:
+def _orig_skjkasdkd_spec(lst: list, output: int) -> bool:
     primes = [x for x in lst if is_prime(x)]
     if not primes:
-        return result == 0
+        return output == 0
     largest_prime = max(primes)
-    return result == sum_of_digits(largest_prime)
+    return output == sum_of_digits(largest_prime)
+
+def skjkasdkd_spec(lst, output):
+    return bool(_orig_skjkasdkd_spec(lst, output))

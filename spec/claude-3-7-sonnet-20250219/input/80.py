@@ -9,5 +9,8 @@ def happy(s: str) -> bool:
             return False
     return True
 
-def is_happy_spec(s: str, res: bool) -> bool:
-    return res == happy(s)
+def _orig_is_happy_spec(s: str, output: bool) -> bool:
+    return output == happy(s)
+
+def is_happy_spec(s, output):
+    return bool(_orig_is_happy_spec(s, output))

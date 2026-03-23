@@ -7,5 +7,8 @@ def product_list(numbers):
         p *= n
     return p
 
-def sum_product_spec(numbers, result):
-    return result[0] == sum_list(numbers) and result[1] == product_list(numbers)
+def _orig_sum_product_spec(numbers, output):
+    return output[0] == sum_list(numbers) and output[1] == product_list(numbers)
+
+def sum_product_spec(numbers, output):
+    return bool(_orig_sum_product_spec(numbers, output))

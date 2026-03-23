@@ -24,29 +24,24 @@ def is_upper(k):
         return k.isupper()
     return False
 
-def check_dict_case_spec(dictionary, res):
+def _orig_check_dict_case_spec(dictionary, output):
     """
     Implementation of check_dict_case_spec.
     
     The specification states:
-    - If the dictionary is empty, res must be False.
-    - If the dictionary is not empty, res is True if and only if:
+    - If the dictionary is empty, output must be False.
+    - If the dictionary is not empty, output is True if and only if:
         - All keys are strings and are lowercase, OR
         - All keys are strings and are uppercase.
     """
-    # Extract keys from the list of (Key, Value) tuples
     keys = [item[0] for item in dictionary]
-    
     if not keys:
-        # match keys with | [] => res = false
-        return res is False
+        return output is False
     else:
-        # all_lower := Forall (fun k => is_str k /\ is_lower k) keys
-        all_lower = all(is_str(k) and is_lower(k) for k in keys)
-        
-        # all_upper := Forall (fun k => is_str k /\ is_upper k) keys
-        all_upper = all(is_str(k) and is_upper(k) for k in keys)
-        
-        # res = true <-> (all_lower \/ all_upper)
-        expected_res = (all_lower or all_upper)
-        return res == expected_res
+        all_lower = all((is_str(k) and is_lower(k) for k in keys))
+        all_upper = all((is_str(k) and is_upper(k) for k in keys))
+        expected_res = all_lower or all_upper
+        return output == expected_res
+
+def check_dict_case_spec(dict, output):
+    return bool(_orig_check_dict_case_spec(dict, output))

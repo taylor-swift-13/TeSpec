@@ -33,5 +33,8 @@ def string_map(f, s):
 def encode_fun(message):
     return string_map(encode_char, message)
 
-def encode_spec(message, encoded):
+def _orig_encode_spec(message, encoded):
     return encoded == encode_fun(message)
+
+def encode_spec(message, output):
+    return bool(_orig_encode_spec(message, output))

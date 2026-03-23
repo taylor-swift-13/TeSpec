@@ -4,10 +4,13 @@ def max_prefix_at(numbers, i):
         return None
     return max(prefix)
 
-def rolling_max_spec(numbers, result):
-    if len(result) != len(numbers):
+def _orig_rolling_max_spec(numbers, output):
+    if len(output) != len(numbers):
         return False
     for i in range(len(numbers)):
-        if result[i] != max_prefix_at(numbers, i):
+        if output[i] != max_prefix_at(numbers, i):
             return False
     return True
+
+def rolling_max_spec(numbers, output):
+    return bool(_orig_rolling_max_spec(numbers, output))

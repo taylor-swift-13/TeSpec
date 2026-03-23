@@ -9,5 +9,8 @@ def is_primeb(a):
         return False
     return not has_divisor_upto(a, a - 1)
 
-def prime_length_spec(s, b):
+def _orig_prime_length_spec(s, b):
     return b == is_primeb(len(s))
+
+def prime_length_spec(string, output):
+    return bool(_orig_prime_length_spec(string, output))

@@ -37,8 +37,14 @@ def is_bored_impl(S: str) -> int:
     boredoms = [s for s in cleaned if is_boredom_sentence_new(s)]
     return len(boredoms)
 
-def problem_91_pre(S: str) -> bool:
+def _orig_problem_91_pre(S: str) -> bool:
     return True
 
-def problem_91_spec(S: str, output: int) -> bool:
+def _orig_problem_91_spec(S: str, output: int) -> bool:
     return output == is_bored_impl(S)
+
+def problem_91_pre(S):
+    return bool(_orig_problem_91_pre(S))
+
+def problem_91_spec(S, output):
+    return bool(_orig_problem_91_spec(S, output))
