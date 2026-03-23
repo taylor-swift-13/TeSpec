@@ -18,7 +18,7 @@ def rounded_avg_impl(n: int, m: int):
     if n > m:
         return -1
     else:
-        return to_binary((n + m) // 2)
+        return to_binary(round((n + m) / 2))
 
 def _orig_problem_103_pre(n: int, m: int) -> bool:
     return n > 0 and m > 0

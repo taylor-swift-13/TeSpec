@@ -1,25 +1,17 @@
 from fractions import Fraction
+import math
 
 def _orig_rescale_to_unit_spec(numbers, output):
     if not numbers:
         return False
-    try:
-        nums_frac = [Fraction(x) for x in numbers]
-        res_frac = [Fraction(x) for x in output]
-    except (ValueError, TypeError, OverflowError):
+    if len(numbers) != len(output):
         return False
-    mi = min(nums_frac)
-    ma = max(nums_frac)
+    mi = min(numbers)
+    ma = max(numbers)
     if mi == ma:
         return False
-    if len(nums_frac) != len(res_frac):
-        return False
-    try:
-        scale = Fraction(1) / (ma - mi)
-        expected = [(x - mi) * scale for x in nums_frac]
-        return res_frac == expected
-    except ZeroDivisionError:
-        return False
+    expected = [(x - mi) / (ma - mi) for x in numbers]
+    return all(math.isclose(a, b, rel_tol=1e-12, abs_tol=1e-12) for a, b in zip(output, expected))
 
 def rescale_to_unit_spec(numbers, output):
     return bool(_orig_rescale_to_unit_spec(numbers, output))

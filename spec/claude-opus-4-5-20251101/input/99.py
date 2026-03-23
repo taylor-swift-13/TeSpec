@@ -41,11 +41,21 @@ def standard_round(r: float) -> int:
     else:
         return truncate(r) + 1
 
-def _orig_closest_integer_spec(value: float, output: int) -> bool:
+# 旧版本直接按 float 参与比较，字符串输入时会崩。
+# def _orig_closest_integer_spec(value: float, output: int) -> bool:
+#     if is_equidistant(value):
+#         return output == round_away_from_zero(value)
+#     else:
+#         return output == standard_round(value)
+
+def _orig_closest_integer_spec(value, output: int) -> bool:
+    try:
+        value = float(value)
+    except Exception:
+        return False
     if is_equidistant(value):
         return output == round_away_from_zero(value)
-    else:
-        return output == standard_round(value)
+    return output == standard_round(value)
 
 def closest_integer_spec(value, output):
     return bool(_orig_closest_integer_spec(value, output))

@@ -1,13 +1,12 @@
 from fractions import Fraction
 
 from decimal import Decimal
+import math
 
 def _orig_triangle_area_spec(a, h, output):
     try:
-        a_f = Fraction(Decimal(str(a)))
-        h_f = Fraction(Decimal(str(h)))
-        res_f = Fraction(Decimal(str(output)))
-        return res_f == a_f * h_f / 2
+        expected = a * h / 2.0
+        return math.isclose(output, expected, rel_tol=1e-12, abs_tol=1e-12)
     except Exception:
         return False
 

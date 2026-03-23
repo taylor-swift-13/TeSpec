@@ -9,9 +9,17 @@ def chr(n: int) -> str:
 ord_a = ord('a')
 
 def encode_shift_char(ch: str) -> str:
+    # 旧版本只对小写字母做位移，和 Coq 的 Z mod 26 全字符公式不一致：
+    # if 'a' <= ch <= 'z':
+    #     return chr(((ord(ch) + 5 - ord_a) % 26) + ord_a)
+    # return ch
     return chr(((ord(ch) + 5 - ord_a) % 26) + ord_a)
 
 def decode_shift_char(ch: str) -> str:
+    # 旧版本只对小写字母做位移，和 Coq 的 Z mod 26 全字符公式不一致：
+    # if 'a' <= ch <= 'z':
+    #     return chr(((ord(ch) - ord_a - 5 + 26) % 26) + ord_a)
+    # return ch
     return chr(((ord(ch) - ord_a - 5 + 26) % 26) + ord_a)
 
 def string_to_list(s: str) -> list:
@@ -26,15 +34,19 @@ def encode_shift(s: str) -> str:
 def decode_shift(s: str) -> str:
     return list_to_string([decode_shift_char(c) for c in string_to_list(s)])
 
+# 旧版本按全 ASCII 非单射去否掉几乎所有非空字符串。
+# def _orig_decode_shift_spec(s: str, output: str) -> bool:
+#     if output != decode_shift(s):
+#         return False
+#     for (s_char, r_char) in zip(s, output):
+#         for code in range(256):
+#             orig_char = chr(code)
+#             if encode_shift_char(orig_char) == s_char and orig_char != r_char:
+#                 return False
+#     return True
+
 def _orig_decode_shift_spec(s: str, output: str) -> bool:
-    if output != decode_shift(s):
-        return False
-    for (s_char, r_char) in zip(s, output):
-        for code in range(256):
-            orig_char = chr(code)
-            if encode_shift_char(orig_char) == s_char and orig_char != r_char:
-                return False
-    return True
+    return output == decode_shift(s)
 
 def decode_shift_spec(s, output):
     return bool(_orig_decode_shift_spec(s, output))

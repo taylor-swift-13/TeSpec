@@ -9,7 +9,9 @@ def count_ones_helper(n, fuel):
     return res
 
 def count_ones(n):
-    return count_ones_helper(n, n)
+    # 旧版本把 Coq nat 直接搬到 Python int，上到负数时语义就跑偏了。
+    # 这里按 Python 题目输入的实际行为，用 bin(n).count('1') 统计。
+    return bin(n).count("1")
 
 def lt_custom(a, b):
     ones_a = count_ones(a)

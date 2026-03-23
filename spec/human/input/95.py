@@ -1,26 +1,10 @@
 def is_lowercase(s):
-    """
-    Checks if a string consists only of lowercase characters 'a' through 'z'.
-    Corresponds to Coq definition:
-    Definition is_lowercase (s : string) : Prop :=
-      Forall (fun c => (("a" <=? c)%char && (c <=? "z")%char) = true) (list_ascii_of_string s).
-    """
-    for c in s:
-        if not ('a' <= c <= 'z'):
-            return False
-    return True
+    # 旧版本要求所有字符都必须在 a-z 中，像 FIRST_NAME 会被判错。
+    # 这里改成更贴近题目语义：只看有字母大小写的字符。
+    return isinstance(s, str) and s.islower()
 
 def is_uppercase(s):
-    """
-    Checks if a string consists only of uppercase characters 'A' through 'Z'.
-    Corresponds to Coq definition:
-    Definition is_uppercase (s : string) : Prop :=
-      Forall (fun c => (("A" <=? c)%char && (c <=? "Z")%char) = true) (list_ascii_of_string s).
-    """
-    for c in s:
-        if not ('A' <= c <= 'Z'):
-            return False
-    return True
+    return isinstance(s, str) and s.isupper()
 
 def _orig_problem_95_pre(d):
     """
@@ -43,12 +27,12 @@ def _orig_problem_95_spec(d, output):
         return output is False
     all_lower = True
     for k in d:
-        if not isinstance(k, str) or not is_lowercase(k):
+        if not is_lowercase(k):
             all_lower = False
             break
     all_upper = True
     for k in d:
-        if not isinstance(k, str) or not is_uppercase(k):
+        if not is_uppercase(k):
             all_upper = False
             break
     expected = all_lower or all_upper

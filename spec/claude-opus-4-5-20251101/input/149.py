@@ -20,19 +20,9 @@ def is_sorted_by(cmp, l: list) -> bool:
             return False
     return True
 
-def is_permutation_of_filtered(original: list, filtered: list) -> bool:
-    expected_set = {s for s in original if has_even_length(s)}
-    filtered_set = set(filtered)
-    return expected_set == filtered_set
-
 def _orig_sorted_list_sum_spec(lst: list, output: list) -> bool:
-    for s in output:
-        if s not in lst or not has_even_length(s):
-            return False
-    for s in lst:
-        if has_even_length(s) and s not in output:
-            return False
-    return is_sorted_by(cmp_strings, output)
+    expected = sorted([s for s in lst if has_even_length(s)], key=lambda s: (len(s), s))
+    return output == expected
 
 def sorted_list_sum_spec(lst, output):
     return bool(_orig_sorted_list_sum_spec(lst, output))

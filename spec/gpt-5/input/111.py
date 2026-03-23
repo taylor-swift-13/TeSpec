@@ -11,8 +11,14 @@ def join_space(l: list) -> str:
 def occ(x: str, l: list) -> int:
     return l.count(x)
 
-def _orig_histogram_spec(test: str, output: list) -> bool:
-    if test == '' and output == []:
+# 旧版本把输出写成 list[(token,count)]，和官方 _impl 的 dict 输出不一致。
+# def _orig_histogram_spec(test: str, output: list) -> bool:
+#     if test == '' and output == []:
+#         return True
+#     ...
+
+def _orig_histogram_spec(test: str, output) -> bool:
+    if test == '' and output == {}:
         return True
     if test == '':
         return False
@@ -25,19 +31,20 @@ def _orig_histogram_spec(test: str, output: list) -> bool:
     if not non_empty_tokens:
         return False
     m = max((occ(t, tokens) for t in non_empty_tokens))
-    ans_keys = [k for (k, v) in output]
-    if len(ans_keys) != len(set(ans_keys)):
+    if not isinstance(output, dict):
         return False
-    for (s, n) in output:
+    if any((not isinstance(k, str) or k == '') for k in output):
+        return False
+    if any((type(n) is not int or n < 0) for n in output.values()):
+        return False
+    for s, n in output.items():
         if n != m:
-            return False
-        if s == '':
             return False
         if occ(s, tokens) != m:
             return False
     for s in set(non_empty_tokens):
         if occ(s, tokens) == m:
-            if not any((k == s and v == m for (k, v) in output)):
+            if output.get(s) != m:
                 return False
     return True
 

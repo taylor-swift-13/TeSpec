@@ -20,12 +20,24 @@ Import ListNotations.
 Open Scope Z_scope.
 Open Scope R_scope.
 
+(*
+  旧版本用显式标签类型来模拟 Python 的 int/float/str：
 
-(* 三种输入类型 *)
-Inductive val :=
-| VInt : Z -> val
-| VFloat : R -> val
-| VStr : string -> val.
+  Inductive val :=
+  | VInt : Z -> val
+  | VFloat : R -> val
+  | VStr : string -> val.
+
+  这种建模会把 HumanEval 的原始输入/输出值额外包一层标签，
+  与任务本身“直接返回原始 int/float/str 或 None”的接口不一致。
+
+  新版本改为抽象一个 pyval 类型，表示任务里的原始 Python 值，
+  只要求它能被解释成实数用于比较，不再在 spec 中强行引入
+  VInt/VFloat/VStr 这样的显式标签构造器。
+*)
+
+Parameter pyval : Type.
+Parameter value_of_pyval : pyval -> option R.
 
 (* 字符串 s 能表示实数 r 的谓词实现。
    约定：s 可能使用 "." 或 "," 作为小数点；允许可选的正负号。
@@ -104,21 +116,14 @@ Definition string_to_R (s : string) : option R :=
       Some (if neg then - base else base)
   end.
 
-Definition value_of_impl (v : val) : option R :=
-  match v with
-  | VInt z => Some (IZR z)
-  | VFloat r => Some r
-  | VStr s => string_to_R s
-  end.
-
 Definition Rlt_bool (x y : R) : bool :=
   match Rlt_dec x y with
   | left _ => true
   | right _ => false
   end.
 
-Definition compare_one_impl (a b : val) : option val :=
-  match value_of_impl a, value_of_impl b with
+Definition compare_one_impl (a b : pyval) : option pyval :=
+  match value_of_pyval a, value_of_pyval b with
   | Some ra, Some rb =>
       if Rlt_bool ra rb then Some b
       else if Rlt_bool rb ra then Some a
@@ -126,8 +131,8 @@ Definition compare_one_impl (a b : val) : option val :=
   | _, _ => None
   end.
 
-(* 任意 val 输入均可 *)
-Definition problem_137_pre (a b : val) : Prop := True.
+(* 任意 pyval 输入均可 *)
+Definition problem_137_pre (a b : pyval) : Prop := True.
 
-Definition problem_137_spec (a b : val) (res : option val) : Prop :=
-  res = compare_one_impl a b.
+Definition problem_137_spec (a b : pyval) (output : option pyval) : Prop :=
+  output = compare_one_impl a b.

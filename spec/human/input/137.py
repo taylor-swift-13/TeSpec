@@ -2,26 +2,30 @@ from fractions import Fraction
 
 from decimal import Decimal
 
-class VInt:
-    def __init__(self, z):
-        self.z = z
-        
-    def __eq__(self, other):
-        return isinstance(other, VInt) and self.z == other.z
-
-class VFloat:
-    def __init__(self, r):
-        self.r = r
-        
-    def __eq__(self, other):
-        return isinstance(other, VFloat) and self.r == other.r
-
-class VStr:
-    def __init__(self, s):
-        self.s = s
-        
-    def __eq__(self, other):
-        return isinstance(other, VStr) and self.s == other.s
+# 旧版本用显式包装类来模拟 Coq 里的 VInt/VFloat/VStr：
+#
+# class VInt:
+#     def __init__(self, z):
+#         self.z = z
+#
+#     def __eq__(self, other):
+#         return isinstance(other, VInt) and self.z == other.z
+#
+# class VFloat:
+#     def __init__(self, r):
+#         self.r = r
+#
+#     def __eq__(self, other):
+#         return isinstance(other, VFloat) and self.r == other.r
+#
+# class VStr:
+#     def __init__(self, s):
+#         self.s = s
+#
+#     def __eq__(self, other):
+#         return isinstance(other, VStr) and self.s == other.s
+#
+# 现在按 HumanEval 原始接口，直接使用 Python 的 int / float / str 值。
 
 def is_digit(c):
     return '0' <= c <= '9'
@@ -102,16 +106,14 @@ def string_to_R(s):
     return -base if neg else base
 
 def value_of_impl(v):
-    if isinstance(v, VInt):
-        return Fraction(v.z)
-    elif isinstance(v, VFloat):
-        # Based on feedback, Coq treats VFloat as the exact real number corresponding 
-        # to the binary float value (IEEE 754), not the decimal literal.
-        # Fraction(v.r) converts the float to its exact rational representation.
-        return Fraction(v.r)
-    elif isinstance(v, VStr):
-        # Coq treats VStr as the exact real number parsed from the decimal string.
-        return string_to_R(v.s)
+    if isinstance(v, bool):
+        return None
+    if isinstance(v, int):
+        return Fraction(v)
+    elif isinstance(v, float):
+        return Fraction(v)
+    elif isinstance(v, str):
+        return string_to_R(v)
     return None
 
 def Rlt_bool(x, y):

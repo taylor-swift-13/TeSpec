@@ -17,14 +17,18 @@ def heron_area(a, b, c):
         return 0.0
     return math.sqrt(float(val))
 
+# 旧版本把“保留两位小数”实现成严格的有理数十进制等价检查。
+# def is_rounded_to_2_decimals(rounded_val, original_val):
+#     f_rounded = Fraction(str(rounded_val))
+#     if (f_rounded * 100).denominator != 1:
+#         return False
+#     z = int(f_rounded * 100)
+#     f_orig = Fraction(str(original_val))
+#     expected_z = round(f_orig * 100)
+#     return z == expected_z
+
 def is_rounded_to_2_decimals(rounded_val, original_val):
-    f_rounded = Fraction(str(rounded_val))
-    if (f_rounded * 100).denominator != 1:
-        return False
-    z = int(f_rounded * 100)
-    f_orig = Fraction(str(original_val))
-    expected_z = round(f_orig * 100)
-    return z == expected_z
+    return abs(float(rounded_val) - round(float(original_val), 2)) <= 1e-9
 
 def _orig_problem_71_pre(a, b, c):
     return True
