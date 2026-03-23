@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/18.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/18.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly counts the occurrences of the substring by iterating over the same indices and comparing the slices, matching the Coq specification's use of filter and substring."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq specification, counting the number of overlapping occurrences of the substring by iterating over all valid starting indices and comparing the slices."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification by counting the number of times 'sub' appears as a substring in 's' using a list comprehension over the indices of 's', which exactly mirrors the filter and length operations on the sequence of indices in Coq."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both implementations count the number of starting positions i in range [0, len(s)) where the substring of s starting at i with length len(sub) equals sub. The Coq code uses filter and length to count matches, while Python uses a generator with sum, but both produce the same count for any concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both implementations count the number of positions i in range [0, len(s)) where the substring of s starting at position i with length len(sub) equals sub. The Coq code uses filter and length to count matches, while Python uses a generator with sum, but both produce the same count for any concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both implementations count the number of positions i in range [0, len(s)) where the substring of s starting at position i with length len(sub) equals sub. The Coq code uses filter and length to count matches, while Python uses a generator with sum, but both produce the same count for any concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both compute the number of positions i in 0..len(s)-1 where the substring of length len(sub) starting at i equals sub, including overlaps and handling empty sub consistently."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both count indices i in 0..len(s)-1 where s[i:i+len(sub)] equals sub, matching Coq\u2019s substring/eqb behavior (including empty sub and boundary cases)."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both count indices i in 0..len(s)-1 where the length-len(sub) substring of s at i equals sub. Python slicing truncates like Coq substring, and equality/edge cases (including empty sub) match."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

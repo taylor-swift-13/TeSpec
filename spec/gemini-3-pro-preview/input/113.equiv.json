@@ -1,0 +1,100 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/gemini-3-pro-preview/input/113.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/gemini-3-pro-preview/input/113.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, including the character replacement logic, odd digit counting, and list mapping."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code accurately implements the logic of the Coq specification, including the character-by-character replacement in the template string and the counting of odd digits."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements all helper functions and the main specification, matching the Coq logic for counting odd digits and replacing characters in the template string."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements all the Coq definitions: is_odd_digit checks for odd digit characters '1','3','5','7','9'; count_odd_digits counts these in a string; replace_i replaces all 'i' characters with the replacement string; and odd_count_spec checks if ans equals the expected list of transformed template strings. All concrete behaviors match."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements all the Coq definitions: is_odd_digit checks for characters in '13579', count_odd_digits counts odd digits in a string, replace_i replaces all 'i' characters with a replacement string, and odd_count_spec checks if ans equals the expected list of transformed template strings. The logic matches the Coq specification for all concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements all the Coq definitions: is_odd_digit checks for characters in '13579', count_odd_digits counts odd digits in a string, replace_i replaces all 'i' characters with a replacement string, and odd_count_spec checks if ans equals the expected list of transformed template strings. The logic matches the Coq specification for all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both count odd digits by checking characters 1,3,5,7,9, convert the count to a string, replace every 'i' in the fixed template with that string, and compare ans to the mapped list."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": false,
+      "reason": "Coq leaves string_of_nat as an unspecified parameter, while Python fixes it to decimal str(n). If Coq\u2019s string_of_nat differs, the produced strings (and thus the judgment) can differ, so the behaviors aren\u2019t guaranteed to match on all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both implementations count odd digits in each input string and replace every 'i' in the template with the decimal string of that count, then check equality with the expected list. The helper functions behave identically on ASCII strings."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 2,
+      "not_equivalent_votes": 1,
+      "majority_equivalent": true,
+      "unanimous_equivalent": false,
+      "reasons_if_not_equivalent": [
+        "Coq leaves string_of_nat as an unspecified parameter, while Python fixes it to decimal str(n). If Coq\u2019s string_of_nat differs, the produced strings (and thus the judgment) can differ, so the behaviors aren\u2019t guaranteed to match on all inputs."
+      ]
+    }
+  },
+  "overall_equivalent_votes": 8,
+  "overall_not_equivalent_votes": 1,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": false,
+  "non_equivalence_reasons": [
+    "Coq leaves string_of_nat as an unspecified parameter, while Python fixes it to decimal str(n). If Coq\u2019s string_of_nat differs, the produced strings (and thus the judgment) can differ, so the behaviors aren\u2019t guaranteed to match on all inputs."
+  ],
+  "repair_round": 10,
+  "syntax_ok": true
+}

@@ -1,0 +1,96 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/gpt-4o/input/31.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/gpt-4o/input/31.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code faithfully implements the literal semantics of the Coq specification, including the behavior resulting from the scope of the 'exists' quantifier (which extends over the implication, making the first clause vacuously true for n > 1) and the 'forall' clause (which forces result=True for all n > 2 due to the existence of non-divisors)."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, including the counter-intuitive operator precedence where 'exists i, P -> Q' parses as 'exists i, (P -> Q)'. Both the Coq spec and Python code are logically weak (e.g., allowing ambiguous results for n=2 and incorrect results for composites), but they agree on all concrete inputs."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code faithfully implements the Coq specification, correctly handling the precedence of logical operators in Coq which makes the exists clause trivially true and the forall clause require result=True if any number in [2, n-1] does not divide n."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python translation correctly implements the Coq spec's logical structure. Both accept the same (n, result) pairs on concrete inputs, including handling the vacuous truth cases in implications correctly."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python correctly implements the Coq spec's logical structure, including the vacuously true exists condition and the forall condition checking that non-divisors imply result=True."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec's logical structure, including the vacuously true exists clause and the forall clause checking. Both would accept/reject the same (n, result) pairs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "For n<=1 it requires result=false; for n>1 the existential clause is tautologically true, and the universal clause enforces result=true whenever some i in [2,n-1] doesn\u2019t divide n (vacuous for n=2, true for n>2). This matches the Coq spec on naturals."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python function correctly checks the Coq spec as written: it enforces result=False when n<=1; for n>1 it treats the existential implication as trivially true and requires that for all i in [2..n-1], if n % i != 0 then result=True. This matches the Coq proposition\u2019s concrete behavior on natural-number inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "For n<=1 it requires result=False; for n>1 it enforces that for all i in 2..n-1, if n%i!=0 then result=True. The existential clause is vacuously true and thus effectively ignored. This matches the Coq spec on all natural-number inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

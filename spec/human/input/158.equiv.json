@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/158.v",
+  "translated_py_file": "spec/human/input/158.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq definitions and specifications, including lexicographical comparison, counting unique characters, and the pre/post-conditions."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code directly translates the Coq helper functions and specification logic, including the unique character counting and the lexicographical tie-breaking condition."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq specification, including the lexicographical string comparison, unique character counting, and the conditions for the maximum unique character string."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec for concrete inputs. The string_le function uses Python's lexicographic comparison which matches the Coq definition (comparing character codes). count_unique_chars correctly counts unique characters (Python's set approach gives the same result as Coq's recursive counting). The spec checks that result is in words and for all words w, either result has more unique chars than w, or they have equal unique chars and result comes first lexicographically. Both implementations express the same concrete behavior."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec for concrete inputs. The string_le function uses Python's lexicographic comparison (<=) which matches the Coq definition based on ASCII values. count_unique_chars uses set() which correctly counts unique characters, matching the Coq recursive definition. The spec checks that result is in words and that for all words w, either result has more unique chars or (equal unique chars and result comes first lexicographically), which matches the Coq spec exactly."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec for concrete inputs. The string_le function uses Python's lexicographic comparison which matches the Coq definition (comparing ASCII values character by character). The count_unique_chars function counts unique characters correctly (using set). The spec checks that result is in words and that for all words w, either result has more unique chars, or equal unique chars and result comes first lexicographically. Both implementations produce the same concrete judgments."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python mirrors Coq: unique char count via len(set) matches count_unique_chars, lexicographic order (<=) matches string_le on ASCII strings, membership and precondition checks align. The spec loop implements the same max-and-tie-break condition."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python uses lexicographic <= like Coq\u2019s string_le for ASCII and counts unique characters via set, matching count_unique_chars; precondition and membership checks also align."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python mirrors Coq: precondition non-empty list, count_unique_chars matches set cardinality, and lexicographic order (<=) matches Coq\u2019s ascii-based order for typical ASCII strings; spec enforces max unique count with lexicographic tie-break."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

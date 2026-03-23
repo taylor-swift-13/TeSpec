@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/claude-3-7-sonnet-20250219/input/31.v",
+  "translated_py_file": "spec/claude-3-7-sonnet-20250219/input/31.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the primality check by testing divisibility for all integers strictly between 1 and n, matching the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the mathematical definition of divisibility and primality checking as specified in the Coq code."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the divides check and the primality test, returning whether the boolean b matches the computed primality of n, which exactly mirrors the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements primality checking. The divides function checks divisibility (handling d=0 edge case appropriately), and is_prime_spec returns True iff b matches whether n is prime. The Coq spec says b=true iff n>1 and no d in (1,n) divides n, which is exactly what the Python computes: is_p is True when n>1 and no divisor found in range(2,n). The final comparison b == is_p matches the biconditional in Coq."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements primality checking: divides(d, n) returns True iff d divides n (handling d=0 correctly), and is_prime_spec(n, b) returns True iff b matches whether n is prime (n > 1 and no divisor in range 2 to n-1). This matches the Coq spec where b = true iff (1 < n and no d with 1 < d < n divides n)."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements primality checking. The divides function checks divisibility (d divides n iff n % d == 0, with special case for d=0). The is_prime_spec function returns true iff b matches whether n is prime, where prime means n > 1 and no d in range 2 to n-1 divides n. This matches the Coq spec: b = true iff (1 < n and for all d with 1 < d < n, d does not divide n)."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python computes primality as n>1 with no divisors d in 2..n-1 and returns b == that result; divides matches Coq (including d=0 case)."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python divides matches Coq\u2019s exists-k definition (including d=0 case), and is_prime_spec computes primality (n>1 and no 2..n-1 divisors) then checks b equals that, aligning with b=true <-> primality."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python divides matches Coq\u2019s definition (including d=0), and is_prime_spec computes primality by checking n>1 and no divisors 2..n-1, then returns b == primality. This makes the Python result true exactly when the Coq equivalence (b = true <-> primality) holds for all n."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

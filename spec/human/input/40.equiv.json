@@ -1,0 +1,96 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/human/input/40.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/human/input/40.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python implementation correctly checks for the existence of three distinct indices whose elements sum to zero, matching the Coq specification's logic."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python implementation correctly checks for the existence of three distinct indices whose elements sum to zero, which matches the logic of the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python implementation correctly checks for the existence of three distinct indices whose elements sum to zero, which is logically equivalent to the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python implementation checks all combinations of three distinct indices (i < j < k) which is sufficient to find any triple with distinct indices summing to zero. The Coq spec requires distinct indices i, j, k (in any order) with sum = 0. Since the Python code checks all ordered combinations, it will find a triple if one exists. The spec function correctly checks all permutations of distinct indices. Both return True iff there exist three distinct indices whose elements sum to zero."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python implementation checks for three distinct indices whose elements sum to zero. While triples_sum_to_zero only checks ordered combinations (i < j < k), this is sufficient because if any unordered triple (i, j, k) with distinct indices sums to zero, there exists a corresponding ordered triple that also sums to zero (addition is commutative). The problem_40_spec correctly checks all permutations of distinct indices and verifies the biconditional relationship between the existence of such a triple and output being True."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python triples_sum_to_zero function checks for three distinct indices i < j < k where the sum is zero. The Coq spec requires three distinct indices (i != j, i != k, j != k) with sum zero. Since the Python function iterates over all ordered combinations (i < j < k), it covers all cases where three distinct indices exist with sum zero - if any such triple exists with distinct indices in any order, there exists a corresponding ordered triple. The problem_40_spec correctly checks all permutations of distinct indices and verifies the biconditional (exists_triple <-> output=true). Both produce the same concrete results."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both return True iff there exist three distinct in-range indices whose elements sum to zero. Python\u2019s i<j<k iteration preserves existence, and ints match Coq\u2019s Z. Precondition is True in both."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both return True iff there exist three distinct in-bounds indices whose elements sum to zero; otherwise False. Integer and index handling match the Coq spec, and the precondition is always True."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both return True iff there exist three distinct in-bounds indices whose elements sum to zero; otherwise False. The Python loops enforce distinctness and bounds, matching the Coq spec, and the precondition is True."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

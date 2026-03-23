@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/claude-opus-4-5-20251101/input/138.v",
+  "translated_py_file": "spec/claude-opus-4-5-20251101/input/138.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly simplifies the existence condition for four positive even integers summing to n, which is equivalent to n being even and at least 8."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly simplifies the existential condition in the Coq specification to n >= 8 and n being even, which is mathematically equivalent."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly simplifies the existential condition to n >= 8 and n % 2 == 0, which is mathematically equivalent to the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The Coq spec states result = true iff (n >= 8, n is even, and there exist four positive even integers summing to n). The Python analysis is correct: any even n >= 8 can be written as 2+2+2+(n-6) where n-6 is positive and even, and conversely any sum of four positive even integers is at least 8 and even. Thus the existential condition is equivalent to (n >= 8 and n % 2 == 0), and the biconditional 'result = true <-> condition' is correctly translated as 'result == condition'."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The Coq spec states result=true iff (n>=8, n is even, and there exist four positive even integers summing to n). The Python analysis is correct: any even n>=8 can be written as 2+2+2+(n-6) where n-6 is positive and even when n>=8 and n is even. Conversely, four positive even integers sum to at least 8 and their sum is even. So the condition simplifies to n>=8 and n%2==0, and the biconditional result=true <-> condition becomes result==condition in Python."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The Coq spec states result = true iff (n >= 8, n is even, and there exist four positive even integers summing to n). The Python analysis is correct: any even n >= 8 can be written as 2+2+2+(n-6) where n-6 >= 2 and even; conversely, four positive even integers sum to at least 8 and their sum is even. Thus the existential condition is equivalent to (n >= 8 and n is even), and the biconditional 'result = true <-> condition' is equivalent to 'result == condition' in Python."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Coq condition is equivalent to n being even and at least 8; the Python code checks exactly (n >= 8 and n % 2 == 0) and returns result == that condition."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "It correctly reduces the Coq condition to n >= 8 and even (choose a=b=c=2, d=n-6) and returns result == condition, matching result = true <-> condition for all integers."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code checks result iff (n >= 8 and n is even), which is equivalent to the Coq spec\u2019s existence of four positive even integers summing to n. Unbounded ints and parity match; no edge cases differ."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

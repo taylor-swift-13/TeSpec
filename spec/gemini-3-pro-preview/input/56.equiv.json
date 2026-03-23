@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/56.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/56.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code implements the exact same logic as the Coq code, using an iterative approach instead of recursion to track the bracket count and check for validity."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the bracket counting logic, incrementing for '<', decrementing for '>', failing if the count drops below zero, and checking if the final count is zero, which exactly matches the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code implements the exact same logic as the Coq code, using a loop instead of recursion to track the bracket count and returning False if it ever drops below zero, and checking if it equals zero at the end."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the same logic as the Coq code: it iterates through characters, incrementing count for '<', decrementing for '>', returning False if count goes negative, and finally checking if count equals 0. The conversion of string to list of characters and the iteration logic match the Coq recursive function behavior on all concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the same logic as the Coq code: it iterates through characters, incrementing count for '<', decrementing for '>', returning False if count goes negative, and finally checking if count equals 0. The conversion of string to list of characters and the iteration logic match the Coq recursive function's behavior on all concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the same logic as the Coq code: it iterates through characters, incrementing cnt for '<', decrementing for '>', returning False if cnt goes negative, and finally checking if cnt equals 0. The spec function also matches by comparing res to the result of correct_bracketing_aux called with the string converted to a list and initial count 0."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both implementations increment on '<', decrement on '>', immediately return false if the count goes negative, and finally check the count equals zero. Python\u2019s list(brackets) matches Coq\u2019s list_ascii_of_string for ASCII strings."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both update a counter for '<' and '>' with early failure on negative and return whether the final count is zero; the spec wrappers use the same list-of-chars conversion and boolean equality."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both increment on '<', decrement on '>', fail early if count goes negative, and return whether the final count is zero; list(brackets) matches list_ascii_of_string behavior."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

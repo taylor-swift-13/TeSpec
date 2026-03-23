@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/134.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/134.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq specification, checking the length of the string and verifying if the last character is an alphabetical letter and, if the string has length > 1, whether the preceding character is a space."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq specification, checking the same conditions for the string length and correctly verifying if the last character is a letter and the preceding character is a space."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, checking the length of the string and verifying if the last character is a letter and, if applicable, preceded by a space."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. For empty strings, it checks res == False. For single-character strings, it checks if res equals whether that character is alphabetic. For longer strings, it checks if res equals whether the last character is alphabetic AND the second-to-last character is a space. The is_alpha function correctly checks ASCII ranges 65-90 (A-Z) and 97-122 (a-z). The logic matches the Coq spec exactly for all concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. For empty strings, it checks res == False. For single-character strings, it checks if res equals is_alpha of that character. For longer strings, it checks if res equals (is_alpha(last_char) and prev_char == ' '). The is_alpha function correctly checks ASCII ranges 65-90 (A-Z) and 97-122 (a-z). The logic matches the Coq spec for all concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: it handles empty strings (returning res == False), single-character strings (checking if the character is alphabetic), and longer strings (checking if the last character is alphabetic AND the second-to-last character is a space). The is_alpha function correctly checks ASCII ranges 65-90 (A-Z) and 97-122 (a-z). The logic matches the Coq specification for all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Matches the Coq spec on all cases: empty -> res=false; length 1 -> res equals ASCII A-Z/a-z test of the only char; length >=2 -> res equals (ASCII-letter last char) and (previous char is space). Character and space checks align with ASCII codes."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code mirrors the Coq logic on ASCII strings: same letter check (A-Z, a-z), same length cases, and the two-char-or-more case requiring a space before the last character. Indexing and equality match Coq\u2019s behavior, so results align on all concrete inputs in the Coq domain."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq spec: it checks empty -> res False; length 1 -> res equals ASCII alpha test; length >=2 -> res equals (last char is A-Z/a-z and previous char is space). ord-based alpha check and char equality match Coq\u2019s is_alpha and Ascii.eqb on ASCII strings."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

@@ -1,0 +1,96 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/claude-3-7-sonnet-20250219/input/49.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/claude-3-7-sonnet-20250219/input/49.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly enforces p > 0, handles the specific behavior of Coq's Z.pow for negative exponents (returning 0), and uses Python's modular exponentiation for non-negative exponents, which aligns with Coq's semantics."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the logic of the Coq specification, including the condition p > 0 and the specific behavior of Z.pow where negative exponents result in 0. The use of Python's 3-argument pow function correctly computes the modular exponentiation for non-negative n."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, including the behavior of Z.pow for negative exponents and the modulo operation."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It checks p > 0, and computes 2^n mod p following Coq's Z.pow semantics: for n >= 0, it computes pow(2, n, p); for n < 0, Z.pow returns 0, so it checks res == 0 % p which equals 0. Both cases match Coq's behavior."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It checks p > 0, and computes 2^n mod p using Coq's Z.pow semantics: for n >= 0, it's 2^n; for n < 0, Z.pow returns 0. The Python code handles both cases correctly, returning res == pow(2, n, p) for n >= 0, and res == (0 % p) which equals res == 0 for n < 0."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. For p > 0: when n >= 0, it returns res == pow(2, n, p) which equals 2^n mod p; when n < 0, Coq's Z.pow 2 n returns 0, and Python correctly checks res == 0 % p (which is 0). Both cases match Coq's behavior."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Checks p > 0 and enforces res equals (2^n) mod p; handles n < 0 as 0 mod p, and for n >= 0 uses modular exponentiation. Matches Coq\u2019s Z.pow and mod behavior for all concrete inputs with p > 0."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Matches Coq spec: enforces p>0; for n>=0 computes (2**n) mod p via pow(2,n,p); for n<0 uses 0 mod p; Python modulo with p>0 aligns with Coq Z.modulo."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Checks p>0 and compares res to (2^n) mod p. Handles n<0 by using 0 mod p, and for n>=0 uses Python pow with modulus. Matches Coq Z.pow and Z.mod behavior for p>0."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

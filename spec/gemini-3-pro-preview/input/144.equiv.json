@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/144.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/144.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the implication and the modulo equivalence, matching the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq implication and logical equivalence, and modulo 0 check is properly handled."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the implication by returning True when the premise is false (x2 * n2 == 0), and correctly checks the modulo condition otherwise. Modulo equality to zero is equivalent in both languages regardless of negative number handling."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. When x2*n2=0, the Coq spec is vacuously true (the implication's premise is false), and Python returns True. When x2*n2\u22600, the Coq spec says result=true iff (x1*n1) mod (x2*n2)=0, which Python checks as bool(result) == (((x1*n1) % (x2*n2)) == 0). Both use the same modulo semantics for the divisibility check."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: when x2*n2=0, the precondition is vacuously true (Python returns True), and when x2*n2\u22600, it checks that result=true iff (x1*n1) mod (x2*n2) = 0, which matches the Coq biconditional. Python's modulo behavior with negative numbers differs from Coq's Z.modulo, but for the equality-to-zero check, both agree since a mod b = 0 iff a is divisible by b regardless of sign conventions."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. When x2*n2 == 0, the Coq precondition is false making the implication vacuously true, which Python handles by returning True. When x2*n2 != 0, Python checks that result is true iff (x1*n1) mod (x2*n2) == 0, matching the Coq biconditional. Python's modulo behavior with negative numbers differs from Coq's Z.modulo, but the check for equality to 0 produces the same result since both agree on when the remainder is exactly 0 (i.e., when divisibility holds)."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Matches the spec: returns True vacuously when x2*n2==0; otherwise checks result is true iff (x1*n1) mod (x2*n2) == 0. Divisibility via mod==0 aligns even with negative operands."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Matches the vacuous truth case when x2*n2=0 and otherwise checks that result\u2019s truth equals ((x1*n1) mod (x2*n2))=0; divisibility via %==0 aligns with Coq mod=0 for all integers, including negatives."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Returns True when x2*n2=0 (vacuous case). Otherwise it checks result iff (x1*n1) is divisible by (x2*n2); zero-remainder test matches Coq mod semantics even with negative operands."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

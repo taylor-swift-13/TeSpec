@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/141.v",
+  "translated_py_file": "spec/human/input/141.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code accurately implements the conditions for a valid file name as specified in the Coq code, including digit count, exact dot count, prefix starting with an alphabetic character, and specific valid suffixes."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements all conditions of the Coq specification, including digit counting, dot splitting, prefix validation, and suffix matching."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements all the conditions for a valid file name as specified in the Coq code, including digit count, exact dot count, prefix starting with an alphabet letter, and specific allowed suffixes."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It checks: (1) at most 3 digits, (2) exactly one dot (via count and split), (3) non-empty prefix starting with a letter, and (4) suffix is one of txt/exe/dll. The Coq spec requires exactly one dot by demanding the file_name equals prefix ++ '.' :: suffix where '.' is not in (prefix ++ suffix), which is equivalent to having exactly one dot. Both return 'Yes' when valid and 'No' otherwise."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It checks: (1) digit count <= 3, (2) exactly one dot (via count('.') == 1), (3) non-empty prefix starting with a letter, and (4) suffix is one of 'txt', 'exe', 'dll'. The Coq spec requires exactly one dot by stating the file_name equals prefix ++ '.' :: suffix where '.' is not in (prefix ++ suffix). The Python split('.') with count('.') == 1 achieves the same result. Both return 'Yes' when valid and 'No' otherwise."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. It checks: (1) at most 3 digits, (2) exactly one dot (via count and split), (3) non-empty prefix starting with a letter, (4) suffix is txt/exe/dll. The Coq spec's condition '~ In \".\" (prefix ++ suffix)' ensures exactly one dot total, which Python's count('.') == 1 achieves. Both return 'Yes' when valid, 'No' otherwise."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python checks exactly one dot, counts ASCII digits with <=3, requires non-empty prefix starting with A-Z/a-z, and suffix in {txt, exe, dll}, returning Yes/No accordingly. This matches the Coq spec on all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python matches the Coq spec: counts ASCII digits across the whole name (<=3), requires exactly one dot, non-empty prefix starting with a Latin letter, and suffix exactly one of txt/exe/dll. Returns Yes/No accordingly."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python enforces the same conditions: at most three digits total, exactly one dot, non-empty prefix starting with A-Z/a-z, and suffix exactly one of txt/exe/dll, returning Yes/No accordingly."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

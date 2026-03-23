@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/50.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/50.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code directly implements the arithmetic operations and string mapping logic defined in the Coq code, using standard ASCII values and modulo arithmetic consistent with Coq's Z arithmetic."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the character encoding/decoding logic and string mapping specifications from the Coq code."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the character encoding/decoding logic and string mapping specifications from Coq, including the modulo arithmetic."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the same character encoding/decoding logic as the Coq spec. Both use ord_a=97, apply the same arithmetic formulas for shifting characters by 5 positions with mod 26, and the spec functions check if the result equals the mapped string. The operations produce identical concrete results for all inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code faithfully implements the Coq specification. ord_a is 97 in both. encode_char_op and decode_char_op perform the same arithmetic operations: shifting by 5 with mod 26 for lowercase letter encoding/decoding. The spec functions encode_shift_spec and decode_shift_spec check if the result equals the mapped string, which is exactly what the Coq Prop definitions specify. The Python uses ord/chr which correspond to nat_of_ascii/ascii_of_nat in Coq. For all concrete string inputs, the Python code will return the same boolean judgment as the Coq specification would indicate."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code faithfully implements the Coq specification. Both encode_char_op and decode_char_op perform the same arithmetic operations: shifting by 5 (or -5) relative to ord_a=97, taking mod 26, and adding ord_a back. The spec functions encode_shift_spec and decode_shift_spec both check if the result equals the string formed by mapping the respective char operation over the input string. The Python uses ord/chr which correspond to Coq's nat_of_ascii/ascii_of_nat. For concrete lowercase letter inputs (the intended domain), both produce identical results."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both implementations map each character c to ((ord(c)+5-97) mod 26)+97 and vice versa for decode, and encode/decode specs compare the mapped string to result. For all ASCII inputs, they produce identical results."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq logic: both shift each character\u2019s code by \u00b15 modulo 26 relative to ord('a') and map over the string, returning equality of the mapped result. Modulo behavior and ranges match, yielding identical outputs on all ASCII inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both use the same per-character transformation ((ord(c) \u00b1 5 \u2212 97) mod 26) + 97 and compare the mapped string to result; Python\u2019s % matches Coq\u2019s mod here, so outputs coincide for all ASCII strings."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

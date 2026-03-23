@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/deepseek-v3.1/input/58.v",
+  "translated_py_file": "spec/deepseek-v3.1/input/58.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code computes the intersection of the two lists, removes duplicates, sorts the result in ascending order, and checks if it equals the given result, which exactly matches the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly computes the sorted intersection of the two lists without duplicates, which exactly matches the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly computes the sorted intersection of the two lists without duplicates, which exactly matches the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Coq spec requires `result` to be a sorted list (by Z.lt) of unique elements that appear in both l1 and l2, with no duplicates. The Python code computes `sorted(list(set(l1) & set(l2)))`, which is exactly the sorted list of unique common elements. Both produce the same concrete result for all concrete integer list inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both specifications require the result to be a sorted list of unique elements that appear in both l1 and l2. The Coq spec requires NoDup (no duplicates), elements are exactly those in both lists, and StronglySorted Z.lt (sorted in ascending order). The Python code computes set intersection (elements in both), converts to list, removes duplicates via set, and sorts in ascending order. For concrete inputs, both produce the same sorted, deduplicated list of common elements."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both specifications require the result to be a sorted list of unique elements that appear in both l1 and l2. The Coq spec requires: NoDup (no duplicates), elements are exactly those in both lists, StronglySorted Z.lt (sorted in ascending order). The Python code computes set intersection (elements in both), converts to list, removes duplicates via set, and sorts. Both produce the same concrete result for any input lists."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python computes the unique intersection of l1 and l2 and returns it sorted in ascending order, matching the Coq spec\u2019s NoDup, membership equivalence, StronglySorted Z.lt, and result equality."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both specify/result in the strictly increasing list of unique elements present in both l1 and l2; Python computes sorted(set(l1) \u2229 set(l2)) which matches the Coq NoDup + StronglySorted + membership characterization."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "It checks that result is the deduplicated, strictly increasing intersection of l1 and l2, which matches the Coq spec\u2019s NoDup, membership equivalence, StronglySorted Z.lt, and result equality."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

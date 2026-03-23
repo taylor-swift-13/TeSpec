@@ -1,0 +1,96 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/human/input/144.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/human/input/144.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the specification checker defined in Coq. It replicates the parsing logic (searching for the '/' delimiter), the string-to-number conversion (including handling of non-digit characters), the positivity constraints, and the core divisibility check. The nested loops in Python correctly implement the existential quantification over possible valid parses of the input strings."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the specification by parsing the input strings as fractions, verifying the positivity constraints, and checking if the product of the fractions results in a whole number (numerator divisible by denominator), matching the Coq logic."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, translating the string parsing, fraction evaluation, and the modulo arithmetic logic faithfully."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It parses fractions by finding the '/' character and converting the numerator and denominator parts to natural numbers using the same algorithm (list_ascii_to_nat). The spec checks if the product of two fractions is a whole number by testing if (num_x * num_n) mod (den_x * den_n) == 0, and the Python code does the same. The existential quantifiers in Coq are handled by searching for valid parses in Python, and the output comparison matches the Coq logic where output equals true iff the modulo is 0."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. Both parse fractions by finding '/' and converting digit strings to numbers. The spec checks if (num_x * num_n) mod (den_x * den_n) == 0 determines the output boolean. The Python code searches for valid parses and checks if the output matches the computed is_whole value, which is equivalent to the Coq existential specification. For any concrete valid fraction inputs, both will agree on whether the product simplifies to a whole number."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. Both parse fractions by finding the '/' separator, convert digit characters to numbers the same way (ord(c) - ord('0')), and check if the product of two fractions is a whole number by testing if (num_x * num_n) mod (den_x * den_n) == 0. The Python spec function returns True when there exists a valid parse where the output matches the computed result, which corresponds to the existential quantification in the Coq spec. For valid fraction inputs (positive numerators and denominators), both will produce the same concrete results."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python mirrors Coq\u2019s parsing and arithmetic: it searches for a slash split, converts chars to digits with the same saturating rule, enforces positive num/den for existence, and checks (num_x*num_n)%(den_x*den_n)==0. Both specs use existential conditions over possible splits, so results align on all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python mirrors Coq\u2019s parsing and arithmetic: same digit conversion, number construction, existence of a split at '/', positivity checks, and divisibility test. It returns True exactly when there exists a valid parse yielding output equal to (product_num % product_den == 0)."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python mirrors Coq\u2019s parsing (existential split on '/'), digit-to-number conversion, positivity checks, and the divisibility test on product_num % product_den == 0. It searches for any valid parse matching the output, matching Coq\u2019s existential spec on all concrete inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 1,
+  "syntax_ok": true
+}

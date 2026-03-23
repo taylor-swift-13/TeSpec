@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gpt-4o/input/163.v",
+  "translated_py_file": "spec/gpt-4o/input/163.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, including the conditional swapping, sequence generation with correct bounds, and filtering for even numbers."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, accurately translating the sequence generation, filtering of even numbers, and the upper bound logic."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, including the swapping of a and b, the sequence generation with the correct bounds, and the filtering of even numbers."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: it swaps a and b if needed, computes the limit as min(b+1, 10), generates the sequence from a_local to limit (matching Coq's seq behavior since range produces the same elements), filters for even numbers, and compares against the provided evens list. The nat subtraction in Coq when limit <= a_local produces 0, and Python's range(a_local, limit) is empty in that case, so they match."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: it swaps a and b if needed, computes the limit as min(b+1, 10), generates the sequence from a_local to limit (matching Coq's seq a (limit - a) since range(a, limit) produces the same elements), filters for even numbers, and checks equality with evens. The behavior matches on all concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: it swaps a and b if needed, computes the limit as min(b+1, 10), generates the sequence from a_local to limit (matching Coq's seq behavior since range produces the same elements), filters for even numbers, and compares against the provided evens list. The behavior matches on all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "It reorders a and b the same way, builds the same sequence [a..min(b+1,10)-1], filters even numbers identically, and returns equality with the expected list; empty cases also match for all natural inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq spec: it orders a,b, builds the sequence a..min(b+1,10)-1 (empty if limit<=a), filters evens, and checks equality. For natural-number inputs, this matches Coq\u2019s behavior on all cases."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq spec: it orders a and b, sets limit = min(b+1, 10), uses range(a, limit) matching Coq\u2019s seq with nat subtraction, and filters evens. This aligns on all natural-number inputs, including edge cases where limit \u2264 a."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

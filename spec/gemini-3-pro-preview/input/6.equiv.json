@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/6.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/6.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq tail-recursive functions into equivalent iterative loops, preserving the logic for counting parenthesis depth and splitting strings by spaces."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq logic, using an iterative approach for the recursive functions while maintaining the exact same string splitting, filtering, and depth counting behavior."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq logic, including the depth counting, string splitting by spaces, and the final specification check."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. count_depth_aux iterates through characters, incrementing/decrementing cnt for parentheses and tracking max depth. split_and_filter splits on spaces, using a reversed accumulator that gets reversed back when forming words. The spec function parse_nested_parens_spec correctly compares the result against map count_depth over the split words. The insert(0, c) followed by [::-1] reversal matches Coq's (c :: acc) followed by (rev acc)."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. count_depth_aux iterates through characters, incrementing/decrementing cnt for parentheses and tracking max depth. split_and_filter splits on spaces, accumulating characters in reverse order (using insert(0, c) to prepend) and reversing when forming words. parse_nested_parens_spec correctly checks if result equals the mapped count_depth over split words. The concrete behavior matches the Coq definitions."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. count_depth_aux iterates through characters, incrementing/decrementing cnt for parentheses and tracking max depth. split_and_filter splits on spaces, accumulating characters in reverse order and reversing when outputting words. The spec function compares result against computed depths. The insert(0, c) in Python matches the Coq's (c :: acc) prepend operation, and the [::-1] reversal matches Coq's rev. All concrete behaviors align."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python mirrors Coq: it splits on spaces ignoring empties, computes max nesting depth by incrementing on '(' and decrementing on ')', and compares the list of depths to the given result. All concrete behaviors match."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both split on ASCII spaces into words (ignoring empty tokens) and for each word compute the maximum nesting depth by incrementing on '(' and decrementing on ')', ignoring other chars; the max update logic matches Z.max. Thus results align on all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq logic: splits the input on spaces into words (ignoring empty ones), computes max parenthesis nesting depth for each word by updating a counter and tracking its maximum, and compares the resulting list to the given result."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

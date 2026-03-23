@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/44.v",
+  "translated_py_file": "spec/human/input/44.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, including the truncation behavior of natural number subtraction in nat_of_digit, the precondition, and the Horner's method evaluation in the spec."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq specification, including the truncation behavior of natural number subtraction in nat_of_digit and the Horner's method evaluation of the base conversion."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq specification, including the natural number subtraction behavior in nat_of_digit and the Horner's method evaluation for the base conversion check."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The nat_of_digit function converts characters to their numeric values (with truncation at 0 matching Coq's nat subtraction). The problem_44_pre checks base >= 2 and base < 10. The problem_44_spec checks both conditions: (1) all digits are less than base using all(), and (2) the fold_left/Horner evaluation matches x. The Python implementation handles the output as an iterable of characters, which works correctly for both strings and lists of characters, matching the Coq list ascii type."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. nat_of_digit converts a character to its numeric value (with truncation at 0 matching Coq's nat subtraction). problem_44_pre checks base is in [2,10). problem_44_spec checks that all digits are less than base and that the Horner evaluation of the digit list equals x, exactly matching the Coq fold_left computation."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. nat_of_digit converts a character to its numeric value (with truncation at 0 matching Coq's nat subtraction). problem_44_pre checks that base is in [2, 10). problem_44_spec checks both conditions: all digits are less than base, and the Horner evaluation of the digit list equals x. The fold_left in Coq with initial accumulator 0 matches the Python loop starting with acc = 0. Both return the same boolean judgment for all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python mirrors Coq: nat_of_digit uses truncated subtraction, precondition checks base in [2,10), and Horner evaluation matches fold_left; behavior (including non-digit chars mapping to \u22650 and empty/leading-zero cases) aligns."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python mirrors Coq\u2019s nat_of_digit (saturating at 0 for chars < '0'), precondition (2 <= base < 10), and Horner evaluation with nonnegative arithmetic. For all concrete ASCII inputs these produce the same digits check and value equality."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Same precondition, same nat_of_digit via truncated subtraction, same digit < base check, and same Horner evaluation; matches Coq spec on all valid inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

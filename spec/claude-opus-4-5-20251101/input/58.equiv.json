@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/claude-opus-4-5-20251101/input/58.v",
+  "translated_py_file": "spec/claude-opus-4-5-20251101/input/58.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specifications, checking for sortedness, lack of duplicates, and exact set intersection equivalence."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specifications for checking if a list is sorted, has no duplicates, represents the intersection of two lists, and satisfies the combined common_spec."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python implementation correctly implements the sorted, no-duplicates, and intersection properties as defined in the Coq specification. The intersection check correctly verifies both directions of the logical equivalence."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec for concrete inputs. is_sorted checks adjacent elements which is equivalent to the Coq definition for sorted lists. no_duplicates checks for uniqueness like NoDup. is_intersection checks both directions of the iff: that every element in result is in both l1 and l2, and that every element in both l1 and l2 is in result. common_spec combines all three conditions with conjunction. All functions return the same boolean judgments as the Coq predicates would evaluate to on concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec for concrete inputs: is_sorted checks adjacent elements which is equivalent to the Coq definition for sorted lists; no_duplicates checks for repeated elements; is_intersection verifies the bidirectional membership condition (result contains only elements in both l1 and l2, and all common elements are in result); common_spec combines all three checks. The Python implementations will return the same boolean judgments as the Coq predicates for any concrete list inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec for concrete inputs: is_sorted checks adjacent elements which is equivalent to the Coq definition for sorted lists; no_duplicates checks for repeated elements matching NoDup; is_intersection checks the biconditional by verifying all result elements are in both l1 and l2, and all elements in both l1 and l2 appear in result; common_spec combines all three conditions with conjunction."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python checks non-decreasing adjacent pairs (equivalent to Coq\u2019s pairwise Z.le), enforces NoDup via membership, and its is_intersection ensures exactly the set of elements common to both lists (subset and superset directions). Conjunction matches Coq\u2019s common_spec on all concrete integer lists."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "is_sorted checks non-decreasing order (equivalent to Coq\u2019s all-pairs condition), no_duplicates matches NoDup, and is_intersection ensures result equals the set intersection of l1 and l2. Thus common_spec matches the Coq spec on all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python enforces result equals the set intersection (both directions), no duplicates, and non-decreasing order; these align with the Coq specs over integer lists."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

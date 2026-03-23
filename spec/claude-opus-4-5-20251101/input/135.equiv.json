@@ -1,0 +1,96 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/claude-opus-4-5-20251101/input/135.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/claude-opus-4-5-20251101/input/135.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, accurately translating the helper functions and the main specification logic including the bounds and conditions for valid indices."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq specification, accurately implementing the helper functions and bounding the existential quantifier to the valid range of indices."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, accurately translating the helper functions and using a loop to evaluate the existential quantifier for the largest valid index."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. nth_Z returns the element at index n or default. is_valid_index checks i > 0, i < len(arr), and arr[i] < arr[i-1]. no_larger_valid_index checks all j > i have arr[j] >= arr[j-1]. no_valid_index checks all i > 0 have arr[i] >= arr[i-1]. can_arrange_spec returns True if result equals the largest valid index (since it iterates from 1 upward and checks no_larger_valid_index), or if no valid index exists and result is -1. The iteration finds valid indices and the no_larger_valid_index check ensures it's the largest one, matching the Coq existential with the conjunction of conditions."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It checks if a result is either the largest valid index (where arr[i] < arr[i-1]) or -1 if no such index exists. The nth_Z function, is_valid_index, no_larger_valid_index, and no_valid_index all match their Coq counterparts. The can_arrange_spec function correctly implements the disjunction by iterating through possible valid indices and checking the conditions, returning True if result matches the largest valid index or if there's no valid index and result is -1."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. nth_Z returns the element at index n or default. is_valid_index checks i > 0, i < len(arr), and arr[i] < arr[i-1]. no_larger_valid_index checks all j > i have arr[j] >= arr[j-1]. no_valid_index checks all i > 0 have arr[i] >= arr[i-1]. can_arrange_spec returns True if result equals the largest valid index (since it iterates through all valid indices and checks no_larger_valid_index), or if no valid index exists and result is -1. The iteration finds all valid indices with no larger valid index, which corresponds to the largest valid index, matching the Coq existential specification."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code mirrors the Coq definitions: same nth with default, same valid index check (i>0, i<len, arr[i]<arr[i-1]), same universal checks for no larger/any valid index via loops, and can_arrange_spec returns True exactly when result equals the largest decreasing index or -1 if none. Indexing and bounds behavior match, so concrete outcomes align."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python functions mirror the Coq predicates: they check i>0 and i<len(arr), use in-bounds comparisons arr[i] < arr[i-1], enforce no later decreases for the chosen i, and accept result=i (as an int) or -1 when no valid index exists. Indexing and comparisons align with Coq\u2019s nat/Z semantics for all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python faithfully checks for the last index i where arr[i] < arr[i-1] and returns i, otherwise -1; all helper predicates mirror the Coq definitions on concrete inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

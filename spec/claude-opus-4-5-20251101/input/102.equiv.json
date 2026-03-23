@@ -1,0 +1,100 @@
+{
+  "source_v_file": "spec/claude-opus-4-5-20251101/input/102.v",
+  "translated_py_file": "spec/claude-opus-4-5-20251101/input/102.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly computes the maximum even number in the range [x, y] or -1 if none exists, which exactly matches the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly computes the maximum even number in the range [x, y] (or -1 if none exists) and checks if the result matches, which is exactly what the Coq specification requires."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly computes the expected result (the maximum even number in the range [x, y], or -1 if none exists) and checks if the given result matches it, which is exactly what the Coq specification defines."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": false,
+      "reason": "The Coq spec requires that when x <= y and there exists an even number k in [x,y], the result must be the maximum such even number (result mod 2 = 0, x <= result <= y, and for all even k in range, k <= result). The Python code computes this maximum even correctly when y is even (returns y) or when y-1 >= x (returns y-1). However, the Coq spec also requires that result mod 2 = 0, meaning the spec checks that the given result satisfies being the maximum even. The Python code computes the expected value and checks equality. These should match for correct implementations, but the Coq spec is a relational specification that could accept any result satisfying the properties, while Python computes a specific expected value. More critically, when y is odd and y-1 < x (i.e., x == y and y is odd), Python returns -1, which matches Coq since no even exists. The logic appears equivalent for computing the maximum even or -1. Actually, on closer inspection, both should produce the same concrete results for all inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": false,
+      "reason": "The Coq spec requires that when x <= y and there exists an even number k in [x,y], the result must be the maximum such even number (result mod 2 = 0, x <= result <= y, and for all even k in range, k <= result). The Python code computes this maximum even correctly when y is even (returns y) or when y-1 >= x (returns y-1). However, the Coq spec also requires result mod 2 = 0 as a condition to check, while Python just checks result == expected. More importantly, the Coq spec is a Prop that checks multiple conditions about the result, whereas Python computes an expected value and checks equality. For concrete inputs where the result is the correct maximum even number, both agree. But the Coq spec structure allows checking arbitrary results against the specification, while Python computes what the result should be. They should agree on concrete inputs when result is the correct answer, but the Python correctly implements the intended behavior of finding the largest even number in range or -1."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": false,
+      "reason": "The Coq spec requires that when x <= y and there exists an even k in [x,y], the result must be the maximum such even k, and it must satisfy result mod 2 = 0. The Python code computes the expected maximum even number correctly (y if y is even, else y-1 if y-1 >= x, else -1). However, the Coq spec is a Prop that checks multiple conditions (result is even, result is in range, result is maximal), while Python just checks result == expected. For correct inputs they agree, but the Coq spec would accept any result satisfying those properties (though the maximality constraint pins it down), while Python checks equality to a specific computed value. More importantly, the Python implementation correctly computes the maximum even in range, matching what the Coq spec constrains. On concrete inputs, both should agree on what constitutes a valid result."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both specify: if x>y return -1; else return the largest even number in [x,y] if it exists, otherwise -1. Python\u2019s %2 parity matches Coq\u2019s Z mod 2 for all integers, including negatives."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both select -1 when x > y or when no even exists in [x,y]; otherwise they choose the largest even in [x,y] (y if even, else y-1 if within range)."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both specify: if x>y or no even in [x,y], result = -1; otherwise result is the maximum even in [x,y] (y if even, else y-1). Python checks result equals this value, matching the Coq spec for all inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 0,
+      "not_equivalent_votes": 3,
+      "majority_equivalent": false,
+      "reasons_if_not_equivalent": [
+        "The Coq spec requires that when x <= y and there exists an even number k in [x,y], the result must be the maximum such even number (result mod 2 = 0, x <= result <= y, and for all even k in range, k <= result). The Python code computes this maximum even correctly when y is even (returns y) or when y-1 >= x (returns y-1). However, the Coq spec also requires that result mod 2 = 0, meaning the spec checks that the given result satisfies being the maximum even. The Python code computes the expected value and checks equality. These should match for correct implementations, but the Coq spec is a relational specification that could accept any result satisfying the properties, while Python computes a specific expected value. More critically, when y is odd and y-1 < x (i.e., x == y and y is odd), Python returns -1, which matches Coq since no even exists. The logic appears equivalent for computing the maximum even or -1. Actually, on closer inspection, both should produce the same concrete results for all inputs.",
+        "The Coq spec requires that when x <= y and there exists an even number k in [x,y], the result must be the maximum such even number (result mod 2 = 0, x <= result <= y, and for all even k in range, k <= result). The Python code computes this maximum even correctly when y is even (returns y) or when y-1 >= x (returns y-1). However, the Coq spec also requires result mod 2 = 0 as a condition to check, while Python just checks result == expected. More importantly, the Coq spec is a Prop that checks multiple conditions about the result, whereas Python computes an expected value and checks equality. For concrete inputs where the result is the correct maximum even number, both agree. But the Coq spec structure allows checking arbitrary results against the specification, while Python computes what the result should be. They should agree on concrete inputs when result is the correct answer, but the Python correctly implements the intended behavior of finding the largest even number in range or -1.",
+        "The Coq spec requires that when x <= y and there exists an even k in [x,y], the result must be the maximum such even k, and it must satisfy result mod 2 = 0. The Python code computes the expected maximum even number correctly (y if y is even, else y-1 if y-1 >= x, else -1). However, the Coq spec is a Prop that checks multiple conditions (result is even, result is in range, result is maximal), while Python just checks result == expected. For correct inputs they agree, but the Coq spec would accept any result satisfying those properties (though the maximality constraint pins it down), while Python checks equality to a specific computed value. More importantly, the Python implementation correctly computes the maximum even in range, matching what the Coq spec constrains. On concrete inputs, both should agree on what constitutes a valid result."
+      ]
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 6,
+  "overall_not_equivalent_votes": 3,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [
+    "The Coq spec requires that when x <= y and there exists an even number k in [x,y], the result must be the maximum such even number (result mod 2 = 0, x <= result <= y, and for all even k in range, k <= result). The Python code computes this maximum even correctly when y is even (returns y) or when y-1 >= x (returns y-1). However, the Coq spec also requires that result mod 2 = 0, meaning the spec checks that the given result satisfies being the maximum even. The Python code computes the expected value and checks equality. These should match for correct implementations, but the Coq spec is a relational specification that could accept any result satisfying the properties, while Python computes a specific expected value. More critically, when y is odd and y-1 < x (i.e., x == y and y is odd), Python returns -1, which matches Coq since no even exists. The logic appears equivalent for computing the maximum even or -1. Actually, on closer inspection, both should produce the same concrete results for all inputs.",
+    "The Coq spec requires that when x <= y and there exists an even number k in [x,y], the result must be the maximum such even number (result mod 2 = 0, x <= result <= y, and for all even k in range, k <= result). The Python code computes this maximum even correctly when y is even (returns y) or when y-1 >= x (returns y-1). However, the Coq spec also requires result mod 2 = 0 as a condition to check, while Python just checks result == expected. More importantly, the Coq spec is a Prop that checks multiple conditions about the result, whereas Python computes an expected value and checks equality. For concrete inputs where the result is the correct maximum even number, both agree. But the Coq spec structure allows checking arbitrary results against the specification, while Python computes what the result should be. They should agree on concrete inputs when result is the correct answer, but the Python correctly implements the intended behavior of finding the largest even number in range or -1.",
+    "The Coq spec requires that when x <= y and there exists an even k in [x,y], the result must be the maximum such even k, and it must satisfy result mod 2 = 0. The Python code computes the expected maximum even number correctly (y if y is even, else y-1 if y-1 >= x, else -1). However, the Coq spec is a Prop that checks multiple conditions (result is even, result is in range, result is maximal), while Python just checks result == expected. For correct inputs they agree, but the Coq spec would accept any result satisfying those properties (though the maximality constraint pins it down), while Python checks equality to a specific computed value. More importantly, the Python implementation correctly computes the maximum even in range, matching what the Coq spec constrains. On concrete inputs, both should agree on what constitutes a valid result."
+  ],
+  "repair_round": 0,
+  "syntax_ok": true
+}

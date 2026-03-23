@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gpt-4o/input/24.v",
+  "translated_py_file": "spec/gpt-4o/input/24.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, including the specific behavior of Coq's modulo operation when the divisor is zero."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, including the specific behavior of Coq's modulo operation by zero, and exhaustively checks the bounded universal quantifier."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, including the specific behavior of Coq's modulo operation when the divisor is zero, and accurately checks the universal quantifier over the finite domain x < n."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. It checks that result < n and n mod result = 0, then verifies that for all x < n where n mod x = 0, x <= result. The coq_mod function correctly handles the case where b=0 by returning a (matching Coq's Nat.modulo behavior). The loop range(n) correctly iterates over all x from 0 to n-1, which matches the Coq quantifier 'forall x, x < n -> ...'."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. It checks that result < n and n mod result = 0, then verifies that for all x < n where n mod x = 0, x <= result. The coq_mod function correctly handles the edge case where b=0 by returning a (matching Coq's Nat.modulo behavior). The loop range(n) correctly iterates over all x from 0 to n-1, which matches 'x < n' in Coq."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. It checks that result < n and n mod result = 0, and verifies that for all x < n where n mod x = 0, x <= result. The coq_mod function correctly handles the case where b=0 by returning a (matching Coq's Nat.modulo behavior), and the loop over range(n) correctly iterates over all x from 0 to n-1, which matches the Coq quantifier 'forall x, x < n -> ...'."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq spec: it checks result < n and n mod result = 0 (with mod 0 returning n), then ensures every x < n dividing n satisfies x <= result. This matches Coq\u2019s semantics for nat and modulo, including the 0 case."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Checks result < n and n mod result = 0, then verifies every x < n dividing n satisfies x <= result; mod 0 is handled like Coq\u2019s Nat.mod. Matches the Coq spec for natural-number inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Matches Coq: uses Nat.mod semantics (mod 0 returns n), checks result < n and divides, then iterates all x < n and enforces that any divisor x satisfies x <= result, mirroring the universal condition."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 1,
+  "syntax_ok": true
+}

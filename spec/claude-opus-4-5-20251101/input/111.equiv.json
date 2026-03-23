@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/claude-opus-4-5-20251101/input/111.v",
+  "translated_py_file": "spec/claude-opus-4-5-20251101/input/111.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq definitions and specification, maintaining the same logic for counting occurrences, finding the maximum, filtering, and checking the histogram conditions."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq definitions and specification, maintaining the same logic for counting occurrences, finding the maximum, filtering, and checking the histogram conditions."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq definitions and specification, including the map operations, filtering, and the logical conditions in the histogram specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both Coq and Python use a stub split_string that always returns an empty list. For empty test string, both require result to be empty. For non-empty test string, words becomes empty (since split_string returns []), count becomes {}, max_count returns 0, filter_max returns {}, so expected is {}. The Python conditions cond1 (result == {}), cond2 (trivially true for empty result), and cond3 (trivially true since count is empty) all match the Coq spec behavior. The concrete behavior is equivalent."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both Coq and Python implementations use a stub split_string that always returns an empty list. Given this, for any non-empty test string, words will be empty, count will be empty, mx will be 0, and expected will be empty. The Python histogram_spec correctly checks the same conditions as the Coq spec: for empty test, result must equal empty dict; for non-empty test, result must equal expected (empty), all values in result must equal mx (vacuously true if empty), and all max-count entries in count must be in result (vacuously true since count is empty). The concrete behavior matches."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both Coq and Python implementations use a stub split_string that always returns an empty list. For empty test string, both require result to be empty. For non-empty test string, since split_string returns [], words becomes [], count_occurrences returns empty map/dict, max_count returns 0, filter_max returns empty map/dict, so expected is empty. The Python conditions cond1 (result == {}), cond2 (trivially true for empty result), and cond3 (trivially true for empty count) all match the Coq spec behavior. The concrete behavior matches on all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both define split_string to always return [], so for any test the expected result is the empty map. The Python histogram_spec enforces result == {} in both cases (empty and non-empty test) and matches the Coq conditions, including max_count=0 and the auxiliary properties."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both Coq and Python define split_string to always return [], making count, max, and expected all empty/zero; thus histogram_spec requires result to be the empty map for any input. The Python helpers mirror Coq behavior (counts, max, filter, map equality), so the concrete judgments match for all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both define split_string as always [], making words empty. The Python checks mirror the Coq implications, counting, max, filtering, and map equality. Thus for any test, it requires result be the empty map, matching the Coq spec."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

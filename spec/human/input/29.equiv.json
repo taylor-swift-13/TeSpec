@@ -1,0 +1,96 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/human/input/29.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/human/input/29.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the subsequence check and the bidirectional implication for prefix filtering, matching the Coq specification exactly."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The `is_subsequence` function implements the standard greedy algorithm which matches the inductive Coq definition. The `problem_29_spec` function correctly verifies that the output is a subsequence and enforces the iff condition (membership in output <-> membership in input AND prefix match) using loops, matching the Coq logic exactly."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code implements a greedy subsequence check that is equivalent to the Coq inductive definition. It also explicitly verifies the bidirectional implication (elements in output iff elements in input and satisfying the prefix condition) using loops, which matches the logical structure of the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. The is_subsequence function checks if l1 is a subsequence of l2 using the standard greedy algorithm, which matches the Coq definition. The spec checks: (1) output is a subsequence of input, (2) every element in output is in input and starts with the prefix, and (3) every element in input that starts with the prefix is in output. This matches the Coq biconditional (In s output <-> In s input /\\ prefix). Python's str.startswith matches Coq's String.prefix for concrete string inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. The is_subsequence function checks if l1 is a subsequence of l2 using the standard greedy algorithm, which matches the Coq definition. The spec checks: (1) output is a subsequence of input, (2) every element in output is in input and starts with substring, and (3) every element in input that starts with substring is in output. This matches the Coq biconditional 'In s output <-> (In s input /\\ String.prefix substring s = true)'. Python's str.startswith corresponds to Coq's String.prefix returning true."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. The is_subsequence function checks if output is a subsequence of input (preserving order). The spec checks: (1) output is a subsequence of input, (2) every element in output is in input and starts with the prefix, and (3) every element in input that starts with the prefix is in output. The Python implementation checks all these conditions correctly. The only subtle difference is that Coq's biconditional is checked by iterating both directions in Python, which is equivalent for concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both check that output is a subsequence of input and that output contains exactly those input strings starting with the given prefix (using startswith/prefix). Order and membership are handled consistently; duplicates are treated set-wise as in the Coq spec."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python checks subsequence ordering and that output contains exactly the input elements with the given prefix (using startswith), matching Coq\u2019s is_subsequence and membership/prefix equivalence."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python spec enforces output is a subsequence of input and that output contains exactly the input strings starting with the given prefix (using startswith), matching the Coq spec\u2019s subsequence and bidirectional membership conditions. Duplicate handling aligns since Coq\u2019s In is set-like."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 3,
+  "syntax_ok": true
+}

@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/44.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/44.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq specification, including the helper functions and the main specification logic."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq definitions, including the string parsing, base conversion logic, and the specification conditions."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq specification, including the helper functions for string conversion, digit validation, and canonical form checking, as well as the logical implications in the main spec."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq spec. char_to_digit, string_to_val, valid_digits, and is_canonical all compute the same values. The change_base_spec function correctly handles the preconditions (returning True when they fail, matching Coq's vacuous truth for implications), and correctly checks both conditions for x=0 and x>0 cases. The is_canonical check in Python returns False when the string starts with '0' and has more characters would be handled correctly since for x>0, a valid canonical representation shouldn't start with '0'. The Coq is_canonical returns False for any string starting with '0' followed by anything, which Python matches."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq specification. char_to_digit, string_to_val, valid_digits, and is_canonical all produce the same concrete results. The change_base_spec function correctly handles the implication structure: when base or x preconditions fail, it returns True (vacuously true). When x=0, it checks ret=\"0\"; when x>0, it checks valid_digits, string_to_val equality, and is_canonical. The is_canonical check in Python correctly returns False when the string starts with '0' (for non-empty strings), matching the Coq pattern that returns False for String \"0\" _."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq spec. char_to_digit, string_to_val, valid_digits, and is_canonical all compute the same values. The change_base_spec function correctly handles the preconditions (returning True when they fail, matching Coq's implication semantics), and correctly checks both conditions for x=0 and x>0 cases. The is_canonical check in Python returns False only when the string starts with '0' and has additional characters, but looking more carefully at the Coq: it returns False for any string starting with '0' followed by anything (String \"0\" _), which matches Python's check since s[0]=='0' when s is non-empty and starts with '0'. For the single character \"0\", Coq pattern String \"0\" _ doesn't match (since _ would need to be a string, and \"0\" is String '0' EmptyString), so is_canonical returns True for \"0\", and Python also returns True for \"0\" since len(\"0\")=1 means s[0]='0' but wait - Python returns False if s[0]=='0'. Actually re-reading: Python's is_canonical returns False if s is non-empty AND s[0]=='0'. For s=\"0\", this returns False. But in Coq, String \"0\" EmptyString doesn't match pattern String \"0\"%char _, so it falls to _ => True. This is a mismatch... Wait, let me re-check: in Coq, String \"0\"%char _ matches any string starting with '0' followed by ANY string including EmptyString. So \"0\" = String '0' EmptyString DOES match, making is_canonical(\"0\") = False in Coq. But the spec says x=0 -> ret=\"0\", and for x>0 we need is_canonical. So when x=0, we don't check is_canonical. When x>0, ret shouldn't be \"0\" anyway. So the mismatch in is_canonical for \"0\" doesn't affect the overall spec behavior on valid inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Helper functions mirror Coq semantics (digit mapping by ord difference, positional value, digit validity, canonical form). The spec\u2019s implications are handled via early True on unmet preconditions and conditional checks for x==0 vs x>0, matching vacuous truth and required constraints. For ASCII inputs, results align on all cases."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python functions mirror the Coq definitions on all relevant inputs: digit conversion, positional value computation, digit validity, and canonicality match. The change_base_spec correctly encodes implications via early returns (vacuous truth) and only enforces canonicality and digit validity when x > 0, with the x = 0 case requiring ret == \"0\". Behavior aligns for all concrete ASCII inputs and base 2..9."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python functions mirror the Coq definitions: same digit conversion, positional value computation, digit validity, and canonicity check. The change_base_spec uses vacuous truth for unmet preconditions and enforces the same conditions for x=0 and x>0. For all concrete ASCII inputs and bases 2..9, results align."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

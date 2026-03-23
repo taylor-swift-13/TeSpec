@@ -1,0 +1,104 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/gpt-5/input/118.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/gpt-5/input/118.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq definitions, including the behavior of Nat.pred on 0, and accurately implements the specification for finding the last vowel between two non-vowels."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the `between_consonants` predicate, including the specific behavior of `Nat.pred 0` and boundary checks. The loop in `get_closest_vowel_spec` correctly identifies the last index satisfying the condition, matching the Coq specification's requirement for the maximal index (implied by the `forall j > i` clause)."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq definitions, correctly handling the Nat.pred 0 = 0 edge case and finding the last vowel between consonants as specified."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": false,
+      "reason": "In Coq, when i=0, Nat.pred 0 = 0, so between_consonants checks nth_char 0 for the 'previous' consonant, which is the same position as the vowel itself. This means a vowel at index 0 could potentially satisfy between_consonants if the character at index 0 is both a vowel (for the is_vowel check) and not a vowel (for the predecessor check), which is impossible. However, the Python code also uses pred_i = 0 when i = 0, matching this behavior. The real issue is that the Python code returns res == best_ch where best_ch is a single character, but the Coq spec requires res = String ch EmptyString (a single-character string). In Python, word[i] returns a single-character string, so res == best_ch compares res to a single character string, which matches the Coq intent. Actually, re-examining: the Python code is correct in this regard. But there's another issue: for i=0, pred_i=0, so nth_char(0, w) returns w[0], which is the same character as ch. If ch is a vowel, then a=ch is also a vowel, so is_vowel(a) is True, and the function returns False. This matches Coq behavior where checking the same position would fail. The codes appear equivalent on concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": false,
+      "reason": "In Coq, when i=0, Nat.pred 0 = 0, so between_consonants checks if nth_char(0, w) is a non-vowel consonant before the vowel at position 0. This means the character at position 0 would need to be both a vowel (the ch) and a non-vowel (the predecessor check), which is impossible. However, in Python, when i=0, pred_i=0, so it checks if the character at position 0 is both the vowel ch AND a non-vowel consonant, which correctly fails. But the real issue is that in Python, for i=1, pred_i=0 correctly checks position 0, matching Coq. The actual mismatch is in the return value: Coq's spec says res = String ch EmptyString (a single-character string), but Python checks res == best_ch where best_ch is a single character from word[i], which is also a single-character string. This should match. Wait, re-examining: the Python code returns res == best_ch where best_ch is word[i], a single character string, and Coq expects String ch EmptyString which is also a single character string. These should be equivalent. Actually they are equivalent for concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": false,
+      "reason": "In Coq, when i=0, Nat.pred 0 = 0, so between_consonants checks if nth_char(0, w) is a non-vowel consonant (the same position as the vowel being checked). This means for i=0, the vowel at position 0 would need to also be a non-vowel at position 0, which is impossible. However, in Python, when i=0, pred_i=0, and it checks if the character at position 0 is both a vowel (the ch check) and a non-vowel (the a check), which will always fail. But the real issue is that in Python, the spec function returns res == best_ch where best_ch is a single character, while in Coq the spec requires res = String ch EmptyString (a single-character string). These match. The actual mismatch is: in Python get_closest_vowel_spec returns a boolean judgment, but when best_ch is found, it checks res == best_ch (single char). In Coq, res must equal String ch EmptyString. Since Python's best_ch is word[i] which is a single character string, and Coq's String ch EmptyString is also a single character string, these should match. Actually, the mismatch is subtle: in Coq, between_consonants requires i > 0 implicitly for a valid predecessor consonant (since at i=0, pred=0 means checking the same position). Python mirrors this. They should be equivalent on concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python mirrors Coq\u2019s nth_char, vowel set, and Nat.pred behavior; it identifies the rightmost vowel with non-vowel neighbors and checks res equals that 1-char string, or empty if none, matching the Coq spec on all concrete string inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python functions implement the same concrete behavior: nth_char matches zero-based lookup with None for out-of-bounds, is_vowel matches exactly AEIOU/aieou, between_consonants enforces a vowel with non-vowel neighbors (with Nat.pred 0 handled as 0), and get_closest_vowel_spec returns the last such vowel as a 1-char string or empty if none. Types outside Coq\u2019s domain are rejected but do not affect valid cases."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python mirrors nth_char, vowel check, and the between_consonants condition (including Nat.pred behavior) and selects the last such vowel, returning a single-character string or empty string exactly as the Coq spec requires."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 0,
+      "not_equivalent_votes": 3,
+      "majority_equivalent": false,
+      "unanimous_equivalent": false,
+      "reasons_if_not_equivalent": [
+        "In Coq, when i=0, Nat.pred 0 = 0, so between_consonants checks nth_char 0 for the 'previous' consonant, which is the same position as the vowel itself. This means a vowel at index 0 could potentially satisfy between_consonants if the character at index 0 is both a vowel (for the is_vowel check) and not a vowel (for the predecessor check), which is impossible. However, the Python code also uses pred_i = 0 when i = 0, matching this behavior. The real issue is that the Python code returns res == best_ch where best_ch is a single character, but the Coq spec requires res = String ch EmptyString (a single-character string). In Python, word[i] returns a single-character string, so res == best_ch compares res to a single character string, which matches the Coq intent. Actually, re-examining: the Python code is correct in this regard. But there's another issue: for i=0, pred_i=0, so nth_char(0, w) returns w[0], which is the same character as ch. If ch is a vowel, then a=ch is also a vowel, so is_vowel(a) is True, and the function returns False. This matches Coq behavior where checking the same position would fail. The codes appear equivalent on concrete inputs.",
+        "In Coq, when i=0, Nat.pred 0 = 0, so between_consonants checks if nth_char(0, w) is a non-vowel consonant before the vowel at position 0. This means the character at position 0 would need to be both a vowel (the ch) and a non-vowel (the predecessor check), which is impossible. However, in Python, when i=0, pred_i=0, so it checks if the character at position 0 is both the vowel ch AND a non-vowel consonant, which correctly fails. But the real issue is that in Python, for i=1, pred_i=0 correctly checks position 0, matching Coq. The actual mismatch is in the return value: Coq's spec says res = String ch EmptyString (a single-character string), but Python checks res == best_ch where best_ch is a single character from word[i], which is also a single-character string. This should match. Wait, re-examining: the Python code returns res == best_ch where best_ch is word[i], a single character string, and Coq expects String ch EmptyString which is also a single character string. These should be equivalent. Actually they are equivalent for concrete inputs.",
+        "In Coq, when i=0, Nat.pred 0 = 0, so between_consonants checks if nth_char(0, w) is a non-vowel consonant (the same position as the vowel being checked). This means for i=0, the vowel at position 0 would need to also be a non-vowel at position 0, which is impossible. However, in Python, when i=0, pred_i=0, and it checks if the character at position 0 is both a vowel (the ch check) and a non-vowel (the a check), which will always fail. But the real issue is that in Python, the spec function returns res == best_ch where best_ch is a single character, while in Coq the spec requires res = String ch EmptyString (a single-character string). These match. The actual mismatch is: in Python get_closest_vowel_spec returns a boolean judgment, but when best_ch is found, it checks res == best_ch (single char). In Coq, res must equal String ch EmptyString. Since Python's best_ch is word[i] which is a single character string, and Coq's String ch EmptyString is also a single character string, these should match. Actually, the mismatch is subtle: in Coq, between_consonants requires i > 0 implicitly for a valid predecessor consonant (since at i=0, pred=0 means checking the same position). Python mirrors this. They should be equivalent on concrete inputs."
+      ]
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 6,
+  "overall_not_equivalent_votes": 3,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": false,
+  "non_equivalence_reasons": [
+    "In Coq, when i=0, Nat.pred 0 = 0, so between_consonants checks nth_char 0 for the 'previous' consonant, which is the same position as the vowel itself. This means a vowel at index 0 could potentially satisfy between_consonants if the character at index 0 is both a vowel (for the is_vowel check) and not a vowel (for the predecessor check), which is impossible. However, the Python code also uses pred_i = 0 when i = 0, matching this behavior. The real issue is that the Python code returns res == best_ch where best_ch is a single character, but the Coq spec requires res = String ch EmptyString (a single-character string). In Python, word[i] returns a single-character string, so res == best_ch compares res to a single character string, which matches the Coq intent. Actually, re-examining: the Python code is correct in this regard. But there's another issue: for i=0, pred_i=0, so nth_char(0, w) returns w[0], which is the same character as ch. If ch is a vowel, then a=ch is also a vowel, so is_vowel(a) is True, and the function returns False. This matches Coq behavior where checking the same position would fail. The codes appear equivalent on concrete inputs.",
+    "In Coq, when i=0, Nat.pred 0 = 0, so between_consonants checks if nth_char(0, w) is a non-vowel consonant before the vowel at position 0. This means the character at position 0 would need to be both a vowel (the ch) and a non-vowel (the predecessor check), which is impossible. However, in Python, when i=0, pred_i=0, so it checks if the character at position 0 is both the vowel ch AND a non-vowel consonant, which correctly fails. But the real issue is that in Python, for i=1, pred_i=0 correctly checks position 0, matching Coq. The actual mismatch is in the return value: Coq's spec says res = String ch EmptyString (a single-character string), but Python checks res == best_ch where best_ch is a single character from word[i], which is also a single-character string. This should match. Wait, re-examining: the Python code returns res == best_ch where best_ch is word[i], a single character string, and Coq expects String ch EmptyString which is also a single character string. These should be equivalent. Actually they are equivalent for concrete inputs.",
+    "In Coq, when i=0, Nat.pred 0 = 0, so between_consonants checks if nth_char(0, w) is a non-vowel consonant (the same position as the vowel being checked). This means for i=0, the vowel at position 0 would need to also be a non-vowel at position 0, which is impossible. However, in Python, when i=0, pred_i=0, and it checks if the character at position 0 is both a vowel (the ch check) and a non-vowel (the a check), which will always fail. But the real issue is that in Python, the spec function returns res == best_ch where best_ch is a single character, while in Coq the spec requires res = String ch EmptyString (a single-character string). These match. The actual mismatch is: in Python get_closest_vowel_spec returns a boolean judgment, but when best_ch is found, it checks res == best_ch (single char). In Coq, res must equal String ch EmptyString. Since Python's best_ch is word[i] which is a single character string, and Coq's String ch EmptyString is also a single character string, these should match. Actually, the mismatch is subtle: in Coq, between_consonants requires i > 0 implicitly for a valid predecessor consonant (since at i=0, pred=0 means checking the same position). Python mirrors this. They should be equivalent on concrete inputs."
+  ],
+  "repair_round": 10,
+  "syntax_ok": true
+}

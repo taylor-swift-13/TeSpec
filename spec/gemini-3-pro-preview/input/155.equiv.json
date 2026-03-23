@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/155.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/155.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the digit counting logic by converting the number to a string and counting even/odd digits, which perfectly matches the Coq inductive relation and specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the digit counting logic by converting the number to a string and counting even/odd digits, which exactly matches the inductive definition in Coq."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly counts the even and odd digits of the absolute value of the number, which exactly matches the inductive definition and specification in Coq."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The Coq inductive definition digit_counts recursively counts even and odd digits by examining the last digit (n mod 10) and recursing on (n div 10), with base case for single digits (0-9). The Python implementation converts the number to a string and counts even/odd digits directly, which produces the same counts. Both handle the absolute value of the input number, and both correctly classify digits 0,2,4,6,8 as even and 1,3,5,7,9 as odd. The concrete results match for all inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The Coq inductive definition digit_counts counts even and odd digits in the decimal representation of a non-negative integer, and even_odd_count_spec applies this to the absolute value of the input. The Python implementation does the same: it converts the absolute value to a string, counts even digits (0,2,4,6,8) and odd digits (1,3,5,7,9), and checks if these match the provided counts. Both use the same definition of even (divisible by 2) and process all decimal digits. The base case in Coq handles single digits (0-9), and the recursive case processes multi-digit numbers by dividing by 10 - this produces the same digit-by-digit counting as the Python string iteration approach."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The Coq inductive definition digit_counts counts even and odd digits by recursively dividing by 10 and checking each digit's parity. The Python version converts to string and counts digits with the same parity check (digit % 2 == 0 for even). Both use Z.abs/abs for the input number. The string-based approach in Python produces the same digit counts as the recursive division approach in Coq for all non-negative integers."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both compute counts of even and odd digits in the base-10 representation of the absolute value of the input; Python\u2019s implementation matches the Coq inductive definition for all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both compute counts of even and odd decimal digits of the nonnegative number (absolute value for spec). Python iterates digits of str(abs(num)) and counts parity, matching the inductive Coq definition via div/mod 10. Handles 0 correctly and rejects negatives internally but spec passes abs, so results align."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both compute the counts of even and odd digits of the decimal representation of the absolute value; the Python helper matches the inductive relation for n>=0 and the spec applies abs, so results align on all inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

@@ -1,0 +1,53 @@
+def get_digits_helper(n, fuel):
+    res = []
+    while fuel > 0 and n > 0:
+        res.append(n % 10)
+        n //= 10
+        fuel -= 1
+    return res
+
+def get_digits(n):
+    return get_digits_helper(n, n)
+
+def product(l):
+    res = 1
+    for x in l:
+        res *= x
+    return res
+
+def digits_impl(n):
+    ds = [x for x in get_digits(n) if x % 2 != 0]
+    if not ds:
+        return 0
+    return product(ds)
+
+def problem_131_pre(n):
+    return n > 0
+
+def problem_131_spec(n, output):
+    return output == digits_impl(n)
+
+def _impl(n):
+    has_odd, prod = False, 1
+    for ch in str(n):
+        if int(ch) % 2 == 1:
+            has_odd = True
+            prod *= int(ch)
+    return 0 if not has_odd else prod
+
+def precondition(input) -> bool:
+    if not isinstance(input, tuple):
+        input = tuple(input)
+    return bool(problem_131_pre(*input))
+
+def postcondition(input, output) -> bool:
+    if not isinstance(input, tuple):
+        input = tuple(input)
+    return bool(problem_131_spec(*input, output))
+
+def digits(*args):
+    _input = tuple(args)
+    assert precondition(_input)
+    _output = _impl(*args)
+    assert postcondition(_input, _output)
+    return _output

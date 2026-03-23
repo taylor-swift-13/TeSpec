@@ -1,0 +1,118 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/human/input/71.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/human/input/71.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": false,
+      "reason": "The Python translation uses Fraction(rounded_val) to check if the value is exactly a multiple of 1/100. However, due to floating-point representation, a valid float output like 1.23 will have a large power-of-two denominator, causing '100 % f_rounded.denominator == 0' to evaluate to False and incorrectly rejecting valid float outputs."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": false,
+      "reason": "The Python implementation of `is_rounded_to_2_decimals` fails for valid floating-point inputs (e.g., 43.30) because `Fraction(float)` captures the inexact binary representation, resulting in a denominator that does not divide 100. Consequently, the Python specification rejects correct results that the Coq specification accepts."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": false,
+      "reason": "The condition `100 % f_rounded.denominator == 0` will evaluate to False for most valid float outputs (like 1.23) because their exact rational representation in binary floating-point has a large power-of-2 denominator, causing the spec to incorrectly reject correct Python float outputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": false,
+      "reason": "The Python is_rounded_to_2_decimals function checks if 100 is divisible by the denominator of the fraction (100 % f_rounded.denominator == 0), but this is incorrect. For example, if rounded_val = 0.01, then Fraction(0.01) gives a denominator that is a power of 2 (since 0.01 cannot be exactly represented in binary floating point), and 100 % (power of 2) will generally not be 0. The Coq spec requires rounded_val = IZR z / 100 for some integer z, meaning the value should be expressible as an integer divided by 100. The Python check does not correctly verify this condition due to floating-point representation issues, leading to potential mismatches on concrete inputs like ret=6.00 where the spec should accept it but the Python check may reject it."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": false,
+      "reason": "The Python is_rounded_to_2_decimals function checks if 100 is divisible by the denominator of the fraction representation of rounded_val (100 % f_rounded.denominator == 0), but this is incorrect. For example, if rounded_val = 0.5, then Fraction(0.5) = Fraction(1, 2), and 100 % 2 == 0 is True, but 0.5 cannot be expressed as z/100 for any integer z (it would be 50/100 = 1/2, which actually works). However, for rounded_val = 0.125, Fraction(0.125) = Fraction(1, 8), and 100 % 8 == 4 != 0, so it would return False, but 0.125 = 12.5/100 which is not an integer divided by 100, so this is correct. The real issue is that the check should verify that f_rounded * 100 is an integer, i.e., (f_rounded * 100).denominator == 1, not that 100 % f_rounded.denominator == 0. For instance, Fraction(1, 3) has denominator 3, and 100 % 3 == 1 != 0, correctly rejecting it. But Fraction(1, 4) has denominator 4, and 100 % 4 == 0, so it would accept 0.25 = 25/100, which is correct. Actually the logic seems to work for many cases. Let me reconsider: the condition 100 % denom == 0 means denom divides 100. If denom divides 100, then f_rounded = num/denom = (num * 100/denom) / 100, and since denom | 100, this is an integer over 100. So the check is actually correct. The real mismatch is in floating-point representation: math.sqrt and float conversions introduce rounding errors, so heron_area may not return the exact real value, causing is_rounded_to_2_decimals to potentially fail or succeed incorrectly compared to Coq's exact reals."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": false,
+      "reason": "The Python is_rounded_to_2_decimals function checks if 100 is divisible by the denominator of the fraction representation of rounded_val (100 % f_rounded.denominator == 0), but this is incorrect. For example, if rounded_val = 0.5, then Fraction(0.5) = Fraction(1, 2), and 100 % 2 == 0 is True, but 0.5 cannot be expressed as z/100 for any integer z (it would be 50/100 = 1/2, which actually works). However, for rounded_val = 0.3, Fraction(0.3) gives a large denominator due to floating-point representation issues, and the check would likely fail even though 0.3 should ideally be 30/100. The fundamental issue is that Fraction(float) doesn't give the intended decimal fraction but rather the exact binary floating-point representation, causing mismatches with the Coq spec's exact real number semantics."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": false,
+      "reason": "The Python code checks that ret is exactly a multiple of 1/100 by converting the float to a Fraction and requiring its denominator to divide 100, which rejects typical floats like 1.23 (not exactly 123/100 in binary). Coq\u2019s spec requires exact z/100 in Reals. Also, heron_area uses float sqrt, so rounding near 0.005 thresholds can differ from Coq\u2019s exact real sqrt. These can change the concrete judgment."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": false,
+      "reason": "The Python check for is_rounded_to_2_decimals requires the float ret to be exactly representable as k/100 (via Fraction), which rejects most two-decimal floats like 6.01 that the Coq spec accepts as exact reals z/100. Additionally, Python uses float sqrt, which can shift the \u00b10.005 window for very large areas. Hence concrete judgments can differ."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": false,
+      "reason": "The Python check for \u201crounded to 2 decimals\u201d inspects the float\u2019s exact binary rational (Fraction(rounded_val)) and requires its denominator to divide 100. Typical decimals like 1.23 aren\u2019t exactly z/100 as floats, so valid 2-decimal results are rejected, unlike the Coq spec which requires exact z/100 in Reals. It also compares against a float approximation of sqrt rather than the exact real, risking boundary mismatches."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 0,
+      "not_equivalent_votes": 3,
+      "majority_equivalent": false,
+      "unanimous_equivalent": false,
+      "reasons_if_not_equivalent": [
+        "The Python translation uses Fraction(rounded_val) to check if the value is exactly a multiple of 1/100. However, due to floating-point representation, a valid float output like 1.23 will have a large power-of-two denominator, causing '100 % f_rounded.denominator == 0' to evaluate to False and incorrectly rejecting valid float outputs.",
+        "The Python implementation of `is_rounded_to_2_decimals` fails for valid floating-point inputs (e.g., 43.30) because `Fraction(float)` captures the inexact binary representation, resulting in a denominator that does not divide 100. Consequently, the Python specification rejects correct results that the Coq specification accepts.",
+        "The condition `100 % f_rounded.denominator == 0` will evaluate to False for most valid float outputs (like 1.23) because their exact rational representation in binary floating-point has a large power-of-2 denominator, causing the spec to incorrectly reject correct Python float outputs."
+      ]
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 0,
+      "not_equivalent_votes": 3,
+      "majority_equivalent": false,
+      "unanimous_equivalent": false,
+      "reasons_if_not_equivalent": [
+        "The Python is_rounded_to_2_decimals function checks if 100 is divisible by the denominator of the fraction (100 % f_rounded.denominator == 0), but this is incorrect. For example, if rounded_val = 0.01, then Fraction(0.01) gives a denominator that is a power of 2 (since 0.01 cannot be exactly represented in binary floating point), and 100 % (power of 2) will generally not be 0. The Coq spec requires rounded_val = IZR z / 100 for some integer z, meaning the value should be expressible as an integer divided by 100. The Python check does not correctly verify this condition due to floating-point representation issues, leading to potential mismatches on concrete inputs like ret=6.00 where the spec should accept it but the Python check may reject it.",
+        "The Python is_rounded_to_2_decimals function checks if 100 is divisible by the denominator of the fraction representation of rounded_val (100 % f_rounded.denominator == 0), but this is incorrect. For example, if rounded_val = 0.5, then Fraction(0.5) = Fraction(1, 2), and 100 % 2 == 0 is True, but 0.5 cannot be expressed as z/100 for any integer z (it would be 50/100 = 1/2, which actually works). However, for rounded_val = 0.125, Fraction(0.125) = Fraction(1, 8), and 100 % 8 == 4 != 0, so it would return False, but 0.125 = 12.5/100 which is not an integer divided by 100, so this is correct. The real issue is that the check should verify that f_rounded * 100 is an integer, i.e., (f_rounded * 100).denominator == 1, not that 100 % f_rounded.denominator == 0. For instance, Fraction(1, 3) has denominator 3, and 100 % 3 == 1 != 0, correctly rejecting it. But Fraction(1, 4) has denominator 4, and 100 % 4 == 0, so it would accept 0.25 = 25/100, which is correct. Actually the logic seems to work for many cases. Let me reconsider: the condition 100 % denom == 0 means denom divides 100. If denom divides 100, then f_rounded = num/denom = (num * 100/denom) / 100, and since denom | 100, this is an integer over 100. So the check is actually correct. The real mismatch is in floating-point representation: math.sqrt and float conversions introduce rounding errors, so heron_area may not return the exact real value, causing is_rounded_to_2_decimals to potentially fail or succeed incorrectly compared to Coq's exact reals.",
+        "The Python is_rounded_to_2_decimals function checks if 100 is divisible by the denominator of the fraction representation of rounded_val (100 % f_rounded.denominator == 0), but this is incorrect. For example, if rounded_val = 0.5, then Fraction(0.5) = Fraction(1, 2), and 100 % 2 == 0 is True, but 0.5 cannot be expressed as z/100 for any integer z (it would be 50/100 = 1/2, which actually works). However, for rounded_val = 0.3, Fraction(0.3) gives a large denominator due to floating-point representation issues, and the check would likely fail even though 0.3 should ideally be 30/100. The fundamental issue is that Fraction(float) doesn't give the intended decimal fraction but rather the exact binary floating-point representation, causing mismatches with the Coq spec's exact real number semantics."
+      ]
+    },
+    "gpt-5": {
+      "equivalent_votes": 0,
+      "not_equivalent_votes": 3,
+      "majority_equivalent": false,
+      "unanimous_equivalent": false,
+      "reasons_if_not_equivalent": [
+        "The Python code checks that ret is exactly a multiple of 1/100 by converting the float to a Fraction and requiring its denominator to divide 100, which rejects typical floats like 1.23 (not exactly 123/100 in binary). Coq\u2019s spec requires exact z/100 in Reals. Also, heron_area uses float sqrt, so rounding near 0.005 thresholds can differ from Coq\u2019s exact real sqrt. These can change the concrete judgment.",
+        "The Python check for is_rounded_to_2_decimals requires the float ret to be exactly representable as k/100 (via Fraction), which rejects most two-decimal floats like 6.01 that the Coq spec accepts as exact reals z/100. Additionally, Python uses float sqrt, which can shift the \u00b10.005 window for very large areas. Hence concrete judgments can differ.",
+        "The Python check for \u201crounded to 2 decimals\u201d inspects the float\u2019s exact binary rational (Fraction(rounded_val)) and requires its denominator to divide 100. Typical decimals like 1.23 aren\u2019t exactly z/100 as floats, so valid 2-decimal results are rejected, unlike the Coq spec which requires exact z/100 in Reals. It also compares against a float approximation of sqrt rather than the exact real, risking boundary mismatches."
+      ]
+    }
+  },
+  "overall_equivalent_votes": 0,
+  "overall_not_equivalent_votes": 9,
+  "overall_majority_equivalent": false,
+  "overall_unanimous_equivalent": false,
+  "non_equivalence_reasons": [
+    "The Python translation uses Fraction(rounded_val) to check if the value is exactly a multiple of 1/100. However, due to floating-point representation, a valid float output like 1.23 will have a large power-of-two denominator, causing '100 % f_rounded.denominator == 0' to evaluate to False and incorrectly rejecting valid float outputs.",
+    "The Python implementation of `is_rounded_to_2_decimals` fails for valid floating-point inputs (e.g., 43.30) because `Fraction(float)` captures the inexact binary representation, resulting in a denominator that does not divide 100. Consequently, the Python specification rejects correct results that the Coq specification accepts.",
+    "The condition `100 % f_rounded.denominator == 0` will evaluate to False for most valid float outputs (like 1.23) because their exact rational representation in binary floating-point has a large power-of-2 denominator, causing the spec to incorrectly reject correct Python float outputs.",
+    "The Python is_rounded_to_2_decimals function checks if 100 is divisible by the denominator of the fraction (100 % f_rounded.denominator == 0), but this is incorrect. For example, if rounded_val = 0.01, then Fraction(0.01) gives a denominator that is a power of 2 (since 0.01 cannot be exactly represented in binary floating point), and 100 % (power of 2) will generally not be 0. The Coq spec requires rounded_val = IZR z / 100 for some integer z, meaning the value should be expressible as an integer divided by 100. The Python check does not correctly verify this condition due to floating-point representation issues, leading to potential mismatches on concrete inputs like ret=6.00 where the spec should accept it but the Python check may reject it.",
+    "The Python is_rounded_to_2_decimals function checks if 100 is divisible by the denominator of the fraction representation of rounded_val (100 % f_rounded.denominator == 0), but this is incorrect. For example, if rounded_val = 0.5, then Fraction(0.5) = Fraction(1, 2), and 100 % 2 == 0 is True, but 0.5 cannot be expressed as z/100 for any integer z (it would be 50/100 = 1/2, which actually works). However, for rounded_val = 0.125, Fraction(0.125) = Fraction(1, 8), and 100 % 8 == 4 != 0, so it would return False, but 0.125 = 12.5/100 which is not an integer divided by 100, so this is correct. The real issue is that the check should verify that f_rounded * 100 is an integer, i.e., (f_rounded * 100).denominator == 1, not that 100 % f_rounded.denominator == 0. For instance, Fraction(1, 3) has denominator 3, and 100 % 3 == 1 != 0, correctly rejecting it. But Fraction(1, 4) has denominator 4, and 100 % 4 == 0, so it would accept 0.25 = 25/100, which is correct. Actually the logic seems to work for many cases. Let me reconsider: the condition 100 % denom == 0 means denom divides 100. If denom divides 100, then f_rounded = num/denom = (num * 100/denom) / 100, and since denom | 100, this is an integer over 100. So the check is actually correct. The real mismatch is in floating-point representation: math.sqrt and float conversions introduce rounding errors, so heron_area may not return the exact real value, causing is_rounded_to_2_decimals to potentially fail or succeed incorrectly compared to Coq's exact reals.",
+    "The Python is_rounded_to_2_decimals function checks if 100 is divisible by the denominator of the fraction representation of rounded_val (100 % f_rounded.denominator == 0), but this is incorrect. For example, if rounded_val = 0.5, then Fraction(0.5) = Fraction(1, 2), and 100 % 2 == 0 is True, but 0.5 cannot be expressed as z/100 for any integer z (it would be 50/100 = 1/2, which actually works). However, for rounded_val = 0.3, Fraction(0.3) gives a large denominator due to floating-point representation issues, and the check would likely fail even though 0.3 should ideally be 30/100. The fundamental issue is that Fraction(float) doesn't give the intended decimal fraction but rather the exact binary floating-point representation, causing mismatches with the Coq spec's exact real number semantics.",
+    "The Python code checks that ret is exactly a multiple of 1/100 by converting the float to a Fraction and requiring its denominator to divide 100, which rejects typical floats like 1.23 (not exactly 123/100 in binary). Coq\u2019s spec requires exact z/100 in Reals. Also, heron_area uses float sqrt, so rounding near 0.005 thresholds can differ from Coq\u2019s exact real sqrt. These can change the concrete judgment.",
+    "The Python check for is_rounded_to_2_decimals requires the float ret to be exactly representable as k/100 (via Fraction), which rejects most two-decimal floats like 6.01 that the Coq spec accepts as exact reals z/100. Additionally, Python uses float sqrt, which can shift the \u00b10.005 window for very large areas. Hence concrete judgments can differ.",
+    "The Python check for \u201crounded to 2 decimals\u201d inspects the float\u2019s exact binary rational (Fraction(rounded_val)) and requires its denominator to divide 100. Typical decimals like 1.23 aren\u2019t exactly z/100 as floats, so valid 2-decimal results are rejected, unlike the Coq spec which requires exact z/100 in Reals. It also compares against a float approximation of sqrt rather than the exact real, risking boundary mismatches."
+  ],
+  "repair_round": 10,
+  "syntax_ok": true
+}

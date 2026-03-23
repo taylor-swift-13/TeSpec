@@ -1,0 +1,103 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/129.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/129.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It checks all preconditions, including the permutation property, and correctly identifies that the lexicographically minimal path in a grid with distinct elements from 1 to N*N must oscillate between 1 and its smallest neighbor."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly checks all preconditions and leverages the mathematical property that the lexicographically minimal path in a grid of distinct elements from 1 to N^2 must oscillate between 1 and its smallest neighbor, which perfectly matches the Coq specification's postconditions."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly checks the preconditions and efficiently computes the unique lexicographically minimal path by oscillating between the cell containing 1 and its smallest neighbor, which perfectly matches the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": false,
+      "reason": "The Python code assumes the lexicographically minimal path always starts at cell containing 1 and oscillates between 1 and its smallest neighbor. However, the Coq spec defines the minimal path as the lexicographically smallest among ALL valid paths of length k starting from ANY cell. For example, if k=1, the Coq spec would accept [1] as the minimal path (which Python also produces), but for certain grid configurations and k values, a path starting elsewhere might not follow the oscillation pattern. More critically, the Python implementation hardcodes a specific algorithm (oscillating between 1 and its smallest neighbor) rather than checking if the given result is actually the lexicographically minimal valid path. If someone provides a different valid minimal path that doesn't match this pattern, Python would reject it even though Coq would accept it."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": false,
+      "reason": "The Python code assumes the lexicographically minimal path always starts at cell containing 1 and oscillates between 1 and its smallest neighbor. However, the Coq spec defines the minimal path as the lexicographically smallest among ALL valid paths of length k starting from ANY cell. For example, if k=1, the Coq spec would accept [1] as the minimal path (which Python also produces), but for certain grid configurations and k values, a path starting elsewhere might not follow the oscillation pattern. More critically, the Python implementation hardcodes the oscillation strategy, but the Coq spec only requires the result to be lex-minimal - it doesn't prescribe how to compute it. If the grid has 1 in a corner with neighbors 2 and 3, and k=3, Python returns [1,2,1] but a valid path [1,2,x] where x is a neighbor of 2 (not 1) might exist. The oscillation assumption is correct for the problem, but the Python spec checks equality with expected_result rather than verifying the Coq conditions (valid path exists AND is lex-minimal among all paths)."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": false,
+      "reason": "The Python code assumes the lexicographically minimal path always starts at cell containing 1 and oscillates between 1 and its smallest neighbor. However, the Coq spec defines the minimal path as the lexicographically smallest among ALL valid paths of length k starting from ANY cell. For example, if k=1, the Coq spec would return [1] (the smallest single value), but for k=2, if the cell with value 1 has neighbors with values like 5,6,7,8, but there exists another cell with value 2 that has a neighbor with value 3, then [2,3] would be lexicographically smaller than [1,5]. The Python implementation incorrectly assumes starting at 1 is always optimal."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Preconditions (square grid, N>=2, k>0, permutation 1..N*N) match; valid_path_coords and lex_le align; for such grids the lex-minimal length-k path values are uniquely [1, m, 1, m, ...] where m is 1\u2019s smallest neighbor, so checking result equals this sequence is equivalent to the Coq spec."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Preconditions (square grid, permutation 1..N*N, N>=2, k>0) match. For valid paths, helpers behave the same. The lex-minimal value sequence is uniquely the oscillation between 1 and its smallest neighbor, which the Python code computes; thus it accepts exactly the results satisfying the Coq spec."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": false,
+      "reason": "map_coords_to_values differs: Coq returns [] if any coordinate is invalid, while the Python version returns the prefix accumulated before the first None. This is a concrete behavioral mismatch for helper definitions. (Other parts, including the greedy minimal path logic in minPath_spec, align.)"
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 0,
+      "not_equivalent_votes": 3,
+      "majority_equivalent": false,
+      "reasons_if_not_equivalent": [
+        "The Python code assumes the lexicographically minimal path always starts at cell containing 1 and oscillates between 1 and its smallest neighbor. However, the Coq spec defines the minimal path as the lexicographically smallest among ALL valid paths of length k starting from ANY cell. For example, if k=1, the Coq spec would accept [1] as the minimal path (which Python also produces), but for certain grid configurations and k values, a path starting elsewhere might not follow the oscillation pattern. More critically, the Python implementation hardcodes a specific algorithm (oscillating between 1 and its smallest neighbor) rather than checking if the given result is actually the lexicographically minimal valid path. If someone provides a different valid minimal path that doesn't match this pattern, Python would reject it even though Coq would accept it.",
+        "The Python code assumes the lexicographically minimal path always starts at cell containing 1 and oscillates between 1 and its smallest neighbor. However, the Coq spec defines the minimal path as the lexicographically smallest among ALL valid paths of length k starting from ANY cell. For example, if k=1, the Coq spec would accept [1] as the minimal path (which Python also produces), but for certain grid configurations and k values, a path starting elsewhere might not follow the oscillation pattern. More critically, the Python implementation hardcodes the oscillation strategy, but the Coq spec only requires the result to be lex-minimal - it doesn't prescribe how to compute it. If the grid has 1 in a corner with neighbors 2 and 3, and k=3, Python returns [1,2,1] but a valid path [1,2,x] where x is a neighbor of 2 (not 1) might exist. The oscillation assumption is correct for the problem, but the Python spec checks equality with expected_result rather than verifying the Coq conditions (valid path exists AND is lex-minimal among all paths).",
+        "The Python code assumes the lexicographically minimal path always starts at cell containing 1 and oscillates between 1 and its smallest neighbor. However, the Coq spec defines the minimal path as the lexicographically smallest among ALL valid paths of length k starting from ANY cell. For example, if k=1, the Coq spec would return [1] (the smallest single value), but for k=2, if the cell with value 1 has neighbors with values like 5,6,7,8, but there exists another cell with value 2 that has a neighbor with value 3, then [2,3] would be lexicographically smaller than [1,5]. The Python implementation incorrectly assumes starting at 1 is always optimal."
+      ]
+    },
+    "gpt-5": {
+      "equivalent_votes": 2,
+      "not_equivalent_votes": 1,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": [
+        "map_coords_to_values differs: Coq returns [] if any coordinate is invalid, while the Python version returns the prefix accumulated before the first None. This is a concrete behavioral mismatch for helper definitions. (Other parts, including the greedy minimal path logic in minPath_spec, align.)"
+      ]
+    }
+  },
+  "overall_equivalent_votes": 5,
+  "overall_not_equivalent_votes": 4,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [
+    "The Python code assumes the lexicographically minimal path always starts at cell containing 1 and oscillates between 1 and its smallest neighbor. However, the Coq spec defines the minimal path as the lexicographically smallest among ALL valid paths of length k starting from ANY cell. For example, if k=1, the Coq spec would accept [1] as the minimal path (which Python also produces), but for certain grid configurations and k values, a path starting elsewhere might not follow the oscillation pattern. More critically, the Python implementation hardcodes a specific algorithm (oscillating between 1 and its smallest neighbor) rather than checking if the given result is actually the lexicographically minimal valid path. If someone provides a different valid minimal path that doesn't match this pattern, Python would reject it even though Coq would accept it.",
+    "The Python code assumes the lexicographically minimal path always starts at cell containing 1 and oscillates between 1 and its smallest neighbor. However, the Coq spec defines the minimal path as the lexicographically smallest among ALL valid paths of length k starting from ANY cell. For example, if k=1, the Coq spec would accept [1] as the minimal path (which Python also produces), but for certain grid configurations and k values, a path starting elsewhere might not follow the oscillation pattern. More critically, the Python implementation hardcodes the oscillation strategy, but the Coq spec only requires the result to be lex-minimal - it doesn't prescribe how to compute it. If the grid has 1 in a corner with neighbors 2 and 3, and k=3, Python returns [1,2,1] but a valid path [1,2,x] where x is a neighbor of 2 (not 1) might exist. The oscillation assumption is correct for the problem, but the Python spec checks equality with expected_result rather than verifying the Coq conditions (valid path exists AND is lex-minimal among all paths).",
+    "The Python code assumes the lexicographically minimal path always starts at cell containing 1 and oscillates between 1 and its smallest neighbor. However, the Coq spec defines the minimal path as the lexicographically smallest among ALL valid paths of length k starting from ANY cell. For example, if k=1, the Coq spec would return [1] (the smallest single value), but for k=2, if the cell with value 1 has neighbors with values like 5,6,7,8, but there exists another cell with value 2 that has a neighbor with value 3, then [2,3] would be lexicographically smaller than [1,5]. The Python implementation incorrectly assumes starting at 1 is always optimal.",
+    "map_coords_to_values differs: Coq returns [] if any coordinate is invalid, while the Python version returns the prefix accumulated before the first None. This is a concrete behavioral mismatch for helper definitions. (Other parts, including the greedy minimal path logic in minPath_spec, align.)"
+  ],
+  "repair_round": 0,
+  "syntax_ok": true
+}

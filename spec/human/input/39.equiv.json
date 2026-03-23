@@ -1,0 +1,96 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/human/input/39.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/human/input/39.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the primality test, Fibonacci check, and the logic to identify the n-th prime Fibonacci number by counting occurrences smaller than r, matching the Coq specification's requirements."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the primality test, Fibonacci sequence generation, and the logic to identify the n-th prime Fibonacci number as specified in the Coq code."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the primality test, Fibonacci sequence check, and the logic to identify the n-th prime Fibonacci number by counting occurrences below r, matching the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. IsPrime checks primality (with correct handling of n<=1), fib computes Fibonacci numbers matching Coq's definition, IsFib checks if a number is a Fibonacci number, and IsPrimeFib combines both. The spec checks that r is a prime Fibonacci number and that exactly n-1 prime Fibonacci numbers exist below r. The Python implementation counts these directly rather than constructing a list, but produces the same result. The saturating subtraction for n=0 is handled correctly (though problem_39_pre requires n>=1 anyway)."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. IsPrime checks primality (the Coq definition with 'n mod d = 0 -> d = 1 \\/ d = n' for all d is equivalent to standard primality for n > 1). fib computes Fibonacci numbers identically. IsFib checks if n is a Fibonacci number by iterating through the sequence. IsPrimeFib combines both checks. problem_39_pre checks n >= 1. problem_39_spec verifies r is a prime Fibonacci number and counts exactly n-1 prime Fibonacci numbers less than r, matching the Coq spec's requirement that |{y < r | IsPrimeFib(y)}| = n-1. The saturating subtraction handling (n-1 if n>0 else 0) matches Coq's nat subtraction behavior, though with the precondition n >= 1, this edge case doesn't affect valid inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. IsPrime checks primality (though using trial division up to sqrt(n) which is equivalent for concrete inputs). fib computes Fibonacci numbers identically. IsFib checks if a number is a Fibonacci number by iterating through the sequence. IsPrimeFib is the conjunction of both. problem_39_pre checks n >= 1. problem_39_spec verifies r is a prime Fibonacci number and counts how many prime Fibonacci numbers are less than r, comparing to n-1 (with saturating subtraction handled). The Coq spec requires the set S to have length n-1, contain no duplicates, and contain exactly all y < r where IsPrimeFib(y). The Python code counts these y values directly, which is equivalent to checking |S| = n-1 when S is the set of all such y. Since problem_39_pre ensures n >= 1, the saturating subtraction case (n=0) won't occur in valid inputs, but Python handles it correctly anyway."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python and Coq agree on primality, Fibonacci membership, and the spec counts prime Fibonacci numbers less than r; precondition and saturating subtraction are handled consistently for natural inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python mirrors Coq: primality and Fibonacci definitions match, IsFib checks membership correctly, precondition n>=1 is the same, and the spec reduces to r being prime-Fibonacci with exactly n\u22121 such numbers < r, which Python counts (with nat-like subtraction)."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python matches Coq: same Fibonacci and primality checks for naturals, IsPrimeFib is conjunction, precondition n>=1, and spec reduces to r being prime-fib with exactly n-1 prime-fibs less than r; Python counts those and handles nat subtraction (n-1) consistently."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 1,
+  "syntax_ok": true
+}

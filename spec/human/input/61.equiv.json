@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/61.v",
+  "translated_py_file": "spec/human/input/61.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the logic of the Coq specification using an iterative approach that matches the tail-recursive structure of the Coq function. Both handle the depth counter and character checks identically."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the bracket counting logic, ignoring non-bracket characters as in the Coq code, and the pre/spec functions match exactly."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code implements the exact same logic as the Coq code, using a loop instead of recursion for the auxiliary function, which is semantically equivalent."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the same bracket-matching logic as the Coq code. Both use a depth counter starting at 0, incrementing on '(', decrementing on ')' (returning false if depth is 0 when seeing ')'), and returning true only if depth is 0 at the end. The precondition and spec also match: pre checks all characters are '(' or ')', and spec checks output equals the result of correct_bracketing. Non-bracket characters are handled the same way (depth unchanged in Coq, skipped in Python iteration which has same effect)."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the same bracket-matching logic as the Coq code. Both use a depth counter starting at 0, increment on '(', decrement on ')' (returning false if depth is 0), and return true only if depth is 0 at the end. The precondition and spec also match: pre checks all characters are '(' or ')', and spec checks output equals the result of correct_bracketing."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code implements the same bracket-matching logic as the Coq code. Both use a depth counter starting at 0, incrementing on '(', decrementing on ')' (returning false if depth is 0 when seeing ')'), and returning true only if depth is 0 at the end. The precondition checks all characters are '(' or ')', and the spec checks output equality. The iterative Python version produces identical results to the recursive Coq version on all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both implementations count '(' and ')' with a depth counter, return false on an unmatched ')', and require depth to end at 0. Non-parenthesis characters are ignored in both. The precondition and spec mirror the Coq definitions. Thus results match on all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both implementations compute balanced parentheses by incrementing on '(' and decrementing on ')', failing on unmatched ')', and requiring final depth 0. They ignore non-parenthesis chars, and the precondition restricts inputs to '(' or ')'. The spec directly equates output to the function, so results match on all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both Coq and Python increment on '(' and decrement on ')', return false if a ')' appears at depth 0, and finally require depth==0. Non-bracket characters are ignored in both, and the precondition restricts to '(' or ')'. Thus outputs match for all inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

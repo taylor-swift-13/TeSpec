@@ -1,0 +1,96 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/claude-opus-4-5-20251101/input/32.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/claude-opus-4-5-20251101/input/32.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the polynomial evaluation and correctly implements the conditions for find_zero_spec, including the even length check, non-zero last element check, and root evaluation."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the polynomial evaluation and the specification checks for even positive length, non-zero last element, and zero evaluation."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the polynomial evaluation and the zero-finding specification, checking for even positive length, non-zero highest degree coefficient, and zero evaluation."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec for concrete inputs: poly computes the same polynomial evaluation using Horner's method, and find_zero_spec checks the same three conditions - length is even and positive (exists n such that length = 2*n and n > 0), last element is non-zero, and poly evaluates to 0 at root. The Python returns a boolean while Coq defines a Prop, but for concrete inputs they agree on the judgment."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec for concrete inputs: poly computes the same polynomial evaluation using Horner's method, and find_zero_spec checks the same three conditions - length is even and positive (exists n such that length = 2*n and n > 0), last element is non-zero, and poly evaluates to 0 at root. The Python returns a boolean while Coq defines a Prop, but for concrete inputs they agree on the judgment."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec for concrete inputs: poly computes the same polynomial evaluation using Horner's method, and find_zero_spec checks the same three conditions - length is even and positive (exists n such that length = 2*n with n > 0), last element is non-zero, and poly evaluates to 0 at root. The Python returns a boolean while Coq defines a Prop, but for concrete inputs they agree on the judgment."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "poly is implemented identically (Horner form). The Python predicate enforces even, nonzero length (equivalent to length=2*n with n>0), checks last coefficient nonzero, and tests poly(xs, root) == 0, matching the Coq spec on concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Checks even positive length, last coefficient nonzero, and uses the same Horner evaluation for poly; returns True exactly when the Coq spec holds for numeric inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "poly uses the same Horner evaluation, and find_zero_spec checks: (1) length is positive even, (2) last coefficient nonzero, and (3) polynomial evaluates to 0. These match the Coq spec on concrete inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 2,
+  "syntax_ok": true
+}

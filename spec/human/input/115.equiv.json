@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/115.v",
+  "translated_py_file": "spec/human/input/115.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the water counting and ceiling division logic used in the Coq specification, and the precondition checks match exactly."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq logic, including the sum of elements, ceiling division for bucket trips, and all precondition checks."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq definitions, including the integer division logic (with a safe fallback for division by zero matching Coq's Nat.div) and all precondition constraints."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. count_water uses sum() which matches fold_left Nat.add. required_trips_impl correctly accumulates ceiling division results for each well's water count. The precondition checks all constraints (non-empty grid, bucket_capacity in [1,10], row lengths equal and in [1,100], elements are 0 or 1, grid length in [1,100]). The spec correctly checks output equals the computed result. The division-by-zero handling in Python is irrelevant since the precondition ensures bucket_capacity >= 1."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. count_water uses sum() which matches fold_left Nat.add well 0. required_trips_impl correctly accumulates ceiling division results for each well's water count. The precondition checks all constraints (non-empty grid, bucket_capacity in [1,10], row lengths equal and in [1,100], elements are 0 or 1, grid length in [1,100]). The spec correctly checks output equality with required_trips_impl. The division-by-zero handling in Python is irrelevant since the precondition ensures bucket_capacity >= 1."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. count_water uses sum() which matches fold_left Nat.add well 0. required_trips_impl correctly accumulates ceiling division results for each well's water count. The precondition checks all constraints (non-empty grid, bucket_capacity in [1,10], row lengths equal and in [1,100], elements are 0 or 1, grid length in [1,100]). The spec correctly checks if output equals the computed result. The division-by-zero handling in Python is irrelevant since the precondition ensures bucket_capacity >= 1."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python mirrors Coq: sum per row, ceiling division per well using (w+c-1)//c, division-by-zero handled as 0 (though precondition ensures c>=1), and the precondition checks (grid nonempty, uniform row lengths, entries 0/1, bounds) align. Spec returns equality to the implementation."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python mirrors Coq: count_water sums each row; required_trips_impl does per-row ceiling division (with division-by-zero yielding 0, though pre ensures capacity >= 1); preconditions and spec checks are implemented consistently. Concrete results match on all valid inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Functions match: count_water sums row entries; required_trips_impl sums ceil(w/c) per row (with safe c=0 handling, though pre enforces c>=1); preconditions enforce nonempty grid, uniform row length, 0/1 entries, and capacity in [1,10]. Spec equality check matches Coq."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

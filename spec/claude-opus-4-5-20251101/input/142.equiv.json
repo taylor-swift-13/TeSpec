@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/claude-opus-4-5-20251101/input/142.v",
+  "translated_py_file": "spec/claude-opus-4-5-20251101/input/142.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the transformation rules and iteratively calculates the sum, which is equivalent to the recursive Coq implementation."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq logic, including the index-based transformations and the sum calculation."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code faithfully implements the transformation logic and the summation logic (iteratively vs recursively) defined in the Coq code."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. transform_entry checks idx % 3 == 0 first (squaring), then idx % 4 == 0 (cubing), else returns num unchanged, matching the Coq logic. sum_squares_helper iteratively computes the same sum as the Coq recursive version, starting from the given index and incrementing for each element. sum_squares_spec checks if result equals sum_squares_helper(lst, 0), matching the Coq Prop definition. All concrete inputs will produce the same results."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. transform_entry uses the same logic (idx % 3 == 0 for squaring, else idx % 4 == 0 for cubing, else identity). sum_squares_helper iteratively computes the same sum as the Coq recursive version, starting from the given index and incrementing. sum_squares_spec checks equality with sum_squares_helper starting at index 0, matching the Coq Prop definition for concrete result checking."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. transform_entry checks idx % 3 == 0 first (returning num^2), then idx % 4 == 0 (returning num^3), otherwise returns num, matching the Coq logic. sum_squares_helper iteratively computes the same sum as the Coq recursive version, starting from the given index. sum_squares_spec correctly checks if result equals sum_squares_helper(lst, 0), matching the Coq Prop definition for concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python matches Coq on all relevant inputs: same transform rules (priority to idx%3==0 over idx%4==0), same iterative sum with starting index 0, and the spec checks equality to the helper\u2019s result. Indices used are nonnegative, so modulo behavior aligns."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python matches Coq: same index-based transform (check idx%3 first, then idx%4), iterates with idx starting at 0, and compares result equality. Uses unbounded integers like Coq Z."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python mirrors Coq: same divisibility-based transform on indices, same accumulation over the list starting at index 0, and the spec checks equality with the helper result."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

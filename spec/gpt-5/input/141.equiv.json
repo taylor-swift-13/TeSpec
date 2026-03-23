@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gpt-5/input/141.v",
+  "translated_py_file": "spec/gpt-5/input/141.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, accurately translating the string manipulation, character counting, and validation logic."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code accurately implements the Coq specification for validating file names, checking digit counts, dot counts, prefix conditions, and allowed suffixes."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, accurately translating the string manipulation, character counting, and validation logic."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It checks the same conditions: count_digits <= 3, exactly one dot (ascii 46), non-empty prefix starting with an alphabetic character, and suffix in {txt, exe, dll}. The split on '.' with len(parts) == 2 check ensures exactly one dot and properly separates prefix and suffix. The file_name_check_spec returns true when the result matches the validity judgment, which corresponds to the Coq disjunction of (valid /\\ Yes) \\/ (not valid /\\ No)."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It checks: (1) count_digits <= 3, (2) exactly one '.' character, (3) prefix is non-empty and starts with an alphabetic character, (4) suffix is one of 'txt', 'exe', or 'dll'. The file_name_check_spec returns true when the result matches the validity ('Yes' for valid, 'No' for invalid), which corresponds to the Coq disjunction. The split('.') approach correctly handles the single dot requirement since count_char already ensures exactly one dot exists."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It checks: (1) count_digits <= 3, (2) exactly one '.' character, (3) prefix is non-empty and starts with an alphabetic character, (4) suffix is one of 'txt', 'exe', or 'dll'. The file_name_check_spec returns true when valid_file_name matches the result string ('Yes' for valid, 'No' for invalid), which matches the Coq disjunction. The split('.') approach correctly handles the single dot requirement since count_char already ensures exactly one dot exists."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq logic: digit/alpha checks via ASCII ranges, counts digits and '.' correctly, enforces exactly one '.', non-empty prefix starting with a letter, allowed suffix in {txt, exe, dll}, and the Yes/No result matches the validity. Concrete behavior aligns on all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq logic: ASCII range checks for digits/letters, counting digits and '.', ensuring exactly one '.', nonempty prefix starting with a letter, and suffix in {txt, exe, dll}. The Yes/No spec is implemented directly. Unicode or non-1-char cases are outside Coq\u2019s domain and don\u2019t affect matching results."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq checks: ASCII digit/alpha tests, counts digits and dots, ensures exactly one dot, non-empty prefix starting with a letter, and suffix in {txt, exe, dll}. The final Yes/No judgment matches the Coq spec. Differences due to Python\u2019s broader string type do not affect these concrete cases."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

@@ -1,0 +1,96 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/gpt-5/input/19.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/gpt-5/input/19.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification by splitting the input strings into lists, verifying the validity of words, ensuring the result is a permutation of the input (multiset equality), and verifying the result is sorted by the numeric value of the words."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python implementation correctly translates the Coq specification, accurately checking string splitting, permutation, and sorting of valid words based on their numeric values."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements a validator for the Coq specification. It parses the strings into lists, verifies the 'valid_word' constraint, checks that the input string matches the joined list (ensuring correct spacing), verifies the permutation property between the lists, and checks the sorted order based on the 'val_of' mapping."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. join_with_space matches (Python's ' '.join handles the base cases correctly). valid_word checks membership in the same set of words. val_of returns the same mapping with default 0. sort_numbers_spec correctly checks: (1) empty string case, (2) that l splits from numbers and rejoins correctly, (3) all words are valid, (4) l' is a permutation of l (using sorted comparison), (5) l' is sorted by val_of values, and (6) result equals join_with_space of l'. The permutation check using sorted() is equivalent since it verifies the same multiset of elements."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. join_with_space matches (using ' '.join which produces the same result). valid_word checks membership in the same set of words. val_of returns the same mapping with default 0. sort_numbers_spec checks all the same conditions: empty string case, that l splits from numbers correctly, all words are valid, l' is a permutation of l (via sorted comparison), l' is sorted by val_of, and result equals join_with_space of l'. The permutation check using sorted() is equivalent to Coq's Permutation for finite lists."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. join_with_space produces the same results (empty string for empty list, space-joined otherwise). valid_word checks membership in the same set of words. val_of returns the same numeric values with 0 as default. sort_numbers_spec checks the same conditions: empty case, valid words, permutation (via sorted comparison), sorted order (via val_of comparison), and string reconstruction. The permutation check using sorted() is equivalent to Coq's Permutation for concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Functions match Coq semantics: join_with_space behavior aligns, valid_word checks membership, val_of maps with default 0, and sort_numbers_spec enforces exact join, all-valid tokens, permutation via sorted multiset equality, nondecreasing by val_of, and result re-join. This matches the Coq spec on all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both enforce that numbers is a space-joined list of valid words, require result to be a permutation of those words and nondecreasing by val_of, and handle empty and spacing cases consistently. The permutation and sortedness checks align with the Coq spec for all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "join_with_space, valid_word, and val_of match Coq; permutation via sorted equality checks multiset equality; adjacency check for nondecreasing val_of matches Coq Sorted; splitting/joining aligns with join_with_space for valid words."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

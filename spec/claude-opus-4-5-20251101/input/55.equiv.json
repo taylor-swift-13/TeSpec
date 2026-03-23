@@ -1,0 +1,96 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/claude-opus-4-5-20251101/input/55.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/claude-opus-4-5-20251101/input/55.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Fibonacci sequence and the specification accurately checks if the result matches the nth Fibonacci number for n >= 0, mirroring the Coq logic."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Fibonacci sequence and the specification matches the Coq logic for all concrete inputs."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Fibonacci sequence and the specification matches the Coq logic for non-negative integers."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python fib_nat function computes the same Fibonacci values as the Coq fib_nat for non-negative integers. For n=0 returns 0, n=1 returns 1, and for n>=2 it computes fib(n-1)+fib(n-2), matching Coq's recursive definition. The fib_spec checks the same conditions: n>=0 and result equals fib_nat(n). The Z.to_nat conversion in Coq for non-negative n gives the same integer value used directly in Python."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python fib_nat function computes the same Fibonacci values as the Coq fib_nat for non-negative integers. For n=0 returns 0, n=1 returns 1, and for n>=2 it computes fib(n-1)+fib(n-2), matching Coq's recursive structure. The fib_spec checks the same conditions: n>=0 and result equals fib_nat(n). The Z.to_nat conversion in Coq for non-negative n gives the same integer value used directly in Python."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python fib_nat function computes the same Fibonacci values as the Coq fib_nat for non-negative integers. For n=0 returns 0, n=1 returns 1, and for n>=2 it computes fib(n-1)+fib(n-2), matching Coq's recursive structure. The fib_spec checks the same conditions: n>=0 and result equals the Fibonacci number. The Python handles n<=0 returning 0, which aligns with Coq's Z.to_nat converting negative Z to nat 0."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "For n >= 0, Python fib_nat implements the same recurrence and base cases as Coq\u2019s fib_nat on Z.to_nat n. For n < 0, Coq\u2019s spec is false due to the n >= 0 conjunct, and Python\u2019s fib_spec short-circuits to False, so results match for all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "For all n >= 0, the Python fib matches Coq\u2019s fib_nat via F(0)=0, F(1)=1, and F(n)=F(n-1)+F(n-2). fib_spec enforces n >= 0 and compares against the same value (Z.to_nat n = n for n >= 0)."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both compute Fibonacci with base cases 0 and 1 and recursion f(n-1)+f(n-2). fib_spec enforces n >= 0, and for n >= 0 Python\u2019s fib_nat(n) matches Coq\u2019s fib_nat (Z.to_nat n)."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 5,
+  "syntax_ok": true
+}

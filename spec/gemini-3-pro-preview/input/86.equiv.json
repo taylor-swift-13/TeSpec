@@ -1,0 +1,96 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/gemini-3-pro-preview/input/86.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/gemini-3-pro-preview/input/86.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq specification, accurately implementing the string splitting, permutation, and sorting checks. The existential quantifiers are correctly resolved by splitting the strings by spaces, which uniquely identifies the words since they cannot contain spaces."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the string manipulation and validation logic. The `anti_shuffle_spec` function in Python accurately reconstructs the word list using `split(' ')` (which is the inverse of the Coq `join_space` under the no-space constraint) and verifies the permutation and sorting conditions for each word, matching the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code accurately implements the logic of the Coq specification, including string splitting, joining, permutation checking, and sorting verification. The use of split(' ') and join_space correctly mirrors the Coq join_space and word_has_no_space constraints."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It checks that the input string splits into words (by space), the result splits into the same number of words, each output word is a sorted permutation of the corresponding input word, and words contain no spaces. The join_space function matches Coq's behavior, and the split/join round-trip verification ensures the structural constraints are met. The word_transform check correctly verifies both permutation and sorted properties for each word pair."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It checks that the input and result strings can be split into words (by space), that each word has no spaces, that the number of words matches, and that each output word is a sorted permutation of the corresponding input word. The join_space function matches the Coq definition, and the split/join round-trip verification ensures the structural constraints are met. The word_transform, is_permutation_string, and is_sorted_string functions correctly implement their Coq counterparts for concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It checks that the input and result strings can be split into words (by space), that each word has no spaces, that the number of words matches, and that each output word is a sorted permutation of the corresponding input word. The join_space function matches the Coq definition, and the split/join round-trip verification ensures the structural constraints are met. The word_transform, is_permutation_string, and is_sorted_string functions correctly implement their Coq counterparts for concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq spec: same split/join with single spaces, checks for no-space words, permutation of characters, and nondecreasing order per word, and enforces the 1-1 correspondence. Hence it agrees on all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Splitting on spaces (including empty tokens) makes the word lists uniquely determined by s and result, join_space matches Coq\u2019s, word_has_no_space matches, and per-word checks use the same multiset (permutation) and non-decreasing ASCII order. Thus the Python code returns the same judgment as the Coq spec on all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python mirrors Coq\u2019s semantics: words are reconstructed uniquely by split on single spaces matching join_space, word_has_no_space is identical, per-word transform checks permutation (via sorted equality) and nondecreasing order (via ord), and Forall2 is enforced by length check and zipping. Thus it returns the same judgment on all inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 3,
+  "syntax_ok": true
+}

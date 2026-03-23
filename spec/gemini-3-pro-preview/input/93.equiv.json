@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/93.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/93.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq string manipulation functions, character checks, and transformations, preserving the exact logic and order of operations."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq string manipulation functions, character checks, and transformations, preserving the exact logic and composition order."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq string manipulation functions, character checks, and transformations, maintaining the exact same logic for encoding."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code faithfully implements the Coq specification. All helper functions (is_upper, is_lower, switch_case_char, is_vowel, vowel_change_char) perform the same character transformations using the same ASCII code logic. The encode_process applies switch_case_char then vowel_change_char to each character, matching the Coq composition of maps. The encode_spec checks if result equals the encoded message, returning a boolean judgment that matches when the Coq Prop would hold. The only difference is Python uses strings directly while Coq uses ascii lists, but the conversions are equivalent for standard ASCII characters."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code faithfully implements the Coq specification. Both convert strings to character lists, apply switch_case_char (swapping upper/lower case) then vowel_change_char (adding 2 to vowel codes), and convert back to strings. The is_upper, is_lower, is_vowel checks use identical ASCII ranges. The encode_process applies the same composition of transformations. The encode_spec returns true iff result equals the encoded message, matching the Coq Prop semantically for concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code faithfully implements the Coq specification. Both convert strings to character lists, apply switch_case_char (swapping upper/lower case) followed by vowel_change_char (adding 2 to vowel codes), then convert back to string. The is_upper, is_lower, is_vowel checks use the same ASCII ranges. The encode_process applies the same composition of transformations. The encode_spec returns true iff result equals the encoded message, matching the Coq Prop equality."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq logic: same string/list conversions, ASCII upper/lower checks, case switching, vowel set, and sequential mapping (switch then vowel shift). For all ASCII inputs, results match; non-ASCII are left unchanged in both models effectively."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq logic: it converts the string to a list of chars, switches case for ASCII letters, then increments vowels by 2, and rejoins. is_upper/is_lower and is_vowel use the same ASCII code ranges/sets, and the operation order (switch then vowel) matches. Non-ASCII are left unchanged in both. encode_spec checks equality similarly. Thus results match on all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq pipeline: convert string to list, switch case for ASCII letters, then if the result is a vowel add 2 to its code, and rejoin. It uses the same ASCII ranges and order of operations, so results coincide on all concrete inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

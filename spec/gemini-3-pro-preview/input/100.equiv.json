@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/100.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/100.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly constructs the expected list using a list comprehension that matches the Coq map and seq functions, including the handling of negative n with max(0, n)."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly generates the expected list using a list comprehension that matches the Coq map and seq functions, and compares it to the given result."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly generates the expected list using a list comprehension that matches the Coq map and seq functions, and compares it to the result."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code computes the same list as the Coq spec. For n >= 0, both produce [n + 2*i for i in range(n)]. For n < 0, Coq's Z.to_nat returns 0 making seq 0 0 = [], and Python's range(max(0, n)) = range(0) = [], so both produce empty lists. The concrete results match."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code computes the same list as the Coq spec. For n >= 0, both produce [n + 2*i for i in range(n)]. For n < 0, Coq's Z.to_nat n returns 0, making seq 0 0 = [] and res = []. Python's range(max(0, n)) = range(0) = [] gives the same empty list. The use of max(0, n) correctly handles negative n."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code computes the same list as the Coq spec. For n >= 0, both produce [n + 2*i for i in range(n)]. For n < 0, Coq's Z.to_nat returns 0, making seq 0 0 = [], and Python's range(max(0, n)) = range(0) = [], so both produce []. The comparison res == expected matches the Coq equality."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both define res to equal [n + 2*i] for i from 0 to n-1 when n>0 and [] when n<=0 (via Z.to_nat in Coq and max(0,n) in Python), so the Python check matches the Coq spec on all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both produce the list [n + 2*i] for i from 0 to max(0,n)-1; negative n yields empty list. Python bool mirrors Coq equality."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both produce the list [n + 2*i for i = 0..n-1] when n > 0, and [] when n <= 0; Python\u2019s range(max(0,n)) matches Coq\u2019s seq 0 (Z.to_nat n)."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

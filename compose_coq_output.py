@@ -11,7 +11,7 @@ def list_translated_inputs(spec_root: Path, model_name: str) -> list[Path]:
     input_dir = spec_root / model_name / "input"
     if not input_dir.exists():
         raise FileNotFoundError(f"Missing input directory: {input_dir}")
-    return sorted(input_dir.glob("*.py"), key=lambda path: int(path.stem))
+    return sorted((path for path in input_dir.glob("*.py") if path.stem.isdigit()), key=lambda path: int(path.stem))
 
 
 def parse_index_selector(files: list[Path], indices: list[int] | None) -> list[Path]:

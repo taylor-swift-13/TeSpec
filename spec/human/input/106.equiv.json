@@ -1,0 +1,96 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/human/input/106.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/human/input/106.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, checking the length of the list and verifying that each element matches the expected factorial or sum based on whether its 1-based index is even or odd."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq specification, checking the length of the list and verifying each element against the factorial or sum formula based on the parity of its 1-based index."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, checking the length of the list and verifying that each element at index i-1 matches the factorial of i if i is even, or the sum from 1 to i if i is odd."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: it checks that the list length equals n, and for each i from 1 to n, verifies that the element at index i-1 equals factorial(i) if i is even, or the sum 1+...+i (computed as i*(i+1)//2) if i is odd. The factorial and sum computations match the Coq definitions (fact and Nat.div with integer division), and the even check is equivalent."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: it checks that the list has length n, and for each i from 1 to n, the element at index i-1 equals factorial(i) if i is even, or the sum 1+...+i (computed as i*(i+1)//2) if i is odd. The helper functions (fact, sum_nat, even) match the Coq definitions (fact, Nat.div formula, even), and the iteration logic correctly mirrors the Coq forall quantifier for concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It checks that the list length equals n, and for each i from 1 to n, verifies that the element at index i-1 equals factorial(i) if i is even, or sum(1..i) = i*(i+1)/2 if i is odd. The factorial and sum computations match the Coq definitions (fact and the Gauss formula), and the even check (i % 2 == 0) matches Coq's even predicate."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both check length equals n and for each i from 1 to n set l[i-1] to fact(i) if i is even, else (i*(i+1))//2. Handles n=0 and uses exact integer division; behavior matches on all natural inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Checks length n and for each i=1..n compares l[i-1] to factorial(i) if i even, else (i*(i+1))//2; matches Coq spec including 1-based indexing and Gauss sum."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python checks length and for each i=1..n sets l[i-1] to fact(i) if i is even else (i*(i+1))//2, matching Coq\u2019s spec (Nat.div on an even product). Indexing, parity, and edge case n=0 align."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

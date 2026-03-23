@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/145.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/145.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq specification, using Python's stable 'sorted' function to match the index-preserving sorting logic defined by 'weight_index_le' in Coq."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq helper functions and uses Python's stable sorted function, which perfectly matches the Coq specification of sorting by weight while preserving the original index order."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code accurately implements the helper functions and uses Python's stable 'sorted' function to perfectly match the Coq specification for stable sorting by weight."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The key functions (nat_to_digits_rev, get_digits, sum_list, weight) produce the same results as their Coq counterparts. The order_by_points_spec in Python uses sorted() with key=weight, which is a stable sort - this matches the Coq spec's requirement that the result is a permutation sorted by weight_index_le (weight first, then original index for stability). Python's stable sort preserves original order for equal weights, which is exactly what the Coq spec requires with the (i1 <= i2) condition for equal weights."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The key functions (nat_to_digits_rev, get_digits, sum_list, weight) produce the same results as their Coq counterparts. The order_by_points_spec in Python uses sorted() with key=weight, which is a stable sort - this matches the Coq spec's requirement that the result is a permutation sorted by weight_index_le (weight first, then original index for stability). Python's stable sort preserves original order for equal weights, which is exactly what the Coq spec requires with the (i1 <= i2) condition for equal weights."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The key functions (nat_to_digits_rev, get_digits, sum_list, weight) produce the same concrete results. For order_by_points_spec, Python's sorted() with key=weight is stable, meaning elements with equal weights preserve their original order, which matches the Coq specification's weight_index_le ordering (sort by weight, then by original index for stability). The final comparison res == expected correctly checks if the result matches the expected stable sort by weight."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python mirrors Coq\u2019s digit extraction and weight computation, and uses stable sorting by weight which matches sorting by (weight, index). The result equals the unique list satisfying the Coq spec for all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Digit extraction, weight computation, and stable ordering match the Coq spec. Python\u2019s stable sort by key=weight yields the same order as sorting pairs by (weight, index) and projecting values."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Digits, weight, and tie-breaking match the Coq spec; Python checks equality to the stable sort by weight, which corresponds exactly to the Coq permutation-and-sorted-by-weight-with-index tie-break specification."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/deepseek-v3.1/input/49.v",
+  "translated_py_file": "spec/deepseek-v3.1/input/49.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the implication logic and handles Coq's specific behavior for negative exponents in Z.pow (returning 0)."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the implication and accurately models Coq's Z.pow behavior for negative exponents."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the implication and accurately models Coq's Z.pow behavior for negative exponents."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. When p > 1, it checks if result equals (2^n) mod p. For n < 0, Coq's Z.pow returns 0, and 0 mod p = 0, which the Python code handles correctly. For n >= 0, Python's pow(2, n, p) correctly computes (2^n) mod p. When p <= 1, the implication is vacuously true, which the Python code also handles correctly by returning True."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. For p > 1, it checks if result equals (2^n) mod p. The handling of negative n is correct: in Coq's ZArith, Z.pow 2 n for n < 0 returns 0, and 0 mod p = 0 for p > 1. For n >= 0, Python's pow(2, n, p) correctly computes (2^n) mod p. When p <= 1, the implication is vacuously true, which the Python code returns. The concrete behavior matches."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. When p > 1, it checks if result equals (2^n) mod p. For n < 0, Coq's Z.pow returns 0, and 0 mod p = 0, which the Python code handles correctly. For n >= 0, Python's pow(2, n, p) correctly computes (2^n) mod p. When p <= 1, the implication is vacuously true, which the Python code returns. The concrete behavior matches on all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Implements the implication correctly: returns True when p<=1; for p>1 computes (2^n) mod p with pow for n>=0 and 0 for n<0 (matching Coq\u2019s Z.pow semantics for base 2)."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Implements the implication correctly (vacuously true for p<=1) and matches Z.pow semantics: 2^n is 0 for n<0, otherwise uses pow(2,n,p) for p>1, yielding the same modulo result."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "It returns True when p <= 1 (vacuous implication) and for p > 1 computes (2^n) mod p consistently with Coq\u2019s Z.pow (including 0 for n < 0), so results match on all concrete inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

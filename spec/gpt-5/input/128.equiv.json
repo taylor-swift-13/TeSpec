@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gpt-5/input/128.v",
+  "translated_py_file": "spec/gpt-5/input/128.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the helper functions and the specification logic, matching the Coq definitions for all concrete inputs."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the helper functions and the specification logic, matching the mutually exclusive conditions of the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the logic of the Coq specification, handling the empty list, lists containing zero, and other lists with the same conditions and calculations for sum_abs and prod_sign."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. signZ matches Z.compare behavior, sum_abs and prod_sign match their Coq recursive definitions. The spec function prod_signs_spec correctly handles all three disjunctive cases: empty list returns None check, list containing 0 returns Some 0 check, and non-empty list without 0 returns Some(sum_abs * prod_sign) check. The Python uses 'res is None' for the None case and 'res is not None and res == value' for Some cases, which correctly models the Coq option type behavior on concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. signZ, sum_abs, and prod_sign match their Coq counterparts. The prod_signs_spec function checks the same three cases: empty list returns None, list containing 0 returns Some 0, and non-empty list without 0 returns Some(sum_abs * prod_sign). The Python logic correctly captures these disjunctive conditions and will return the same boolean judgment for any concrete (arr, res) pair."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. signZ, sum_abs, and prod_sign match their Coq counterparts. The prod_signs_spec function checks the same three cases: (1) empty list returns None, (2) list containing 0 returns Some 0, (3) non-empty list without 0 returns Some(sum_abs * prod_sign). The Python logic correctly captures these disjunctive conditions and will return the same boolean judgment for any concrete (arr, res) pair."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq cases: None for empty list, 0 if any zero is present, otherwise Some(sum_abs*prod_sign). Helper functions signZ, sum_abs, and prod_sign match Coq definitions on integers."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Branches match the Coq spec: [] -> None; contains 0 -> 0; otherwise Some(sum_abs(arr)*prod_sign(arr)). Helper functions signZ, sum_abs, and prod_sign are faithful, using None/value to represent option."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Helper functions mirror Coq (signZ, sum_abs, prod_sign), and the spec cases match exactly: empty -> None, contains 0 -> 0, otherwise Some(sum_abs(arr) * prod_sign(arr))."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/5.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/5.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the intersperse logic iteratively, producing the exact same list as the Coq recursive definition for all concrete inputs."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq intersperse logic iteratively, handling the empty list, single element list, and multiple element lists identically to the Coq recursive definition."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the intersperse logic iteratively, matching the recursive behavior of the Coq function for all list lengths."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq intersperse function. For empty list, both return []. For single element [h], Python returns [numbers[0]] with no further iterations, matching Coq's [h]. For multiple elements, Python iteratively appends delimiter then element for each tail element, producing the same h :: delimeter :: ... pattern as Coq's recursion. The spec functions both check equality with the computed result."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq intersperse function. For an empty list, both return []. For a single element [h], Coq returns [h] and Python returns [numbers[0]] which is [h]. For multiple elements, Coq inserts the delimiter between each pair, and Python does the same by starting with the first element and then appending delimiter followed by each subsequent element. The spec functions both check equality with the computed intersperse result."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq intersperse function. For an empty list, both return []. For a single element [h], Coq returns [h] and Python returns [numbers[0]] which is [h]. For multiple elements, Coq inserts the delimiter between each pair, and Python's loop does the same by appending delimiter then element for each element after the first. The spec function correctly checks equality with the computed result."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python builds [] for empty, [h] for singletons, and for longer lists inserts the delimiter before each subsequent element, matching the Coq intersperse definition. The spec checks equality to that result in both."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python function inserts the delimiter between elements exactly like the Coq definition for empty, single-element, and multi-element lists, and the spec checks equality with that result."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both implementations return [] for empty input, [h] for a single element, and otherwise insert the delimiter between each pair of elements; the spec checks equality to that result in both."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

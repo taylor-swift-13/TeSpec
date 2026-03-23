@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/36.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/36.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq logic, including the fuel-based recursion which is correctly implemented as a loop, and handles non-negative conversions appropriately."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq definitions, using iterative loops to match the recursive functions and correctly handling the conversion from Z to nat with max(0, x)."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq functions, correctly handling the base cases, recursive logic (via loops), and non-negative constraints."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. count_sevens_nat iteratively counts 7s in decimal digits with the same logic as the Coq recursive version. count_sevens converts to non-negative and provides sufficient fuel. condition checks divisibility by 11 or 13. fizz_buzz_sum iterates from 0 to n-1 (matching Coq's recursion from S p down to 0, summing for indices 0..n-1). fizz_buzz_spec checks equality of cnt with the computed sum. The use of max(0, ...) handles negative inputs consistently with Z.to_nat returning 0 for negatives."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. count_sevens_nat iteratively counts 7s in decimal digits with the same logic as the Coq recursive version. count_sevens converts to non-negative and provides sufficient fuel. condition checks divisibility by 11 or 13. fizz_buzz_sum iterates from 0 to n-1 (matching Coq's recursion pattern where S p means iterating over 0..p). fizz_buzz_spec checks equality of cnt with the computed sum. The use of max(0, ...) handles negative inputs consistently with Z.to_nat behavior in Coq."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. count_sevens_nat iteratively counts 7s in decimal digits with fuel limit, count_sevens converts to natural number and calls with sufficient fuel, condition checks divisibility by 11 or 13, fizz_buzz_sum sums count_sevens for indices 0 to n-1 where condition holds, and fizz_buzz_spec checks equality. The use of max(0, ...) handles negative inputs consistently with Z.to_nat. The iterative Python loop correctly mirrors the recursive Coq structure for concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python functions mirror the Coq logic: count_sevens_nat processes base-10 digits with fuel and early termination when n<10, count_sevens uses max(0,z) matching Z.to_nat, condition checks divisibility by 11 or 13, fizz_buzz_sum sums over p=0..n-1, and fizz_buzz_spec checks equality. This yields the same results on all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq logic: negatives are clamped to 0 (Z.to_nat), count_sevens_nat counts digit 7s with equivalent fuel/early-stop behavior, condition matches Z modulo semantics with positive moduli, fizz_buzz_sum sums over p in [0, n), and fizz_buzz_spec checks equality against that sum. Results align on all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Functions match on all concrete inputs: count_sevens_nat accumulates per-digit counts identically (including limited fuel), count_sevens uses Z.to_nat via max(0,z), condition\u2019s modulo logic matches for all ints, fizz_buzz_sum sums over p=0..n-1 as in Coq, and fizz_buzz_spec mirrors equality with Z.to_nat via max(0,n)."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

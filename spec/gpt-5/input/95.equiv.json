@@ -1,0 +1,104 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/gpt-5/input/95.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/gpt-5/input/95.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, checking that the dictionary is non-empty and that either all keys are lowercase or all keys are uppercase."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, checking that the dictionary is non-empty and that all keys are either lowercase or uppercase."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, checking if the dictionary is non-empty and whether all its keys are either entirely lowercase or entirely uppercase."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": false,
+      "reason": "The Python code's IsLower and IsUpper functions return True for strings with no letters (like '123' or ''), since '123' == '123'.lower() and '123' == '123'.upper() are both True. This means for a dict with key '123', both all_lower and all_upper would be True, so res=True would be accepted. However, the Coq spec likely intends IsLower and IsUpper to be mutually exclusive predicates (a string is either lowercase or uppercase, not both), which would affect the concrete result for such inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": false,
+      "reason": "The Python code's IsLower and IsUpper functions return True for strings without any letters (like '123' or ''), since '123'.lower() == '123' and '123'.upper() == '123'. This means a dict with keys like {'123': 1} would have all_lower=True and all_upper=True, so res=True would be expected. However, the Coq spec's IsLower and IsUpper are abstract predicates that may have different semantics (e.g., requiring at least one lowercase/uppercase letter). Additionally, the Python KeyStr is defined as str(k)==str(s), which is deterministic, while Coq's KeyStr is a relation that could potentially relate a key to multiple strings. The Python code's witness generation tries to compensate but may not match all possible Coq interpretations of KeyStr."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": false,
+      "reason": "The Python code's IsLower and IsUpper functions return True for strings without any letters (like '123' or ''), since '123'.lower() == '123' and '123'.upper() == '123'. This means a dict with keys like {'123': 1} would have all_lower=True and all_upper=True, so res=True would be expected. However, the Coq spec's IsLower and IsUpper are abstract predicates that may have different semantics (e.g., requiring at least one lowercase/uppercase letter). Additionally, the Python KeyStr is defined as str(k)==str(s), which is deterministic, while Coq's KeyStr is a relation that could allow multiple witnesses. The get_witnesses approach tries to compensate but may not match Coq's abstract relation exactly. For concrete inputs with mixed-case keys like {'Abc': 1}, Python correctly returns res=False, but edge cases with non-alphabetic keys may differ."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "It enforces res == (keys non-empty and either all keys have a lower-case witness or all have an upper-case witness). With KeyStr instantiated as string equality, the existential per key is satisfied exactly by str(k), and the empty-keys case is handled correctly."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "For nonempty dicts it checks res equals (all keys have a lower witness or all have an upper witness), and for empty dicts it enforces res is false. With KeyStr defined as str(k)==str(s), the existential reduces to testing IsLower/IsUpper on str(k), matching the Coq spec\u2019s condition."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "For empty dicts it enforces res = false; otherwise it checks res equals (all keys admit a lower-case witness or all admit an upper-case witness). With KeyStr defined as s = str(k), the existential reduces to checking IsLower/IsUpper on str(k), matching the Coq spec\u2019s condition."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 0,
+      "not_equivalent_votes": 3,
+      "majority_equivalent": false,
+      "unanimous_equivalent": false,
+      "reasons_if_not_equivalent": [
+        "The Python code's IsLower and IsUpper functions return True for strings with no letters (like '123' or ''), since '123' == '123'.lower() and '123' == '123'.upper() are both True. This means for a dict with key '123', both all_lower and all_upper would be True, so res=True would be accepted. However, the Coq spec likely intends IsLower and IsUpper to be mutually exclusive predicates (a string is either lowercase or uppercase, not both), which would affect the concrete result for such inputs.",
+        "The Python code's IsLower and IsUpper functions return True for strings without any letters (like '123' or ''), since '123'.lower() == '123' and '123'.upper() == '123'. This means a dict with keys like {'123': 1} would have all_lower=True and all_upper=True, so res=True would be expected. However, the Coq spec's IsLower and IsUpper are abstract predicates that may have different semantics (e.g., requiring at least one lowercase/uppercase letter). Additionally, the Python KeyStr is defined as str(k)==str(s), which is deterministic, while Coq's KeyStr is a relation that could potentially relate a key to multiple strings. The Python code's witness generation tries to compensate but may not match all possible Coq interpretations of KeyStr.",
+        "The Python code's IsLower and IsUpper functions return True for strings without any letters (like '123' or ''), since '123'.lower() == '123' and '123'.upper() == '123'. This means a dict with keys like {'123': 1} would have all_lower=True and all_upper=True, so res=True would be expected. However, the Coq spec's IsLower and IsUpper are abstract predicates that may have different semantics (e.g., requiring at least one lowercase/uppercase letter). Additionally, the Python KeyStr is defined as str(k)==str(s), which is deterministic, while Coq's KeyStr is a relation that could allow multiple witnesses. The get_witnesses approach tries to compensate but may not match Coq's abstract relation exactly. For concrete inputs with mixed-case keys like {'Abc': 1}, Python correctly returns res=False, but edge cases with non-alphabetic keys may differ."
+      ]
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 6,
+  "overall_not_equivalent_votes": 3,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": false,
+  "non_equivalence_reasons": [
+    "The Python code's IsLower and IsUpper functions return True for strings with no letters (like '123' or ''), since '123' == '123'.lower() and '123' == '123'.upper() are both True. This means for a dict with key '123', both all_lower and all_upper would be True, so res=True would be accepted. However, the Coq spec likely intends IsLower and IsUpper to be mutually exclusive predicates (a string is either lowercase or uppercase, not both), which would affect the concrete result for such inputs.",
+    "The Python code's IsLower and IsUpper functions return True for strings without any letters (like '123' or ''), since '123'.lower() == '123' and '123'.upper() == '123'. This means a dict with keys like {'123': 1} would have all_lower=True and all_upper=True, so res=True would be expected. However, the Coq spec's IsLower and IsUpper are abstract predicates that may have different semantics (e.g., requiring at least one lowercase/uppercase letter). Additionally, the Python KeyStr is defined as str(k)==str(s), which is deterministic, while Coq's KeyStr is a relation that could potentially relate a key to multiple strings. The Python code's witness generation tries to compensate but may not match all possible Coq interpretations of KeyStr.",
+    "The Python code's IsLower and IsUpper functions return True for strings without any letters (like '123' or ''), since '123'.lower() == '123' and '123'.upper() == '123'. This means a dict with keys like {'123': 1} would have all_lower=True and all_upper=True, so res=True would be expected. However, the Coq spec's IsLower and IsUpper are abstract predicates that may have different semantics (e.g., requiring at least one lowercase/uppercase letter). Additionally, the Python KeyStr is defined as str(k)==str(s), which is deterministic, while Coq's KeyStr is a relation that could allow multiple witnesses. The get_witnesses approach tries to compensate but may not match Coq's abstract relation exactly. For concrete inputs with mixed-case keys like {'Abc': 1}, Python correctly returns res=False, but edge cases with non-alphabetic keys may differ."
+  ],
+  "repair_round": 10,
+  "syntax_ok": true
+}

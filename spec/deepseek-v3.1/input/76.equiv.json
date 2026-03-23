@@ -1,0 +1,96 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/deepseek-v3.1/input/76.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/deepseek-v3.1/input/76.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification by checking all edge cases for n (0, 1, -1) and using a loop to find if x is a power of n for |n| >= 2, which matches the existential quantification over k >= 0."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the mathematical check for whether x is a power of n with a non-negative exponent, handling all edge cases (n=0, 1, -1) and correctly bounding the loop for |n| >= 2."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the check for whether x is a power of n (x = n^k for k >= 0). It handles the base cases n=0, 1, -1 according to Coq's Z.pow semantics and uses a valid search loop for |n| >= 2 where powers grow in magnitude."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification for checking if x is a power of n with non-negative exponent. It handles all special cases: n=0 (0^0=1, 0^k=0 for k>0), n=1 (1^k=1), n=-1 (alternates between 1 and -1), and for |n|>=2 it iterates through powers until exceeding |x|. The spec checks if result matches whether such a k exists, which the Python code computes correctly for all concrete integer inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification for checking if x is a power of n with non-negative exponent. It handles special cases (n=0, n=1, n=-1) correctly according to Coq's Z.pow semantics (0^0=1, 0^k=0 for k>0, 1^k=1, (-1)^k alternates). For |n|>=2, it iterates through powers until |n^k| > |x|, which correctly determines if x is a power of n. The spec returns true iff result matches whether such a k exists, which is what the Python code does."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification for checking if x is a power of n with non-negative exponent. It handles special cases (n=0, n=1, n=-1) correctly according to Coq's Z.pow semantics (0^0=1, 0^k=0 for k>0), and for |n|>=2 it iterates through powers until finding x or exceeding |x|. The spec checks if result matches whether such a k exists, which the Python code faithfully computes."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python check returns true exactly when there exists an integer k >= 0 with n**k = x, handling special cases n=0,1,-1 consistently with Coq Z.pow and iterating powers for |n|>=2 until |n^k| exceeds |x|. Thus it matches the Coq spec on all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python check exactly characterizes existence of k >= 0 with n^k = x (including special cases n in {0,1,-1}), and the wrapper tests result == that characterization."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python computes whether x equals n^k for some k >= 0, handling 0, 1, -1 cases and enumerating powers for |n|>=2; result is compared for equivalence as in the Coq spec."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 10,
+  "syntax_ok": true
+}

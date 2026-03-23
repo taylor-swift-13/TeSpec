@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gpt-5/input/34.v",
+  "translated_py_file": "spec/gpt-5/input/34.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly checks that 'res' is sorted, contains no duplicates, and has the exact same set of elements as 'l', which perfectly matches the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly checks that the result list is sorted, contains no duplicates, and has the exact same set of elements as the input list, which perfectly matches the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly checks that the result list is sorted, contains no duplicates, and has the exact same set of elements as the input list, matching the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly checks the three conditions from the Coq spec: (1) sorted check via comparison with sorted(res), (2) no duplicates via set comparison, (3) same elements via set equality. The Coq spec uses Z.le (<=) for sorting and the Python sorted() uses <= by default. The biconditional 'In x res <-> In x l' is equivalent to set equality for finite lists. All concrete inputs will produce the same judgment."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly checks the three conditions from the Coq spec: (1) sorted checks Z.le ordering, (2) len(res) != len(set(res)) checks NoDup, and (3) set(res) != set(l) checks that elements in res are exactly those in l (the biconditional In x res <-> In x l). For concrete inputs, these produce the same judgments."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly checks the three conditions from the Coq spec: (1) sorted check via comparison with sorted(res), (2) no duplicates via set comparison, (3) same elements via set equality. The Coq spec uses Z.le (<=) for sorting and the Python sorted() uses <= by default. The biconditional 'In x res <-> In x l' is equivalent to set equality for finite lists. All concrete inputs will produce the same judgment."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both require res to be sorted ascending, contain no duplicates, and have exactly the same elements as l (set equality), matching Coq\u2019s Sorted, NoDup, and membership equivalence."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python checks ascending order, no duplicates, and equality of element sets, matching Sorted Z.le, NoDup, and membership equivalence in the Coq spec."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Checks ascending sort, no duplicates, and equality of element sets, matching Sorted Z.le, NoDup, and membership equivalence for all Z."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

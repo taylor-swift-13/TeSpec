@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gpt-5/input/85.v",
+  "translated_py_file": "spec/gpt-5/input/85.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the recursive logic using an iterative approach, maintaining the same parity checks for indices and values."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq logic, summing the even elements that are located at odd indices."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq logic using an iterative approach with enumerate, accurately checking for odd indices and even values to compute the sum."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq logic. In Coq, sum_even_at_odd_from starts at index i and increments by 1 for each element, checking if the current index is odd and the element is even. The Python version uses enumerate starting from 0 and computes the actual index as (i + idx), which gives the same sequence of indices. Both check for odd index ((i + idx) % 2 != 0 in Python, Nat.odd i in Coq) and even element (x % 2 == 0 in Python, Z.even x in Coq). The add_spec function correctly checks equality of s with the computed sum."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the same logic as the Coq code. In Coq, sum_even_at_odd_from starts at index i and increments by 1 for each element, checking if the current index is odd and the element is even. The Python version uses enumerate starting from 0 and adds i to get the effective index (i + idx), which is equivalent. Both check for odd index (% 2 != 0 in Python, Nat.odd in Coq) and even element (% 2 == 0 in Python, Z.even in Coq). The add_spec function correctly checks equality of s with the computed sum."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq logic. In Coq, sum_even_at_odd_from starts at index i and increments with each recursive call, checking if the current index is odd and the element is even. The Python version uses enumerate starting from 0 and computes the effective index as (i + idx), which matches the Coq behavior where the index starts at i and increments. Both check for odd index ((i + idx) % 2 != 0 in Python, Nat.odd i in Coq) and even element (x % 2 == 0 in Python, Z.even x in Coq). The add_spec function correctly checks equality of s with the computed sum."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both implementations sum elements x where x is even and the index (i+position) is odd; Python mirrors Coq\u2019s parity checks and accumulation, and add_spec checks the same equality."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both sum even-valued elements at odd indices offset by i (starting at 0), and add_spec checks equality with that sum; Python\u2019s modulo/parity matches Coq\u2019s Z.even for all integers."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both sum_even_at_odd_from and sum_even_at_odd sum elements that are even and at odd indices (with 0-based starting i), and add_spec checks equality with that sum. Parity and negatives are handled consistently in Python and Coq."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

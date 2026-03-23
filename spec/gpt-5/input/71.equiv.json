@@ -1,0 +1,96 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/gpt-5/input/71.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/gpt-5/input/71.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, using exact rational arithmetic and integer square root properties to find the closest integer to the scaled area, including the round-to-even tie-breaking rule."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the triangle inequality logic and Heron's formula using exact rational arithmetic. It also correctly implements the rounding requirement (nearest integer, ties to even) by comparing the squared scaled area to the squared midpoint, ensuring the result matches the Coq specification for all inputs."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification using exact rational arithmetic and integer square roots to avoid floating-point inaccuracies, including the exact tie-breaking logic for rounding to the nearest even integer."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: it checks the triangle inequality conditions and returns whether area equals -1 for invalid triangles. For valid triangles, it computes Heron's formula using exact rational arithmetic, finds the integer k closest to sqrt(V)*100 (with tie-breaking to even integers as specified by Zeven), and checks if area equals k/100. The use of Fraction for exact arithmetic and the careful handling of the rounding/tie-breaking matches the Coq specification's requirements."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification: it returns true when area=-1 for invalid triangles (where triangle inequality fails), and for valid triangles it computes Heron's formula using exact rational arithmetic, finds the integer k closest to sqrt(V)*100 (with ties broken by choosing the even integer as required by Zeven), and checks if area equals k/100. The use of Fraction for exact arithmetic and the tie-breaking logic match the Coq spec's requirements."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification: it returns True when area=-1 for invalid triangles (where triangle inequality fails), and for valid triangles it computes Heron's formula, finds the integer k closest to sqrt(p*(p-a)*(p-b)*(p-c))*100 (with ties broken by choosing the even integer as required by Zeven), and checks if area equals k/100. The use of exact rational arithmetic via Fraction matches Coq's exact real arithmetic for the algebraic operations, and the rounding logic correctly implements the minimization condition with the tie-breaking rule."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The code implements the same case split: returns -1 for non-triangles, otherwise computes p and uses Heron\u2019s formula, then selects k as the nearest integer to 100*sqrt(p*(p-a)*(p-b)*(p-c)) with ties to even, and checks area = k/100 exactly. Arithmetic is exact via Fraction and the isqrt-based rounding matches the spec\u2019s minimization and tie rule, so results coincide for all numeric inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "It checks the same triangle inequality, uses exact rationals for Heron\u2019s formula, selects k as the nearest integer to 100*x with exact tie-to-even, and enforces area = k/100 exactly, matching the Coq spec on all numeric inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Implements the same cases: returns -1 for non-triangles, otherwise computes Heron\u2019s x = sqrt(p(p-a)(p-b)(p-c)), rounds x*100 to the nearest integer with tie-to-even using exact rational arithmetic, and checks area = k/100 exactly. The integer sqrt logic correctly finds the nearest integer, matching the Coq spec\u2019s minimization and tie condition."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 7,
+  "syntax_ok": true
+}

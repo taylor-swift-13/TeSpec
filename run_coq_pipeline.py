@@ -74,6 +74,7 @@ def main() -> None:
     parser.add_argument("--judge-models", nargs="+", default=["gemini-3-pro-preview", "claude-opus-4-5-20251101", "gpt-5"])
     parser.add_argument("--judge-repeats", type=int, default=3)
     parser.add_argument("--max-iterations", type=int, default=2)
+    parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--range")
     parser.add_argument("--idx", nargs="+", type=int)
     parser.add_argument("--base-url", default="https://yunwu.ai/v1")
@@ -111,6 +112,8 @@ def main() -> None:
         str(args.judge_repeats),
         "--max-iterations",
         str(args.max_iterations),
+        "--workers",
+        str(args.workers),
         "--judge-models",
         *args.judge_models,
         *idx_args,

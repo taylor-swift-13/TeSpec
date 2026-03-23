@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/19.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/19.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq specification, including the string tokenization, permutation check, sortedness check, and string joining logic."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq definitions, including the string splitting, joining, and the specification which checks for permutation, sortedness by numeric value, and correct string reconstruction."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq definitions, including the string tokenization, joining, and the specification checking for permutation and sortedness."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The to_int, str_le, is_space, tokenize (via split_by_space), and join_with_space functions match their Coq counterparts. The sort_numbers_spec function checks the same three conditions: (1) permutation check via sorted comparison, (2) sorted order via str_le on consecutive elements (equivalent to Sorted), and (3) result equals joined tokens. The permutation check using sorted() is equivalent to Coq's Permutation for finite lists of strings."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The to_int, str_le, is_space, tokenize (split_by_space), and join_with_space functions match the Coq definitions. The sort_numbers_spec checks the same three conditions: (1) permutation check via sorted comparison, (2) sorted order via str_le on consecutive elements (equivalent to Sorted), and (3) result equals join_with_space of result_tokens. The empty string case is handled identically. All concrete inputs will produce the same judgments."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The to_int, str_le, is_space, split_by_space, tokenize, and join_with_space functions match their Coq counterparts. The sort_numbers_spec function checks the same three conditions: (1) permutation check via sorted comparison, (2) sorted order via str_le on consecutive elements (equivalent to Sorted), and (3) result equals joined tokens. The permutation check using sorted() is equivalent to Coq's Permutation for concrete inputs since two lists are permutations iff their sorted versions are equal."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Tokenization, integer mapping, and space handling match. Permutation is checked via sorted equality (valid for multisets), sortedness is enforced by adjacent <= checks which suffice due to transitivity of <= on to_int, and join_with_space equality matches the Coq spec. Thus results coincide on all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python mirrors Coq: same to_int mapping (unknown -> 0), same space-based tokenization and joining, permutation checked via sorted-equality, and sortedness enforced by adjacent <= which suffices since <= on ints is transitive. Empty-input case also matches."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Tokenization and joining match space-only behavior; permutation is correctly checked via sorted equality; sortedness via adjacent <= is sufficient since <= is transitive; empty-input case handled identically."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

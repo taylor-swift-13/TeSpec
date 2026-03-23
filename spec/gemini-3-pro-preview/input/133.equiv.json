@@ -1,0 +1,96 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/gemini-3-pro-preview/input/133.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/gemini-3-pro-preview/input/133.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python implementation correctly identifies that Coq's 'up' function is equivalent to math.floor(x) + 1, and the rest of the logic (summing the squares of these values) matches the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. Specifically, it correctly interprets the Coq 'up' function as 'math.floor(x) + 1' and accurately replicates the map-sum logic using a loop and arbitrary-precision integers."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements Coq's 'up' function as math.floor(x) + 1 and accurately computes the sum of squares to check against the expected result."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly interprets Coq's 'up' function as math.floor(x) + 1, which matches the Archimedean property definition (IZR(up r) > r and IZR(up r) - r <= 1, meaning up(r) is the smallest integer strictly greater than r). The sum of squares computation using fold_right with Z.add and Z.mul is correctly translated to Python's iterative sum of products. The spec checks if res equals this computed sum, which both versions do identically."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly interprets Coq's 'up' function as math.floor(x) + 1, which matches the Coq archimed axiom definition (the unique integer strictly greater than x). The sum of squares computation using fold_right with Z.add and map is correctly translated to an iterative sum in Python. The spec checks if res equals the computed sum, which matches the Coq Prop equality."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly interprets Coq's 'up' function as math.floor(x) + 1, which matches the Coq archimed axiom definition where up(r) is the smallest integer strictly greater than r. The sum of squares computation using fold_right with Z.add and map is equivalent to the Python loop accumulating ceil_x * ceil_x values. The final comparison res == expected matches the Coq equality in the spec."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python uses floor(x)+1 for Coq\u2019s up and sums squared values as integers, matching the Coq fold over Z; it returns True precisely when res equals the specified sum."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both compute the sum over the list of (floor(x)+1)^2 and check equality with res, matching Coq\u2019s up function behavior."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python sums (floor(x)+1)^2 for each x and checks equality with res, matching Coq\u2019s use of up (the least integer strictly greater than x) and folding Z.add over squared ups."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 3,
+  "syntax_ok": true
+}

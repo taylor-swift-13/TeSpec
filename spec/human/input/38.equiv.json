@@ -1,0 +1,96 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/human/input/38.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/human/input/38.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code faithfully translates the Coq specification, correctly implementing natural number subtraction, character retrieval with bounds checking, and the cyclic encoding logic for all indices."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq specification, correctly handling natural number subtraction, character retrieval with out-of-bounds padding, and the specific cyclic encoding logic."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq specification, including the use of natural number subtraction and the custom get_char function to handle out-of-bounds indices."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It checks length equality, computes n using natural number subtraction (where 0-1=0), and for each index i: if i<=n, it verifies either cond1 ((i+1)%3==1 and output[i]==input[i+2]) or cond2 ((i+1)%3==2 or 0 and output[i]==input[i-1] with nat subtraction); if i>n, it verifies output[i]==input[i]. The logic matches the Coq spec's disjunction structure and nat_sub handles Coq's natural number subtraction semantics correctly."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It checks length equality, computes n using natural number subtraction (nat_sub handles the 0-1=0 case), and for each index i: if i <= n, it verifies either cond1 ((i+1)%3=1 and output[i]=input[i+2]) or cond2 ((i+1)%3=2 or 0 and output[i]=input[i-1] with nat subtraction); if i > n, it verifies output[i]=input[i]. The disjunction structure in Python (cond1 or cond2) matches the Coq specification's logical structure for the i <= n case."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It checks length equality, computes n using natural number subtraction (where 0-1=0), and for each index i: if i<=n, it verifies either cond1 ((i+1)%3==1 and output[i]==input[i+2]) or cond2 ((i+1)%3==2 or 0 and output[i]==input[i-1] with nat subtraction); if i>n, it verifies output[i]==input[i]. The logic matches the Coq spec's disjunction structure and nat_sub handles Coq's natural subtraction semantics correctly."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code mirrors the Coq spec: it enforces equal lengths, uses n = ((L//3)*3)-1 with nat-style subtraction, applies the same (i+1) mod 3-based mapping for i \u2264 n, keeps characters unchanged for i > n, and mimics Coq\u2019s get_char with space for out-of-bounds. Thus it matches the concrete behavior on all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python mirrors Coq on length check, n via nat subtraction, space-padding get_char, and the conditional mapping for i<=n vs i>n using the same modulo cases; thus it enforces the same output for all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python mirrors Coq: same length check, same n via nat-subtraction, same per-index implications using get_char with space fallback, and identical mod-3 case handling."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 4,
+  "syntax_ok": true
+}

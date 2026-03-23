@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gpt-4o/input/96.v",
+  "translated_py_file": "spec/gpt-4o/input/96.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements both directions of the Coq specification, checking that every element in 'ans' is a prime less than 'n', and that every prime less than 'n' is in 'ans'."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification by checking that all elements in 'ans' are primes strictly less than 'n', and that all primes strictly less than 'n' are present in 'ans'."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly checks both directions of the Coq specification, ensuring all elements in 'ans' are primes in [2, n) and all primes in [2, n) are in 'ans'."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. Part 1 checks that every element in ans is in range [2, n) and satisfies the primality condition (no divisors in [2, x)). Part 2 checks that every prime in [2, n) is in ans. The is_prime_helper function correctly implements the divisibility check. Both parts together verify the bidirectional condition from the Coq spec, producing the same concrete judgments for any given n and ans."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. Part 1 checks that every element in ans is in range [2, n) and is prime (no divisors in [2, x)). Part 2 checks that every prime in [2, n) is in ans. The is_prime_helper function correctly implements the primality condition from the spec. Both parts together verify the bidirectional condition that ans contains exactly the primes in [2, n)."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. Part 1 checks that every element in ans is in range [2, n) and is prime (no divisor d in [2, x) divides x). Part 2 checks that every prime in [2, n) is in ans. The is_prime_helper function correctly implements the primality condition by checking that no d in range [2, x) divides x. Both parts together match the Coq specification's conjunction of the two conditions."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "It enforces both directions: every element of ans is in [2,n) and has no divisor in [2,x), and every such x in [2,n) appears in ans. Duplicates are allowed and order is irrelevant, matching the Coq spec."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The function enforces that every element in ans is in [2, n) and has no divisors in [2, x), and that all such numbers in [2, n) are included in ans. This matches the Coq spec exactly for natural-number inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code enforces that ans contains exactly those x with 2 <= x < n having no divisor d in [2,x), and that all such x are included; duplicates/order are irrelevant as in the Coq spec."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

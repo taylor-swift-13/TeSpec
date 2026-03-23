@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/126.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/126.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly checks if the list is sorted and if all elements appear at most twice, matching the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly checks if the list is sorted and if every element occurs at most twice, matching the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly checks if the list is sorted in ascending order and if every element appears at most twice, matching the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly checks the same conditions as the Coq spec: (1) is_sorted checks that the list is sorted in non-decreasing order (equivalent to Sorted le lst), and (2) all_le_2 checks that no element appears more than twice (equivalent to forall x, count_occ lst x <= 2). The function returns true iff res matches the conjunction of these conditions, which corresponds to the Coq biconditional res = true <-> (Sorted le lst /\\ count condition)."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly checks the same conditions as the Coq spec: (1) the list is sorted (each element <= next), and (2) each element appears at most 2 times. It returns whether the boolean result matches these combined conditions, which corresponds to the Coq biconditional 'res = true <-> (Sorted le lst /\\ count_occ <= 2)'."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly checks the same conditions as the Coq spec: (1) the list is sorted (each element <= next), and (2) each element appears at most twice. It returns whether the boolean result matches these combined conditions, which corresponds to the Coq biconditional 'res = true <-> (Sorted le lst /\\ count_occ <= 2)'."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python checks non-decreasing order and that no value appears more than twice, then returns whether res equals that predicate, matching the Coq iff specification."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python checks nondecreasing adjacency and enforces max count 2 per value, then verifies res equals that condition; this matches Coq\u2019s Sorted le and count_occ <= 2 with res=true iff the property holds."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "It checks nondecreasing order via <= and ensures no element appears more than twice, then verifies res matches this property; this matches the Coq spec (res = true <-> Sorted le lst and counts <= 2) for lists of naturals and boolean res."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

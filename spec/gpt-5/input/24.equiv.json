@@ -1,0 +1,96 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/gpt-5/input/24.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/gpt-5/input/24.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, handling the n <= 1 case and checking that res is the largest proper divisor for n >= 2."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, handling the n <= 1 case and checking the divisibility and maximality conditions for n >= 2 without any division by zero issues."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, handling the n <= 1 case and checking that res is the strictly largest proper divisor for n >= 2."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: for n <= 1, it checks res == 1; for n >= 2, it verifies res divides n, 1 <= res < n, and that no divisor m exists with res < m < n (which is equivalent to the forall condition that all divisors m with 1 <= m < n satisfy m <= res). The Coq spec also requires Z.divide res n at the top level, which Python checks via n % res != 0 returning False. The only subtle difference is that Coq's spec for n <= 1 doesn't explicitly require res to divide n in that branch, but the top-level conjunction does - Python's check for n <= 1 returning res == 1 is correct since 1 always divides any n."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: for n <= 1, it checks res == 1; for n >= 2, it verifies res divides n, 1 <= res < n, and that no divisor m exists with res < m < n (which is equivalent to res being the largest proper divisor). The Coq spec also requires Z.divide res n at the top level, but for n <= 1 with res = 1, 1 always divides any n, so this is satisfied. For n >= 2, the Python code explicitly checks n % res == 0."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: for n <= 1, it checks res == 1 (matching the first disjunct, though it doesn't verify divisibility which is trivially true for res=1 dividing any n). For n >= 2, it checks 1 <= res < n, that res divides n, and that no larger proper divisor exists (equivalent to the forall condition). The only subtle difference is that for n <= 1, Python doesn't explicitly check divisibility, but res=1 always divides any integer, so this is correct."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Checks res divides n, enforces 1 <= res < n for n >= 2, and ensures no larger proper divisor exists; for n <= 1, accepts only res = 1. Matches Coq spec on all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python enforces res=1 when n<=1 and for n>=2 checks 1<=res<n, res|n, and that no m>res with m<n divides n, matching the Coq spec\u2019s conditions and maximality clause."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Matches Coq: for n<=1 it requires res=1 (and 1 divides any n), and for n>=2 it enforces 1<=res<n, res|n, and no larger proper divisor exists. The loop checks exactly the absence of divisors in (res,n)."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 4,
+  "syntax_ok": true
+}

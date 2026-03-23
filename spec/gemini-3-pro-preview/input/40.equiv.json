@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/40.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/40.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the logic that res is true if and only if there exist three distinct indices whose elements sum to zero, covering all combinations exactly once."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly checks all combinations of three distinct indices (which is equivalent to checking all permutations of distinct indices due to commutativity of addition) and returns whether the boolean 'res' matches the existence of a triplet summing to zero, exactly mirroring the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly checks for the existence of three distinct elements that sum to zero and verifies that 'res' matches this boolean outcome, which is equivalent to the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Coq spec says res=true iff there exist three distinct indices i,j,k (all in bounds) such that l[i]+l[j]+l[k]=0. The Python code checks all combinations of three distinct indices (using i<j<k to avoid duplicates) and returns res==True if any triple sums to zero, otherwise res==False. Since the existence of any triple with distinct indices i,j,k summing to zero is equivalent to the existence of such a triple with i<j<k (just reorder), the Python correctly implements the same concrete judgment."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Coq spec says res=true iff there exist three distinct indices i,j,k (all in bounds) such that l[i]+l[j]+l[k]=0. The Python code checks all combinations of three distinct indices (using i<j<k to avoid duplicates) and returns res==True if any triple sums to zero, otherwise res==False. Since the existence of any triple with distinct indices i,j,k summing to zero is equivalent to the existence of such a triple with i<j<k (by symmetry), the Python correctly implements the same concrete judgment."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Coq spec says res=true iff there exist three distinct indices i,j,k (all in bounds) such that l[i]+l[j]+l[k]=0. The Python code checks all combinations of three distinct indices (using i<j<k to avoid duplicates) and returns whether res matches the existence of such a triple. Since the order of indices doesn't matter for the sum condition, checking i<j<k covers all unordered triples of distinct indices, which is equivalent to checking all distinct index triples. Both return the same judgment for any concrete list l and boolean res."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Enumerates all distinct index triples via i<j<k (covers all 3-combinations), checks sum==0, and returns whether res matches existence; matches Coq\u2019s iff condition on all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Loops over all distinct index triples (i<j<k), which suffices for existence; returns True iff res matches existence of such a triple, matching the Coq biconditional."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both characterize that res is true iff there exist three distinct indices whose elements sum to zero. Python searches i<j<k, which is sufficient for existence with distinct indices, and returns whether res matches this existence."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

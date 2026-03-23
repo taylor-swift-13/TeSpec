@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 import argparse
 import ast
+import concurrent.futures
 import json
+import os
 import re
 import textwrap
 from pathlib import Path
@@ -10,27 +12,32 @@ from config import LLMConfig
 from llm import OpenAILLM
 
 
-MODEL_API_KEYS = {
-    "gpt": "sk-afVplv2oRlR8SnMlC3K0ndGKOIsaBN5O3zxrD1B7zWzgNWGA",
-    "deepseek": "sk-afVplv2oRlR8SnMlC3K0ndGKOIsaBN5O3zxrD1B7zWzgNWGA",
-    "claude": "sk-531Gm6lDz4TntanpSd8Pp8BYzUNGqQ90XukBrw4Xxo1eI4SQ",
-    "gemini": "sk-uTP4bW0qlJ927dODSZ81Ww5QsspvYE2pGRXynvPjf66lXjkS",
+MODEL_API_KEY_ENVS = {
+    "gpt": "TESPEC_GPT_API_KEY",
+    "deepseek": "TESPEC_GPT_API_KEY",
+    "claude": "TESPEC_CLAUDE_API_KEY",
+    "gemini": "TESPEC_GEMINI_API_KEY",
 }
 
 
 def resolve_api_key(model_name: str) -> str:
     lowered = model_name.lower()
-    for prefix, key in MODEL_API_KEYS.items():
+    for prefix, env_name in MODEL_API_KEY_ENVS.items():
         if lowered.startswith(prefix):
+            key = os.environ.get(env_name)
+            if not key:
+                raise ValueError(
+                    f"Missing API key for model {model_name!r}. Set environment variable {env_name}."
+                )
             return key
-    raise ValueError(f"No API key mapping configured for model {model_name!r}")
+    raise ValueError(f"No API key environment mapping configured for model {model_name!r}")
 
 
 def list_coq_inputs(spec_root: Path, input_model: str) -> list[Path]:
     input_dir = spec_root / input_model / "input"
     if not input_dir.exists():
         raise FileNotFoundError(f"Missing input directory: {input_dir}")
-    return sorted(input_dir.glob("*.v"), key=lambda path: int(path.stem))
+    return sorted((path for path in input_dir.glob("*.v") if path.stem.isdigit()), key=lambda path: int(path.stem))
 
 
 def parse_index_selector(files: list[Path], indices: list[int] | None) -> list[Path]:
@@ -263,6 +270,7 @@ def validate_translation_votes(
             "equivalent_votes": yes_votes,
             "not_equivalent_votes": no_votes,
             "majority_equivalent": yes_votes > no_votes,
+            "unanimous_equivalent": no_votes == 0,
             "reasons_if_not_equivalent": [item["reason"] for item in model_votes if not item["equivalent"]],
         }
 
@@ -278,8 +286,84 @@ def validate_translation_votes(
         "overall_equivalent_votes": total_yes,
         "overall_not_equivalent_votes": total_no,
         "overall_majority_equivalent": total_yes > total_no,
+        "overall_unanimous_equivalent": total_no == 0,
         "non_equivalence_reasons": [item["reason"] for item in votes if not item["equivalent"]],
     }
+
+
+def process_input_file(
+    input_path: Path,
+    api_model: str,
+    base_url: str,
+    judge_models: list[str],
+    judge_repeats: int,
+    max_iterations: int,
+    skip_equivalence_check: bool,
+) -> tuple[Path, Path | None]:
+    output_path = input_path.with_suffix(".py")
+    report_path = input_path.with_suffix(".equiv.json")
+    llm = make_llm(api_model, base_url, temperature=0.0)
+
+    translate_one(llm, input_path, output_path)
+    print(f"Translated {input_path} -> {output_path}")
+    if skip_equivalence_check:
+        return output_path, None
+
+    report = None
+    for repair_round in range(0, max_iterations + 1):
+        python_source = output_path.read_text(encoding="utf-8")
+        syntax_ok, syntax_error = try_validate_python_module(python_source)
+        if not syntax_ok:
+            report = {
+                "source_v_file": str(input_path),
+                "translated_py_file": str(output_path),
+                "judge_models": judge_models,
+                "judge_repeats": judge_repeats,
+                "repair_round": repair_round,
+                "syntax_ok": False,
+                "syntax_error": syntax_error,
+                "overall_majority_equivalent": False,
+                "overall_unanimous_equivalent": False,
+                "overall_equivalent_votes": 0,
+                "overall_not_equivalent_votes": 0,
+                "non_equivalence_reasons": [syntax_error],
+                "votes": [],
+                "per_model_summary": {},
+            }
+            if repair_round == max_iterations:
+                break
+            repair_translation(llm, input_path, output_path, [syntax_error])
+            print(f"Repaired syntax for {output_path} after round {repair_round}: {syntax_error}")
+            continue
+        report = validate_translation_votes(
+            input_path=input_path,
+            output_path=output_path,
+            judge_models=judge_models,
+            judge_repeats=judge_repeats,
+            base_url=base_url,
+        )
+        report["repair_round"] = repair_round
+        report["syntax_ok"] = True
+        if report["overall_unanimous_equivalent"]:
+            break
+        if repair_round == max_iterations:
+            break
+        reasons = report["non_equivalence_reasons"]
+        if not reasons:
+            reasons = ["The judges found the translation not equivalent, but did not provide detailed reasons."]
+        repair_translation(llm, input_path, output_path, reasons)
+        print(
+            f"Repaired {output_path} after round {repair_round}: "
+            f"{report['overall_equivalent_votes']} eq / {report['overall_not_equivalent_votes']} neq"
+        )
+
+    report_path.write_text(json.dumps(report, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")
+    print(
+        f"Validated {output_path} with votes: "
+        f"{report['overall_equivalent_votes']} eq / {report['overall_not_equivalent_votes']} neq"
+    )
+    print(f"Wrote {report_path}")
+    return output_path, report_path
 
 
 def main() -> None:
@@ -296,76 +380,37 @@ def main() -> None:
     )
     parser.add_argument("--judge-repeats", type=int, default=3)
     parser.add_argument("--max-iterations", type=int, dest="max_iterations")
+    parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--skip-equivalence-check", action="store_true")
     args = parser.parse_args()
 
     if args.max_iterations is None:
         args.max_iterations = 2
+    if args.workers < 1:
+        raise ValueError("--workers must be at least 1")
 
     spec_root = Path(args.spec_root)
     files = parse_index_selector(list_coq_inputs(spec_root, args.model), args.idx)
-
-    llm = make_llm(args.api_model, args.base_url, temperature=0.0)
-
-    for input_path in files:
-        output_path = input_path.with_suffix(".py")
-        translate_one(llm, input_path, output_path)
-        print(f"Translated {input_path} -> {output_path}")
-        if args.skip_equivalence_check:
-            continue
-        report = None
-        for repair_round in range(0, args.max_iterations + 1):
-            python_source = output_path.read_text(encoding="utf-8")
-            syntax_ok, syntax_error = try_validate_python_module(python_source)
-            if not syntax_ok:
-                report = {
-                    "source_v_file": str(input_path),
-                    "translated_py_file": str(output_path),
-                    "judge_models": args.judge_models,
-                    "judge_repeats": args.judge_repeats,
-                    "repair_round": repair_round,
-                    "syntax_ok": False,
-                    "syntax_error": syntax_error,
-                    "overall_majority_equivalent": False,
-                    "overall_equivalent_votes": 0,
-                    "overall_not_equivalent_votes": 0,
-                    "non_equivalence_reasons": [syntax_error],
-                    "votes": [],
-                    "per_model_summary": {},
-                }
-                if repair_round == args.max_iterations:
-                    break
-                repair_translation(llm, input_path, output_path, [syntax_error])
-                print(f"Repaired syntax for {output_path} after round {repair_round}: {syntax_error}")
-                continue
-            report = validate_translation_votes(
-                input_path=input_path,
-                output_path=output_path,
-                judge_models=args.judge_models,
-                judge_repeats=args.judge_repeats,
-                base_url=args.base_url,
-            )
-            report["repair_round"] = repair_round
-            report["syntax_ok"] = True
-            if report["overall_majority_equivalent"]:
-                break
-            if repair_round == args.max_iterations:
-                break
-            reasons = report["non_equivalence_reasons"]
-            if not reasons:
-                reasons = ["The judges found the translation not equivalent, but did not provide detailed reasons."]
-            repair_translation(llm, input_path, output_path, reasons)
-            print(
-                f"Repaired {output_path} after round {repair_round}: "
-                f"{report['overall_equivalent_votes']} eq / {report['overall_not_equivalent_votes']} neq"
-            )
-        report_path = input_path.with_suffix(".equiv.json")
-        report_path.write_text(json.dumps(report, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")
-        print(
-            f"Validated {output_path} with votes: "
-            f"{report['overall_equivalent_votes']} eq / {report['overall_not_equivalent_votes']} neq"
-        )
-        print(f"Wrote {report_path}")
+    with concurrent.futures.ThreadPoolExecutor(max_workers=args.workers) as executor:
+        futures = {
+            executor.submit(
+                process_input_file,
+                input_path,
+                args.api_model,
+                args.base_url,
+                args.judge_models,
+                args.judge_repeats,
+                args.max_iterations,
+                args.skip_equivalence_check,
+            ): input_path
+            for input_path in files
+        }
+        for future in concurrent.futures.as_completed(futures):
+            input_path = futures[future]
+            try:
+                future.result()
+            except Exception as exc:
+                raise RuntimeError(f"Failed while processing {input_path}") from exc
 
 
 if __name__ == "__main__":

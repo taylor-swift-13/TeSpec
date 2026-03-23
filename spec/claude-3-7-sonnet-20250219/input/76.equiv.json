@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/claude-3-7-sonnet-20250219/input/76.v",
+  "translated_py_file": "spec/claude-3-7-sonnet-20250219/input/76.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the logical conditions of the Coq specification, including the existential check for k >= 0 by iterating and breaking when the absolute value exceeds |x|."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the logical conditions specified in the Coq definition, including handling edge cases for n=0, 1, -1 and correctly searching for k >= 0 when |n| > 1."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the logical conditions of the Coq specification, handling the explicit disjunctions and correctly searching for a valid exponent k when |n| > 1 by leveraging the monotonic growth of |n^k|."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It checks all the disjunctive conditions (x=1, n=0 and x=0, n=1 and x=1, n=-1 and x in {1,-1}) and then searches for k>=0 such that n^k=x. The condition abs(n^k)<=abs(x) is automatically satisfied when n^k=x. The Python code returns whether b matches the computed condition, which corresponds to the Coq biconditional b=true <-> condition. For all concrete inputs, the Python code will return the same judgment as the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It checks whether b equals the condition that x is a power of n (with the special cases handled). The condition in Coq is a biconditional (b = true <-> condition), which means b should be true iff the condition holds. The Python code computes whether the condition holds and returns whether b matches that computed condition. All the special cases (x=1, n=0 and x=0, n=1 and x=1, n=-1 with x=1 or x=-1) and the general existential case (finding k>=0 such that n^k=x) are correctly handled. The redundancy in checking some cases twice doesn't affect correctness."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It checks if b equals the condition that x is a power of n (with the special cases handled). The condition in Coq is a biconditional (b = true <-> condition), which means b should be true iff the condition holds. The Python code computes whether the condition holds and returns whether b matches that computed condition. All the disjunctive cases (x=1, n=0 and x=0, n=1 and x=1, n=-1 and x in {1,-1}, or exists k>=0 with n^k=x) are properly checked. The existential search terminates because for |n|>1, powers grow unboundedly, and special cases for n in {-1,0,1} are handled separately."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Implements the same disjunctions (x=1; n in {0,1,-1} special cases) and checks existence of k>=0 with n**k=x for other n, with Python ints matching Coq Z and 0**0=1. The abs inequality is redundant when n**k=x. Returns b==condition as required."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "It checks the same disjunctions and searches for k >= 0 with n**k = x, handling 0, 1, and -1 consistently with Coq Z.pow (including 0**0 = 1). Returns b == condition, matching b = true <-> ..."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq disjunctions and searches k >= 0 for n^k = x (with correct special cases for n in {0,1,-1} and 0^0 = 1). It returns b == condition, matching b = true <-> condition for all inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

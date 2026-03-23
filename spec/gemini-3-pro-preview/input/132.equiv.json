@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/132.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/132.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification by iterating over all substrings and verifying the balanced bracket property and nesting depth. The logic for calculating nesting depth (stack-based) is equivalent to the inductive definition in Coq, and the condition d >= 2 is correctly applied."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification by checking all substrings to see if any is a valid balanced bracket sequence with a maximum nesting depth of at least 2, returning whether this matches the expected boolean result."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification by checking if there exists any contiguous substring that is a valid balanced bracket sequence with a maximum nesting depth of at least 2."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The balanced_depth function checks that a sequence consists only of brackets, is properly balanced (depth returns to 0), and tracks maximum nesting depth. The is_nested_spec function searches all contiguous substrings for a balanced bracket sequence with depth >= 2, which matches the Coq spec's existential condition. The Python returns true iff result matches whether such a nested balanced substring exists, which is equivalent to the Coq biconditional specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It checks whether there exists a contiguous substring of the input that is a balanced bracket sequence with nesting depth >= 2. The balanced_depth function in Python correctly computes whether a sequence consists only of brackets, is balanced (depth returns to 0), and has the specified maximum depth. The is_nested_spec function iterates through all substrings and checks if any balanced substring has depth >= 2, matching the Coq specification's existential condition. The Python returns true iff such a substring exists, which matches the Coq biconditional."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It checks whether the result matches the existence of a balanced bracket substring with nesting depth >= 2. The balanced_depth function correctly computes whether a sequence of only brackets is balanced with a specific max depth. The is_nested_spec function iterates through all substrings, checks if they consist only of brackets, are balanced (depth returns to 0), and have max_depth >= 2. This matches the Coq spec's condition that result=true iff there exists a substring with balanced_depth d where d >= 2."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python searches all contiguous substrings and checks for a balanced bracket sequence with maximum nesting depth >= 2, matching the Coq specification\u2019s exists sub,d with balanced_depth sub d and d>=2; helpers align with standard Dyck word balance and depth."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both enumerate contiguous substrings of the input and accept exactly those bracket-only substrings that are well-formed with maximum nesting depth at least 2; the Python returns result == existence, matching the Coq iff."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python checks all contiguous substrings and validates they are balanced bracket sequences with max nesting depth >= 2, matching the Coq balanced_depth and is_substring predicates and the equivalence result=true iff such a substring exists."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

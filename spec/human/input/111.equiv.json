@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/111.v",
+  "translated_py_file": "spec/human/input/111.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq specification, including the helper functions and the pre/post-conditions. The logic for filtering spaces, counting characters, finding the maximum count, and verifying the soundness and completeness of the result list exactly matches the Coq implementation."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq specification, including the helper functions, preconditions, and the soundness and completeness checks for the result list."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq definitions and specifications, correctly implementing the helper functions, preconditions, and the soundness and completeness checks for the histogram specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It filters spaces, computes unique letters (order doesn't matter for the logic), calculates max count the same way (fold_right max 0 is equivalent to max with 0 appended), and checks both soundness (every element in res has count equal to max_count) and completeness (every character with max_count appears in res). The concrete behavior matches for all inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. filter_spaces removes spaces, count_char counts occurrences, get_max_count finds the maximum count among unique letters (with 0 as fallback), and problem_111_spec checks both soundness (every element in res has the max count) and completeness (every character with max count is in res). The logic matches the Coq spec for all concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. filter_spaces removes spaces, count_char counts occurrences, get_max_count finds the maximum count among unique letters (with 0 as fallback), and problem_111_spec checks both soundness (every element in res has the max count) and completeness (every character with max count is in res). The logic matches the Coq spec for all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python mirrors Coq: spaces filtered identically, counts via list.count equal to count_occ, max logic matches (incl. empty case), and soundness/completeness conditions are enforced the same. The precondition also matches the lowercase-or-space constraint."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python mirrors Coq: filters spaces, counts occurrences, computes max with initial 0, and enforces that res lists exactly the max-frequency letters (or empty if none). Dedup order differences don\u2019t affect results; precondition matches lowercase/space check."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python mirrors Coq\u2019s space filtering, counting, max computation, and the spec\u2019s soundness/completeness conditions; empty-case handling and precondition checks match. Differences (like tuple unpacking) don\u2019t affect concrete results on valid inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

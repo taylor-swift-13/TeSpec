@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/134.v",
+  "translated_py_file": "spec/human/input/134.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, checking if the string ends with a single letter preceded by a space or the start of the string."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, checking if the string ends with a letter and is preceded by a space or the beginning of the string."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, checking if the string ends with a single alphabetical character preceded by a space or the beginning of the string."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It checks if the last character is alphabetic and if the preceding character (if any) is a space. The Coq spec says ends_with_single_letter_pred holds iff the string ends with an alphabetic character c, and the prefix is either empty or ends with a space. The Python implementation returns True when the last char is alpha AND (prefix is empty OR prefix ends with space), which matches exactly. The spec says b=true iff the predicate holds, and Python returns b == ends_with_single_letter_pred(s), which is equivalent."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python `ends_with_single_letter_pred` correctly implements the Coq spec: it checks if the string is non-empty, the last character is alphabetical, and either there's no preceding character or the preceding character is a space. The `problem_134_spec` checks `b == ends_with_single_letter_pred(s)`, which matches the Coq biconditional `b = true <-> ends_with_single_letter_pred s` for concrete boolean inputs (when b is True it requires the predicate to hold, when b is False it requires it not to hold)."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It checks if the last character is alphabetical and if the preceding character (if any) is a space. The Coq spec says ends_with_single_letter_pred holds iff the string ends with an alphabetical character c, and the prefix is either empty or ends with a space. The Python implementation returns True iff: (1) string is non-empty, (2) last char is alpha, and (3) either prefix is empty or prefix ends with space. This matches the Coq definition exactly. The problem_134_spec in Python correctly returns whether b equals the computed predicate result."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both implementations return true exactly when the last character is an ASCII letter and either the string length is 1 or the preceding character is a space; the spec wrapper matches the iff."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python checks that the last character is an ASCII letter and either the string has length 1 or the previous character is a space, matching the Coq predicate\u2019s conditions; empty or non-letter endings return False."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both implementations return true iff the last character is an ASCII letter and is either the first character of the string or preceded by a space; otherwise false. Empty strings and non-letter endings yield false. The spec relation is captured by equality in Python."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

@@ -1,0 +1,24 @@
+def rev_string(s: str) -> str:
+    return s[::-1]
+
+def is_palindrome_spec(text: str, result: bool) -> bool:
+    is_pal = (text == rev_string(text))
+    return result == is_pal
+
+def _impl(text: str):
+    return text == text[::-1]
+
+def precondition(input) -> bool:
+    return True
+
+def postcondition(input, output) -> bool:
+    if not isinstance(input, tuple):
+        input = tuple(input)
+    return bool(is_palindrome_spec(*input, output))
+
+def is_palindrome(*args):
+    _input = tuple(args)
+    assert precondition(_input)
+    _output = _impl(*args)
+    assert postcondition(_input, _output)
+    return _output

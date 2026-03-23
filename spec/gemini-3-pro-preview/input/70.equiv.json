@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/70.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/70.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the 'strange interleave' logic by sorting the input list and then iteratively picking elements from the front and back, which matches the inductive definition in Coq."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the specification by sorting the input list and then constructing the interleaved result using a two-pointer approach (taking from start and end), which exactly matches the inductive definition of strange_interleave in Coq."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the outside-in interleaving logic defined by the Coq inductive predicate and applies it to the sorted version of the input list, matching the specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The Coq `strange_interleave` relation builds the result by taking the first element, then the last element, recursively on the middle portion. The Python implementation does exactly this: it iterates with left/right pointers, appending lst1[left] then lst1[right], moving inward, handling the single middle element case. The `strange_sort_list_spec` checks if `ans` is the strange interleaving of the sorted version of `lst`, which matches the Coq spec that requires existence of a sorted permutation with the interleaving property. Since there's exactly one sorted permutation and one valid interleaving result, the Python code correctly determines whether the spec holds for concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. The Coq strange_interleave relation builds the result by taking the first element, then the last element, recursively on the middle. The Python implementation does the same: it alternates between taking from the left (front) and right (back) of the sorted list. For the spec, Python sorts the input list (which is a permutation and is sorted), then checks if ans matches the strange interleave pattern. This matches the Coq spec's existential requirement since sorted(lst) is the unique sorted permutation."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. The Coq strange_interleave relation takes elements alternately from the front and back of the first list to produce the second list: si_nil handles empty, si_one handles single element, and si_step takes x from front and y from back recursively. The Python implementation does exactly this with left/right pointers, building expected_lst2 by appending lst1[left] then lst1[right] while moving inward. The spec checks if ans equals the strange interleaving of the sorted permutation of lst, which Python implements by sorting lst and checking if strange_interleave(sorted_lst, ans) holds."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code sorts the input list in nondecreasing order and then produces the sequence x1, xn, x2, x_{n-1}, ... from the ends inward. This matches the Coq spec: existence of a sorted permutation (unique up to equal elements) and the inductive strange_interleave relation, which deterministically yields the same interleaving. Base cases for empty and singleton lists also align."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python sorts the list ascending and then constructs ans by alternately taking first and last elements (with a single middle element if odd length), exactly matching the Coq strange_interleave relation and the existential spec; behavior is identical on all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python sorts the list ascending and checks ans equals the sequence formed by alternately taking first and last elements of the sorted list, which matches the deterministic relation defined by strange_interleave and satisfies the Permutation and Sorted conditions."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

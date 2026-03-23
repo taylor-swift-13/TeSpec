@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/claude-3-7-sonnet-20250219/input/24.v",
+  "translated_py_file": "spec/claude-3-7-sonnet-20250219/input/24.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq specification, checking the bounds, divisibility, and the minimality condition exactly as specified in the Coq code."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, checking the bounds, divisibility, and the minimality condition exactly as described in the Coq code."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, checking the bounds, the divisibility condition, and the minimality condition exactly as described in the Coq implication."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec for concrete inputs. When n <= 1, the Coq precondition (1 < n) is false, making the implication vacuously true, which matches Python returning True. When n > 1, Python checks: (1) 1 < d < n, (2) n mod d = 0, and (3) for all k in range(2, n), if n mod k = 0 then d <= k. This matches the Coq spec's conjunction of conditions. The range(2, n) correctly covers all k where 1 < k < n."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec for concrete inputs. When n <= 1, the Coq precondition (1 < n) is false, making the implication vacuously true, which matches Python returning True. When n > 1, Python checks: (1) 1 < d < n, (2) n mod d = 0, and (3) for all k in range(2, n), if n mod k = 0 then d <= k. This matches the Coq spec's conditions exactly for concrete values."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec for concrete inputs. When n <= 1, the Coq precondition (1 < n) is false, making the implication vacuously true, which matches Python returning True. When n > 1, Python checks: (1) 1 < d < n, (2) n mod d = 0, and (3) for all k in range(2, n), if n mod k = 0 then d <= k. This matches the Coq spec's three conjuncts under the precondition 1 < n. The range(2, n) correctly covers all k where 1 < k < n."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "For n <= 1 both are vacuously true; for n > 1 the Python checks 1 < d < n, n % d == 0, and that for all k with 2 <= k < n dividing n, d <= k, matching the Coq forall condition. Range and modulus behavior align for positive integers."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "For n <= 1 it returns True (matches implication). Otherwise it enforces 1 < d < n, n % d == 0, and ensures no k in 2..n-1 dividing n is smaller than d, i.e., d <= all such k. This aligns with the Coq spec on all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "For n <= 1 both are vacuously true; for n > 1 both require 1 < d < n, d divides n, and for all k with 1 < k < n dividing n, d <= k. The Python loop enforces exactly this by rejecting any smaller divisor."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

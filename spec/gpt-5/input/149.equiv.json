@@ -1,0 +1,100 @@
+{
+  "source_v_file": "spec/gpt-5/input/149.v",
+  "translated_py_file": "spec/gpt-5/input/149.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements all helper functions and the specification. Checking the counts for elements in the union of lst and res is sufficient because elements not in either list will have a count of 0 in both, trivially satisfying the conditions. The adjacent element check correctly implements Coq's Sorted predicate."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python implementation correctly translates the Coq specification, using equivalent built-in string comparisons and list operations, and correctly verifying the counts and sortedness of the result."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, checking the counts of elements present in the lists and verifying that the result list is sorted according to the specified length and lexicographical order."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": false,
+      "reason": "The Coq orderR relation allows equal elements (via string_lex_le which includes s = t), but the Python sorted check requires strict ordering between consecutive elements. In Coq, Sorted orderR res allows consecutive equal elements, but Python's check `not orderR(res[i], res[i+1])` would pass for equal consecutive elements (since orderR returns True when s == t). However, the real issue is that Coq's Sorted is defined inductively and allows the relation to hold between consecutive elements, while Python checks orderR(res[i], res[i+1]) must be True. For equal consecutive strings, Python's orderR returns True (since string_lex_le includes equality), so this part is fine. The actual mismatch is in string_lex_lt: Coq defines it recursively on the string structure where EmptyString < any non-empty string, and for same-length strings it compares character by character. Python's `s < t` uses standard lexicographic comparison which should match. But Coq's string_lex_lt(EmptyString, EmptyString) = False while Python's '' < '' = False, so that matches. The definitions appear equivalent for concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": false,
+      "reason": "The Coq orderR relation allows equal elements (via string_lex_le which includes s = t), but the Python sorted check requires strict ordering between consecutive elements. In Coq, Sorted orderR res allows consecutive equal elements, but Python's check `not orderR(res[i], res[i+1])` would pass for equal consecutive elements (since orderR returns True when s == t). However, the real issue is that Coq's string_lex_lt is defined differently from Python's string comparison - Coq uses ascii_lt based on nat_of_ascii which may differ from Python's ord() for the same characters, and Coq's string_lex_lt returns False for two empty strings while Python's '<' also returns False, but the recursive structure differs. More critically, the Python orderR allows s == t (returns True), but Coq's Sorted requires the relation to hold between consecutive elements in a specific way. The main concrete mismatch: Python's string comparison '<' uses lexicographic ordering based on Unicode code points, while Coq's string_lex_lt uses nat_of_ascii. For standard ASCII characters these should match, but the definitions have subtle differences in edge cases."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": false,
+      "reason": "The Coq orderR relation allows equal elements (string_lex_le includes s = t), but the Python sorted check requires strict ordering between consecutive elements. When res has duplicate strings of the same length, Python's orderR(res[i], res[i+1]) returns True (since s <= s), but Coq's Sorted orderR requires the relation to hold between consecutive elements, which also allows equality. However, the more significant issue is that Python's string_lex_lt uses Python's built-in string comparison which is lexicographic by Unicode code points, while Coq's string_lex_lt compares by nat_of_ascii. For standard ASCII characters these should match, but the empty string comparison differs: Coq's string_lex_lt(EmptyString, EmptyString) = False, but Python's '' < '' = False, which matches. The real mismatch is that Coq's Sorted uses a specific inductive definition that may differ from checking consecutive pairs in edge cases (e.g., single-element or empty lists). Actually, Coq's Sorted for empty and singleton lists is trivially satisfied, and Python's loop also handles these correctly. The main equivalence holds for concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Counts of even-length strings are preserved, odd-length strings are excluded, and the result list is nondecreasing under the same length-then-lex order. Python\u2019s adjacency check suffices since the order is transitive, and its string comparison and parity match the Coq spec on concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Counts for even/odd strings and the orderR sorting are implemented correctly; checking adjacent pairs suffices as orderR is transitive; Python\u2019s lex order matches Coq\u2019s for ASCII strings."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Counting, even-length check, lexicographic order, and orderR are implemented to match the Coq spec on ASCII strings; adjacency-based sort check suffices due to transitivity, and quantification over all strings is effectively covered by checking elements in lst \u222a res."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 0,
+      "not_equivalent_votes": 3,
+      "majority_equivalent": false,
+      "reasons_if_not_equivalent": [
+        "The Coq orderR relation allows equal elements (via string_lex_le which includes s = t), but the Python sorted check requires strict ordering between consecutive elements. In Coq, Sorted orderR res allows consecutive equal elements, but Python's check `not orderR(res[i], res[i+1])` would pass for equal consecutive elements (since orderR returns True when s == t). However, the real issue is that Coq's Sorted is defined inductively and allows the relation to hold between consecutive elements, while Python checks orderR(res[i], res[i+1]) must be True. For equal consecutive strings, Python's orderR returns True (since string_lex_le includes equality), so this part is fine. The actual mismatch is in string_lex_lt: Coq defines it recursively on the string structure where EmptyString < any non-empty string, and for same-length strings it compares character by character. Python's `s < t` uses standard lexicographic comparison which should match. But Coq's string_lex_lt(EmptyString, EmptyString) = False while Python's '' < '' = False, so that matches. The definitions appear equivalent for concrete inputs.",
+        "The Coq orderR relation allows equal elements (via string_lex_le which includes s = t), but the Python sorted check requires strict ordering between consecutive elements. In Coq, Sorted orderR res allows consecutive equal elements, but Python's check `not orderR(res[i], res[i+1])` would pass for equal consecutive elements (since orderR returns True when s == t). However, the real issue is that Coq's string_lex_lt is defined differently from Python's string comparison - Coq uses ascii_lt based on nat_of_ascii which may differ from Python's ord() for the same characters, and Coq's string_lex_lt returns False for two empty strings while Python's '<' also returns False, but the recursive structure differs. More critically, the Python orderR allows s == t (returns True), but Coq's Sorted requires the relation to hold between consecutive elements in a specific way. The main concrete mismatch: Python's string comparison '<' uses lexicographic ordering based on Unicode code points, while Coq's string_lex_lt uses nat_of_ascii. For standard ASCII characters these should match, but the definitions have subtle differences in edge cases.",
+        "The Coq orderR relation allows equal elements (string_lex_le includes s = t), but the Python sorted check requires strict ordering between consecutive elements. When res has duplicate strings of the same length, Python's orderR(res[i], res[i+1]) returns True (since s <= s), but Coq's Sorted orderR requires the relation to hold between consecutive elements, which also allows equality. However, the more significant issue is that Python's string_lex_lt uses Python's built-in string comparison which is lexicographic by Unicode code points, while Coq's string_lex_lt compares by nat_of_ascii. For standard ASCII characters these should match, but the empty string comparison differs: Coq's string_lex_lt(EmptyString, EmptyString) = False, but Python's '' < '' = False, which matches. The real mismatch is that Coq's Sorted uses a specific inductive definition that may differ from checking consecutive pairs in edge cases (e.g., single-element or empty lists). Actually, Coq's Sorted for empty and singleton lists is trivially satisfied, and Python's loop also handles these correctly. The main equivalence holds for concrete inputs."
+      ]
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 6,
+  "overall_not_equivalent_votes": 3,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [
+    "The Coq orderR relation allows equal elements (via string_lex_le which includes s = t), but the Python sorted check requires strict ordering between consecutive elements. In Coq, Sorted orderR res allows consecutive equal elements, but Python's check `not orderR(res[i], res[i+1])` would pass for equal consecutive elements (since orderR returns True when s == t). However, the real issue is that Coq's Sorted is defined inductively and allows the relation to hold between consecutive elements, while Python checks orderR(res[i], res[i+1]) must be True. For equal consecutive strings, Python's orderR returns True (since string_lex_le includes equality), so this part is fine. The actual mismatch is in string_lex_lt: Coq defines it recursively on the string structure where EmptyString < any non-empty string, and for same-length strings it compares character by character. Python's `s < t` uses standard lexicographic comparison which should match. But Coq's string_lex_lt(EmptyString, EmptyString) = False while Python's '' < '' = False, so that matches. The definitions appear equivalent for concrete inputs.",
+    "The Coq orderR relation allows equal elements (via string_lex_le which includes s = t), but the Python sorted check requires strict ordering between consecutive elements. In Coq, Sorted orderR res allows consecutive equal elements, but Python's check `not orderR(res[i], res[i+1])` would pass for equal consecutive elements (since orderR returns True when s == t). However, the real issue is that Coq's string_lex_lt is defined differently from Python's string comparison - Coq uses ascii_lt based on nat_of_ascii which may differ from Python's ord() for the same characters, and Coq's string_lex_lt returns False for two empty strings while Python's '<' also returns False, but the recursive structure differs. More critically, the Python orderR allows s == t (returns True), but Coq's Sorted requires the relation to hold between consecutive elements in a specific way. The main concrete mismatch: Python's string comparison '<' uses lexicographic ordering based on Unicode code points, while Coq's string_lex_lt uses nat_of_ascii. For standard ASCII characters these should match, but the definitions have subtle differences in edge cases.",
+    "The Coq orderR relation allows equal elements (string_lex_le includes s = t), but the Python sorted check requires strict ordering between consecutive elements. When res has duplicate strings of the same length, Python's orderR(res[i], res[i+1]) returns True (since s <= s), but Coq's Sorted orderR requires the relation to hold between consecutive elements, which also allows equality. However, the more significant issue is that Python's string_lex_lt uses Python's built-in string comparison which is lexicographic by Unicode code points, while Coq's string_lex_lt compares by nat_of_ascii. For standard ASCII characters these should match, but the empty string comparison differs: Coq's string_lex_lt(EmptyString, EmptyString) = False, but Python's '' < '' = False, which matches. The real mismatch is that Coq's Sorted uses a specific inductive definition that may differ from checking consecutive pairs in edge cases (e.g., single-element or empty lists). Actually, Coq's Sorted for empty and singleton lists is trivially satisfied, and Python's loop also handles these correctly. The main equivalence holds for concrete inputs."
+  ],
+  "repair_round": 0,
+  "syntax_ok": true
+}

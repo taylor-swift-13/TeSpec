@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gpt-5/input/31.v",
+  "translated_py_file": "spec/gpt-5/input/31.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the divisibility check, the primality predicate using trial division up to the integer square root, and the specification matching the boolean result to the predicate."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the divisibility check, prime predicate, and specification, handling edge cases like n < 2 before calling math.isqrt to avoid errors."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq definitions for divisibility and primality testing, including the correct bounds and edge cases."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification for concrete inputs. The divides function checks divisibility (handling d=0 edge case appropriately), is_prime_pred checks if n >= 2 and no integer from 2 to sqrt(n) divides n (matching the Coq definition), and is_prime_spec returns whether b matches the primality result. The Coq spec states b=true iff is_prime_pred(n) and b=false iff not is_prime_pred(n), which is equivalent to checking b == is_prime_pred(n) for boolean b."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification for concrete inputs. The divides function checks divisibility (handling d=0 edge case appropriately), is_prime_pred checks if n >= 2 and has no divisors from 2 to sqrt(n), and is_prime_spec returns true iff b matches the primality judgment. The Coq spec's biconditional structure (b=true iff prime, b=false iff not prime) is equivalent to checking b == is_prime_pred(n) for boolean b."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification for concrete inputs. The divides function checks divisibility (handling d=0 edge case appropriately), is_prime_pred checks if n >= 2 and has no divisors from 2 to sqrt(n), and is_prime_spec returns whether the boolean b matches the primality judgment. The Coq spec's biconditional structure (b=true iff prime, b=false iff not prime) is equivalent to checking b == is_prime_pred(n) for boolean b."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python mirrors Coq: divides matches integer divisibility (including d=0), is_prime_pred checks n>=2 with no divisors up to floor(sqrt n), and is_prime_spec returns b equals that predicate, which is equivalent to the Coq biconditionals."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "For n>=2, both check no divisors i in [2..floor(sqrt(n))]; for n<2 both return false. divides(0,n) iff n=0 matches. is_prime_spec returns True exactly when b equals is_prime_pred(n), matching the Coq spec."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python functions implement the same concrete checks as the Coq specs: divides matches existence of k (including the d=0 case), is_prime_pred returns False for n<2 and otherwise checks for divisors up to floor(sqrt n), and is_prime_spec returns True exactly when b matches the primality predicate. Behavior aligns for all integer inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

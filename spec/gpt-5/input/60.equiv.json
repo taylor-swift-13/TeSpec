@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gpt-5/input/60.v",
+  "translated_py_file": "spec/gpt-5/input/60.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, using exact integer division which matches Coq's behavior since the numerator is always even."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification using integer division, which matches the exact division by 2 in Coq."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, using integer division which matches Coq's Z.div behavior, and returns the equivalent boolean judgment."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq specification. Both check if sum equals ((n + 1) * n) / 2. In Coq, Z division is integer division (truncation toward zero), and Python's // operator performs floor division. For the expression ((n + 1) * n), when n >= 0, the product is non-negative and even (since one of n or n+1 is even), so both divisions give the same result. For n < 0, the product (n+1)*n is also non-negative (both factors have the same sign or one is zero), so again both divisions agree. The concrete behavior matches for all integer inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq specification. Both check if sum equals ((n + 1) * n) / 2. In Coq, Z division is integer division (truncated toward zero), and Python's // operator performs floor division. For non-negative n (the typical use case for sum_to_n), both produce the same result since (n+1)*n is always even, making the division exact with no remainder. For negative n, there could theoretically be differences in edge cases, but the formula (n+1)*n/2 for sum to n is typically only meaningful for non-negative n, and when the division is exact (no remainder), both divisions agree."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq specification. Both compute sum as ((n + 1) * n) / 2, where Coq's `/` on Z and Python's `//` both perform integer division (truncating toward negative infinity in Coq, toward negative infinity in Python 3). For the typical use case where n >= 0, both produce identical results. The comparison `sum == ...` in Python returns a boolean matching whether the Coq Prop `sum = ...` holds."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both compute sum == ((n+1)*n)/2 over integers; since n(n+1) is always even, division by 2 is exact. Python // with positive divisor matches Coq Z.div here, so results coincide for all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both check equality to ((n+1)*n)/2 with integer division; Coq Z.div by 2 and Python //2 coincide (the product of consecutive integers is even), so results match for all integers."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both check sum equals ((n+1)*n)/2 over integers. Python // matches Coq\u2019s Z.div for positive divisor 2, and n*(n+1) is always even, so the division is exact for all n."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

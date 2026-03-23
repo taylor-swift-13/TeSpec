@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gpt-5/input/154.v",
+  "translated_py_file": "spec/gpt-5/input/154.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, checking if 'a' equals 'b', 'b' is empty, or any rotation of 'b' is a substring of 'a'."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, accurately translating the substring and rotation checks and combining them with the same logical conditions."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, accurately translating the substring and rotation checks, and properly evaluating the disjunction for the final result."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The substring function checks if sub is contained in s (matching the Coq existential definition). The rotation_of function checks if rot is a rotation of b by trying all possible split points. The cycpattern_check_spec correctly implements the biconditional: res should be true iff (a == b) or (b is empty) or (some rotation of b is a substring of a). The Python code iterates through all rotations and checks if any is a substring of a, which matches the Coq existential quantification over rotations."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The substring function checks if sub is contained in s (matching the Coq existential definition). The rotation_of function checks all rotations of b. The cycpattern_check_spec correctly returns true when res matches the expected value based on: a==b, b is empty, or some rotation of b is a substring of a. The Coq spec uses a biconditional (res=true iff condition), and the Python code computes the expected boolean and checks if res equals it, which is equivalent behavior on concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The substring function checks if sub is contained in s (matching the Coq existential definition). The rotation_of function checks all rotations of b. The cycpattern_check_spec correctly returns true when res matches the expected value based on: a==b, b is empty, or some rotation of b is a substring of a. The Coq spec uses a biconditional (res=true iff condition), and the Python checks if res equals the expected boolean, which is equivalent behavior on concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python checks substring with 'in', enumerates all rotations b[i:]+b[:i] (including empty splits), and sets expected True exactly when the Coq disjunction holds; returning res == expected matches the Coq iff."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Substring uses Python \"in\" which matches Coq definition; rotations are enumerated as yx for all splits of b; and res == expected implements the Coq iff. Edge cases like empty strings are handled consistently."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python mirrors Coq: substring uses containment, rotations enumerate all b[i:]+b[:i], and cycpattern_check_spec checks res equals the condition (a=b or b empty or some rotation of b is a substring of a). Edge cases like empty strings are handled consistently."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

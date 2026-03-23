@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/74.v",
+  "translated_py_file": "spec/human/input/74.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, calculating the sum of string lengths for both lists and returning the appropriate list based on the comparison."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification by comparing the total length of strings in both lists and returning whether the output matches the list with the smaller total length (or the first list if equal)."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the logic defined in the Coq specification, comparing the total character counts of two lists and verifying the output matches the list with the smaller or equal count."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the same logic as the Coq spec. Both compute the total character count for each list and return lst1 if its sum is less than or equal to lst2's sum, otherwise return lst2. The precondition is trivially True in both cases. The Coq spec uses a disjunction with conditions (sum lst1 <= sum lst2 /\\ output = lst1) \\/ (sum lst1 > sum lst2 /\\ output = lst2), which is logically equivalent to the Python if-else structure checking sum1 <= sum2."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the same logic as the Coq spec. Both compute the total character count for each list and return lst1 if its sum is less than or equal to lst2's sum, otherwise return lst2. The precondition is trivially True in both cases. The Python sum of lengths matches the Coq fold_left accumulation of String.length values."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the same logic as the Coq spec. Both compute the total character count for each list and return lst1 if its sum is less than or equal to lst2's sum, otherwise return lst2. The precondition is trivially True in both cases. The Coq spec uses a disjunction with conditions (sum lst1 <= sum lst2 /\\ output = lst1) \\/ (sum lst1 > sum lst2 /\\ output = lst2), which is logically equivalent to the Python if-else structure checking sum1 <= sum2."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both compute total character counts of each list and require output to be the list with fewer chars, breaking ties in favor of the first list. The Python precondition and tie behavior match the Coq spec."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both compute total character counts of each list and return lst1 if its sum is <= lst2\u2019s (tie goes to lst1), otherwise lst2; precondition is trivially true in both."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both compute total lengths of strings in each list and require output be the first list on tie, otherwise the second. Precondition matches (always true)."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

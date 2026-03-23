@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/146.v",
+  "translated_py_file": "spec/human/input/146.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq definitions, including the fuel-based most significant digit extraction, the filtering logic, and the odd digit checks."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code accurately implements the Coq specification, correctly translating the helper functions, the fuel-based most significant digit extraction, and the filtering logic."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq specification, correctly implementing the fuel-based most significant digit extraction, the odd digit checks, and the filtering logic."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq specification. The key functions match: last_digit computes abs(n % 10), msd_fuel iteratively finds the most significant digit with fuel limiting iterations, special_number_b checks n > 10 (not abs_n > 10, matching Coq's '10 <? n'), and checks both first and last digits are odd. The specialFilter_impl counts matching elements. The iterative Python msd_fuel is equivalent to the recursive Coq version. Both pre and spec functions match the Coq definitions."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq specification. The key functions match: last_digit computes abs(n % 10), msd_fuel iteratively finds the most significant digit with the same logic (loop vs recursion), special_number_b checks n > 10, odd first digit, and odd last digit. The specialFilter_impl counts matching elements. While msd_fuel uses iteration instead of recursion, the behavior is equivalent for concrete inputs. The condition (10 <? n) in Coq and (10 < n) in Python both check if n is strictly greater than 10. All concrete computations will produce the same results."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq specification. The key functions match: last_digit computes abs(n % 10), msd_fuel iteratively finds the most significant digit with fuel limiting iterations, special_number_b checks n > 10 (not abs_n > 10, matching Coq's '10 <? n'), odd first digit, and odd last digit. The specialFilter_impl counts matching elements. The while-loop in Python's msd_fuel correctly simulates the recursive Coq version. Both pre and spec functions match their Coq counterparts."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq logic: it checks n > 10 (not abs), computes most-significant and last digits from abs(n) using equivalent msd_fuel and last_digit implementations, tests both for oddness, and counts matches. Concrete behavior aligns for all integer inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both compute count of n > 10 with odd first and last digits of |n|; msd_fuel and last_digit match Coq behavior on all integers, and the filter/count equals the Coq spec."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both implementations count integers > 10 whose first and last digits (of abs value) are odd. msd_fuel behavior (using abs(n) as both fuel and value), digit/odd checks, and aggregation match Coq\u2019s definitions on all integer inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

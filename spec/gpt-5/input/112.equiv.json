@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gpt-5/input/112.v",
+  "translated_py_file": "spec/gpt-5/input/112.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the string reversal, character filtering, and palindrome checking specified by the Coq code."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the string reversal, character filtering, and palindrome checking logic defined in the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the string reversal, character filtering, and the specification logic defined in the Coq code."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. rev_string reverses a string (Python's s[::-1] is equivalent). CharIn checks character membership. Filtered computes the string with characters from c removed, which Python does with list comprehension. reverse_delete_spec checks that out equals (filtered_string, is_palindrome), matching the Coq spec's existential requirement that ss is the filtered result and b indicates whether ss equals its reverse."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. rev_string reverses a string (Python's [::-1] is equivalent). CharIn checks character membership. Filtered computes the string with characters from c removed, which Python does with list comprehension. reverse_delete_spec checks that out equals (filtered_string, is_palindrome), matching the Coq spec's existential requirement that ss is the filtered result and b indicates whether ss equals its reverse."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly computes the filtered string by removing characters present in c, checks if the result is a palindrome, and verifies the output tuple matches. The rev_string_acc function differs structurally (s[::-1] + acc instead of character-by-character accumulation) but produces the same result. The Coq spec's rev_string reverses via accumulator which is standard string reversal, matching Python's [::-1]. The Filtered relation keeps characters not in c, matching the list comprehension. The spec checks if ss equals its reverse for the boolean, which the Python code does correctly."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python builds the filtered string by removing characters present in c, preserves order, and sets the boolean to whether the result equals its reverse, matching the Coq spec and helpers on all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python reverses strings the same way, filters by removing any characters present in c while preserving order, and sets b iff the filtered string is a palindrome. The spec\u2019s ss and b are uniquely determined, so checking equality with the computed pair matches the Coq spec on all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python computes the filtered string by removing chars present in c and sets b to whether it is a palindrome, matching the Coq spec; reverse helpers also align on concrete behavior."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

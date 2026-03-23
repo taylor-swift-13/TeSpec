@@ -1,0 +1,96 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/gemini-3-pro-preview/input/95.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/gemini-3-pro-preview/input/95.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly extracts the keys, checks for emptiness, and evaluates the all_lower and all_upper conditions, matching the Coq specification exactly."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, checking if the dictionary is empty and verifying whether all keys are lowercase strings or all keys are uppercase strings."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the logic of the Coq specification, handling both the empty list case and the non-empty case with the correct quantification and logical connectives."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. For empty dictionaries, it checks res is False. For non-empty dictionaries, it checks that res equals True iff all keys are strings that are either all lowercase or all uppercase. The biconditional (res = true <-> condition) is correctly translated as checking res == expected_res where expected_res is the boolean value of (all_lower or all_upper)."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. For empty dictionaries, it returns True iff res is False. For non-empty dictionaries, it checks if all keys satisfy is_str and is_lower (or is_upper) and returns True iff res matches the expected boolean value (all_lower or all_upper). The Python predicates is_str, is_lower, and is_upper correctly correspond to the abstract Coq predicates for concrete string inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. For empty dictionaries, it checks res is False. For non-empty dictionaries, it computes all_lower (all keys are strings and lowercase) and all_upper (all keys are strings and uppercase), then checks if res equals (all_lower or all_upper). This matches the Coq biconditional 'res = true <-> (all_lower \\/ all_upper)' for concrete boolean inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Empty case requires res=False; otherwise res is True iff all keys are strings and all lowercase or all uppercase. The Python uses the same predicates and Forall logic, so it matches the Coq spec on all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Matches the spec: empty list enforces res=False; otherwise computes all-lower or all-upper over keys (requiring string keys) and checks res equals that condition. Helper predicates reflect Python\u2019s islower/isupper semantics."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "For empty input it enforces res is False; otherwise it checks res equals (all keys are strings and all lowercase) or (all strings and all uppercase). This matches the Coq spec\u2019s Forall/conjunction and biconditional behavior on concrete inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

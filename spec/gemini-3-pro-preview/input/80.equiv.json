@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/80.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/80.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification by checking if the string length is at least 3 and ensuring that every window of 3 consecutive characters contains distinct characters."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification by checking that the string length is at least 3 and that every window of 3 consecutive characters contains distinct characters."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification by checking if the string length is at least 3 and verifying that every sliding window of 3 characters contains distinct characters."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: it returns true iff res matches the expected value, where expected is true only when the string has length >= 3 and all consecutive triples have distinct characters. The Coq spec uses a biconditional (res = true <-> condition), which means res should be true exactly when the condition holds. The Python code computes this expected value and checks if res equals it, which is equivalent behavior on all concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: it returns true iff res matches the expected value, where expected is true only when the string has length >= 3 and every consecutive triple of characters has all distinct characters. The Coq spec uses a biconditional (res = true <-> condition), which means res should be true exactly when the condition holds. The Python code computes this expected value and checks if res equals it."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: it returns true iff res matches the expected value, where expected is true only when the string has length >= 3 and all consecutive triples have distinct characters. The Coq spec uses a biconditional (res = true <-> conditions), which means res should be true exactly when conditions hold and false otherwise. The Python code computes this expected value and checks if res equals it."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both enforce len(s) >= 3 and that every consecutive triple s[i], s[i+1], s[i+2] has pairwise distinct characters; for shorter strings expected is False. Python returns res == that property, matching the Coq iff condition."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "It computes expected as (len>=3 and all consecutive triples have pairwise distinct chars) and returns res==expected, matching the Coq iff condition and index range i < len-2."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python computes the same predicate: it requires len(s) >= 3 and checks each length-3 window has pairwise distinct chars, and returns res == that expectation, matching the Coq equivalence res = true <-> predicate."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

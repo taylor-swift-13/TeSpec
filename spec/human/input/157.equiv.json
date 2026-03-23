@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/157.v",
+  "translated_py_file": "spec/human/input/157.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the precondition and the specification, checking if the three sides satisfy the Pythagorean theorem."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code directly translates the Coq specifications, checking the same conditions for the pre-condition and the Pythagorean theorem for the post-condition."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the preconditions and the specification, checking if the three sides satisfy the Pythagorean theorem in any order."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the precondition (all sides positive) and the specification (res is True iff one of the three Pythagorean arrangements holds). The Coq spec uses a biconditional (res = true <-> condition), which means res should be true exactly when the condition holds and false otherwise. The Python code checks res == is_right, which is equivalent - res matches the boolean value of whether any Pythagorean arrangement is satisfied. Both will produce the same concrete results for all inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the precondition (all sides positive) and the specification (res is True iff one of the three Pythagorean arrangements holds). The Coq spec uses a biconditional (res = true <-> condition), which means res should be true exactly when the condition holds and false otherwise. The Python code checks res == is_right, which is equivalent: when is_right is True, res must be True for the spec to hold; when is_right is False, res must be False. Both implementations check the same three Pythagorean conditions."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the precondition (all sides positive) and the specification (checking if res matches whether any permutation of the Pythagorean theorem holds). The Coq spec uses a biconditional (res = true <-> condition), which means res should be true iff the condition holds, and false otherwise. The Python code checks res == is_right, which is equivalent: when is_right is True, res must be True; when is_right is False, res must be False. This matches the Coq specification's concrete behavior."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Precondition matches positivity, and the spec checks res equals the Pythagorean condition under any permutation using unbounded integers, matching Coq Z behavior."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both preconditions require all sides > 0, and the spec checks res is true exactly when any permutation satisfies the Pythagorean equality, using exact integer arithmetic. Python\u2019s logic mirrors the Coq spec on all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both preconditions require all sides > 0, and the spec checks that res is true iff any permutation satisfies the Pythagorean equality. Python integer arithmetic matches Coq Z arithmetic, so concrete outcomes align."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

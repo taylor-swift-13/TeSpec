@@ -1,0 +1,96 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/gemini-3-pro-preview/input/116.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/gemini-3-pro-preview/input/116.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq specification, using Counter for Permutation and a nested loop to check the StronglySorted property with the correct bit-count sorting criteria."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq definitions, using Counter for Permutation and nested loops to check the StronglySorted condition, while correctly counting set bits using Python's built-in bin() and string count methods."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the bit counting logic (using absolute value for negative numbers as specified in Coq) and verifies the permutation and sortedness properties defined in the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: count_set_bits counts 1-bits in the binary representation (handling negative numbers by taking absolute value, matching Coq's Zneg case which counts bits in the positive part). sort_criteria checks the same condition (fewer bits, or equal bits with x <= y). sort_array_spec checks permutation via Counter equality and StronglySorted via pairwise comparison of all i < j pairs, which is equivalent to checking the transitive closure of the sorted relation."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. count_set_bits handles Z0 (0), Zpos (positive), and Zneg (negative) by counting 1-bits in the absolute value, matching Coq's behavior. sort_criteria correctly encodes the ordering predicate. sort_array_spec checks that res is a permutation of arr (via Counter comparison) and that res is strongly sorted according to sort_criteria (by checking all pairs i < j). The StronglySorted check in Coq requires the relation to hold between each element and all elements after it, which is exactly what the nested loop checks."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: count_set_bits counts 1-bits in the binary representation (handling negative numbers by taking absolute value, matching Coq's Zneg case which counts bits in the positive part). sort_criteria checks if cx < cy or (cx == cy and x <= y), matching the Coq Prop. sort_array_spec checks that res is a permutation of arr (via Counter comparison) and that res is strongly sorted by sort_criteria (checking all pairs i < j). The Counter comparison correctly captures Permutation for concrete lists, and the nested loop correctly checks StronglySorted for a transitive relation."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python counts set bits using abs(z), matching Coq\u2019s handling of Zpos/Zneg, uses Counter equality to match Permutation, and enforces StronglySorted by checking the pairwise sort_criteria across all i<j. Comparator semantics (lexicographic on bit count then value) align."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Counts set bits as Hamming weight of |z|; tie-break x<=y matches; pairwise i<j check matches StronglySorted; Counter enforces multiset equality (Permutation)."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Counts set bits on absolute value, uses same lexicographic order by bit-count then value, and checks multiset equality plus pairwise ordering matching StronglySorted; thus behavior aligns on all inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 1,
+  "syntax_ok": true
+}

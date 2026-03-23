@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gpt-4o/input/12.v",
+  "translated_py_file": "spec/gpt-4o/input/12.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly checks the conditions of the Coq specification, including the uniqueness of the maximum length string and the correct handling of empty lists."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, checking for an empty list and ensuring that there is a unique string of maximum length when the list is non-empty."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, checking for an empty list and ensuring that if the list is non-empty, there is a unique string of maximum length which matches the result."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: when strings is empty, it checks result is None; when non-empty, it computes the max length, checks that all strings with that max length are identical (matching the forall uniqueness condition), and verifies result equals that unique string. The behavior matches on all concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: when strings is empty, it checks result is None; when non-empty, it computes the max length, checks that all strings with that max length are identical (matching the forall uniqueness condition), and verifies result equals that unique string. This matches the Coq spec's behavior on all concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: when the list is empty, it checks result is None; when non-empty, it computes the maximum length, checks that all strings with that maximum length are identical (matching the universal quantifier condition), and verifies that result equals that unique string. This matches the concrete behavior of the Coq specification for all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Matches: returns True iff result is None for empty list, and for non-empty lists iff all max-length elements are the same string and result equals that string; this aligns with the Coq spec\u2019s existence and uniqueness conditions."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Handles empty vs non-empty cases correctly, computes max length, enforces that all max-length elements are equal (allowing duplicates), and requires result to be that unique value (None vs string for option)."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Matches Coq spec: returns True iff (1) empty list implies result is None, and (2) for non-empty lists, result equals the unique string value achieving the maximum length (allowing duplicates of the same value), otherwise False."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

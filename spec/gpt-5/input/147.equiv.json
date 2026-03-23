@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gpt-5/input/147.v",
+  "translated_py_file": "spec/gpt-5/input/147.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code implements the exact same arithmetic logic as the Coq specification, correctly translating Z.div and Z.modulo to Python's // and % operators."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code directly translates the Coq specification, using equivalent arithmetic operations and conditional logic."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, using equivalent arithmetic operations and logic."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq spec. The condition `n <= 2` matches `Z.leb n 2` (which is true when n <= 2). The arithmetic operations for one_cnt, zero_cnt, and the final expected value use Python's floor division `//` which matches Coq's `Z.div` for the non-negative values that arise in this context. The modulo operation `%` matches `Z.modulo`. The function returns whether ans equals the expected value, which corresponds to the Coq Prop stating ans equals the computed expression."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq spec. The condition `n <= 2` matches `Z.leb n 2` (which is true when n <= 2). The arithmetic operations (integer division with `//`, modulo with `%`) match Coq's `Z.div` and `Z.modulo`. The formulas for `one_cnt`, `zero_cnt`, and `expected` are identical. The function returns whether `ans` equals the expected value, which corresponds to the Coq Prop equality."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq spec. The condition `n <= 2` matches `Z.leb n 2` (which is true when n <= 2). The arithmetic operations for one_cnt, zero_cnt, and the final expected value use Python's floor division `//` which matches Coq's `Z.div` for non-negative dividends (which is the case here for valid inputs). The modulo operation `%` matches `Z.modulo`. The function returns whether ans equals the expected value, matching the Coq equality proposition."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Conditions and arithmetic match: the n<=2 branch returns 0 in both; for n>2, (n-2) is nonnegative so // and % match Z.div and Z.modulo, and // with positive 6 matches Z.div. Equality check aligns with the Coq spec."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq logic: same branch on n <= 2, same computations with floor division and modulo by positive numbers (matching Z.div and Z.modulo), and checks ans equals the computed value."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Operations match: for n <= 2 both yield 0; for n > 2, integer division and modulo with positive divisor align, and combination formulas use exact integer division. Python ints match Coq Z. No edge-case mismatch."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

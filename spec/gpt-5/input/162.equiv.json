@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gpt-5/input/162.v",
+  "translated_py_file": "spec/gpt-5/input/162.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the logic of the Coq specification, handling the empty string case (returning None) and the non-empty case (returning the MD5 hash) consistently with the Coq Prop."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification by returning True if text is empty and res is None, or if text is not empty and res matches the MD5 hash of the text."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, returning None for empty strings and the MD5 hex digest for non-empty strings."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: when text is empty, it checks that res is None; when text is non-empty, it checks that res equals the MD5 hex digest of the UTF-8 encoded text. The md5_hex_utf8 function is a concrete implementation of the Coq parameter, and the spec function correctly captures the disjunction in the Coq definition."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: when text is empty, it checks that res is None; when text is non-empty, it checks that res equals the MD5 hex digest of the UTF-8 encoded text. The md5_hex_utf8 function is a concrete implementation of the Coq parameter, and the spec function correctly captures the disjunction in the Coq definition."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: when text is empty, it checks that res is None; when text is non-empty, it checks that res equals the MD5 hex digest of the UTF-8 encoded text. The md5_hex_utf8 function is a concrete implementation of the Coq parameter, and the spec function correctly captures the disjunction in the Coq definition."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "For empty text it requires res=None; otherwise it requires res to equal the md5 hex of the UTF-8 encoding. Using None for None and a raw string for Some value matches the Coq option behavior on all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both require res to be None when text is empty and to match the UTF-8 MD5 hex of text otherwise; Python encodes Some s as s and None as None, aligning with the Coq option semantics on concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Matches the two-case spec: returns True iff res is None for empty text, and iff res equals md5_hex_utf8(text) for non-empty. Using None vs bare string corresponds to Coq\u2019s option (None/Some) representation."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/5.v",
+  "translated_py_file": "spec/human/input/5.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, checking the length and elements of the output list for both empty and non-empty inputs."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, checking the empty list case and verifying the length and interleaved elements for non-empty lists."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, checking the empty list case and verifying the length and elements of the output list for non-empty inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: for empty input it returns output == [], for non-empty input it checks the output length is 2*n-1, and verifies that even indices contain corresponding input elements while odd indices contain the delimiter d. The Coq spec uses nth_error which returns Some/None, but the Python code directly accesses elements after verifying the length constraint, which produces equivalent concrete behavior."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: for empty input it returns output == [], for non-empty input it checks length is 2*n-1, even indices map to input[i//2], and odd indices equal d. The Coq spec's condition (1 <= n) is implicitly satisfied when input is non-empty, which the Python handles by the if-else structure."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: for empty input it returns output == [], for non-empty input it checks length is 2*n-1, even indices map to input[i//2], and odd indices equal d. The Coq spec's condition (1 <= n) is implicitly satisfied when input is non-empty, which the Python handles by the if-else structure."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "For empty input, both require output to be empty. For non-empty input, Python enforces length 2*n-1 and places input elements at even indices and delimiter d at odd indices, matching the Coq spec\u2019s conditions for all indices."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python enforces empty-input -> empty-output, correct output length, and alternates original elements at even indices with delimiter at odd indices, matching the Coq spec for all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Matches: empty input forces empty output; otherwise enforces length 2n-1 and for each index i, even positions copy input[i//2] and odd positions equal d, aligning with Coq\u2019s nth_error parity conditions."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

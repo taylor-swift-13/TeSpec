@@ -1,0 +1,118 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/claude-opus-4-5-20251101/input/50.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/claude-opus-4-5-20251101/input/50.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": false,
+      "reason": "In Coq, encode_shift is not injective over all ASCII characters (e.g., 'a' and '{' both encode to 'f'), making the forall condition in decode_shift_spec false for any non-empty string. The Python implementation restricts the check to lowercase letters, incorrectly returning True."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": false,
+      "reason": "The Python implementation of `decode_shift_spec` restricts the `forall` check to lowercase letters ('a'-'z'). However, the Coq specification quantifies over all strings (`forall original : string`). Because `encode_shift_char` uses modulo 26, it is not injective over all ASCII characters (e.g., both 'A' and 'u' encode to 'z'). Thus, in Coq, `decode_shift_spec` is False for any non-empty string, whereas the Python code will return True for valid lowercase strings."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": false,
+      "reason": "The Coq specification quantifies over all possible strings, making the second conjunct logically False for any non-empty string (e.g., encode_shift('{') == 'f', but 'a' != '{'). The Python implementation restricts the check to lowercase letters ('a'-'z'), returning True for valid lowercase strings, which results in a mismatch in the evaluated judgment."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": false,
+      "reason": "The Python decode_shift_spec adds extra checks not in the Coq spec. The Coq spec is a Prop that simply states result = decode_shift s AND a universal property about encode_shift being invertible. The Python version adds a length check (len(s) != len(result)) which would return False even when result = decode_shift(s) is true (since decode_shift preserves length, this specific check is actually always satisfied when the first condition passes). More importantly, the Python version iterates through characters checking if any lowercase letter encodes to s_char and differs from r_char - this is an approximation of the universal quantifier that could give different results. For example, if s contains non-lowercase characters, the Coq decode_shift_char would still compute a result (possibly wrapping around due to mod 26), but the Python check only considers lowercase originals. The core issue is that the Coq spec's second conjunct is a logical implication that's always true when result = decode_shift(s) (by the correctness of the cipher), but the Python attempts to verify it empirically in a way that could fail for edge cases with non-lowercase input characters."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": false,
+      "reason": "The Python decode_shift_spec adds extra checks not in the Coq spec. The Coq spec is a Prop that simply states result = decode_shift s AND a universal property about encode_shift. The Python version adds a length check (len(s) != len(result)) which would return False even when result = decode_shift(s) is true (since decode_shift preserves length, this specific check is actually always satisfied when the first condition passes). More importantly, the Python version iterates through characters checking encode_shift_char against lowercase letters only, which could return False in cases where the Coq Prop would be satisfied. For example, if s contains non-lowercase characters, the Coq universal quantifier is vacuously true for those positions (no original lowercase letter encodes to them), but the Python code's logic handles this differently. The fundamental issue is that the Coq spec's second conjunct is a universal statement that Python cannot fully verify, and the Python approximation may give different judgments."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": false,
+      "reason": "The Python decode_shift_spec adds extra checks not in the Coq spec. The Coq spec is a Prop that simply states result = decode_shift s AND a universal property about encode_shift being invertible. The Python version adds a length check (len(s) != len(result)) that would return False even when result = decode_shift(s) is true (which always has the same length). More importantly, the Python version iterates over lowercase letters 'a'-'z' checking if any original character encodes to s_char but doesn't equal r_char - this is a different check than the Coq universal quantifier over all strings. For concrete inputs where s contains non-lowercase characters, the Coq spec's second conjunct would be vacuously true for those positions (no original encodes to them via the intended domain), but the Python code's loop logic differs. The fundamental mismatch is that Python tries to verify the universal property by enumeration over a restricted domain, which doesn't match Coq's universal quantification over all strings."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": false,
+      "reason": "Python\u2019s decode_shift_spec only checks the implication for lowercase originals ('a'-'z'), while the Coq spec quantifies over all ascii strings. Since encode_shift is many-to-one modulo 26, there exist non-lowercase originals (e.g., '{' for s='f') that map to the same s but are not recovered by decode_shift. Coq\u2019s spec is false in such cases, but the Python function returns True."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": false,
+      "reason": "Python\u2019s decode_shift_spec only considers lowercase originals, whereas the Coq spec quantifies over all ASCII. For all-lowercase s, Coq\u2019s spec is false (many different originals encode to s), but the Python version returns True when result == decode_shift(s)."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": false,
+      "reason": "encode/decode functions align, but the Python decode_shift_spec only checks lowercase preimages and returns True for nonempty inputs, whereas the Coq spec quantifies over all ascii originals; since encode_shift is many-to-one outside lowercase, the Coq spec is false for any nonempty s, causing a concrete mismatch."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 0,
+      "not_equivalent_votes": 3,
+      "majority_equivalent": false,
+      "unanimous_equivalent": false,
+      "reasons_if_not_equivalent": [
+        "In Coq, encode_shift is not injective over all ASCII characters (e.g., 'a' and '{' both encode to 'f'), making the forall condition in decode_shift_spec false for any non-empty string. The Python implementation restricts the check to lowercase letters, incorrectly returning True.",
+        "The Python implementation of `decode_shift_spec` restricts the `forall` check to lowercase letters ('a'-'z'). However, the Coq specification quantifies over all strings (`forall original : string`). Because `encode_shift_char` uses modulo 26, it is not injective over all ASCII characters (e.g., both 'A' and 'u' encode to 'z'). Thus, in Coq, `decode_shift_spec` is False for any non-empty string, whereas the Python code will return True for valid lowercase strings.",
+        "The Coq specification quantifies over all possible strings, making the second conjunct logically False for any non-empty string (e.g., encode_shift('{') == 'f', but 'a' != '{'). The Python implementation restricts the check to lowercase letters ('a'-'z'), returning True for valid lowercase strings, which results in a mismatch in the evaluated judgment."
+      ]
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 0,
+      "not_equivalent_votes": 3,
+      "majority_equivalent": false,
+      "unanimous_equivalent": false,
+      "reasons_if_not_equivalent": [
+        "The Python decode_shift_spec adds extra checks not in the Coq spec. The Coq spec is a Prop that simply states result = decode_shift s AND a universal property about encode_shift being invertible. The Python version adds a length check (len(s) != len(result)) which would return False even when result = decode_shift(s) is true (since decode_shift preserves length, this specific check is actually always satisfied when the first condition passes). More importantly, the Python version iterates through characters checking if any lowercase letter encodes to s_char and differs from r_char - this is an approximation of the universal quantifier that could give different results. For example, if s contains non-lowercase characters, the Coq decode_shift_char would still compute a result (possibly wrapping around due to mod 26), but the Python check only considers lowercase originals. The core issue is that the Coq spec's second conjunct is a logical implication that's always true when result = decode_shift(s) (by the correctness of the cipher), but the Python attempts to verify it empirically in a way that could fail for edge cases with non-lowercase input characters.",
+        "The Python decode_shift_spec adds extra checks not in the Coq spec. The Coq spec is a Prop that simply states result = decode_shift s AND a universal property about encode_shift. The Python version adds a length check (len(s) != len(result)) which would return False even when result = decode_shift(s) is true (since decode_shift preserves length, this specific check is actually always satisfied when the first condition passes). More importantly, the Python version iterates through characters checking encode_shift_char against lowercase letters only, which could return False in cases where the Coq Prop would be satisfied. For example, if s contains non-lowercase characters, the Coq universal quantifier is vacuously true for those positions (no original lowercase letter encodes to them), but the Python code's logic handles this differently. The fundamental issue is that the Coq spec's second conjunct is a universal statement that Python cannot fully verify, and the Python approximation may give different judgments.",
+        "The Python decode_shift_spec adds extra checks not in the Coq spec. The Coq spec is a Prop that simply states result = decode_shift s AND a universal property about encode_shift being invertible. The Python version adds a length check (len(s) != len(result)) that would return False even when result = decode_shift(s) is true (which always has the same length). More importantly, the Python version iterates over lowercase letters 'a'-'z' checking if any original character encodes to s_char but doesn't equal r_char - this is a different check than the Coq universal quantifier over all strings. For concrete inputs where s contains non-lowercase characters, the Coq spec's second conjunct would be vacuously true for those positions (no original encodes to them via the intended domain), but the Python code's loop logic differs. The fundamental mismatch is that Python tries to verify the universal property by enumeration over a restricted domain, which doesn't match Coq's universal quantification over all strings."
+      ]
+    },
+    "gpt-5": {
+      "equivalent_votes": 0,
+      "not_equivalent_votes": 3,
+      "majority_equivalent": false,
+      "unanimous_equivalent": false,
+      "reasons_if_not_equivalent": [
+        "Python\u2019s decode_shift_spec only checks the implication for lowercase originals ('a'-'z'), while the Coq spec quantifies over all ascii strings. Since encode_shift is many-to-one modulo 26, there exist non-lowercase originals (e.g., '{' for s='f') that map to the same s but are not recovered by decode_shift. Coq\u2019s spec is false in such cases, but the Python function returns True.",
+        "Python\u2019s decode_shift_spec only considers lowercase originals, whereas the Coq spec quantifies over all ASCII. For all-lowercase s, Coq\u2019s spec is false (many different originals encode to s), but the Python version returns True when result == decode_shift(s).",
+        "encode/decode functions align, but the Python decode_shift_spec only checks lowercase preimages and returns True for nonempty inputs, whereas the Coq spec quantifies over all ascii originals; since encode_shift is many-to-one outside lowercase, the Coq spec is false for any nonempty s, causing a concrete mismatch."
+      ]
+    }
+  },
+  "overall_equivalent_votes": 0,
+  "overall_not_equivalent_votes": 9,
+  "overall_majority_equivalent": false,
+  "overall_unanimous_equivalent": false,
+  "non_equivalence_reasons": [
+    "In Coq, encode_shift is not injective over all ASCII characters (e.g., 'a' and '{' both encode to 'f'), making the forall condition in decode_shift_spec false for any non-empty string. The Python implementation restricts the check to lowercase letters, incorrectly returning True.",
+    "The Python implementation of `decode_shift_spec` restricts the `forall` check to lowercase letters ('a'-'z'). However, the Coq specification quantifies over all strings (`forall original : string`). Because `encode_shift_char` uses modulo 26, it is not injective over all ASCII characters (e.g., both 'A' and 'u' encode to 'z'). Thus, in Coq, `decode_shift_spec` is False for any non-empty string, whereas the Python code will return True for valid lowercase strings.",
+    "The Coq specification quantifies over all possible strings, making the second conjunct logically False for any non-empty string (e.g., encode_shift('{') == 'f', but 'a' != '{'). The Python implementation restricts the check to lowercase letters ('a'-'z'), returning True for valid lowercase strings, which results in a mismatch in the evaluated judgment.",
+    "The Python decode_shift_spec adds extra checks not in the Coq spec. The Coq spec is a Prop that simply states result = decode_shift s AND a universal property about encode_shift being invertible. The Python version adds a length check (len(s) != len(result)) which would return False even when result = decode_shift(s) is true (since decode_shift preserves length, this specific check is actually always satisfied when the first condition passes). More importantly, the Python version iterates through characters checking if any lowercase letter encodes to s_char and differs from r_char - this is an approximation of the universal quantifier that could give different results. For example, if s contains non-lowercase characters, the Coq decode_shift_char would still compute a result (possibly wrapping around due to mod 26), but the Python check only considers lowercase originals. The core issue is that the Coq spec's second conjunct is a logical implication that's always true when result = decode_shift(s) (by the correctness of the cipher), but the Python attempts to verify it empirically in a way that could fail for edge cases with non-lowercase input characters.",
+    "The Python decode_shift_spec adds extra checks not in the Coq spec. The Coq spec is a Prop that simply states result = decode_shift s AND a universal property about encode_shift. The Python version adds a length check (len(s) != len(result)) which would return False even when result = decode_shift(s) is true (since decode_shift preserves length, this specific check is actually always satisfied when the first condition passes). More importantly, the Python version iterates through characters checking encode_shift_char against lowercase letters only, which could return False in cases where the Coq Prop would be satisfied. For example, if s contains non-lowercase characters, the Coq universal quantifier is vacuously true for those positions (no original lowercase letter encodes to them), but the Python code's logic handles this differently. The fundamental issue is that the Coq spec's second conjunct is a universal statement that Python cannot fully verify, and the Python approximation may give different judgments.",
+    "The Python decode_shift_spec adds extra checks not in the Coq spec. The Coq spec is a Prop that simply states result = decode_shift s AND a universal property about encode_shift being invertible. The Python version adds a length check (len(s) != len(result)) that would return False even when result = decode_shift(s) is true (which always has the same length). More importantly, the Python version iterates over lowercase letters 'a'-'z' checking if any original character encodes to s_char but doesn't equal r_char - this is a different check than the Coq universal quantifier over all strings. For concrete inputs where s contains non-lowercase characters, the Coq spec's second conjunct would be vacuously true for those positions (no original encodes to them via the intended domain), but the Python code's loop logic differs. The fundamental mismatch is that Python tries to verify the universal property by enumeration over a restricted domain, which doesn't match Coq's universal quantification over all strings.",
+    "Python\u2019s decode_shift_spec only checks the implication for lowercase originals ('a'-'z'), while the Coq spec quantifies over all ascii strings. Since encode_shift is many-to-one modulo 26, there exist non-lowercase originals (e.g., '{' for s='f') that map to the same s but are not recovered by decode_shift. Coq\u2019s spec is false in such cases, but the Python function returns True.",
+    "Python\u2019s decode_shift_spec only considers lowercase originals, whereas the Coq spec quantifies over all ASCII. For all-lowercase s, Coq\u2019s spec is false (many different originals encode to s), but the Python version returns True when result == decode_shift(s).",
+    "encode/decode functions align, but the Python decode_shift_spec only checks lowercase preimages and returns True for nonempty inputs, whereas the Coq spec quantifies over all ascii originals; since encode_shift is many-to-one outside lowercase, the Coq spec is false for any nonempty s, causing a concrete mismatch."
+  ],
+  "repair_round": 10,
+  "syntax_ok": true
+}

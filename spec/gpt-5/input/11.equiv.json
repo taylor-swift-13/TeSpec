@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gpt-5/input/11.v",
+  "translated_py_file": "spec/gpt-5/input/11.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, accurately translating the string prefix XOR logic, character conversions, and length constraints."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code accurately implements the Coq specifications, correctly handling the string lengths, character-by-character XOR logic, and invalid character cases."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, accurately translating the string prefix XOR logic and character conversions."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The Coq string_xor_prefix recursively checks that: (1) a and r have the same length (both empty or both non-empty together), (2) b has at least as many characters as a (exists cb b' such that b = String cb b'), and (3) each character pair XORs correctly. The Python version checks len(a) == len(r), len(b) >= len(a), and iterates through verifying xor_ascii(a[i], b[i]) == r[i]. Both return the same concrete boolean/truth value for all valid binary string inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The Coq string_xor_prefix recursively checks that: (1) a and r have the same length (both empty or both non-empty together), (2) b has at least as many characters as a (existentially quantified cb, b' means b must have a character at each position), and (3) each character in r equals the XOR of corresponding characters in a and b. The Python implementation checks these same conditions: len(a) == len(r), len(b) >= len(a), and xor_ascii(a[i], b[i]) == r[i] for all positions. The helper functions ascii_of_bool, bool_of_ascii, and xor_ascii also match their Coq counterparts for concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The Coq `string_xor_prefix` recursively checks that for each character position, the XOR of corresponding characters from `a` and `b` equals the character in `r`, requiring `a` and `r` to have the same length and `b` to be at least as long as `a`. The Python implementation checks the same conditions: `len(a) == len(r)`, `len(b) >= len(a)`, and for each index `i`, `xor_ascii(a[i], b[i]) == r[i]`. The helper functions `ascii_of_bool`, `bool_of_ascii`, and `xor_ascii` behave identically in both versions for valid binary string characters ('0' and '1')."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq spec: it requires a and r to have equal length, allows b to be at least that long, and checks each prefix character so that r[i] is the XOR of a[i] and b[i] with '0'/'1' mapping. Non-binary chars cause failure in both. Extra trailing chars in b are allowed in both. Thus concrete behavior matches."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python mirrors Coq: it maps only '0'/'1' to booleans, XORs them, and fails otherwise; string_xor_prefix enforces |a|=|r|, |b|>=|a|, and per-position XOR equality, with the empty a/r case returning True regardless of b. This matches the Coq existential prefix spec on all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python enforces len(a)=len(r), len(b)>=len(a), and for each position computes XOR only for '0'/'1' chars, failing otherwise\u2014matching the Coq prefix relation and xor_ascii behavior."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

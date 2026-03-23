@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gpt-5/input/122.v",
+  "translated_py_file": "spec/gpt-5/input/122.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the bounds checks and computes the sum of elements in the first k elements that have at most two digits, matching the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq specification, checking the length constraints and computing the sum of the first k elements that have at most two digits."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the length constraints, the slicing (firstn), the filtering condition, and the summation logic defined in the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: at_most_two_digitsb checks if absolute value is <= 99, and add_elements_spec checks the length constraints (1 <= len(arr) <= 100, 1 <= k <= len(arr)), then computes the sum of elements in arr[:k] that pass the two-digit filter. The Coq fold_right Z.add 0 on a filtered list equals Python's sum of filtered elements. Both return the same concrete results."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: at_most_two_digitsb checks if absolute value is <= 99, and add_elements_spec verifies the preconditions (1 <= len(arr) <= 100, 1 <= k <= len(arr)) and checks that res equals the sum of elements in arr[:k] that have at most two digits. The fold_right Z.add 0 in Coq is equivalent to Python's sum(), and firstn k arr is equivalent to arr[:k]. The filter and boolean check are implemented identically."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: at_most_two_digitsb checks if abs(z) <= 99, and add_elements_spec checks the length constraints (1 <= len(arr) <= 100, 1 <= k <= len(arr)), then computes the sum of elements in arr[:k] that satisfy at_most_two_digitsb, returning whether res equals this sum. The Coq fold_right Z.add 0 on a filtered list produces the same sum as Python's sum() on the same filtered elements."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both enforce 1 <= len(arr) <= 100 and 1 <= k <= len(arr), then compute res as the sum of elements among the first k with abs(x) <= 99. Python slicing and sum match Coq\u2019s firstn, filter, and fold_right with Z.add."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Checks array and k bounds identically and computes res as the sum of the first k elements whose absolute value is <= 99; matches Coq\u2019s filter + firstn + fold_right semantics."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Same preconditions on arr length and k, same filter (|z| <= 99) over the first k elements, and same summation; Python returns True exactly when the Coq Prop holds."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

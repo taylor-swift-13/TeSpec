@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/155.v",
+  "translated_py_file": "spec/human/input/155.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code faithfully implements the logic defined in the Coq specification. Both implementations extract digits using the absolute value and integer arithmetic in the same way, and both handle the edge case of 0 by producing an empty list of digits (resulting in a count of (0, 0))."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq logic, including the fuel-based digit extraction and the accumulator-based even/odd counting, preserving the exact behavior for all concrete inputs."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq logic, including the fuel-based digit extraction and the accumulator-based counting of even and odd digits."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the same logic as the Coq code. Both extract digits from the absolute value of the number, count even and odd digits, and return the same tuple. The count_digits_acc iterates through digits checking evenness, to_digits_fuel extracts digits with sufficient fuel, and even_odd_count_impl combines them identically. The Python uses iterative loops instead of recursion but produces the same results for all concrete integer inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the same logic as the Coq code. Both compute the absolute value of the input, extract digits by repeatedly taking mod 10 and dividing by 10, and count even/odd digits. The count_digits_acc function iterates through digits and increments even/odd counters identically. The to_digits_fuel function uses the same fuel-based approach with abs(n) and the same termination condition (p == 0). The spec simply checks equality with the implementation result in both cases."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the same logic as the Coq code. count_digits_acc iterates through digits and counts even/odd digits identically. to_digits_fuel extracts digits from the absolute value of n, and even_odd_count_impl combines them with the same fuel calculation. The only minor difference is that Python uses iterative loops instead of recursion, but the concrete results are the same for all integer inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python mirrors Coq: digits are from abs(n) with sufficient fuel and stop when p==0; counts even/odd digits using the same parity logic. Edge cases like n=0 and negatives match. Pre/spec align."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python mirrors Coq: builds digits from abs(num) with ample fuel, stops at zero, counts even vs odd via modulo parity, and returns the same (even, odd) tuple; zero yields (0,0)."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both compute digits of abs(num) with ample fuel, stop when reaching 0, and count even vs odd digits identically (including returning (0,0) for 0). Pre and spec match."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

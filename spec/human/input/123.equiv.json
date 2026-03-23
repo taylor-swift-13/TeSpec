@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/123.v",
+  "translated_py_file": "spec/human/input/123.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Collatz sequence generation, the collatz_list predicate, and the problem_123_spec by computing the sequence, filtering odd numbers, and sorting them, which matches the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Collatz sequence generation, filtering of odd numbers, and sorting, which exactly matches the Coq specification's requirements of permutation and sortedness."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Collatz sequence generation, filtering of odd numbers, and sorting, which exactly matches the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. For positive n, it generates the Collatz sequence until reaching 1, filters for odd numbers, sorts them, and checks if result matches. The Coq spec requires result to be a permutation of the filtered odds AND sorted in ascending order, which together uniquely determine the sorted list of odds. The Python code checks result == sorted(odds), which is equivalent. The precondition check (n > 0) is handled consistently."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both implementations compute the Collatz sequence starting from n until reaching 1, filter out the odd numbers, and check that the result is a sorted list of those odd numbers. The Python spec directly computes the expected sorted odd numbers and checks equality, which is equivalent to the Coq spec's requirement that result is a permutation of the filtered odds and is sorted (a sorted list that is a permutation of another list equals that list when sorted). The collatz_aux and collatz_list helpers match the Coq definitions for concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. For positive n, it generates the Collatz sequence until reaching 1, filters for odd numbers, sorts them, and checks if result matches. The Coq spec requires result to be a permutation of the filtered odds AND sorted in ascending order - which means result must equal the sorted list of odds. The Python code checks exactly this with `result == expected` where expected is `sorted(odds)`. For n <= 0, Python returns False which aligns with the precondition being violated (no valid collatz_list exists for non-positive n since the sequence behavior is undefined/doesn't reach 1 properly)."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both compute the same Collatz sequence ending at 1; collatz_aux and collatz_list match (fuel=len(l) works), preconditions align (n>0), and the Coq spec\u2019s permutation+sorted requirement is exactly equality to the sorted odd elements, which the Python enforces."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python collatz_aux matches Coq\u2019s fuelled generator with early stop at 1; collatz_list requires ending in 1 and equals Coq\u2019s existential condition; precondition n>0 matches; and the spec\u2019s result == sorted(odds) is equivalent to Coq\u2019s Permutation(filter odd) plus Sorted. For n<=0 both yield false. Thus concrete behaviors align."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python collatz_aux and collatz_list match the Coq versions (including stopping at 1). For n>0, problem_123_spec returns True exactly when result is the sorted list of odd elements from the unique Collatz sequence ending in 1, which matches Coq\u2019s Permutation+Sorted condition. For n<=0 both are false."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

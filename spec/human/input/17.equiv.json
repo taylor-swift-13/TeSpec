@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/17.v",
+  "translated_py_file": "spec/human/input/17.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq logic, using a loop for string splitting that correctly mirrors the recursive Coq implementation and faithfully reproducing the parsing and filtering logic."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code accurately implements the string splitting and note parsing logic defined in the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the string splitting and note parsing logic defined in the Coq specification, producing the same concrete results."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. SplitOnSpaces splits on spaces (handling multiple/leading/trailing spaces), parse_note maps 'o'->4, 'o|'->2, '.|'->1, and None otherwise, parse_music_impl_aux filters out None results, and the spec checks equality with parse_music_impl. The Python iteration-based approach produces the same results as the Coq recursive approach for all concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. SplitOnSpaces splits on spaces (handling multiple/leading/trailing spaces), parse_note maps 'o'->4, 'o|'->2, '.|'->1, and None otherwise, parse_music_impl_aux filters out None results, and the spec checks equality with parse_music_impl. The Python implementation handles the reversed current_group correctly by reversing it at the start and then appending normally, which produces the same results as the Coq version that prepends and reverses at the end."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. SplitOnSpaces splits on spaces (handling multiple/leading/trailing spaces), parse_note maps 'o'->4, 'o|'->2, '.|'->1, and None otherwise, parse_music_impl_aux filters out None results, and the spec checks equality with parse_music_impl. The Python implementation handles the reversed current_group correctly by reversing it at the start and then appending normally, which produces the same results as the Coq version that prepends and reverses at the end."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python mirrors Coq: splits on spaces skipping empties, maps notes o->4, o|->2, .|->1, ignores others, and the spec checks equality to parse_music_impl. Concrete outputs match for all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq logic: it splits on single space characters ignoring empty tokens, maps notes o/o|/.| to 4/2/1, skips unknown tokens, and the spec checks equality with the impl. Concrete behavior matches on all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python replicates Coq\u2019s space-splitting (ignores multiple/leading/trailing spaces), note mapping (o\u21924, o|\u21922, .|\u21921), and filtering of unknown notes. The spec/output equality is the same."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/15.v",
+  "translated_py_file": "spec/human/input/15.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the string sequence generation, matching the Coq specification for all concrete inputs."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the string sequence generation, matching the Coq specification's logic of producing space-separated numbers from 0 to n."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, generating a space-separated string of numbers from 0 to n inclusive."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both implementations generate a space-delimited string of numbers from 0 to n inclusive. The Coq code uses seq_string which recursively builds the string from start to start+limit, and the Python code uses range(start, start+limit+1) which produces the same sequence. For string_sequence_impl(n), both call seq_string(0, n) producing '0 1 2 ... n'. The string_of_nat functions both convert natural numbers to their decimal string representation. The pre and spec functions match in behavior."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both implementations generate a space-delimited string of numbers from 0 to n inclusive. The Coq code uses seq_string which recursively builds the string from start to start+limit, and the Python code uses range(start, start+limit+1) which produces the same sequence. For string_sequence_impl(n), both call seq_string(0, n) producing '0 1 2 ... n'. The string_of_nat functions both convert natural numbers to their decimal string representation. The pre and spec functions match in behavior."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both implementations generate a space-delimited string of numbers from 0 to n inclusive. The Coq seq_string recursively builds the string from start to start+limit, and the Python seq_string uses range(start, start+limit+1) which produces the same sequence. For example, string_sequence(5) produces '0 1 2 3 4 5' in both cases. The pre-condition is trivially True in both, and the spec checks equality with the implementation result."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "For all natural n, both implementations produce a space-separated list of decimal numerals from 0 to n inclusive. Python\u2019s str(n) matches Coq\u2019s string_of_nat on naturals, and the join/range logic matches the Coq recursion. Pre/spec alignment holds for nat inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "For all natural n, Python produces the same space-separated sequence 0..n as Coq (string_of_nat via str and seq_string via join). Spec and pre align."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "For all natural n, Python str(n) matches Coq\u2019s string_of_nat and seq_string builds the inclusive range with single spaces; string_sequence_impl returns the same '0 1 ... n' string."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

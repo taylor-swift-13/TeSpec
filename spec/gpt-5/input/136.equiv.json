@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gpt-5/input/136.v",
+  "translated_py_file": "spec/gpt-5/input/136.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly computes the expected largest negative and smallest positive integers (or None if they don't exist) and compares them to the given inputs, matching the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly computes the largest negative and smallest positive integers from the list and compares them to the given inputs, matching the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly computes the largest negative and smallest positive integers (or None if they don't exist) and compares them to the given inputs, matching the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Coq spec defines a as None when no negatives exist, or Some m where m is the largest negative (max of negatives). Similarly, b is None when no positives exist, or Some p where p is the smallest positive (min of positives). The Python code computes exactly these values: max of negatives for a, min of positives for b, with None when the respective lists are empty. The concrete behavior matches."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Coq spec says a is None iff there are no negatives, otherwise a is the largest negative (max of negatives). Similarly, b is None iff there are no positives, otherwise b is the smallest positive (min of positives). The Python code computes exactly this: expected_a = None if no negatives else max(negatives), expected_b = None if no positives else min(positives), and returns whether a and b match these expected values."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Coq spec defines a as None when no negatives exist, otherwise the largest negative (max of negatives satisfying n <= m for all negatives n). Similarly, b is None when no positives exist, otherwise the smallest positive (min of positives satisfying p <= n for all positives n). The Python code computes exactly this: expected_a = None if no negatives else max(negatives), and expected_b = None if no positives else min(positives). Both return the same concrete results for any input list and candidate values a, b."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both require a be the maximum negative (or None if none) and b be the minimum positive (or None if none). The Python code computes exactly these and compares, using None/int to represent Coq option values."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both compute a as the maximum negative (or None if none) and b as the minimum positive (or None if none), matching the Coq spec on all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both specify None when no negatives/positives exist and otherwise select the maximum negative and minimum positive from the list, matching on all concrete inputs (with None representing absence)."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

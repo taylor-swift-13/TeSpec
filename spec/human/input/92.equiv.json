@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/92.v",
+  "translated_py_file": "spec/human/input/92.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly checks if the inputs are integers and if one is the sum of the other two, matching the Coq specification's existential integer conditions."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly checks if all three inputs are integers and if any one of them is the sum of the other two, which perfectly matches the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly checks if the inputs are integers and if one is the sum of the other two, matching the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both implementations check the same conditions: (1) all three inputs must be integers, and (2) one of them equals the sum of the other two. The Coq spec uses existential quantifiers over integers and rational number equality, while Python uses int() conversion to check integrality. For concrete rational inputs, both will return true iff all inputs are integers and satisfy the sum property. The Python try/except handles edge cases gracefully, and the logic matches the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both implementations check the same conditions: (1) all three inputs must be integers, and (2) one of them equals the sum of the other two. The Coq spec uses existential quantifiers over integers and rational number equality, while Python uses int() conversion to check integrality. For concrete rational inputs, both will return true iff all inputs are integers and one equals the sum of the other two. The Python try/except handles edge cases gracefully, and the logic matches the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both implementations check the same conditions: (1) all three inputs must be integers, and (2) one of them equals the sum of the other two. The Coq spec uses existential quantifiers over integers and rational number equality, while Python uses int() conversion to check integrality. For concrete rational inputs, both will return true iff all inputs are integers and one equals the sum of the other two. The Python try/except handles edge cases gracefully, and the logic matches the Coq specification."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "It enforces that x, y, z are integers (equality to int(x), etc.) and then checks the same sum-equality conditions; returning b == cond matches the Coq spec\u2019s equivalence."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "It enforces all inputs are integer-valued and returns true iff one equals the sum of the other two, matching the Coq spec\u2019s integer-existence condition for concrete numeric inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both require x, y, z to be integers and then check if one equals the sum of the other two; Python enforces integrality via x == int(x) and compares the same sum conditions, returning b == that result."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

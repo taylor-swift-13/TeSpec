@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/18.v",
+  "translated_py_file": "spec/human/input/18.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification by counting the number of overlapping occurrences of the substring and comparing it to the expected output."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the logic defined in the Coq specification. It iterates through all valid starting positions, checks for matches (handling overlaps correctly), and enforces the condition that the substring must be non-empty, matching the Coq definition of match_at."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the match_at logic and counts the number of valid overlapping occurrences, which exactly matches the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. The match_at function checks the same conditions: non-empty substring, valid index range, and character-by-character matching. The problem_18_spec function counts all positions where match_at succeeds, which corresponds to the Coq spec's requirement that output equals the length of the list of all matching indices. The Coq spec uses an existential over a list of indices with NoDup, but the concrete result is simply the count of all positions i where match_at holds, which is exactly what the Python code computes."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. The match_at function checks if substr matches at position i in input, returning False for empty substr (matching the Coq condition length(substr) > 0), checking bounds, and comparing characters. The problem_18_spec counts all positions where match_at succeeds, which corresponds to the Coq spec's requirement that output equals the length of the list of all matching indices. The Coq spec uses existential quantification over a list of indices with NoDup, but the concrete result is simply the count of all positions where matching occurs, which the Python code computes directly."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. The match_at function checks the same conditions: non-empty substring, valid index range, and character-by-character matching. The problem_18_spec function counts all positions where match_at succeeds, which corresponds to the Coq spec's requirement that output equals the length of the list of all matching indices. The Coq spec uses an existential over a list of indices with NoDup, but the concrete count is uniquely determined by the number of positions where match_at holds, which is exactly what the Python code computes."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python match_at matches the Coq predicate, and the Python spec counts exactly all starting indices where the substring occurs (including overlaps). For empty substrings both yield 0. Thus the returned count equals the Coq-specified output for all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both define match_at identically (nonempty substring, in-bounds, per-char match) and count all matching start indices, including overlaps. Empty substring yields 0. Python\u2019s count equals the Coq spec\u2019s length of indices."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python counts all starting positions i where substr matches input (including overlaps), and returns 0 for empty substrings; this matches the Coq spec\u2019s match_at definition and the requirement that output equals the number of such indices."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

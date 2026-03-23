@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/claude-opus-4-5-20251101/input/136.v",
+  "translated_py_file": "spec/claude-opus-4-5-20251101/input/136.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the logic of finding the largest negative and smallest positive integers, and the specification checks for equality with these expected results, which is concretely equivalent to the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the filtering and max/min logic defined in the Coq specification, and the spec function checks for equality with these computed values."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python implementation of largest_negative and smallest_positive correctly mirrors the Coq logic using list comprehensions and the max/min functions, and the spec function correctly checks if the provided result matches these computed values."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. Both filter negatives/positives the same way (x < 0 and x > 0 respectively), and both compute the maximum of negatives and minimum of positives. The Coq fold_left Z.max starting from head computes the maximum, and fold_left Z.min computes the minimum, which matches Python's max() and min(). The Python spec function checks that the result tuple matches (largest_negative, smallest_positive), which is exactly what the Coq spec requires for the first two conjuncts. The additional Coq conjuncts about membership and bounds are logical consequences that hold when the first two conditions are satisfied, so they don't affect concrete behavior checking."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. Both filter negatives/positives the same way (x < 0 and x > 0 respectively). The Coq code computes largest negative via fold_left Z.max (which gives the maximum) and smallest positive via fold_left Z.min (which gives the minimum). Python's max() and min() produce the same results. The spec function checks that the result tuple matches these computed values, which is equivalent to checking the first two conjuncts of the Coq spec (the remaining conjuncts are logical consequences that hold when the first two hold)."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. Both filter negatives/positives the same way (x < 0 and x > 0 respectively). The Coq code computes largest negative via fold_left Z.max (which gives the maximum) and smallest positive via fold_left Z.min (which gives the minimum). Python's max() and min() produce the same results. The spec function checks that the result tuple matches these computed values, which is equivalent to checking the first two conjuncts of the Coq spec (the remaining conjuncts are logical consequences that hold when the first two are satisfied)."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python filters negatives/positives and uses max/min to compute largest negative and smallest positive, matching Coq\u2019s fold_left with Z.max/Z.min on filtered lists. The spec check in Python equates to the Coq Prop\u2019s equalities, and the additional Coq properties follow from those equalities, so results coincide on all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both implementations filter negatives (<0) and positives (>0), then return the max of negatives and min of positives or None if empty. The spec checker returns true iff the pair matches these values, which matches the Coq Prop for all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code computes the same largest negative and smallest positive values as the Coq definitions, and the spec checker returns true exactly when the pair matches those values; the additional Coq properties are guaranteed by max/min and do not change concrete results."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

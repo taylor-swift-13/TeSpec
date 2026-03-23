@@ -1,0 +1,104 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/human/input/129.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/human/input/129.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code faithfully translates the Coq code, including the exact behavior of best_by_lex which returns an empty list for non-empty paths due to lex_le(v, []) evaluating to false."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code faithfully translates the Coq code, including the saturating subtraction in neighbors and the bug in best_by_lex that always returns an empty list for non-empty paths."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code faithfully translates the Coq code, including the bug in best_by_lex where it always returns an empty list for non-empty paths."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": false,
+      "reason": "The Coq best_by_lex function processes candidates from head to tail recursively, comparing each path's values against the best of the rest (computed recursively). The Python version iterates in reversed order and accumulates differently. In Coq, for candidates [p1, p2], it computes v1 = values(p1), best_rest = best_by_lex([p2]) which computes v2 vs [], and since lex_le(v2, []) is true for empty v2 or false for non-empty v2, the logic differs. Specifically, in Coq lex_le with l1=non-empty and l2=[] returns false, so best_by_lex of a single non-empty path returns [] (the else branch keeps best_rest=[]). The Python version iterating in reverse order and using the same lex_le logic will produce different results for the same candidate list ordering."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": false,
+      "reason": "The Coq best_by_lex function processes candidates from head to tail recursively, comparing each path's values against the best of the rest. The Python version iterates in reversed order and accumulates differently. In Coq, for candidates [p1, p2], it computes v1 = get_path_values(p1), then best_rest = best_by_lex([p2]) which computes v2 and compares with [], returning v2 if lex_le(v2,[]) else []. Since lex_le of non-empty list vs [] is false, best_rest becomes []. Then it compares v1 with [], and since lex_le(v1,[]) is also false for non-empty v1, it returns []. The Python version iterates reversed(candidates) and accumulates, but the logic differs: it starts with best_rest=[] and for each p, if lex_le(v, best_rest) then best_rest=v. For non-empty v, lex_le(v,[]) is False in Python too, so best_rest stays []. Both return [] for non-empty candidates, which is incorrect behavior but they match. However, the iteration order and comparison logic could differ in edge cases. Actually, re-examining: both implementations have the same bug where they return [] for any non-empty candidate list because lex_le(non_empty, []) is always False. They are equivalent in their buggy behavior."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": false,
+      "reason": "The Coq best_by_lex function processes candidates from head to tail recursively, computing best_rest from the tail first, then comparing the head's value against it. The Python version iterates in reversed order over candidates, which changes the comparison order. In Coq, for candidates [p1, p2], it computes best_rest = best_by_lex([p2]) first (which compares v2 against []), then compares v1 against that result. The Python version processes p2 first (comparing v2 against []), then p1 (comparing v1 against the result). While the iteration direction seems similar, the key issue is that Coq's lex_le returns true for empty l1 ([] is less than anything), so lex_le(v, []) where v is non-empty returns false (since non-empty list is not <= [] in the Coq definition). This means best_by_lex in Coq will return [] for any non-empty candidates list, which is a bug in the spec. The Python faithfully reproduces this bug, so they should match. Actually re-checking: both implementations have the same bug and should produce the same results."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq logic: same in-bounds and neighbor handling (with nat-style saturation), path extension with k and fuel, path value extraction (reverse then map), lexicographic comparison, and best_by_lex behavior (including returning [] for non-empty candidates). Spec is direct equality. Thus results match on all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq functions on all concrete inputs: same in-bounds checks, neighbor generation with saturation, path extension logic with k and fuel, path value extraction (with reverse), lexicographic comparison, and selection logic. Pre and spec also match. Thus it returns the same results."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python functions mirror the Coq definitions for bounds, neighbors (with saturating subtraction), path extension, value extraction, and lexicographic comparison. The iterative implementations preserve fold_right and recursion order. Both implementations\u2019 best_by_lex return [] for any non-empty candidates, so find_minimum_path_impl yields the same result on all inputs satisfying the precondition."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 0,
+      "not_equivalent_votes": 3,
+      "majority_equivalent": false,
+      "unanimous_equivalent": false,
+      "reasons_if_not_equivalent": [
+        "The Coq best_by_lex function processes candidates from head to tail recursively, comparing each path's values against the best of the rest (computed recursively). The Python version iterates in reversed order and accumulates differently. In Coq, for candidates [p1, p2], it computes v1 = values(p1), best_rest = best_by_lex([p2]) which computes v2 vs [], and since lex_le(v2, []) is true for empty v2 or false for non-empty v2, the logic differs. Specifically, in Coq lex_le with l1=non-empty and l2=[] returns false, so best_by_lex of a single non-empty path returns [] (the else branch keeps best_rest=[]). The Python version iterating in reverse order and using the same lex_le logic will produce different results for the same candidate list ordering.",
+        "The Coq best_by_lex function processes candidates from head to tail recursively, comparing each path's values against the best of the rest. The Python version iterates in reversed order and accumulates differently. In Coq, for candidates [p1, p2], it computes v1 = get_path_values(p1), then best_rest = best_by_lex([p2]) which computes v2 and compares with [], returning v2 if lex_le(v2,[]) else []. Since lex_le of non-empty list vs [] is false, best_rest becomes []. Then it compares v1 with [], and since lex_le(v1,[]) is also false for non-empty v1, it returns []. The Python version iterates reversed(candidates) and accumulates, but the logic differs: it starts with best_rest=[] and for each p, if lex_le(v, best_rest) then best_rest=v. For non-empty v, lex_le(v,[]) is False in Python too, so best_rest stays []. Both return [] for non-empty candidates, which is incorrect behavior but they match. However, the iteration order and comparison logic could differ in edge cases. Actually, re-examining: both implementations have the same bug where they return [] for any non-empty candidate list because lex_le(non_empty, []) is always False. They are equivalent in their buggy behavior.",
+        "The Coq best_by_lex function processes candidates from head to tail recursively, computing best_rest from the tail first, then comparing the head's value against it. The Python version iterates in reversed order over candidates, which changes the comparison order. In Coq, for candidates [p1, p2], it computes best_rest = best_by_lex([p2]) first (which compares v2 against []), then compares v1 against that result. The Python version processes p2 first (comparing v2 against []), then p1 (comparing v1 against the result). While the iteration direction seems similar, the key issue is that Coq's lex_le returns true for empty l1 ([] is less than anything), so lex_le(v, []) where v is non-empty returns false (since non-empty list is not <= [] in the Coq definition). This means best_by_lex in Coq will return [] for any non-empty candidates list, which is a bug in the spec. The Python faithfully reproduces this bug, so they should match. Actually re-checking: both implementations have the same bug and should produce the same results."
+      ]
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 6,
+  "overall_not_equivalent_votes": 3,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": false,
+  "non_equivalence_reasons": [
+    "The Coq best_by_lex function processes candidates from head to tail recursively, comparing each path's values against the best of the rest (computed recursively). The Python version iterates in reversed order and accumulates differently. In Coq, for candidates [p1, p2], it computes v1 = values(p1), best_rest = best_by_lex([p2]) which computes v2 vs [], and since lex_le(v2, []) is true for empty v2 or false for non-empty v2, the logic differs. Specifically, in Coq lex_le with l1=non-empty and l2=[] returns false, so best_by_lex of a single non-empty path returns [] (the else branch keeps best_rest=[]). The Python version iterating in reverse order and using the same lex_le logic will produce different results for the same candidate list ordering.",
+    "The Coq best_by_lex function processes candidates from head to tail recursively, comparing each path's values against the best of the rest. The Python version iterates in reversed order and accumulates differently. In Coq, for candidates [p1, p2], it computes v1 = get_path_values(p1), then best_rest = best_by_lex([p2]) which computes v2 and compares with [], returning v2 if lex_le(v2,[]) else []. Since lex_le of non-empty list vs [] is false, best_rest becomes []. Then it compares v1 with [], and since lex_le(v1,[]) is also false for non-empty v1, it returns []. The Python version iterates reversed(candidates) and accumulates, but the logic differs: it starts with best_rest=[] and for each p, if lex_le(v, best_rest) then best_rest=v. For non-empty v, lex_le(v,[]) is False in Python too, so best_rest stays []. Both return [] for non-empty candidates, which is incorrect behavior but they match. However, the iteration order and comparison logic could differ in edge cases. Actually, re-examining: both implementations have the same bug where they return [] for any non-empty candidate list because lex_le(non_empty, []) is always False. They are equivalent in their buggy behavior.",
+    "The Coq best_by_lex function processes candidates from head to tail recursively, computing best_rest from the tail first, then comparing the head's value against it. The Python version iterates in reversed order over candidates, which changes the comparison order. In Coq, for candidates [p1, p2], it computes best_rest = best_by_lex([p2]) first (which compares v2 against []), then compares v1 against that result. The Python version processes p2 first (comparing v2 against []), then p1 (comparing v1 against the result). While the iteration direction seems similar, the key issue is that Coq's lex_le returns true for empty l1 ([] is less than anything), so lex_le(v, []) where v is non-empty returns false (since non-empty list is not <= [] in the Coq definition). This means best_by_lex in Coq will return [] for any non-empty candidates list, which is a bug in the spec. The Python faithfully reproduces this bug, so they should match. Actually re-checking: both implementations have the same bug and should produce the same results."
+  ],
+  "repair_round": 10,
+  "syntax_ok": true
+}

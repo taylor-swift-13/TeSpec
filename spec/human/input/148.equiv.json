@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/148.v",
+  "translated_py_file": "spec/human/input/148.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification by checking if the result matches the slice of the solar_system list between the two planet indices, which perfectly aligns with the Coq requirements for membership and sorting."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, checking that the result contains exactly the planets between the two given planets in the correct order, or an empty list if either planet is invalid."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, checking that the result contains exactly the planets between the two given planets in the correct order, or an empty list if either planet is invalid."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. Both check if planet names are valid using the same solar_system list. When both are valid, the Coq spec requires that result contains exactly the planets with indices strictly between min_idx and max_idx, sorted by proximity to sun. The Python code computes this as solar_system[min_idx + 1 : max_idx], which gives exactly those planets in order. When either planet is invalid, both require an empty result. The Python simplifies the Coq's logical properties into a direct slice comparison, but produces the same concrete results."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. Both check if planet names are valid using the same solar_system list. When both are valid, the Coq spec requires result to contain exactly planets with indices strictly between min_idx and max_idx, sorted by proximity to sun. The Python code computes this as solar_system[min_idx + 1 : max_idx], which gives exactly those planets in order. When either planet is invalid, both require an empty result. The Coq spec's two properties (membership iff index in range, and sorted order) are equivalent to checking equality with the slice of solar_system, since that slice contains exactly the right planets in the right order."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. Both check if planet names are valid using the same solar_system list. For valid planets, the Coq spec requires result to contain exactly those planets with indices strictly between min_idx and max_idx, sorted by proximity to sun. The Python code computes this as solar_system[min_idx + 1 : max_idx], which gives exactly the planets at indices min_idx+1, min_idx+2, ..., max_idx-1, already sorted. For invalid planets, both return empty list. The index function in Python matches the Coq fold_left implementation (0-indexed)."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both compute indices in the fixed planet list and require the result to be exactly the planets strictly between those indices in solar_system order; they return empty when either name is invalid."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both compute indices of valid planet names and return exactly the planets strictly between them in solar-system order; if either name is invalid, both require an empty list."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both compute indices of planets, return empty result if any name is invalid, and otherwise require result to be exactly the planets strictly between the two in solar_system order. The Python slice matches the Coq membership and ordering constraints."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

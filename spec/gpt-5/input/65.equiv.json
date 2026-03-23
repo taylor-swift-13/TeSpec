@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gpt-5/input/65.v",
+  "translated_py_file": "spec/gpt-5/input/65.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the logic of the Coq specification, including the length check, modulo arithmetic, and the string splitting/concatenation required for the circular shift operation."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, accurately translating the string slicing and reversal logic for the circular shift."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the logic of the Coq specification, including the conditional check for shift size, the modulo operation for circular shifting, and the string reversal case."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: when len(s) < shift, it returns the reversed string; otherwise it computes k = shift % len(s), and if k == 0 returns s unchanged, else splits s into u (first len(s)-k chars) and v (last k chars) and returns v + u. This matches the existential condition in Coq where s = u ++ v with len(v) = k and res = v ++ u."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: when len(s) < shift, it returns the reversed string; otherwise it computes k = shift mod len(s), and if k=0 returns s unchanged, else splits s into u (first len(s)-k chars) and v (last k chars) and checks if res = v + u. The existential in Coq is satisfied by exactly this split where v has length k and u is the prefix, which Python computes directly."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: when len(s) < shift, it returns the reversed string; otherwise it computes k = shift mod len(s), and if k=0 returns s unchanged, else splits s into u (first len(s)-k chars) and v (last k chars) and returns v+u. The existential in Coq is satisfied by the specific u,v chosen in Python (s[:-k] and s[-k:]), which have the required properties: s = u ++ v, len(v) = k, and res = v ++ u."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Matches the spec: if shift > len(s) return reverse(s); else let k = shift % len(s), return s if k=0, otherwise rotate by taking last k chars to the front. The chosen u,v satisfy the existential uniquely. Assumes nonnegative shift and the same str_of_Z/reverse_string."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code mirrors the Coq spec: it computes s from x, returns reverse(s) if shift > len(s), else sets k = shift mod len(s), returns s if k=0, otherwise rotates by taking the last k chars to the front. This matches the existential decomposition in Coq for all concrete inputs (with nonnegative shift)."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Matches the spec: if shift > len(s) return reverse(s); else k = shift mod len(s), if k=0 return s, otherwise rotate last k chars to front. The existential in Coq corresponds to the unique suffix/prefix split used in Python. Assuming shift is nonnegative and consistent str/reverse functions, results agree on all inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

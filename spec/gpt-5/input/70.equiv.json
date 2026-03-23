@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gpt-5/input/70.v",
+  "translated_py_file": "spec/gpt-5/input/70.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the index calculation, array matching, and sorting logic specified in the Coq code."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the index calculation, array checking, and uses the sorted version of the list to match the existential quantification over a sorted permutation in Coq."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification by sorting the list and checking the elements at the computed strange indices, matching the Coq logic exactly."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. index_strange matches (k%2==0 checks evenness, k//2 is Nat.div2). ans_of_sorted checks length equality and that each position k in ans equals position index_strange(n,k) in s. strange_sort_list_spec sorts lst to get s (which is a sorted permutation of lst) and checks ans_of_sorted. The Coq spec uses existential quantification over sorted permutations, but for any concrete input there is exactly one sorted list (up to equal elements), and Python's sorted() produces this. The concrete behavior matches."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. index_strange computes the same index mapping (k//2 for even k, n-1-k//2 for odd k). ans_of_sorted checks that ans has the same length as s and that each element matches the corresponding element from s at the computed index. strange_sort_list_spec sorts the input list (which produces a permutation that is sorted) and checks ans_of_sorted. The Python implementation will return True exactly when there exists a sorted permutation s of lst such that ans matches the strange ordering of s, which is what the Coq spec requires."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. index_strange computes the same values (k//2 for even k, n-1-k//2 for odd k). ans_of_sorted checks that ans has the same length as s and that each element matches according to index_strange. strange_sort_list_spec uses Python's sorted() to get a permutation of lst that is sorted (satisfying both Permutation and Sorted conditions from Coq), then checks ans_of_sorted. For any concrete inputs, both will produce the same judgment."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python sorts the list in nondecreasing order and checks ans[k] equals s[index_strange(n,k)] with matching index logic. This matches the Coq spec\u2019s existence of a sorted permutation s and the same reindexing, which is unique for Z-valued lists."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python uses the canonical sorted permutation as the witness and matches the Coq mapping via index_strange for all k < n; ans_of_sorted and sorting behavior align on all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python computes the same index_strange mapping and checks ans against s = sorted(lst), which is a sorted permutation uniquely determined by lst. This matches the Coq spec\u2019s existence of a sorted permutation s and the ans_of_sorted condition for all concrete inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

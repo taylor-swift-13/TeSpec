@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/135.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/135.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the two disjuncts of the Coq specification, checking for a sorted array when res == -1, and checking for a specific violation index when 0 < res < len(arr)."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements both cases of the Coq specification: the case where res is -1 (the entire list is non-decreasing) and the case where res is a positive index (the element at res is less than the previous element, and the suffix starting at res is non-decreasing). The index bounds and comparisons match the Coq spec exactly."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, checking the same conditions for res == -1 and 0 < res < len(arr)."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. When res=-1, it checks all consecutive pairs are non-decreasing (matching the Coq condition with >= which means 'not less than'). When 0<res<len(arr), it checks arr[res]<arr[res-1] and that all subsequent pairs are non-decreasing. The Python returns False for invalid res values, which correctly indicates the spec is not satisfied. The logic matches the Coq disjunction of the two cases."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: it returns True when res=-1 and the array is non-decreasing from index 1 onward, or when 0<res<len(arr), arr[res]<arr[res-1], and all subsequent pairs are non-decreasing. The Coq uses >= for non-decreasing checks (nth i >= nth (i-1)), which means arr[i] >= arr[i-1], so the violation condition is arr[i] < arr[i-1], matching the Python. The Python returns False for any other case, correctly rejecting invalid res values."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. When res=-1, it checks all consecutive pairs are non-decreasing (matching the Coq condition with >= which means 'not less than'). When 0<res<len(arr), it checks arr[res]<arr[res-1] and that all subsequent pairs are non-decreasing. The Python returns True/False matching whether the Coq Prop would hold for those concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Matches Coq: res = -1 iff array is nondecreasing; otherwise 0 < res < len(arr) with a drop at res and nondecreasing thereafter; else False."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code implements the same two cases: (1) res = -1 and the array is nondecreasing, and (2) 0 < res < len(arr) with a strict drop at res and nondecreasing thereafter. Index bounds and comparisons align with the Coq spec for all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Matches the two Coq disjuncts: res = -1 enforces non-decreasing across all adjacent pairs; otherwise 0 < res < len(arr) requires a strict drop at res and non-decreasing thereafter. Indices and comparisons align with Coq\u2019s ranges and semantics."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

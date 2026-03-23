@@ -14,26 +14,22 @@ def is_palindrome_spec(s, b):
     return b == palindrome(s)
 
 def make_palindrome_spec(s, t):
-    if not palindrome(t):
-        return False
-    if not begins_with(s, t):
-        return False
+    # The spec requires t to be the shortest palindrome that starts with s.
+    # This is constructed by taking s and appending the reverse of the prefix
+    # of s that comes before the longest palindromic suffix of s.
     
-    cond4 = False
-    for i in range(len(s) + 1):
-        v = s[:i]
-        w = s[i:]
-        if palindrome(w) and t == s + strrev(v):
-            all_v_w = True
-            for j in range(len(s) + 1):
-                v_prime = s[:j]
-                w_prime = s[j:]
-                if palindrome(w_prime):
-                    if not (strlen(v) <= strlen(v_prime)):
-                        all_v_w = False
-                        break
-            if all_v_w:
-                cond4 = True
-                break
-                
-    return cond4
+    n = len(s)
+    # Find the starting index of the longest palindromic suffix.
+    # We iterate i from 0 upwards; the first i such that s[i:] is a palindrome
+    # gives the longest such suffix (since length is n - i).
+    split_idx = n
+    for i in range(n + 1):
+        if palindrome(s[i:]):
+            split_idx = i
+            break
+            
+    v = s[:split_idx]
+    # The unique shortest palindrome t satisfying the conditions is s + strrev(v).
+    expected_t = s + strrev(v)
+    
+    return t == expected_t

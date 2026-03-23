@@ -1,0 +1,96 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/gemini-3-pro-preview/input/94.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/gemini-3-pro-preview/input/94.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the prime check, digit sum calculation, and the specification which checks if 'res' is the sum of the digits of the maximum prime in the list."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the primality test, digit sum calculation, and the specification which checks if 'res' is the sum of digits of the maximum prime in the list."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the primality test, digit summation, and the specification which checks if the result is the sum of the digits of the maximum prime in the list."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both implementations find the maximum prime in the list and check if res equals the sum of its digits. The Coq is_prime is a Prop that matches the Python trial-division check for concrete positive integers. The digits_sum_aux implementations both sum decimal digits (Coq uses recursion with fuel, Python uses a loop). sum_digits converts to non-negative int and computes digit sum. skjkasdkd_spec checks existence of a maximum prime p in lst where res = sum_digits(p), which the Python code does by filtering primes, taking max, and comparing. For concrete inputs they produce the same judgments."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification for concrete inputs. is_prime checks primality correctly (Coq's Prop definition matches the Python boolean check). digits_sum_aux and sum_digits compute digit sums identically. skjkasdkd_spec finds the maximum prime in the list and checks if res equals its digit sum, which matches the Coq spec's existential statement about a prime p that is maximal among primes in lst. The only edge case difference is when no primes exist - Python returns False, and Coq's spec would be unsatisfiable (no such p exists), which is equivalent behavior for concrete verification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification for concrete inputs. The is_prime function checks primality correctly (though using a more efficient algorithm). The digits_sum_aux and sum_digits functions compute digit sums identically. The skjkasdkd_spec function checks if res equals the digit sum of the maximum prime in lst, which matches the Coq spec's existential statement that there exists a prime p in lst that is maximal among primes and res = sum_digits(p). The Python returns False when no primes exist, which is correct since the Coq spec would be unsatisfiable in that case."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python finds the maximum prime in the list and checks res equals its digit sum; is_prime matches the Coq primality predicate for integers, and sum_digits mirrors Z.to_nat behavior (negatives map to 0). Thus it aligns with the Coq spec on all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both compute the sum of digits of the maximum prime in the list and return True iff res matches it. Primality checks agree for all integers and sum_digits handles negatives as 0 (Z.to_nat) in both. Empty or no-prime lists correctly yield False."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both select the maximum prime in the list and return the sum of its decimal digits; primality and digit-sum handling (including nonpositive inputs) match the Coq spec on all concrete inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 1,
+  "syntax_ok": true
+}

@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/77.v",
+  "translated_py_file": "spec/human/input/77.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly checks if the absolute value of 'a' is a perfect cube using binary search, which is mathematically equivalent to checking if 'a' is a perfect cube."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly checks if the absolute value of 'a' is a perfect cube using binary search, which is mathematically equivalent to checking if 'a' itself is a perfect cube since the cube function preserves signs."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly checks if the absolute value of the input is a perfect cube using binary search. Since an integer a is a perfect cube if and only if |a| is a perfect cube, the logic matches the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code checks if a is a perfect cube by binary searching for an integer x such that x^3 equals abs(a). Since x^3 = a is equivalent to (-x)^3 = -a, checking abs(a) correctly determines if a is a perfect cube. The spec returns b == is_c, which is true iff b matches whether a is a perfect cube, matching the Coq biconditional (b = true <-> exists x, a = x*x*x)."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code checks if a is a perfect cube by binary searching for an integer x such that x^3 equals abs(a). Since x^3 = a is equivalent to (-x)^3 = -a, checking abs(a) correctly determines if a is a perfect cube. The spec returns b == is_c, which is True iff b matches whether a is actually a cube, matching the Coq biconditional (b = true <-> exists x, a = x*x*x)."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code checks if a is a perfect cube by binary searching for an integer x where x^3 equals |a|. Since x^3 = a is equivalent to (-x)^3 = -a, checking |a| correctly determines if a is a cube of some integer. The spec returns true iff b equals the actual cube status, matching the Coq biconditional (b = true <-> exists x, a = x*x*x)."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python determines if |a| is a perfect cube and returns b == result; since a is a cube iff |a| is a cube (cubes preserve sign), this matches the Coq iff spec for all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python computes whether |a| is a perfect cube via binary search, which is equivalent to existence of x with a = x^3 (use x=\u00b1mid). It then checks b equals this result. Precondition is always true in both."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "It checks if |a| is a perfect cube via binary search and returns b == that result. Over integers, a is a cube iff |a| is a cube, so this matches the Coq spec for all inputs; precondition is always true."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

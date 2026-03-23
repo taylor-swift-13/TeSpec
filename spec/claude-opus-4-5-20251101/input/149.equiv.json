@@ -1,0 +1,100 @@
+{
+  "source_v_file": "spec/claude-opus-4-5-20251101/input/149.v",
+  "translated_py_file": "spec/claude-opus-4-5-20251101/input/149.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the filtering logic (even length strings), the custom string comparison (length first, then lexicographical), and the sorting check, matching the Coq specification's behavior on concrete list inputs."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specifications, including string length parity, custom string comparison, sortedness checking, and set-based filtering equivalence."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq definitions, correctly implementing the length and lexicographical string comparison, the sorting check, and the set-based filtering specifications."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": false,
+      "reason": "The Coq spec uses In which counts multiplicity (a string can appear multiple times in a list), while the Python code uses set membership which ignores duplicates. For example, if lst = ['aa', 'aa'] and result = ['aa'], the Coq spec would require that 'aa' appears in result with the same multiplicity as it appears in lst (after filtering), but the Python code would accept result = ['aa'] since it only checks set membership. Similarly, if result = ['aa', 'aa'] and lst = ['aa'], Python would accept it but Coq would not since 'aa' appears twice in result but only once in lst."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": false,
+      "reason": "The Coq spec uses multiset membership (In s result counts occurrences implicitly through the list structure), while the Python code uses set membership which ignores duplicates. For example, if lst = ['aa', 'aa'] and result = ['aa'], the Coq spec would require both occurrences to be preserved, but the Python code would accept result = ['aa'] since it only checks set membership. Similarly, if result = ['aa', 'aa'] but lst = ['aa'], Python would accept it but Coq would not."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": false,
+      "reason": "The Coq spec uses In which counts multiplicity (a string can appear multiple times in a list), while the Python code uses set membership and 'in' which only checks presence. For example, if lst = ['aa', 'aa'] and result = ['aa'], the Coq spec would require that 'aa' appears in result with the same multiplicity as in lst (after filtering), but the Python code would accept this since 'aa' is present in both. Additionally, the Python code doesn't properly handle duplicate elements - it checks membership rather than multiset equality."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python mirrors Coq: even-length via len%2, comparison by length then lexicographic, sortedness via adjacent pair checks allowing Eq, and membership equivalence using In (set-style) rather than multiplicity. The spec check returns the same conjunction of membership condition and sortedness."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python mirrors Coq: even-length via len%2, comparison by length then lexicographic, sorted_by checks adjacent pairs for non-decreasing order, and specs enforce set-like membership of even-length elements. Duplicates are ignored as in Coq\u2019s In-based specs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python mirrors Coq: even-length via len%2, comparison by length then lexicographic, sortedness checks adjacent pairs allowing Eq, and membership spec ignores multiplicities. The set-union quantification is sufficient for the forall, so concrete results match."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 0,
+      "not_equivalent_votes": 3,
+      "majority_equivalent": false,
+      "reasons_if_not_equivalent": [
+        "The Coq spec uses In which counts multiplicity (a string can appear multiple times in a list), while the Python code uses set membership which ignores duplicates. For example, if lst = ['aa', 'aa'] and result = ['aa'], the Coq spec would require that 'aa' appears in result with the same multiplicity as it appears in lst (after filtering), but the Python code would accept result = ['aa'] since it only checks set membership. Similarly, if result = ['aa', 'aa'] and lst = ['aa'], Python would accept it but Coq would not since 'aa' appears twice in result but only once in lst.",
+        "The Coq spec uses multiset membership (In s result counts occurrences implicitly through the list structure), while the Python code uses set membership which ignores duplicates. For example, if lst = ['aa', 'aa'] and result = ['aa'], the Coq spec would require both occurrences to be preserved, but the Python code would accept result = ['aa'] since it only checks set membership. Similarly, if result = ['aa', 'aa'] but lst = ['aa'], Python would accept it but Coq would not.",
+        "The Coq spec uses In which counts multiplicity (a string can appear multiple times in a list), while the Python code uses set membership and 'in' which only checks presence. For example, if lst = ['aa', 'aa'] and result = ['aa'], the Coq spec would require that 'aa' appears in result with the same multiplicity as in lst (after filtering), but the Python code would accept this since 'aa' is present in both. Additionally, the Python code doesn't properly handle duplicate elements - it checks membership rather than multiset equality."
+      ]
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 6,
+  "overall_not_equivalent_votes": 3,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [
+    "The Coq spec uses In which counts multiplicity (a string can appear multiple times in a list), while the Python code uses set membership which ignores duplicates. For example, if lst = ['aa', 'aa'] and result = ['aa'], the Coq spec would require that 'aa' appears in result with the same multiplicity as it appears in lst (after filtering), but the Python code would accept result = ['aa'] since it only checks set membership. Similarly, if result = ['aa', 'aa'] and lst = ['aa'], Python would accept it but Coq would not since 'aa' appears twice in result but only once in lst.",
+    "The Coq spec uses multiset membership (In s result counts occurrences implicitly through the list structure), while the Python code uses set membership which ignores duplicates. For example, if lst = ['aa', 'aa'] and result = ['aa'], the Coq spec would require both occurrences to be preserved, but the Python code would accept result = ['aa'] since it only checks set membership. Similarly, if result = ['aa', 'aa'] but lst = ['aa'], Python would accept it but Coq would not.",
+    "The Coq spec uses In which counts multiplicity (a string can appear multiple times in a list), while the Python code uses set membership and 'in' which only checks presence. For example, if lst = ['aa', 'aa'] and result = ['aa'], the Coq spec would require that 'aa' appears in result with the same multiplicity as in lst (after filtering), but the Python code would accept this since 'aa' is present in both. Additionally, the Python code doesn't properly handle duplicate elements - it checks membership rather than multiset equality."
+  ],
+  "repair_round": 0,
+  "syntax_ok": true
+}

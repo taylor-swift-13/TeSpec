@@ -1,0 +1,104 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/claude-opus-4-5-20251101/input/143.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/claude-opus-4-5-20251101/input/143.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, including the exact set membership condition and the pairwise order preservation condition using the first and last occurrence indices."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, including the set equivalence for filtered words and the pairwise order preservation using first and last occurrence indices."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, including the exact set membership condition and the pairwise relative order preservation condition. It also correctly ignores the unused 'prime_words' variable from the Coq definition."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": false,
+      "reason": "The Coq spec's filter uses a match that always returns true regardless of is_prime, making it filter nothing (keeping all words). The Python code actually filters by is_prime. Also, the Python membership check uses 'in' which checks if element exists anywhere in list, but the Coq spec's membership condition is about multiset membership with proper counting of duplicates. For example, if sentence='a a' where 'a' has prime length, and result='a', the Python would accept this (since 'a' is in filtered_words iff 'a' is in words and is_prime), but the Coq spec requires filtered_words to contain all occurrences of prime-length words from words."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": false,
+      "reason": "The Coq spec's filter uses a match that always returns true regardless of is_prime, making it filter nothing (keeping all words). The Python code actually filters by is_prime. Also, the Python membership check uses 'in' which checks if the word appears anywhere in the list, not accounting for multiplicity - if a word appears multiple times in words but only once in filtered_words, the Python check would pass incorrectly. Furthermore, the order preservation check in Python uses first occurrence of w1 and last occurrence of w2, but the Coq spec requires that for each specific pair of positions (i,j) in filtered_words with i<j, there exist corresponding positions in words preserving order - this is about preserving the relative order of the actual occurrences, not just any occurrences of those word values."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": false,
+      "reason": "The Coq spec's filter uses a match that always returns true regardless of is_prime, making it filter nothing (keeping all words). The Python code actually filters by is_prime. Additionally, the Python membership check uses 'in' which checks if a word appears anywhere in the list, but the Coq spec's membership condition is about multiset membership with positions. For example, if sentence='a a' where 'a' has prime length, and result='a', the Python would accept this (since 'a' is in words and is_prime), but the Coq spec requires filtered_words to contain all occurrences from words that satisfy the predicate, preserving order. The Python's set-based membership check loses multiplicity information."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python function validates exactly the existence of a filtered list whose elements are precisely the words with prime length (by len), preserves pairwise order, and whose join equals result. It checks membership (as sets) and pairwise order via first/last occurrences, which matches the Coq spec\u2019s requirements. Differences like the unused Coq let-binding and Prop/Bool mismatch are irrelevant to concrete results."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python checks that result splits into a list whose elements are exactly the prime-length words from the sentence (as a set) and that their pairwise order is consistent with the original list, then rejoins to result. This matches the Coq spec\u2019s existence of such a filtered list, and is_prime behavior aligns on all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python function treats result as the filtered list (via split) and checks: (1) result = join(filtered_words), (2) membership iff a word is in the original and has prime length, and (3) pairwise order preservation using first/last occurrence, which is equivalent to the Coq existence of indices. Primality and word length align, and multiplicities are handled consistently with In-based Coq conditions."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 0,
+      "not_equivalent_votes": 3,
+      "majority_equivalent": false,
+      "unanimous_equivalent": false,
+      "reasons_if_not_equivalent": [
+        "The Coq spec's filter uses a match that always returns true regardless of is_prime, making it filter nothing (keeping all words). The Python code actually filters by is_prime. Also, the Python membership check uses 'in' which checks if element exists anywhere in list, but the Coq spec's membership condition is about multiset membership with proper counting of duplicates. For example, if sentence='a a' where 'a' has prime length, and result='a', the Python would accept this (since 'a' is in filtered_words iff 'a' is in words and is_prime), but the Coq spec requires filtered_words to contain all occurrences of prime-length words from words.",
+        "The Coq spec's filter uses a match that always returns true regardless of is_prime, making it filter nothing (keeping all words). The Python code actually filters by is_prime. Also, the Python membership check uses 'in' which checks if the word appears anywhere in the list, not accounting for multiplicity - if a word appears multiple times in words but only once in filtered_words, the Python check would pass incorrectly. Furthermore, the order preservation check in Python uses first occurrence of w1 and last occurrence of w2, but the Coq spec requires that for each specific pair of positions (i,j) in filtered_words with i<j, there exist corresponding positions in words preserving order - this is about preserving the relative order of the actual occurrences, not just any occurrences of those word values.",
+        "The Coq spec's filter uses a match that always returns true regardless of is_prime, making it filter nothing (keeping all words). The Python code actually filters by is_prime. Additionally, the Python membership check uses 'in' which checks if a word appears anywhere in the list, but the Coq spec's membership condition is about multiset membership with positions. For example, if sentence='a a' where 'a' has prime length, and result='a', the Python would accept this (since 'a' is in words and is_prime), but the Coq spec requires filtered_words to contain all occurrences from words that satisfy the predicate, preserving order. The Python's set-based membership check loses multiplicity information."
+      ]
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 6,
+  "overall_not_equivalent_votes": 3,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": false,
+  "non_equivalence_reasons": [
+    "The Coq spec's filter uses a match that always returns true regardless of is_prime, making it filter nothing (keeping all words). The Python code actually filters by is_prime. Also, the Python membership check uses 'in' which checks if element exists anywhere in list, but the Coq spec's membership condition is about multiset membership with proper counting of duplicates. For example, if sentence='a a' where 'a' has prime length, and result='a', the Python would accept this (since 'a' is in filtered_words iff 'a' is in words and is_prime), but the Coq spec requires filtered_words to contain all occurrences of prime-length words from words.",
+    "The Coq spec's filter uses a match that always returns true regardless of is_prime, making it filter nothing (keeping all words). The Python code actually filters by is_prime. Also, the Python membership check uses 'in' which checks if the word appears anywhere in the list, not accounting for multiplicity - if a word appears multiple times in words but only once in filtered_words, the Python check would pass incorrectly. Furthermore, the order preservation check in Python uses first occurrence of w1 and last occurrence of w2, but the Coq spec requires that for each specific pair of positions (i,j) in filtered_words with i<j, there exist corresponding positions in words preserving order - this is about preserving the relative order of the actual occurrences, not just any occurrences of those word values.",
+    "The Coq spec's filter uses a match that always returns true regardless of is_prime, making it filter nothing (keeping all words). The Python code actually filters by is_prime. Additionally, the Python membership check uses 'in' which checks if a word appears anywhere in the list, but the Coq spec's membership condition is about multiset membership with positions. For example, if sentence='a a' where 'a' has prime length, and result='a', the Python would accept this (since 'a' is in words and is_prime), but the Coq spec requires filtered_words to contain all occurrences from words that satisfy the predicate, preserving order. The Python's set-based membership check loses multiplicity information."
+  ],
+  "repair_round": 10,
+  "syntax_ok": true
+}

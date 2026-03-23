@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/140.v",
+  "translated_py_file": "spec/human/input/140.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code is a direct translation of the Coq implementation. It correctly implements the recursive logic for handling single versus consecutive spaces and the helper function `skip_spaces` behaves identically to the Coq version."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code is a direct and faithful translation of the Coq implementation, preserving the logic for replacing spaces and skipping consecutive spaces."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code directly translates the Coq recursive functions and logic, including the fuel-based recursion and space-skipping logic, ensuring identical behavior on all inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code faithfully translates the Coq implementation. Both use the same logic: skip_spaces removes leading spaces, fix_spaces_func processes the list with fuel, replacing single spaces with underscore and 2+ consecutive spaces with a single dash while skipping remaining spaces. The fuel is set to len(l)+1 in both. The helper functions and main logic match exactly, so concrete inputs will produce the same results."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code faithfully translates the Coq implementation. The skip_spaces function removes leading spaces identically. The fix_spaces_func uses the same logic: single space becomes underscore, two or more consecutive spaces become a single dash (skipping remaining spaces), and non-space characters pass through unchanged. The fuel parameter and recursion structure match. Both return the same concrete results for any input string."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code faithfully translates the Coq implementation. The skip_spaces function removes leading spaces identically. The fix_spaces_func uses the same logic: single space becomes underscore, two or more consecutive spaces become a single dash (skipping remaining spaces). The fuel parameter and recursion structure match. Both convert string to list of characters, process, and convert back. The pre-condition is trivially True, and the spec checks equality with fix_spaces output in both versions."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code mirrors the Coq logic: single spaces become '_', runs of two or more spaces collapse to '-', with the same skip of consecutive spaces and sufficient fuel (len(s)+1). String/list conversions align, so outputs match for all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq logic: single spaces become '_', runs of two or more spaces become '-', using the same skip_spaces and fuel scheme, yielding identical outputs on all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq logic: single spaces become '_', runs of two or more spaces collapse to '-' via skip_spaces, with the same fuel strategy and wrapper; spec equality is preserved."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

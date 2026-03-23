@@ -1,0 +1,96 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/claude-3-7-sonnet-20250219/input/88.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/claude-3-7-sonnet-20250219/input/88.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the logic of the Coq specification, including the handling of empty lists, the calculation of the sum of the first and last elements, the parity-based sorting requirement (ascending if odd, descending if even), and the set-equivalence of elements between the input and result lists."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the logic of the Coq specification, including the empty list case, the parity check of the sum of the first and last elements, the sorting conditions (ascending or descending), and the multiset/membership equivalence."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The sorting predicates sorted_asc and sorted_desc are implemented using the same index-based logic. The main specification sort_array_spec correctly handles the empty case and the non-empty case with the parity check on the sum of the first and last elements. The set equivalence condition (forall x, In x result <-> In x array) is correctly verified by iterating over all elements present in either list."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It handles the empty array case, computes the sum of first and last elements, checks odd/even parity to determine ascending/descending sort order, and verifies that result contains exactly the same elements as array. The forall_cond check iterates over elements from both lists to verify the bidirectional membership condition. The sorted_asc and sorted_desc functions correctly check ordering for all valid index pairs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It handles the empty array case, computes the sum of first and last elements, checks odd/even parity to determine ascending/descending sort order, and verifies that result contains exactly the same elements as array. The forall_cond check iterates over elements from both lists to verify the bidirectional membership condition. The sorted_asc and sorted_desc functions correctly implement the Coq definitions by checking all pairs i < j."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It handles the empty array case, computes the sum of first and last elements, checks if the sum is odd to determine ascending vs descending sort order, verifies the sorting property, and checks that result contains exactly the same elements as array. The forall_cond check iterates over elements from both lists to verify the bidirectional membership condition. The sorted_asc and sorted_desc functions correctly implement the Coq definitions by checking all pairs i < j."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq spec: it handles the empty case, enforces sortedness of result based on the parity of hd+last, and checks membership equivalence. The forall over nat is effectively captured by checking elements in array \u222a result, since any counterexample must lie there. Helpers (nth, hd, last, sorted_asc/desc, Nat.odd) behave consistently for lists of naturals."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code mirrors the Coq spec on all concrete inputs: it checks ascending/descending order with the same i<j<n condition, computes sum via head+last consistently, chooses the sortedness based on oddness equivalently to the Coq disjunction, and enforces membership equivalence by checking both lists\u2019 union (sufficient for In x result <-> In x array). The empty-array case is handled identically."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Parity-based sortedness and membership equivalence are checked in the same way; the Python covers the same cases (including empty array), uses equivalent hd/last, and its union-iteration suffices to validate the In <-> condition for all relevant elements."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 6,
+  "syntax_ok": true
+}

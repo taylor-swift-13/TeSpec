@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/159.v",
+  "translated_py_file": "spec/human/input/159.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code implements the exact logic of the Coq specification, handling both cases (enough remaining vs not enough) identically."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq precondition and specification, correctly handling both cases for remaining carrots."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the precondition and specification defined in the Coq code, matching the logic for both cases of remaining carrots."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The precondition checks the same bounds (0 <= number, need, remaining <= 1000). The spec checks the same two cases: if remaining >= need, result should be [number + need, remaining - need]; otherwise result should be [number + remaining, 0]. The Coq uses Z.ge and Z.lt which correspond to >= and < in Python, and the list construction matches exactly."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The precondition checks the same bounds (0 to 1000 for all three inputs). The spec checks the same two cases: if remaining >= need, result should be [number + need, remaining - need]; otherwise result should be [number + remaining, 0]. The Coq uses Z.ge (>=) and Z.lt (<) which correspond exactly to the Python >= and < (via else) comparisons."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The precondition checks the same bounds (0 <= number, need, remaining <= 1000). The spec checks the same two cases: if remaining >= need, result should be [number + need, remaining - need]; otherwise result should be [number + remaining, 0]. The Coq uses Z.ge and Z.lt which correspond to >= and < in Python, and the list construction matches exactly."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python precondition matches the Coq bounds; the spec mirrors the Coq case split on remaining >= need vs remaining < need and returns the same list results."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Precondition bounds match exactly and the spec branches (remaining >= need vs remaining < need) produce identical result lists in both Coq and Python."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Precondition range checks match exactly, and the spec\u2019s two branches (remaining >= need vs. remaining < need) produce the same resulting list in Python as in Coq."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

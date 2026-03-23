@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/0.v",
+  "translated_py_file": "spec/human/input/0.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the precondition and the specification by checking all pairs of distinct elements to see if their absolute difference is within the threshold, matching the Coq logic."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification by checking all pairs of distinct elements to see if their absolute difference is less than or equal to the threshold, and compares this boolean result to the output."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification by checking all pairs of distinct indices to see if their absolute difference is within the threshold."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code checks all pairs (i, j) with i < j for closeness within threshold, which is equivalent to the Coq spec's existential quantification over distinct indices i \u2260 j. The Coq spec uses i \u2260 j (unordered pairs), but checking i < j covers all unordered pairs since |x - y| = |y - x|. Both return true iff there exist two distinct elements within threshold distance."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code checks all pairs (i, j) with i < j for closeness within threshold, which is equivalent to the Coq spec that checks for any two distinct indices i \u2260 j. Since |x - y| = |y - x|, checking i < j covers all unordered pairs. Both return true iff such a close pair exists, and the precondition threshold >= 0 is identical."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code checks all pairs (i, j) with i < j for closeness within threshold, which is equivalent to the Coq spec that checks for any two distinct indices i != j. Since abs(x - y) = abs(y - x), checking only i < j pairs covers all distinct pairs. Both return true iff there exist two distinct elements within threshold distance."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both check for any two distinct indices whose absolute difference is <= threshold and set output to True iff such a pair exists; the precondition threshold >= 0 also matches."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python checks pairs (i<j) for abs difference <= threshold and matches output accordingly; this is equivalent to the Coq existential over i\u2260j. Precondition threshold>=0 is the same. Early breaks and index handling do not change results."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both implementations return true iff there exists a pair of distinct indices with absolute difference <= threshold; the Python precondition also matches threshold >= 0."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

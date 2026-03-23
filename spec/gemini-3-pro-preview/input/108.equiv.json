@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/108.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/108.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq logic, including the extraction of digits, the calculation of the signed digit sum, and the filtering/counting logic."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the digit extraction and signed digit sum logic, and accurately translates the specification into a boolean check."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq logic, including the extraction of digits, the calculation of the signed digits sum, and the filtering/counting of elements in the array."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. digits_of_Z_aux iteratively builds digits from LSB to MSB then reverses, matching the Coq recursive approach that builds MSB to LSB via appending. digits_of_Z handles the zero case and uses abs_n as fuel (which is always sufficient for positive numbers). signed_digits_sum correctly computes the sum with the first digit negated if n < 0. count_nums_spec correctly counts elements where signed_digits_sum > 0 and compares to res. The concrete behavior matches on all inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. digits_of_Z_aux builds digits from MSB to LSB (matching Coq's recursive append pattern), digits_of_Z handles the zero case and uses abs_n as fuel (which is sufficient since abs_n >= number of digits for n > 0), signed_digits_sum correctly negates only the first digit for negative numbers, and count_nums_spec counts elements with positive signed digit sum. The iterative Python implementation produces the same concrete results as the recursive Coq definitions."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. digits_of_Z_aux iteratively builds digits from LSB to MSB then reverses, matching Coq's recursive append behavior. digits_of_Z handles the zero case and uses abs_n as fuel (which is always sufficient for positive numbers). signed_digits_sum correctly computes the sum where the first digit is negated for negative inputs. count_nums_spec counts elements with positive signed_digits_sum, matching the Coq filter/length logic. The concrete behavior matches on all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq logic: digits are computed for nonnegative n with fuel = Z.to_nat n (n if >=0 else 0), using // and % consistent with Coq for nonnegatives; signed_digits_sum uses abs and adjusts the leading digit\u2019s sign; count_nums_spec counts cases with signed_digits_sum(x) > 0 and compares to res. Concrete behavior matches for all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python computes digits for nonnegative inputs identically, uses abs before digit extraction, applies the same signed first-digit sum, and counts elements with sum > 0 exactly as the Coq spec, yielding the same results on all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python mirrors Coq: digits are extracted for nonnegative abs(n) with sufficient fuel, order restored by reverse, signed_digits_sum treats MSB sign as in Coq, and count checks >0 and equality to the count. Edge cases (n=0, negatives) match. Thus results coincide for all inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

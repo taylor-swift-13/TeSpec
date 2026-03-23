@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/16.v",
+  "translated_py_file": "spec/human/input/16.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification by computing the set of lowercase characters and checking if its size matches the output."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification by computing the set of lowercased characters and checking if its size matches the output."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification by using a set to collect the lowercased characters of the string and checking if its length matches the output, which is equivalent to the Coq spec's existence of a duplicate-free list with the same properties."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. Both compute the number of distinct lowercase characters in a string. The Coq spec defines D as a set (list with NoDup) containing exactly the lowercase versions of all characters in s, and requires output to equal |D|. The Python code builds a set D by adding lower(c) for each character c in s, then checks if output equals len(D). The is_upper and lower functions match between Coq and Python (checking ASCII 65-90 for uppercase, adding 32 to convert). For any concrete string input, both will count the same number of distinct case-insensitive characters."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly computes the number of distinct lowercase characters in the string. It builds a set D of lowercase versions of all characters in s, then checks if output equals the size of D. This matches the Coq spec which requires D to be a set (NoDup) containing exactly the lowercase versions of characters in s, with output equal to |D|. The lower function implementations are equivalent (both convert uppercase A-Z to lowercase by adding 32 to ASCII value). The Python set automatically handles the NoDup requirement and the membership conditions from the Coq spec."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both implementations count distinct lowercase versions of characters in the string. The Coq spec defines D as a set (list with NoDup) containing exactly the lowercase versions of all characters in s, and requires output to equal |D|. The Python code builds a set D by adding lower(c) for each character c in s, then checks if output equals len(D). Both use the same is_upper and lower functions (checking ASCII 65-90 and adding 32 for uppercase). The Python set automatically handles uniqueness like Coq's NoDup requirement. For any concrete string input, both will compute the same count of distinct lowercase characters."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both compute the count of distinct characters after converting ASCII uppercase letters to lowercase; Python\u2019s set-based implementation matches the Coq spec\u2019s unique list set semantics."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both compute the number of distinct characters after mapping ASCII A-Z to lowercase; Python builds the set of lowercased chars and compares its size to output, matching the Coq spec\u2019s existence of a no-dup set D of lowercased characters with size equal to output."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both define lower as mapping ASCII A\u2013Z to a+32 and count the size of the set of lower(c) for c in s; output equals the number of distinct lowercased chars."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/claude-opus-4-5-20251101/input/57.v",
+  "translated_py_file": "spec/claude-opus-4-5-20251101/input/57.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the checks for monotonically increasing and decreasing lists, matching the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the definitions of increasing and decreasing sequences by checking adjacent elements, which is equivalent to the Coq specification checking all pairs of indices due to transitivity. The monotonic_spec accurately reflects the logical equivalence."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification by checking if the list is either non-decreasing or non-increasing."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python is_increasing checks adjacent pairs for l[i] <= l[i+1], which is equivalent to the Coq definition that requires nth i <= nth j for all i < j (transitivity of <=). Similarly, is_decreasing checks l[i] >= l[i+1] for adjacent pairs, equivalent to Coq's >= for all i < j. The monotonic_spec correctly checks if result matches whether the list is increasing or decreasing. Both handle empty and single-element lists as monotonic (vacuously true in Coq, loop doesn't execute in Python returning True)."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python is_increasing checks consecutive pairs for l[i] <= l[i+1], which is equivalent to the Coq definition that requires nth i l 0 <= nth j l 0 for all i < j (transitivity makes consecutive checks sufficient). Similarly for is_decreasing with >= vs >. The monotonic_spec correctly checks that result equals true iff the list is increasing or decreasing. The Python implementations correctly capture the concrete behavior of the Coq specifications."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python is_increasing checks consecutive pairs for l[i] <= l[i+1], which is equivalent to the Coq definition requiring nth i l 0 <= nth j l 0 for all i < j (transitivity makes checking consecutive pairs sufficient). Similarly for is_decreasing with >= vs >. The monotonic_spec correctly checks that result equals true iff the list is increasing or decreasing. Both handle empty and single-element lists correctly (vacuously true in Coq, loop doesn't execute in Python returning True)."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Adjacent-pair checks implement weak monotonicity, equivalent to Coq\u2019s all-pairs definitions; empty/singleton lists are handled the same, and monotonic_spec correctly checks result against the monotone predicate."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Adjacent comparisons in Python correctly capture the non-strict monotonicity defined in Coq (forall i<j, l[i]<=l[j] or l[i]>=l[j]). Empty/one-element lists are handled identically. The monotonic_spec equality in Python matches the Coq iff condition for boolean results."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both define non-strict monotonicity; adjacent comparisons in Python imply (and are implied by) the Coq all-pairs condition. Empty/singleton cases match. monotonic_spec checks result matches monotonicity; with result as a bool, bool(result) aligns with Coq\u2019s result = true."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

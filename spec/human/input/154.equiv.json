@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/154.v",
+  "translated_py_file": "spec/human/input/154.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, checking if any rotation of the second string is a substring of the first string."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the substring and rotation checks, and the spec accurately verifies if any rotation of 'b' is a substring of 'a'."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, checking if any rotation of the second string is a substring of the first string."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The is_rotation_of function generates all rotations of b by splitting at each position i (b[i:] + b[:i]), which matches the Coq definition where r = p2 ++ p1 and b = p1 ++ p2. The is_substring function checks if sub appears as a contiguous subsequence in main, matching the Coq definition with prefix and suffix. The problem_154_spec correctly checks if res equals true iff there exists some rotation of lb that is a substring of la. For all concrete inputs, the Python code will return the same judgment as the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The is_rotation_of function generates all rotations of b by splitting at each position i (b[i:] + b[:i]), which matches the Coq definition where b = p1 ++ p2 and r = p2 ++ p1. The is_substring function checks if sub appears as a contiguous subsequence in main, matching the Coq definition with prefix and suffix. The problem_154_spec function checks whether there exists any rotation of lb that is a substring of la, and returns whether res equals this boolean result, which correctly implements the Coq biconditional (res = true <-> exists b' with rotation and substring properties)."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The is_rotation_of function in Python checks all rotations of b by splitting at each position i, which matches the Coq definition (exists p1 p2, b = p1 ++ p2 /\\ r = p2 ++ p1). The is_substring function checks if sub appears as a contiguous subsequence in main, matching the Coq definition. The problem_154_spec correctly checks whether res equals true iff there exists some rotation of lb that is a substring of la, which is exactly what the Coq spec states. The Python implementation iterates through all possible rotations and checks substring membership, producing the same concrete results as the Coq specification."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python enumerates all rotations of b and checks for contiguous substring in a, matching the Coq spec\u2019s existence of a rotation of b as a substring. Edge cases like empty strings are handled consistently."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python enumerates all rotations of b and checks for contiguous substring in a, matching Coq\u2019s is_rotation_of and is_substring on lists of characters, including edge cases like empty strings; the spec returns res == existence accordingly."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python checks all rotations of b (including empty case) and tests substring in a, and returns res == existence, matching the Coq spec and helper definitions on concrete inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

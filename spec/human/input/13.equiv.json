@@ -1,0 +1,118 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/human/input/13.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/human/input/13.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": false,
+      "reason": "The Coq spec incorrectly checks if 'output' is a common multiple of 'a' and 'b' (output mod a = 0), whereas the Python code checks if 'output' is the greatest common divisor. For example, with a=3, b=5, output=1, Python returns True but Coq evaluates to False."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": false,
+      "reason": "The Coq spec contains a typo and checks if 'output' is a common multiple of 'a' and 'b' (output mod a = 0), making it unsatisfiable for non-zero inputs, whereas the Python code correctly implements the greatest common divisor check. For example, with a=3, b=5, output=1, Python returns True but Coq evaluates to False."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": false,
+      "reason": "The Coq spec incorrectly requires `output mod a = 0` and `output mod b = 0` (meaning output is a common multiple of a and b), whereas the Python code checks if output is the greatest common divisor. For example, with a=3, b=5, output=1, Python returns True but Coq evaluates to False."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": false,
+      "reason": "The Coq spec checks (output mod a = 0) and (output mod b = 0), meaning output is divisible by both a and b (like an LCM condition), not (a mod output = 0) and (b mod output = 0) (like a GCD condition). The Python code uses math.gcd which computes the greatest common divisor. For example, with a=6, b=4: math.gcd(6,4)=2, but the Coq spec requires output mod 6 = 0 and output mod 4 = 0, so output must be a common multiple of 6 and 4 (like 12), not 2. The Coq spec and Python code compute fundamentally different things."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": false,
+      "reason": "The Coq spec checks (output mod a = 0) and (output mod b = 0), meaning output is divisible by both a and b (like an LCM condition), not (a mod output = 0) and (b mod output = 0) (GCD condition). The Python code uses math.gcd which computes the greatest common divisor. For example, with a=6, b=4: math.gcd(6,4)=2, but the Coq spec requires output mod 6 = 0 and output mod 4 = 0, so output must be a common multiple of 6 and 4 (like 12), not 2. The Coq spec and Python code compute fundamentally different things."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": false,
+      "reason": "The Coq spec checks (output mod a = 0) and (output mod b = 0), meaning output is divisible by both a and b (like an LCM condition), not that a and b are divisible by output (GCD condition). The Python code uses math.gcd which checks the opposite divisibility relationship. For example, with a=6, b=4, output=2: Python returns True (gcd(6,4)=2), but Coq checks 2 mod 6 = 0 which is false, so Coq returns False."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": false,
+      "reason": "Preconditions match, but the Coq spec uses output mod a = 0 and output mod b = 0 (making output a common multiple and an upper bound of all positive common multiples), which is unsatisfiable when both a and b are nonzero and forces output = 0 when exactly one is zero. The Python code checks output == gcd(a, b). Thus they disagree on concrete inputs (e.g., a=3,b=5,output=1)."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": false,
+      "reason": "Coq\u2019s spec checks output mod a = 0 and output mod b = 0 (making output a common multiple) and even an upper bound of all positive common multiples, whereas the Python code checks output == gcd(a,b). Thus they disagree, e.g., a=3, b=5, output=1 satisfies Python but fails the Coq spec; and for a=0, b\u22600 the Coq spec forces output=0 while Python expects |b|."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": false,
+      "reason": "The Coq spec uses output mod a = 0 and output mod b = 0 (a,b divide output) and requires all positive common multiples x be <= output, making it unsatisfiable when a and b are both nonzero and forcing output=0 when exactly one is zero. The Python spec checks output == gcd(a,b), e.g., for (0,5) it requires output=5, and for (3,5) it accepts 1, so they disagree on concrete behavior."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 0,
+      "not_equivalent_votes": 3,
+      "majority_equivalent": false,
+      "unanimous_equivalent": false,
+      "reasons_if_not_equivalent": [
+        "The Coq spec incorrectly checks if 'output' is a common multiple of 'a' and 'b' (output mod a = 0), whereas the Python code checks if 'output' is the greatest common divisor. For example, with a=3, b=5, output=1, Python returns True but Coq evaluates to False.",
+        "The Coq spec contains a typo and checks if 'output' is a common multiple of 'a' and 'b' (output mod a = 0), making it unsatisfiable for non-zero inputs, whereas the Python code correctly implements the greatest common divisor check. For example, with a=3, b=5, output=1, Python returns True but Coq evaluates to False.",
+        "The Coq spec incorrectly requires `output mod a = 0` and `output mod b = 0` (meaning output is a common multiple of a and b), whereas the Python code checks if output is the greatest common divisor. For example, with a=3, b=5, output=1, Python returns True but Coq evaluates to False."
+      ]
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 0,
+      "not_equivalent_votes": 3,
+      "majority_equivalent": false,
+      "unanimous_equivalent": false,
+      "reasons_if_not_equivalent": [
+        "The Coq spec checks (output mod a = 0) and (output mod b = 0), meaning output is divisible by both a and b (like an LCM condition), not (a mod output = 0) and (b mod output = 0) (like a GCD condition). The Python code uses math.gcd which computes the greatest common divisor. For example, with a=6, b=4: math.gcd(6,4)=2, but the Coq spec requires output mod 6 = 0 and output mod 4 = 0, so output must be a common multiple of 6 and 4 (like 12), not 2. The Coq spec and Python code compute fundamentally different things.",
+        "The Coq spec checks (output mod a = 0) and (output mod b = 0), meaning output is divisible by both a and b (like an LCM condition), not (a mod output = 0) and (b mod output = 0) (GCD condition). The Python code uses math.gcd which computes the greatest common divisor. For example, with a=6, b=4: math.gcd(6,4)=2, but the Coq spec requires output mod 6 = 0 and output mod 4 = 0, so output must be a common multiple of 6 and 4 (like 12), not 2. The Coq spec and Python code compute fundamentally different things.",
+        "The Coq spec checks (output mod a = 0) and (output mod b = 0), meaning output is divisible by both a and b (like an LCM condition), not that a and b are divisible by output (GCD condition). The Python code uses math.gcd which checks the opposite divisibility relationship. For example, with a=6, b=4, output=2: Python returns True (gcd(6,4)=2), but Coq checks 2 mod 6 = 0 which is false, so Coq returns False."
+      ]
+    },
+    "gpt-5": {
+      "equivalent_votes": 0,
+      "not_equivalent_votes": 3,
+      "majority_equivalent": false,
+      "unanimous_equivalent": false,
+      "reasons_if_not_equivalent": [
+        "Preconditions match, but the Coq spec uses output mod a = 0 and output mod b = 0 (making output a common multiple and an upper bound of all positive common multiples), which is unsatisfiable when both a and b are nonzero and forces output = 0 when exactly one is zero. The Python code checks output == gcd(a, b). Thus they disagree on concrete inputs (e.g., a=3,b=5,output=1).",
+        "Coq\u2019s spec checks output mod a = 0 and output mod b = 0 (making output a common multiple) and even an upper bound of all positive common multiples, whereas the Python code checks output == gcd(a,b). Thus they disagree, e.g., a=3, b=5, output=1 satisfies Python but fails the Coq spec; and for a=0, b\u22600 the Coq spec forces output=0 while Python expects |b|.",
+        "The Coq spec uses output mod a = 0 and output mod b = 0 (a,b divide output) and requires all positive common multiples x be <= output, making it unsatisfiable when a and b are both nonzero and forcing output=0 when exactly one is zero. The Python spec checks output == gcd(a,b), e.g., for (0,5) it requires output=5, and for (3,5) it accepts 1, so they disagree on concrete behavior."
+      ]
+    }
+  },
+  "overall_equivalent_votes": 0,
+  "overall_not_equivalent_votes": 9,
+  "overall_majority_equivalent": false,
+  "overall_unanimous_equivalent": false,
+  "non_equivalence_reasons": [
+    "The Coq spec incorrectly checks if 'output' is a common multiple of 'a' and 'b' (output mod a = 0), whereas the Python code checks if 'output' is the greatest common divisor. For example, with a=3, b=5, output=1, Python returns True but Coq evaluates to False.",
+    "The Coq spec contains a typo and checks if 'output' is a common multiple of 'a' and 'b' (output mod a = 0), making it unsatisfiable for non-zero inputs, whereas the Python code correctly implements the greatest common divisor check. For example, with a=3, b=5, output=1, Python returns True but Coq evaluates to False.",
+    "The Coq spec incorrectly requires `output mod a = 0` and `output mod b = 0` (meaning output is a common multiple of a and b), whereas the Python code checks if output is the greatest common divisor. For example, with a=3, b=5, output=1, Python returns True but Coq evaluates to False.",
+    "The Coq spec checks (output mod a = 0) and (output mod b = 0), meaning output is divisible by both a and b (like an LCM condition), not (a mod output = 0) and (b mod output = 0) (like a GCD condition). The Python code uses math.gcd which computes the greatest common divisor. For example, with a=6, b=4: math.gcd(6,4)=2, but the Coq spec requires output mod 6 = 0 and output mod 4 = 0, so output must be a common multiple of 6 and 4 (like 12), not 2. The Coq spec and Python code compute fundamentally different things.",
+    "The Coq spec checks (output mod a = 0) and (output mod b = 0), meaning output is divisible by both a and b (like an LCM condition), not (a mod output = 0) and (b mod output = 0) (GCD condition). The Python code uses math.gcd which computes the greatest common divisor. For example, with a=6, b=4: math.gcd(6,4)=2, but the Coq spec requires output mod 6 = 0 and output mod 4 = 0, so output must be a common multiple of 6 and 4 (like 12), not 2. The Coq spec and Python code compute fundamentally different things.",
+    "The Coq spec checks (output mod a = 0) and (output mod b = 0), meaning output is divisible by both a and b (like an LCM condition), not that a and b are divisible by output (GCD condition). The Python code uses math.gcd which checks the opposite divisibility relationship. For example, with a=6, b=4, output=2: Python returns True (gcd(6,4)=2), but Coq checks 2 mod 6 = 0 which is false, so Coq returns False.",
+    "Preconditions match, but the Coq spec uses output mod a = 0 and output mod b = 0 (making output a common multiple and an upper bound of all positive common multiples), which is unsatisfiable when both a and b are nonzero and forces output = 0 when exactly one is zero. The Python code checks output == gcd(a, b). Thus they disagree on concrete inputs (e.g., a=3,b=5,output=1).",
+    "Coq\u2019s spec checks output mod a = 0 and output mod b = 0 (making output a common multiple) and even an upper bound of all positive common multiples, whereas the Python code checks output == gcd(a,b). Thus they disagree, e.g., a=3, b=5, output=1 satisfies Python but fails the Coq spec; and for a=0, b\u22600 the Coq spec forces output=0 while Python expects |b|.",
+    "The Coq spec uses output mod a = 0 and output mod b = 0 (a,b divide output) and requires all positive common multiples x be <= output, making it unsatisfiable when a and b are both nonzero and forcing output=0 when exactly one is zero. The Python spec checks output == gcd(a,b), e.g., for (0,5) it requires output=5, and for (3,5) it accepts 1, so they disagree on concrete behavior."
+  ],
+  "repair_round": 10,
+  "syntax_ok": true
+}

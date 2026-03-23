@@ -1,0 +1,96 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/human/input/32.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/human/input/32.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the polynomial evaluation using Horner's method and exact Fraction arithmetic, and accurately translates the precondition and postcondition."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the polynomial evaluation (Horner's method), precondition (non-empty, even length), and postcondition (root finding) specified in the Coq code."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the polynomial evaluation using Horner's method, matching the Coq Fixpoint. The precondition and postcondition logic (checking list length and verifying the root) are identical to the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. eval_poly uses the same Horner's method evaluation (processing coefficients in reverse order with accumulator pattern matches the Coq recursive definition). problem_32_pre checks length > 0 and even length (using % 2 == 0 which is equivalent to Nat.Even). problem_32_spec checks if eval_poly returns exactly 0, matching the Coq postcondition. Using Fraction for exact arithmetic aligns with Coq's exact Real semantics for concrete rational inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. eval_poly uses the same Horner's method evaluation (iterating from highest to lowest coefficient via reversed), matching the recursive Coq definition. The precondition checks length > 0 and even length. The postcondition checks if the polynomial evaluates to 0 at the output. Using Fraction for exact arithmetic matches Coq's exact Real semantics for rational inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. eval_poly uses the same Horner's method evaluation (processing coefficients in reverse order with accumulator pattern matches Coq's recursive c + x * (eval_poly cs x)). The precondition checks length > 0 and even length. The postcondition checks if eval_poly equals 0. Using Fraction for exact arithmetic matches Coq's exact Real semantics for rational inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both use Horner evaluation yielding the same polynomial value (the reversed loop still matches the Coq recursion), the precondition (non-empty and even length) matches, and the spec checks exact zero using exact arithmetic, so results coincide on all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "eval_poly implements the same Horner evaluation as Coq; the precondition (non-empty and even length) matches, and the spec checks exact zero of the polynomial. Using Fraction preserves exact arithmetic for the concrete inputs, so results align."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python eval_poly matches Coq\u2019s Horner-style evaluation, precondition checks non-empty even-length lists, and spec checks exact zero root; using Fraction preserves exact arithmetic for typical numeric inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 9,
+  "syntax_ok": true
+}

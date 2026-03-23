@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/127.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/127.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the interval intersection logic and primality check as specified in the Coq code."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the interval intersection logic and primality check, returning the equivalent boolean condition as the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the interval intersection logic and primality check, returning the exact same boolean judgments as the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It computes the intersection length as inter_r - inter_l (same as Coq), checks if it's prime, and returns whether result matches 'YES' when prime or 'NO' when not prime. The is_prime function correctly handles all cases including negative numbers and values <= 1 (returning False, matching Coq's prime definition which requires n >= 2). The Coq spec is a conjunction stating result should be 'YES' iff len is prime and 'NO' iff len is not prime, which the Python code checks correctly."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It computes the intersection length as inter_r - inter_l (same as Coq), checks if it's prime, and returns whether the result matches 'YES' for prime lengths or 'NO' for non-prime lengths. The is_prime function correctly handles all cases including negative numbers and values <= 1 (returning False, matching Coq's prime definition which requires n >= 2). The Coq spec states a conjunction of two implications which together mean: result is 'YES' iff length is prime, which is exactly what the Python code checks."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It computes the intersection length as inter_r - inter_l (same as Coq), checks if it's prime, and returns whether the result matches 'YES' for prime lengths or 'NO' for non-prime lengths. The is_prime function correctly handles all cases including negative numbers and values <= 1 (returning False, matching Coq's prime definition which requires n >= 2). The Coq spec states a conjunction of two implications which together mean: result is 'YES' iff length is prime, which is exactly what the Python code checks."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both compute inter_l = max(s1,s2), inter_r = min(e1,e2), length = inter_r - inter_l, and judge result as YES iff length is prime (over integers > 1), NO otherwise. Python\u2019s is_prime returns False for non-positive values, matching Coq\u2019s prime on Z; thus concrete outcomes align."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both compute length = min(e1,e2) - max(s1,s2) and require result to be 'YES' iff this length is prime, else 'NO'. The Python is_prime treats n<=1 and negatives as non-prime, matching Coq\u2019s Z prime behavior."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both compute length = min(e1,e2) - max(s1,s2) and require result to be YES iff that length is prime; Python\u2019s is_prime matches Coq\u2019s Z prime behavior for all integers (negatives, 0, 1 non-prime; standard primes true)."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 1,
+  "syntax_ok": true
+}

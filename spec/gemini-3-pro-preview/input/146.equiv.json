@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/146.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/146.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specifications, accurately translating the first digit extraction, odd digit check, special condition, and counting logic."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code accurately implements the Coq specifications, correctly computing the first and last digits, checking the conditions, and counting the matching elements."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the logic for finding the first digit, checking if digits are odd, and counting elements that satisfy the special condition (n > 10, last digit odd, and first digit odd)."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. FirstDigit computes the first digit by repeatedly dividing by 10. IsOddDigit checks membership in [1,3,5,7,9]. SpecialCondition checks n > 10, last digit is odd, and first digit is odd - matching the Coq definition. CountSpecial counts elements satisfying SpecialCondition and compares to ans. The Coq FirstDigit requires 0 <= n in the base case, and the Python handles this implicitly (negative numbers would loop infinitely or return False, but SpecialCondition only processes n > 10 which are positive). All concrete behaviors match."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. FirstDigit computes the first digit by repeatedly dividing by 10. IsOddDigit checks membership in [1,3,5,7,9]. SpecialCondition checks n > 10, last digit is odd, and first digit is odd - matching the Coq definition. CountSpecial counts elements satisfying SpecialCondition and compares to ans. The Coq FirstDigit requires 0 <= n in the base case, and the Python handles this correctly for positive numbers (which is the intended domain given the context). For negative numbers, the Coq FirstDigit would not be satisfiable (base case requires 0 <= n < 10), and Python's FirstDigit returns False, which is consistent behavior."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. FirstDigit extracts the first digit by repeatedly dividing by 10. IsOddDigit checks membership in [1,3,5,7,9]. SpecialCondition checks n>10, last digit is odd, and first digit is odd - matching the Coq definition. CountSpecial counts elements satisfying SpecialCondition and compares to ans. The only subtle point is negative numbers: Coq's FirstDigit requires 0<=n for the base case, and Python's FirstDigit returns False for n<0, but SpecialCondition requires n>10 anyway, so negatives are excluded. The concrete behavior matches."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both define SpecialCondition as n>10 with odd last and first digits (using modulo and repeated division), and CountSpecial counts such elements and compares with ans. Handling of negatives aligns (excluded by n>10), so results match on all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both implementations accept integers only and define SpecialCondition as n>10 with odd last and odd first digit. Python\u2019s loop computes the same first digit as the Coq FirstDigit relation for n>=0. CountSpecial counts how many elements satisfy this and checks ans equals that count. Thus results match on all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both require n>10, the last digit odd (n%10), and the most significant digit odd (via repeated division by 10). Negative n never qualify. CountSpecial counts how many elements satisfy this condition and checks equality with ans. Python and Coq thus agree on all concrete inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

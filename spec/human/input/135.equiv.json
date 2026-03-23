@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/135.v",
+  "translated_py_file": "spec/human/input/135.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, finding the maximum index where the element is strictly less than the preceding one, or returning -1 if no such index exists."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specifications, including the drop_at condition, the NoDup precondition, and finding the maximum index satisfying drop_at or returning -1."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, finding the maximum index where the element is strictly less than the preceding element, or -1 if no such index exists."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. `drop_at` checks if 1 <= k < len(lst) and lst[k] < lst[k-1], matching the Coq definition. `problem_135_spec` finds the largest k where drop_at holds and returns whether r equals that k (or -1 if none exists), which matches the Coq spec's two cases: r=-1 when no drop_at exists, or r=k where k is the maximum index with drop_at. The precondition checks for no duplicates via set comparison."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. drop_at checks if 1 <= k < len(lst) and lst[k] < lst[k-1], matching the Coq definition. problem_135_pre checks for no duplicates using set comparison. problem_135_spec finds the largest index k where drop_at holds (or -1 if none exists), which matches the Coq spec that r=-1 when no drop_at exists, or r equals the maximum k satisfying drop_at. The Python implementation iterates through all valid k values and keeps track of the maximum, producing the same result as the Coq specification for all concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. drop_at checks if 1 <= k < len(lst) and lst[k] < lst[k-1], matching the Coq definition. problem_135_pre checks for no duplicates using set comparison. problem_135_spec finds the largest index k where drop_at holds (or -1 if none exists), which matches the Coq spec that r=-1 when no drop_at exists, or r equals the maximum k satisfying drop_at. The iteration from 1 to len(lst)-1 naturally finds the maximum such k by updating max_k whenever drop_at is true."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both define drop_at as 1<=k<len(lst) and lst[k] < lst[k-1], the precondition enforces no duplicates, and the spec requires r be the largest such k (or -1 if none). The Python code computes exactly this max_k and checks r == max_k."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python computes the maximum index k (1 <= k < len) where lst[k] < lst[k-1], returning -1 if none. This matches the Coq drop_at predicate and the spec\u2019s requirement for either -1 or the largest such k. The NoDup precondition is checked via set size, aligning with Coq\u2019s NoDup for integer lists."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "drop_at matches the Coq definition (1 <= k < len and lst[k] < lst[k-1]); the precondition NoDup is correctly checked via set for integers; and the spec returns r equal to the maximum such k or -1 if none, exactly as in Coq."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

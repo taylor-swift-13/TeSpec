@@ -1,0 +1,102 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/gemini-3-pro-preview/input/140.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/gemini-3-pro-preview/input/140.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Coq relation defines a deterministic transformation where blocks of spaces > 2 are replaced by '-' and blocks <= 2 are replaced by underscores. The Python code faithfully implements this logic using a loop and lookahead, correctly handling both cases."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code accurately implements the Coq relation by iteratively processing characters, replacing 1 or 2 consecutive spaces with '_' individually, and replacing 3 or more consecutive spaces with a single '-', matching the inductive rules."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the logic of the Coq inductive relation: it replaces single or double spaces with '_' and sequences of three or more spaces with a single '-'."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": false,
+      "reason": "The Coq code replaces each space individually when count <= 2, so 'a  b' (2 spaces) becomes 'a__b' (two underscores). The Python code also advances by 1 for each space when count <= 2, but count_consecutive_spaces is recalculated at each position. For 'a  b', at position 1 (first space), count=2, so it appends '_' and advances by 1. At position 2 (second space), count=1, so it appends '_' and advances by 1. Result is 'a__b'. However, for 3+ spaces like 'a   b', Coq's count at first space is 3, so it outputs '-' and skips all 3 spaces, giving 'a-b'. Python does the same. But for exactly 2 spaces followed by more spaces (e.g., 'a    b' = 4 spaces), Coq at first space sees count=4 > 2, outputs '-' and skips 4. Python does the same. The issue is with exactly 3 spaces: Coq outputs '-' and skips 3, Python outputs '-' and skips 3. Actually the mismatch is: in Coq FS_Space_Short, when count<=2, it replaces ONE space with '_' and recurses on 's' (the rest after that one space). So for 'a  b' (2 spaces), first space: count=2<=2, output '_', recurse on ' b'. Second space: count=1<=2, output '_', recurse on 'b'. Final: 'a__b'. Python matches. For 'a   b' (3 spaces), first space: count=3>2, output '-', skip 3, recurse on 'b'. Final: 'a-b'. Python matches. The codes appear equivalent on these cases, but let me check edge case: single space 'a b'. Coq: count=1<=2, output '_'. Python: same. They match."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq inductive relation: for <=2 consecutive spaces from current position, it replaces one space with '_' and advances by 1; for >2 consecutive spaces, it replaces all with '-' and advances by the full count. This matches the FS_Space_Short and FS_Space_Long constructors respectively."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": false,
+      "reason": "The Coq spec replaces each individual space with '_' when there are <=2 consecutive spaces, processing one space at a time. For example, with '  ' (2 spaces), Coq would: first space sees count=2 (<=2), outputs '_' and recurses on ' '; second space sees count=1 (<=2), outputs '_' and recurses on ''. Result: '__'. The Python code also processes one space at a time when count<=2, so for '  ' it would output '__'. However, for 3+ spaces, Coq outputs '-' and skips all n spaces, while Python does the same. The issue is that in Coq, count_consecutive_spaces counts from the current position including the current space, so for a single space ' ', count=1. For '  ', at first space count=2. The Python matches this. But consider ' x' (space followed by x): Coq count=1, Python count=1, both output '_'. The codes appear equivalent on closer inspection."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both compute the same transformation: non-space chars are preserved; runs of 1 or 2 spaces produce one underscore per space (processed one at a time); runs of >2 spaces are replaced by a single dash and skipped. Auxiliary functions for counting leading spaces and skipping n chars match. Deterministic outputs align for all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both implementations scan left-to-right, copy non-spaces, replace each of up to two consecutive spaces with '_' (advancing by one), and replace any longer run with a single '-' (skipping the run). Empty string and all edge cases align."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python reproduces the Coq relation: non-space chars are copied, runs of 1\u20132 spaces yield one underscore per space, and runs of 3+ spaces are replaced by a single dash, using the same leading-space count and skipping behavior."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 1,
+      "not_equivalent_votes": 2,
+      "majority_equivalent": false,
+      "unanimous_equivalent": false,
+      "reasons_if_not_equivalent": [
+        "The Coq code replaces each space individually when count <= 2, so 'a  b' (2 spaces) becomes 'a__b' (two underscores). The Python code also advances by 1 for each space when count <= 2, but count_consecutive_spaces is recalculated at each position. For 'a  b', at position 1 (first space), count=2, so it appends '_' and advances by 1. At position 2 (second space), count=1, so it appends '_' and advances by 1. Result is 'a__b'. However, for 3+ spaces like 'a   b', Coq's count at first space is 3, so it outputs '-' and skips all 3 spaces, giving 'a-b'. Python does the same. But for exactly 2 spaces followed by more spaces (e.g., 'a    b' = 4 spaces), Coq at first space sees count=4 > 2, outputs '-' and skips 4. Python does the same. The issue is with exactly 3 spaces: Coq outputs '-' and skips 3, Python outputs '-' and skips 3. Actually the mismatch is: in Coq FS_Space_Short, when count<=2, it replaces ONE space with '_' and recurses on 's' (the rest after that one space). So for 'a  b' (2 spaces), first space: count=2<=2, output '_', recurse on ' b'. Second space: count=1<=2, output '_', recurse on 'b'. Final: 'a__b'. Python matches. For 'a   b' (3 spaces), first space: count=3>2, output '-', skip 3, recurse on 'b'. Final: 'a-b'. Python matches. The codes appear equivalent on these cases, but let me check edge case: single space 'a b'. Coq: count=1<=2, output '_'. Python: same. They match.",
+        "The Coq spec replaces each individual space with '_' when there are <=2 consecutive spaces, processing one space at a time. For example, with '  ' (2 spaces), Coq would: first space sees count=2 (<=2), outputs '_' and recurses on ' '; second space sees count=1 (<=2), outputs '_' and recurses on ''. Result: '__'. The Python code also processes one space at a time when count<=2, so for '  ' it would output '__'. However, for 3+ spaces, Coq outputs '-' and skips all n spaces, while Python does the same. The issue is that in Coq, count_consecutive_spaces counts from the current position including the current space, so for a single space ' ', count=1. For '  ', at first space count=2. The Python matches this. But consider ' x' (space followed by x): Coq count=1, Python count=1, both output '_'. The codes appear equivalent on closer inspection."
+      ]
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 7,
+  "overall_not_equivalent_votes": 2,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": false,
+  "non_equivalence_reasons": [
+    "The Coq code replaces each space individually when count <= 2, so 'a  b' (2 spaces) becomes 'a__b' (two underscores). The Python code also advances by 1 for each space when count <= 2, but count_consecutive_spaces is recalculated at each position. For 'a  b', at position 1 (first space), count=2, so it appends '_' and advances by 1. At position 2 (second space), count=1, so it appends '_' and advances by 1. Result is 'a__b'. However, for 3+ spaces like 'a   b', Coq's count at first space is 3, so it outputs '-' and skips all 3 spaces, giving 'a-b'. Python does the same. But for exactly 2 spaces followed by more spaces (e.g., 'a    b' = 4 spaces), Coq at first space sees count=4 > 2, outputs '-' and skips 4. Python does the same. The issue is with exactly 3 spaces: Coq outputs '-' and skips 3, Python outputs '-' and skips 3. Actually the mismatch is: in Coq FS_Space_Short, when count<=2, it replaces ONE space with '_' and recurses on 's' (the rest after that one space). So for 'a  b' (2 spaces), first space: count=2<=2, output '_', recurse on ' b'. Second space: count=1<=2, output '_', recurse on 'b'. Final: 'a__b'. Python matches. For 'a   b' (3 spaces), first space: count=3>2, output '-', skip 3, recurse on 'b'. Final: 'a-b'. Python matches. The codes appear equivalent on these cases, but let me check edge case: single space 'a b'. Coq: count=1<=2, output '_'. Python: same. They match.",
+    "The Coq spec replaces each individual space with '_' when there are <=2 consecutive spaces, processing one space at a time. For example, with '  ' (2 spaces), Coq would: first space sees count=2 (<=2), outputs '_' and recurses on ' '; second space sees count=1 (<=2), outputs '_' and recurses on ''. Result: '__'. The Python code also processes one space at a time when count<=2, so for '  ' it would output '__'. However, for 3+ spaces, Coq outputs '-' and skips all n spaces, while Python does the same. The issue is that in Coq, count_consecutive_spaces counts from the current position including the current space, so for a single space ' ', count=1. For '  ', at first space count=2. The Python matches this. But consider ' x' (space followed by x): Coq count=1, Python count=1, both output '_'. The codes appear equivalent on closer inspection."
+  ],
+  "repair_round": 10,
+  "syntax_ok": true
+}

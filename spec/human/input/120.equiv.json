@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/120.v",
+  "translated_py_file": "spec/human/input/120.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification by checking if the result is exactly the sorted top k elements of the array, which is equivalent to the permutation and partition conditions in the Coq spec."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the preconditions and the specification. The Coq specification uniquely identifies 'res' as the sorted list of the 'k' largest elements of 'arr', which exactly matches the Python implementation using sorted(arr)[len(arr) - k:]."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the preconditions and checks if the result is exactly the k largest elements sorted in ascending order, which uniquely satisfies the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the specification. The precondition checks match (length bounds, element bounds, k bounds). For the spec: (1) length check is identical, (2) sorted check is equivalent to Sorted Z.le, (3) the Python implementation computes the k largest elements by taking the last k elements of the sorted array, which is equivalent to the Coq spec's requirement that res contains the k maximum elements (via Permutation and the comparison condition). Since sorting arr and taking the last k elements gives exactly the k largest elements in sorted order, this matches what the Coq spec describes: res has length k, is sorted, and contains the k largest elements from arr."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the spec. For _pre, it checks the same constraints (length 1-1000, elements in [-1000,1000], k <= len(arr)). For _spec, it checks length equals k, that res is sorted, and that res equals the top k elements of arr sorted in ascending order. This matches the Coq spec: the Coq spec requires res to be sorted, have length k, and contain the k largest elements (with the property that all elements in res are >= all elements not in res). The Python implementation computes this directly by taking the last k elements of the sorted array, which are exactly the k largest elements in ascending order."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. The precondition checks are equivalent (length bounds, element bounds, k bounds). For the spec: (1) length check is identical, (2) sorted check is equivalent to Sorted Z.le, (3) the Python implementation computes expected_res as the top k elements sorted, which matches the Coq spec's requirement that res contains k largest elements (via Permutation with rest_of_arr where all elements in res >= all elements in rest_of_arr) in sorted order. Taking the last k elements of sorted(arr) gives exactly the k largest elements in ascending order, which is what the Coq spec requires."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python preconditions match Coq\u2019s (array length bounds, value bounds, 0 <= k <= len). The Python spec returns the sorted suffix of length k, which is exactly the unique ascending list of the k largest elements, satisfying the Coq spec including permutation and ordering constraints, including k=0."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both specs require res to be the k largest elements from arr in non-decreasing order, with matching preconditions (array length, element bounds, and 0 <= k <= len(arr)). The Python checks res equals sorted(arr)[-k:], which uniquely matches the Coq specification, including k=0."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python preconditions match Coq\u2019s (length bounds, element bounds, and 0 <= k <= len). The spec enforces res is sorted and equal to the last k elements of sorted(arr), which exactly captures Coq\u2019s characterization of a sorted list of the k largest elements via permutation and ordering."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

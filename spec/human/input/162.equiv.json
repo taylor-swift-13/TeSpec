@@ -1,0 +1,96 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/human/input/162.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/human/input/162.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the logic defined in the Coq specification: returning None for an empty string and the MD5 hash for a non-empty string."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, returning None for empty strings and the MD5 hash for non-empty strings, and the precondition and specification functions match the Coq logic."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the logic defined in the Coq specification: returning None for an empty string and the MD5 hash for a non-empty string."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. For empty strings, it returns None (matching Coq's None case). For non-empty strings, it returns the MD5 hash (matching Coq's Some (md5_hash text) case). The spec function correctly checks these conditions: output is None for empty text, and output equals md5_hash(text) for non-empty text. The Coq Parameter md5_hash is an abstract function, and the Python implementation uses the standard MD5 algorithm, which is the intended concrete interpretation."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. For empty strings, it returns None (matching Coq's None case). For non-empty strings, it returns the MD5 hash (matching Coq's Some (md5_hash text) case). The spec function correctly checks these conditions: output is None for empty text, and output equals md5_hash(text) for non-empty text. The Coq Parameter md5_hash is an abstract function that the Python code implements using hashlib.md5, which is the standard MD5 implementation expected by the docstring example."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. For empty strings, both return None. For non-empty strings, both return the MD5 hash. The Coq spec uses an abstract md5_hash parameter, while Python uses hashlib.md5, but since the Coq parameter is meant to represent the ideal MD5 function, and Python's hashlib.md5 is the standard MD5 implementation, they agree on concrete inputs. The precondition is trivially True in both cases, and the spec checks the same conditions."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "For empty input it returns None; for non-empty input it returns Some(md5_hash text) using the same md5_hash function. The precondition is always true. Python\u2019s None/string matches Coq\u2019s option string behavior."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both return None for empty input and Some/hash value for non-empty input using the same md5_hash; the Python spec mirrors the Coq spec with an instantiated md5_hash."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Matches the spec: returns None for empty string, otherwise returns md5_hash(text); same md5_hash is used in both implementation and spec, and precondition is always True."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

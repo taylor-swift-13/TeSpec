@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/11.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/11.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, including the default '0' padding for out-of-bounds indices in string b."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, including the default '0' padding for out-of-bounds characters in string b."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, including the default '0' padding for string b when it is shorter than string a."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. char_to_bool, bool_to_char, and xor_ascii match their Coq counterparts. string_xor_spec checks that len(result) == len(a) and that for each index i < len(a), result[i] equals xor_ascii(a[i], b[i]) where b[i] defaults to '0' if i >= len(b). This matches the Coq spec which uses nth with default '0' for out-of-bounds access in lb."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. char_to_bool, bool_to_char, and xor_ascii match their Coq counterparts. string_xor_spec checks that result has the same length as a, and for each index i < len(a), it verifies that result[i] equals xor_ascii(a[i], b[i]) where b[i] defaults to '0' if i >= len(b), matching the Coq nth function's default behavior. The Python returns True iff the Coq Prop would hold."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. char_to_bool, bool_to_char, and xor_ascii match their Coq counterparts. string_xor_spec checks that result has the same length as a, and for each index i < len(a), verifies that result[i] equals xor_ascii(a[i], b[i]) where b[i] defaults to '0' if i >= len(b), matching the Coq nth default behavior. The Python returns True iff the Coq Prop would hold for the same concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Matches Coq: enforces result length equals a\u2019s length and per-index XOR of chars where b[i] defaults to '0'; char_to_bool and xor behavior align with Coq definitions."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both require result length equals a\u2019s length and check each position is XOR of a[i] and b[i] (using '0' when b is short), with only '1' mapping to true and all other characters to false."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq spec: maps only '1' to true, XORs via booleans, requires result length equals a, and pads b with '0' when shorter; per-index comparison matches the Coq nth-based definition."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

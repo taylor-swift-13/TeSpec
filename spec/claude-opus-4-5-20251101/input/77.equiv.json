@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/claude-opus-4-5-20251101/input/77.v",
+  "translated_py_file": "spec/claude-opus-4-5-20251101/input/77.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly checks if the absolute value of 'a' is a perfect cube using binary search, which is mathematically equivalent to checking if 'a' is a perfect cube, and returns whether this matches 'result'."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly determines if the absolute value of 'a' is a perfect cube using binary search, which is mathematically equivalent to 'a' being a perfect cube, and returns whether this matches 'result'."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly checks if the absolute value of 'a' is a perfect cube using binary search, which is mathematically equivalent to checking if 'a' is a perfect cube, and returns whether this matches the expected 'result'."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code checks if abs(a) is a perfect cube using binary search, and returns whether this matches the given result. The Coq spec says result=true iff there exists n such that n^3=a. For any integer a, a is a perfect cube iff abs(a) is a perfect cube (since if n^3=a for negative a, then (-n)^3=-a means abs(a)=(-n)^3 or similar). The binary search correctly determines if abs(a) is a perfect cube for non-negative values. Both agree on concrete inputs: the Python returns True when result correctly indicates whether a is a perfect cube."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code checks if abs(a) is a perfect cube using binary search, and returns whether this matches the given result. The Coq spec says result=true iff there exists n such that n^3=a. For any integer a, a is a perfect cube iff abs(a) is a perfect cube (since if n^3=a for negative a, then (-n)^3=-a means abs(a)=(-n)^3 or similar). The binary search correctly determines if abs(a) is a perfect cube for non-negative values. Both agree on concrete inputs: result=true should correspond to a being a perfect cube, which the Python code verifies correctly."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code checks if abs(a) is a perfect cube using binary search, and returns whether this matches the given result. The Coq spec says result=true iff there exists n such that n^3=a. For any integer a, a is a perfect cube iff abs(a) is a perfect cube (since if n^3=a for negative a, then (-n)^3=-a means abs(a)=(-n)^3 or similar). The binary search correctly finds if abs(a) has an integer cube root. The Python returns True when is_c==result, which matches the Coq biconditional: result=true iff a is a cube."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "It checks whether |a| is a perfect cube via binary search and returns that this matches result. In Coq, exists n:Z with n^3=a iff |a| is a perfect cube (allowing negative n). Thus the Python predicate returns True exactly when the Coq spec holds for all integers."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code checks if |a| is a perfect cube via binary search and returns is_c == result, matching the Coq spec result = true <-> \u2203n:Z, n^3 = a (since a is a cube iff |a| is a nonnegative cube, with sign handled by integer n)."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python determines if abs(a) is a perfect cube using integer arithmetic and checks equality with result, which is equivalent to the Coq spec that result=true iff there exists an integer n with n^3=a."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/90.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/90.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, checking for list uniformity when res is None, and verifying that res is the strictly second smallest element when res is an integer."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, checking if all elements are equal when res is None, and verifying that res is the strictly second smallest element when res is not None."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, checking if the list has at most one unique element when res is None, and verifying that res is the strictly second smallest element when res is not None."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. For None case, it checks if all elements are equal (set size <= 1), matching the Coq condition that any two elements must be equal. For Some z case, it verifies z is in lst, finds m as the minimum (satisfying the 'forall k, In k lst -> m <= k' condition), checks m < z, and verifies z is the smallest element greater than m (the second-smallest). Both implementations identify the second-smallest element correctly."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. For None case, it checks if all elements are equal (len(set(lst)) <= 1), which matches the Coq condition that any two elements must be equal. For Some z case, it verifies z is in lst, finds the minimum m, checks m < z, and verifies z is the smallest element greater than m - all matching the Coq specification's conditions for the second-smallest element."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. For None case, it checks if all elements are equal (set size <= 1), matching the Coq condition that any two elements must be equal. For Some z case, it verifies z is in lst, finds the minimum m, checks m < z, and verifies z is the smallest element greater than m. The Python implementation correctly captures the concrete behavior of the Coq specification."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Matches Coq: None iff list has at most one distinct element; Some z iff z is in the list, strictly greater than the minimum, and no element between min and z exists (z is the least element > min). Python enforces this via set(), min(), and comparisons."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "For None, Python checks the list has at most one distinct value, matching the Coq condition. For Some z, it verifies z is in the list, the minimum m exists with m<z, and z is minimal among elements >m, aligning with the Coq spec."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "None case checks at most one distinct element; Some case enforces z in lst, uses min(lst) as minimal m, checks m<z and z <= all elements greater than m. This matches the Coq spec on all inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

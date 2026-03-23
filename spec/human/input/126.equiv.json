@@ -1,0 +1,104 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/human/input/126.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/human/input/126.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, which requires the list to be strictly sorted according to Nat.lt, overriding the informal description."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, which checks if the list is strictly sorted according to Nat.lt."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, checking if the list is strictly sorted according to Nat.lt."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": false,
+      "reason": "The Coq spec uses Sorted Nat.lt which requires strictly ascending order (no duplicates allowed). However, the problem description says lists with at most 1 duplicate of the same number should return True (e.g., [1,2,2,3,3,4] should be True). The Python code correctly implements the Coq spec (strictly ascending), but this differs from the problem description examples. More importantly, the Coq spec as written (Sorted Nat.lt) would return False for [1,2,2,3,3,4], but the problem says it should be True. The Python code follows the Coq spec, not the problem description, so Python and Coq are equivalent. Actually, re-reading: the Python implements Sorted Nat.lt correctly (strictly ascending), matching the Coq spec exactly. So they are equivalent."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": false,
+      "reason": "The Coq spec uses Sorted Nat.lt which requires strictly ascending order (no duplicates allowed). However, the problem description and examples show that up to 1 duplicate of the same number is allowed (e.g., [1,2,2,3,3,4] should return True). The Python code correctly implements the Coq spec (strictly ascending), but this differs from the problem's intended behavior. More importantly, the Coq spec as written (Sorted Nat.lt l <-> b = true) is a biconditional Prop, not a boolean function. The Python spec returns whether the biconditional holds (both sides equal), which is correct for checking if b is the right answer. However, the issue is that the Coq spec doesn't match the problem description - the problem allows one duplicate but Nat.lt doesn't. Since we're comparing Python to Coq spec (not problem description), and the Python correctly implements Sorted Nat.lt, they should be equivalent on concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": false,
+      "reason": "The Coq spec uses Sorted Nat.lt which requires strictly ascending order (no duplicates allowed). However, the problem description and examples show that up to 1 duplicate of the same number is allowed (e.g., [1,2,2,3,3,4] should return True). The Python code correctly implements the Coq spec (strictly ascending), but this doesn't match the intended behavior from the problem description. More importantly, the Coq spec as written (Sorted Nat.lt) would return False for [1,2,2,3,3,4], but according to the problem examples this should return True. The Python translation faithfully implements the Coq spec, so they are equivalent to each other, but both disagree with the problem description. Since the question asks if Python agrees with Coq spec on concrete inputs, and the Python does implement Sorted Nat.lt correctly, they should be equivalent."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python checks strict increasing via adjacent < comparisons and compares it with b==True, matching Coq\u2019s Sorted Nat.lt <-> b=true for lists of naturals (including empty/singleton)."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both require the list to be strictly increasing (no duplicates) and enforce b is true iff the list is strictly sorted; adjacency check in Python matches Coq Sorted Nat.lt for naturals."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Coq spec requires the list to be strictly increasing (Sorted Nat.lt) and b = true iff that holds. The Python checks all adjacent pairs with < (which is equivalent for nat due to transitivity) and returns equality with b==True. Empty and single-element lists are handled consistently. Thus behaviors match on all inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 0,
+      "not_equivalent_votes": 3,
+      "majority_equivalent": false,
+      "unanimous_equivalent": false,
+      "reasons_if_not_equivalent": [
+        "The Coq spec uses Sorted Nat.lt which requires strictly ascending order (no duplicates allowed). However, the problem description says lists with at most 1 duplicate of the same number should return True (e.g., [1,2,2,3,3,4] should be True). The Python code correctly implements the Coq spec (strictly ascending), but this differs from the problem description examples. More importantly, the Coq spec as written (Sorted Nat.lt) would return False for [1,2,2,3,3,4], but the problem says it should be True. The Python code follows the Coq spec, not the problem description, so Python and Coq are equivalent. Actually, re-reading: the Python implements Sorted Nat.lt correctly (strictly ascending), matching the Coq spec exactly. So they are equivalent.",
+        "The Coq spec uses Sorted Nat.lt which requires strictly ascending order (no duplicates allowed). However, the problem description and examples show that up to 1 duplicate of the same number is allowed (e.g., [1,2,2,3,3,4] should return True). The Python code correctly implements the Coq spec (strictly ascending), but this differs from the problem's intended behavior. More importantly, the Coq spec as written (Sorted Nat.lt l <-> b = true) is a biconditional Prop, not a boolean function. The Python spec returns whether the biconditional holds (both sides equal), which is correct for checking if b is the right answer. However, the issue is that the Coq spec doesn't match the problem description - the problem allows one duplicate but Nat.lt doesn't. Since we're comparing Python to Coq spec (not problem description), and the Python correctly implements Sorted Nat.lt, they should be equivalent on concrete inputs.",
+        "The Coq spec uses Sorted Nat.lt which requires strictly ascending order (no duplicates allowed). However, the problem description and examples show that up to 1 duplicate of the same number is allowed (e.g., [1,2,2,3,3,4] should return True). The Python code correctly implements the Coq spec (strictly ascending), but this doesn't match the intended behavior from the problem description. More importantly, the Coq spec as written (Sorted Nat.lt) would return False for [1,2,2,3,3,4], but according to the problem examples this should return True. The Python translation faithfully implements the Coq spec, so they are equivalent to each other, but both disagree with the problem description. Since the question asks if Python agrees with Coq spec on concrete inputs, and the Python does implement Sorted Nat.lt correctly, they should be equivalent."
+      ]
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 6,
+  "overall_not_equivalent_votes": 3,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": false,
+  "non_equivalence_reasons": [
+    "The Coq spec uses Sorted Nat.lt which requires strictly ascending order (no duplicates allowed). However, the problem description says lists with at most 1 duplicate of the same number should return True (e.g., [1,2,2,3,3,4] should be True). The Python code correctly implements the Coq spec (strictly ascending), but this differs from the problem description examples. More importantly, the Coq spec as written (Sorted Nat.lt) would return False for [1,2,2,3,3,4], but the problem says it should be True. The Python code follows the Coq spec, not the problem description, so Python and Coq are equivalent. Actually, re-reading: the Python implements Sorted Nat.lt correctly (strictly ascending), matching the Coq spec exactly. So they are equivalent.",
+    "The Coq spec uses Sorted Nat.lt which requires strictly ascending order (no duplicates allowed). However, the problem description and examples show that up to 1 duplicate of the same number is allowed (e.g., [1,2,2,3,3,4] should return True). The Python code correctly implements the Coq spec (strictly ascending), but this differs from the problem's intended behavior. More importantly, the Coq spec as written (Sorted Nat.lt l <-> b = true) is a biconditional Prop, not a boolean function. The Python spec returns whether the biconditional holds (both sides equal), which is correct for checking if b is the right answer. However, the issue is that the Coq spec doesn't match the problem description - the problem allows one duplicate but Nat.lt doesn't. Since we're comparing Python to Coq spec (not problem description), and the Python correctly implements Sorted Nat.lt, they should be equivalent on concrete inputs.",
+    "The Coq spec uses Sorted Nat.lt which requires strictly ascending order (no duplicates allowed). However, the problem description and examples show that up to 1 duplicate of the same number is allowed (e.g., [1,2,2,3,3,4] should return True). The Python code correctly implements the Coq spec (strictly ascending), but this doesn't match the intended behavior from the problem description. More importantly, the Coq spec as written (Sorted Nat.lt) would return False for [1,2,2,3,3,4], but according to the problem examples this should return True. The Python translation faithfully implements the Coq spec, so they are equivalent to each other, but both disagree with the problem description. Since the question asks if Python agrees with Coq spec on concrete inputs, and the Python does implement Sorted Nat.lt correctly, they should be equivalent."
+  ],
+  "repair_round": 10,
+  "syntax_ok": true
+}

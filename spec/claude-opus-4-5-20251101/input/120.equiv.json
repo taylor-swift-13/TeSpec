@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/claude-opus-4-5-20251101/input/120.v",
+  "translated_py_file": "spec/claude-opus-4-5-20251101/input/120.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq specifications, correctly implementing the properties of sorting, sublist permutation, and the top-k elements logic using equivalent list operations and comprehensions."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq specifications, correctly implementing the list operations, quantifiers, and logical conditions for checking if a list contains the top-k sorted elements of another list."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq specification, checking all conditions including list length, sortedness, sublist permutation, and the property that kept elements are greater than or equal to dropped elements."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification for concrete inputs. is_sorted checks ascending order, count_occ_Z counts occurrences, is_permutation_of_sublist verifies result elements don't exceed original counts, and maximum_spec checks all conditions: length equals k, sorted, permutation of sublist, k <= length of arr, all result elements are in arr, and for any dropped element (where arr has more occurrences than result), all kept elements in result are >= dropped. The logic matches the Coq spec for all concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements all the concrete checks from the Coq specification: length check, sorted check (ascending order), permutation sublist check (counts in result <= counts in arr), k <= len(arr) check, all result elements in arr check, and the final condition that any dropped element (appearing more in arr than result) must be <= all kept elements in result. The is_sorted implementation correctly checks ascending order matching the Coq definition. All conditions produce the same boolean/concrete results for any given inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements all the concrete checks from the Coq specification: length check, sorted check (ascending order), permutation sublist check (counts in result <= counts in arr), k <= len(arr), all result elements are in arr, and the 'top k' property that any dropped element (with higher count in arr than result) must be <= all kept elements. The is_sorted implementation checks consecutive pairs which is equivalent to the Coq definition for concrete lists. The are_top_k_elements function is defined but not used in maximum_spec, matching the Coq code structure where it's also not used in maximum_spec."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "All helpers and maximum_spec enforce the same concrete conditions: non-decreasing order, multiset inclusion via counts, length and membership checks, and the dropped-vs-kept dominance. The Python are_top_k_elements matches the Coq quantification (k unused). The restriction to set(result) in is_permutation_of_sublist is sufficient to catch any violation."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "All predicates match on concrete behavior: sorting via adjacent <= implies the Coq pairwise order, count_occ uses exact equality, sub-multiset check compares counts for result elements, are_top_k_elements matches the Coq implications, and maximum_spec enforces the same length, sortedness, sub-multiset, in-arr, and dominance conditions. Python int semantics align with Coq Z for these uses."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python mirrors Coq on all checks: nondecreasing sorting (adjacent implies all-pairs for integers), occurrence counts, sub-multiset condition, k and membership constraints, and the kept >= dropped condition. Quantification over set(result) in the sub-multiset check is sufficient since other elements have zero count in result."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/claude-3-7-sonnet-20250219/input/115.v",
+  "translated_py_file": "spec/claude-3-7-sonnet-20250219/input/115.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq specification, checking all constraints on the grid and capacity, and correctly computing the expected answer using the same ceiling division logic."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, including the helper functions and all constraints on the grid and capacity."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq specification, including all constraints on the grid and capacity, and accurately implements the ceiling division and sum logic."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It checks all the same preconditions (elements are 0 or 1, capacity in [1,10], grid length in [1,100], all rows same length, row lengths in [1,100]) and computes the expected answer using the same fold/sum logic with ceil_div. The sum_list uses Python's sum which matches fold_left Nat.add with 0. The ceil_div formula is identical. The Python guard for d==0 in ceil_div is irrelevant since capacity is constrained to be >= 1. The fold_left accumulation in Coq matches the iterative sum in Python."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It checks all the same preconditions (elements are 0 or 1, capacity in [1,10], grid length in [1,100], all rows same length, row lengths in [1,100]) and computes the expected answer using the same fold/accumulation logic with ceil_div and sum_list. The ceil_div guard for d==0 is irrelevant since capacity is constrained to be >= 1. The sum_list and ceil_div functions match their Coq counterparts for concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements all the constraints from the Coq spec: it checks that all elements are 0 or 1, capacity is in [1,10], grid length is in [1,100], all rows have equal length, each row length is in [1,100], and computes the expected answer using the same fold_left logic (accumulating ceil_div of sum_list for each row). The ceil_div function handles d=0 specially in Python but since capacity >= 1 is enforced, this case never occurs. The sum_list and ceil_div implementations match the Coq definitions for valid inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python enforces the same constraints (0/1 entries, capacity and size bounds, equal row lengths) and computes ans as the sum of ceil_div(sum(row), capacity). ceil_div behavior matches Coq (including d=0, though capacity>=1 prevents it)."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python enforces the same constraints (0/1 entries, capacity and size bounds, equal row lengths) and computes ans as the sum over rows of ceil_div(sum(row), capacity). With capacity >= 1, ceil_div matches Coq\u2019s (n + d - 1) / d, so the returned judgment aligns on all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python enforces the same constraints and computes ans as the sum over rows of ceil_div(sum(row), capacity). sum_list and ceil_div match Coq behavior (including d=0 case, though capacity>=1 prevents it). Thus concrete outcomes agree for all valid inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

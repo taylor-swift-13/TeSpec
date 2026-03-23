@@ -1,0 +1,42 @@
+def is_lowercase(c: str) -> bool:
+    n = ord(c)
+    return 97 <= n <= 122
+
+def rotate_char(c: str) -> str:
+    if is_lowercase(c):
+        n = ord(c)
+        shifted = (n - 97 + 4) % 26 + 97
+        return chr(shifted)
+    else:
+        return c
+
+def encrypt_aux(s: list) -> list:
+    return [rotate_char(c) for c in s]
+
+def string_to_list(s: str) -> list:
+    return list(s)
+
+def list_to_string(l: list) -> str:
+    return "".join(l)
+
+def encrypt_spec(s: str, result: str) -> bool:
+    return result == list_to_string(encrypt_aux(string_to_list(s)))
+
+def _impl(s):
+    d = 'abcdefghijklmnopqrstuvwxyz'
+    return "".join(map(lambda ch: chr((ord(ch) - ord("a") + 4) % 26 + ord("a")) if ch in d else ch, s))
+
+def precondition(input) -> bool:
+    return True
+
+def postcondition(input, output) -> bool:
+    if not isinstance(input, tuple):
+        input = tuple(input)
+    return bool(encrypt_spec(*input, output))
+
+def encrypt(*args):
+    _input = tuple(args)
+    assert precondition(_input)
+    _output = _impl(*args)
+    assert postcondition(_input, _output)
+    return _output

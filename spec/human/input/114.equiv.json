@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/114.v",
+  "translated_py_file": "spec/human/input/114.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the precondition and uses Kadane's algorithm to efficiently compute the minimum contiguous subarray sum, which perfectly matches the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification by using Kadane's algorithm to find the actual minimum contiguous sub-array sum and comparing it to min_sum."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the specification by computing the minimum contiguous subarray sum using Kadane's algorithm and comparing it to the given min_sum."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the specification. problem_114_pre checks if nums is non-empty. problem_114_spec uses Kadane's algorithm (modified for minimum) to find the actual minimum subarray sum and checks if it equals min_sum. This correctly verifies both the existence condition (there exists a subarray with sum = min_sum) and the minimality condition (all subarrays have sum >= min_sum). The Coq spec defines what it means for min_sum to be the minimum subarray sum, and the Python code correctly determines whether a given min_sum satisfies that definition by computing the actual minimum and comparing."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the specification. problem_114_pre checks if nums is non-empty. problem_114_spec uses Kadane's algorithm (modified for minimum) to find the actual minimum subarray sum and checks if it equals min_sum. This correctly verifies both the existence condition (there exists a subarray with sum = min_sum) and the minimality condition (no subarray has sum < min_sum). The Coq spec defines what it means for min_sum to be the minimum subarray sum, and the Python code verifies this by computing the actual minimum and comparing. For all concrete inputs, they will agree on whether min_sum is the correct minimum subarray sum."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the specification. problem_114_pre checks if nums is non-empty. problem_114_spec uses Kadane's algorithm (modified for minimum) to find the minimum sum of any contiguous non-empty subarray, which matches the Coq spec's definition of a subarray as prefix ++ sub_array ++ suffix (i.e., contiguous). The algorithm correctly computes the minimum subarray sum and checks if it equals min_sum, which is equivalent to verifying both the existence and minimality conditions in the Coq spec."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python computes the minimum sum over all non-empty contiguous subarrays (Kadane for minima) and checks equality with min_sum, matching the Coq existence and minimality spec; it also returns False on empty input, consistent with the Coq spec being unsatisfiable there."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python computes the minimum sum over all non-empty contiguous subarrays (via min-Kadane) and compares to min_sum; empty list returns False, matching the Coq spec\u2019s false when no non-empty subarray exists. Integers and sums align with Coq Z and list_sum."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python computes the minimum contiguous subarray sum (Kadane variant) and checks equality with min_sum, matching the Coq existence and minimality spec; precondition and list_sum also align, including the empty-list case."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

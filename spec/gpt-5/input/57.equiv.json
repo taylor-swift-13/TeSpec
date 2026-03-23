@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gpt-5/input/57.v",
+  "translated_py_file": "spec/gpt-5/input/57.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification by checking if the list is sorted in ascending or descending order and comparing the result to 'res'."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the adjacency checks and the monotonic specification, matching the Coq logic for all concrete inputs."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the adjacent element comparisons and the monotonic specification, matching the Coq logic for all concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. adj_le checks that all adjacent pairs satisfy a <= b, adj_ge checks a >= b, and monotonic_spec returns true iff res equals whether the list is monotonically increasing or decreasing. The Coq spec uses universal quantification over indices with nth_error, which the Python loops faithfully implement by iterating through valid adjacent pairs. Empty and single-element lists are correctly handled as monotonic in both (vacuously true in Coq, loop doesn't execute in Python)."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. adj_le checks that all adjacent pairs satisfy a <= b, adj_ge checks that all adjacent pairs satisfy a >= b, and monotonic_spec returns true iff res equals whether the list is monotonic (either non-decreasing or non-increasing). The Coq Prop definitions using forall over indices with nth_error are equivalent to iterating through adjacent pairs, and the biconditional in monotonic_spec is correctly translated as an equality check between res and the computed boolean."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. adj_le checks that all adjacent pairs satisfy a <= b, adj_ge checks that all adjacent pairs satisfy a >= b, and monotonic_spec returns true iff res equals whether the list is monotonic (either non-decreasing or non-increasing). The Coq Prop definitions using forall over indices with nth_error are equivalent to iterating through adjacent pairs, and the biconditional in monotonic_spec is correctly translated as an equality check between res and the boolean result of the disjunction."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "adj_le/adj_ge check all adjacent pairs exactly as the Coq nth_error definitions (vacuously true for lists of length < 2), and monotonic_spec returns true iff res matches (adj_le or adj_ge), aligning with the Coq iff specification."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both adj_le/adj_ge check all adjacent pairs and return true iff nondecreasing/nonincreasing respectively; empty and singleton lists vacuously satisfy both. The Python monotonic_spec returns res == (adj_le or adj_ge), matching the Coq iff condition on res=true."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python checks adjacent nondecreasing/nonincreasing exactly like the Coq definitions and returns res == (adj_le or adj_ge), matching the Coq iff specification on all inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

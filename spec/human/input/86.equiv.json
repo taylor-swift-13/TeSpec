@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/86.v",
+  "translated_py_file": "spec/human/input/86.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq logic, including the reverse accumulation of characters and sorting them upon encountering spaces or the end of the string. Python's built-in sorted function is equivalent to Coq's insertion sort implementation."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq logic, using a loop instead of recursion for anti_shuffle_aux and Python's built-in sorted function which is functionally equivalent to the Coq insertion sort."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The recursive anti_shuffle_aux is translated to an equivalent iterative loop, accumulating characters in reverse order and sorting them when a space is encountered, which matches the Coq logic. Python's sorted() is equivalent to Coq's insertion sort for characters."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both implementations split the string by spaces, sort each word's characters by ASCII value, and rejoin with spaces. The Coq version uses insertion sort while Python uses built-in sorted(), but both produce the same sorted result. The accumulator reversal in Python (c + current_acc) matches Coq's (String c acc) which prepends characters, and both apply sort_chars to the accumulated word, making the reversal irrelevant since sorting produces the same result regardless of input order."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both implementations split the string by spaces, sort each word's characters by ASCII value, and rejoin with spaces. The Coq code accumulates characters in reverse order (prepending with `String c acc`) then sorts, while Python also prepends (`c + current_acc`) then sorts. Since sorting produces the same result regardless of input order, both yield identical outputs. The `sort_chars` in Python uses `sorted()` which sorts by ASCII value, matching Coq's insertion sort by `nat_of_ascii`. Both handle spaces identically, preserving word order and spaces."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both implementations split the string by spaces, sort each word's characters by ASCII value, and rejoin with spaces. The Coq version uses insertion sort while Python uses built-in sorted(), but both produce the same sorted result. The accumulator builds words in reverse order (prepending characters), but sorting makes the order irrelevant. Both handle spaces identically, preserving word order and spaces in the output."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both split on spaces and sort characters of each word by ASCII order, preserving spaces and word order. Python\u2019s implementation matches the Coq anti_shuffle_impl and the spec for all ASCII inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both split only on space characters, sort each word\u2019s characters in ascending ASCII order, preserve spaces and word order, and the spec ties output to this implementation. Python\u2019s use of sorted matches Coq\u2019s insertion sort on ASCII."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both split only on spaces, sort each word\u2019s characters by ASCII order, preserve spaces and word order, and the spec directly compares to the implementation result."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 1,
+  "syntax_ok": true
+}

@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/122.v",
+  "translated_py_file": "spec/human/input/122.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the logic defined in the Coq specification, including the helper function for checking digit count (range (-100, 100)), slicing the array, filtering, and summing."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq definitions, including the bounds check for at most two digits, the precondition, and the specification logic using list slicing, filtering, and summing."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code implements the exact same logic for checking two-digit numbers (-100 < n < 100) and performs the same list operations (take k, filter, sum) as the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The is_at_most_two_digits function checks -100 < n < 100, matching Z.ltb(-100, n) && Z.ltb(n, 100). The precondition checks the same bounds. The spec takes first k elements, filters by the two-digit condition, and sums them. Python's sum() with default 0 matches fold_left Z.add with initial 0."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The is_at_most_two_digits function checks -100 < n < 100, matching Z.ltb(-100, n) && Z.ltb(n, 100). The precondition checks the same bounds. The spec takes first k elements, filters by the two-digit condition, and sums them. Python's sum() on an empty list returns 0, matching fold_left Z.add [] 0 = 0. All concrete behaviors align."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: is_at_most_two_digits checks -100 < n < 100 (matching Z.ltb(-100, n) && Z.ltb(n, 100)), problem_122_pre checks the same constraints, and problem_122_spec takes first k elements, filters by the two-digit check, and sums them (fold_left Z.add with initial 0 equals sum). All concrete behaviors match."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both compute the sum of elements among the first k that satisfy -100 < n < 100, using equivalent slicing/filtering and summation; preconditions match."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python mirrors Coq: same preconditions, takes first k elements, filters -100 < n < 100, and sums them (starting from 0). Both use unbounded integers and yield the same result on all concrete inputs satisfying the preconditions."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python mirrors Coq: it filters numbers with -100<n<100, takes the first k elements, and sums them; the precondition checks and sum behavior match Coq\u2019s firstn/filter/fold_left with Z.add."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

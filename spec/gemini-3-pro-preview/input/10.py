@@ -6,5 +6,6 @@ def make_palindrome_spec(s, res):
         p = s[:i]
         q = s[i:]
         if is_palindrome(q):
-            return res == s + p[::-1]
+            expected_res = s + p[::-1]
+            return res == expected_res
     return False

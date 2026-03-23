@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/claude-opus-4-5-20251101/input/87.v",
+  "translated_py_file": "spec/claude-opus-4-5-20251101/input/87.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq logic, including the descending column index order within each row and the ascending row index order overall."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python implementation correctly mirrors the Coq logic, including the descending column index order achieved via reversing the list, and the ascending row index order."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python implementation correctly mirrors the Coq logic. find_in_row_desc collects matching coordinates and reverses them to match the descending column index order produced by the Coq recursive function. get_row_helper and get_row_spec also match the Coq definitions."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python find_in_row_desc and get_row_helper produce the same results as the Coq versions on all concrete inputs (both produce matches in descending column order within each row, rows in ascending order). The Python get_row_spec checks only result equality with get_row_helper, which is the key conjunct of the Coq spec\u2014the other Coq conjuncts are properties that hold whenever the first conjunct holds."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. find_in_row_desc builds a list of coordinates where the value equals x, appending matches to the end then reversing (equivalent to Coq's 'rest ++ [(row_idx, col_idx)]' pattern which puts later columns first). get_row_helper iterates through rows and extends with results from find_in_row_desc. The get_row_spec checks equality with get_row_helper(lst, x, 0), which matches the first conjunct of the Coq spec. The other Coq conjuncts are properties that follow from this equality and don't need separate checking for concrete equivalence."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. find_in_row_desc builds a list of coordinates where the value equals x, appending matches to the end then reversing (equivalent to Coq's rest ++ [(row_idx, col_idx)] pattern which builds in descending column order). get_row_helper iterates through rows, extending results with each row's findings. The get_row_spec checks if result equals get_row_helper(lst, x, 0), which matches the first conjunct of the Coq spec. The other conjuncts in Coq's spec are properties that follow from this equality and are not separate computational checks. On concrete inputs, both produce the same list of coordinates."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python builds the same coordinates: within each row it collects matches then reverses to get descending column order, and across rows it concatenates in increasing row order. get_row_spec checks equality with get_row_helper, which matches the Coq spec\u2019s result and implied properties."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both compute all (row,col) where lst[row][col] == x, ordering rows ascending and columns descending. Python reverses per-row matches to match Coq\u2019s descending order, and get_row_spec reduces to result == get_row_helper, so judgments align on all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python find_in_row_desc collects matches then reverses, matching Coq\u2019s rest-then-append order (descending columns). get_row_helper processes rows in increasing index order identically. get_row_spec checks equality with the helper result, which characterizes the Coq spec for all inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

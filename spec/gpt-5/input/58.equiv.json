@@ -1,0 +1,100 @@
+{
+  "source_v_file": "spec/gpt-5/input/58.v",
+  "translated_py_file": "spec/gpt-5/input/58.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly checks for no duplicates, sorted order, and that the elements of 'out' are exactly the intersection of 'l1' and 'l2', matching the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly checks for no duplicates, sorted order, and exact set intersection, matching the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly checks for no duplicates, sorted order, and set intersection, which exactly matches the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": false,
+      "reason": "The Python code checks if set(out) equals the intersection of set(l1) and set(l2), but this loses information about duplicates in l1 and l2. The Coq spec says 'In x out <-> (In x l1 /\\ In x l2)', which only checks membership (whether x appears at least once), not the full set equality. However, the real issue is that the Python sorted() function returns a new list sorted in ascending order, but Coq's Sorted Z.le allows equal adjacent elements and is non-strict. For lists like [1, 1], sorted([1, 1]) == [1, 1] is True, so that's fine. The actual mismatch is: if l1 = [1, 1] and l2 = [1], then set(l1).intersection(set(l2)) = {1}, and if out = [1], the Python code would accept it. The Coq spec would also accept it since In 1 [1] <-> (In 1 [1,1] /\\ In 1 [1]). So they agree here. But consider: the Python code uses set(out) != set(l1).intersection(set(l2)), which checks if the elements in out match the intersection. But the Coq spec checks 'forall x, In x out <-> ...', which is equivalent to checking that out contains exactly the elements in the intersection (with membership semantics). Since out must have NoDup, set(out) correctly represents its elements. The intersection check is correct. Actually, they appear equivalent for concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": false,
+      "reason": "The Python code checks if set(out) equals the intersection of set(l1) and set(l2), but the Coq spec requires that for all x, x is in out iff x is in both l1 and l2. If l1 or l2 contain duplicates, the Coq spec still requires out to contain exactly those elements that appear in both lists (counting membership, not multiplicity). The Python code using set operations would give the same result for membership. However, the Python sorted() function returns a new list sorted in ascending order, but the comparison 'out != sorted(out)' checks exact equality. For lists with equal elements, sorted() uses stable sort and preserves order of equal elements, so this should work. The real issue is that sorted(out) in Python uses default < comparison which for integers matches Z.le for strict ordering, but Z.le is non-strict (<=). A list [1,1,2] would be Sorted Z.le in Coq but the NoDup check would fail anyway. Actually, the main issue is that the Coq Sorted uses Z.le (<=) which allows equal consecutive elements, but the Python check 'out != sorted(out)' would accept [1,2,3] and reject [2,1,3]. Since NoDup is also required, equal consecutive elements won't occur in valid outputs. The logic appears equivalent for concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": false,
+      "reason": "The Coq spec requires that out contains exactly the elements that are in both l1 and l2 (the intersection), but it does not require out to contain ALL such elements - it only requires that every element in out is in both l1 and l2, and vice versa. However, the Python code checks set(out) != set(l1).intersection(set(l2)), which correctly captures this bidirectional condition. The actual issue is that the Python sorted() function returns a new list sorted in ascending order, but Coq's Sorted Z.le allows equal adjacent elements and is non-strict. More importantly, sorted(out) in Python with default comparison will sort integers correctly matching Z.le. The real potential mismatch is that out != sorted(out) uses list equality which requires exact element-by-element match, which should correctly verify the sorted property. Actually, upon closer inspection, the Python translation appears correct for concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Checks for NoDup via set length, sorted nondecreasing order, and membership equivalence via set intersection all match the Coq spec for lists of integers."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Checks NoDup via set length, sorted order via Python sorted, and membership via set intersection; matches the Coq spec for all integer lists."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Checks no duplicates, nondecreasing sort order, and that out contains exactly elements present in both l1 and l2 (as a set), matching the Coq spec on all integer lists."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 0,
+      "not_equivalent_votes": 3,
+      "majority_equivalent": false,
+      "reasons_if_not_equivalent": [
+        "The Python code checks if set(out) equals the intersection of set(l1) and set(l2), but this loses information about duplicates in l1 and l2. The Coq spec says 'In x out <-> (In x l1 /\\ In x l2)', which only checks membership (whether x appears at least once), not the full set equality. However, the real issue is that the Python sorted() function returns a new list sorted in ascending order, but Coq's Sorted Z.le allows equal adjacent elements and is non-strict. For lists like [1, 1], sorted([1, 1]) == [1, 1] is True, so that's fine. The actual mismatch is: if l1 = [1, 1] and l2 = [1], then set(l1).intersection(set(l2)) = {1}, and if out = [1], the Python code would accept it. The Coq spec would also accept it since In 1 [1] <-> (In 1 [1,1] /\\ In 1 [1]). So they agree here. But consider: the Python code uses set(out) != set(l1).intersection(set(l2)), which checks if the elements in out match the intersection. But the Coq spec checks 'forall x, In x out <-> ...', which is equivalent to checking that out contains exactly the elements in the intersection (with membership semantics). Since out must have NoDup, set(out) correctly represents its elements. The intersection check is correct. Actually, they appear equivalent for concrete inputs.",
+        "The Python code checks if set(out) equals the intersection of set(l1) and set(l2), but the Coq spec requires that for all x, x is in out iff x is in both l1 and l2. If l1 or l2 contain duplicates, the Coq spec still requires out to contain exactly those elements that appear in both lists (counting membership, not multiplicity). The Python code using set operations would give the same result for membership. However, the Python sorted() function returns a new list sorted in ascending order, but the comparison 'out != sorted(out)' checks exact equality. For lists with equal elements, sorted() uses stable sort and preserves order of equal elements, so this should work. The real issue is that sorted(out) in Python uses default < comparison which for integers matches Z.le for strict ordering, but Z.le is non-strict (<=). A list [1,1,2] would be Sorted Z.le in Coq but the NoDup check would fail anyway. Actually, the main issue is that the Coq Sorted uses Z.le (<=) which allows equal consecutive elements, but the Python check 'out != sorted(out)' would accept [1,2,3] and reject [2,1,3]. Since NoDup is also required, equal consecutive elements won't occur in valid outputs. The logic appears equivalent for concrete inputs.",
+        "The Coq spec requires that out contains exactly the elements that are in both l1 and l2 (the intersection), but it does not require out to contain ALL such elements - it only requires that every element in out is in both l1 and l2, and vice versa. However, the Python code checks set(out) != set(l1).intersection(set(l2)), which correctly captures this bidirectional condition. The actual issue is that the Python sorted() function returns a new list sorted in ascending order, but Coq's Sorted Z.le allows equal adjacent elements and is non-strict. More importantly, sorted(out) in Python with default comparison will sort integers correctly matching Z.le. The real potential mismatch is that out != sorted(out) uses list equality which requires exact element-by-element match, which should correctly verify the sorted property. Actually, upon closer inspection, the Python translation appears correct for concrete inputs."
+      ]
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 6,
+  "overall_not_equivalent_votes": 3,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [
+    "The Python code checks if set(out) equals the intersection of set(l1) and set(l2), but this loses information about duplicates in l1 and l2. The Coq spec says 'In x out <-> (In x l1 /\\ In x l2)', which only checks membership (whether x appears at least once), not the full set equality. However, the real issue is that the Python sorted() function returns a new list sorted in ascending order, but Coq's Sorted Z.le allows equal adjacent elements and is non-strict. For lists like [1, 1], sorted([1, 1]) == [1, 1] is True, so that's fine. The actual mismatch is: if l1 = [1, 1] and l2 = [1], then set(l1).intersection(set(l2)) = {1}, and if out = [1], the Python code would accept it. The Coq spec would also accept it since In 1 [1] <-> (In 1 [1,1] /\\ In 1 [1]). So they agree here. But consider: the Python code uses set(out) != set(l1).intersection(set(l2)), which checks if the elements in out match the intersection. But the Coq spec checks 'forall x, In x out <-> ...', which is equivalent to checking that out contains exactly the elements in the intersection (with membership semantics). Since out must have NoDup, set(out) correctly represents its elements. The intersection check is correct. Actually, they appear equivalent for concrete inputs.",
+    "The Python code checks if set(out) equals the intersection of set(l1) and set(l2), but the Coq spec requires that for all x, x is in out iff x is in both l1 and l2. If l1 or l2 contain duplicates, the Coq spec still requires out to contain exactly those elements that appear in both lists (counting membership, not multiplicity). The Python code using set operations would give the same result for membership. However, the Python sorted() function returns a new list sorted in ascending order, but the comparison 'out != sorted(out)' checks exact equality. For lists with equal elements, sorted() uses stable sort and preserves order of equal elements, so this should work. The real issue is that sorted(out) in Python uses default < comparison which for integers matches Z.le for strict ordering, but Z.le is non-strict (<=). A list [1,1,2] would be Sorted Z.le in Coq but the NoDup check would fail anyway. Actually, the main issue is that the Coq Sorted uses Z.le (<=) which allows equal consecutive elements, but the Python check 'out != sorted(out)' would accept [1,2,3] and reject [2,1,3]. Since NoDup is also required, equal consecutive elements won't occur in valid outputs. The logic appears equivalent for concrete inputs.",
+    "The Coq spec requires that out contains exactly the elements that are in both l1 and l2 (the intersection), but it does not require out to contain ALL such elements - it only requires that every element in out is in both l1 and l2, and vice versa. However, the Python code checks set(out) != set(l1).intersection(set(l2)), which correctly captures this bidirectional condition. The actual issue is that the Python sorted() function returns a new list sorted in ascending order, but Coq's Sorted Z.le allows equal adjacent elements and is non-strict. More importantly, sorted(out) in Python with default comparison will sort integers correctly matching Z.le. The real potential mismatch is that out != sorted(out) uses list equality which requires exact element-by-element match, which should correctly verify the sorted property. Actually, upon closer inspection, the Python translation appears correct for concrete inputs."
+  ],
+  "repair_round": 0,
+  "syntax_ok": true
+}

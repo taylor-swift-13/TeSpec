@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/108.v",
+  "translated_py_file": "spec/human/input/108.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq logic, including the auxiliary functions for summing digits and finding the most significant digit, as well as the main logic for counting numbers with a positive digit sum."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq definitions, including the auxiliary functions for digit sum and most significant digit, and accurately implements the filtering logic in count_nums_impl."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq logic, accurately implementing the digit sum and most significant digit extraction for both positive and negative integers, and correctly counts the elements satisfying the condition."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. Both compute sum_digits the same way: for positive numbers, sum all digits; for negative numbers, compute sum of digits of absolute value minus 2 times the most significant digit (effectively making the first digit negative). The count_nums_impl counts elements with sum_digits > 0. The iterative Python implementations match the recursive Coq definitions with fuel parameters. The fuel is set to n itself which is sufficient for any number's digit count."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. nat_sum_digits_aux sums digits with fuel limit, nat_get_msd_aux finds most significant digit, sum_digits handles positive/negative/zero cases identically (for negative z, computes sum of digits minus 2*msd which effectively makes first digit negative), and count_nums_impl counts elements with sum_digits > 0. The iterative Python implementations match the recursive Coq definitions for all concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. nat_sum_digits_aux sums digits with fuel limit, nat_get_msd_aux finds most significant digit, sum_digits handles positive/negative/zero cases identically (for negative z, computes sum of digits minus 2*msd which effectively makes first digit negative), and count_nums_impl counts elements with digit sum > 0. The iterative Python implementations match the recursive Coq definitions on all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq logic: digit-sum and most-significant-digit helpers match via loops, negative handling uses sum(abs) - 2*msd, and counting checks sum_digits(z) > 0. For all integer inputs, results coincide."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python mirrors Coq\u2019s digit-sum and most-significant-digit logic (including the negative-number adjustment) and counts elements with sum_digits > 0; loop guards match Coq\u2019s early termination on n=0/fuel, so results align for all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq logic: nat-based digit sum and most-significant-digit via div/mod are replicated, negative handling uses sum(p) - 2*msd(p), and count checks sum_digits(z) > 0. Zero and edge cases match; pre/spec are identical."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

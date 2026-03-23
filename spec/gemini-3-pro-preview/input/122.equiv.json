@@ -1,0 +1,100 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/122.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/122.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, filtering the first k elements by absolute value < 100 and checking if their sum equals the result."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, matching the absolute value condition, the list slicing for the first k elements, and the sum of the filtered elements."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq specification, correctly implementing the absolute value check, list slicing for the first k elements, and the sum comparison."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": false,
+      "reason": "The Coq code uses Z.ltb (Z.abs x) 100 which checks if abs(x) < 100, meaning it includes values from -99 to 99. However, the Coq definition says 'is_two_digits' which semantically should include two-digit numbers (10-99 in absolute value), but the actual implementation checks < 100. The Python code correctly translates the Coq implementation (abs(x) < 100), so they match. Wait, let me re-check: Coq uses Z.ltb (Z.abs x) 100 which is abs(x) < 100, and Python uses abs(x) < 100. These are equivalent. Both include single-digit numbers and two-digit numbers but exclude 100 and above. The translations match."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": false,
+      "reason": "The Coq code uses Z.ltb (Z.abs x) 100 which checks if abs(x) < 100, meaning it includes values from -99 to 99 (two-digit or less). However, the comment says 'is_two_digits' but the actual check allows single-digit numbers too. The Python code correctly translates this as abs(x) < 100. But wait - let me re-check: Z.ltb (Z.abs x) 100 returns true when abs(x) < 100, and Python uses abs(x) < 100, so these match. The codes are actually equivalent."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": false,
+      "reason": "The Coq code uses Z.ltb (Z.abs x) 100 which checks if abs(x) < 100, meaning it includes values from -99 to 99. However, the Coq definition says 'is_two_digits' which semantically should include two-digit numbers (10-99 in absolute value), but the actual implementation checks < 100. The Python code correctly translates the Coq implementation (abs(x) < 100), so they are equivalent. Wait, let me re-check: Z.ltb (Z.abs x) 100 returns true when |x| < 100, and Python's abs(x) < 100 does the same. These are equivalent."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both compute the sum of elements with |x| < 100 from the first k entries (k<=0 treated as 0), returning equality of result to that sum."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both compute the sum of elements among the first max(0,k) entries with |x|<100; negative k yields 0 elements. Matches Coq behavior on all integer inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both compute the sum of elements with |x|<100 from the first Z.to_nat k (i.e., max(0,k)) elements; negative k handled as 0 and slicing/filtering/summing align."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 0,
+      "not_equivalent_votes": 3,
+      "majority_equivalent": false,
+      "reasons_if_not_equivalent": [
+        "The Coq code uses Z.ltb (Z.abs x) 100 which checks if abs(x) < 100, meaning it includes values from -99 to 99. However, the Coq definition says 'is_two_digits' which semantically should include two-digit numbers (10-99 in absolute value), but the actual implementation checks < 100. The Python code correctly translates the Coq implementation (abs(x) < 100), so they match. Wait, let me re-check: Coq uses Z.ltb (Z.abs x) 100 which is abs(x) < 100, and Python uses abs(x) < 100. These are equivalent. Both include single-digit numbers and two-digit numbers but exclude 100 and above. The translations match.",
+        "The Coq code uses Z.ltb (Z.abs x) 100 which checks if abs(x) < 100, meaning it includes values from -99 to 99 (two-digit or less). However, the comment says 'is_two_digits' but the actual check allows single-digit numbers too. The Python code correctly translates this as abs(x) < 100. But wait - let me re-check: Z.ltb (Z.abs x) 100 returns true when abs(x) < 100, and Python uses abs(x) < 100, so these match. The codes are actually equivalent.",
+        "The Coq code uses Z.ltb (Z.abs x) 100 which checks if abs(x) < 100, meaning it includes values from -99 to 99. However, the Coq definition says 'is_two_digits' which semantically should include two-digit numbers (10-99 in absolute value), but the actual implementation checks < 100. The Python code correctly translates the Coq implementation (abs(x) < 100), so they are equivalent. Wait, let me re-check: Z.ltb (Z.abs x) 100 returns true when |x| < 100, and Python's abs(x) < 100 does the same. These are equivalent."
+      ]
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 6,
+  "overall_not_equivalent_votes": 3,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [
+    "The Coq code uses Z.ltb (Z.abs x) 100 which checks if abs(x) < 100, meaning it includes values from -99 to 99. However, the Coq definition says 'is_two_digits' which semantically should include two-digit numbers (10-99 in absolute value), but the actual implementation checks < 100. The Python code correctly translates the Coq implementation (abs(x) < 100), so they match. Wait, let me re-check: Coq uses Z.ltb (Z.abs x) 100 which is abs(x) < 100, and Python uses abs(x) < 100. These are equivalent. Both include single-digit numbers and two-digit numbers but exclude 100 and above. The translations match.",
+    "The Coq code uses Z.ltb (Z.abs x) 100 which checks if abs(x) < 100, meaning it includes values from -99 to 99 (two-digit or less). However, the comment says 'is_two_digits' but the actual check allows single-digit numbers too. The Python code correctly translates this as abs(x) < 100. But wait - let me re-check: Z.ltb (Z.abs x) 100 returns true when abs(x) < 100, and Python uses abs(x) < 100, so these match. The codes are actually equivalent.",
+    "The Coq code uses Z.ltb (Z.abs x) 100 which checks if abs(x) < 100, meaning it includes values from -99 to 99. However, the Coq definition says 'is_two_digits' which semantically should include two-digit numbers (10-99 in absolute value), but the actual implementation checks < 100. The Python code correctly translates the Coq implementation (abs(x) < 100), so they are equivalent. Wait, let me re-check: Z.ltb (Z.abs x) 100 returns true when |x| < 100, and Python's abs(x) < 100 does the same. These are equivalent."
+  ],
+  "repair_round": 0,
+  "syntax_ok": true
+}

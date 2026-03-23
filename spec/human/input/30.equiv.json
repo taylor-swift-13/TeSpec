@@ -1,0 +1,100 @@
+{
+  "source_v_file": "spec/human/input/30.v",
+  "translated_py_file": "spec/human/input/30.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the subsequence check and the bidirectional implication for positive elements, matching the Coq specification exactly."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, including the subsequence check and the bidirectional membership condition for positive elements."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the subsequence check and exactly mirrors the logical conditions of the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": false,
+      "reason": "The Coq spec requires a biconditional: r is in output iff (r is in input and r > 0). This means every positive element from input must appear in output exactly as many times as it appears in input. The Python code only checks membership (r not in output), not multiplicity. For example, input=[2.0, 2.0] and output=[2.0] would pass the Python check (2.0 is in output) but fail the Coq spec because the second occurrence of 2.0 in input is positive but the biconditional with In (which counts occurrences in Coq lists) would not hold properly for subsequence matching with correct multiplicity."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": false,
+      "reason": "The Coq spec uses 'In r output' which checks membership (existence), so if input has duplicate positive values, the biconditional 'In r output <-> (In r input /\\ is_positive r)' only requires that each positive value appears at least once in output. However, the Python code's backward check 'if r not in output: return False' would pass even if output has fewer copies of a repeated positive number than input. More critically, the Coq spec's biconditional combined with is_subsequence means output must contain exactly the positive elements preserving order and multiplicity. But consider input=[2,2] and output=[2]: is_subsequence([2],[2,2]) is True, every element in output is positive, and for each r in input that's positive, r is in output. Python returns True. But the Coq spec's 'In r output <-> (In r input /\\ is_positive r)' would also be satisfied since In uses existence not counting. The real issue is with input=[2,-1,2] and output=[2]: Python's backward check passes (2 is in output), but the intended filtering should produce [2,2]. The Coq In-based spec actually has the same weakness. So they may be equivalent. Let me reconsider: both have the same flaw with duplicates, so they match on concrete behavior."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": false,
+      "reason": "The Coq spec uses 'In r output' which checks membership (existence), so if input has duplicate positive values, the biconditional 'In r output <-> (In r input /\\ is_positive r)' only requires that each positive value appears at least once in output. However, the Python code's backward check 'if r not in output: return False' would pass even if output has fewer copies of a repeated positive number than input. More critically, the Coq spec's biconditional combined with is_subsequence means output must contain exactly the positive elements preserving order and multiplicity. But the Python backward check only verifies that each positive value from input appears somewhere in output, not that it appears the correct number of times. For example, input=[2.0, 2.0], output=[2.0] would fail the Coq spec (is_subsequence fails since [2.0, 2.0] filtered should give [2.0, 2.0]), but Python's is_subsequence([2.0], [2.0, 2.0]) returns True, and the backward check passes since 2.0 is in output. So Python would return True while Coq spec would be False."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python checks output is a subsequence of input, all output elements are >0, and every positive element in input appears in output, matching the Coq spec\u2019s subsequence and membership equivalence conditions."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python checks output is a subsequence of input, that all output elements are >0, and that every positive input value appears in output. This matches the Coq spec\u2019s subsequence constraint and membership iff condition (ignoring multiplicities), so concrete behavior aligns."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python checks subsequence, requires all output elements be >0, and ensures every positive input value appears in output (via membership), matching the Coq spec\u2019s is_subsequence and In r output <-> (In r input \u2227 r>0) semantics."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 0,
+      "not_equivalent_votes": 3,
+      "majority_equivalent": false,
+      "reasons_if_not_equivalent": [
+        "The Coq spec requires a biconditional: r is in output iff (r is in input and r > 0). This means every positive element from input must appear in output exactly as many times as it appears in input. The Python code only checks membership (r not in output), not multiplicity. For example, input=[2.0, 2.0] and output=[2.0] would pass the Python check (2.0 is in output) but fail the Coq spec because the second occurrence of 2.0 in input is positive but the biconditional with In (which counts occurrences in Coq lists) would not hold properly for subsequence matching with correct multiplicity.",
+        "The Coq spec uses 'In r output' which checks membership (existence), so if input has duplicate positive values, the biconditional 'In r output <-> (In r input /\\ is_positive r)' only requires that each positive value appears at least once in output. However, the Python code's backward check 'if r not in output: return False' would pass even if output has fewer copies of a repeated positive number than input. More critically, the Coq spec's biconditional combined with is_subsequence means output must contain exactly the positive elements preserving order and multiplicity. But consider input=[2,2] and output=[2]: is_subsequence([2],[2,2]) is True, every element in output is positive, and for each r in input that's positive, r is in output. Python returns True. But the Coq spec's 'In r output <-> (In r input /\\ is_positive r)' would also be satisfied since In uses existence not counting. The real issue is with input=[2,-1,2] and output=[2]: Python's backward check passes (2 is in output), but the intended filtering should produce [2,2]. The Coq In-based spec actually has the same weakness. So they may be equivalent. Let me reconsider: both have the same flaw with duplicates, so they match on concrete behavior.",
+        "The Coq spec uses 'In r output' which checks membership (existence), so if input has duplicate positive values, the biconditional 'In r output <-> (In r input /\\ is_positive r)' only requires that each positive value appears at least once in output. However, the Python code's backward check 'if r not in output: return False' would pass even if output has fewer copies of a repeated positive number than input. More critically, the Coq spec's biconditional combined with is_subsequence means output must contain exactly the positive elements preserving order and multiplicity. But the Python backward check only verifies that each positive value from input appears somewhere in output, not that it appears the correct number of times. For example, input=[2.0, 2.0], output=[2.0] would fail the Coq spec (is_subsequence fails since [2.0, 2.0] filtered should give [2.0, 2.0]), but Python's is_subsequence([2.0], [2.0, 2.0]) returns True, and the backward check passes since 2.0 is in output. So Python would return True while Coq spec would be False."
+      ]
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 6,
+  "overall_not_equivalent_votes": 3,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [
+    "The Coq spec requires a biconditional: r is in output iff (r is in input and r > 0). This means every positive element from input must appear in output exactly as many times as it appears in input. The Python code only checks membership (r not in output), not multiplicity. For example, input=[2.0, 2.0] and output=[2.0] would pass the Python check (2.0 is in output) but fail the Coq spec because the second occurrence of 2.0 in input is positive but the biconditional with In (which counts occurrences in Coq lists) would not hold properly for subsequence matching with correct multiplicity.",
+    "The Coq spec uses 'In r output' which checks membership (existence), so if input has duplicate positive values, the biconditional 'In r output <-> (In r input /\\ is_positive r)' only requires that each positive value appears at least once in output. However, the Python code's backward check 'if r not in output: return False' would pass even if output has fewer copies of a repeated positive number than input. More critically, the Coq spec's biconditional combined with is_subsequence means output must contain exactly the positive elements preserving order and multiplicity. But consider input=[2,2] and output=[2]: is_subsequence([2],[2,2]) is True, every element in output is positive, and for each r in input that's positive, r is in output. Python returns True. But the Coq spec's 'In r output <-> (In r input /\\ is_positive r)' would also be satisfied since In uses existence not counting. The real issue is with input=[2,-1,2] and output=[2]: Python's backward check passes (2 is in output), but the intended filtering should produce [2,2]. The Coq In-based spec actually has the same weakness. So they may be equivalent. Let me reconsider: both have the same flaw with duplicates, so they match on concrete behavior.",
+    "The Coq spec uses 'In r output' which checks membership (existence), so if input has duplicate positive values, the biconditional 'In r output <-> (In r input /\\ is_positive r)' only requires that each positive value appears at least once in output. However, the Python code's backward check 'if r not in output: return False' would pass even if output has fewer copies of a repeated positive number than input. More critically, the Coq spec's biconditional combined with is_subsequence means output must contain exactly the positive elements preserving order and multiplicity. But the Python backward check only verifies that each positive value from input appears somewhere in output, not that it appears the correct number of times. For example, input=[2.0, 2.0], output=[2.0] would fail the Coq spec (is_subsequence fails since [2.0, 2.0] filtered should give [2.0, 2.0]), but Python's is_subsequence([2.0], [2.0, 2.0]) returns True, and the backward check passes since 2.0 is in output. So Python would return True while Coq spec would be False."
+  ],
+  "repair_round": 0,
+  "syntax_ok": true
+}

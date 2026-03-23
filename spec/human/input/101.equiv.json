@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/101.v",
+  "translated_py_file": "spec/human/input/101.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the string splitting logic and the precondition and specification exactly match the Coq definitions."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the string splitting logic, character filtering, and precondition checks exactly as specified in the Coq code."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code faithfully implements the logic of the Coq specification. The iterative `words_string_aux` in Python correctly mirrors the recursive accumulation and splitting logic of the Coq function, handling delimiters, word accumulation, and edge cases (like consecutive delimiters or empty input) in the same way."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the same logic as the Coq code. The is_delimiter function checks for comma and space. The words_string_aux function iteratively builds words by accumulating characters until a delimiter is found, matching the recursive Coq version. The precondition checks that all characters are letters (A-Z, a-z), comma, or space. The spec checks that output equals words_string(s). Both produce the same concrete results for all valid inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the same logic as the Coq code. The is_delimiter function checks for comma and space. The words_string_aux function iteratively builds words by accumulating characters until a delimiter is found, matching the recursive Coq definition. The precondition checks that all characters are letters (A-Z, a-z), comma, or space. The spec checks that output equals words_string(s). All concrete behaviors match."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the same logic as the Coq code. The is_delimiter function checks for comma or space. The words_string_aux function iteratively builds words by accumulating characters until a delimiter is found, then appending the accumulated word to results - this matches the Coq recursive definition. The precondition checks that all characters are letters (A-Z, a-z), comma, or space. The spec checks that output equals the result of words_string. Both implementations will produce the same concrete results for any valid input string."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both implementations split the input on commas and spaces, ignore consecutive/leading/trailing delimiters, and return the same list of words; the precondition and spec checks also match the Coq definitions."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python mirrors Coq\u2019s delimiter check (comma or space) and word accumulation, including handling of consecutive/edge delimiters. The precondition and spec are also implemented equivalently, and the final join matches Coq\u2019s string_of_list_ascii."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python mirrors Coq: same delimiter test (comma/space), same accumulation and skipping of consecutive delimiters, no empty words, and identical final joining. The precondition (letters, comma, space) matches via ord checks. Spec is equality to words_string, which both implement identically."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

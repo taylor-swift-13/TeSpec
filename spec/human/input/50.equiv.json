@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/50.v",
+  "translated_py_file": "spec/human/input/50.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, including the truncation behavior of natural number subtraction and the modulo arithmetic for character decoding."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, including the natural number subtraction truncation and modulo arithmetic for character decoding."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, including the truncating behavior of Coq's nat subtraction and the modulo 256 behavior of ascii_of_nat."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The decode_char function properly handles the character decoding by computing (a + (n - a + 21) mod 26), with appropriate handling for Coq's natural number subtraction (truncating at 0 when n < a). The spec function correctly checks that l equals the decoded version of l_prime by mapping decode_char over each character. For valid lowercase letters (the intended domain), both implementations produce identical results."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The decode_char function properly handles the character decoding by computing (a + (n - a + 21) mod 26), with appropriate handling for Coq's natural number subtraction (truncating at 0 when n < a). The spec function correctly checks that l equals the decoded version of l_prime by mapping decode_char over each character. For valid lowercase letters (the intended domain), both implementations produce identical results."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The decode_char function properly handles the character decoding by computing (a + (n - a + 21) mod 26), with appropriate handling for Coq's natural number subtraction (truncating at 0 when n < a). The spec function correctly checks that l equals the decoded version of l_prime by mapping decode_char over each character. For lowercase letters (the intended domain), both implementations produce identical results."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python mirrors Coq\u2019s decode_char using truncated subtraction and mod 26 around \u2018a\u2019, and problem_50_spec checks equality with the per-char map; results match for all ASCII inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python decode_char implements the same a+((n\u2212a)+21) mod 26 logic with truncated subtraction as Coq, and problem_50_spec maps it over the input string identically; precondition is True. Results match for all ASCII inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python decode_char mirrors Coq: it uses truncated (n - a) when n < a, adds 21 mod 26 relative to 'a', and returns a lowercase ASCII. problem_50_spec maps this over the input and compares to l; precondition is True. Matches Coq on all ASCII strings."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

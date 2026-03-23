@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/147.v",
+  "translated_py_file": "spec/human/input/147.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, using an equivalent combinatorial formula to count the number of valid triples."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The spec function uses combinatorics to efficiently calculate the exact number of valid triples by analyzing the residues modulo 3, which is mathematically equivalent to the Coq specification counting the valid triples."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the helper functions and uses an optimized mathematical approach to compute the exact number of valid triples, which perfectly matches the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The a_val function matches exactly (i*i - i + 1). The is_valid_triple function correctly checks 1 <= i < j < k <= n and the sum mod 3 condition. The problem_147_pre checks n > 0. The problem_147_spec uses a mathematical optimization: since a_val(x) mod 3 equals 0 when x % 3 == 2 and equals 1 otherwise, valid triples require either three values with residue 0 or three with residue 1. The count of x in 1..n with x % 3 == 2 is correctly computed as (n+1)//3, and the combination formula C(x,3) = x*(x-1)*(x-2)/6 correctly counts unordered triples. This produces the same count as the Coq spec which counts all valid triples satisfying is_valid_triple."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The a_val function matches exactly (i*i - i + 1). The is_valid_triple function correctly checks 1 <= i < j < k <= n and the sum mod 3 condition. The problem_147_pre checks n > 0. The problem_147_spec uses a mathematical optimization: since a_val(x) mod 3 equals 0 when x % 3 == 2 and equals 1 otherwise, valid triples require either three values with residue 0 or three with residue 1. The count of x in 1..n with x % 3 == 2 is (n+1)//3, and the formula nCr_3 computes combinations of 3. This correctly counts all valid triples matching the Coq spec's existential definition of a list containing exactly all valid triples."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The a_val function matches exactly (i*i - i + 1). The is_valid_triple function correctly checks 1 <= i < j < k <= n and the sum mod 3 condition. The problem_147_pre checks n > 0. The problem_147_spec uses a mathematical optimization: since a_val(x) mod 3 equals 0 when x % 3 == 2, and equals 1 otherwise, valid triples require either all three residues to be 0 or all three to be 1. The count of valid triples is C(count_0, 3) + C(count_1, 3), which correctly counts all unique (i,j,k) triples with i < j < k satisfying the divisibility condition. This produces the same concrete output count as enumerating all valid triples per the Coq spec."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python derives the correct residue classes (a_val(i) mod 3 is 0 iff i\u22612 mod 3) and counts triples as C(cnt0,3)+C(cnt1,3) over 1..n, matching the Coq spec\u2019s valid triples. Precondition and modulo semantics align."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both compute the number of (i<j<k) with a_val(i)+a_val(j)+a_val(k) divisible by 3. The Python uses correct residue analysis: a_val(i)%3 is 0 iff i%3=2, else 1, so valid triples are exactly three from residue-0 or three from residue-1. The counts ((n+1)//3 and n - that) and combinations give the exact number of valid triples for all n>0."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python correctly derives that a_val(i) mod 3 is 0 iff i mod 3 = 2, else 1, and counts triples as C(c0,3)+C(c1,3), matching the Coq spec\u2019s set of all i<j<k with sum mod 3 = 0. Precondition n>0 is also preserved."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/109.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/109.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the cyclic shift check and verifies if any cyclic shift of the array is sorted, matching the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the cyclic shift check and verifies if any cyclic shift of the array is sorted, matching the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the cyclic shift check and verifies if any cyclic shift of the array is sorted, matching the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly checks whether there exists a cyclic shift of arr that is sorted. The is_cyclic_shift function checks all rotations, and move_one_ball_spec checks if result equals True iff some cyclic shift of arr is sorted (using <= for comparison, matching Z.le). The biconditional in Coq (result = true <-> ...) is captured by checking bool(result) == exists_sorted_shift. Both implementations agree on concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly checks if there exists a cyclic shift of arr that is sorted. The is_cyclic_shift function checks all possible rotations, and move_one_ball_spec checks if result equals whether such a sorted cyclic shift exists. The Coq spec says result=true iff there exists a sorted cyclic shift, which matches the Python logic. The Python handles the empty list case correctly (empty list is trivially sorted, and rotating by 0 gives the same list)."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly checks if there exists a cyclic shift of arr that is sorted. is_cyclic_shift checks all rotations by iterating through split points. move_one_ball_spec checks if result equals True iff there exists a sorted cyclic shift, which matches the Coq biconditional. The iteration range len(arr)+1 covers all rotations (including identity at i=0 and i=len(arr) which are equivalent). The sorted check using Z.le corresponds to <= in Python."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python enumerates all rotations arr[i:]+arr[:i] (exactly the Coq is_cyclic_shift cases) and checks nondecreasing order with <=, matching Sorted Z.le. The spec function returns True iff result equals the existence of a sorted rotation, aligning with the Coq iff. Edge cases like empty lists are handled consistently."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python enumerates all rotations of the list and checks nondecreasing order, matching Coq\u2019s is_cyclic_shift and Sorted Z.le; the spec returns whether result is true iff such a rotation exists."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python enumerates all cyclic rotations (including duplicates) and checks nondecreasing order with <=, matching Coq\u2019s is_cyclic_shift and Sorted Z.le. It returns whether result equals the existence of a sorted rotation. Length check is consistent; edge cases like empty/singleton lists align."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

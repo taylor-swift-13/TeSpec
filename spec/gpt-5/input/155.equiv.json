@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gpt-5/input/155.v",
+  "translated_py_file": "spec/gpt-5/input/155.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the digit extraction and counting logic specified in the Coq code, handling absolute values, zero, and even/odd checks equivalently."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the digit extraction and counting logic, matching the Coq specification for all concrete inputs."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq definitions, correctly extracting the base-10 digits of the absolute value of the number and counting the even and odd digits."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The digits10 function in Coq builds digits by repeatedly taking mod 10 and div 10, appending each digit to the end of the accumulated list, which produces digits in most-significant-first order. The Python code does the same by collecting digits (which come out in reverse order), then reversing them. count_even and count_odd correctly count even/odd digits using the same parity checks. The spec function computes the absolute value, converts to digits, and returns the pair of counts, matching the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The digits10 function in Coq builds digits by repeatedly taking mod 10 and div 10, appending each digit to the end of the accumulated list, which produces digits in most-significant-first order. The Python code does the same by collecting digits (which come out in reverse order), then reversing them. The count_even and count_odd functions correctly count even/odd digits using the same parity checks (Nat.even checks d%2==0, Nat.odd checks d%2!=0). The even_odd_count_spec correctly computes the absolute value, generates the digit list, and returns the pair of counts. All concrete inputs will produce the same results."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The digits10 function in Coq builds digits by repeatedly taking mod 10 and div 10, appending each digit to the end of the accumulated list, which produces digits in most-significant-first order. The Python code does the same by collecting digits (which come out least-significant first) and then reversing. The count_even and count_odd functions correctly count even/odd digits using the same parity checks (Nat.even/odd in Coq corresponds to d % 2 == 0 / != 0 in Python). The spec function correctly computes the absolute value and returns the tuple of counts."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both compute the base-10 digits of abs(num) (with 0 -> [0]) and then count even and odd digits; Python\u2019s digit construction and parity checks match the Coq definitions, so the returned judgment coincides on all valid inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python computes decimal digits of abs(num) identically to the Coq digits10 relation (with 0 -> [0] and no leading zeros), and counts even/odd digits using parity matching Nat.even/Nat.odd. even_odd_count_spec checks res equals these counts, matching the Coq existential. Types/domains align for natural-number inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both compute decimal digits of abs(num) (with 0 -> [0]) and compare res to (count_even, count_odd) using the same parity logic; behavior matches for all integer inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

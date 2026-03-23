@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/148.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/148.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, including the validation of planets and the slicing logic to find the planets between the two given planets."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, including the list of planets, the validation logic, and the slicing logic to find the planets between the two given planets."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, including the validation of planets and the exact list slicing logic."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. Both check if planet1 and planet2 are valid planets, returning [] if either is invalid. For valid planets, both find indices i1 and i2, compute start=min(i1,i2) and stop=max(i1,i2), and extract planets between them. The Coq expression 'firstn (stop - start - 1) (skipn (start + 1) planets)' is equivalent to Python's 'planets[start + 1 : stop]' slice, which extracts elements from index start+1 up to but not including stop."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. Both check if planet1 and planet2 are valid planets, returning [] if either is invalid. When both are valid, both compute indices i1 and i2, then extract planets between min and max indices (exclusive). The Coq expression 'firstn (stop - start - 1) (skipn (start + 1) planets)' is equivalent to Python's 'planets[start + 1 : stop]' - both extract elements from index start+1 up to but not including stop."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. Both check if planet1 and planet2 are valid planets, returning [] if either is invalid. When both are valid, both compute indices i1 and i2, then extract planets between min and max indices (exclusive). The Coq expression 'firstn (stop - start - 1) (skipn (start + 1) planets)' is equivalent to Python's 'planets[start + 1 : stop]' - both extract elements from index start+1 up to but not including stop."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both require [] when either planet is invalid, and when both are valid they produce the slice of planets strictly between their indices (Python slice planets[start+1:stop] matches the Coq firstn/skipn expression). Indices and list are fixed and unique, so behavior aligns on all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both require [] if either planet is not in the fixed list; if both are present, both produce the sublist strictly between their positions (exclusive) using the same indices. With unique planet names, the existential in Coq matches Python\u2019s chosen indices."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "On invalid inputs it requires result == [], and on valid inputs it returns the sublist strictly between the two planets (exclusive), matching the Coq spec."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

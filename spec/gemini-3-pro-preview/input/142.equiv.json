@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/142.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/142.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python iterative implementation correctly reproduces the logic of the Coq recursive function, including the modulo conditions and index updates."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the recursive Coq function using a loop, applying the same modulo conditions and arithmetic operations to accumulate the total."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the logic of the Coq fixpoint using a loop, maintaining the index state and conditional arithmetic operations exactly as specified."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the same logic as the Coq code. Both iterate through the list with an index starting at 0, applying x*x when idx mod 3 == 0, x*x*x when idx mod 4 == 0 (but not idx mod 3 == 0), and x otherwise. The sum is accumulated identically. The spec checks if result equals sum_squares_aux(lst, 0) in both cases."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the same logic as the Coq code: iterating through the list with an index starting at 0, squaring elements at indices divisible by 3, cubing elements at indices divisible by 4 (but not 3), and adding elements unchanged otherwise. The iterative Python version produces the same result as the recursive Coq version for all concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the same logic as the Coq code: iterating through the list with an index starting at 0, squaring elements at indices divisible by 3, cubing elements at indices divisible by 4 (but not 3), and adding elements unchanged otherwise. The iterative Python version produces the same result as the recursive Coq version for all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both implementations iterate over the list starting at idx=0, apply the same prioritized conditions (idx%3==0 then square, else if idx%4==0 then cube, else x), increment idx per element, and sum the results. The spec simply equates to calling aux with idx=0 in both."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq logic: starting at idx=0, for each element it checks idx%3 first then idx%4, applies square/cube/identity accordingly, increments idx, and sums. Using unbounded integers and non-negative idx ensures matching results for all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code mirrors the Coq function: it starts at idx=0, increments per element, prioritizes the mod 3 check over mod 4, and computes x^2, x^3, or x accordingly using arbitrary-precision integers. The spec checks equality with the same computation. Thus results match on all concrete inputs in the intended domain."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

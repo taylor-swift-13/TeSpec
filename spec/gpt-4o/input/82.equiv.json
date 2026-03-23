@@ -1,0 +1,104 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/gpt-4o/input/82.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/gpt-4o/input/82.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, including the bounds for the divisibility check and the logic for determining primality."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the prime checking logic, matching the Coq specification's use of a sequence up to the square root minus one."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq specification, including the sequence generation and divisibility checks, while properly handling natural number subtraction semantics."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": false,
+      "reason": "The Coq code uses 'seq 2 (Nat.sqrt a - 1)' which generates a list starting at 2 with length (sqrt(a) - 1), so it checks divisors from 2 to sqrt(a) (exclusive of sqrt(a) itself, i.e., up to sqrt(a)-1). The Python code uses 'range(2, 2 + seq_len)' where seq_len = sqrt_a - 1, which also checks from 2 to sqrt(a) (exclusive). However, in Coq, when sqrt(a) < 1, the subtraction Nat.sqrt a - 1 underflows to 0 (natural number subtraction), but the Python handles this with 'sqrt_a - 1 if sqrt_a >= 1 else 0'. The real issue is that for proper primality checking, we should check divisors up to and including sqrt(a), but both implementations exclude sqrt(a). For example, with a=4: sqrt(4)=2, seq_len=1, Python checks range(2,3)=[2], finds 4%2==0, so not prime (correct). With a=9: sqrt(9)=3, seq_len=2, Python checks range(2,4)=[2,3], finds 9%3==0, so not prime (correct). Actually, let me reconsider: Coq's seq 2 (Nat.sqrt a - 1) for a=4 gives seq 2 (2-1) = seq 2 1 = [2], same as Python. For a=9: seq 2 (3-1) = seq 2 2 = [2,3], same as Python. The implementations appear equivalent on closer inspection."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": false,
+      "reason": "The Coq code uses `seq 2 (Nat.sqrt a - 1)` which generates a list starting at 2 with length `Nat.sqrt a - 1`, meaning it checks divisors from 2 to `Nat.sqrt a` (exclusive of the endpoint, so up to `Nat.sqrt a - 1 + 2 - 1 = Nat.sqrt a`). The Python code uses `range(2, 2 + seq_len)` where `seq_len = sqrt_a - 1`, so it checks divisors from 2 to `sqrt_a` (exclusive). For example, with a=9, Coq checks divisors 2 (since seq 2 (3-1) = [2,3]), while Python checks range(2, 2+2) = [2,3]. Actually these match. But the issue is when sqrt_a < 1: in Coq, `Nat.sqrt a - 1` for a=0 or a=1 gives 0-1 which wraps to 0 in nat subtraction, so seq 2 0 = []. Python handles this with `seq_len = 0`. However, for a=4, Coq has sqrt=2, so seq 2 (2-1) = seq 2 1 = [2], checking if 4 mod 2 = 0 (true), so result should be false. Python: sqrt_a=2, seq_len=1, range(2,3)=[2], checks 4%2=0, exists_divisible=true, expected=false. This matches. For a=2: Coq sqrt=1, seq 2 (1-1)=seq 2 0=[], no divisor found, lt_2=false, result=true. Python: sqrt_a=1, seq_len=0, range(2,2)=[], expected=true. Matches. For a=3: sqrt=1, same as a=2, result=true in both. For a=5: sqrt=2, seq 2 1=[2], 5%2!=0, result=true. Python: range(2,3)=[2], same. For a=9: sqrt=3, seq 2 2=[2,3], 9%3=0, result=false. Python: range(2,4)=[2,3], same. Actually they seem equivalent on these tests. Let me reconsider the Coq semantics more carefully - `seq start len` produces [start, start+1, ..., start+len-1]. So seq 2 (sqrt a - 1) checks [2, 3, ..., sqrt a]. For a=4, this is [2], for a=9 this is [2,3]. Python range(2, 2+seq_len) = range(2, 2+sqrt_a-1) = range(2, sqrt_a+1) = [2,...,sqrt_a]. These match."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": false,
+      "reason": "The Coq code uses `seq 2 (Nat.sqrt a - 1)` which generates a list starting at 2 with length `(sqrt(a) - 1)`, so it checks divisors from 2 to sqrt(a) (exclusive of sqrt(a) itself, i.e., up to sqrt(a)-1). The Python code uses `range(2, 2 + seq_len)` where `seq_len = sqrt_a - 1`, which also checks 2 to sqrt(a)-1. However, a correct primality check should include sqrt(a) as a potential divisor. For example, for a=9, sqrt(9)=3, Coq checks seq 2 (3-1) = [2], missing the divisor 3. Python also checks range(2,4) = [2,3] when seq_len=2. Wait, let me recalculate: for a=9, sqrt_a=3, seq_len=3-1=2, range(2, 2+2)=range(2,4)=[2,3]. Coq: seq 2 (3-1) = seq 2 2 = [2,3]. These match. For a=4, sqrt_a=2, seq_len=2-1=1, Python: range(2,3)=[2]. Coq: seq 2 (2-1) = seq 2 1 = [2]. These match. Actually they appear equivalent on closer inspection."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Matches Coq: it returns result == (a>=2 and no divisor in 2..floor(sqrt(a))); range bounds and empty cases align, and prime_length_spec uses length likewise. Negative a is clamped to 0 but Coq a is nat, so for all nonnegative inputs behavior matches."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "For nonnegative inputs (nat), it mirrors Coq: checks a<2 or any divisor x in [2..floor(sqrt(a))] using seq length max(0, sqrt-1), and returns result == that negation. prime_length_spec uses len consistently. Handling negatives by setting a=0 does not affect the nat domain of the Coq spec."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq spec: it checks a<2, tests divisibility for x in 2..sqrt(a), and returns whether result equals negb(..). The range length matches seq 2 (Nat.sqrt a - 1). prime_length_spec uses len similarly. Negative a is mapped to 0, consistent with nat domain."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 0,
+      "not_equivalent_votes": 3,
+      "majority_equivalent": false,
+      "unanimous_equivalent": false,
+      "reasons_if_not_equivalent": [
+        "The Coq code uses 'seq 2 (Nat.sqrt a - 1)' which generates a list starting at 2 with length (sqrt(a) - 1), so it checks divisors from 2 to sqrt(a) (exclusive of sqrt(a) itself, i.e., up to sqrt(a)-1). The Python code uses 'range(2, 2 + seq_len)' where seq_len = sqrt_a - 1, which also checks from 2 to sqrt(a) (exclusive). However, in Coq, when sqrt(a) < 1, the subtraction Nat.sqrt a - 1 underflows to 0 (natural number subtraction), but the Python handles this with 'sqrt_a - 1 if sqrt_a >= 1 else 0'. The real issue is that for proper primality checking, we should check divisors up to and including sqrt(a), but both implementations exclude sqrt(a). For example, with a=4: sqrt(4)=2, seq_len=1, Python checks range(2,3)=[2], finds 4%2==0, so not prime (correct). With a=9: sqrt(9)=3, seq_len=2, Python checks range(2,4)=[2,3], finds 9%3==0, so not prime (correct). Actually, let me reconsider: Coq's seq 2 (Nat.sqrt a - 1) for a=4 gives seq 2 (2-1) = seq 2 1 = [2], same as Python. For a=9: seq 2 (3-1) = seq 2 2 = [2,3], same as Python. The implementations appear equivalent on closer inspection.",
+        "The Coq code uses `seq 2 (Nat.sqrt a - 1)` which generates a list starting at 2 with length `Nat.sqrt a - 1`, meaning it checks divisors from 2 to `Nat.sqrt a` (exclusive of the endpoint, so up to `Nat.sqrt a - 1 + 2 - 1 = Nat.sqrt a`). The Python code uses `range(2, 2 + seq_len)` where `seq_len = sqrt_a - 1`, so it checks divisors from 2 to `sqrt_a` (exclusive). For example, with a=9, Coq checks divisors 2 (since seq 2 (3-1) = [2,3]), while Python checks range(2, 2+2) = [2,3]. Actually these match. But the issue is when sqrt_a < 1: in Coq, `Nat.sqrt a - 1` for a=0 or a=1 gives 0-1 which wraps to 0 in nat subtraction, so seq 2 0 = []. Python handles this with `seq_len = 0`. However, for a=4, Coq has sqrt=2, so seq 2 (2-1) = seq 2 1 = [2], checking if 4 mod 2 = 0 (true), so result should be false. Python: sqrt_a=2, seq_len=1, range(2,3)=[2], checks 4%2=0, exists_divisible=true, expected=false. This matches. For a=2: Coq sqrt=1, seq 2 (1-1)=seq 2 0=[], no divisor found, lt_2=false, result=true. Python: sqrt_a=1, seq_len=0, range(2,2)=[], expected=true. Matches. For a=3: sqrt=1, same as a=2, result=true in both. For a=5: sqrt=2, seq 2 1=[2], 5%2!=0, result=true. Python: range(2,3)=[2], same. For a=9: sqrt=3, seq 2 2=[2,3], 9%3=0, result=false. Python: range(2,4)=[2,3], same. Actually they seem equivalent on these tests. Let me reconsider the Coq semantics more carefully - `seq start len` produces [start, start+1, ..., start+len-1]. So seq 2 (sqrt a - 1) checks [2, 3, ..., sqrt a]. For a=4, this is [2], for a=9 this is [2,3]. Python range(2, 2+seq_len) = range(2, 2+sqrt_a-1) = range(2, sqrt_a+1) = [2,...,sqrt_a]. These match.",
+        "The Coq code uses `seq 2 (Nat.sqrt a - 1)` which generates a list starting at 2 with length `(sqrt(a) - 1)`, so it checks divisors from 2 to sqrt(a) (exclusive of sqrt(a) itself, i.e., up to sqrt(a)-1). The Python code uses `range(2, 2 + seq_len)` where `seq_len = sqrt_a - 1`, which also checks 2 to sqrt(a)-1. However, a correct primality check should include sqrt(a) as a potential divisor. For example, for a=9, sqrt(9)=3, Coq checks seq 2 (3-1) = [2], missing the divisor 3. Python also checks range(2,4) = [2,3] when seq_len=2. Wait, let me recalculate: for a=9, sqrt_a=3, seq_len=3-1=2, range(2, 2+2)=range(2,4)=[2,3]. Coq: seq 2 (3-1) = seq 2 2 = [2,3]. These match. For a=4, sqrt_a=2, seq_len=2-1=1, Python: range(2,3)=[2]. Coq: seq 2 (2-1) = seq 2 1 = [2]. These match. Actually they appear equivalent on closer inspection."
+      ]
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 6,
+  "overall_not_equivalent_votes": 3,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": false,
+  "non_equivalence_reasons": [
+    "The Coq code uses 'seq 2 (Nat.sqrt a - 1)' which generates a list starting at 2 with length (sqrt(a) - 1), so it checks divisors from 2 to sqrt(a) (exclusive of sqrt(a) itself, i.e., up to sqrt(a)-1). The Python code uses 'range(2, 2 + seq_len)' where seq_len = sqrt_a - 1, which also checks from 2 to sqrt(a) (exclusive). However, in Coq, when sqrt(a) < 1, the subtraction Nat.sqrt a - 1 underflows to 0 (natural number subtraction), but the Python handles this with 'sqrt_a - 1 if sqrt_a >= 1 else 0'. The real issue is that for proper primality checking, we should check divisors up to and including sqrt(a), but both implementations exclude sqrt(a). For example, with a=4: sqrt(4)=2, seq_len=1, Python checks range(2,3)=[2], finds 4%2==0, so not prime (correct). With a=9: sqrt(9)=3, seq_len=2, Python checks range(2,4)=[2,3], finds 9%3==0, so not prime (correct). Actually, let me reconsider: Coq's seq 2 (Nat.sqrt a - 1) for a=4 gives seq 2 (2-1) = seq 2 1 = [2], same as Python. For a=9: seq 2 (3-1) = seq 2 2 = [2,3], same as Python. The implementations appear equivalent on closer inspection.",
+    "The Coq code uses `seq 2 (Nat.sqrt a - 1)` which generates a list starting at 2 with length `Nat.sqrt a - 1`, meaning it checks divisors from 2 to `Nat.sqrt a` (exclusive of the endpoint, so up to `Nat.sqrt a - 1 + 2 - 1 = Nat.sqrt a`). The Python code uses `range(2, 2 + seq_len)` where `seq_len = sqrt_a - 1`, so it checks divisors from 2 to `sqrt_a` (exclusive). For example, with a=9, Coq checks divisors 2 (since seq 2 (3-1) = [2,3]), while Python checks range(2, 2+2) = [2,3]. Actually these match. But the issue is when sqrt_a < 1: in Coq, `Nat.sqrt a - 1` for a=0 or a=1 gives 0-1 which wraps to 0 in nat subtraction, so seq 2 0 = []. Python handles this with `seq_len = 0`. However, for a=4, Coq has sqrt=2, so seq 2 (2-1) = seq 2 1 = [2], checking if 4 mod 2 = 0 (true), so result should be false. Python: sqrt_a=2, seq_len=1, range(2,3)=[2], checks 4%2=0, exists_divisible=true, expected=false. This matches. For a=2: Coq sqrt=1, seq 2 (1-1)=seq 2 0=[], no divisor found, lt_2=false, result=true. Python: sqrt_a=1, seq_len=0, range(2,2)=[], expected=true. Matches. For a=3: sqrt=1, same as a=2, result=true in both. For a=5: sqrt=2, seq 2 1=[2], 5%2!=0, result=true. Python: range(2,3)=[2], same. For a=9: sqrt=3, seq 2 2=[2,3], 9%3=0, result=false. Python: range(2,4)=[2,3], same. Actually they seem equivalent on these tests. Let me reconsider the Coq semantics more carefully - `seq start len` produces [start, start+1, ..., start+len-1]. So seq 2 (sqrt a - 1) checks [2, 3, ..., sqrt a]. For a=4, this is [2], for a=9 this is [2,3]. Python range(2, 2+seq_len) = range(2, 2+sqrt_a-1) = range(2, sqrt_a+1) = [2,...,sqrt_a]. These match.",
+    "The Coq code uses `seq 2 (Nat.sqrt a - 1)` which generates a list starting at 2 with length `(sqrt(a) - 1)`, so it checks divisors from 2 to sqrt(a) (exclusive of sqrt(a) itself, i.e., up to sqrt(a)-1). The Python code uses `range(2, 2 + seq_len)` where `seq_len = sqrt_a - 1`, which also checks 2 to sqrt(a)-1. However, a correct primality check should include sqrt(a) as a potential divisor. For example, for a=9, sqrt(9)=3, Coq checks seq 2 (3-1) = [2], missing the divisor 3. Python also checks range(2,4) = [2,3] when seq_len=2. Wait, let me recalculate: for a=9, sqrt_a=3, seq_len=3-1=2, range(2, 2+2)=range(2,4)=[2,3]. Coq: seq 2 (3-1) = seq 2 2 = [2,3]. These match. For a=4, sqrt_a=2, seq_len=2-1=1, Python: range(2,3)=[2]. Coq: seq 2 (2-1) = seq 2 1 = [2]. These match. Actually they appear equivalent on closer inspection."
+  ],
+  "repair_round": 10,
+  "syntax_ok": true
+}

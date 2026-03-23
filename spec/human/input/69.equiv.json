@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/69.v",
+  "translated_py_file": "spec/human/input/69.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq definitions, including the helper functions for counting and finding the maximum satisfying element, as well as the precondition and specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq definitions, including the helper functions for counting and finding the maximum satisfying element, as well as the precondition and specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code is a direct, faithful translation of the Coq logic, implementing the same counting and maximization strategy to find the greatest integer with frequency greater than or equal to its value."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code faithfully translates the Coq code. The count function iterates through the list counting occurrences of z, matching the Coq recursive definition. The find_max_satisfying function iterates through candidates, updating current_max when count(h, lst) >= h, which matches the Coq logic (Z.of_nat converts nat count to Z for comparison, but since counts are non-negative integers, this is equivalent). The search_impl function handles empty lists by returning -1, otherwise computes max_val and returns it. The precondition checks non-empty list with all positive integers. The spec checks y equals search_impl(lst). All concrete behaviors match."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code faithfully translates the Coq code. The count function counts occurrences identically. The find_max_satisfying function iterates through candidates and updates current_max when count(h, lst) >= h, using max(h, current_max), which matches Z.max. The search_impl function handles empty lists by returning -1, otherwise computes find_max_satisfying with candidates=lst and initial max=-1, then returns the result. The pre and spec functions correctly check the preconditions and specification. All concrete behaviors match."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code faithfully implements the Coq specification. The count function counts occurrences identically. The find_max_satisfying function iterates through candidates and updates current_max when count(h, lst) >= h, using max(h, current_max), which matches Z.max. The search_impl function handles empty lists by returning -1, otherwise computes the max satisfying value. The precondition checks non-empty list with all positive integers. The spec checks equality with search_impl result. All concrete behaviors match."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq logic: same count of equals, same frequency>=value check over candidates=lst with max update and -1 fallback, and matching pre/spec definitions for non-empty positive lists and equality to search_impl."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python mirrors Coq: same count of occurrences, same >= check against element, same max accumulation, same -1 handling for empty/no match; pre and spec match Coq definitions."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python mirrors Coq logic: same counting, same candidate iteration, same >= check and max update, same handling of empty list and pre/spec. Thus returns the same result on all inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

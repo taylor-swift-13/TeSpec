@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gpt-4o/input/9.v",
+  "translated_py_file": "spec/gpt-4o/input/9.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the rolling maximum logic by maintaining a running maximum initialized to 0, which exactly matches the fold_left max over the prefix of the list in the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly computes the rolling maximum by maintaining a running maximum starting from 0, which exactly matches the Coq specification using fold_left max over the prefixes of the list."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code iteratively verifies that each element in the result list equals the maximum of the prefix of the input list up to that index (starting with 0), which corresponds exactly to the Coq specification using fold_left max on firstn elements."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Coq spec requires result[i] = fold_left max (firstn (i+1) numbers) 0, which computes the maximum of the first i+1 elements starting from 0. The Python code maintains a running maximum (current_max) initialized to 0 and updated as max(current_max, numbers[i]) at each step, which is equivalent to fold_left max over the prefix. Both check length equality and verify each position matches the running maximum."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Coq spec requires result[i] = fold_left max (firstn (i+1) numbers) 0, which computes the maximum of the first i+1 elements starting from 0. The Python code maintains a running maximum (current_max) initialized to 0 and updated as max(current_max, numbers[i]) at each step, which is equivalent to fold_left max over the prefix. Both check length equality and verify each position matches the running maximum."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Coq spec requires result[i] = fold_left max (firstn (i+1) numbers) 0, which computes the maximum of the first i+1 elements starting from 0. The Python code maintains a running maximum (current_max) initialized to 0 and updated as max(current_max, numbers[i]) at each step, which is equivalent to fold_left max over the prefix. Both check length equality and verify each position matches the running maximum."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both enforce equal lengths and ensure each result[i] equals the running maximum of the first i+1 elements of numbers starting from 0, matching fold_left max on firstn (i+1) with initial 0."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both require equal lengths and verify each result[i] equals the running maximum of the first i+1 numbers starting from 0, matching the Coq spec."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both require equal lengths and that each result[i] equals the max over the first i+1 numbers with initial 0; the Python loop computes exactly this running maximum for natural numbers."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

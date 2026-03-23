@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/81.v",
+  "translated_py_file": "spec/human/input/81.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, matching all grade boundaries and list relations exactly."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq specification, accurately implementing the grade relation conditions, the precondition, and the Forall2 list matching logic."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq specifications, including the grade relation intervals, the precondition, and the Forall2 list matching logic."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The grade_relation function checks the same conditions as the Coq grade_relation Prop (equality at 4.0 for A+, strict inequality 3.7 < gpa < 4.0 for A, and half-open intervals for other grades matching the Coq spec). The precondition checks all GPAs are in [0,4]. The spec uses Forall2 semantics correctly by checking equal lengths and pairwise grade_relation. The Python implementation will return the same boolean judgments as the Coq specification for all concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The grade_relation function checks the same conditions as the Coq definition (with the same boundary conditions for each grade range). The problem_81_pre checks that all GPAs are in [0,4]. The problem_81_spec uses zip with length check to implement Forall2, verifying that corresponding elements satisfy grade_relation. All concrete inputs will produce the same results."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. The grade_relation function checks the same conditions as the Coq grade_relation Prop (exact equality for 4.0 and 0.0, and the same interval conditions for other grades). The precondition problem_81_pre checks that all GPAs are in [0,4]. The spec problem_81_spec uses Forall2 semantics by checking equal lengths and that grade_relation holds for all corresponding pairs. The Python implementation will return the same boolean judgments as the Coq specification for all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq intervals and endpoints exactly (including 4.0->A+, 0.0->E, and each half-open range), enforces the same precondition bounds, and matches Forall2 via length check and pairwise grade_relation."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python matches the Coq relation intervals and boundaries, the precondition 0<=g<=4, and the Forall2 pairing via equal lengths and per-element checks."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Interval thresholds and inclusivity match exactly; precondition and pairwise relation (Forall2) are implemented equivalently with length check and per-element grade_relation."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

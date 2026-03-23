@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gpt-5/input/87.v",
+  "translated_py_file": "spec/gpt-5/input/87.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the row/column extraction, the sorting criteria (row ascending, column descending), and the uniqueness requirement specified in the Coq code."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code constructs the expected list of indices by iterating through the grid, sorts them according to the specific order defined in Coq (row ascending, column descending), and checks equality, which matches the Coq specification requiring NoDup, StronglySorted, and correct membership."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification by finding all matching (i, j) pairs, sorting them according to the specified pair_order (row ascending, col descending), and checking for exact equality, which satisfies NoDup, StronglySorted, and the logical equivalence."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. match_pos checks if lst[i][j] == x with proper bounds checking. get_row_spec builds the list of all positions where x occurs, sorts by row ascending and column descending (matching pair_order), and checks if res equals this expected list. This ensures NoDup (no duplicates in expected since each (i,j) appears once), StronglySorted pair_order (via the sort), and the iff condition (res contains exactly the matching positions). The concrete behavior matches the Coq spec."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. match_pos checks if lst[i][j] == x with proper bounds checking. get_row_spec builds the expected list of all positions where x occurs, sorts them by row ascending and column descending (matching pair_order), and checks if res equals this list. This ensures NoDup (no duplicates since we iterate once), StronglySorted pair_order (via the sort), and the iff condition (res contains exactly the matching positions). The concrete behavior matches the Coq spec."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. match_pos checks if lst[i][j] == x with proper bounds checking. get_row_spec builds the list of all positions where x occurs, sorts them by row ascending and column descending (matching pair_order), and checks if res equals this expected list. This captures the Coq spec's requirements: NoDup (no duplicates in expected since each (i,j) appears at most once), StronglySorted pair_order (achieved by the sort), and the iff condition (res contains exactly the positions where match_pos holds). The sorting key (p[0], -p[1]) correctly implements row ascending, col descending order."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python computes exactly all (i,j) with lst[i][j]==x, sorts by row ascending and column descending, and checks equality with res; this matches NoDup, StronglySorted pair_order, and the In <-> match_pos condition in the Coq spec."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python builds exactly the positions (i,j) where lst[i][j]==x, sorts by row asc and col desc, and checks equality to that list, enforcing the Coq spec\u2019s membership, NoDup, and StronglySorted conditions."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python collects all (i,j) where lst[i][j]==x and sorts by row ascending and col descending, matching NoDup, StronglySorted(pair_order), and In <-> match_pos in Coq, yielding the same concrete result."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

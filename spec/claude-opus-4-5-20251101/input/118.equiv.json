@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/claude-opus-4-5-20251101/input/118.v",
+  "translated_py_file": "spec/claude-opus-4-5-20251101/input/118.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq specifications, correctly implementing the vowel/consonant checks, valid position logic, and the specification for finding the closest valid vowel from the end of the string."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, accurately identifying the last valid vowel position surrounded by consonants and checking if the result matches it."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, accurately translating the helper functions and the logic for finding the last valid vowel position."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. Both check if length < 3 returns empty string. For length >= 3, the Coq spec finds a valid vowel position i with no valid vowel after it (i.e., the rightmost valid vowel position), and Python finds this by iterating and keeping the last valid position. The valid_vowel_position logic matches: checking i > 0, i < len-1, vowel at i, consonants at i-1 and i+1. The result comparison (single character string vs empty string) is equivalent."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. Both check if a vowel is surrounded by consonants (not at first or last position). The Coq spec finds the rightmost such vowel using 'no_valid_vowel_after' which means no valid position exists after index i. The Python code iterates forward and keeps updating last_valid_i, effectively finding the rightmost valid position. Both return empty string for words shorter than 3 characters or when no valid vowel position exists. The Python returns the single character at that position, matching the Coq's 'String ch EmptyString'."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. Both check if a vowel is surrounded by consonants (not at first or last position), and both find the rightmost such vowel. The Coq spec uses 'no_valid_vowel_after' to identify the last valid position, while Python iterates and keeps updating last_valid_i, achieving the same result. For strings with length < 3, both return empty string. The helper functions (is_vowel, is_consonant, valid_vowel_position) produce identical results on concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both select the last index where a vowel is flanked by non-vowels and return that single-character result, or empty if none; edge cases (length < 3) and bounds match."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both define vowels identically, consider any non-vowel a consonant, and select the last index where a vowel has consonant neighbors; otherwise they require the empty string. Index bounds and iteration match Coq\u2019s spec, so results coincide on all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both select the last index i (1 <= i <= len-2) where the character is a vowel and both neighbors are non-vowels, returning that single character, and return empty string if length < 3 or no such position exists. Helper predicates and indexing behavior align with the Coq spec for all concrete ASCII inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

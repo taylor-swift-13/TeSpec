@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/98.v",
+  "translated_py_file": "spec/human/input/98.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, counting uppercase vowels at even indices."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code implements the same logic as the Coq code, counting uppercase vowels at even indices."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, counting uppercase vowels at even indices."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both implementations count uppercase vowels (A, E, I, O, U) at even indices (0, 2, 4, ...). The Coq code uses filter on indices checking Nat.even and is_uppercase_vowel_bool, while Python iterates with i % 2 == 0 check. Both use 0-based indexing and the same vowel set. The logic is equivalent for all concrete string inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both implementations count uppercase vowels (A, E, I, O, U) at even indices (0, 2, 4, ...). The Coq code uses filter and length to count indices where Nat.even i is true and the character is an uppercase vowel. The Python code iterates through indices, checking i % 2 == 0 and membership in the uppercase vowel list. Both use 0-based indexing and the same definition of even (divisible by 2). The pre-condition is trivially true in both, and the spec checks equality with the implementation result."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both implementations count uppercase vowels (A, E, I, O, U) at even indices (0, 2, 4, ...). The Coq code uses filter and length on indices where Nat.even i is true and the character is an uppercase vowel. The Python code iterates through indices, checking i % 2 == 0 and if the character is in the uppercase vowel list. Both use 0-based indexing and the same definition of even (divisible by 2). The pre-condition is trivially true in both, and the spec checks equality with the implementation result."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both implementations count characters A,E,I,O,U at even (0-based) indices over the string range 0..len-1, returning the same count for all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both count uppercase vowels A/E/I/O/U at even (0-based) indices and return the same count for all inputs; precondition and spec match."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both implementations count positions i in 0..len(s)-1 where i is even and s[i] is one of A,E,I,O,U. Indexing and evenness checks align, and the spec equates output to this function."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

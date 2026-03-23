@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/claude-opus-4-5-20251101/input/33.v",
+  "translated_py_file": "spec/claude-opus-4-5-20251101/input/33.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq specification, resolving the existential quantifier by explicitly sorting the extracted elements and checking the required conditions."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the logic of the Coq specification, including the extraction of elements at indices divisible by three, sorting them, and verifying that the target list matches the original list except at those indices where it should match the sorted elements."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the logic of extracting elements at indices divisible by three, sorting them, and verifying if the target list matches the original list with those specific indices updated to the sorted values."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. get_indices_div_by_three extracts elements at indices divisible by 3, nth_default returns the element at index n or default d, is_sorted checks ascending order, and sort_third_spec verifies that l_prime has the same length as l, elements at indices divisible by 3 come from the sorted version of thirds, and other elements match l. The Python uses sorted() which produces a permutation that is sorted, matching the existential in Coq. All concrete behaviors align."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. get_indices_div_by_three extracts elements at indices divisible by 3, nth_default returns the element at index n or default d, is_sorted checks ascending order, and sort_third_spec verifies that l_prime has the same length as l, elements at indices divisible by 3 come from the sorted version of thirds, and other elements are unchanged. The Python uses sorted() which produces a permutation that is sorted, matching the existential in Coq. All concrete behaviors align."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec for concrete inputs. get_indices_div_by_three extracts elements at indices divisible by 3, nth_default returns the element at index n or default d, is_sorted checks ascending order, and sort_third_spec verifies that l_prime has the same length as l, elements at indices divisible by 3 come from the sorted version of those elements in l, and other elements remain unchanged. The Python sorted() function produces a permutation that is sorted, matching the existential requirement in Coq. All concrete behaviors align."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Helper functions match Coq definitions, and sort_third_spec checks l\u2032 equals l with multiples-of-3 positions replaced by the uniquely determined sorted(thirds). This matches the existential Coq spec since the sorted permutation is uniquely defined by nondecreasing order."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python collects elements at indices multiple of 3, sorts them, and checks l\u2032 matches replacing those positions with the sorted sequence; length and index calculations (mod/div) and nth_default behavior align with the Coq spec\u2019s existential witness (sorted(thirds))."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both select elements at indices multiple of 3, sort them in nondecreasing order, and require l\u2019 to replace those positions with the sorted sequence while keeping others unchanged. The sorted nondecreasing permutation is unique, so the Python check with sorted(thirds) matches the Coq existential spec on all inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

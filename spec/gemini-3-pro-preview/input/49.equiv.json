@@ -1,0 +1,105 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/gemini-3-pro-preview/input/49.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/gemini-3-pro-preview/input/49.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly handles the edge cases for n < 0 (where Coq's Z.pow is 0) and p = 0 (where Coq's Z.modulo returns the dividend). It also correctly implements the floored division behavior of Coq's Z.modulo for both positive and negative moduli."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements Coq's Z arithmetic semantics, including handling negative exponents (returning 0), division by zero (returning the dividend), and negative modulus (adjusting the remainder to be non-positive)."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": false,
+      "reason": "In Coq's ZArith, division by zero is defined such that 'a mod 0 = 0'. The Python code incorrectly assumes 'a mod 0 = a' and returns '2 ** n' when 'p == 0', leading to a mismatch on concrete inputs like n=2, p=0 (Python expects 4, Coq expects 0)."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly handles all cases matching Coq's ZArith semantics: for n < 0, Coq's 2^n = 0 so result is 0; for p = 0, Coq's a mod 0 = a; for p > 0, standard modulo; for p < 0, Coq uses floored division where the remainder has the same sign as the divisor, and the Python code correctly adjusts the positive remainder to match this convention."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly handles all cases matching Coq's ZArith semantics: for n < 0, Coq's 2^n = 0 so result is 0; for p = 0, Coq's a mod 0 = a; for p > 0, standard modulo; for p < 0, Coq uses floored division giving remainder in (p, 0], which the Python code correctly computes by adjusting the positive remainder."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly handles all cases matching Coq's ZArith semantics: for n < 0, Coq's 2^n = 0 so result is 0; for p = 0, Coq's a mod 0 = a; for p > 0, standard modulo; for p < 0, Coq uses floored division where the remainder has the same sign as the divisor, and the Python code correctly adjusts the positive remainder to match this convention."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Handles n<0 as 0, p=0 as identity, p>0 via pow modulo, and p<0 by adjusting remainder to Coq\u2019s range; matches Coq\u2019s Z.modulo and Z.pow semantics on all cases."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": false,
+      "reason": "Mismatch for negative modulus. Coq\u2019s Z.modulo returns a nonnegative remainder in [0, |p|) even when p < 0, but the Python code adjusts to a negative remainder (e.g., n=1, p=-5: Coq gives 2, Python gives -3). Other cases (n<0, p=0, p>0) match."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": false,
+      "reason": "Mismatch for negative modulus: Coq\u2019s Z.modulo returns a nonnegative remainder in [0, |p|), but the Python code adjusts to (p, 0], yielding negative residues (e.g., n=1, p=-5 gives Coq 2, Python -3). Other cases align."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 2,
+      "not_equivalent_votes": 1,
+      "majority_equivalent": true,
+      "unanimous_equivalent": false,
+      "reasons_if_not_equivalent": [
+        "In Coq's ZArith, division by zero is defined such that 'a mod 0 = 0'. The Python code incorrectly assumes 'a mod 0 = a' and returns '2 ** n' when 'p == 0', leading to a mismatch on concrete inputs like n=2, p=0 (Python expects 4, Coq expects 0)."
+      ]
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 1,
+      "not_equivalent_votes": 2,
+      "majority_equivalent": false,
+      "unanimous_equivalent": false,
+      "reasons_if_not_equivalent": [
+        "Mismatch for negative modulus. Coq\u2019s Z.modulo returns a nonnegative remainder in [0, |p|) even when p < 0, but the Python code adjusts to a negative remainder (e.g., n=1, p=-5: Coq gives 2, Python gives -3). Other cases (n<0, p=0, p>0) match.",
+        "Mismatch for negative modulus: Coq\u2019s Z.modulo returns a nonnegative remainder in [0, |p|), but the Python code adjusts to (p, 0], yielding negative residues (e.g., n=1, p=-5 gives Coq 2, Python -3). Other cases align."
+      ]
+    }
+  },
+  "overall_equivalent_votes": 6,
+  "overall_not_equivalent_votes": 3,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": false,
+  "non_equivalence_reasons": [
+    "In Coq's ZArith, division by zero is defined such that 'a mod 0 = 0'. The Python code incorrectly assumes 'a mod 0 = a' and returns '2 ** n' when 'p == 0', leading to a mismatch on concrete inputs like n=2, p=0 (Python expects 4, Coq expects 0).",
+    "Mismatch for negative modulus. Coq\u2019s Z.modulo returns a nonnegative remainder in [0, |p|) even when p < 0, but the Python code adjusts to a negative remainder (e.g., n=1, p=-5: Coq gives 2, Python gives -3). Other cases (n<0, p=0, p>0) match.",
+    "Mismatch for negative modulus: Coq\u2019s Z.modulo returns a nonnegative remainder in [0, |p|), but the Python code adjusts to (p, 0], yielding negative residues (e.g., n=1, p=-5 gives Coq 2, Python -3). Other cases align."
+  ],
+  "repair_round": 10,
+  "syntax_ok": true
+}

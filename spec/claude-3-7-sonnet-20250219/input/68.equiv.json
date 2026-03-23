@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/claude-3-7-sonnet-20250219/input/68.v",
+  "translated_py_file": "spec/claude-3-7-sonnet-20250219/input/68.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the logic for finding the minimum even value and its first occurrence index, matching the Coq specification's two cases (no even numbers vs. minimum even number with its smallest index)."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly identifies the minimum even value and its first occurrence index, matching both cases of the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification by finding the minimum even number and its smallest index, returning true if the result matches this pair or an empty list when no even numbers exist."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: it returns [] when there are no even numbers (matching the first disjunct), and otherwise returns [min_even, idx] where min_even is the smallest even number and idx is the first index where it appears (matching the second disjunct with its conditions about minimality and first occurrence). The min function with key (pair[0], pair[1]) correctly finds the minimum even value and breaks ties by choosing the smallest index."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both implementations find the minimum even number in the array and return it with its smallest index, or return empty list if no evens exist. The Python code uses min with (value, index) key which correctly finds the smallest even value and breaks ties by smallest index, matching the Coq spec's conditions that min_even <= all evens and idx <= all indices where min_even appears."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both implementations find the minimum even number in the array and return it along with its first occurrence index. The Coq spec returns [] when no even numbers exist (all odd), and [min_even, idx] otherwise, where min_even is the smallest even number and idx is the smallest index where it appears. The Python code does the same: it filters evens with their indices, returns [] if none exist, otherwise finds the minimum by value then by index (using tuple comparison), and returns [min_even, idx]. The behavior matches on all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both return [] when no even exists; otherwise they select the minimal even value and the smallest index where it occurs, matching Coq\u2019s conditions."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python returns [] when there are no even elements, otherwise returns [min_even, earliest_index] for the smallest even value. This matches the Coq spec\u2019s two cases exactly for all natural-number inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python returns [] when no even numbers exist, and otherwise returns [smallest even value, earliest index], matching the Coq spec\u2019s minimality and tie-breaking conditions with 0-based indexing."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

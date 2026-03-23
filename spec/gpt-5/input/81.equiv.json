@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gpt-5/input/81.v",
+  "translated_py_file": "spec/gpt-5/input/81.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the letter grade conditions and the list-wise Forall2 property using zip and length checks."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, checking the exact same conditions for each grade and using zip with length check to simulate Forall2."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq specification, mapping each score range to the corresponding letter grade and implementing the Forall2 list relation using zip and all."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. Each branch in to_letter_grade_spec matches the corresponding disjunct in the Coq definition: score == 4.0 maps to score = 4, 3.7 < score maps to 37/10 < score, etc. The numerical_letter_grade_spec correctly implements Forall2 by checking that both lists have equal length and that each corresponding pair satisfies to_letter_grade_spec. The concrete behavior matches for all inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. Each branch in to_letter_grade_spec matches the corresponding disjunct in the Coq spec: score == 4.0 with 'A+', 3.7 < score with score != 4.0 for 'A', and so on with the correct boundary conditions (37/10 = 3.7, 33/10 = 3.3, etc.). The numerical_letter_grade_spec correctly implements Forall2 by checking equal lengths and that each pair satisfies to_letter_grade_spec."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. Each branch in to_letter_grade_spec matches the corresponding disjunct in the Coq spec: score == 4.0 maps to score = 4, 3.7 < score maps to 37/10 < score, etc. The numerical_letter_grade_spec correctly implements Forall2 by checking lengths match and all pairs satisfy to_letter_grade_spec. The concrete behavior will match for all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python implements the same interval boundaries and letter mappings (including the special case at 4.0) and checks pairwise correspondence with equal lengths, matching Coq\u2019s disjoint cases and Forall2 behavior."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python function mirrors the Coq piecewise intervals and string labels exactly (including open/closed bounds and the special case for score=4.0), and the list predicate matches Forall2 by requiring equal lengths and per-pair satisfaction."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python mirrors all interval boundaries (open/closed) and the 4.0 special case exactly, and the list function matches Forall2 via length check and pairwise predicate evaluation."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

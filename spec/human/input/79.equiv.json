@@ -1,0 +1,96 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/human/input/79.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/human/input/79.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code is a direct recursive translation of the Coq logic, faithfully implementing the binary conversion algorithm, fuel-based termination (though fuel is sufficient for all valid inputs), and string formatting."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq specification, including the recursive auxiliary function with fuel, and accurately implements the string formatting."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq logic, including the fuel-based auxiliary function for binary conversion and the string formatting."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code faithfully translates the Coq logic. The nat_to_binary_string_aux function handles the same cases: fuel=0 returns empty string, n=0 returns '0', n=1 returns '1', and for larger n it recursively builds the binary string by checking evenness and dividing. The nat_to_binary_string handles n=0 specially and otherwise calls the aux function with fuel=n, matching Coq. The decimal_to_binary_impl wraps with 'db' prefix and suffix. The spec checks equality with the implementation result. For all concrete non-negative integer inputs, both produce identical binary string representations."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code faithfully translates the Coq logic. The nat_to_binary_string_aux function uses the same recursive structure with fuel decrementing, handling base cases n=0 and n=1, and recursively computing binary representation by checking even/odd. The nat_to_binary_string handles n=0 specially and uses n as fuel otherwise. The decimal_to_binary_impl wraps with 'db' prefix and suffix. For all non-negative integer inputs (which is what Coq nat represents), the Python code produces identical results. The Python code also handles negative inputs by treating them as 0, which is a reasonable interpretation since Coq nat cannot be negative."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code faithfully translates the Coq logic. The nat_to_binary_string_aux function handles the same cases: fuel=0 returns empty string, n=0 returns '0', n=1 returns '1', and for larger n it recursively builds the binary string by checking evenness and dividing. The nat_to_binary_string function handles n=0 specially and otherwise calls the aux function with fuel=n, matching Coq. The decimal_to_binary_impl wraps with 'db' prefix and suffix. The spec checks equality with the implementation result. For all non-negative integer inputs (which is what Coq nat represents), the Python code produces the same binary string output."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq binary conversion with the same recursion and formatting; for all natural numbers (n >= 0) it returns the same \"db\"-wrapped binary string."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Matches Coq for all natural inputs; same recursive halving logic and \"db\" wrapping. Extra negative handling maps to 0, which doesn\u2019t affect Coq\u2019s nat domain."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "For all natural numbers, the Python functions mirror the Coq logic: same binary conversion and 'db' wrappers. Handling of negatives by mapping to 0 does not affect equivalence on the nat domain."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 1,
+  "syntax_ok": true
+}

@@ -1,0 +1,104 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/human/input/67.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/human/input/67.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the string parsing, natural number conversion, and subtraction logic (including truncation at 0 for nat subtraction) as defined in the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, including string parsing, natural number conversion, and natural number subtraction (truncating at 0)."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq specifications, including the string parsing logic, natural number subtraction semantics (truncating at zero), and character-to-digit conversion."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": false,
+      "reason": "The Coq spec uses natural number subtraction which truncates to 0 when n < apples + oranges (i.e., n - (apples + oranges) = 0 when n < apples + oranges). The Python code explicitly handles this with 'n - total_fruits if n >= total_fruits else 0', which matches. However, the Python code searches for ANY valid parse that makes ret match, while Coq's existential quantifier requires there EXISTS a valid parse. The key difference is that Python's string_to_nat treats non-digit characters by computing ord(c) - 48, which can give incorrect values for non-digits. For example, string_to_nat('a') would compute ord('a') - 48 = 97 - 48 = 49, not 0 or an error. In Coq, char_to_digit also does nat_of_ascii c - nat_of_ascii '0', which would similarly give 49 for 'a'. So they match on this. But the real issue is that the Python parse_fruit_string only finds the FIRST occurrence of ' apples and ' and checks if it works, then moves start forward by 1 character. The Coq spec uses string concatenation which implies a unique parse structure. For inputs like '5 apples and 3 apples and 6 oranges', Python would try multiple parses while Coq's existential would be satisfied by any valid one. This should still be equivalent. Actually, re-examining: Python returns True if ANY parse works, Coq requires EXISTS a parse - these are equivalent for checking validity."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": false,
+      "reason": "The Coq spec uses natural number subtraction which truncates to 0 when n < apples + oranges (i.e., n - (apples + oranges) = 0 when n < apples + oranges). The Python code explicitly handles this with 'n - total_fruits if n >= total_fruits else 0', which matches. However, the Python code returns True for the first valid parse that matches ret, while the Coq spec uses existential quantification. The key mismatch is that the Python parse_fruit_string only finds the first occurrence of ' apples and ' separator, but the Coq spec allows any valid decomposition. More critically, when parsing strings like '5 apples and 6 oranges', if the string contains non-digit characters, char_to_digit in Python returns 0 for negative values but Coq's nat_of_ascii subtraction would wrap around (since nat subtraction truncates). For valid inputs matching the expected format, they should agree, but the Python code's loop structure (searching for multiple occurrences of separator) differs from Coq's simple concatenation model which expects exactly one occurrence at a specific position."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": false,
+      "reason": "The Coq spec uses natural number subtraction which truncates to 0 when n < apples + oranges (i.e., n - (apples + oranges) = 0 when n < apples + oranges). The Python code explicitly handles this with 'n - total_fruits if n >= total_fruits else 0', which matches. However, the Python code returns True for ANY valid parse that matches ret, while Coq's existential quantifier also allows any valid parse. The real issue is that Python's string_to_nat treats non-digit characters by computing ord(c) - 48, which can give wrong values for non-digits (e.g., 'a' gives 49), while Coq's char_to_digit does the same (nat_of_ascii c - nat_of_ascii '0'). But more critically, the Python code searches for the separator starting from different positions (start = idx + 1), potentially finding different parses than Coq expects. For the standard format 'X apples and Y oranges', both should work the same, but the Python loop logic differs from Coq's single existential witness approach. For well-formed inputs matching the expected format, they should agree."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq spec: it recognizes the same pattern s = s_apples ++ \" apples and \" ++ s_oranges ++ \" oranges\", computes apples/oranges via the same char_to_digit (ASCII code minus '0' floored at 0), and checks ret equals n - (apples+oranges) with truncation at 0. It uses an existential search over possible splits, matching the Coq exists. Thus concrete behavior aligns."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq spec: it parses the same pattern via existence of a split, uses the same string-to-number (ord(c)-'0' with 0 floor), and computes ret as saturated n - (apples+oranges). Thus it matches Coq on all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both implement the same digit conversion (ord(c)-48 floored at 0), the same string-to-number accumulation, parse the string by finding a split s = s_apples + ' apples and ' + s_oranges + ' oranges', and compute ret as n - (apples + oranges) with truncation at 0. Python\u2019s search over possible splits matches Coq\u2019s existential."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 0,
+      "not_equivalent_votes": 3,
+      "majority_equivalent": false,
+      "unanimous_equivalent": false,
+      "reasons_if_not_equivalent": [
+        "The Coq spec uses natural number subtraction which truncates to 0 when n < apples + oranges (i.e., n - (apples + oranges) = 0 when n < apples + oranges). The Python code explicitly handles this with 'n - total_fruits if n >= total_fruits else 0', which matches. However, the Python code searches for ANY valid parse that makes ret match, while Coq's existential quantifier requires there EXISTS a valid parse. The key difference is that Python's string_to_nat treats non-digit characters by computing ord(c) - 48, which can give incorrect values for non-digits. For example, string_to_nat('a') would compute ord('a') - 48 = 97 - 48 = 49, not 0 or an error. In Coq, char_to_digit also does nat_of_ascii c - nat_of_ascii '0', which would similarly give 49 for 'a'. So they match on this. But the real issue is that the Python parse_fruit_string only finds the FIRST occurrence of ' apples and ' and checks if it works, then moves start forward by 1 character. The Coq spec uses string concatenation which implies a unique parse structure. For inputs like '5 apples and 3 apples and 6 oranges', Python would try multiple parses while Coq's existential would be satisfied by any valid one. This should still be equivalent. Actually, re-examining: Python returns True if ANY parse works, Coq requires EXISTS a parse - these are equivalent for checking validity.",
+        "The Coq spec uses natural number subtraction which truncates to 0 when n < apples + oranges (i.e., n - (apples + oranges) = 0 when n < apples + oranges). The Python code explicitly handles this with 'n - total_fruits if n >= total_fruits else 0', which matches. However, the Python code returns True for the first valid parse that matches ret, while the Coq spec uses existential quantification. The key mismatch is that the Python parse_fruit_string only finds the first occurrence of ' apples and ' separator, but the Coq spec allows any valid decomposition. More critically, when parsing strings like '5 apples and 6 oranges', if the string contains non-digit characters, char_to_digit in Python returns 0 for negative values but Coq's nat_of_ascii subtraction would wrap around (since nat subtraction truncates). For valid inputs matching the expected format, they should agree, but the Python code's loop structure (searching for multiple occurrences of separator) differs from Coq's simple concatenation model which expects exactly one occurrence at a specific position.",
+        "The Coq spec uses natural number subtraction which truncates to 0 when n < apples + oranges (i.e., n - (apples + oranges) = 0 when n < apples + oranges). The Python code explicitly handles this with 'n - total_fruits if n >= total_fruits else 0', which matches. However, the Python code returns True for ANY valid parse that matches ret, while Coq's existential quantifier also allows any valid parse. The real issue is that Python's string_to_nat treats non-digit characters by computing ord(c) - 48, which can give wrong values for non-digits (e.g., 'a' gives 49), while Coq's char_to_digit does the same (nat_of_ascii c - nat_of_ascii '0'). But more critically, the Python code searches for the separator starting from different positions (start = idx + 1), potentially finding different parses than Coq expects. For the standard format 'X apples and Y oranges', both should work the same, but the Python loop logic differs from Coq's single existential witness approach. For well-formed inputs matching the expected format, they should agree."
+      ]
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 6,
+  "overall_not_equivalent_votes": 3,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": false,
+  "non_equivalence_reasons": [
+    "The Coq spec uses natural number subtraction which truncates to 0 when n < apples + oranges (i.e., n - (apples + oranges) = 0 when n < apples + oranges). The Python code explicitly handles this with 'n - total_fruits if n >= total_fruits else 0', which matches. However, the Python code searches for ANY valid parse that makes ret match, while Coq's existential quantifier requires there EXISTS a valid parse. The key difference is that Python's string_to_nat treats non-digit characters by computing ord(c) - 48, which can give incorrect values for non-digits. For example, string_to_nat('a') would compute ord('a') - 48 = 97 - 48 = 49, not 0 or an error. In Coq, char_to_digit also does nat_of_ascii c - nat_of_ascii '0', which would similarly give 49 for 'a'. So they match on this. But the real issue is that the Python parse_fruit_string only finds the FIRST occurrence of ' apples and ' and checks if it works, then moves start forward by 1 character. The Coq spec uses string concatenation which implies a unique parse structure. For inputs like '5 apples and 3 apples and 6 oranges', Python would try multiple parses while Coq's existential would be satisfied by any valid one. This should still be equivalent. Actually, re-examining: Python returns True if ANY parse works, Coq requires EXISTS a parse - these are equivalent for checking validity.",
+    "The Coq spec uses natural number subtraction which truncates to 0 when n < apples + oranges (i.e., n - (apples + oranges) = 0 when n < apples + oranges). The Python code explicitly handles this with 'n - total_fruits if n >= total_fruits else 0', which matches. However, the Python code returns True for the first valid parse that matches ret, while the Coq spec uses existential quantification. The key mismatch is that the Python parse_fruit_string only finds the first occurrence of ' apples and ' separator, but the Coq spec allows any valid decomposition. More critically, when parsing strings like '5 apples and 6 oranges', if the string contains non-digit characters, char_to_digit in Python returns 0 for negative values but Coq's nat_of_ascii subtraction would wrap around (since nat subtraction truncates). For valid inputs matching the expected format, they should agree, but the Python code's loop structure (searching for multiple occurrences of separator) differs from Coq's simple concatenation model which expects exactly one occurrence at a specific position.",
+    "The Coq spec uses natural number subtraction which truncates to 0 when n < apples + oranges (i.e., n - (apples + oranges) = 0 when n < apples + oranges). The Python code explicitly handles this with 'n - total_fruits if n >= total_fruits else 0', which matches. However, the Python code returns True for ANY valid parse that matches ret, while Coq's existential quantifier also allows any valid parse. The real issue is that Python's string_to_nat treats non-digit characters by computing ord(c) - 48, which can give wrong values for non-digits (e.g., 'a' gives 49), while Coq's char_to_digit does the same (nat_of_ascii c - nat_of_ascii '0'). But more critically, the Python code searches for the separator starting from different positions (start = idx + 1), potentially finding different parses than Coq expects. For the standard format 'X apples and Y oranges', both should work the same, but the Python loop logic differs from Coq's single existential witness approach. For well-formed inputs matching the expected format, they should agree."
+  ],
+  "repair_round": 10,
+  "syntax_ok": true
+}

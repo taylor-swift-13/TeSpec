@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/58.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/58.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly checks that the result is sorted, contains no duplicates, and its elements are exactly the intersection of the elements in l1 and l2, matching the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly checks that the result list is sorted, contains no duplicates, and its elements are exactly the intersection of the elements in the two input lists, matching the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly checks that the result list is sorted, contains no duplicates, and its elements are exactly the intersection of the elements in the two input lists, matching the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly checks the three conditions from the Coq spec: (1) res is sorted (using sorted() comparison), (2) res has no duplicates (comparing length to set length), and (3) res contains exactly the intersection of l1 and l2 (comparing set(res) to the set intersection). These produce the same concrete judgments as the Coq specification for all concrete list inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code checks the same three conditions as the Coq spec: (1) res is sorted (Sorted Z.le res), (2) res has no duplicates (NoDup res), and (3) res contains exactly the elements that are in both l1 and l2 (the intersection). The set intersection check correctly captures the Coq biconditional 'In x res <-> (In x l1 /\\ In x l2)'."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code checks the same three conditions as the Coq spec: (1) res is sorted (using Python's sorted which gives ascending order, matching Z.le), (2) res has no duplicates (len(res) == len(set(res)) is equivalent to NoDup), and (3) res contains exactly the elements that are in both l1 and l2 (set intersection matches the Coq biconditional for membership). All concrete inputs will produce the same judgment."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python enforces ascending order, no duplicates, and that res contains exactly the elements in both l1 and l2, matching the Coq Sorted/NoDup/membership iff spec for Z integers."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both enforce res is sorted ascending, has no duplicates, and its elements are exactly those present in both l1 and l2 (set intersection)."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "It enforces res is sorted nondecreasing, has no duplicates, and its elements are exactly those appearing in both l1 and l2, matching the Coq spec."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

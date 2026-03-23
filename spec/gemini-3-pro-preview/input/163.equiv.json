@@ -1,0 +1,100 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/163.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/163.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly constructs the unique strictly sorted list of even integers between min(a, b) and min(max(a, b), 9) and compares it to the input list, matching the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code constructs the unique strictly sorted list of even integers between lower and min(upper, 9) and checks if the input list matches it, which is exactly equivalent to the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly constructs the unique strictly sorted list of even integers between min(a, b) and min(max(a, b), 9) and compares it to l, which is logically equivalent to the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": false,
+      "reason": "The Coq spec uses Z.even which returns true for even integers (including negative even integers), while the Python code uses x % 2 == 0 which also correctly identifies even integers. However, the issue is that in Coq, Z.even returns a boolean where Z.even x = true means x is even, but in Python, for negative numbers, x % 2 can return -1 (e.g., (-3) % 2 == -1 in some contexts, though in Python 3 it returns 1). Actually, Python's % always returns a non-negative result when the divisor is positive, so x % 2 == 0 correctly identifies even integers. The real issue is that the Coq spec defines a Prop (a logical statement about whether l satisfies certain properties), while the Python code constructs the expected list and checks equality. For the Coq spec, any list satisfying the sorted and membership conditions would make the Prop true, but since there's exactly one such sorted list, this should be equivalent. However, the Python code constructs integers starting from 'lower' which could be negative, and includes all even integers in [lower, min(upper, 9)]. The Coq spec requires x < 10 AND Z.even x = true AND lower <= x <= upper. These conditions match. The Python implementation correctly constructs this unique list and compares. The behavior should be equivalent."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": false,
+      "reason": "The Coq spec uses Z.even which returns true for even integers including negative ones, and the condition x < 10 allows negative even integers. The Python code uses x % 2 == 0 which correctly identifies even integers, but the issue is that Z.even in Coq checks if the number is even (last bit is 0), which for negative numbers in Coq's Z type works correctly. However, the main difference is that the Python code generates integers starting from 'lower' which could be negative, and x % 2 == 0 in Python returns True for negative even numbers (e.g., -4 % 2 == 0 is True). So actually the Python code should handle negative evens correctly. But wait - the Coq Z.even function returns a bool where Z.even x = true means x is even. In Python, x % 2 == 0 also correctly identifies even integers including negatives. The logic appears equivalent for concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": false,
+      "reason": "The Coq spec uses Z.even which returns true for even integers (including negative even integers), while the Python code uses x % 2 == 0 which also correctly identifies even integers. However, the issue is that the Coq spec requires Z.even x = true, and in Coq, Z.even returns a boolean where negative even numbers like -2 have Z.even (-2) = true. The Python x % 2 == 0 also returns True for -2. But there's a subtle issue: in Python, (-1) % 2 == 1, while in Coq Z.even (-1) = false. Actually both handle this correctly. The real issue is that the Coq spec defines the property via a biconditional (In x l <-> ...) which means l must contain ALL such x and ONLY such x. The Python code constructs the expected list correctly. However, the Python range function with negative numbers works correctly. Let me reconsider: for a=1, b=5, lower=1, upper=5, limit=5, expected=[2,4]. For a=-5, b=5, lower=-5, upper=5, limit=5, expected=[-4,-2,0,2,4]. Both should match. The codes appear equivalent for concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "It builds the unique strictly increasing list of all even integers x with lower <= x <= upper and x < 10, then checks l equals it, matching the Coq Sorted and exact-membership spec for all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "It builds the unique strictly increasing list of even integers x with lower <= x <= upper and x < 10 (i.e., up to 9), then checks l equals this list, matching the Coq spec\u2019s sortedness and membership iff conditions."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "It builds the strictly increasing list of even integers x with lower <= x <= upper and x < 10 (using limit=min(upper,9)), then checks equality with l. Equality implies both Sorted and the exact membership equivalence. Python\u2019s x%2==0 matches Coq\u2019s Z.even, including negatives."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 0,
+      "not_equivalent_votes": 3,
+      "majority_equivalent": false,
+      "reasons_if_not_equivalent": [
+        "The Coq spec uses Z.even which returns true for even integers (including negative even integers), while the Python code uses x % 2 == 0 which also correctly identifies even integers. However, the issue is that in Coq, Z.even returns a boolean where Z.even x = true means x is even, but in Python, for negative numbers, x % 2 can return -1 (e.g., (-3) % 2 == -1 in some contexts, though in Python 3 it returns 1). Actually, Python's % always returns a non-negative result when the divisor is positive, so x % 2 == 0 correctly identifies even integers. The real issue is that the Coq spec defines a Prop (a logical statement about whether l satisfies certain properties), while the Python code constructs the expected list and checks equality. For the Coq spec, any list satisfying the sorted and membership conditions would make the Prop true, but since there's exactly one such sorted list, this should be equivalent. However, the Python code constructs integers starting from 'lower' which could be negative, and includes all even integers in [lower, min(upper, 9)]. The Coq spec requires x < 10 AND Z.even x = true AND lower <= x <= upper. These conditions match. The Python implementation correctly constructs this unique list and compares. The behavior should be equivalent.",
+        "The Coq spec uses Z.even which returns true for even integers including negative ones, and the condition x < 10 allows negative even integers. The Python code uses x % 2 == 0 which correctly identifies even integers, but the issue is that Z.even in Coq checks if the number is even (last bit is 0), which for negative numbers in Coq's Z type works correctly. However, the main difference is that the Python code generates integers starting from 'lower' which could be negative, and x % 2 == 0 in Python returns True for negative even numbers (e.g., -4 % 2 == 0 is True). So actually the Python code should handle negative evens correctly. But wait - the Coq Z.even function returns a bool where Z.even x = true means x is even. In Python, x % 2 == 0 also correctly identifies even integers including negatives. The logic appears equivalent for concrete inputs.",
+        "The Coq spec uses Z.even which returns true for even integers (including negative even integers), while the Python code uses x % 2 == 0 which also correctly identifies even integers. However, the issue is that the Coq spec requires Z.even x = true, and in Coq, Z.even returns a boolean where negative even numbers like -2 have Z.even (-2) = true. The Python x % 2 == 0 also returns True for -2. But there's a subtle issue: in Python, (-1) % 2 == 1, while in Coq Z.even (-1) = false. Actually both handle this correctly. The real issue is that the Coq spec defines the property via a biconditional (In x l <-> ...) which means l must contain ALL such x and ONLY such x. The Python code constructs the expected list correctly. However, the Python range function with negative numbers works correctly. Let me reconsider: for a=1, b=5, lower=1, upper=5, limit=5, expected=[2,4]. For a=-5, b=5, lower=-5, upper=5, limit=5, expected=[-4,-2,0,2,4]. Both should match. The codes appear equivalent for concrete inputs."
+      ]
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 6,
+  "overall_not_equivalent_votes": 3,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [
+    "The Coq spec uses Z.even which returns true for even integers (including negative even integers), while the Python code uses x % 2 == 0 which also correctly identifies even integers. However, the issue is that in Coq, Z.even returns a boolean where Z.even x = true means x is even, but in Python, for negative numbers, x % 2 can return -1 (e.g., (-3) % 2 == -1 in some contexts, though in Python 3 it returns 1). Actually, Python's % always returns a non-negative result when the divisor is positive, so x % 2 == 0 correctly identifies even integers. The real issue is that the Coq spec defines a Prop (a logical statement about whether l satisfies certain properties), while the Python code constructs the expected list and checks equality. For the Coq spec, any list satisfying the sorted and membership conditions would make the Prop true, but since there's exactly one such sorted list, this should be equivalent. However, the Python code constructs integers starting from 'lower' which could be negative, and includes all even integers in [lower, min(upper, 9)]. The Coq spec requires x < 10 AND Z.even x = true AND lower <= x <= upper. These conditions match. The Python implementation correctly constructs this unique list and compares. The behavior should be equivalent.",
+    "The Coq spec uses Z.even which returns true for even integers including negative ones, and the condition x < 10 allows negative even integers. The Python code uses x % 2 == 0 which correctly identifies even integers, but the issue is that Z.even in Coq checks if the number is even (last bit is 0), which for negative numbers in Coq's Z type works correctly. However, the main difference is that the Python code generates integers starting from 'lower' which could be negative, and x % 2 == 0 in Python returns True for negative even numbers (e.g., -4 % 2 == 0 is True). So actually the Python code should handle negative evens correctly. But wait - the Coq Z.even function returns a bool where Z.even x = true means x is even. In Python, x % 2 == 0 also correctly identifies even integers including negatives. The logic appears equivalent for concrete inputs.",
+    "The Coq spec uses Z.even which returns true for even integers (including negative even integers), while the Python code uses x % 2 == 0 which also correctly identifies even integers. However, the issue is that the Coq spec requires Z.even x = true, and in Coq, Z.even returns a boolean where negative even numbers like -2 have Z.even (-2) = true. The Python x % 2 == 0 also returns True for -2. But there's a subtle issue: in Python, (-1) % 2 == 1, while in Coq Z.even (-1) = false. Actually both handle this correctly. The real issue is that the Coq spec defines the property via a biconditional (In x l <-> ...) which means l must contain ALL such x and ONLY such x. The Python code constructs the expected list correctly. However, the Python range function with negative numbers works correctly. Let me reconsider: for a=1, b=5, lower=1, upper=5, limit=5, expected=[2,4]. For a=-5, b=5, lower=-5, upper=5, limit=5, expected=[-4,-2,0,2,4]. Both should match. The codes appear equivalent for concrete inputs."
+  ],
+  "repair_round": 0,
+  "syntax_ok": true
+}

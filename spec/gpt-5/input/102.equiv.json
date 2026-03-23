@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gpt-5/input/102.v",
+  "translated_py_file": "spec/gpt-5/input/102.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification by checking if r is -1 when x > y or when there are no even numbers in the range [x, y], and otherwise checking if r is the maximum even number in the range [x, y]."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly computes the maximum even number in the range [x, y] and checks if r equals it, or -1 if no such number exists or x > y, matching the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly identifies the maximum even number in the range [x, y] and checks if r equals it, or returns r == -1 when no such number exists or x > y, exactly matching the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Coq spec says: if x > y, return -1; if x <= y and there exists an even number in [x,y], return the largest such even; otherwise return -1. The Python code computes max_even as the largest even <= y, then checks if max_even >= x (i.e., if there's an even in [x,y]). If so, it returns that max_even; otherwise -1. This matches the Coq spec's three cases exactly for all concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Coq spec says: if x > y, return -1; if x <= y and there exists an even number in [x,y], return the largest such even; otherwise return -1. The Python code computes max_even as the largest even <= y, then checks if it's >= x (i.e., in range). If so, r must equal max_even (the largest even in range); otherwise r = -1. This matches the Coq spec's concrete behavior for all inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Coq spec says: if x > y, return -1; if x <= y and there exists an even number in [x,y], return the maximum such even (which is y if y is even, else y-1, provided it's >= x); otherwise return -1. The Python code computes exactly this: when x > y it checks r == -1; when x <= y it computes max_even as the largest even <= y, and if max_even >= x (meaning an even exists in range), checks r == max_even, otherwise checks r == -1. This matches the Coq specification on all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both require r = -1 when x > y or when no even exists in [x, y], and otherwise r must be the maximum even in [x, y]. The Python code computes that maximum as y (if even) or y-1 and checks it lies within [x, y], matching the Coq spec for all integers, including negatives."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both specify r = -1 if x > y or if no even exists in [x, y]; otherwise r must be the maximum even in [x, y]. The Python code computes y if even else y-1, checks it is >= x, and requires r to equal that; this matches the Coq spec on all integers."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Matches Coq: returns -1 if x>y or no even in [x,y]; otherwise returns the largest even in [x,y] (y if even, else y-1)."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

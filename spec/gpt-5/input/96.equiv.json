@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gpt-5/input/96.v",
+  "translated_py_file": "spec/gpt-5/input/96.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq specifications, correctly implementing the checks for divisibility, primality, and the properties of the list of primes up to n."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specifications for divisibility, primality, and the count_up_to_spec property, checking both directions of the iff condition and the NoDup constraint."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specifications for divisibility, primality, and the count_up_to_spec by checking for duplicates and verifying the bidirectional implication for all relevant natural numbers."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specifications. The divides function checks divisibility (handling d=0 correctly since 0*k=0 only when n=0). The prime function checks if p >= 2 and has no divisors in range [2, p). The count_up_to_spec function checks: (1) no duplicates via set comparison, (2) all elements in ans are primes less than n, and (3) all primes less than n are in ans. This matches the Coq biconditional specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specifications. The divides function checks divisibility (handling d=0 correctly since in Coq, 0*k=0 for any k, so divides(0,n) holds iff n=0). The prime function checks p>=2 and that no d in [2,p) divides p. The count_up_to_spec function checks: (1) no duplicates via set comparison, (2) all elements in ans are primes less than n, and (3) all primes less than n are in ans. This matches the Coq biconditional specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specifications for concrete inputs. The divides function checks divisibility (handling d=0 correctly since 0*k=0 only when n=0). The prime function checks if p >= 2 and has no divisors in range [2, p). The count_up_to_spec function verifies: (1) no duplicates via set comparison, (2) all elements in ans are primes less than n, and (3) all primes less than n are in ans. This matches the Coq biconditional specification."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "divides handles d=0 like Coq; prime checks no divisors in 2..p-1 and p>=2; count_up_to_spec enforces NoDup and that ans contains exactly all primes < n. Matches Coq on naturals."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "For natural-number inputs, divides matches Coq (including d=0), prime correctly rejects any divisor in 2..p-1, and count_up_to_spec enforces NoDup and exact membership of primes < n in both directions, yielding the same concrete results."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "For natural number inputs, divides matches Coq\u2019s definition (0 divides only 0), prime checks absence of divisors 2..p-1, and count_up_to_spec enforces NoDup and exact inclusion of primes < n via both directions. The concrete behaviors align."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

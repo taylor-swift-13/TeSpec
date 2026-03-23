@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/claude-3-7-sonnet-20250219/input/102.v",
+  "translated_py_file": "spec/claude-3-7-sonnet-20250219/input/102.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq specification, correctly handling the precedence of logical operators (AND binds tighter than OR) and correctly implementing Z.even using modulo 2."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq specification, accurately reflecting the logical structure, arithmetic conditions, and operator precedence."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq specification, accurately preserving the logical structure, operator precedence (where /\\ binds tighter than \\/), and the behavior of Z.even using modulo arithmetic."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq specification. It properly handles the three main disjunctive cases: (1) x > y implies res = -1, (2) x = y with even/odd checks, (3) x < y with even/odd checks combined with the validity constraint. The precedence interpretation (A \\/ B \\/ (C /\\ D)) matches Coq's operator precedence where /\\ binds tighter than \\/. The Z.even check is correctly translated to res % 2 == 0 for integers."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq specification. It properly handles the three main disjunctive cases: (1) x > y implies res = -1, (2) x = y with even/odd checks on y determining res, (3) x < y with even/odd checks combined with the constraint that res is either -1 or a valid even number in range. The precedence interpretation (A \\/ B \\/ (C /\\ D)) matches Coq's operator precedence where /\\ binds tighter than \\/. The Z.even check is correctly translated to res % 2 == 0 for integers."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq specification. It properly handles the three main disjunctive cases: (1) x > y with res = -1, (2) x = y with even/odd checks, (3) x < y with even/odd checks combined with the validity constraint. The precedence interpretation (A \\/ B \\/ (C /\\ D)) matches Coq's operator precedence where /\\ binds tighter than \\/. The Z.even check is correctly translated to res % 2 == 0 for integers."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq structure A \\/ B \\/ (C /\\ D) exactly, and uses n % 2 == 0 to match Z.even for all integers; all comparisons and bounds are preserved, so results align on all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Same case split and operator precedence (A or B or (C and D)); evenness checks via n%2==0 match Z.even for all integers, so results align on all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code mirrors the Coq spec\u2019s disjunctive structure A \u2228 B \u2228 (C \u2227 D), correctly handles evenness (including negatives) via n % 2 == 0, and matches all branch conditions and bounds. It should yield the same truth value for all inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gpt-5/input/69.v",
+  "translated_py_file": "spec/gpt-5/input/69.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the logic of the Coq specification, including the frequency count, the constraints on the input list (non-empty and positive elements), and the identification of the maximum integer 'n' such that its frequency is at least 'n', or returning -1 if no such 'n' exists."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the specification by checking the conditions on the list and finding the maximum valid n (which must be an element of the list since its frequency must be >= n > 0), returning -1 if no such n exists."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification by checking that all elements are positive, the list is non-empty, and ans is either the maximum element n that appears at least n times, or -1 if no such element exists."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: it checks all elements are positive, list is non-empty, finds all n > 0 where freq(n, lst) >= n, and returns the maximum such n if any exist (or -1 otherwise). The Coq spec requires ans to be the maximum valid n (via the condition that all valid n satisfy n <= ans), which matches Python's max(valid_ns). The Python only checks n in set(lst), which is correct since any n not in lst has freq 0 and cannot satisfy freq(n, lst) >= n for n > 0."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: it checks all elements are positive, list is non-empty, finds all n > 0 where freq(n, lst) >= n, and returns the maximum such n if any exist, or -1 otherwise. The Coq spec requires ans to be the maximum valid n (via the condition that all valid n <= ans), which matches Python's max(valid_ns). The Python only checks n in set(lst), which is correct since any n not in lst has freq 0, so freq(n, lst) >= n with n > 0 is impossible."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: it checks all elements are positive, list is non-empty, finds all n > 0 where freq(n, lst) >= n, and returns the maximum such n (or -1 if none exist). The Coq spec requires ans to be the maximum valid n when valid ns exist (via the condition that all valid n <= ans), which matches Python's max(valid_ns). The Python only checks n in set(lst), which is correct since any n not in lst has freq 0, so freq(n, lst) >= n with n > 0 is impossible."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "It checks all elements positive and non-empty, then if any n>0 with freq(n)>=n exists it requires ans be the maximal such n; otherwise ans=-1. Restricting to set(lst) is fine since any valid n must appear in the list. Matches the Coq spec on all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both require lst to be non-empty and all positive; candidates n satisfy n>0 and freq(n,l)>=n, which implies n must be an element of lst. Coq\u2019s ans is the maximal such n or -1 if none exist. Python computes exactly this (max over set(lst) with the condition, else -1). Thus results match on all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both compute freq by equality, require lst nonempty and all positive, select ans as the maximum positive n with freq(n) >= n if any exist, otherwise require ans = -1; restricting to n in set(lst) is sound since n must occur to satisfy freq(n) >= n."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

@@ -1,0 +1,96 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/human/input/104.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/human/input/104.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq definitions, including the fueled digit extraction, filtering logic, and insertion sort implementation."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq definitions, including the fueled digit extraction, filtering, and insertion sort logic, preserving the exact concrete behavior."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq definitions, including the fueled digit extraction, filtering, and insertion sort logic, preserving the exact semantics for all concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the same logic as the Coq code. Both filter elements with only odd digits (1,3,5,7,9) and sort the result. The nat_to_digits function works the same way (using n as fuel), has_only_odd_digits_bool checks the same condition, filter_odd_digits filters the same elements, and sort_list implements insertion sort identically. The sort_list in Python uses reversed(l) which matches the Coq recursive pattern of processing from the end. For all concrete positive integer inputs, both produce the same results."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the same logic as the Coq code. The key functions match: nat_to_digits converts a number to its digits (least significant first), has_only_odd_digits_bool checks if all digits are odd (1,3,5,7,9), filter_odd_digits keeps only numbers with all odd digits, and sort_list implements insertion sort. The sort_list in Python uses reversed(l) and builds up the result, which is equivalent to the Coq recursive pattern of inserting the head into the sorted tail. Both produce the same concrete results for all inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the same logic as the Coq code. Both filter elements with only odd digits (1,3,5,7,9) and sort the result using insertion sort. The nat_to_digits function works the same way (using n as fuel), and the sort_list in Python uses reversed(l) which matches the Coq recursive pattern of processing the tail first then inserting the head. All helper functions produce the same concrete results."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq logic: digit extraction via div/mod for naturals, odd-digit check, filtering, and insertion sort all match. The precondition and spec are direct translations, and edge case n=0 behaves the same."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq logic: digits extraction (LSB-first with fuel), odd-digit check, filtering, and insertion sort all match, and the pre/spec (positivity check and equality to unique_digits_impl) are implemented equivalently."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq definitions: same digit extraction (with fuel), odd-digit check, filtering, and insertion sort. The precondition and spec are also translated directly, so results match on all natural-number inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 3,
+  "syntax_ok": true
+}

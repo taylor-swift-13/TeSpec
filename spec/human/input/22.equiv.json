@@ -1,0 +1,96 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/human/input/22.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/human/input/22.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python implementation and specification correctly mirror the Coq specification's logic. Both use a subsequence check and a membership check (including type checking for integers) to ensure the output list contains all and only the integers from the input list in their original relative order."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python implementation of the filter and the specification (including the subsequence and integer checks) correctly mirror the logic defined in the Coq code."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python implementation and spec correctly mirror the Coq specification's logic: the output must be a subsequence of the input containing all and only the integer elements from the input, preserving their original order."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. The is_int function checks for exact int type (matching PyInt in Coq). The is_subsequence function correctly checks if output is a subsequence of input. The spec checks: (1) output is a subsequence of input, (2) every element in output is in input and is an integer, (3) every integer in input is in output. The filter_integers function produces output that satisfies this spec. The use of strict_eq and strict_in ensures type-exact comparisons matching Coq's equality semantics for the py_value type."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. The is_int function checks for exact int type (matching PyInt in Coq). The is_subsequence function correctly checks if output is a subsequence of input. The spec checks: (1) output is a subsequence of input, (2) all elements in output are integers from input, and (3) all integers in input appear in output. The filter_integers function produces output that satisfies this spec. The use of strict_eq and strict_in ensures type-exact comparisons matching Coq's equality semantics for the py_value type."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. The is_int function checks for exact int type (matching PyInt in Coq). The is_subsequence function correctly checks if output is a subsequence of input. The spec checks: (1) output is a subsequence of input, (2) all elements in output are integers from input, and (3) all integers from input appear in output. The filter_integers implementation produces results that satisfy this spec, and the spec function correctly validates this relationship."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python helpers and spec mirror Coq: is_int checks only true ints (excluding bool), is_subsequence matches subsequence semantics, and problem_22_spec enforces output is exactly the subsequence of input consisting of ints. filter_integers produces such an output, preserving order. Equality on ints aligns with Coq\u2019s Z equality."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both Coq and Python specs require output to be the subsequence of input consisting of exactly the integer elements (by membership), with the same equality on ints and order preserved; Python filter_integers satisfies this."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python spec enforces output is a subsequence of input and contains exactly the integers from input, matching Coq\u2019s is_subsequence and In v output <-> (In v input \u2227 is_int v). Equality relevant to ints aligns, and the filter preserves order and includes all int elements. Precondition is True in both."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 2,
+  "syntax_ok": true
+}

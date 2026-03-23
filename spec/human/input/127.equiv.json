@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/127.v",
+  "translated_py_file": "spec/human/input/127.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq specification, computing the intersection length and checking its primality to determine if the output should be 'YES' or 'NO'."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the interval intersection logic, length calculation, and prime checking exactly as specified in the Coq code."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code accurately implements the interval intersection logic and primality check as specified in the Coq code."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. Both compute the intersection as [max(s1,s2), min(e1,e2)], check if it's non-empty (s_inter <= e_inter), compute the length as e_inter - s_inter, and return 'YES' if the length is prime, 'NO' otherwise. The is_prime function correctly identifies primes (returns False for n<=1, handles 2, checks odd divisors up to sqrt). The Coq spec uses Z.to_nat which would make negative lengths become 0 (not prime), but when s_inter <= e_inter, the length is always non-negative, so this edge case doesn't cause a mismatch."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both implementations compute the intersection of two intervals using max/min, calculate the length as e_inter - s_inter, check if that length is prime, and return 'YES' if prime, 'NO' otherwise (including when intervals don't intersect). The Coq code converts to nat and back to Z but this doesn't change the value for non-negative lengths. The Python is_prime correctly implements primality checking. Both agree on concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both implementations compute the intersection of two intervals using max/min, calculate the length as (e_inter - s_inter), check if this length is prime, and return 'YES' if prime, 'NO' otherwise (including when intervals don't intersect). The Coq code converts to nat and back to Z for the prime check, but since the length is non-negative when intervals intersect, this doesn't change the result. The Python is_prime function correctly implements primality testing, matching Coq's prime predicate for concrete integer inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both compute the closed-interval intersection via max/min, use length = e_inter - s_inter, return YES iff that length is prime (>1), and NO otherwise or when no intersection. This matches for all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python computes the same intersection endpoints and uses length = e_inter - s_inter, checks primality consistently, and returns YES iff prime, otherwise NO; it also returns NO when no intersection. Precondition matches."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both compute intersection as [max(s1,s2), min(e1,e2)], use length = e_inter - s_inter (0 when a single point), treat non-intersecting as NO, and check primality consistently (prime iff length > 1 and prime). The Python boolean exactly matches the Coq spec\u2019s required output."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

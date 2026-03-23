@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/57.v",
+  "translated_py_file": "spec/human/input/57.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly checks if the list is monotonically increasing or decreasing, which matches the Coq specification using Sorted with Z.le and Z.ge."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly checks if the list is sorted in ascending or descending order, matching the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly checks if the list is monotonically increasing or decreasing, which matches the Coq specification using Sorted with Z.le and Z.ge."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly checks if a list is monotonically increasing (all consecutive pairs satisfy <=) or monotonically decreasing (all consecutive pairs satisfy >=), which matches the Coq Sorted predicate semantics. The spec returns true iff b equals the boolean result of (is_inc or is_dec), which corresponds to the Coq biconditional b = true <-> (Sorted Z.le l \\/ Sorted Z.ge l). For empty and single-element lists, both Python's all() on empty ranges returns True, matching Coq's Sorted being trivially satisfied."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly checks if a list is monotonically increasing (all consecutive pairs satisfy <=) or monotonically decreasing (all consecutive pairs satisfy >=), which matches the Coq Sorted predicate semantics. The spec returns true iff b equals the boolean result of (is_inc or is_dec), which corresponds to the Coq biconditional b = true <-> (Sorted Z.le l \\/ Sorted Z.ge l). For empty and single-element lists, both Python's all() on empty ranges returns True and Coq's Sorted holds vacuously, so they agree."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly checks if a list is monotonically increasing (all consecutive pairs satisfy <=) or monotonically decreasing (all consecutive pairs satisfy >=), which matches the Coq Sorted predicate semantics. The spec returns true iff b equals the boolean result of (is_inc or is_dec), which corresponds to the Coq biconditional b = true <-> (Sorted Z.le l \\/ Sorted Z.ge l). For empty and single-element lists, both Python's all() on empty ranges returns True and Coq's Sorted holds vacuously, so they agree."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python checks non-strict monotonicity via adjacent <= or >=, which is equivalent to Coq Sorted Z.le or Z.ge for Z (transitive). Handles empty/singleton lists the same, so results match for all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Adjacent <=/>= checks are equivalent to Coq Sorted Z.le/Z.ge for Z (transitive), including empty/singleton lists, so b matches iff the list is monotonic."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both treat a list as monotonic iff it is nondecreasing or nonincreasing. Coq\u2019s Sorted with Z.le/Z.ge is equivalent to checking all adjacent pairs due to transitivity, and empty/singleton cases align; Python returns b == (is_inc or is_dec), matching b=true <-> (Sorted le or Sorted ge)."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

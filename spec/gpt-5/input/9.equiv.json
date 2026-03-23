@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gpt-5/input/9.v",
+  "translated_py_file": "spec/gpt-5/input/9.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the prefix maximum logic and the rolling maximum specification, matching the Coq behavior on all concrete inputs."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the prefix maximum logic and the rolling maximum specification, matching the Coq definitions on all concrete inputs."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq specification, correctly computing the rolling maximum and verifying the result list against the input list."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. max_prefix_at takes the first i+1 elements and returns their maximum (or None if empty), matching Coq's firstn (S i) and fold_left Z.max. rolling_max_spec checks that result has the same length as numbers and that each element equals the corresponding max_prefix_at value, which matches the Coq Prop. The Python uses direct list indexing result[i] which is equivalent to nth_error result i returning Some value when i < length, and the comparison works correctly since max_prefix_at returns the actual max value (not None) for valid indices."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. max_prefix_at takes the first i+1 elements and returns their maximum (or None if empty), matching Coq's firstn (S i) and fold_left Z.max. rolling_max_spec checks that result has the same length as numbers and that each element equals the corresponding max_prefix_at value, which matches the Coq Prop. The only difference is that Python uses result[i] instead of nth_error, but since we iterate over valid indices (i < len(numbers)) and len(result) == len(numbers), this is equivalent for concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. max_prefix_at takes the first i+1 elements and returns their maximum (or None if empty), matching Coq's firstn (S i) and fold_left Z.max. rolling_max_spec checks that result has the same length as numbers and that each element equals the corresponding max_prefix_at value, which matches the Coq Prop. The Python uses direct list indexing result[i] which is equivalent to nth_error result i when i < len(result), and the comparison works correctly since max_prefix_at returns an integer (not None) for valid indices."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both implementations compute the maximum of the first i+1 elements (returning None/option None when the list is empty) and the spec checks length equality and per-index equality for i < length numbers. The Python code mirrors the Coq behavior on all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Both implementations compute the maximum over the first i+1 elements (returning None if the list is empty), and the spec checks length equality and per-index agreement for i < len(numbers)."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python max over numbers[:i+1] matches Coq firstn(S i) with fold_left Z.max; rolling_max_spec checks equal lengths and per-index values equal to the prefix max, which corresponds to nth_error equality on in-bounds indices."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

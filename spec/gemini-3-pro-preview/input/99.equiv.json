@@ -1,0 +1,96 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/gemini-3-pro-preview/input/99.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/gemini-3-pro-preview/input/99.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the distance calculation and the tie-breaking rule (rounding half away from zero) exactly as specified in the Coq code."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code directly translates the Coq specification, correctly implementing the distance check and the tie-breaking rule using absolute values."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq specification's logic, including the tie-breaking condition (rounding away from zero) and the distance calculation."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It computes the distance as abs(val - result), checks if dist < 0.5 (corresponding to dist < /2 in Coq where /2 means 1/2), and handles the tie-breaking case where dist == 0.5 and abs(result) > abs(val). The IZR function in Coq converts integers to reals, which Python handles implicitly. The logic matches exactly for concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It computes the distance as abs(val - result), checks if dist < 0.5 (corresponding to dist < /2 in Coq where /2 means 1/2), and handles the tie-breaking case where dist == 0.5 and abs(result) > abs(val). The IZR function in Coq converts integers to reals, which Python handles implicitly. The logic matches for all concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly translates the Coq specification. It computes the distance as abs(val - result), checks if dist < 0.5 (corresponding to dist < /2 in Coq where /2 means 1/2), and handles the tie-breaking case where dist == 0.5 and abs(result) > abs(val). The logic matches the Coq Prop definition for determining if a result is the closest integer to val."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Direct translation: it computes |val - result| and returns true if < 1/2, or if = 1/2 with tie-breaker |result| > |val|. Using 0.5 and abs matches Coq\u2019s /2 and Rabs. For typical numeric inputs (ints, floats), this yields the same concrete judgments."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "It directly mirrors the Coq spec: computes |val - result| and returns true iff dist < 1/2, or dist = 1/2 with |result| > |val|; abs and 0.5 correspond to Rabs, IZR, and /2 for integer results."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python mirrors the Coq spec: it computes |val - result| and returns true if this is < 0.5, or equals 0.5 with tie-breaking by |result| > |val|. Using ints for result matches IZR; behavior aligns on all concrete real/integer inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

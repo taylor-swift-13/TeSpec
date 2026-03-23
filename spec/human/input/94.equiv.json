@@ -1,0 +1,96 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/human/input/94.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/human/input/94.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the primality test, the digit sum calculation (mimicking the fueled recursion iteratively), and the logic to find the largest prime in the list and return its digit sum (or 0 if none exist), exactly matching the Coq specification."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code accurately implements the Coq specification, including the sum of digits logic with fuel, primality testing, and finding the maximum prime in the list."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the primality check, the digit sum calculation, and the specification logic for finding the maximum prime and returning the sum of its digits, exactly matching the Coq specification."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It finds all primes in the list, returns 0 if none exist, otherwise returns the digit sum of the largest prime. The sum_digits function works correctly for all positive integers since the fuel equals n, which is always sufficient (a number n has at most log10(n)+1 digits, which is less than n for n>=1). The is_prime function correctly identifies primes matching Coq's prime predicate for natural numbers."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. Both find the largest prime in the list and return the sum of its digits, or return 0 if no primes exist. The sum_digits function works correctly for all positive integers since the fuel equals n, which is always sufficient (a number n has at most log10(n)+1 digits, which is much less than n for n >= 1). The is_prime function correctly identifies primes matching Coq's prime predicate for natural numbers. The spec check in Python correctly verifies the output matches the sum of digits of the maximum prime, or 0 if no primes exist."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It finds all primes in the list, returns 0 if none exist, otherwise returns the sum of digits of the largest prime. The sum_digits function works correctly for positive integers (fuel=n is sufficient since n has at most log10(n)+1 digits which is always <= n for n>=1). The is_prime function correctly identifies primes matching Coq's prime predicate. Both handle the same concrete cases identically."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both select the maximum prime in the list and return the sum of its digits, or 0 if no primes. The Python primality test is correct for nonnegative integers, and sum_digits mirrors the Coq fueled recursion using mod/div by 10 with early stop at 0."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "For lists of nonnegative integers, both compute the largest prime in the list (if any) and return the sum of its digits; otherwise return 0. The primality test and digit-sum logic match the Coq spec on all such inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python matches Coq: it filters primes using a correct primality test, selects the maximum prime, and returns the sum of its decimal digits; if no primes, returns 0. The helper sum_digits behavior aligns with the Coq fueled version, and the precondition is True in both."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 1,
+  "syntax_ok": true
+}

@@ -1,0 +1,96 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/gemini-3-pro-preview/input/4.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/gemini-3-pro-preview/input/4.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, using Fraction for exact arithmetic and properly handling Coq's division by zero semantics."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code implements the exact logic of the Coq specification using exact rational arithmetic (Fraction) to model Coq's Reals. It correctly handles the division-by-zero edge case (empty list) consistent with Coq's total division operator."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification using exact rational arithmetic (Fractions) to model Coq's Reals, including the correct handling of division by zero as defined in Coq's standard library."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It computes the mean as sum/length, computes absolute deviations from the mean, and checks if the result equals sum of deviations divided by length. The Rdiv function handles division by zero by returning 0, which matches Coq's real division semantics (0/0 = 0). Using Fraction ensures exact arithmetic matching Coq's real number semantics for concrete rational inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It computes the mean as sum/length, then computes absolute deviations from the mean, and finally returns whether the result equals the mean of those deviations. The use of Fraction ensures exact arithmetic matching Coq's real number semantics. The Rdiv function handling division by zero (returning 0) matches Coq's convention where 0/0 = 0. The conversion of floats via string representation preserves decimal values as intended for typical inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification. It computes the mean as sum/length, then computes absolute deviations from the mean, and finally returns whether the result equals the mean of those deviations. The use of Fraction ensures exact arithmetic matching Coq's reals. The Rdiv function handles division by zero by returning 0, which matches Coq's convention where 0/0 = 0. The conversion of floats via string representation is a reasonable approach to handle typical test inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both compute mean and mean absolute deviation as sum(|x-mean|)/len with len = INR(length), use 0/0 -> 0, and compare result to this value using exact rational arithmetic. Thus they agree on all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Implements the same mean absolute deviation formula, including Coq\u2019s convention x/0 = 0; uses exact Fraction arithmetic and abs, so results match the Coq spec on all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Uses exact rational arithmetic to compute sum, mean, and absolute deviations; handles empty list via 0/0 -> 0 like Coq; equality check matches the Coq spec on all concrete inputs."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 6,
+  "syntax_ok": true
+}

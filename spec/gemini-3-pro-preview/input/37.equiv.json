@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/37.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/37.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, checking length equality, preservation of elements at odd indices, permutation of elements at even indices, and sortedness of elements at even indices."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, checking length equality, unchanged elements at odd indices, permutation of elements at even indices, and sortedness of elements at even indices."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the extraction of elements at even indices and accurately translates the specification, checking length equality, unchanged elements at odd indices, permutation of even-indexed elements, and sortedness of even-indexed elements."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: (1) checks length equality, (2) checks odd-indexed elements are preserved (Coq's Nat.odd uses 0-indexing where odd indices are 1,3,5,...), (3) checks get_evens extracts even-indexed elements (0,2,4,...) which matches Coq's recursive definition, (4) checks permutation by comparing sorted lists, and (5) checks evens_res is sorted. The get_evens implementations are equivalent - Coq takes 1st element, skips 2nd, recurses on rest, which gives indices 0,2,4,... same as Python's i%2==0 check."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: (1) checks length equality, (2) verifies odd-indexed elements are unchanged (Coq's Nat.odd uses 0-indexing where odd indices are 1,3,5,...), (3) checks permutation of even-indexed elements by comparing sorted versions, and (4) checks that even-indexed elements in result are sorted. The get_evens function correctly extracts elements at indices 0,2,4,... matching the Coq recursive definition."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: (1) checks equal lengths, (2) verifies odd-indexed elements are unchanged (Coq's Nat.odd i = true means i is odd, matching Python's i % 2 == 1), (3) checks that evens from l and res are permutations by comparing sorted versions, (4) checks evens_res is sorted. The get_evens function correctly extracts even-indexed elements (0, 2, 4, ...) matching Coq's recursive definition that takes the first element, skips the second, and recurses."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both define even-indexed elements identically and check: (1) same length, (2) odd indices unchanged, (3) even-indexed multiset preserved (via sorted equality), and (4) even-indexed elements in res are nondecreasing. These match the Coq spec\u2019s concrete behavior for all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python get_evens selects 0,2,4,... indices like Coq. sort_even_spec enforces equal lengths, odd indices unchanged, even-indexed elements are a permutation (via sorted equality) and nondecreasing (evens_res == sorted(evens_res)), matching the Coq Permutation and Sorted Z.le conditions."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python enforces same length, preserves all odd-index elements, and ensures the even-index elements of res are a permutation of those of l and sorted nondecreasing; get_evens matches Coq\u2019s even-index extraction. Comparing sorted lists correctly checks permutation for integers."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

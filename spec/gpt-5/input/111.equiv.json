@@ -1,0 +1,96 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/gpt-5/input/111.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/gpt-5/input/111.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification by uniquely recovering the tokens using split, computing the maximum occurrences of non-empty tokens, and verifying all conditions on the answer list including no duplicates, correct counts, and completeness."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, accurately translating the string splitting, occurrence counting, and validation of the maximum occurrence properties for the histogram."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification by uniquely recovering the tokens via string splitting, computing the maximum occurrence count of non-empty tokens, and verifying all conditions on the answer list including no duplicates, correct max counts, and completeness."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification for concrete inputs. It handles the empty string case, splits by space to recover tokens (which matches join_space behavior), verifies nospace property (no spaces in tokens), computes maximum occurrence count among non-empty tokens, checks NoDup on answer keys, validates that all answer entries have the max count and are non-empty with correct occurrence, and ensures all non-empty tokens with max occurrences appear in the answer. The logic matches the Coq spec's existential requirements by computing the concrete values that must exist."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification for concrete inputs. It handles the empty string case, splits by space to get tokens, verifies no spaces within tokens, computes maximum occurrence count among non-empty tokens, checks NoDup on answer keys, validates each answer entry has the max count and is non-empty with correct occurrence, and ensures all non-empty tokens with max occurrences are included in the answer. The split/join operations correctly mirror the Coq join_space behavior, and occ using list.count matches the Coq recursive counting."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification for concrete inputs. It handles the empty string case, splits by space to recover tokens (which matches join_space's inverse), verifies nospace property, computes maximum occurrence count among non-empty tokens, checks NoDup on answer keys, validates each answer entry has the max count and is non-empty with correct occurrence, and ensures all non-empty tokens with max occurrences are included in the answer. The logic matches the Coq spec's existential requirements by computing the concrete maximum and checking the corresponding conditions."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python mirrors Coq: tokens are uniquely test.split(' '), join_space matches, nospace forbids spaces within tokens, m is the max count among non-empty tokens, and ans must list exactly the non-empty tokens with count m with no duplicate keys. Empty test case also handled identically."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python picks the unique tokenization test.split(' ') that satisfies Forall nospace and test = join_space tokens, computes the max occurrence among non-empty tokens, and checks ans exactly matches all non-empty tokens achieving this max with no duplicate keys. This aligns with the Coq spec for all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python mirrors Coq: it uses split/join with spaces (matching join_space), checks nospace correctly, computes m as the max occ over non-empty tokens, enforces unique keys, and ensures ans contains exactly all non-empty tokens occurring m times. Edge cases like empty test or all-space strings behave the same."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 3,
+  "syntax_ok": true
+}

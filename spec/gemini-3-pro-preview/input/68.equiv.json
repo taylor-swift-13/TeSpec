@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/gemini-3-pro-preview/input/68.v",
+  "translated_py_file": "spec/gemini-3-pro-preview/input/68.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Coq specification defines 'res' as [] if no evens exist, or [v, i] where v is the minimum even value and i is the index of its first occurrence (enforced by the condition that any even number at a smaller index must be strictly greater). The Python code replicates this by filtering evens and finding the minimum tuple (value, index), which selects the smallest value and breaks ties with the smallest index."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification by finding the minimum even value and its smallest index, or returning an empty list if no even numbers exist."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification by finding the minimum even value and its first index, or returning an empty list if no even numbers exist."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: it returns [] when no even numbers exist, and otherwise returns [v, i] where v is the smallest even value and i is the smallest index containing that value (due to min with key (value, index) being stable on index for equal values). This matches the Coq spec's conditions for the minimum even value and smallest index among positions with that value."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: it returns [] when no even numbers exist, and otherwise returns [v, i] where v is the smallest even value and i is the smallest index among positions containing that minimum even value. The min with key (pair[0], pair[1]) first minimizes by value, then by index, which matches the Coq spec's requirements that v is the minimum even and i is the smallest index with value v."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec: it returns [] when no even numbers exist, and when evens exist, it finds the minimum even value v and the smallest index i among those with value v (since min with key (pair[0], pair[1]) first minimizes value, then index). This matches the Coq spec which requires v to be the smallest even value and i to be the smallest index containing v."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Python picks the smallest even value and, on ties, the smallest index; returns [] if no evens. This matches the Coq spec\u2019s two cases and its minimality/tie-break conditions."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Python returns [] when no even numbers; otherwise it selects the minimal even value and the smallest index where it occurs, matching the Coq spec\u2019s conditions."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Returns [] if no evens; otherwise returns the minimal even value and the smallest index where it occurs, matching the Coq spec\u2019s constraints."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

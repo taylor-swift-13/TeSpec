@@ -1,0 +1,96 @@
+{
+  "source_v_file": "/home/yangfp/TeSpec/spec/human/input/21.v",
+  "translated_py_file": "/home/yangfp/TeSpec/spec/human/input/21.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, including the explicit handling of Coq's division by zero semantics."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, including handling Coq's division by zero semantics by explicitly returning 0.0 when the denominator is 0."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq specification, including handling Coq's division by zero semantics and empty list edge cases."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. It computes min_val and max_val as the minimum and maximum of the input list, then checks if output equals the mapped transformation (x - min_val) / (max_val - min_val). The handling of division by zero (returning 0.0 when denom == 0) matches Coq's convention where x/0 = 0 in the standard reals library. The is_list_min and is_list_max helpers correctly check if m equals the min/max of the list, which aligns with the Coq definitions for concrete inputs."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. It computes min_val and max_val from input, then checks if output equals the mapped transformation (x - min_val) / (max_val - min_val). The Python code handles division by zero by returning 0.0, which matches Coq's standard library behavior where x / 0 = 0. The is_list_min and is_list_max helpers correctly check if m equals the min/max of the list, which is equivalent to the Coq definitions for concrete inputs. Both versions produce the same concrete results."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code correctly implements the Coq spec. It computes min_val and max_val from the input list, then checks if output equals the mapped transformation (x - min_val) / (max_val - min_val). The Python code handles division by zero by returning 0.0, which matches Coq's standard library behavior where x / 0 = 0. The is_list_min and is_list_max helpers correctly check if m equals the min/max of the list. Both implementations produce the same concrete results for all inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Both use the same min/max-based linear rescaling, handle denom=0 by producing all zeros, and precondition len>=2 matches. Helper min/max predicates coincide with selecting the list\u2019s minimum/maximum value."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "It computes min/max and outputs map((x-min)/(max-min)) with 0 when denom=0, and enforces equal lengths. This matches the Coq spec and pre on all concrete inputs."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Both use min/max of the list and produce output by mapping (x - min)/(max - min), with division-by-zero yielding 0. Precondition len>=2 matches, and helper min/max predicates are equivalent."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "unanimous_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "overall_unanimous_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}

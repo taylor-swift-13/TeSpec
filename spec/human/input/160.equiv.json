@@ -1,0 +1,92 @@
+{
+  "source_v_file": "spec/human/input/160.v",
+  "translated_py_file": "spec/human/input/160.py",
+  "judge_models": [
+    "gemini-3-pro-preview",
+    "claude-opus-4-5-20251101",
+    "gpt-5"
+  ],
+  "judge_repeats": 3,
+  "votes": [
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq implementation, including the parsing logic, precedence handling via rfind_index/find_index, and the specific behaviors of Z.div and Z.pow (such as returning 0 for division by zero or negative exponents)."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code faithfully translates the Coq definitions, including the recursive evaluation logic, operator precedence, and specific behaviors of division by zero and negative exponents."
+    },
+    {
+      "judge_model": "gemini-3-pro-preview",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code accurately translates the Coq implementation, including the recursive evaluation logic, operator precedence (via rfind_index and find_index), fuel management, and specific behaviors like division by zero and negative exponents."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 1,
+      "equivalent": true,
+      "reason": "The Python code faithfully implements the Coq specification. Both use the same algorithm: recursively splitting expressions by finding the rightmost +/- operator (lowest precedence), then rightmost *//, then leftmost ^ (right-associative). The interp_op functions match (+ - * / ^), with Python using floor division matching Coq's Z.div. The rfind_index and find_index implementations are equivalent. The eval function uses the same fuel mechanism (length of nums). The precondition and spec checks are equivalent. Minor differences like Python's division-by-zero handling don't affect valid inputs per the precondition."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 2,
+      "equivalent": true,
+      "reason": "The Python code faithfully implements the Coq specification. Both use the same algorithm: recursively splitting expressions by finding the rightmost +/- operator, then rightmost *//, then leftmost ^ for exponentiation. The interp_op functions match (+ - * / ^), with Python using floor division matching Coq's Z.div. The rfind_index and find_index functions work identically. The eval_helper uses the same fuel-based recursion with length of nums as initial fuel. The precondition checks and spec definition are equivalent. Minor differences like Python's division-by-zero handling don't affect valid inputs where the precondition holds (non-negative operands, valid operators)."
+    },
+    {
+      "judge_model": "claude-opus-4-5-20251101",
+      "round": 3,
+      "equivalent": true,
+      "reason": "The Python code faithfully implements the Coq specification. Both use the same algorithm: recursively splitting expressions by finding the rightmost +/- operator, then rightmost *//, then leftmost ^ for exponentiation. The interp_op functions match (+ - * / ^), with Python using floor division matching Coq's Z.div. The rfind_index and find_index implementations are equivalent. The eval_helper uses the same fuel-based recursion with length of nums. The precondition checks and spec definition match. Minor differences like Python's division-by-zero handling don't affect valid inputs where operands are non-negative and the expression structure is valid."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 1,
+      "equivalent": true,
+      "reason": "Same operator set, precedence (+:/- leftmost via rfind, */ via rfind, ^ right-assoc via find), and evaluation structure. Division by zero returns 0 in both; division matches (floor) since denominators remain non-negative under the preconditions; exponent with negative exponent returns 0 in both. Pre and spec checks align."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 2,
+      "equivalent": true,
+      "reason": "Operator parsing, precedence, associativity, and evaluation (including division by zero and exponent handling) match Coq\u2019s behavior on all inputs satisfying the preconditions (non-negative operands, valid operators, and length constraints)."
+    },
+    {
+      "judge_model": "gpt-5",
+      "round": 3,
+      "equivalent": true,
+      "reason": "Python mirrors Coq: same operator mapping (+,-,*,/,^), same precedence/associativity (rightmost +/-, rightmost *//, leftmost ^), same handling of division by zero and floor division for negatives, same treatment of negative exponents (result 0), and identical list indexing/search helpers and preconditions."
+    }
+  ],
+  "per_model_summary": {
+    "gemini-3-pro-preview": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "claude-opus-4-5-20251101": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    },
+    "gpt-5": {
+      "equivalent_votes": 3,
+      "not_equivalent_votes": 0,
+      "majority_equivalent": true,
+      "reasons_if_not_equivalent": []
+    }
+  },
+  "overall_equivalent_votes": 9,
+  "overall_not_equivalent_votes": 0,
+  "overall_majority_equivalent": true,
+  "non_equivalence_reasons": [],
+  "repair_round": 0,
+  "syntax_ok": true
+}
