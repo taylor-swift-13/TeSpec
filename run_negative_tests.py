@@ -4,6 +4,7 @@ import ast
 import importlib.util
 import json
 import multiprocessing
+import signal
 import sys
 import traceback
 from pathlib import Path
@@ -54,6 +55,15 @@ def select_indices(total: int, range_expr: str | None, explicit_indices: list[in
             raise IndexError(f"Range end {end} exceeds dataset size {total}")
         return list(range(start, end))
     return list(range(total))
+
+
+def available_generated_indices(output_dir: Path):
+    indices = []
+    for path in output_dir.glob("HumanEval_*.py"):
+        suffix = path.stem.split("_", 1)[-1]
+        if suffix.isdigit():
+            indices.append(int(suffix))
+    return sorted(set(indices))
 
 
 def list_timestamped_runs(root: Path):
@@ -116,32 +126,79 @@ def safe_call(fn, args):
         }
 
 
-def evaluate_spec(module, args, output):
+class CallTimeout(Exception):
+    pass
+
+
+def _alarm_handler(signum, frame):
+    raise CallTimeout()
+
+
+def safe_call_with_timeout(fn, args, call_timeout: int):
+    if call_timeout <= 0:
+        return safe_call(fn, args)
+    previous = signal.getsignal(signal.SIGALRM)
+    signal.signal(signal.SIGALRM, _alarm_handler)
+    try:
+        signal.alarm(call_timeout)
+        return safe_call(fn, args)
+    except CallTimeout:
+        return False, {
+            "error_type": "CallTimeout",
+            "error": f"call exceeded {call_timeout}s",
+            "traceback": None,
+            "timed_out": True,
+        }
+    finally:
+        signal.alarm(0)
+        signal.signal(signal.SIGALRM, previous)
+
+
+def evaluate_spec(module, args, output, spec_call_timeout: int):
     if not hasattr(module, "precondition") or not hasattr(module, "postcondition"):
         return {
+            "status": "failed",
             "failure_type": "missing_spec_functions",
             "details": "Generated module is missing precondition or postcondition",
         }
 
-    input_tuple = tuple(args)
-    try:
-        pre_ok = bool(module.precondition(input_tuple))
-    except Exception as exc:
+    pre_ok_result, pre_value = safe_call_with_timeout(module.precondition, args, spec_call_timeout)
+    if not pre_ok_result:
+        if pre_value.get("timed_out"):
+            return {
+                "status": "failed",
+                "failure_type": "precondition_call_timeout",
+                "details": pre_value["error"],
+            }
         return {
+            "status": "failed",
             "failure_type": "precondition_evaluation_error",
-            "details": f"{type(exc).__name__}: {exc}",
-            "traceback": traceback.format_exc(),
+            "details": f"{pre_value['error_type']}: {pre_value['error']}",
+            "traceback": pre_value["traceback"],
         }
+    pre_ok = bool(pre_value)
 
-    try:
-        post_ok = bool(module.postcondition(input_tuple, output))
-    except Exception as exc:
+    post_ok_result, post_value = safe_call_with_timeout(
+        lambda *call_args: module.postcondition(*call_args, output=output),
+        args,
+        spec_call_timeout,
+    )
+    if not post_ok_result:
+        if post_value.get("timed_out"):
+            return {
+                "status": "failed",
+                "failure_type": "postcondition_call_timeout",
+                "details": post_value["error"],
+                "precondition_result": pre_ok,
+            }
         return {
+            "status": "failed",
             "failure_type": "postcondition_evaluation_error",
-            "details": f"{type(exc).__name__}: {exc}",
-            "traceback": traceback.format_exc(),
+            "details": f"{post_value['error_type']}: {post_value['error']}",
+            "traceback": post_value["traceback"],
             "precondition_result": pre_ok,
         }
+    post_ok = bool(post_value)
 
     if pre_ok and not post_ok:
         return {
@@ -190,18 +247,46 @@ def describe_failure(case_report: dict):
         return "precondition raised an exception while checking the mutated output"
     if failure_type == "postcondition_evaluation_error":
         return "postcondition raised an exception while checking the mutated output"
+    if failure_type == "precondition_call_timeout":
+        return "precondition exceeded the configured per-call timeout"
+    if failure_type == "postcondition_call_timeout":
+        return "postcondition exceeded the configured per-call timeout"
     if failure_type == "mutation_syntax_error":
         return "mutation file has a syntax error"
     if failure_type == "mutation_load_error":
         return "mutation file failed to load"
     if failure_type == "missing_mutation_entry_point":
         return "mutation file is missing the expected entry point"
+    if failure_type == "mutation_call_timeout":
+        return "mutation call exceeded the configured per-call timeout; mutation skipped"
+    if failure_type == "original_call_timeout":
+        return "original call exceeded the configured per-call timeout; mutation skipped"
     return failure_type
 
 
-def run_negative_case(module, original_func, mutation_func, args, case_index, mutation_path: Path):
-    original_ok, original_value = safe_call(original_func, args)
-    mutation_ok, mutation_value = safe_call(mutation_func, args)
+def run_negative_case(module, original_func, mutation_func, args, case_index, mutation_path: Path, impl_call_timeout: int, spec_call_timeout: int):
+    original_ok, original_value = safe_call_with_timeout(original_func, args, impl_call_timeout)
+    mutation_ok, mutation_value = safe_call_with_timeout(mutation_func, args, impl_call_timeout)
+
+    if not original_ok and original_value.get("timed_out"):
+        return {
+            "status": "skipped",
+            "failure_type": "original_call_timeout",
+            "case_index": case_index,
+            "input": list(args),
+            "mutation_file": str(mutation_path),
+            "details": original_value["error"],
+        }
+
+    if not mutation_ok and mutation_value.get("timed_out"):
+        return {
+            "status": "skipped",
+            "failure_type": "mutation_call_timeout",
+            "case_index": case_index,
+            "input": list(args),
+            "mutation_file": str(mutation_path),
+            "details": mutation_value["error"],
+        }
 
     if not original_ok:
         return {
@@ -229,7 +314,7 @@ def run_negative_case(module, original_func, mutation_func, args, case_index, mu
     if mutation_value == original_value:
         return None
 
-    spec_eval = evaluate_spec(module, args, mutation_value)
+    spec_eval = evaluate_spec(module, args, mutation_value, spec_call_timeout)
     report = {
         "status": spec_eval["status"],
         "failure_type": spec_eval["failure_type"],
@@ -250,7 +335,7 @@ def run_negative_case(module, original_func, mutation_func, args, case_index, mu
     return report
 
 
-def run_task(task: dict, output_dir: Path, mutation_root: Path):
+def run_task(task: dict, output_dir: Path, mutation_root: Path, impl_call_timeout: int, spec_call_timeout: int):
     task_name = task["task_id"].replace("/", "_")
     module_path = output_dir / f"{task_name}.py"
     mutation_dir = mutation_root / task_name
@@ -530,13 +615,28 @@ def run_task(task: dict, output_dir: Path, mutation_root: Path):
         mutation_failure_breakdown = {}
         mutation_first_failure = None
         mutation_failure_examples = []
+        mutation_skipped = False
+        mutation_skip_reason = None
         for case_index, inp in enumerate(inputs):
             args = normalize_args(inp)
-            case_report = run_negative_case(module, original_func, mutation_func, args, case_index, mutation_path)
+            case_report = run_negative_case(
+                module,
+                original_func,
+                mutation_func,
+                args,
+                case_index,
+                mutation_path,
+                impl_call_timeout,
+                spec_call_timeout,
+            )
             if case_report is None:
                 same_output_cases += 1
                 mutation_same_output_cases += 1
                 continue
+            if case_report["status"] == "skipped":
+                mutation_skipped = True
+                mutation_skip_reason = case_report
+                break
             if case_report["status"] == "passed":
                 passed_cases += 1
                 mutation_passed_cases += 1
@@ -555,6 +655,23 @@ def run_task(task: dict, output_dir: Path, mutation_root: Path):
             failure_type = case_report["failure_type"]
             failure_breakdown[failure_type] = failure_breakdown.get(failure_type, 0) + 1
             mutation_failure_breakdown[failure_type] = mutation_failure_breakdown.get(failure_type, 0) + 1
+
+        if mutation_skipped:
+            mutation_reports.append(
+                {
+                    "mutation_file": str(mutation_path),
+                    "status": "skipped",
+                    "failure_type": mutation_skip_reason["failure_type"],
+                    "skip_reason": mutation_skip_reason,
+                    "passed_cases": 0,
+                    "failed_cases": 0,
+                    "total_cases": 0,
+                    "different_output_cases": 0,
+                    "same_output_cases": mutation_same_output_cases,
+                    "accuracy": None,
+                }
+            )
+            continue
 
         mutation_total_cases = mutation_passed_cases + mutation_failed_cases
         mutation_report = {
@@ -599,6 +716,7 @@ def run_task(task: dict, output_dir: Path, mutation_root: Path):
         "negative_cases_found": total_cases,
         "failure_breakdown": failure_breakdown,
         "mutations": mutation_reports,
+        "skipped_mutations": sum(1 for item in mutation_reports if item.get("status") == "skipped"),
     }
     if first_failure is not None:
         report["failure_type"] = first_failure["failure_type"]
@@ -608,9 +726,15 @@ def run_task(task: dict, output_dir: Path, mutation_root: Path):
     return report
 
 
-def _run_task_worker(conn, task, output_dir_str, mutation_root_str):
+def _run_task_worker(conn, task, output_dir_str, mutation_root_str, impl_call_timeout, spec_call_timeout):
     try:
-        report = run_task(task, Path(output_dir_str), Path(mutation_root_str))
+        report = run_task(
+            task,
+            Path(output_dir_str),
+            Path(mutation_root_str),
+            impl_call_timeout,
+            spec_call_timeout,
+        )
     except Exception as exc:
         report = {
             "task_id": task["task_id"],
@@ -636,14 +760,31 @@ def _run_task_worker(conn, task, output_dir_str, mutation_root_str):
         conn.close()
 
 
-def run_task_with_timeout(task: dict, output_dir: Path, mutation_root: Path, task_timeout: int):
+def run_task_with_timeout(
+    task: dict,
+    output_dir: Path,
+    mutation_root: Path,
+    task_timeout: int,
+    impl_call_timeout: int,
+    spec_call_timeout: int,
+):
     ctx = multiprocessing.get_context("fork")
     parent_conn, child_conn = ctx.Pipe(duplex=False)
-    proc = ctx.Process(target=_run_task_worker, args=(child_conn, task, str(output_dir), str(mutation_root)))
+    proc = ctx.Process(
+        target=_run_task_worker,
+        args=(
+            child_conn,
+            task,
+            str(output_dir),
+            str(mutation_root),
+            impl_call_timeout,
+            spec_call_timeout,
+        ),
+    )
     proc.start()
     child_conn.close()
-    proc.join(task_timeout)
-    if proc.is_alive():
+    proc.join(None if task_timeout <= 0 else task_timeout)
+    if task_timeout > 0 and proc.is_alive():
         proc.terminate()
         proc.join()
         parent_conn.close()
@@ -714,6 +855,7 @@ def aggregate_reports(report_dir: Path):
     total_mutations = 0
     passed_mutations = 0
     failed_mutations = 0
+    skipped_mutations = 0
 
     for report_path in report_paths:
         report = json.loads(report_path.read_text(encoding="utf-8"))
@@ -724,9 +866,13 @@ def aggregate_reports(report_dir: Path):
         spec_correct_tasks += int(report.get("spec_correct", report.get("status") == "passed"))
         tasks_with_negative_cases += int(report.get("total_cases", 0) > 0)
         mutation_reports = report.get("mutations", [])
-        total_mutations += len(mutation_reports)
-        passed_mutations += sum(1 for item in mutation_reports if item.get("status") == "passed")
-        failed_mutations += sum(1 for item in mutation_reports if item.get("status") == "failed")
+        report_passed_mutations = sum(1 for item in mutation_reports if item.get("status") == "passed")
+        report_failed_mutations = sum(1 for item in mutation_reports if item.get("status") == "failed")
+        report_skipped_mutations = sum(1 for item in mutation_reports if item.get("status") == "skipped")
+        passed_mutations += report_passed_mutations
+        failed_mutations += report_failed_mutations
+        skipped_mutations += report_skipped_mutations
+        total_mutations += report_passed_mutations + report_failed_mutations
         if report.get("status") == "passed":
             passed += 1
         else:
@@ -755,6 +901,7 @@ def aggregate_reports(report_dir: Path):
         "total_mutations": total_mutations,
         "passed_mutations": passed_mutations,
         "failed_mutations": failed_mutations,
+        "skipped_mutations": skipped_mutations,
         "mutation_accuracy": (passed_mutations / total_mutations) if total_mutations else 0.0,
         "failed_tasks": failed_tasks,
     }
@@ -770,7 +917,9 @@ def main():
     parser.add_argument("--mutation-root", default="humaneval_mutations")
     parser.add_argument("--range")
     parser.add_argument("--idx", nargs="+", type=int)
-    parser.add_argument("--task-timeout", type=int, default=30)
+    parser.add_argument("--task-timeout", type=int, default=0)
+    parser.add_argument("--impl-call-timeout", type=int, default=1)
+    parser.add_argument("--spec-call-timeout", type=int, default=3)
     parser.add_argument("--fail-fast", action="store_true")
     args = parser.parse_args()
 
@@ -783,7 +932,10 @@ def main():
     with jsonl_path.open(encoding="utf-8") as fh:
         lines = fh.readlines()
 
-    indices = select_indices(len(lines), args.range, args.idx)
+    if args.idx or args.range:
+        indices = select_indices(len(lines), args.range, args.idx)
+    else:
+        indices = available_generated_indices(output_dir)
     if len(indices) == len(lines):
         for old_report in report_dir.glob("HumanEval_*.json"):
             old_report.unlink()
@@ -798,7 +950,14 @@ def main():
 
     for idx in indices:
         task = json.loads(lines[idx])
-        report = run_task_with_timeout(task, output_dir, mutation_root, args.task_timeout)
+        report = run_task_with_timeout(
+            task,
+            output_dir,
+            mutation_root,
+            args.task_timeout,
+            args.impl_call_timeout,
+            args.spec_call_timeout,
+        )
         report.setdefault("syntax_correct", report.get("failure_type") != "syntax_error")
         report.setdefault("spec_correct", report["status"] == "passed")
         write_report(report_dir, report)

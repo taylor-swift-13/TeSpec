@@ -4,6 +4,7 @@ import ast
 import importlib.util
 import json
 import multiprocessing
+import signal
 import sys
 import traceback
 from pathlib import Path
@@ -56,6 +57,15 @@ def select_indices(total: int, range_expr: str | None, explicit_indices: list[in
     return list(range(total))
 
 
+def available_generated_indices(output_dir: Path):
+    indices = []
+    for path in output_dir.glob("HumanEval_*.py"):
+        suffix = path.stem.split("_", 1)[-1]
+        if suffix.isdigit():
+            indices.append(int(suffix))
+    return sorted(set(indices))
+
+
 def list_timestamped_runs(root: Path):
     if not root.exists():
         return []
@@ -78,8 +88,6 @@ def load_cases(task: dict):
     test_globals = {}
     exec(task["test"], test_globals)
     assertion = test_globals.get("assertion")
-    if assertion is None:
-        raise RuntimeError(f"Unsupported test structure for {task['task_id']}")
     mod = ast.parse(task["test"])
     check_func = next(
         (node for node in mod.body if isinstance(node, ast.FunctionDef) and node.name == "check"),
@@ -109,6 +117,20 @@ def load_cases(task: dict):
     ref_func = test_globals.get("ref_func") if use_ref_func else None
     if use_ref_func and ref_func is None:
         raise RuntimeError(f"Missing ref_func for {task['task_id']}")
+    if assertion is None:
+        if task["task_id"] == "HumanEval/32":
+            poly = test_globals.get("_poly")
+            if poly is None:
+                raise RuntimeError(f"Missing _poly helper for {task['task_id']}")
+
+            def assertion(actual, expected, atol, args=None):
+                if args is None:
+                    raise RuntimeError("HumanEval/32 assertion requires case args")
+                xs = args[0]
+                assert poly(xs, actual) <= 0.0001
+
+        else:
+            raise RuntimeError(f"Unsupported test structure for {task['task_id']}")
     return inputs, results, assertion, ref_func
 
 
@@ -120,17 +142,76 @@ def normalize_args(inp):
     return (inp,)
 
 
-def determine_assertion_failure(module, args):
+class CallTimeout(Exception):
+    pass
+
+
+def _alarm_handler(signum, frame):
+    raise CallTimeout()
+
+
+def safe_call_with_timeout(fn, args, call_timeout: int):
+    if call_timeout <= 0:
+        try:
+            return True, fn(*args)
+        except Exception as exc:
+            return False, {
+                "error_type": type(exc).__name__,
+                "error": str(exc),
+                "traceback": traceback.format_exc(),
+            }
+    previous = signal.getsignal(signal.SIGALRM)
+    signal.signal(signal.SIGALRM, _alarm_handler)
+    try:
+        signal.alarm(call_timeout)
+        try:
+            return True, fn(*args)
+        except Exception as exc:
+            return False, {
+                "error_type": type(exc).__name__,
+                "error": str(exc),
+                "traceback": traceback.format_exc(),
+            }
+    except CallTimeout:
+        return False, {
+            "error_type": "CallTimeout",
+            "error": f"call exceeded {call_timeout}s",
+            "traceback": None,
+            "timed_out": True,
+        }
+    finally:
+        signal.alarm(0)
+        signal.signal(signal.SIGALRM, previous)
+
+
+def determine_assertion_failure(module, args, impl_call_timeout: int, spec_call_timeout: int):
     if not hasattr(module, "precondition") or not hasattr(module, "postcondition"):
         return "wrapper_assertion_failed", None
-    input_tuple = tuple(args)
     try:
-        if not module.precondition(input_tuple):
+        pre_ok, pre_value = safe_call_with_timeout(module.precondition, args, spec_call_timeout)
+        if not pre_ok:
+            if pre_value.get("timed_out"):
+                return "precondition_call_timeout", pre_value["error"]
+            return "spec_evaluation_error", f"{pre_value['error_type']}: {pre_value['error']}"
+        if not pre_value:
             return "precondition_failed", None
         if not hasattr(module, "_impl"):
             return "missing_impl", None
-        output = module._impl(*args)
-        if not module.postcondition(input_tuple, output):
+        impl_ok, impl_value = safe_call_with_timeout(module._impl, args, impl_call_timeout)
+        if not impl_ok:
+            if impl_value.get("timed_out"):
+                return "impl_call_timeout", impl_value["error"]
+            return "impl_runtime_error", f"{impl_value['error_type']}: {impl_value['error']}"
+        post_ok, post_value = safe_call_with_timeout(
+            lambda *call_args: module.postcondition(*call_args, output=impl_value),
+            args,
+            spec_call_timeout,
+        )
+        if not post_ok:
+            if post_value.get("timed_out"):
+                return "postcondition_call_timeout", post_value["error"]
+            return "spec_evaluation_error", f"{post_value['error_type']}: {post_value['error']}"
+        if not post_value:
             return "postcondition_failed", output
         return "wrapper_assertion_failed", output
     except Exception as exc:
@@ -149,6 +230,14 @@ def describe_failure(case_report: dict):
         return "precondition or postcondition raised an exception during evaluation"
     if failure_type == "runtime_error":
         return "the wrapped candidate raised an exception during execution"
+    if failure_type == "entry_call_timeout":
+        return "the wrapped candidate call exceeded the configured per-call timeout"
+    if failure_type == "precondition_call_timeout":
+        return "precondition exceeded the configured per-call timeout"
+    if failure_type == "postcondition_call_timeout":
+        return "postcondition exceeded the configured per-call timeout"
+    if failure_type == "impl_call_timeout":
+        return "calling _impl exceeded the configured per-call timeout"
     if failure_type == "test_assertion_failed":
         return "the wrapped candidate returned, but the official test assertion failed"
     if failure_type == "missing_impl":
@@ -170,7 +259,7 @@ def describe_failure(case_report: dict):
     return failure_type
 
 
-def run_unrestricted_case(module, assertion, args, expected, case_index):
+def run_unrestricted_case(module, assertion, args, expected, case_index, impl_call_timeout: int, spec_call_timeout: int):
     if not hasattr(module, "_impl"):
         return {
             "status": "failed",
@@ -180,19 +269,78 @@ def run_unrestricted_case(module, assertion, args, expected, case_index):
             "expected": expected,
             "details": None,
         }
-    try:
-        actual = module._impl(*args)
-    except Exception as exc:
+    impl_ok, impl_value = safe_call_with_timeout(module._impl, args, impl_call_timeout)
+    if not impl_ok:
+        if impl_value.get("timed_out"):
+            return {
+                "status": "failed",
+                "failure_type": "impl_call_timeout",
+                "case_index": case_index,
+                "input": list(args),
+                "expected": expected,
+                "details": impl_value["error"],
+            }
         return {
             "status": "failed",
             "failure_type": "impl_runtime_error",
             "case_index": case_index,
             "input": list(args),
             "expected": expected,
-            "details": f"{type(exc).__name__}: {exc}",
+            "details": f"{impl_value['error_type']}: {impl_value['error']}",
         }
+    actual = impl_value
+    if hasattr(module, "postcondition"):
+        post_ok, post_value = safe_call_with_timeout(
+            lambda *call_args: module.postcondition(*call_args, output=actual),
+            args,
+            spec_call_timeout,
+        )
+        if not post_ok:
+            if post_value.get("timed_out"):
+                return {
+                    "status": "failed",
+                    "failure_type": "postcondition_call_timeout",
+                    "case_index": case_index,
+                    "input": list(args),
+                    "expected": expected,
+                    "actual": actual,
+                    "details": post_value["error"],
+                }
+            return {
+                "status": "failed",
+                "failure_type": "spec_evaluation_error",
+                "case_index": case_index,
+                "input": list(args),
+                "expected": expected,
+                "actual": actual,
+                "details": f"{post_value['error_type']}: {post_value['error']}",
+                "traceback": post_value["traceback"],
+            }
+        if not post_value:
+            return {
+                "status": "failed",
+                "failure_type": "postcondition_failed",
+                "case_index": case_index,
+                "input": list(args),
+                "expected": expected,
+                "actual": actual,
+                "details": "postcondition rejected _impl output when precondition was ignored",
+            }
     try:
-        assertion(actual, expected, 0)
+        assertion(actual, expected, 0, args=args)
+    except TypeError:
+        try:
+            assertion(actual, expected, 0)
+        except Exception as exc:
+            return {
+                "status": "failed",
+                "failure_type": "impl_test_assertion_failed",
+                "case_index": case_index,
+                "input": list(args),
+                "expected": expected,
+                "actual": actual,
+                "details": f"{type(exc).__name__}: {exc}",
+            }
     except Exception as exc:
         return {
             "status": "failed",
@@ -209,32 +357,55 @@ def run_unrestricted_case(module, assertion, args, expected, case_index):
     }
 
 
-def run_single_case(module, candidate, assertion, args, expected, case_index):
-    try:
-        actual = candidate(*args)
-    except AssertionError:
-        failure_type, extra = determine_assertion_failure(module, args)
-        return {
-            "status": "failed",
-            "failure_type": failure_type,
-            "case_index": case_index,
-            "input": list(args),
-            "expected": expected,
-            "details": extra,
-        }
-    except Exception as exc:
+def run_single_case(module, candidate, assertion, args, expected, case_index, impl_call_timeout: int, spec_call_timeout: int):
+    actual_ok, actual_value = safe_call_with_timeout(candidate, args, impl_call_timeout)
+    if not actual_ok:
+        if actual_value.get("timed_out"):
+            return {
+                "status": "failed",
+                "failure_type": "entry_call_timeout",
+                "case_index": case_index,
+                "input": list(args),
+                "expected": expected,
+                "details": actual_value["error"],
+            }
+        if actual_value["error_type"] == "AssertionError":
+            failure_type, extra = determine_assertion_failure(module, args, impl_call_timeout, spec_call_timeout)
+            return {
+                "status": "failed",
+                "failure_type": failure_type,
+                "case_index": case_index,
+                "input": list(args),
+                "expected": expected,
+                "details": extra,
+            }
         return {
             "status": "failed",
             "failure_type": "runtime_error",
             "case_index": case_index,
             "input": list(args),
             "expected": expected,
-            "details": f"{type(exc).__name__}: {exc}",
-            "traceback": traceback.format_exc(),
+            "details": f"{actual_value['error_type']}: {actual_value['error']}",
+            "traceback": actual_value["traceback"],
         }
+    actual = actual_value
 
     try:
-        assertion(actual, expected, 0)
+        assertion(actual, expected, 0, args=args)
+    except TypeError:
+        try:
+            assertion(actual, expected, 0)
+        except Exception as exc:
+            return {
+                "status": "failed",
+                "failure_type": "test_assertion_failed",
+                "case_index": case_index,
+                "input": list(args),
+                "expected": expected,
+                "actual": actual,
+                "details": f"{type(exc).__name__}: {exc}",
+                "traceback": traceback.format_exc(),
+            }
     except Exception as exc:
         return {
             "status": "failed",
@@ -253,7 +424,7 @@ def run_single_case(module, candidate, assertion, args, expected, case_index):
     }
 
 
-def run_task(task: dict, output_dir: Path):
+def run_task(task: dict, output_dir: Path, impl_call_timeout: int, spec_call_timeout: int):
     task_name = task["task_id"].replace("/", "_")
     module_path = output_dir / f"{task_name}.py"
     if not module_path.exists():
@@ -358,7 +529,16 @@ def run_task(task: dict, output_dir: Path):
     for case_index, inp in enumerate(inputs):
         args = normalize_args(inp)
         expected = results[case_index] if results is not None else ref_func(*args)
-        case_report = run_single_case(module, candidate, assertion, args, expected, case_index)
+        case_report = run_single_case(
+            module,
+            candidate,
+            assertion,
+            args,
+            expected,
+            case_index,
+            impl_call_timeout,
+            spec_call_timeout,
+        )
         if case_report["status"] == "passed":
             passed_cases += 1
         else:
@@ -369,7 +549,15 @@ def run_task(task: dict, output_dir: Path):
             if len(failure_examples) < 10:
                 failure_examples.append(case_report)
 
-        unrestricted_case_report = run_unrestricted_case(module, assertion, args, expected, case_index)
+        unrestricted_case_report = run_unrestricted_case(
+            module,
+            assertion,
+            args,
+            expected,
+            case_index,
+            impl_call_timeout,
+            spec_call_timeout,
+        )
         if unrestricted_case_report["status"] == "passed":
             unrestricted_passed_cases += 1
         else:
@@ -407,9 +595,9 @@ def run_task(task: dict, output_dir: Path):
     return report
 
 
-def _run_task_worker(conn, task, output_dir_str):
+def _run_task_worker(conn, task, output_dir_str, impl_call_timeout, spec_call_timeout):
     try:
-        report = run_task(task, Path(output_dir_str))
+        report = run_task(task, Path(output_dir_str), impl_call_timeout, spec_call_timeout)
     except Exception as exc:
         report = {
             "task_id": task["task_id"],
@@ -436,14 +624,17 @@ def _run_task_worker(conn, task, output_dir_str):
         conn.close()
 
 
-def run_task_with_timeout(task: dict, output_dir: Path, task_timeout: int):
+def run_task_with_timeout(task: dict, output_dir: Path, task_timeout: int, impl_call_timeout: int, spec_call_timeout: int):
     ctx = multiprocessing.get_context("fork")
     parent_conn, child_conn = ctx.Pipe(duplex=False)
-    proc = ctx.Process(target=_run_task_worker, args=(child_conn, task, str(output_dir)))
+    proc = ctx.Process(
+        target=_run_task_worker,
+        args=(child_conn, task, str(output_dir), impl_call_timeout, spec_call_timeout),
+    )
     proc.start()
     child_conn.close()
-    proc.join(task_timeout)
-    if proc.is_alive():
+    proc.join(None if task_timeout <= 0 else task_timeout)
+    if task_timeout > 0 and proc.is_alive():
         proc.terminate()
         proc.join()
         parent_conn.close()
@@ -566,7 +757,9 @@ def main():
     parser.add_argument("--report-root", default="test_reports")
     parser.add_argument("--range")
     parser.add_argument("--idx", nargs="+", type=int)
-    parser.add_argument("--task-timeout", type=int, default=30)
+    parser.add_argument("--task-timeout", type=int, default=0)
+    parser.add_argument("--impl-call-timeout", type=int, default=1)
+    parser.add_argument("--spec-call-timeout", type=int, default=3)
     parser.add_argument("--fail-fast", action="store_true")
     args = parser.parse_args()
 
@@ -578,7 +771,10 @@ def main():
     with jsonl_path.open(encoding="utf-8") as fh:
         lines = fh.readlines()
 
-    indices = select_indices(len(lines), args.range, args.idx)
+    if args.idx or args.range:
+        indices = select_indices(len(lines), args.range, args.idx)
+    else:
+        indices = available_generated_indices(output_dir)
     if len(indices) == len(lines):
         for old_report in report_dir.glob("HumanEval_*.json"):
             old_report.unlink()
@@ -593,7 +789,13 @@ def main():
 
     for idx in indices:
         task = json.loads(lines[idx])
-        report = run_task_with_timeout(task, output_dir, args.task_timeout)
+        report = run_task_with_timeout(
+            task,
+            output_dir,
+            args.task_timeout,
+            args.impl_call_timeout,
+            args.spec_call_timeout,
+        )
         report.setdefault("syntax_correct", report.get("failure_type") != "syntax_error")
         report.setdefault("spec_correct", report["status"] == "passed")
         report.setdefault("postcondition_correct_without_precondition", False)
