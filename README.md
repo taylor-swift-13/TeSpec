@@ -36,8 +36,11 @@
 - `*_spec` 视为后条件
 - `*_pre` 视为前条件
 - 其他 `Definition` / `Fixpoint` / `Inductive` 都视为辅助函数
-- 如果没有 `*_pre`，组合阶段统一生成：
-  - `precondition(input) -> True`
+- 主 `*_pre` 的参数必须与官方 `_impl` 完全一致；如果没有前条件，可以不定义
+- 主 `*_spec` 的参数必须与官方 `_impl` 完全一致，并且最后只多一个 `output`
+- `output` 就是 `_impl(*args)` 的真实返回值
+- 多返回值题也只能通过单个 `output` 传入，若需要拆开，应在 `*_spec` 函数体内部解构
+- `spec/*/input/*.py` 里不应写测试 wrapper，只保留接近 Coq 语义的 Python 规格本体
 
 ## Prompt
 
@@ -167,23 +170,35 @@ spec/gpt-5/output/gpt-5_<timestamp>/HumanEval_10.py
 组合后的文件会统一带：
 
 ```python
-def precondition(input) -> bool:
+def precondition(*args) -> bool:
     ...
 
-def postcondition(input, output) -> bool:
+def postcondition(*args, output) -> bool:
     ...
 ```
+
+这里的规则是：
+
+- `precondition(*args)` 直接调用主 `*_pre(*args)`；若该题没有 `*_pre`，则恒为 `True`
+- `postcondition(*args, output)` 直接调用主 `*_spec(*args, output)`
+- 不再通过 `input` tuple 作为真实 spec 接口
 
 ### 单独跑正例测试
 
 ```bash
-python3 run_tests.py --output-dir spec/gpt-5/output/<run_name> --idx 10
+python3 run_tests.py \
+  --output-dir spec/gpt-5/output/<run_name> \
+  --idx 10 \
+  --task-timeout 600
 ```
 
 ### 单独跑负例测试
 
 ```bash
-python3 run_negative_tests.py --output-dir spec/gpt-5/output/<run_name> --idx 10
+python3 run_negative_tests.py \
+  --output-dir spec/gpt-5/output/<run_name> \
+  --idx 10 \
+  --task-timeout 600
 ```
 
 ### 一键跑完整流水线
@@ -224,6 +239,42 @@ python3 run_coq_pipeline.py --model gpt-5 --idx 26 --run-name gpt-5_pipeline_smo
   - `3` 次
 - 语法修复与行为修复共用：
   - `--max-iterations`
+- 正例/负例测试默认推荐：
+  - `--task-timeout 600`
+
+## 当前接口约定
+
+对每道题，当前推荐的 `spec/*/input/*.py` 主接口如下：
+
+```python
+def <entry_point>_pre(arg1, arg2, ...):
+    ...
+
+def <entry_point>_spec(arg1, arg2, ..., output):
+    ...
+```
+
+要求是：
+
+- `arg1, arg2, ...` 与官方 `_impl(arg1, arg2, ...)` 完全一致
+- `output` 是唯一合法的输出形参名
+- 不再使用 `input` / `result` / `res` / `ans` 作为主接口形参
+- 多输出题也只允许一个 `output`
+
+例如：
+
+```python
+def below_threshold_spec(l, t, output):
+    return output == all(x < t for x in l)
+```
+
+如果 `_impl` 返回的是 tuple/list，则在 spec 内部自行解构：
+
+```python
+def sum_product_spec(numbers, output):
+    sum_value, product_value = output
+    ...
+```
 
 ## 当前语义
 
@@ -237,12 +288,6 @@ python3 run_coq_pipeline.py --model gpt-5 --idx 26 --run-name gpt-5_pipeline_smo
 - 证明结构保真
 - 量词结构完整保留
 
-## 具体输入上的表达能力
-
-这条链路只关心一件事：
-
-- 当 spec 中涉及的所有变量都已经具体化时，Python 是否能返回与 Coq 相同的结果
-
 在这个前提下，这里的结论是：
 
 - 如果所有变量都是具体的，并且判断只依赖这些具体值本身，那么 Python 可以作为可执行 checker，与 Coq 保持完全一致的返回结果。
@@ -252,95 +297,7 @@ python3 run_coq_pipeline.py --model gpt-5 --idx 26 --run-name gpt-5_pipeline_smo
 - 对这一组具体输入，Coq 判真还是判假
 - Python 也必须判真还是判假
 
-### 1. `Prop` 可以直接落成 `bool`
 
-典型形式：
-
-- `Definition foo_spec ... : Prop := <一些具体可判定条件>`
-
-当所有输入都已经具体化后，这里的 `Prop` 本质上就是：
-
-- 一个关于当前输入的真值判断
-
-Python 不需要保留 `Prop` 这个层次，只需要输出一个 `bool`，就可以与 Coq 保持一致。
-
-### 2. `forall` 可以消成对当前输入的有限检查
-
-典型形式：
-
-- `forall x, In x xs -> P x`
-- `forall i, 0 <= i < length xs -> P (nth i xs ...)`
-
-当 `xs` 已经是一个具体列表时，`forall` 不再是抽象量词，而是：
-
-- 对这一个具体列表中的每个元素逐个检查
-
-Python 可以直接把它实现成：
-
-- `all(...)`
-- 显式循环
-
-只要每个具体元素上的判断与 Coq 一致，整个结果就一致。
-
-### 3. `exists` 可以消成对当前输入的有限搜索
-
-典型形式：
-
-- `exists x, In x xs /\ P x`
-- `exists i, 0 <= i < length xs /\ ...`
-
-当输入已经固定时，`exists` 的候选集合也是具体且有限的。  
-Python 可以直接做：
-
-- `any(...)`
-- 遍历搜索
-
-只要搜索逻辑与 Coq 在当前输入上的返回一致，就已经满足目标。
-
-### 4. 辅助定义保留可执行行为即可
-
-常见情况是：
-
-- Coq 中先定义若干 `Fixpoint` / `Definition`
-- `*_spec` 或 `*_pre` 只是调用这些辅助定义来给出最终判断
-
-在这个任务里，Python 不需要复刻这些定义的证明意义，只需要保留：
-
-- 对具体输入的可执行行为
-
-只要辅助函数在当前输入上的返回和 Coq 一样，最外层 spec 的结果也就会一致。
-
-### 5. 不需要保留证明结构
-
-这里不要求 Python 表达：
-
-- proof term
-- tactic 证明过程
-- proof obligation
-- 命题为何成立的证明结构
-
-因为这些都不影响“对这一组具体输入，最后判真还是判假”。  
-所以这条链路允许直接忽略证明结构，只保留最终的判定行为。
-
-### 6. 这条链路的保证边界
-
-这里真正保证的是：
-
-- 对所有已经具体化的输入，Python 返回与 Coq 相同的结果
-
-它不保证：
-
-- Python 在形式上完整复现 Coq 的逻辑表达
-- Python 保留 Coq 的证明结构
-- Python 保留量词、`Prop`、`Inductive` 的原始逻辑写法
-
-更准确地说，这里做的是：
-
-- 把 Coq spec 消成对当前输入的可执行判断
-- 把 `forall` 消成有限遍历
-- 把 `exists` 消成有限搜索
-- 把 `Prop` 消成 `bool`
-- 只保留会影响当前输入返回结果的那部分语义
 
 ## 非全票翻译检查
 
@@ -377,257 +334,240 @@ Python 可以直接做：
 - 非全票 != 一定错误
 - 但非全票题里，确实有相当一部分会在后续正负例里暴露出真实行为偏差
 
-### 1. 真正会在具体输入上不同的例子
 
-#### `gpt-4o / HumanEval_31`
 
-- 投票：`6/3`
-- 正例：失败
-- 负例：失败
-
-judge 的核心意见是：
-
-- Coq 要表达的是“存在因子则结果为假，不存在因子则结果为真”
-- Python 把逻辑写成了“存在非因子时结果为真”
-
-这不是抽象分歧，而是具体输入上真的会错。  
-例如当 `n = 4` 时：
-
-- Coq 期望：`False`
-- Python 可能接受 `True`
-
-这类问题说明：
-
-- `forall` / `exists` 被翻译成了错误的布尔结构
-- 需要直接回到 spec 逻辑本身修复，而不是只调表面判断
-
-#### `gpt-4o / HumanEval_55`
-
-- 投票：`6/3`
-- 正例：失败
-- 负例：失败
-
-judge 的核心意见是：
-
-- Coq 允许 `n >= 3` 时存在合法 Fibonacci 输出
-- Python 却把 `n >= 3` 全部写成 `False`
-
-这是典型的：
-
-- 把递推条件错误地塌缩成常量
-
-修改方案：
-
-- 对出现递推、归纳、迭代变量的 spec，不要把中间条件直接常量化
-- 要显式构造递推或有限迭代
-
-#### `gpt-5 / HumanEval_95`
-
-- 投票：`3/6`
-- 这是本轮唯一一个多数票判定“不等价”的题
-- 正例：失败
-- 负例：失败
-
-judge 的核心意见是：
-
-- Coq 里的 `IsLower` / `IsUpper` 是抽象谓词
-- Python 直接替换成了 `isalpha() and islower()/isupper()`
-
-这会把：
-
-- 抽象 predicate
-- 强行具体化成 Python 字符串库语义
-
-从而改变具体输入行为。  
-这类题说明：
-
-- 对抽象谓词，不能擅自绑定成某个 Python 内建语义
-- 至少应保持更弱的接口，或显式承认这是外部未解释谓词
-
-修改方案：
-
-- 当 Coq 中出现未解释 predicate 时：
-  - 优先保留成辅助函数占位
-  - 不要直接映射到 `isalpha`、`islower`、`sorted` 之类具体库行为
-
-#### `human / HumanEval_125`
-
-- 投票：`6/3`
-- 正例：失败
-- judge 认为存在具体输出形状差异
-
-核心问题是：
-
-- Coq 结果是 sum type：`inl(...)` / `inr(...)`
-- Python 把它直接落成裸 `list` / `int`
-
-这会导致：
-
-- 底层内容可能对
-- 但最终返回形状与 Coq 不同
-
-这类题说明：
-
-- option / sum / tagged union 不能直接去标签
-- 否则具体输入上会出现判断差异
-
-修改方案：
-
-- 对 `option`、`sum`、`inl/inr`、`Some/None` 这类结构，应该统一约定 Python 表示法
-- 然后在 compose / runner 中保持这个表示法一致
-
-### 2. judge 有分歧，但当前具体输入未暴露问题的例子
-
-#### `claude-3-7-sonnet-20250219 / HumanEval_67`
-
-- 投票：`6/3`
-- 正例：通过
-- 负例：通过
-
-judge 的担忧是：
-
-- Coq 对字符串 `s` 的约束比较弱
-- Python 里却写了具体的 parse 逻辑
-
-这说明存在一种可能：
-
-- judge 认为 Python 可能过强
-- 但在当前正负例输入集上，这个差异还没有被触发
-
-这种题不应直接当成错误实现，而应记为：
-
-- “潜在语义收缩，但现有测试未击中”
-
-修改方案：
-
-- 对这类题优先补充更针对性的输入
-- 特别是 parser / format / abstract string predicate 相关边界输入
-
-#### `human / HumanEval_12`
-
-- 投票：`5/4`
-- 正例：通过
-- 负例：通过
-
-judge 的担忧是：
-
-- Coq 允许任意最长字符串
-- Python 只接受“第一个最长字符串”
-
-这说明：
-
-- judge 发现了潜在的 tie-breaking 差异
-- 但当前测试集中没有出现足以区分二者的具体输入
-
-修改方案：
-
-- 对这类 “argmax / 最长 / 最小 / 最优” 题，补充平局样例
-- 明确 tie-breaking 是否属于 spec 的一部分
-
-### 3. 常见问题类型
-
-从所有非全票题的自然语言 reason 看，反复出现的核心问题有：
-
-#### 抽象谓词被过度具体化
-
-例如：
-
-- `IsLower`
-- `IsUpper`
-- 自定义 predicate
-- 未解释关系
-
-被直接替换成：
-
-- `str.isalpha()`
-- `str.islower()`
-- Python 内建顺序 / 比较 / 集合语义
-
-这类问题很容易导致具体输入行为偏离 Coq。
-
-#### 逻辑结构被错误塌缩
-
-例如：
-
-- 递推被写成常量
-- `exists` 被翻错成固定 witness
-- `forall` 被翻成局部检查
-
-这类问题通常会直接在正例或负例里暴露。
-
-#### Coq 的结构化返回值被去标签
-
-例如：
-
-- `Some x`
-- `None`
-- `inl x`
-- `inr y`
-
-如果直接简化成裸 Python 值，就会改变“具体输入下判断 output 是否满足 spec”的规则。
-
-#### 精确语义被浮点近似替换
-
-例如：
-
-- exact real / integer comparison
-- Python `float`
-- 近似容差 `1e-7`
-
-这类问题在大整数、长小数、边界比较上尤其危险。
-
-#### 最优性 / 最短性 / 极值条件丢失
-
-例如：
-
-- shortest palindrome
-- best path
-- lexicographically minimal
-- maximum valid witness
-
-Python 只检查“可行”，没检查“最优”，会在负例里被 mutation 放大。
-
-### 4. 修改方案
-
-基于这批非全票题，下一轮最值得做的修正不是单纯增加 judge 数量，而是增加以下约束：
-
-#### Prompt 侧
-
-- 明确要求保留 `option` / `sum` / tagged output 的结构
-- 明确禁止把抽象谓词直接映射成 Python 内建语义，除非 Coq 已给出可执行定义
-- 明确要求：
-  - `forall` 必须对应有限遍历
-  - `exists` 必须对应有限搜索
-  - 递推必须显式构造，不得直接塌缩成常量
-- 对包含 “shortest / best / minimum / lexicographically smallest / maximum” 的 spec，明确要求保留最优性条件
-
-#### Judge 侧
-
-- 要求 judge 给出“最小具体反例”
-- 不只说“可能不一致”，而是尽量给出：
-  - 一个具体输入
-  - Coq 应为真/假
-  - Python 为什么会给出相反结果
-
-这样修复阶段就不再只是读抽象意见，而是直接针对反例改。
-
-#### 静态检查侧
-
-在投票前加几条便宜但高收益的 lint：
-
-- 检查是否把 `Some` / `inl` / `inr` 去掉了
-- 检查是否引入 `float` / 容差比较
-- 检查是否出现 `isalpha` / `islower` / `sorted(set(...))` 这类可疑具体化
-- 检查是否把 spec 写成固定常量返回
-- 检查是否遗漏 “shortest / minimum / maximum / lexicographic” 之类关键词对应的最优性条件
-
-#### 测试侧
-
-- 对“judge 分歧但当前通过”的题，优先补：
-  - tie case
-  - parser 边界输入
-  - 抽象 predicate 边界
-  - 大整数 / 精确比较
-  - 多 witness / 多极值候选
-
-这样可以把“潜在错误”尽快变成“可复现错误”或“确认无误”。
+## 正例测试结果
+
+以下统计基于当前最新一轮正例：
+
+- `*_20260324_010947_positive600`
+- 只看正例
+- 整题超时：`600s`
+
+对应目录：
+
+- `test_reports/*_20260324_010947_positive600`
+
+### 1. 任务级统计
+
+口径：
+
+- 忽略前条件，只统计官方 `_impl` 输出是否满足 `postcondition`
+- `正例后条件正确率`：`postcondition_correct_without_precondition_tasks / 164`
+- 缺失题目按未通过计入分母
+
+| 模型 | 正例后条件正确率 | testcase 正确率 |
+| --- | ---: | ---: |
+| `claude-3-7-sonnet-20250219` | `26/164 = 0.1585` | `0.9233` |
+| `claude-opus-4-5-20251101` | `78/164 = 0.4756` | `0.9119` |
+| `deepseek-v3.1` | `10/164 = 0.0610` | `0.9844` |
+| `gemini-3-pro-preview` | `113/164 = 0.6890` | `0.9439` |
+| `gpt-4o` | `17/164 = 0.1037` | `0.8050` |
+| `gpt-5` | `98/164 = 0.5976` | `0.9486` |
+| `human` | `129/164 = 0.7866` | `0.9601` |
+
+### 2. 已确认的 spec 本身问题
+
+这里的“spec 本身问题”指：
+
+- 不是 runner/compose 框架错误
+- 不是单纯性能超时
+- 而是把官方 `_impl` 的正确输出代回当前 Coq/Python 规格后，规格自己拒绝
+
+#### `claude-3-7-sonnet-20250219`
+
+- `HumanEval/9`
+  问题定义：`prefix_max` 语义写成了滚动前缀最大值，但 Coq 递归语义对应的是“非空时返回首个最长候选/单元素全局最大值”的那一版。
+- `HumanEval/24`
+  问题定义：最长元素的 witness/位置约束写得过强，重复最长值时会错误拒绝合法输出。
+  错误 case：
+  - `["dog", "cat", "horse", "cow", "hore", "horse"]`
+  - 官方输出：`"horse"`
+- `HumanEval/62`, `HumanEval/63`, `HumanEval/163`
+  问题定义：当前规格与官方题意仍有细节偏差，表现为 `_impl` 输出被后条件拒绝。
+
+#### `claude-opus-4-5-20251101`
+
+- `HumanEval/12`
+  问题定义：最长字符串规格对重复最长值的索引条件写得过强。
+  错误 case：
+  - `["dog", "cat", "horse", "cow", "hore", "horse"]`
+  - 官方输出：`"horse"`
+- `HumanEval/17`
+  问题定义：带标签输出/构造子语义仍没有完全对齐官方裸输出。
+- `HumanEval/22`
+  问题定义：把抽象整数/类型约束具体化成了 Python 类型判定。
+- `HumanEval/32`
+  问题定义：Coq 规格要求精确根，官方题是数值近似求根。
+- `HumanEval/45`
+  问题定义：精确数值语义和 Python 落地的近似判断存在差异。
+- `HumanEval/92`
+  问题定义：是否“是整数”的判断按 Coq/有理数语义与官方实现有差异。
+- `HumanEval/99`
+  问题定义：精确最近整数语义与官方 `float` 语义在大数上分叉。
+- `HumanEval/111`
+  问题定义：输出表示/频次最大项约束与官方接口仍未完全一致。
+- `HumanEval/151`
+  问题定义：Coq 输入域是整数列表，官方任务允许浮点并要求忽略非整数。
+- `HumanEval/155`
+  问题定义：当前 even/odd digit 计数规格与官方返回 tuple 的行为仍存在差异。
+
+#### `deepseek-v3.1`
+
+- `HumanEval/139`
+  问题定义：当前规约对构造/递推结果的判定仍和 Coq/官方行为不一致。
+
+#### `gemini-3-pro-preview`
+
+- `HumanEval/27`
+  问题定义：大小写翻转规则对非 ASCII/边界字符的处理与题意不完全一致。
+- `HumanEval/32`
+  问题定义：精确根 vs 数值近似根。
+- `HumanEval/92`
+  问题定义：整数判定按 Coq/有理数语义与官方实现不一致。
+- `HumanEval/95`
+  问题定义：抽象大小写谓词被具体化成 Python 字符串判定。
+- `HumanEval/101`
+  问题定义：分词/字符串处理规格与官方返回值有细节偏差。
+- `HumanEval/133`
+  问题定义：上取整/边界条件落地仍与题意不完全一致。
+- `HumanEval/148`
+  问题定义：集合/顺序类约束在 Python 侧实现偏强或偏弱。
+
+#### `gpt-4o`
+
+- `HumanEval/9`
+  问题定义：`prefix_max` 语义未和 Coq 递归定义对齐。
+- `HumanEval/12`
+  问题定义：最长元素的 witness/位置条件写得过强。
+- `HumanEval/85`
+  问题定义：当前判定条件仍和 Coq 题意存在边界不一致。
+- `HumanEval/92`
+  问题定义：整数判定按 Coq/有理数语义与官方实现不一致。
+- `HumanEval/151`
+  问题定义：输入域被 Coq 写成整数列表，官方任务允许浮点。
+- `HumanEval/162`
+  问题定义：当前输出/约束实现与 Coq/官方行为仍有差异。
+
+#### `gpt-5`
+
+- `HumanEval/1`
+  问题定义：后条件结构约束仍过强，拒绝了官方实现输出。
+- `HumanEval/27`
+  问题定义：大小写翻转语义仍有字符域边界差异。
+- `HumanEval/45`
+  问题定义：精确数值语义和当前 Python 近似判断不完全一致。
+- `HumanEval/71`
+  问题定义：两位小数/面积舍入规则仍和官方行为不完全一致。
+- `HumanEval/92`
+  问题定义：整数判定按 Coq/有理数语义与官方实现不一致。
+- `HumanEval/101`
+  问题定义：字符串/分词规格仍有边界偏差。
+- `HumanEval/133`
+  问题定义：边界数值语义仍未完全贴合。
+- `HumanEval/137`
+  问题定义：字符串数值与浮点数值的比较仍受表示方式影响。
+- `HumanEval/141`
+  问题定义：ASCII 文件名约束与官方任务更宽的输入域不一致。
+- `HumanEval/148`
+  问题定义：集合/顺序约束实现仍未完全贴合题意。
+- `HumanEval/161`
+  问题定义：ASCII 大小写语义与官方 Unicode 测试不一致。
+
+#### `human`
+
+- `HumanEval/0`
+  问题定义：Coq 用 `<= threshold`，官方实现用严格 `< threshold`。
+  错误 case：
+  - `numbers = [1.0, 2.0, 3.0, 4.0, 5.0]`
+  - `threshold = 1.0`
+  - 官方输出：`False`
+- `HumanEval/32`
+  问题定义：精确根 vs 数值近似根。
+- `HumanEval/50`
+  问题定义：当前规约按 Coq 的全字符算术位移，官方题意更接近字母表位移。
+- `HumanEval/91`
+  问题定义：把“句子以单词 I 开头”实现成了字符串前缀 `"I"`。
+- `HumanEval/92`
+  问题定义：Coq 把数值等于整数的有理数也当整数。
+- `HumanEval/99`
+  问题定义：已修复“平局远离 0”，但仍会在超大数上和官方 `float` 实现分叉。
+  错误 case：
+  - 输入：`"-578000000007654321.12345"`
+  - 官方输出：`-578000000007654272`
+- `HumanEval/111`
+  问题定义：输出表示/频次最大项约束仍与官方接口有缝。
+- `HumanEval/125`
+  问题定义：Coq 使用 `sum (list string) nat`，而官方输出是裸 `list | int`；虽然 Python 已把输出类型对齐，但 Coq 的 split 语义仍与官方 Python `split` 不完全一致。
+  错误 case：
+  - 输入：`"as,words,,a"`
+  - 官方输出：`["as", "words", "", "a"]`
+- `HumanEval/126`
+  问题定义：Coq 用严格升序 `Sorted Nat.lt`，不允许重复。
+- `HumanEval/137`
+  问题定义：字符串数值语法与官方实现不完全一致，例如 `.0`、`-.123`。
+  错误 case：
+  - 输入：`(".0", "-2.0")`
+  - 官方输出：`.0`
+- `HumanEval/141`
+  问题定义：只接受 ASCII 拉丁字母开头。
+- `HumanEval/151`
+  问题定义：Coq 输入域写成 `list Z`，官方任务允许浮点并要求忽略非整数。
+- `HumanEval/155`
+  问题定义：even/odd digit 计数规格与官方 tuple 行为仍未完全对齐。
+- `HumanEval/161`
+  问题定义：只处理 ASCII 大小写，官方测试包含 `äëïöü`。
+
+### 3. 超时案例与原因
+
+这轮超时全部是整题超时：
+
+- `--task-timeout 600`
+
+这些超时目前更像性能问题，不直接说明 spec 语义错误。
+
+#### 代表例子
+
+- `human / HumanEval/31`
+  问题定义：大数判素数。
+  原因：当前规格按试除法判素数，测试里有很大的输入，整题累计超过 `600s`。
+
+- `human / HumanEval/39`
+  问题定义：prime-fib 递推/计数。
+  原因：会反复做 prime/fib 判定，整题累计很重。
+
+- `human / HumanEval/55`
+  问题定义：Fibonacci 规格。
+  原因：当前实现是朴素递归 Fibonacci，复杂度指数级。
+
+- `human / HumanEval/129`
+  问题定义：路径扩展/最优路径选择。
+  原因：候选路径扩展有组合爆炸。
+
+- `human / HumanEval/130`
+  问题定义：递推列表验证。
+  原因：既要构造递推值又要整列表校验，累计很慢。
+
+- `claude-opus / HumanEval/15`
+  问题定义：构造 `0..n` 的长字符串。
+  原因：`n` 可到 `10^6` 量级，生成完整字符串序列代价很高。
+
+- `claude-opus / HumanEval/50`
+  问题定义：当前规格按全字符位移校验。
+  原因：虽然单次不一定慢，但整题 case 多时累计超过 `600s`。
+
+- `claude-opus / HumanEval/55`
+  问题定义：Fibonacci 规格。
+  原因：同样是朴素递归带来的累计超时。
+
+- `deepseek / HumanEval/130`
+  问题定义：递推列表验证。
+  原因：与 `human / 130` 同类，整列表递推检查过慢。
+
+- `gemini / HumanEval/31`
+  问题定义：大数判素数。
+  原因：与 `human / 31` 同类。
+
+- `gemini / HumanEval/5`
+  问题定义：虽然单次输入不大，但整题 case 数多。
+  原因：在当前 runner 的整题粒度下，累计执行时间超过 `600s`。
