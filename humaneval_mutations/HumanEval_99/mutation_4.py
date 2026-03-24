@@ -19,7 +19,6 @@ def closest_integer(value):
     from math import floor, ceil
 
     if value.count('.') == 0:
-        # remove trailing zeros
         while (value[-1] == '0'):
             value = value[:-1]
 

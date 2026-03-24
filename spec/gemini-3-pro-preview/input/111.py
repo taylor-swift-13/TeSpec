@@ -29,22 +29,42 @@ def lookup(k, l):
             return val
     return None
 
+# Old incorrect translation:
+# def _orig_histogram_spec(test, output):
+#     words = split_spaces(test)
+#     mx = get_max_count(words)
+#     if not words:
+#         return output == []
+#     keys = [k for (k, v) in output]
+#     if len(keys) != len(set(keys)):
+#         return False
+#     for (k, v) in output:
+#         if v != mx:
+#             return False
+#         if count_occurrences(k, words) != mx:
+#             return False
+#     for k in words:
+#         if count_occurrences(k, words) == mx:
+#             if lookup(k, output) != mx:
+#                 return False
+#     return True
 def _orig_histogram_spec(test, output):
     words = split_spaces(test)
     mx = get_max_count(words)
     if not words:
-        return output == []
-    keys = [k for (k, v) in output]
-    if len(keys) != len(set(keys)):
+        return output == {}
+    if not isinstance(output, dict):
         return False
-    for (k, v) in output:
+    for k, v in output.items():
+        if not isinstance(k, str) or not isinstance(v, int):
+            return False
         if v != mx:
             return False
         if count_occurrences(k, words) != mx:
             return False
     for k in words:
         if count_occurrences(k, words) == mx:
-            if lookup(k, output) != mx:
+            if output.get(k) != mx:
                 return False
     return True
 

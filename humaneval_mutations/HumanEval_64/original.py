@@ -15,6 +15,8 @@ def vowels_count(s):
     >>> vowels_count("ACEDY")
     3
     """
+    if s == "":
+        return 0
     vowels = "aeiouAEIOU"
     n_vowels = sum(c in vowels for c in s)
     if s[-1] == 'y' or s[-1] == 'Y':

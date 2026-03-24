@@ -9,8 +9,7 @@ def count_upper(s):
     count_upper('dBBE') returns 0
     """
     count = 0
-    for i in range(0,len(s),1):  # Bug: should be step 2
+    for i in range(0,len(s),1):
         if s[i] in "AEIOU":
             count += 1
     return count
-

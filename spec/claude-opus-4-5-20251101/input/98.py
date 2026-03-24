@@ -21,8 +21,15 @@ def count_upper_vowels_even_indices_aux(l: list, idx: int) -> int:
 def count_upper_vowels_even_indices(l: list) -> int:
     return count_upper_vowels_even_indices_aux(l, 0)
 
+# Old recursion-based translation:
+# def _orig_count_upper_spec(s: str, output: int) -> bool:
+#     return output == count_upper_vowels_even_indices(string_to_list(s))
 def _orig_count_upper_spec(s: str, output: int) -> bool:
-    return output == count_upper_vowels_even_indices(string_to_list(s))
+    count = 0
+    for idx, ch in enumerate(s):
+        if idx % 2 == 0 and is_upper_vowel(ch):
+            count += 1
+    return output == count
 
 def count_upper_spec(s, output):
     return bool(_orig_count_upper_spec(s, output))
