@@ -14,16 +14,5 @@ under the same logical module path when a residual VC is checked.
 The modified concrete symbolic executor is stored separately at
 `../bin/qcp-symexec`.
 
-Refresh these resources from a QCIP checkout with:
-
-```bash
-scripts/vendor-qcip-runtime.sh
-```
-
-Set `QCIP_SOURCE_DIR` to use a checkout other than the default sibling
-`../QCIP`.
-The installed runtime does not require that original checkout to remain
-available.
-
 System dependencies are not copied here: Linux/glibc and Python are required
 to run the tool; Coq 8.20 is required only when a residual VC must be compiled.

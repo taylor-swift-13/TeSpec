@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="690" viewBox="0 0 1600 690" role="img" aria-labelledby="title desc">
+  <title id="title">TeSpec public command-line interfaces</title>
+  <desc id="desc">A publication-ready diagram of the four public TeSpec interfaces: analyze, run, check, and check-proof, with their inputs and generated artifacts.</desc>
+
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="5" stdDeviation="7" flood-color="#0F172A" flood-opacity="0.09"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="9" markerHeight="9" orient="auto">
+      <path d="M1,1 L11,6 L1,11 Z" fill="#64748B"/>
+    </marker>
+    <style>
+      .sans { font-family: Inter, "Helvetica Neue", Arial, sans-serif; }
+      .title { font-size: 31px; font-weight: 700; fill: #0F172A; letter-spacing: -0.4px; }
+      .subtitle { font-size: 17px; fill: #64748B; }
+      .stage { font-size: 13px; font-weight: 700; fill: #475569; letter-spacing: 1.7px; }
+      .command { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size: 20px; font-weight: 700; fill: #FFFFFF; }
+      .card-title { font-size: 19px; font-weight: 700; fill: #0F172A; }
+      .copy { font-size: 14px; fill: #475569; }
+      .mono { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size: 13px; fill: #334155; }
+      .artifact { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size: 15px; font-weight: 650; fill: #0F172A; }
+      .caption { font-size: 14px; font-weight: 500; fill: #64748B; }
+      .flow { fill: none; stroke: #64748B; stroke-width: 2; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect width="1600" height="690" rx="24" fill="#FFFFFF"/>
+  <rect x="1" y="1" width="1598" height="688" rx="23" fill="none" stroke="#E2E8F0" stroke-width="2"/>
+
+  <g class="sans">
+    <text x="72" y="66" class="title">TeSpec public interfaces</text>
+    <text x="72" y="96" class="subtitle">A new problem can be analyzed and executed directly from its annotated source and concrete bindings.</text>
+
+    <text x="72" y="151" class="stage">COMMAND</text>
+    <text x="350" y="151" class="stage">PURPOSE</text>
+    <text x="1120" y="151" class="stage">PRIMARY OUTPUT</text>
+
+    <!-- Row 1 -->
+    <g filter="url(#shadow)">
+      <rect x="72" y="177" width="236" height="94" rx="16" fill="#4F46E5"/>
+      <rect x="350" y="177" width="700" height="94" rx="16" fill="#F8FAFC" stroke="#C7D2FE" stroke-width="1.5"/>
+      <rect x="1092" y="177" width="436" height="94" rx="16" fill="#EEF2FF" stroke="#A5B4FC" stroke-width="1.5"/>
+    </g>
+    <text x="190" y="218" text-anchor="middle" class="command">analyze</text>
+    <text x="190" y="244" text-anchor="middle" font-size="13" fill="#E0E7FF">discover + template</text>
+    <text x="378" y="211" class="card-title">Discover every required concrete binding</text>
+    <text x="378" y="239" class="copy">Reads the target C signature and QCP With declarations; optionally creates an editable template.</text>
+    <text x="1120" y="211" class="artifact">binds.json</text>
+    <text x="1120" y="239" class="copy">args · values · types</text>
+    <path class="flow" d="M308 224 H336"/>
+    <path class="flow" d="M1050 224 H1078"/>
+
+    <!-- Row 2 -->
+    <g filter="url(#shadow)">
+      <rect x="72" y="292" width="236" height="94" rx="16" fill="#0E7490"/>
+      <rect x="350" y="292" width="700" height="94" rx="16" fill="#F8FAFC" stroke="#A5F3FC" stroke-width="1.5"/>
+      <rect x="1092" y="292" width="436" height="94" rx="16" fill="#ECFEFF" stroke="#67E8F9" stroke-width="1.5"/>
+    </g>
+    <text x="190" y="333" text-anchor="middle" class="command">run</text>
+    <text x="190" y="359" text-anchor="middle" font-size="13" fill="#CFFAFE">test a new source</text>
+    <text x="378" y="326" class="card-title">Execute one source file against one or more binds</text>
+    <text x="378" y="354" class="copy">The direct interface for a new problem: SOURCE.c + function + binds.json.</text>
+    <text x="1120" y="326" class="artifact">report.json</text>
+    <text x="1120" y="354" class="copy">per-bind status + evidence directory</text>
+    <path class="flow" d="M308 339 H336"/>
+    <path class="flow" d="M1050 339 H1078"/>
+
+    <!-- Row 3 -->
+    <g filter="url(#shadow)">
+      <rect x="72" y="407" width="236" height="94" rx="16" fill="#7C3AED"/>
+      <rect x="350" y="407" width="700" height="94" rx="16" fill="#F8FAFC" stroke="#DDD6FE" stroke-width="1.5"/>
+      <rect x="1092" y="407" width="436" height="94" rx="16" fill="#F5F3FF" stroke="#C4B5FD" stroke-width="1.5"/>
+    </g>
+    <text x="190" y="448" text-anchor="middle" class="command">check</text>
+    <text x="190" y="474" text-anchor="middle" font-size="13" fill="#EDE9FE">run a saved job</text>
+    <text x="378" y="441" class="card-title">Execute a reusable job description</text>
+    <text x="378" y="469" class="copy">Packages source, target, binds, limits, and include paths in one portable JSON file.</text>
+    <text x="1120" y="441" class="artifact">report.json</text>
+    <text x="1120" y="469" class="copy">the same auditable result schema</text>
+    <path class="flow" d="M308 454 H336"/>
+    <path class="flow" d="M1050 454 H1078"/>
+
+    <!-- Row 4 -->
+    <g filter="url(#shadow)">
+      <rect x="72" y="522" width="236" height="94" rx="16" fill="#475569"/>
+      <rect x="350" y="522" width="700" height="94" rx="16" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/>
+      <rect x="1092" y="522" width="436" height="94" rx="16" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/>
+    </g>
+    <text x="190" y="563" text-anchor="middle" class="command">check-proof</text>
+    <text x="190" y="589" text-anchor="middle" font-size="13" fill="#E2E8F0">validate residual</text>
+    <text x="378" y="556" class="card-title">Validate an explicitly manual residual proof</text>
+    <text x="378" y="584" class="copy">Checks artifact integrity and asks the Coq 8.20 kernel to accept the completed proof.</text>
+    <text x="1120" y="556" class="artifact">manual proof result</text>
+    <text x="1120" y="584" class="copy">kept distinct from automatic QCP / SMT</text>
+    <path class="flow" d="M308 569 H336"/>
+    <path class="flow" d="M1050 569 H1078"/>
+
+    <line x1="72" y1="644" x2="1528" y2="644" stroke="#E2E8F0"/>
+    <text x="72" y="672" class="caption">Figure 2. The public command-line surface; all execution and classification paths are deterministic.</text>
+  </g>
+</svg>

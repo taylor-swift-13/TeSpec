@@ -1,13 +1,8 @@
 # QCP assertion coverage
 
-本清单依据 QCP source 中 `compiler/parser.y` 的 grammar；开发脚本默认从
-TeSpec 的 sibling `../sac_c_parser` 读取，也可用 `QCP_SOURCE_DIR` 覆盖。
-`qcp-spectest` 只向选中 spec 的 `Require` 插入绑定等式，其余 assertion 文本
-不做降级转换，所以以下格式都可继续交给 QCP。
-
-QCP、CAV 与 xizi corpus 共 488 个 C 文件已全部通过 spec 外壳分析，覆盖
-1119 个 full spec；这表示格式可识别，不表示每个抽象谓词都能由当前自动化立即
-关闭。
+本清单对应 TeSpec 随附 QCP parser 的 assertion grammar。`qcp-spectest`
+只向选中 spec 的 `Require` 插入绑定等式，其余 assertion 文本不做降级转换，
+所以以下格式都可继续交给 QCP。
 
 ## Function spec 外壳
 

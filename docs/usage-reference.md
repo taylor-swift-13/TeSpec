@@ -1,4 +1,4 @@
-# TeSpec 使用与实现参考
+# TeSpec 使用接口参考
 
 `qcp-spectest` 的公开输入是：
 
@@ -246,68 +246,8 @@ skills/qcp-spec-test/scripts/run-agent.sh SOURCE.c FUNCTION [BINDS.json]
 该脚本参考 CAV 的 Codex runner，固定使用 `gpt-5.4-mini` 和 medium
 reasoning。
 
-## 语法与 corpus 覆盖
+## Assertion 语法
 
 Python 只解析 function-spec 外壳和 `With`，`Require / Ensure` assertion
 主体完整交给项目自带 `bin/qcp-symexec` 中的 QCP assertion parser。详细语法见
 [QCP assertion coverage](qcp-assertion-coverage.md)。
-
-当前 corpus 扫描覆盖：
-
-- QCP 示例、CAV input 和 xizi OUTPUT 共 488 个 C 文件；
-- 488/488 成功分析，parser error 为 0；
-- 1036 个函数、1119 个 full spec、2177 个 C argument binding、1537 个
-  value binding；
-- 递归 include/signature 分析后有 65 个 bind 类型无法静态唯一推断；它们仍可用
-  显式 `type + qcp` 形式绑定。
-
-`scripts/run-cav-memory-suite.py` 另外执行 20 个 CAV 链表、数组、排序/搜索和
-字符串程序，共 54 组 bind。移除 `coq_auto` 后当前结果为 35 组
-`qcp_auto`、19 组 manual residual（35.19%），无 `FAIL / ERROR` 或非预期
-UNKNOWN。脚本仍保留 10% manual-rate 硬门禁，因此当前回归会以非零状态明确
-报告该覆盖缺口；后续只能通过通用 QCP 闭项归约与 SMT 能力降低它，不能添加
-case-specific Coq tactic。自动证明不依赖 CoqGym。
-
-## 回归案例
-
-本地回归包括：
-
-- 标量、单 cell heap、链表和数组；
-- 任意 `Let` 分离谓词，以及 xizi 自定义单/双链表布局；
-- 任意递归构造器谓词的存在变量合一；外层单链、内层双链、闭合结构体字段与
-  节点数组的嵌套组合，并包含错误深层数组后态的 `FAIL` 反例；
-- 数组的基址、结构体字段内数组、数组中的闭合结构体，以及这些对象跨
-  loop/callee/recursion 的读写；
-- `option Z`、用户构造子树和 `With {A}` 多态类型实例化；
-- 具体 `Znth` 的正常、负下标（按 Coq `Z.to_nat` 归零）和越界默认值归约，
-  以及归约后 safety VC 的 auto/manual 分类；
-- `while / for / do-while`、嵌套循环、链表遍历；
-- 无 callee spec 的循环调用和 heap 副作用；
-- callee 带误导 spec 时仍执行真实函数体；
-- `switch` 的 return、break、default；
-- 有限递归 factorial；
-- 错误后置条件、loop limit 和 call-depth limit。
-
-构建并复制修改后的 QCP：
-
-```bash
-scripts/build-qcp-symexec.sh
-```
-
-从一份 QCIP checkout 更新项目内运行时资源：
-
-```bash
-QCIP_SOURCE_DIR=/path/to/QCIP scripts/vendor-qcip-runtime.sh
-```
-
-以上两个命令是开发/更新命令；普通运行不需要 QCP 或 QCIP 源码树。Linux/glibc
-和 Python 是系统运行依赖；只有 residual VC 需要编译时才要求系统安装 Coq
-8.20。
-
-运行回归与 corpus 分析：
-
-```bash
-python3 -m unittest discover -s tests -v
-python3 scripts/analyze-corpora.py
-python3 scripts/run-cav-memory-suite.py
-```

@@ -4,86 +4,47 @@
 
 ### Concrete specification testing for QCP-annotated C
 
-把一份 **C implementation + QCP spec** 和一组具体 **binds**，
-转化为可追溯的 `PASS / FAIL / UNKNOWN / ERROR` 测试结果。
+输入一份 **C implementation + QCP spec** 和具体 **binds**，
+直接得到逐测试用例的 `PASS / FAIL / UNKNOWN / ERROR`。
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![Coq 8.20](https://img.shields.io/badge/Coq-8.20-8B5CF6)](https://coq.inria.fr/)
-[![QCP + SMT](https://img.shields.io/badge/Automation-QCP%20%2B%20SMT-0F766E)](#可信边界)
-[![Model-free core](https://img.shields.io/badge/Core-model--free-111827)](#可信边界)
+[![Coq 8.20](https://img.shields.io/badge/Coq-8.20-7C3AED)](https://coq.inria.fr/)
+[![Automation](https://img.shields.io/badge/Automation-QCP%20%2B%20SMT-0E7490)](#结果解释)
+[![Core](https://img.shields.io/badge/Core-model--free-334155)](#结果解释)
 
-[`快速开始`](#快速开始) ·
-[`Binds`](#binds输入) ·
-[`执行流程`](#执行流程) ·
-[`完整文档`](docs/usage-reference.md)
+[`测试一道新题`](#测试一道新题) ·
+[`命令行接口`](#命令行接口) ·
+[`Binds`](#binds-输入) ·
+[`完整参考`](docs/usage-reference.md)
 
 </div>
 
 ---
 
-TeSpec 面向“给定具体测试输入，检查这次执行是否满足函数 spec”的场景。
-它不是把测试伪装成全称验证：每个 bind 都独立执行、独立生成 VC、独立报告结果。
+TeSpec 检查的是：
 
-核心框架不调用大模型。模型只可在框架之外帮助填写 binds，或为明确标记为
-manual 的 residual VC 编写 Coq 证明。
+> 在这一组具体 C 参数和逻辑变量绑定下，真实执行目标函数后得到的终态是否满足
+> 原始 `Ensure`。
 
-## 执行流程
+每个 bind 是一条独立测试用例。框架会执行有限循环、可见 callee 和相关 heap
+读写；不要求循环不变式，也不要求填写 callee binds。核心执行、VC 归约、结果分类
+均不调用大模型。
 
-```mermaid
-%%{init: {"theme": "base", "themeVariables": {
-  "fontFamily": "Inter, ui-sans-serif, system-ui",
-  "primaryColor": "#EEF2FF",
-  "primaryTextColor": "#172554",
-  "primaryBorderColor": "#6366F1",
-  "lineColor": "#64748B",
-  "secondaryColor": "#ECFDF5",
-  "tertiaryColor": "#FFF7ED"
-}}}%%
-flowchart LR
-    A["C implementation<br/>+ QCP spec"]:::input
-    B["binds.json<br/>args · values · types"]:::input
+## 使用流程
 
-    A --> C["Analyze<br/>发现 C 参数与 With 变量"]:::engine
-    B --> D["Specialize<br/>注入具体绑定"]:::engine
-    C --> D
+<p align="center">
+  <img src="docs/assets/tespec-workflow.svg" alt="TeSpec concrete specification testing workflow" width="100%">
+</p>
 
-    D --> E["Concrete symbolic execution<br/>执行函数体、循环与 callee"]:::engine
-    E --> F["Heap evolution<br/>数组 · 结构体 · 单/双链表"]:::memory
-    F --> G["Closed AST normalization<br/>Zlength · Znth · 逻辑连接词 · 有界量词"]:::solver
-    G --> H["QCP strategies + SMT"]:::solver
+<p align="center">
+  <a href="docs/assets/tespec-workflow.svg">SVG</a> ·
+  <a href="docs/assets/tespec-workflow.pdf">PDF</a>
+</p>
 
-    H -->|全部 VC 关闭| P["PASS"]:::pass
-    H -->|确定矛盾| Q["FAIL"]:::fail
-    H -->|路径/深度上限| U["UNKNOWN"]:::unknown
-    H -->|Residual VC| R["proof_manual.v"]:::manual
-    R --> S["Human / model proof<br/>spectest check-proof"]:::manual
-    S -->|Coq 8.20 kernel accepts| M["Manual proof PASS"]:::pass
-    S -->|未证明| U
-
-    classDef input fill:#F8FAFC,stroke:#94A3B8,color:#0F172A,stroke-width:1.5px;
-    classDef engine fill:#EEF2FF,stroke:#6366F1,color:#312E81,stroke-width:1.5px;
-    classDef memory fill:#F0FDFA,stroke:#14B8A6,color:#134E4A,stroke-width:1.5px;
-    classDef solver fill:#EFF6FF,stroke:#3B82F6,color:#1E3A8A,stroke-width:1.5px;
-    classDef pass fill:#ECFDF5,stroke:#10B981,color:#065F46,stroke-width:2px;
-    classDef fail fill:#FEF2F2,stroke:#EF4444,color:#991B1B,stroke-width:2px;
-    classDef unknown fill:#FFF7ED,stroke:#F97316,color:#9A3412,stroke-width:2px;
-    classDef manual fill:#FAF5FF,stroke:#A855F7,color:#6B21A8,stroke-width:1.5px;
-```
-
-### 具体执行语义
-
-- 顶层函数的全部 C 参数和 required value-level `With` 都必须具体绑定。
-- 有函数体的 callee 直接执行真实函数体，不使用 callee spec；callee 参数由调用点自动建立。
-- 有限 `while / for / do-while` 不要求循环不变式，每轮计算闭合条件并剪枝。
-- 数组、闭合结构体、单链表、双链表及其递归组合共享同一套 heap。
-- 执行结束后仍检查目标函数原始 `Ensure`，不会因为“程序跑完”就自动判定 PASS。
+图中的每条路径都对应一个具体 bind。程序执行结束后，TeSpec 仍使用实际终态检查
+目标函数的原始后置条件；“程序能够运行结束”本身不等于 `PASS`。
 
 ## 快速开始
-
-### 1. 环境
-
-仓库自带 Linux x86-64 的修改版 QCP 执行器、通用 QCIP headers/strategies 和
-Coq runtime：
 
 ```bash
 git clone https://github.com/taylor-swift-13/TeSpec.git
@@ -92,70 +53,126 @@ python3 -m pip install -e .
 scripts/check-runtime.sh
 ```
 
-最低要求：
+运行 spec test 需要 Linux x86-64、glibc 和 Python 3.10+。只有检查 manual
+residual proof 时需要 Coq 8.20.x。
 
-| 用途 | 依赖 |
-|---|---|
-| 分析和运行 spec tests | Linux x86-64、glibc、Python 3.10+ |
-| 检查 manual residual proof | Coq 8.20.x |
-| 重新构建执行器 | QCP source、CMake、C compiler |
+## 测试一道新题
 
-### 2. 分析 spec
+新题不需要复制到 `cases/`，也不需要登记或修改项目文件。只要准备一份包含目标
+implementation 与 QCP spec 的 C 文件即可。
+
+### 1. 自动发现需要绑定的变量
 
 ```bash
-python3 -m spectest analyze SOURCE.c \
-  --function FUNCTION
+python3 -m spectest analyze /path/to/SOURCE.c \
+  --function FUNCTION \
+  --write-binds binds.json
 ```
 
-输出会区分：
+`analyze` 会列出：
 
-- `argument_bindings`：目标函数的 C 输入；
-- `value_bindings`：value-level `With`；
-- type-level `With {A}`：需要时通过 `types` 指定 Coq 类型实例。
+- `argument_bindings`：目标函数的全部 C 形参；
+- `value_bindings`：spec 中需要具体化的 value-level `With`；
+- type-level `With {A}`：需要具体类型实例时填入 `types`。
 
-### 3. 填写 binds
+如果同一函数有多个 full spec，添加 `--spec SPEC_NAME`。如果 spec 引用本地
+header，可重复传入 `-I INCLUDE_DIR`。
+
+### 2. 填入具体测试输入
+
+编辑刚生成的 `binds.json`。一个文件可以放任意多条测试：
 
 ```json
 [
   {
-    "id": "empty",
-    "args": {"state": 4096, "data_length": 0, "area_length": 8, "force": 0},
-    "values": {"l": [2, 3, 0]}
+    "id": "no_wrap",
+    "args": {
+      "state": 4096,
+      "data_length": 2,
+      "area_length": 8,
+      "force": 0
+    },
+    "values": {
+      "l": [1, 3, 0]
+    }
   },
   {
     "id": "wrap_and_force",
-    "args": {"state": 8192, "data_length": 3, "area_length": 8, "force": 1},
-    "values": {"l": [1, 7, 0]}
+    "args": {
+      "state": 8192,
+      "data_length": 3,
+      "area_length": 8,
+      "force": 1
+    },
+    "values": {
+      "l": [1, 7, 0]
+    }
   }
 ]
 ```
 
-### 4. 运行
+顶层函数的全部 C 参数必须出现在 `args`。执行所需的 heap 由具体指针参数、
+`values` 和 `Require` 一起物化；callee 的参数在调用点自动计算。
+
+### 3. 直接运行
 
 ```bash
-python3 -m spectest run SOURCE.c \
+python3 -m spectest run /path/to/SOURCE.c \
   --function FUNCTION \
   --binds binds.json \
-  --loop-unroll-limit 64 \
-  --call-depth-limit 64 \
   --output-dir .spectest/my-run
 ```
 
-已有 job：
+有限循环或递归较深时，可显式调整安全上限：
 
 ```bash
-python3 -m spectest check cases/callee_heap/job.json
+python3 -m spectest run /path/to/SOURCE.c \
+  --function FUNCTION \
+  --binds binds.json \
+  --loop-unroll-limit 128 \
+  --call-depth-limit 128 \
+  --timeout 60
 ```
 
-## Binds输入
+命令会在终端打印逐 bind 结果，并在输出目录保存 `report.json`、特化后的
+`specialized.c`、QCP 日志和对应 VC 证据。
 
-| 区域 | 绑定对象 | 友好输入 |
+## 命令行接口
+
+<p align="center">
+  <img src="docs/assets/tespec-interfaces.svg" alt="TeSpec public command-line interfaces" width="100%">
+</p>
+
+<p align="center">
+  <a href="docs/assets/tespec-interfaces.svg">SVG</a> ·
+  <a href="docs/assets/tespec-interfaces.pdf">PDF</a>
+</p>
+
+| 接口 | 用途 |
+|---|---|
+| `analyze SOURCE --function F [--spec S]` | 分析 spec，并可用 `--write-binds` 生成模板 |
+| `run SOURCE --function F --binds binds.json` | 直接测试一道新题 |
+| `check job.json` | 运行已保存、可复用的 job |
+| `check-proof vc/manifest.json` | 检查已填写的 manual residual Coq 证明 |
+
+查看任意接口的完整选项：
+
+```bash
+python3 -m spectest analyze --help
+python3 -m spectest run --help
+python3 -m spectest check --help
+python3 -m spectest check-proof --help
+```
+
+## Binds 输入
+
+| 区域 | 绑定对象 | 支持的友好输入 |
 |---|---|---|
-| `args` | 顶层 C 形参 | 整数、布尔、具体指针地址、QCP expression |
+| `args` | 顶层 C 形参 | 整数、布尔、具体指针地址、原始 QCP expression |
 | `values` | value-level `With` | `Z`、`bool`、嵌套 list、constructor tree、raw QCP term |
 | `types` | type-level `With {A}` | `option Z`、`list Z` 或任意合法 Coq 类型 |
 
-常用形式：
+常用逻辑值：
 
 ```json
 {
@@ -168,156 +185,64 @@ python3 -m spectest check cases/callee_heap/job.json
 }
 ```
 
-指针使用具体数值地址。不同且不可别名的对象使用不同地址；只有测试故意要求别名时
-才复用同一地址。callee 不需要也不接受单独的 binds。
+构造子可以递归嵌套，因此 `option`、pair、tree 和用户自定义 inductive 不需要
+Python 预先认识。无法唯一推断的任意 Coq 类型可以使用显式 `type + qcp` 形式。
 
-更多格式见 [完整使用参考](docs/usage-reference.md) 和
-[binds skill reference](skills/qcp-spec-test/references/binds.md)。
+指针使用具体数值地址。不同且不可别名的对象应使用不同地址；只有测试故意要求
+别名时才复用地址。更多格式见
+[binds reference](skills/qcp-spec-test/references/binds.md)。
 
-## 状态解释
+## 结果解释
 
 | 状态 | 含义 |
 |---|---|
 | `PASS` | QCP/SMT 已关闭该 bind 的全部 VC |
-| `FAIL` | QCP 得到确定不一致 obligation，说明该具体执行不满足 spec |
-| `UNKNOWN` | residual VC 或执行深度上限；不能解释为 PASS 或 FAIL |
-| `ERROR` | binds、parser、环境、超时或工具配置错误 |
+| `FAIL` | 某个具体 obligation 确定为假，该执行不满足 spec |
+| `UNKNOWN` | 存在 residual VC，或达到循环/调用深度上限；绝不视为成功 |
+| `ERROR` | binds、parser、依赖、超时或运行环境错误 |
 
-QCP/SMT 未关闭的目标写入 `vc/manifest.json` 和 `proof_manual.v`：
+自动证明只来自通用 assertion 归约与 QCP/SMT，保存为 `proof_auto.v`。核心没有
+二级 `coq_auto`，也不会自动填写 `proof_manual.v`。
+
+如果产生 residual VC，可由人或模型填写 manifest 指定的 manual proof，再运行：
 
 ```bash
-python3 -m spectest check-proof PATH/TO/vc/manifest.json
+python3 -m spectest check-proof .spectest/my-run/CASE/vc/manifest.json
 ```
 
-检查器拒绝 `Admitted`、`Abort`、新公理等 proof escape，并使用 Coq 8.20
-内核检查完整证明。
+检查器会拒绝 `Admitted`、`Abort`、新增公理等 proof escape，并通过 Coq 8.20
+内核检查证明。manual 结果始终与 QCP/SMT 自动证明分开标记。
 
-## 组件边界
-
-```mermaid
-%%{init: {"theme": "base", "flowchart": {"curve": "basis"}}}%%
-flowchart TB
-    subgraph UX["User-facing layer"]
-        CLI["spectest CLI"]
-        JOB["job.json / binds.json"]
-        SKILL["qcp-spec-test Codex skill"]
-    end
-
-    subgraph CORE["Deterministic Python core"]
-        ANALYZE["Spec & With analyzer"]
-        ENCODE["Typed bind encoder"]
-        STAGE["Case-local dependency staging"]
-        CLASSIFY["Result classifier"]
-        PROOFCHECK["Manual proof integrity checker"]
-    end
-
-    subgraph QCP["Bundled QCP execution"]
-        EXEC["Concrete symbolic executor"]
-        HEAP["Separation-logic heap"]
-        NORMALIZE["Closed assertion normalizer"]
-        SMT["SMT automation"]
-    end
-
-    subgraph OUTPUT["Per-bind artifacts"]
-        SOURCE["specialized.c"]
-        LOGS["stdout / stderr"]
-        VC["goal · proof_auto · proof_manual · manifest"]
-        REPORT["report.json"]
-    end
-
-    JOB --> CLI
-    SKILL -. optional bind/manual help .-> CLI
-    CLI --> ANALYZE --> ENCODE --> STAGE --> EXEC
-    EXEC <--> HEAP
-    EXEC --> NORMALIZE --> SMT
-    SMT --> CLASSIFY
-    CLASSIFY --> SOURCE & LOGS & VC & REPORT
-    VC --> PROOFCHECK
-
-    style UX fill:#F8FAFC,stroke:#94A3B8
-    style CORE fill:#EEF2FF,stroke:#6366F1
-    style QCP fill:#ECFDF5,stroke:#10B981
-    style OUTPUT fill:#FFF7ED,stroke:#F97316
-```
-
-## 可信边界
-
-TeSpec 只有一种核心自动证明来源：
-
-> 通用 QCP assertion 归约后，由 QCP strategies / SMT 接受并写入
-> `proof_auto.v`。
-
-核心没有二级 `coq_auto`，不会恢复特定 witness、按案例枚举、选择固定 Coq
-分支或填写 `proof_manual.v`。模型生成的 residual proof 即使通过 Coq 内核，
-来源仍标记为 manual。
-
-## 支持范围
+## 支持的测试对象
 
 - 标量、指针、数组和数组切片；
-- 闭合结构体及结构体字段内数组；
-- 任意 QCP `Let` 分离谓词；
+- 闭合结构体及其字段内数组；
+- QCP `Let` 分离谓词；
 - 有策略定义的 `Extern Coq` predicate；
 - 单链表、双链表与数组/结构体的递归组合；
 - 有限循环、嵌套循环、函数调用和有限递归；
 - `Z`、`bool`、嵌套 `list`、多态类型和任意 constructor tree；
 - 整数与当前 QCP store 支持的闭合浮点路径。
 
-当前优先支持数组、闭合结构体、单/双链表及其组合；树和一般图不属于当前承诺范围。
-完整 assertion 语法见 [QCP assertion coverage](docs/qcp-assertion-coverage.md)。
+当前承诺范围以数组、闭合结构体、单/双链表及其组合为主；树和一般图暂不在承诺
+范围内。完整 assertion 语法见
+[QCP assertion coverage](docs/qcp-assertion-coverage.md)。
 
-## 项目结构
+## 模型辅助（可选）
 
-```text
-TeSpec/
-├── bin/qcp-symexec          # 修改版 QCP concrete executor
-├── spectest/                # Python analyzer、bind encoder、runner
-├── runtime/qcip/            # 通用 QCP/QCIP + Coq runtime
-├── cases/                   # 自包含回归案例及各自领域依赖
-├── skills/qcp-spec-test/    # Codex binds/manual-proof 工作流
-├── scripts/                 # 构建、runtime 检查、corpus 回归
-├── tests/                   # 端到端回归
-└── docs/                    # 详细说明与语法覆盖
-```
+仓库内的 [qcp-spec-test skill](skills/qcp-spec-test/SKILL.md) 可以驱动 Codex：
 
-## 回归状态
+- 根据 `analyze` 结果帮助选择和填写 binds；
+- 诊断 `FAIL / UNKNOWN`；
+- 为 residual VC 编写明确标记为 manual 的 Coq 证明。
 
-```bash
-python3 -m unittest discover -s tests -v
-python3 scripts/run-cav-memory-suite.py
-```
+人已经填写的 binds 会原样保留。模型不参与核心执行和自动结果分类。
 
-- 本地端到端测试：49 项通过；纯仓库环境中 1 项外部 xizi corpus
-  探测会按设计 skip；
-- CAV memory suite：20 个程序、54 组 binds；
-- QCP/SMT 自动 PASS：35；
-- manual residual：19；
-- `FAIL / ERROR / unexpected UNKNOWN`：0。
-
-CAV runner 保留 10% manual-rate 硬门禁。当前仅使用 QCP/SMT 时手动率为
-35.19%，因此该门禁会故意返回非零；这是可见的覆盖缺口，不会通过特定 Coq tactic
-隐藏。
-
-## 开发
-
-重新构建并安装修改版 QCP：
-
-```bash
-QCP_SOURCE_DIR=/path/to/sac_c_parser \
-  scripts/build-qcp-symexec.sh
-```
-
-更新 bundled QCIP runtime：
-
-```bash
-QCIP_SOURCE_DIR=/path/to/QCIP \
-  scripts/vendor-qcip-runtime.sh
-```
-
-详细执行语义、job schema、residual VC 和 corpus 数据见
-[docs/usage-reference.md](docs/usage-reference.md)。
+完整 job schema、执行语义与证据文件说明见
+[使用参考](docs/usage-reference.md)。
 
 ---
 
 <div align="center">
-<sub>Concrete tests, explicit proof provenance, no hidden model calls.</sub>
+<sub>Concrete tests · explicit proof provenance · no hidden model calls</sub>
 </div>
