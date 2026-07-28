@@ -1,173 +1,198 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="720" viewBox="0 0 1600 720" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="960" viewBox="0 0 1800 960" role="img" aria-labelledby="title desc">
   <title id="title">TeSpec concrete specification testing workflow</title>
-  <desc id="desc">A publication-ready workflow from a QCP-annotated C program, imported Coq definitions and strategies, and concrete bindings through specialization, concrete symbolic execution, normalization, and QCP plus SMT checking to PASS, FAIL, or a residual proof.</desc>
+  <desc id="desc">Publication diagram showing a C implementation with QCP and Coq specification dependencies plus concrete bindings, followed by specialization, concrete symbolic execution, normalization, QCP and SMT checking, automatic outcomes, and the optional manual residual-proof path.</desc>
 
   <defs>
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
-      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#0F172A" flood-opacity="0.10"/>
-    </filter>
-    <marker id="arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
-      <path d="M1,1 L11,6 L1,11 Z" fill="#475569"/>
+    <marker id="arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="9" markerHeight="9" orient="auto">
+      <path d="M1 1L11 6 1 11Z" fill="#475569"/>
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="9" markerHeight="9" orient="auto">
+      <path d="M1 1L11 6 1 11Z" fill="#7C3AED"/>
     </marker>
     <style>
-      .sans { font-family: Inter, "Helvetica Neue", Arial, sans-serif; }
-      .title { font-size: 31px; font-weight: 700; fill: #0F172A; letter-spacing: -0.4px; }
-      .subtitle { font-size: 17px; font-weight: 400; fill: #64748B; }
-      .stage { font-size: 13px; font-weight: 700; fill: #475569; letter-spacing: 1.7px; }
-      .card-title { font-size: 21px; font-weight: 700; fill: #0F172A; }
-      .card-copy { font-size: 15px; font-weight: 400; fill: #475569; }
-      .mono { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size: 14px; fill: #334155; }
-      .result-title { font-size: 18px; font-weight: 750; }
-      .result-copy { font-size: 13px; font-weight: 450; fill: #475569; }
-      .caption { font-size: 14px; font-weight: 500; fill: #64748B; }
-      .flow { fill: none; stroke: #475569; stroke-width: 2.2; marker-end: url(#arrow); }
-      .flow-light { fill: none; stroke: #94A3B8; stroke-width: 1.8; marker-end: url(#arrow); }
+      .sans{font-family:Inter,"Helvetica Neue",Arial,sans-serif}
+      .mono{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace}
+      .h1{font-size:34px;font-weight:750;letter-spacing:-.5px;fill:#0F172A}
+      .sub{font-size:17px;font-weight:400;fill:#64748B}
+      .eyebrow{font-size:13px;font-weight:750;letter-spacing:1.8px;fill:#475569}
+      .card-title{font-size:21px;font-weight:720;fill:#0F172A}
+      .body{font-size:15px;font-weight:400;fill:#475569}
+      .small{font-size:13px;font-weight:500;fill:#64748B}
+      .code{font-size:14px;font-weight:600;fill:#334155}
+      .step{font-size:13px;font-weight:750;fill:#FFFFFF}
+      .result{font-size:18px;font-weight:780}
+      .caption{font-size:14px;font-weight:500;fill:#64748B}
+      .join{fill:none;stroke:#475569;stroke-width:2.2}
+      .flow{fill:none;stroke:#475569;stroke-width:2.2;marker-end:url(#arrow)}
+      .branch{fill:none;stroke:#94A3B8;stroke-width:1.8;marker-end:url(#arrow)}
+      .manual{fill:none;stroke:#7C3AED;stroke-width:2;stroke-dasharray:7 6;marker-end:url(#arrow-purple)}
     </style>
   </defs>
 
-  <rect width="1600" height="720" rx="24" fill="#FFFFFF"/>
-  <rect x="1" y="1" width="1598" height="718" rx="23" fill="none" stroke="#E2E8F0" stroke-width="2"/>
+  <rect width="1800" height="960" rx="24" fill="#FFFFFF"/>
+  <rect x="1" y="1" width="1798" height="958" rx="23" fill="none" stroke="#CBD5E1" stroke-width="2"/>
 
   <g class="sans">
-    <text x="72" y="66" class="title">TeSpec concrete specification testing workflow</text>
-    <text x="72" y="96" class="subtitle">One concrete test per binding · deterministic execution core · explicit proof provenance</text>
+    <!-- Header -->
+    <rect x="72" y="45" width="82" height="30" rx="15" fill="#0F172A"/>
+    <text x="113" y="66" text-anchor="middle" font-size="13" font-weight="750" fill="#FFFFFF">TeSpec</text>
+    <text x="72" y="118" class="h1">Concrete specification testing workflow</text>
+    <text x="72" y="150" class="sub">Each binding defines one concrete execution; proof provenance remains explicit at every outcome.</text>
 
-    <text x="72" y="151" class="stage">CONCRETE TEST INPUT</text>
-    <text x="444" y="151" class="stage">DETERMINISTIC EXECUTION</text>
-    <text x="1134" y="151" class="stage">SPECIFICATION CHECK</text>
+    <!-- Section labels -->
+    <text x="72" y="204" class="eyebrow">TEST INPUT</text>
+    <text x="472" y="204" class="eyebrow">DETERMINISTIC CORE</text>
+    <text x="482" y="606" class="eyebrow">AUTOMATIC OUTCOME</text>
 
-    <!-- Input cards -->
-    <g filter="url(#shadow)">
-      <rect x="72" y="178" width="306" height="150" rx="18" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5"/>
-      <rect x="72" y="178" width="8" height="150" rx="4" fill="#334155"/>
-    </g>
-    <circle cx="112" cy="220" r="17" fill="#E2E8F0"/>
-    <path d="M104 212h11l6 6v12h-17z M115 212v7h6" fill="none" stroke="#334155" stroke-width="1.8" stroke-linejoin="round"/>
-    <text x="142" y="218" class="card-title">Program + QCP spec</text>
-    <text x="103" y="252" class="mono">C implementation</text>
-    <text x="103" y="282" class="card-copy">Require / Ensure + dependencies</text>
-    <text x="103" y="304" class="card-copy">headers · Coq .v · strategies</text>
-    <text x="103" y="322" font-size="12" font-weight="500" fill="#64748B">SOURCE.c  ·  --function F</text>
+    <!-- Input package -->
+    <rect x="72" y="226" width="334" height="158" rx="18" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5"/>
+    <rect x="72" y="226" width="7" height="158" rx="3.5" fill="#334155"/>
+    <circle cx="113" cy="267" r="18" fill="#E2E8F0"/>
+    <path d="M105 258h11l6 6v13h-17zM116 258v7h6" fill="none" stroke="#334155" stroke-width="1.8" stroke-linejoin="round"/>
+    <text x="143" y="273" class="card-title">Program + specification</text>
+    <text x="102" y="311" class="code mono">SOURCE.c · --function F</text>
+    <text x="102" y="340" class="body">C implementation · QCP contract</text>
+    <text x="102" y="366" class="body">headers · Coq .v · strategies</text>
 
-    <g filter="url(#shadow)">
-      <rect x="72" y="352" width="306" height="150" rx="18" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5"/>
-      <rect x="72" y="352" width="8" height="150" rx="4" fill="#6366F1"/>
-    </g>
-    <circle cx="112" cy="394" r="17" fill="#E0E7FF"/>
-    <path d="M104 388h16v13h-16z M108 385v6 M116 385v6" fill="none" stroke="#4F46E5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-    <text x="142" y="399" class="card-title">Concrete bindings</text>
-    <text x="103" y="439" class="mono">args  ·  values  ·  types</text>
-    <text x="103" y="470" class="card-copy">Concrete C arguments and logical</text>
-    <text x="103" y="492" class="card-copy">variables; optional Coq types.</text>
+    <!-- Bind package -->
+    <rect x="72" y="414" width="334" height="158" rx="18" fill="#F8FAFC" stroke="#818CF8" stroke-width="1.5"/>
+    <rect x="72" y="414" width="7" height="158" rx="3.5" fill="#4F46E5"/>
+    <circle cx="113" cy="455" r="18" fill="#E0E7FF"/>
+    <path d="M104 449h18v14h-18zM109 445v7M117 445v7" fill="none" stroke="#4F46E5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="143" y="461" class="card-title">Concrete bindings</text>
+    <text x="102" y="499" class="code mono">binds.json</text>
+    <text x="102" y="528" class="body">C arguments · logical values</text>
+    <text x="102" y="554" class="body">optional Coq type instances</text>
 
-    <!-- Main pipeline -->
-    <path class="flow" d="M378 253 H424"/>
-    <path class="flow" d="M378 427 H402 Q424 427 424 405 V311"/>
+    <!-- Core background -->
+    <rect x="450" y="226" width="1278" height="346" rx="24" fill="#FBFCFF" stroke="#D8DEE9" stroke-width="1.5"/>
 
-    <g filter="url(#shadow)">
-      <rect x="444" y="207" width="222" height="214" rx="18" fill="#EEF2FF" stroke="#6366F1" stroke-width="1.7"/>
-    </g>
-    <rect x="464" y="228" width="58" height="27" rx="13.5" fill="#4F46E5"/>
-    <text x="493" y="247" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">01</text>
-    <text x="464" y="291" class="card-title">Analyze &amp; specialize</text>
-    <text x="464" y="324" class="card-copy">Discover required bindings</text>
-    <text x="464" y="348" class="card-copy">and inject the concrete test.</text>
-    <line x1="464" y1="369" x2="646" y2="369" stroke="#C7D2FE"/>
-    <text x="464" y="398" class="mono">closed test state</text>
+    <!-- Merge input arrows -->
+    <path d="M406 305H430Q450 305 450 325V390" class="join"/>
+    <path d="M406 493H430Q450 493 450 473V390" class="join"/>
+    <path d="M450 390H462" class="flow"/>
 
-    <path class="flow" d="M666 314 H704"/>
+    <!-- Stage 01 -->
+    <rect x="482" y="262" width="272" height="256" rx="18" fill="#EEF2FF" stroke="#6366F1" stroke-width="1.7"/>
+    <rect x="502" y="282" width="52" height="27" rx="13.5" fill="#4F46E5"/>
+    <text x="528" y="301" text-anchor="middle" class="step">01</text>
+    <text x="502" y="345" class="card-title">Analyze &amp; specialize</text>
+    <line x1="502" y1="365" x2="734" y2="365" stroke="#C7D2FE"/>
+    <circle cx="507" cy="396" r="3.5" fill="#6366F1"/>
+    <text x="520" y="401" class="body">discover args and With variables</text>
+    <circle cx="507" cy="429" r="3.5" fill="#6366F1"/>
+    <text x="520" y="434" class="body">validate bind completeness</text>
+    <circle cx="507" cy="462" r="3.5" fill="#6366F1"/>
+    <text x="520" y="467" class="body">inject the concrete test state</text>
+    <text x="502" y="500" class="small mono">closed initial state</text>
 
-    <g filter="url(#shadow)">
-      <rect x="724" y="178" width="276" height="272" rx="18" fill="#ECFEFF" stroke="#0891B2" stroke-width="1.7"/>
-    </g>
-    <rect x="744" y="199" width="58" height="27" rx="13.5" fill="#0E7490"/>
-    <text x="773" y="218" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">02</text>
-    <text x="744" y="262" font-size="19" font-weight="700" fill="#0F172A">Concrete symbolic execution</text>
-    <text x="744" y="296" class="card-copy">Execute statements and finite loops.</text>
-    <text x="744" y="322" class="card-copy">Inline visible callees at call sites.</text>
-    <text x="744" y="348" class="card-copy">Evolve the shared separation heap.</text>
+    <path d="M754 390H790" class="flow"/>
+
+    <!-- Stage 02 -->
+    <rect x="810" y="262" width="272" height="256" rx="18" fill="#ECFEFF" stroke="#0891B2" stroke-width="1.7"/>
+    <rect x="830" y="282" width="52" height="27" rx="13.5" fill="#0E7490"/>
+    <text x="856" y="301" text-anchor="middle" class="step">02</text>
+    <text x="830" y="345" class="card-title">Execute concrete path</text>
+    <line x1="830" y1="365" x2="1062" y2="365" stroke="#A5F3FC"/>
+    <circle cx="835" cy="396" r="3.5" fill="#0891B2"/>
+    <text x="848" y="401" class="body">statements and finite loops</text>
+    <circle cx="835" cy="429" r="3.5" fill="#0891B2"/>
+    <text x="848" y="434" class="body">visible callees at call sites</text>
+    <circle cx="835" cy="462" r="3.5" fill="#0891B2"/>
+    <text x="848" y="467" class="body">one shared separation heap</text>
     <g>
-      <rect x="744" y="377" width="66" height="28" rx="14" fill="#CFFAFE"/>
-      <rect x="818" y="377" width="75" height="28" rx="14" fill="#CFFAFE"/>
-      <rect x="901" y="377" width="77" height="28" rx="14" fill="#CFFAFE"/>
-      <text x="777" y="396" text-anchor="middle" font-size="12" font-weight="650" fill="#155E75">loops</text>
-      <text x="855.5" y="396" text-anchor="middle" font-size="12" font-weight="650" fill="#155E75">callees</text>
-      <text x="939.5" y="396" text-anchor="middle" font-size="12" font-weight="650" fill="#155E75">heap</text>
+      <rect x="830" y="486" width="61" height="25" rx="12.5" fill="#CFFAFE"/>
+      <rect x="899" y="486" width="70" height="25" rx="12.5" fill="#CFFAFE"/>
+      <rect x="977" y="486" width="71" height="25" rx="12.5" fill="#CFFAFE"/>
+      <text x="860.5" y="503" text-anchor="middle" font-size="11.5" font-weight="700" fill="#155E75">loops</text>
+      <text x="934" y="503" text-anchor="middle" font-size="11.5" font-weight="700" fill="#155E75">callees</text>
+      <text x="1012.5" y="503" text-anchor="middle" font-size="11.5" font-weight="700" fill="#155E75">heap</text>
     </g>
 
-    <path class="flow" d="M1000 314 H1038"/>
+    <path d="M1082 390H1118" class="flow"/>
 
-    <g filter="url(#shadow)">
-      <rect x="1058" y="207" width="222" height="214" rx="18" fill="#F5F3FF" stroke="#8B5CF6" stroke-width="1.7"/>
-    </g>
-    <rect x="1078" y="228" width="58" height="27" rx="13.5" fill="#7C3AED"/>
-    <text x="1107" y="247" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">03</text>
-    <text x="1078" y="291" class="card-title">Normalize assertions</text>
-    <text x="1078" y="324" class="card-copy">Reduce closed list, arithmetic,</text>
-    <text x="1078" y="348" class="card-copy">constructor, and heap terms.</text>
-    <line x1="1078" y1="369" x2="1260" y2="369" stroke="#DDD6FE"/>
-    <text x="1078" y="398" class="mono">specialized VC</text>
+    <!-- Stage 03 -->
+    <rect x="1138" y="262" width="252" height="256" rx="18" fill="#F5F3FF" stroke="#8B5CF6" stroke-width="1.7"/>
+    <rect x="1158" y="282" width="52" height="27" rx="13.5" fill="#7C3AED"/>
+    <text x="1184" y="301" text-anchor="middle" class="step">03</text>
+    <text x="1158" y="345" class="card-title">Normalize assertions</text>
+    <line x1="1158" y1="365" x2="1370" y2="365" stroke="#DDD6FE"/>
+    <circle cx="1163" cy="396" r="3.5" fill="#8B5CF6"/>
+    <text x="1176" y="401" class="body">closed arithmetic and lists</text>
+    <circle cx="1163" cy="429" r="3.5" fill="#8B5CF6"/>
+    <text x="1176" y="434" class="body">constructors and predicates</text>
+    <circle cx="1163" cy="462" r="3.5" fill="#8B5CF6"/>
+    <text x="1176" y="467" class="body">actual final-state Ensure</text>
+    <text x="1158" y="500" class="small mono">specialized VC</text>
 
-    <path class="flow" d="M1280 314 H1318"/>
+    <path d="M1390 390H1426" class="flow"/>
 
-    <g filter="url(#shadow)">
-      <rect x="1338" y="207" width="190" height="214" rx="18" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.7"/>
-    </g>
-    <rect x="1358" y="228" width="58" height="27" rx="13.5" fill="#15803D"/>
-    <text x="1387" y="247" text-anchor="middle" font-size="13" font-weight="700" fill="#FFFFFF">04</text>
-    <text x="1358" y="291" class="card-title">QCP + SMT</text>
-    <text x="1358" y="324" class="card-copy">Check every obligation</text>
-    <text x="1358" y="348" class="card-copy">for this concrete bind.</text>
-    <line x1="1358" y1="369" x2="1508" y2="369" stroke="#BBF7D0"/>
-    <text x="1358" y="398" class="mono">proof provenance</text>
+    <!-- Stage 04 -->
+    <rect x="1446" y="262" width="250" height="256" rx="18" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.7"/>
+    <rect x="1466" y="282" width="52" height="27" rx="13.5" fill="#15803D"/>
+    <text x="1492" y="301" text-anchor="middle" class="step">04</text>
+    <text x="1466" y="345" class="card-title">QCP + SMT</text>
+    <line x1="1466" y1="365" x2="1676" y2="365" stroke="#BBF7D0"/>
+    <circle cx="1471" cy="396" r="3.5" fill="#16A34A"/>
+    <text x="1484" y="401" class="body">discharge specialized VCs</text>
+    <circle cx="1471" cy="429" r="3.5" fill="#16A34A"/>
+    <text x="1484" y="434" class="body">classify every bind</text>
+    <circle cx="1471" cy="462" r="3.5" fill="#16A34A"/>
+    <text x="1484" y="467" class="body">record proof provenance</text>
+    <text x="1466" y="500" class="small mono">proof_auto.v</text>
 
-    <!-- Results -->
-    <path class="flow-light" d="M1433 421 V480"/>
-    <path d="M1433 455 H526" fill="none" stroke="#CBD5E1" stroke-width="1.5"/>
-    <circle cx="526" cy="455" r="4" fill="#CBD5E1"/>
-    <circle cx="823" cy="455" r="4" fill="#CBD5E1"/>
-    <circle cx="1120" cy="455" r="4" fill="#CBD5E1"/>
-    <circle cx="1433" cy="455" r="4" fill="#CBD5E1"/>
-    <path d="M526 455v25 M823 455v25 M1120 455v25" stroke="#CBD5E1" stroke-width="1.5"/>
+    <!-- Outcome fan -->
+    <path d="M1571 518V548H771V604" class="branch"/>
+    <path d="M1071 548V604" class="branch"/>
+    <path d="M1371 548V604" class="branch"/>
 
-    <g filter="url(#shadow)">
-      <rect x="444" y="498" width="234" height="128" rx="16" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.6"/>
-    </g>
-    <circle cx="477" cy="532" r="14" fill="#16A34A"/>
-    <path d="M470 532l5 5 9-11" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-    <text x="502" y="538" class="result-title" fill="#166534">PASS</text>
-    <text x="467" y="574" class="result-copy">All VCs closed by QCP / SMT.</text>
-    <text x="467" y="598" class="mono">proof_auto.v</text>
+    <!-- PASS -->
+    <rect x="642" y="624" width="258" height="122" rx="16" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.6"/>
+    <circle cx="681" cy="665" r="16" fill="#16A34A"/>
+    <path d="M673 665l6 6 11-14" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="711" y="672" class="result" fill="#166534">PASS</text>
+    <text x="668" y="710" class="body">All obligations closed.</text>
+    <text x="668" y="733" class="small mono">QCP / SMT automatic</text>
 
-    <g filter="url(#shadow)">
-      <rect x="699" y="498" width="234" height="128" rx="16" fill="#FEF2F2" stroke="#DC2626" stroke-width="1.6"/>
-    </g>
-    <circle cx="732" cy="532" r="14" fill="#DC2626"/>
-    <path d="M726 526l12 12 M738 526l-12 12" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round"/>
-    <text x="757" y="538" class="result-title" fill="#991B1B">FAIL</text>
-    <text x="722" y="574" class="result-copy">A concrete obligation is false.</text>
-    <text x="722" y="598" class="mono">counterexample evidence</text>
+    <!-- FAIL -->
+    <rect x="942" y="624" width="258" height="122" rx="16" fill="#FEF2F2" stroke="#DC2626" stroke-width="1.6"/>
+    <circle cx="981" cy="665" r="16" fill="#DC2626"/>
+    <path d="M974 658l14 14M988 658l-14 14" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/>
+    <text x="1011" y="672" class="result" fill="#991B1B">FAIL</text>
+    <text x="968" y="710" class="body">A concrete obligation is false.</text>
+    <text x="968" y="733" class="small mono">spec violation evidence</text>
 
-    <g filter="url(#shadow)">
-      <rect x="954" y="498" width="272" height="128" rx="16" fill="#FFF7ED" stroke="#EA580C" stroke-width="1.6"/>
-    </g>
-    <circle cx="987" cy="532" r="14" fill="#EA580C"/>
-    <text x="987" y="538" text-anchor="middle" font-size="18" font-weight="750" fill="#FFFFFF">?</text>
-    <text x="1012" y="538" class="result-title" fill="#9A3412">UNKNOWN</text>
-    <text x="977" y="574" class="result-copy">Execution limit or unresolved VC.</text>
-    <text x="977" y="598" class="mono">never treated as success</text>
+    <!-- UNKNOWN -->
+    <rect x="1242" y="624" width="258" height="122" rx="16" fill="#FFF7ED" stroke="#EA580C" stroke-width="1.6"/>
+    <circle cx="1281" cy="665" r="16" fill="#EA580C"/>
+    <text x="1281" y="671" text-anchor="middle" font-size="19" font-weight="800" fill="#FFFFFF">?</text>
+    <text x="1311" y="672" class="result" fill="#9A3412">UNKNOWN</text>
+    <text x="1268" y="710" class="body">Limit or unresolved VC.</text>
+    <text x="1268" y="733" class="small mono">never treated as success</text>
 
-    <g filter="url(#shadow)">
-      <rect x="1247" y="498" width="281" height="128" rx="16" fill="#FAF5FF" stroke="#9333EA" stroke-width="1.6"/>
-    </g>
-    <circle cx="1280" cy="532" r="14" fill="#9333EA"/>
-    <path d="M1274 538l2-8 8-8 4 4-8 8z M1274 538l5-1" fill="none" stroke="#FFFFFF" stroke-width="1.7" stroke-linejoin="round"/>
-    <text x="1305" y="538" class="result-title" fill="#6B21A8">MANUAL RESIDUAL</text>
-    <text x="1270" y="574" class="result-copy">Optional human / model Coq proof.</text>
-    <text x="1270" y="598" class="mono">check-proof → Coq kernel</text>
+    <!-- Manual residual path -->
+    <path d="M1371 746V762H900V812H920" class="manual"/>
+    <text x="642" y="819" class="eyebrow" fill="#6D28D9">OPTIONAL MANUAL PATH</text>
 
-    <line x1="72" y1="663" x2="1528" y2="663" stroke="#E2E8F0"/>
-    <text x="72" y="691" class="caption">Figure 1. Each binding denotes one concrete execution; the original postcondition is checked over its actual final state.</text>
+    <rect x="920" y="776" width="212" height="72" rx="14" fill="#FAF5FF" stroke="#A855F7" stroke-width="1.5"/>
+    <text x="942" y="807" class="code mono" fill="#6B21A8">proof_manual.v</text>
+    <text x="942" y="830" class="small">human / model proof</text>
+
+    <path d="M1132 812H1156" class="manual"/>
+    <rect x="1176" y="776" width="190" height="72" rx="14" fill="#F5F3FF" stroke="#8B5CF6" stroke-width="1.5"/>
+    <text x="1198" y="807" class="code mono" fill="#5B21B6">check-proof</text>
+    <text x="1198" y="830" class="small">Coq 8.20 kernel</text>
+
+    <path d="M1366 812H1390" class="manual"/>
+    <rect x="1410" y="776" width="238" height="72" rx="14" fill="#ECFDF5" stroke="#10B981" stroke-width="1.5"/>
+    <circle cx="1440" cy="812" r="13" fill="#10B981"/>
+    <path d="M1434 812l4 4 8-10" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="1465" y="807" class="result" fill="#047857">MANUAL PASS</text>
+    <text x="1465" y="831" class="small">kept separate from auto</text>
+
+    <!-- Caption -->
+    <line x1="72" y1="890" x2="1728" y2="890" stroke="#E2E8F0"/>
+    <text x="72" y="922" class="caption">Figure 1. TeSpec executes the concrete program state, checks the original postcondition, and reports the source of every accepted proof.</text>
   </g>
 </svg>

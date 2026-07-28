@@ -1,102 +1,158 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="690" viewBox="0 0 1600 690" role="img" aria-labelledby="title desc">
-  <title id="title">TeSpec public command-line interfaces</title>
-  <desc id="desc">A publication-ready diagram of the four public TeSpec interfaces: analyze, run, check, and check-proof, with annotated source, specification dependencies, concrete bindings, and generated artifacts.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="840" viewBox="0 0 1800 840" role="img" aria-labelledby="title desc">
+  <title id="title">TeSpec command-line interface and evidence artifacts</title>
+  <desc id="desc">Publication diagram showing the TeSpec input package, its analyze, run, check, and check-proof command-line interfaces, and the generated binding templates, reports, execution evidence, and verification-condition artifacts.</desc>
 
   <defs>
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
-      <feDropShadow dx="0" dy="5" stdDeviation="7" flood-color="#0F172A" flood-opacity="0.09"/>
-    </filter>
     <marker id="arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="9" markerHeight="9" orient="auto">
-      <path d="M1,1 L11,6 L1,11 Z" fill="#64748B"/>
+      <path d="M1 1L11 6 1 11Z" fill="#475569"/>
     </marker>
     <style>
-      .sans { font-family: Inter, "Helvetica Neue", Arial, sans-serif; }
-      .title { font-size: 31px; font-weight: 700; fill: #0F172A; letter-spacing: -0.4px; }
-      .subtitle { font-size: 17px; fill: #64748B; }
-      .stage { font-size: 13px; font-weight: 700; fill: #475569; letter-spacing: 1.7px; }
-      .command { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size: 20px; font-weight: 700; fill: #FFFFFF; }
-      .card-title { font-size: 19px; font-weight: 700; fill: #0F172A; }
-      .copy { font-size: 14px; fill: #475569; }
-      .mono { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size: 13px; fill: #334155; }
-      .artifact { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size: 15px; font-weight: 650; fill: #0F172A; }
-      .caption { font-size: 14px; font-weight: 500; fill: #64748B; }
-      .flow { fill: none; stroke: #64748B; stroke-width: 2; marker-end: url(#arrow); }
+      .sans{font-family:Inter,"Helvetica Neue",Arial,sans-serif}
+      .mono{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace}
+      .h1{font-size:34px;font-weight:750;letter-spacing:-.5px;fill:#0F172A}
+      .sub{font-size:17px;font-weight:400;fill:#64748B}
+      .eyebrow{font-size:13px;font-weight:750;letter-spacing:1.8px;fill:#475569}
+      .panel-title{font-size:22px;font-weight:730;fill:#0F172A}
+      .row-title{font-size:17px;font-weight:700;fill:#0F172A}
+      .body{font-size:14.5px;font-weight:400;fill:#475569}
+      .small{font-size:13px;font-weight:500;fill:#64748B}
+      .terminal-code{font-size:15px;font-weight:650;fill:#F8FAFC}
+      .terminal-copy{font-size:13.5px;font-weight:400;fill:#CBD5E1}
+      .code{font-size:14px;font-weight:650;fill:#334155}
+      .status{font-size:13px;font-weight:750}
+      .caption{font-size:14px;font-weight:500;fill:#64748B}
+      .flow{fill:none;stroke:#475569;stroke-width:2.2;marker-end:url(#arrow)}
     </style>
   </defs>
 
-  <rect width="1600" height="690" rx="24" fill="#FFFFFF"/>
-  <rect x="1" y="1" width="1598" height="688" rx="23" fill="none" stroke="#E2E8F0" stroke-width="2"/>
+  <rect width="1800" height="840" rx="24" fill="#FFFFFF"/>
+  <rect x="1" y="1" width="1798" height="838" rx="23" fill="none" stroke="#CBD5E1" stroke-width="2"/>
 
   <g class="sans">
-    <text x="72" y="66" class="title">TeSpec public interfaces</text>
-    <text x="72" y="96" class="subtitle">A new problem runs directly from its annotated source, specification dependencies, and concrete bindings.</text>
+    <!-- Header -->
+    <rect x="72" y="45" width="82" height="30" rx="15" fill="#0F172A"/>
+    <text x="113" y="66" text-anchor="middle" font-size="13" font-weight="750" fill="#FFFFFF">TeSpec</text>
+    <text x="72" y="118" class="h1">Public interface and evidence artifacts</text>
+    <text x="72" y="150" class="sub">A new problem runs directly from its source package and concrete bindings—no case registration is required.</text>
 
-    <text x="72" y="151" class="stage">COMMAND</text>
-    <text x="350" y="151" class="stage">PURPOSE</text>
-    <text x="1120" y="151" class="stage">PRIMARY OUTPUT</text>
+    <!-- Column labels -->
+    <text x="72" y="205" class="eyebrow">INPUT PACKAGE</text>
+    <text x="534" y="205" class="eyebrow">COMMAND-LINE INTERFACE</text>
+    <text x="1254" y="205" class="eyebrow">AUDITABLE OUTPUT</text>
 
-    <!-- Row 1 -->
-    <g filter="url(#shadow)">
-      <rect x="72" y="177" width="236" height="94" rx="16" fill="#4F46E5"/>
-      <rect x="350" y="177" width="700" height="94" rx="16" fill="#F8FAFC" stroke="#C7D2FE" stroke-width="1.5"/>
-      <rect x="1092" y="177" width="436" height="94" rx="16" fill="#EEF2FF" stroke="#A5B4FC" stroke-width="1.5"/>
-    </g>
-    <text x="190" y="218" text-anchor="middle" class="command">analyze</text>
-    <text x="190" y="244" text-anchor="middle" font-size="13" fill="#E0E7FF">discover + template</text>
-    <text x="378" y="211" class="card-title">Discover every required concrete binding</text>
-    <text x="378" y="239" class="copy">Reads the target C signature and QCP With declarations; optionally creates an editable template.</text>
-    <text x="1120" y="211" class="artifact">binds.json</text>
-    <text x="1120" y="239" class="copy">args · values · types</text>
-    <path class="flow" d="M308 224 H336"/>
-    <path class="flow" d="M1050 224 H1078"/>
+    <!-- Input panel -->
+    <rect x="72" y="228" width="398" height="486" rx="22" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/>
+    <text x="102" y="272" class="panel-title">One test problem</text>
+    <text x="102" y="299" class="body">Self-contained source and specification inputs</text>
 
-    <!-- Row 2 -->
-    <g filter="url(#shadow)">
-      <rect x="72" y="292" width="236" height="94" rx="16" fill="#0E7490"/>
-      <rect x="350" y="292" width="700" height="94" rx="16" fill="#F8FAFC" stroke="#A5F3FC" stroke-width="1.5"/>
-      <rect x="1092" y="292" width="436" height="94" rx="16" fill="#ECFEFF" stroke="#67E8F9" stroke-width="1.5"/>
-    </g>
-    <text x="190" y="333" text-anchor="middle" class="command">run</text>
-    <text x="190" y="359" text-anchor="middle" font-size="13" fill="#CFFAFE">test a new source</text>
-    <text x="378" y="326" class="card-title">Execute one source file against one or more binds</text>
-    <text x="378" y="354" class="copy">Direct new-problem interface: source + Coq/strategy dependencies + binds.</text>
-    <text x="1120" y="326" class="artifact">report.json</text>
-    <text x="1120" y="354" class="copy">per-bind status + evidence directory</text>
-    <path class="flow" d="M308 339 H336"/>
-    <path class="flow" d="M1050 339 H1078"/>
+    <rect x="102" y="330" width="338" height="92" rx="14" fill="#FFFFFF" stroke="#94A3B8" stroke-width="1.3"/>
+    <circle cx="132" cy="376" r="17" fill="#E2E8F0"/>
+    <path d="M124 367h11l6 6v13h-17zM135 367v7h6" fill="none" stroke="#334155" stroke-width="1.7" stroke-linejoin="round"/>
+    <text x="161" y="370" class="row-title">Annotated C source</text>
+    <text x="161" y="396" class="code mono">implementation + QCP spec</text>
 
-    <!-- Row 3 -->
-    <g filter="url(#shadow)">
-      <rect x="72" y="407" width="236" height="94" rx="16" fill="#7C3AED"/>
-      <rect x="350" y="407" width="700" height="94" rx="16" fill="#F8FAFC" stroke="#DDD6FE" stroke-width="1.5"/>
-      <rect x="1092" y="407" width="436" height="94" rx="16" fill="#F5F3FF" stroke="#C4B5FD" stroke-width="1.5"/>
-    </g>
-    <text x="190" y="448" text-anchor="middle" class="command">check</text>
-    <text x="190" y="474" text-anchor="middle" font-size="13" fill="#EDE9FE">run a saved job</text>
-    <text x="378" y="441" class="card-title">Execute a reusable job description</text>
-    <text x="378" y="469" class="copy">Packages source, target, binds, limits, and include paths in one portable JSON file.</text>
-    <text x="1120" y="441" class="artifact">report.json</text>
-    <text x="1120" y="469" class="copy">the same auditable result schema</text>
-    <path class="flow" d="M308 454 H336"/>
-    <path class="flow" d="M1050 454 H1078"/>
+    <rect x="102" y="442" width="338" height="104" rx="14" fill="#FFFFFF" stroke="#A78BFA" stroke-width="1.3"/>
+    <circle cx="132" cy="494" r="17" fill="#EDE9FE"/>
+    <path d="M123 488h18M123 494h18M123 500h12" stroke="#7C3AED" stroke-width="1.8" stroke-linecap="round"/>
+    <text x="161" y="480" class="row-title">Specification dependencies</text>
+    <text x="161" y="506" class="code mono">headers · Coq .v · strategies</text>
+    <text x="161" y="530" class="small">included only when referenced</text>
 
-    <!-- Row 4 -->
-    <g filter="url(#shadow)">
-      <rect x="72" y="522" width="236" height="94" rx="16" fill="#475569"/>
-      <rect x="350" y="522" width="700" height="94" rx="16" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/>
-      <rect x="1092" y="522" width="436" height="94" rx="16" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/>
-    </g>
-    <text x="190" y="563" text-anchor="middle" class="command">check-proof</text>
-    <text x="190" y="589" text-anchor="middle" font-size="13" fill="#E2E8F0">validate residual</text>
-    <text x="378" y="556" class="card-title">Validate an explicitly manual residual proof</text>
-    <text x="378" y="584" class="copy">Checks artifact integrity and asks the Coq 8.20 kernel to accept the completed proof.</text>
-    <text x="1120" y="556" class="artifact">manual proof result</text>
-    <text x="1120" y="584" class="copy">kept distinct from automatic QCP / SMT</text>
-    <path class="flow" d="M308 569 H336"/>
-    <path class="flow" d="M1050 569 H1078"/>
+    <rect x="102" y="566" width="338" height="118" rx="14" fill="#FFFFFF" stroke="#6366F1" stroke-width="1.3"/>
+    <circle cx="132" cy="618" r="17" fill="#E0E7FF"/>
+    <path d="M123 612h18v14h-18zM128 608v7M136 608v7" fill="none" stroke="#4F46E5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="161" y="604" class="row-title">Concrete test data</text>
+    <text x="161" y="630" class="code mono">binds.json</text>
+    <text x="161" y="654" class="small">or a reusable job.json</text>
 
-    <line x1="72" y1="644" x2="1528" y2="644" stroke="#E2E8F0"/>
-    <text x="72" y="672" class="caption">Figure 2. The public command-line surface; all execution and classification paths are deterministic.</text>
+    <!-- Input to terminal -->
+    <path d="M470 471H508" class="flow"/>
+
+    <!-- Terminal panel -->
+    <rect x="528" y="228" width="658" height="486" rx="22" fill="#0F172A" stroke="#0F172A" stroke-width="1.5"/>
+    <rect x="528" y="228" width="658" height="54" rx="22" fill="#1E293B"/>
+    <rect x="528" y="260" width="658" height="22" fill="#1E293B"/>
+    <circle cx="560" cy="255" r="6" fill="#FB7185"/>
+    <circle cx="580" cy="255" r="6" fill="#FBBF24"/>
+    <circle cx="600" cy="255" r="6" fill="#34D399"/>
+    <text x="857" y="261" text-anchor="middle" font-size="13" font-weight="650" fill="#94A3B8" class="mono">python3 -m spectest</text>
+
+    <!-- Analyze row -->
+    <rect x="554" y="308" width="606" height="78" rx="13" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+    <rect x="574" y="326" width="84" height="28" rx="14" fill="#4F46E5"/>
+    <text x="616" y="345" text-anchor="middle" font-size="13" font-weight="750" fill="#FFFFFF" class="mono">analyze</text>
+    <text x="680" y="344" class="terminal-code mono">SOURCE --function F --write-binds B</text>
+    <text x="574" y="373" class="terminal-copy">Discover required args, With variables, and optional type instances.</text>
+
+    <!-- Run row -->
+    <rect x="554" y="404" width="606" height="78" rx="13" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+    <rect x="574" y="422" width="84" height="28" rx="14" fill="#0891B2"/>
+    <text x="616" y="441" text-anchor="middle" font-size="13" font-weight="750" fill="#FFFFFF" class="mono">run</text>
+    <text x="680" y="440" class="terminal-code mono">SOURCE --function F --binds B [-I DIR]</text>
+    <text x="574" y="469" class="terminal-copy">Directly execute a new problem and check every concrete binding.</text>
+
+    <!-- Check row -->
+    <rect x="554" y="500" width="606" height="78" rx="13" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+    <rect x="574" y="518" width="84" height="28" rx="14" fill="#7C3AED"/>
+    <text x="616" y="537" text-anchor="middle" font-size="13" font-weight="750" fill="#FFFFFF" class="mono">check</text>
+    <text x="680" y="536" class="terminal-code mono">job.json</text>
+    <text x="574" y="565" class="terminal-copy">Run the same interface from a portable, reusable job description.</text>
+
+    <!-- Check-proof row -->
+    <rect x="554" y="596" width="606" height="92" rx="13" fill="#1E293B" stroke="#475569" stroke-width="1"/>
+    <rect x="574" y="614" width="112" height="28" rx="14" fill="#475569"/>
+    <text x="630" y="633" text-anchor="middle" font-size="13" font-weight="750" fill="#FFFFFF" class="mono">check-proof</text>
+    <text x="706" y="632" class="terminal-code mono">vc/manifest.json</text>
+    <text x="574" y="662" class="terminal-copy">Validate an explicitly manual residual proof with the Coq kernel.</text>
+
+    <!-- Terminal to outputs -->
+    <path d="M1186 471H1224" class="flow"/>
+
+    <!-- Output panel -->
+    <rect x="1244" y="228" width="484" height="486" rx="22" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1.5"/>
+    <text x="1274" y="272" class="panel-title">Per-bind evidence</text>
+    <text x="1274" y="299" class="body">Stable files for inspection and reproduction</text>
+
+    <rect x="1274" y="330" width="424" height="74" rx="13" fill="#EEF2FF" stroke="#A5B4FC" stroke-width="1.2"/>
+    <rect x="1294" y="348" width="38" height="38" rx="10" fill="#4F46E5"/>
+    <path d="M1305 358h15v18h-15zM1308 362h9M1308 367h9M1308 372h6" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round"/>
+    <text x="1350" y="359" class="row-title">Binding template</text>
+    <text x="1350" y="384" class="code mono">binds.json</text>
+
+    <rect x="1274" y="420" width="424" height="86" rx="13" fill="#ECFEFF" stroke="#67E8F9" stroke-width="1.2"/>
+    <rect x="1294" y="444" width="38" height="38" rx="10" fill="#0E7490"/>
+    <path d="M1305 454h16M1305 460h11M1305 466h14M1305 472h8" stroke="#FFFFFF" stroke-width="1.7" stroke-linecap="round"/>
+    <text x="1350" y="450" class="row-title">Result report</text>
+    <text x="1350" y="476" class="code mono">report.json · per-bind status</text>
+    <text x="1350" y="496" class="small">PASS · FAIL · UNKNOWN · ERROR</text>
+
+    <rect x="1274" y="522" width="424" height="74" rx="13" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1.2"/>
+    <rect x="1294" y="540" width="38" height="38" rx="10" fill="#475569"/>
+    <path d="M1304 551l5 5-5 5M1314 563h9" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="1350" y="551" class="row-title">Execution evidence</text>
+    <text x="1350" y="576" class="code mono">specialized.c · stdout · stderr</text>
+
+    <rect x="1274" y="612" width="424" height="74" rx="13" fill="#FAF5FF" stroke="#D8B4FE" stroke-width="1.2"/>
+    <rect x="1294" y="630" width="38" height="38" rx="10" fill="#7C3AED"/>
+    <path d="M1306 639h14v20h-14zM1309 644h8M1309 649h8M1309 654h5" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
+    <text x="1350" y="641" class="row-title">Verification-condition bundle</text>
+    <text x="1350" y="666" class="code mono">goal · auto · manual · manifest</text>
+
+    <!-- Bottom status key -->
+    <text x="72" y="760" class="eyebrow">RESULT CONTRACT</text>
+    <rect x="258" y="738" width="91" height="32" rx="16" fill="#DCFCE7"/>
+    <text x="303.5" y="759" text-anchor="middle" class="status" fill="#166534">PASS</text>
+    <rect x="361" y="738" width="83" height="32" rx="16" fill="#FEE2E2"/>
+    <text x="402.5" y="759" text-anchor="middle" class="status" fill="#991B1B">FAIL</text>
+    <rect x="456" y="738" width="116" height="32" rx="16" fill="#FFEDD5"/>
+    <text x="514" y="759" text-anchor="middle" class="status" fill="#9A3412">UNKNOWN</text>
+    <rect x="584" y="738" width="91" height="32" rx="16" fill="#E2E8F0"/>
+    <text x="629.5" y="759" text-anchor="middle" class="status" fill="#334155">ERROR</text>
+    <text x="708" y="759" class="small">Each status is reported independently for every concrete bind.</text>
+
+    <!-- Caption -->
+    <line x1="72" y1="790" x2="1728" y2="790" stroke="#E2E8F0"/>
+    <text x="72" y="820" class="caption">Figure 2. TeSpec exposes four commands and preserves all generated evidence in a reproducible, per-binding artifact directory.</text>
   </g>
 </svg>
