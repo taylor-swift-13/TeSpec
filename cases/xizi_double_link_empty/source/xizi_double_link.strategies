@@ -1,0 +1,75 @@
+#include "xizi_double_link_def.h"
+
+id : 401
+priority : core(0)
+left : xizi_dll(?p, nil{Z}) at 0
+action : left_erase(0);
+         left_add(store(field_addr(p, SysDoubleLinklistNode, node_next), PTR(struct SysDoubleLinklistNode), p));
+         left_add(store(field_addr(p, SysDoubleLinklistNode, node_prev), PTR(struct SysDoubleLinklistNode), p));
+
+id : 402
+priority : core(0)
+right : xizi_dll(?p, nil{Z}) at 0
+action : right_erase(0);
+         right_add(store(field_addr(p, SysDoubleLinklistNode, node_next), PTR(struct SysDoubleLinklistNode), p));
+         right_add(store(field_addr(p, SysDoubleLinklistNode, node_prev), PTR(struct SysDoubleLinklistNode), p));
+
+id : 403
+priority : core(3)
+left : xizi_dll(?p, ?l) at 0
+action : left_erase(0);
+         left_exist_add(first);
+         left_exist_add(last);
+         left_add(store(field_addr(p, SysDoubleLinklistNode, node_next), PTR(struct SysDoubleLinklistNode), first));
+         left_add(store(field_addr(p, SysDoubleLinklistNode, node_prev), PTR(struct SysDoubleLinklistNode), last));
+         left_add(xizi_dllseg(first, p, p, last, l));
+
+id : 404
+priority : core(3)
+right : xizi_dll(?p, ?l) at 0
+action : right_erase(0);
+         right_exist_add(first);
+         right_exist_add(last);
+         right_add(store(field_addr(p, SysDoubleLinklistNode, node_next), PTR(struct SysDoubleLinklistNode), first));
+         right_add(store(field_addr(p, SysDoubleLinklistNode, node_prev), PTR(struct SysDoubleLinklistNode), last));
+         right_add(xizi_dllseg(first, p, p, last, l));
+
+id : 406
+priority : core(4)
+left : (?p != ?tail || ?tail != ?p) at 0
+       xizi_dllseg(p, ?prev, tail, ?last, ?l) at 1
+action : left_erase(1);
+         left_exist_add(next);
+         left_exist_add(l0);
+         left_add(store(field_addr(p, SysDoubleLinklistNode, node_next), PTR(struct SysDoubleLinklistNode), next));
+         left_add(store(field_addr(p, SysDoubleLinklistNode, node_prev), PTR(struct SysDoubleLinklistNode), prev));
+         left_add(xizi_dllseg(next, p, tail, last, l0));
+         left_add(l == cons{Z}(p, l0));
+
+id : 408
+priority : core(4)
+left : xizi_dll(?head, cons{Z}(?first, ?l)) at 0
+action : left_erase(0);
+         left_exist_add(next);
+         left_exist_add(last);
+         left_add(first != 0);
+         left_add(first != head);
+         left_add(store(field_addr(head, SysDoubleLinklistNode, node_next), PTR(struct SysDoubleLinklistNode), first));
+         left_add(store(field_addr(head, SysDoubleLinklistNode, node_prev), PTR(struct SysDoubleLinklistNode), last));
+         left_add(store(field_addr(first, SysDoubleLinklistNode, node_next), PTR(struct SysDoubleLinklistNode), next));
+         left_add(store(field_addr(first, SysDoubleLinklistNode, node_prev), PTR(struct SysDoubleLinklistNode), head));
+         left_add(xizi_dllseg(next, first, head, last, l));
+
+id : 409
+priority : core(4)
+left : ?first != 0 at 0
+       first != ?head at 1
+right : xizi_dll(head, cons{Z}(first, ?l)) at 0
+action : right_erase(0);
+         right_exist_add(next);
+         right_exist_add(last);
+         right_add(store(field_addr(head, SysDoubleLinklistNode, node_next), PTR(struct SysDoubleLinklistNode), first));
+         right_add(store(field_addr(head, SysDoubleLinklistNode, node_prev), PTR(struct SysDoubleLinklistNode), last));
+         right_add(store(field_addr(first, SysDoubleLinklistNode, node_next), PTR(struct SysDoubleLinklistNode), next));
+         right_add(store(field_addr(first, SysDoubleLinklistNode, node_prev), PTR(struct SysDoubleLinklistNode), head));
+         right_add(xizi_dllseg(next, first, head, last, l));

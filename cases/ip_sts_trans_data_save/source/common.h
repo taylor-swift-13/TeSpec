@@ -1,0 +1,1 @@
+/* constants are inlined in the active verification source */

@@ -1,0 +1,54 @@
+{
+  "source": "znth_concrete_auto.c",
+  "function": "square_first",
+  "binds": [
+    {
+      "id": "in_range",
+      "args": {"p": 4096},
+      "values": {
+        "xs": [3],
+        "index": 0,
+        "fallback": 5,
+        "expected": 9
+      }
+    },
+    {
+      "id": "negative_maps_to_zero",
+      "args": {"p": 4096},
+      "values": {
+        "xs": [3],
+        "index": -1,
+        "fallback": 5,
+        "expected": 9
+      }
+    },
+    {
+      "id": "negative_element",
+      "args": {"p": 4096},
+      "values": {
+        "xs": [-3],
+        "index": 0,
+        "fallback": 5,
+        "expected": 9
+      }
+    },
+    {
+      "id": "out_of_range_uses_default",
+      "args": {"p": 4096},
+      "values": {
+        "xs": [3],
+        "index": 4,
+        "fallback": 5,
+        "expected": 25
+      }
+    }
+  ],
+  "output_dir": "../../.spectest/znth_concrete_auto",
+  "qcp": {
+    "qcip_root": "../../runtime/qcip",
+    "include_dirs": [
+      "QCP_examples/QCP_demos_LLM"
+    ],
+    "timeout_seconds": 30
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "source": "composite_recursive_bundle.c",
+  "function": "composite_recursive_bundle",
+  "binds": [
+    {
+      "id": "positive_deltas",
+      "args": {
+        "bundle": 4096,
+        "single_delta": 3,
+        "double_delta": 4
+      },
+      "values": {
+        "single_head": 8192,
+        "single_tail": 12288,
+        "double_head": 16384,
+        "double_tail": 20480,
+        "totals": [10, 20],
+        "single_first": [1, 101],
+        "single_second": [2, 102],
+        "double_first": [5, 105],
+        "double_second": [7, 107],
+        "single_first_tag": 11,
+        "single_second_tag": 12,
+        "double_first_tag": 13,
+        "double_second_tag": 14,
+        "expected": 59
+      }
+    },
+    {
+      "id": "signed_values",
+      "args": {
+        "bundle": 24576,
+        "single_delta": -2,
+        "double_delta": 5
+      },
+      "values": {
+        "single_head": 28672,
+        "single_tail": 32768,
+        "double_head": 36864,
+        "double_tail": 40960,
+        "totals": [-10, 4],
+        "single_first": [8, -101],
+        "single_second": [-3, -102],
+        "double_first": [-6, -105],
+        "double_second": [9, -107],
+        "single_first_tag": -11,
+        "single_second_tag": -12,
+        "double_first_tag": -13,
+        "double_second_tag": -14,
+        "expected": 8
+      }
+    }
+  ],
+  "output_dir": "../../.spectest/composite_recursive_bundle",
+  "qcp": {
+    "qcip_root": "../../runtime/qcip",
+    "include_dirs": [
+      "QCP_examples/QCP_demos_LLM"
+    ],
+    "loop_unroll_limit": 32,
+    "call_depth_limit": 32,
+    "timeout_seconds": 60
+  }
+}
