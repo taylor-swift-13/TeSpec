@@ -3,8 +3,10 @@
 `qcp-spectest` 的公开输入是：
 
 1. 一份同时包含 QCP spec 和 C implementation 的源文件；
-2. 目标函数及可选的 named spec；
-3. 若干组 `binds`，每组 bind 就是一条具体测试用例。
+2. spec 引用的本地 QCP headers/strategies，以及 `Import Coq` 对应的 `.v`
+   definitions（若有）；
+3. 目标函数及可选的 named spec；
+4. 若干组 `binds`，每组 bind 就是一条具体测试用例。
 
 输出按 bind 给出 `PASS / FAIL / UNKNOWN / ERROR`，并保存特化源文件、QCP
 日志和 Coq VC。核心框架完全确定性，不调用大模型。
@@ -63,6 +65,17 @@ value-level `With`）。不填写 callee binds；callee 的 C 参数绑定完全
 中发现 direct/`From ... Require Import`，本地优先并递归 stage 传递依赖。
 不存在项目级 `providers` 兜底目录：源码中的 `include strategies` 必须能从
 源码目录或该 job 显式配置的 `qcp.include_dirs` 中解析，避免案例隐式串用依赖。
+
+直接测试仓库外的新题时同样适用这一布局：在 `SOURCE.c` 当前目录或其上级目录
+建立 `dependencies/coq/LOGICAL/MODULE.v`。例如
+`Import Coq Require Import Logical.Module` 对应
+`dependencies/coq/Logical/Module.v`。QCP header/strategy 可以与源码放在一起，
+或通过 `-I DIR` / job 的 `qcp.include_dirs` 指定。
+
+Coq definition 与 concrete heap 执行语义是两个层次：`.v` 模块为生成的 VC
+提供逻辑定义和证明环境；QCP `Let` separation predicate 可由执行器直接展开，
+而只有 `Extern Coq` 声明的 separation predicate 还需要 strategy 才能指导
+heap 物化和归约。
 
 可先检查项目内资源和系统依赖：
 

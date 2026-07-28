@@ -4,8 +4,9 @@
 
 ### Concrete specification testing for QCP-annotated C
 
-输入一份 **C implementation + QCP spec** 和具体 **binds**，
-直接得到逐测试用例的 `PASS / FAIL / UNKNOWN / ERROR`。
+输入 **C implementation + QCP spec**、spec 引用的 **Coq definitions /
+strategies** 和具体 **binds**，直接得到逐测试用例的
+`PASS / FAIL / UNKNOWN / ERROR`。
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![Coq 8.20](https://img.shields.io/badge/Coq-8.20-7C3AED)](https://coq.inria.fr/)
@@ -58,8 +59,24 @@ residual proof 时需要 Coq 8.20.x。
 
 ## 测试一道新题
 
-新题不需要复制到 `cases/`，也不需要登记或修改项目文件。只要准备一份包含目标
-implementation 与 QCP spec 的 C 文件即可。
+新题不需要复制到 `cases/`，也不需要登记或修改项目文件。准备包含目标
+implementation 与 QCP spec 的 C 文件；如果 spec 导入了 Coq 模块或 strategy，
+同时提供这些依赖文件。
+
+推荐把一道新题组织成：
+
+```text
+my-problem/
+├── SOURCE.c
+├── predicates.h                  # 可选：QCP declarations / Let definitions
+├── predicates.strategies         # 可选：QCP strategy rules
+└── dependencies/coq/
+    └── Logical/Module.v          # 可选：Import Coq 对应的逻辑模块路径
+```
+
+例如源码包含 `Import Coq Require Import Logical.Module` 时，对应文件放在
+`dependencies/coq/Logical/Module.v`。其传递导入也按逻辑模块路径保存；工具会
+递归发现并复制到每个 bind 的 VC 目录。
 
 ### 1. 自动发现需要绑定的变量
 
@@ -75,8 +92,8 @@ python3 -m spectest analyze /path/to/SOURCE.c \
 - `value_bindings`：spec 中需要具体化的 value-level `With`；
 - type-level `With {A}`：需要具体类型实例时填入 `types`。
 
-如果同一函数有多个 full spec，添加 `--spec SPEC_NAME`。如果 spec 引用本地
-header，可重复传入 `-I INCLUDE_DIR`。
+如果同一函数有多个 full spec，添加 `--spec SPEC_NAME`。如果 QCP declaration
+或 `include strategies` 位于其他目录，可重复传入 `-I INCLUDE_DIR`。
 
 ### 2. 填入具体测试输入
 
@@ -151,7 +168,7 @@ python3 -m spectest run /path/to/SOURCE.c \
 | 接口 | 用途 |
 |---|---|
 | `analyze SOURCE --function F [--spec S]` | 分析 spec，并可用 `--write-binds` 生成模板 |
-| `run SOURCE --function F --binds binds.json` | 直接测试一道新题 |
+| `run SOURCE --function F --binds binds.json [-I DIR]` | 直接测试一道新题及其本地依赖 |
 | `check job.json` | 运行已保存、可复用的 job |
 | `check-proof vc/manifest.json` | 检查已填写的 manual residual Coq 证明 |
 
@@ -203,6 +220,10 @@ Python 预先认识。无法唯一推断的任意 Coq 类型可以使用显式 `
 
 自动证明只来自通用 assertion 归约与 QCP/SMT，保存为 `proof_auto.v`。核心没有
 二级 `coq_auto`，也不会自动填写 `proof_manual.v`。
+
+`Import Coq` 引入的 `.v` 文件提供逻辑定义和证明环境；它不自动等价于可执行的
+heap 规则。自定义 separation predicate 如果使用 QCP `Let` 定义，可以直接展开；
+如果只用 `Extern Coq` 声明，还必须提供相应 strategy，执行器不会猜测其内存布局。
 
 如果产生 residual VC，可由人或模型填写 manifest 指定的 manual proof，再运行：
 
