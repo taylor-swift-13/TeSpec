@@ -1,0 +1,6 @@
+Require Import m06_next1_wrong_flag__preserve_below_both_goal m06_next1_wrong_flag__preserve_below_both_proof_auto m06_next1_wrong_flag__preserve_below_both_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include m06_next1_wrong_flag__preserve_below_both_proof_auto.
+  Include m06_next1_wrong_flag__preserve_below_both_proof_manual.
+End VC_Correctness.

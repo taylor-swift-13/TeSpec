@@ -1,0 +1,6 @@
+Require Import m04_next2_wrong_flag__all_zero_inject_boundary_goal m04_next2_wrong_flag__all_zero_inject_boundary_proof_auto m04_next2_wrong_flag__all_zero_inject_boundary_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include m04_next2_wrong_flag__all_zero_inject_boundary_proof_auto.
+  Include m04_next2_wrong_flag__all_zero_inject_boundary_proof_manual.
+End VC_Correctness.

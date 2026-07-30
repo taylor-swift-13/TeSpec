@@ -1,0 +1,6 @@
+Require Import m06_next1_wrong_flag__negative_double_boundary_goal m06_next1_wrong_flag__negative_double_boundary_proof_auto m06_next1_wrong_flag__negative_double_boundary_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include m06_next1_wrong_flag__negative_double_boundary_proof_auto.
+  Include m06_next1_wrong_flag__negative_double_boundary_proof_manual.
+End VC_Correctness.

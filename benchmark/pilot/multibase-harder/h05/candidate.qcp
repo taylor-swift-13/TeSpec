@@ -1,0 +1,18 @@
+With left_items right_items old_trace old_used
+Require
+  MergeHeap::split(context, left_items, right_items,
+                   old_trace, old_used) &&
+  SortedByKey(left_items) &&
+  SortedByKey(right_items) &&
+  ItemOrigins(left_items) &&
+  ItemOrigins(right_items) &&
+  MergeCapacityAndArithmeticSafe(context, left_items, right_items)
+Ensure
+  exists merged_items trace_after,
+    MergeHeap::joined(context, merged_items, trace_after) &&
+    SortedByKey(merged_items) &&
+    Permutation(left_items ++ right_items, merged_items) &&
+    TraceBits(trace_after) &&
+    Zlength(trace_after) ==
+      Zlength(left_items) + Zlength(right_items) &&
+    __return == KeySum(merged_items)

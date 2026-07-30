@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import ast
 import json
 import hashlib
 import re
@@ -16,10 +17,40 @@ class JobError(ValueError):
     """The job cannot be executed safely or unambiguously."""
 
 
+_C_SOURCE_ENCODINGS = ("utf-8-sig", "gb18030")
+
+
+def read_source_text(path: Path) -> str:
+    """Decode C sources without silently replacing specification text.
+
+    QCIP corpora contain both UTF-8 and legacy GBK-family source files.
+    GB18030 is a strict superset of GBK, so it is a deterministic fallback
+    after UTF-8 while still rejecting byte streams that are valid in neither
+    encoding.
+    """
+
+    resolved = path.expanduser().resolve()
+    try:
+        data = resolved.read_bytes()
+    except OSError as error:
+        raise JobError(f"cannot read source {resolved}: {error}") from error
+    failures: list[str] = []
+    for encoding in _C_SOURCE_ENCODINGS:
+        try:
+            return data.decode(encoding)
+        except UnicodeDecodeError as error:
+            failures.append(f"{encoding}: byte {error.start}")
+    raise JobError(
+        f"cannot decode source {resolved}; tried "
+        + ", ".join(_C_SOURCE_ENCODINGS)
+        + " ("
+        + "; ".join(failures)
+        + ")"
+    )
+
+
 _NAME_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_]*\Z")
-_LOGIC_NAME_RE = re.compile(
-    r"[A-Za-z_][A-Za-z0-9_]*(?:::[A-Za-z_][A-Za-z0-9_]*)*\Z"
-)
+_LOGIC_NAME_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_]*(?:::[A-Za-z_][A-Za-z0-9_]*)*\Z")
 _FORBIDDEN_EXPR_PARTS = (
     "/*",
     "*/",
@@ -61,6 +92,15 @@ class CParameter:
     name: str
     declaration: str
     pointer_like: bool
+
+
+@dataclass(frozen=True)
+class BindCase:
+    case_id: str
+    arguments: dict[str, Any]
+    values: dict[str, Any]
+    types: dict[str, Any]
+    spec: str | None
 
 
 def bundled_qcip_root() -> Path:
@@ -177,6 +217,12 @@ def _is_symbolic_binding(value: Any) -> bool:
     return isinstance(value, dict) and value == {"symbolic": True}
 
 
+def _format_qcp_list(items: list[str]) -> str:
+    """Build a nested QCP list in linear time."""
+
+    return "".join(f"cons({item}, " for item in items) + "nil" + ")" * len(items)
+
+
 def _format_native_binding(value: Any, logic_type: str | None, variable: str) -> str:
     if isinstance(value, dict):
         if set(value) == {"repeat", "count"}:
@@ -197,10 +243,7 @@ def _format_native_binding(value: Any, logic_type: str | None, variable: str) ->
             item_expression = _format_native_binding(
                 value["repeat"], element_type, f"{variable}.repeat"
             )
-            result = "nil"
-            for _ in range(count):
-                result = f"cons({item_expression}, {result})"
-            return result
+            return _format_qcp_list([item_expression] * count)
         if set(value) == {"qcp"}:
             return _validate_expression(value["qcp"], variable)
         if set(value) == {"type", "qcp"}:
@@ -218,9 +261,7 @@ def _format_native_binding(value: Any, logic_type: str | None, variable: str) ->
                 not isinstance(constructor, str)
                 or _LOGIC_NAME_RE.fullmatch(constructor) is None
             ):
-                raise JobError(
-                    f"binding {variable!r}: ctor must be a QCP logic name"
-                )
+                raise JobError(f"binding {variable!r}: ctor must be a QCP logic name")
             arguments = value.get("args", [])
             if not isinstance(arguments, list):
                 raise JobError(
@@ -231,12 +272,10 @@ def _format_native_binding(value: Any, logic_type: str | None, variable: str) ->
                 raise JobError(
                     f"binding {variable!r}: constructor type_args must be an array"
                 )
-            type_arguments = [
+            for index, item in enumerate(raw_type_arguments):
                 _validate_logic_type(
                     item, f"binding {variable!r} constructor type_args[{index}]"
                 )
-                for index, item in enumerate(raw_type_arguments)
-            ]
             head = constructor
             # Type arguments are metadata for validating/documenting the
             # constructor tree.  QCP's C-assertion parser infers them from the
@@ -245,9 +284,7 @@ def _format_native_binding(value: Any, logic_type: str | None, variable: str) ->
             if not arguments:
                 return head
             formatted_arguments = [
-                _format_native_binding(
-                    item, None, f"{variable}.{constructor}[{index}]"
-                )
+                _format_native_binding(item, None, f"{variable}.{constructor}[{index}]")
                 for index, item in enumerate(arguments)
             ]
             return f"{head}({', '.join(formatted_arguments)})"
@@ -268,13 +305,11 @@ def _format_native_binding(value: Any, logic_type: str | None, variable: str) ->
             raise JobError(
                 f"binding {variable!r}: JSON arrays require a declared 'list T' type"
             )
-        result = "nil"
-        for index, item in reversed(list(enumerate(value))):
-            item_expression = _format_native_binding(
-                item, element_type, f"{variable}[{index}]"
-            )
-            result = f"cons({item_expression}, {result})"
-        return result
+        items = [
+            _format_native_binding(item, element_type, f"{variable}[{index}]")
+            for index, item in enumerate(value)
+        ]
+        return _format_qcp_list(items)
     raise JobError(
         f"binding {variable!r} must be an integer, boolean, typed list, "
         "generic constructor, or QCP expression"
@@ -358,8 +393,7 @@ def _find_function_spec(
         candidates = [item for item in candidates if item.name == spec_name]
     if len(candidates) != 1:
         available = sorted(
-            "<unnamed>" if item.name is None else item.name
-            for item in all_candidates
+            "<unnamed>" if item.name is None else item.name for item in all_candidates
         )
         raise JobError(
             f"expected exactly one full spec for function {function!r}"
@@ -492,9 +526,7 @@ def _c_parameters(candidate: SpecCandidate) -> tuple[CParameter, ...]:
     return tuple(parameters)
 
 
-_QUOTED_INCLUDE_RE = re.compile(
-    r'(?m)^\s*#\s*include\s*"(?P<path>[^"\r\n]+)"'
-)
+_QUOTED_INCLUDE_RE = re.compile(r'(?m)^\s*#\s*include\s*"(?P<path>[^"\r\n]+)"')
 
 
 def source_with_local_includes(
@@ -524,15 +556,9 @@ def source_with_local_includes(
             raise JobError("local include analysis exceeded 512 files")
         seen.add(resolved)
         try:
-            text = (
-                supplied
-                if supplied is not None
-                else resolved.read_text(encoding="utf-8", errors="replace")
-            )
+            text = supplied if supplied is not None else read_source_text(resolved)
         except OSError as error:
-            raise JobError(
-                f"cannot read source/include {resolved}: {error}"
-            ) from error
+            raise JobError(f"cannot read source/include {resolved}: {error}") from error
         total_bytes += len(text.encode("utf-8", errors="replace"))
         if total_bytes > 16 * 1024 * 1024:
             raise JobError("local include analysis exceeded 16 MiB")
@@ -547,7 +573,11 @@ def source_with_local_includes(
                 resolved.parent / relative.name,
             ) + tuple(root / relative for root in roots)
             included = next(
-                (candidate.resolve() for candidate in candidates if candidate.is_file()),
+                (
+                    candidate.resolve()
+                    for candidate in candidates
+                    if candidate.is_file()
+                ),
                 None,
             )
             # Missing headers are left to QCP's own preprocessor.  They may be
@@ -614,9 +644,7 @@ def _type_from_function_arguments(
         if signature is None:
             continue
         try:
-            arguments, _ = _consume_balanced(
-                spec_body, match.end() - 1, "(", ")"
-            )
+            arguments, _ = _consume_balanced(spec_body, match.end() - 1, "(", ")")
         except JobError:
             continue
         for index, argument in enumerate(_split_top_level(arguments, ",")):
@@ -693,10 +721,7 @@ def _derived_with_bindings(
             is_derivable = (
                 re.fullmatch(r"[-+]?[0-9]+", expression) is not None
                 or expression in variables
-                or (
-                    dependency is not None
-                    and dependency.group(1) in variables
-                )
+                or (dependency is not None and dependency.group(1) in variables)
             )
             if expression != name and is_derivable:
                 derived[name] = expression
@@ -837,7 +862,7 @@ def _with_analysis(
         match = re.match(r"[A-Za-z_][A-Za-z0-9_]*", body[index:])
         if match is None:
             raise JobError(
-                f"cannot parse With clause near {body[index:index + 30]!r}"
+                f"cannot parse With clause near {body[index : index + 30]!r}"
             )
         name = match.group(0)
         variables[name] = None
@@ -845,9 +870,7 @@ def _with_analysis(
 
     for name, logic_type in tuple(variables.items()):
         if logic_type is None:
-            variables[name] = _infer_logic_type(
-                name, spec_body, signatures or {}
-            )
+            variables[name] = _infer_logic_type(name, spec_body, signatures or {})
     return WithAnalysis(
         values=variables,
         types=tuple(dict.fromkeys(type_variables)),
@@ -914,17 +937,13 @@ def _analyze_candidate(
         )
     for name, logic_type in analysis.values.items():
         hint, example = _input_hint(logic_type)
-        declared_type = re.search(
-            rf"\([^)]*\b{re.escape(name)}\b[^)]*:", spec_body
-        )
+        declared_type = re.search(rf"\([^)]*\b{re.escape(name)}\b[^)]*:", spec_body)
         variables.append(
             {
                 "name": name,
                 "type": logic_type,
                 "required": name not in analysis.derived,
-                "binding_mode": (
-                    "derived" if name in analysis.derived else "user"
-                ),
+                "binding_mode": ("derived" if name in analysis.derived else "user"),
                 "derived_from": analysis.derived.get(name),
                 "input": hint,
                 "type_source": (
@@ -962,12 +981,7 @@ def _analyze_candidate(
             {
                 "id": "case_001",
                 **(
-                    {
-                        "types": {
-                            name: "<Coq type>"
-                            for name, _kind in analysis.types
-                        }
-                    }
+                    {"types": {name: "<Coq type>" for name, _kind in analysis.types}}
                     if analysis.types
                     else {}
                 ),
@@ -1017,9 +1031,7 @@ def analyze_catalog(
 ) -> dict[str, Any]:
     """Find every full function spec in a source file and analyze its bindings."""
 
-    name_pattern = re.compile(
-        r"\b(?P<name>[A-Za-z_][A-Za-z0-9_]*)\s*\("
-    )
+    name_pattern = re.compile(r"\b(?P<name>[A-Za-z_][A-Za-z0-9_]*)\s*\(")
     ignored = {"if", "for", "while", "switch", "sizeof"}
     names = list(
         dict.fromkeys(
@@ -1071,20 +1083,14 @@ def _instantiate_spec_type_variables(
     if not type_bindings:
         return spec_body
     declared = {name for name, _kind in declared_types}
-    invalid = sorted(
-        name for name in type_bindings if _NAME_RE.fullmatch(name) is None
-    )
+    invalid = sorted(name for name in type_bindings if _NAME_RE.fullmatch(name) is None)
     if invalid:
         raise JobError(f"invalid type binding names: {', '.join(invalid)}")
     unknown = sorted(set(type_bindings) - declared)
     if unknown:
-        raise JobError(
-            "type bindings not declared by With: " + ", ".join(unknown)
-        )
+        raise JobError("type bindings not declared by With: " + ", ".join(unknown))
     normalized = {
-        name: _validate_logic_type(
-            raw_type, f"type binding {name!r}"
-        )
+        name: _validate_logic_type(raw_type, f"type binding {name!r}")
         for name, raw_type in type_bindings.items()
     }
 
@@ -1093,9 +1099,7 @@ def _instantiate_spec_type_variables(
     if require is None or with_keyword is None or with_keyword.end() > require.start():
         raise JobError("cannot locate With type declarations in target spec")
 
-    before = _substitute_type_names(
-        spec_body[: with_keyword.end()], normalized
-    )
+    before = _substitute_type_names(spec_body[: with_keyword.end()], normalized)
     region = spec_body[with_keyword.end() : require.start()]
     rebuilt: list[str] = []
     index = 0
@@ -1141,27 +1145,21 @@ def specialize_source(
     parameters = _c_parameters(candidate)
     normalized_arguments: dict[str, str] = {}
     if argument_bindings is not None:
-        argument_bindings = _require_object(
-            argument_bindings, "argument bindings"
-        )
+        argument_bindings = _require_object(argument_bindings, "argument bindings")
         declared_arguments = {parameter.name for parameter in parameters}
         provided_arguments = set(argument_bindings)
         invalid_arguments = sorted(
-            name
-            for name in provided_arguments
-            if _NAME_RE.fullmatch(name) is None
+            name for name in provided_arguments if _NAME_RE.fullmatch(name) is None
         )
         unknown_arguments = sorted(provided_arguments - declared_arguments)
         missing_arguments = sorted(declared_arguments - provided_arguments)
         if invalid_arguments:
             raise JobError(
-                "invalid C argument binding names: "
-                + ", ".join(invalid_arguments)
+                "invalid C argument binding names: " + ", ".join(invalid_arguments)
             )
         if unknown_arguments:
             raise JobError(
-                "bindings not declared as C parameters: "
-                + ", ".join(unknown_arguments)
+                "bindings not declared as C parameters: " + ", ".join(unknown_arguments)
             )
         if missing_arguments:
             raise JobError(
@@ -1185,7 +1183,9 @@ def specialize_source(
     declared = set(analysis.values)
     provided = set(bindings)
 
-    invalid_names = sorted(name for name in provided if _NAME_RE.fullmatch(name) is None)
+    invalid_names = sorted(
+        name for name in provided if _NAME_RE.fullmatch(name) is None
+    )
     if invalid_names:
         raise JobError(f"invalid binding names: {', '.join(invalid_names)}")
     unknown = sorted(provided - declared)
@@ -1214,10 +1214,7 @@ def specialize_source(
                 f"({name} == ({expression}))"
                 for name, expression in normalized_arguments.items()
             ),
-            *(
-                f"({name} == ({expression}))"
-                for name, expression in normalized.items()
-            ),
+            *(f"({name} == ({expression}))" for name, expression in normalized.items()),
         ]
     )
     if not constraints:
@@ -1227,11 +1224,7 @@ def specialize_source(
         return source[:start] + specialized_comment + source[end:]
     insertion = require_match.end()
     specialized_body = (
-        spec_body[:insertion]
-        + "\n      "
-        + constraints
-        + " &&"
-        + spec_body[insertion:]
+        spec_body[:insertion] + "\n      " + constraints + " &&" + spec_body[insertion:]
     )
     specialized_comment = "/*@" + specialized_body + "*/"
     return source[:start] + specialized_comment + source[end:]
@@ -1270,9 +1263,7 @@ def _parse_qcp_config(job: dict[str, Any], base: Path, source_dir: Path) -> QcpC
         or loop_unroll_limit < 0
         or loop_unroll_limit > 1_000_000
     ):
-        raise JobError(
-            "qcp.loop_unroll_limit must be an integer from 0 to 1000000"
-        )
+        raise JobError("qcp.loop_unroll_limit must be an integer from 0 to 1000000")
     call_depth_limit = raw.get("call_depth_limit", 64)
     if (
         isinstance(call_depth_limit, bool)
@@ -1280,9 +1271,7 @@ def _parse_qcp_config(job: dict[str, Any], base: Path, source_dir: Path) -> QcpC
         or call_depth_limit < 1
         or call_depth_limit > 1_000_000
     ):
-        raise JobError(
-            "qcp.call_depth_limit must be an integer from 1 to 1000000"
-        )
+        raise JobError("qcp.call_depth_limit must be an integer from 1 to 1000000")
     return QcpConfig(
         qcip_root=qcip_root,
         binary=binary,
@@ -1320,9 +1309,7 @@ def _qcp_command(
         command.extend(("--spec", spec_name))
     command.extend(f"-I{path}" for path in config.include_dirs)
     if config.loop_unroll_limit:
-        command.extend(
-            ("--loop-unroll-limit", str(config.loop_unroll_limit))
-        )
+        command.extend(("--loop-unroll-limit", str(config.loop_unroll_limit)))
     command.extend(("--call-depth-limit", str(config.call_depth_limit)))
     return command
 
@@ -1342,9 +1329,7 @@ _SOURCE_COQ_IMPORT_RE = re.compile(
     r"(?P<modules>.*?)\*/",
     re.DOTALL,
 )
-_COQ_LOGICAL_NAME = (
-    r"[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*"
-)
+_COQ_LOGICAL_NAME = r"[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*"
 _COQ_REQUIRE_RE = re.compile(
     rf"(?:(?:From\s+(?P<prefix>{_COQ_LOGICAL_NAME})\s+)?"
     r"Require\s+Import\s+)"
@@ -1414,9 +1399,7 @@ def _resolve_source_coq_module(
         if candidate.is_file():
             return candidate.resolve()
 
-    standard_roots = (
-        ("SimpleC.EE.", qcip_root / "SeparationLogic/examples"),
-    )
+    standard_roots = (("SimpleC.EE.", qcip_root / "SeparationLogic/examples"),)
     for prefix, physical_root in standard_roots:
         if module.startswith(prefix):
             candidate = physical_root / Path(
@@ -1458,9 +1441,7 @@ def _stage_source_coq_dependencies(
     def stage(module: str) -> None:
         if module in staged_modules or module in visiting:
             return
-        physical = _resolve_source_coq_module(
-            module, original_source, qcip_root
-        )
+        physical = _resolve_source_coq_module(module, original_source, qcip_root)
         if physical is None:
             return
         visiting.add(module)
@@ -1506,13 +1487,22 @@ def _write_vc_manifest(
     missing = [name for name, path in paths.items() if not path.is_file()]
     residual_goals: list[str] = []
     if not missing:
-        manual = paths["proof_manual"].read_text(
-            encoding="utf-8", errors="replace"
-        )
+        manual = paths["proof_manual"].read_text(encoding="utf-8", errors="replace")
         residual_goals = re.findall(
             r"(?m)^\s*Lemma\s+(proof_of_[A-Za-z_][A-Za-z0-9_]*)\s*:",
             manual,
         )
+    counterexample_goals: list[str] = []
+    if residual_goals and paths["goal"].is_file():
+        goal_source = paths["goal"].read_text(encoding="utf-8", errors="replace")
+        counterexample_goals = [
+            lemma
+            for lemma in residual_goals
+            if _closed_generated_goal_value(
+                goal_source, lemma.removeprefix("proof_of_")
+            )
+            is False
+        ]
     coq_dependencies = _stage_source_coq_dependencies(
         generated_source,
         original_source,
@@ -1529,14 +1519,16 @@ def _write_vc_manifest(
         "status": (
             "not_generated"
             if missing
+            else "counterexample"
+            if counterexample_goals
             else "residual"
             if residual_goals
             else "auto_proved"
         ),
         "residual_goals": residual_goals,
+        "counterexample_goals": counterexample_goals,
         "files": {
-            name: str(path) if path.is_file() else None
-            for name, path in paths.items()
+            name: str(path) if path.is_file() else None for name, path in paths.items()
         },
         "missing_files": missing,
         "immutable_sha256": {
@@ -1596,6 +1588,31 @@ def _safe_case_id(raw: Any, index: int) -> str:
     if not isinstance(raw, str) or _NAME_RE.fullmatch(raw) is None:
         raise JobError(f"binds[{index}].id must be a C-identifier-like string")
     return raw
+
+
+def _parse_bind_cases(raw_binds: list[Any], default_spec: Any) -> tuple[BindCase, ...]:
+    cases: list[BindCase] = []
+    seen_ids: set[str] = set()
+    for index, raw_case in enumerate(raw_binds):
+        case = _require_object(raw_case, f"binds[{index}]")
+        case_id = _safe_case_id(case.get("id"), index)
+        if case_id in seen_ids:
+            raise JobError(f"duplicate bind case id: {case_id}")
+        seen_ids.add(case_id)
+
+        selected_spec = case.get("spec", default_spec)
+        if selected_spec is not None and not isinstance(selected_spec, str):
+            raise JobError(f"binds[{index}].spec must be a string")
+        cases.append(
+            BindCase(
+                case_id=case_id,
+                arguments=_require_object(case.get("args"), f"binds[{index}].args"),
+                values=_require_object(case.get("values"), f"binds[{index}].values"),
+                types=_require_object(case.get("types", {}), f"binds[{index}].types"),
+                spec=selected_spec,
+            )
+        )
+    return tuple(cases)
 
 
 def _subprocess_text(value: str | bytes | None) -> str:
@@ -1668,6 +1685,163 @@ def _coq_definition_body(source: str, name: str) -> str | None:
             return source[start:index]
         index += 1
     return None
+
+
+def _closed_coq_proposition_value(expression: str) -> bool | None:
+    """Evaluate a deliberately small, closed fragment of Coq propositions.
+
+    This is used only to recognize concrete counterexamples, never to prove a
+    residual VC.  Free variables, calls, quantifiers, heap entailments, and
+    unsupported operators conservatively return ``None``.
+    """
+
+    compact = re.sub(r"\s+", " ", expression).strip()
+    if not compact or len(compact) > 4096:
+        return None
+    compact = compact.strip("“”").strip()
+    if any(
+        marker in compact
+        for marker in ("|--", "EX ", "exists ", "forall ", "->", "#", "&(")
+    ):
+        return None
+    python_expression = compact
+    python_expression = python_expression.replace("/\\", " and ")
+    python_expression = python_expression.replace("\\/", " or ")
+    python_expression = python_expression.replace("<>", "!=")
+    python_expression = re.sub(r"(?<![<>=!])=(?!=)", "==", python_expression)
+    python_expression = re.sub(r"(?<![A-Za-z0-9_])~\s*", " not ", python_expression)
+    try:
+        parsed = ast.parse(python_expression, mode="eval")
+    except SyntaxError:
+        return None
+
+    def evaluate(node: ast.AST) -> int | bool | None:
+        if isinstance(node, ast.Expression):
+            return evaluate(node.body)
+        if isinstance(node, ast.Constant):
+            if isinstance(node.value, bool):
+                return node.value
+            if isinstance(node.value, int):
+                return node.value
+            return None
+        if isinstance(node, ast.UnaryOp):
+            operand = evaluate(node.operand)
+            if operand is None:
+                return None
+            if isinstance(node.op, ast.Not) and isinstance(operand, bool):
+                return not operand
+            if isinstance(operand, bool) or not isinstance(operand, int):
+                return None
+            if isinstance(node.op, ast.USub):
+                return -operand
+            if isinstance(node.op, ast.UAdd):
+                return operand
+            return None
+        if isinstance(node, ast.BinOp):
+            left = evaluate(node.left)
+            right = evaluate(node.right)
+            if (
+                left is None
+                or right is None
+                or isinstance(left, bool)
+                or isinstance(right, bool)
+                or not isinstance(left, int)
+                or not isinstance(right, int)
+            ):
+                return None
+            if isinstance(node.op, ast.Add):
+                return left + right
+            if isinstance(node.op, ast.Sub):
+                return left - right
+            if isinstance(node.op, ast.Mult):
+                return left * right
+            return None
+        if isinstance(node, ast.BoolOp):
+            values = [evaluate(item) for item in node.values]
+            if not all(isinstance(item, bool) for item in values):
+                return None
+            if isinstance(node.op, ast.And):
+                return all(values)
+            if isinstance(node.op, ast.Or):
+                return any(values)
+            return None
+        if isinstance(node, ast.Compare):
+            left = evaluate(node.left)
+            if left is None or isinstance(left, bool):
+                return None
+            for operator, comparator in zip(node.ops, node.comparators):
+                right = evaluate(comparator)
+                if right is None or isinstance(right, bool):
+                    return None
+                if isinstance(operator, ast.Eq):
+                    result = left == right
+                elif isinstance(operator, ast.NotEq):
+                    result = left != right
+                elif isinstance(operator, ast.Lt):
+                    result = left < right
+                elif isinstance(operator, ast.LtE):
+                    result = left <= right
+                elif isinstance(operator, ast.Gt):
+                    result = left > right
+                elif isinstance(operator, ast.GtE):
+                    result = left >= right
+                else:
+                    return None
+                if not result:
+                    return False
+                left = right
+            return True
+        return None
+
+    value = evaluate(parsed)
+    return value if isinstance(value, bool) else None
+
+
+def _closed_generated_goal_value(goal_source: str, goal_name: str) -> bool | None:
+    """Decide a generated goal with only closed proof-hypothesis binders."""
+
+    body = _coq_definition_body(goal_source, goal_name)
+    if body is None or "|--" in body:
+        return None
+    remaining = re.sub(r"\s+", " ", body).strip()
+    while remaining.startswith("forall"):
+        cursor = len("forall")
+        binder_types: list[str] = []
+        found = False
+        while True:
+            while cursor < len(remaining) and remaining[cursor].isspace():
+                cursor += 1
+            if cursor >= len(remaining) or remaining[cursor] != "(":
+                break
+            found = True
+            start = cursor + 1
+            depth = 1
+            cursor += 1
+            while cursor < len(remaining) and depth:
+                if remaining[cursor] == "(":
+                    depth += 1
+                elif remaining[cursor] == ")":
+                    depth -= 1
+                cursor += 1
+            if depth:
+                return None
+            declaration = remaining[start : cursor - 1]
+            colon = _top_level_colon(declaration)
+            if colon is None:
+                return None
+            binder_types.append(declaration[colon + 1 :].strip())
+        while cursor < len(remaining) and remaining[cursor].isspace():
+            cursor += 1
+        if not found or cursor >= len(remaining) or remaining[cursor] != ",":
+            return None
+        for binder_type in binder_types:
+            value = _closed_coq_proposition_value(binder_type)
+            if value is None:
+                return None
+            if value is False:
+                return True
+        remaining = remaining[cursor + 1 :].strip()
+    return _closed_coq_proposition_value(remaining)
 
 
 def _finite_z_interval(body: str) -> tuple[str, int, int] | None:
@@ -1785,14 +1959,8 @@ def _finite_z_interval(body: str) -> tuple[str, int, int] | None:
                 bounds = re.search(pattern, tail)
                 if bounds is None:
                     continue
-                low = (
-                    int(bounds.group("lo").replace(" ", ""))
-                    + low_adjustment
-                )
-                high = (
-                    int(bounds.group("hi").replace(" ", ""))
-                    + high_adjustment
-                )
+                low = int(bounds.group("lo").replace(" ", "")) + low_adjustment
+                high = int(bounds.group("hi").replace(" ", "")) + high_adjustment
                 # Keep generated proof size linear and bounded.  Larger
                 # concrete domains remain sound residual VCs.
                 if 0 <= high - low <= 256:
@@ -1803,9 +1971,7 @@ def _finite_z_interval(body: str) -> tuple[str, int, int] | None:
     return intervals[-1] if intervals else None
 
 
-def _finite_z_interval_proof(
-    goal_name: str, goal_source: str
-) -> str | None:
+def _finite_z_interval_proof(goal_name: str, goal_source: str) -> str | None:
     body = _coq_definition_body(goal_source, goal_name)
     interval = _finite_z_interval(body) if body is not None else None
     if interval is None:
@@ -1821,8 +1987,7 @@ def _finite_z_interval_proof(
         neq_name = f"Hneq_{offset}"
         lines.extend(
             [
-                f"  destruct (Z.eq_dec {var} ({value})) "
-                f"as [-> | {neq_name}];",
+                f"  destruct (Z.eq_dec {var} ({value})) as [-> | {neq_name}];",
                 "    [vm_compute; intuition congruence | idtac].",
             ]
         )
@@ -1917,9 +2082,7 @@ def _z_case_pattern(values: tuple[int, ...]) -> str:
     return pattern
 
 
-def _finite_closed_quantifier_proof(
-    goal_name: str, goal_source: str
-) -> str | None:
+def _finite_closed_quantifier_proof(goal_name: str, goal_source: str) -> str | None:
     """Close concrete bounded quantifier combinations by finite enumeration."""
 
     body = _coq_definition_body(goal_source, goal_name)
@@ -1958,18 +2121,14 @@ def _finite_closed_quantifier_proof(
         if len(values) == 1:
             prefix = "  " if index == 0 else "  all: "
             lines.append(
-                f"{prefix}assert ({variable} = ({values[0]})) by lia; "
-                f"subst {variable}."
+                f"{prefix}assert ({variable} = ({values[0]})) by lia; subst {variable}."
             )
             continue
         prefix = "  " if index == 0 else "  all: "
-        lines.append(
-            f"{prefix}assert ({proposition}) as Hcases_{index} by lia."
-        )
+        lines.append(f"{prefix}assert ({proposition}) as Hcases_{index} by lia.")
         destruct = _z_case_pattern(values)
         lines.append(
-            f"{'  ' if index == 0 else '  all: '}"
-            f"destruct Hcases_{index} as {destruct}."
+            f"{'  ' if index == 0 else '  all: '}destruct Hcases_{index} as {destruct}."
         )
 
     if existential is None:
@@ -2006,8 +2165,7 @@ def _finite_closed_quantifier_proof(
                     tactics.extend(
                         [
                             f"assert ({proposition}) as Hinner_{index} by lia",
-                            f"destruct Hinner_{index} as "
-                            f"{_z_case_pattern(values)}",
+                            f"destruct Hinner_{index} as {_z_case_pattern(values)}",
                         ]
                     )
         tactics.extend(["try lia", "vm_compute", "intuition congruence"])
@@ -2023,9 +2181,7 @@ def _finite_closed_quantifier_proof(
     return "\n".join(lines)
 
 
-def _concrete_permutation_proof(
-    goal_name: str, goal_source: str
-) -> str | None:
+def _concrete_permutation_proof(goal_name: str, goal_source: str) -> str | None:
     """Decide a closed ``Permutation (list Z) (list Z)`` proposition."""
 
     body = _coq_definition_body(goal_source, goal_name)
@@ -2034,9 +2190,7 @@ def _concrete_permutation_proof(
     values = sorted(
         {
             int(value.replace(" ", ""))
-            for value in re.findall(
-                r"\bcons\s+\(+\s*(-?\s*[0-9]+)\s*\)+", body
-            )
+            for value in re.findall(r"\bcons\s+\(+\s*(-?\s*[0-9]+)\s*\)+", body)
         }
     )
     lines = [
@@ -2424,13 +2578,9 @@ def _int_array_return_attempt(
         return result
 
     for index, value in enumerate(values):
-        tactics.append(
-            f"sep_apply (IntArray.seg_single {base} {index} ({value}))"
-        )
+        tactics.append(f"sep_apply (IntArray.seg_single {base} {index} ({value}))")
     for index in range(len(values)):
-        tactics.append(
-            f"replace ({index} + 1) with {index + 1} by lia"
-        )
+        tactics.append(f"replace ({index} + 1) with {index + 1} by lia")
     if len(values) > 1:
         prefix = list_term(values[:1])
         for index in range(1, len(values)):
@@ -2450,15 +2600,10 @@ def _int_array_return_attempt(
             prefix = list_term(values[: index + 1])
     if values:
         tactics.append(
-            f"sep_apply (IntArray.seg_to_full {base} 0 "
-            f"{len(values)} {witness})"
+            f"sep_apply (IntArray.seg_to_full {base} 0 {len(values)} {witness})"
         )
-        tactics.append(
-            f"replace ({base} + 0 * sizeof (INT)) with {base} by lia"
-        )
-        tactics.append(
-            f"replace ({len(values)} - 0) with {len(values)} by lia"
-        )
+        tactics.append(f"replace ({base} + 0 * sizeof (INT)) with {base} by lia")
+        tactics.append(f"replace ({len(values)} - 0) with {len(values)} by lia")
     tactics.append("entailer!")
     return "solve [" + "; ".join(tactics) + "]"
 
@@ -2476,25 +2621,17 @@ def _closed_return_disjunction_proof(
     int_array_witness = _concrete_int_array_witness(return_body)
     z_witnesses = _concrete_bounded_z_witness_tuples(return_body)
     definitions, _lemmas = _local_coq_declarations(dependency_source)
-    body_symbols = set(
-        re.findall(r"[A-Za-z_][A-Za-z0-9_']*", return_body)
-    )
-    used_definitions = [
-        name for name in definitions if name in body_symbols
-    ][:64]
+    body_symbols = set(re.findall(r"[A-Za-z_][A-Za-z0-9_']*", return_body))
+    used_definitions = [name for name in definitions if name in body_symbols][:64]
     reduce_local = (
-        "cbn [" + ", ".join(used_definitions) + "] in *; "
-        if used_definitions
-        else ""
+        "cbn [" + ", ".join(used_definitions) + "] in *; " if used_definitions else ""
     )
     sides = ("right", "left") if r"\/" in return_body else ("Left", "Right")
     for side in sides:
         if int_array_witness is not None:
             base, values, array_witness = int_array_witness
             attempts.append(
-                _int_array_return_attempt(
-                    side, base, values, array_witness
-                )
+                _int_array_return_attempt(side, base, values, array_witness)
             )
         if list_witness is not None:
             attempts.append(
@@ -2517,18 +2654,13 @@ def _closed_return_disjunction_proof(
         for witnesses in z_witnesses:
             terms = " ".join(f"({witness})" for witness in witnesses)
             attempts.append(
-                f"solve [{side}; try intros; Exists {terms}; "
-                f"{reduce_local}entailer!]"
+                f"solve [{side}; try intros; Exists {terms}; {reduce_local}entailer!]"
             )
-        attempts.append(
-            f"solve [{side}; try intros; {reduce_local}entailer!]"
-        )
+        attempts.append(f"solve [{side}; try intros; {reduce_local}entailer!]")
     return (
         "Proof.\n"
         f"  unfold {goal_name}.\n"
-        "  first [\n    "
-        + "\n  | ".join(attempts)
-        + "\n  ].\n"
+        "  first [\n    " + "\n  | ".join(attempts) + "\n  ].\n"
         "Qed."
     )
 
@@ -2581,16 +2713,10 @@ def _local_definition_split_proof(
     if len(lemmas) <= 64:
         used_lemmas = lemmas
     else:
-        prefixes = {
-            symbol.split("_", 1)[0]
-            for symbol in body_symbols
-            if "_" in symbol
-        }
-        used_lemmas = [
-            name
-            for name in lemmas
-            if name.split("_", 1)[0] in prefixes
-        ][:64]
+        prefixes = {symbol.split("_", 1)[0] for symbol in body_symbols if "_" in symbol}
+        used_lemmas = [name for name in lemmas if name.split("_", 1)[0] in prefixes][
+            :64
+        ]
 
     unfold = ", ".join(used_definitions)
     eauto = (
@@ -2621,10 +2747,7 @@ def run_job(job_path: Path, output_override: Path | None = None) -> dict[str, An
     base = job_path.parent
 
     source_path = _resolve(base, job.get("source"), "source")
-    try:
-        source = source_path.read_text(encoding="utf-8")
-    except OSError as error:
-        raise JobError(f"cannot read source {source_path}: {error}") from error
+    source = read_source_text(source_path)
     function = job.get("function")
     if not isinstance(function, str):
         raise JobError("function must be a string")
@@ -2632,6 +2755,7 @@ def run_job(job_path: Path, output_override: Path | None = None) -> dict[str, An
     raw_binds = job.get("binds")
     if not isinstance(raw_binds, list) or not raw_binds:
         raise JobError("binds must be a non-empty array")
+    bind_cases = _parse_bind_cases(raw_binds, job.get("spec"))
 
     output_dir = (
         output_override.expanduser().resolve()
@@ -2648,50 +2772,42 @@ def run_job(job_path: Path, output_override: Path | None = None) -> dict[str, An
 
     results: list[dict[str, Any]] = []
     started = time.time()
-    for index, raw_case in enumerate(raw_binds):
-        case = _require_object(raw_case, f"binds[{index}]")
-        case_id = _safe_case_id(case.get("id"), index)
-        arguments = _require_object(
-            case.get("args"), f"binds[{index}].args"
-        )
-        values = _require_object(case.get("values"), f"binds[{index}].values")
-        types = _require_object(
-            case.get("types", {}), f"binds[{index}].types"
-        )
-        selected_spec = case.get("spec", job.get("spec"))
-        if selected_spec is not None and not isinstance(selected_spec, str):
-            raise JobError(f"binds[{index}].spec must be a string")
-        case_dir = output_dir / case_id
+    for case in bind_cases:
+        case_dir = output_dir / case.case_id
+        if case_dir.is_symlink() or (case_dir.exists() and not case_dir.is_dir()):
+            raise JobError(f"case output path is not a directory: {case_dir}")
+        if case_dir.exists():
+            shutil.rmtree(case_dir)
         case_dir.mkdir(parents=True, exist_ok=True)
-        generated_source = case_dir / f"{source_path.stem}__{case_id}.c"
+        generated_source = case_dir / f"{source_path.stem}__{case.case_id}.c"
         stdout_path = case_dir / "qcp.stdout.txt"
         stderr_path = case_dir / "qcp.stderr.txt"
         vc_dir = case_dir / "vc"
 
         case_result: dict[str, Any] = {
-            "id": case_id,
-            "arguments": arguments,
-            "bindings": values,
-            "type_bindings": types,
-            "spec": selected_spec,
+            "id": case.case_id,
+            "arguments": case.arguments,
+            "bindings": case.values,
+            "type_bindings": case.types,
+            "spec": case.spec,
             "generated_source": str(generated_source),
         }
         try:
             specialized = specialize_source(
                 source,
                 function,
-                values,
-                selected_spec,
-                type_bindings=types,
+                case.values,
+                case.spec,
+                type_bindings=case.types,
                 signature_source=signature_source,
-                argument_bindings=arguments,
+                argument_bindings=case.arguments,
             )
             generated_source.write_text(specialized, encoding="utf-8")
             command = _qcp_command(
                 config,
                 generated_source,
                 function,
-                selected_spec,
+                case.spec,
                 vc_dir,
             )
             run_started = time.time()
@@ -2714,10 +2830,14 @@ def run_job(job_path: Path, output_override: Path | None = None) -> dict[str, An
                 source_path,
                 config.qcip_root,
                 function,
-                case_id,
+                case.case_id,
                 signature_source,
             )
-            if status == "PASS" and vc["status"] == "residual":
+            if status == "PASS" and vc["status"] == "counterexample":
+                status = "FAIL"
+                satisfied = False
+                reason = "closed_concrete_vc_is_false"
+            elif status == "PASS" and vc["status"] == "residual":
                 status = "UNKNOWN"
                 satisfied = None
                 reason = "residual_vc_requires_proof"
@@ -2748,12 +2868,8 @@ def run_job(job_path: Path, output_override: Path | None = None) -> dict[str, An
                 }
             )
         except subprocess.TimeoutExpired as error:
-            stdout_path.write_text(
-                _subprocess_text(error.stdout), encoding="utf-8"
-            )
-            stderr_path.write_text(
-                _subprocess_text(error.stderr), encoding="utf-8"
-            )
+            stdout_path.write_text(_subprocess_text(error.stdout), encoding="utf-8")
+            stderr_path.write_text(_subprocess_text(error.stderr), encoding="utf-8")
             case_result.update(
                 {
                     "status": "ERROR",
@@ -2791,18 +2907,19 @@ def run_job(job_path: Path, output_override: Path | None = None) -> dict[str, An
 
 
 _FORBIDDEN_MANUAL_PROOF = re.compile(
-    r"(?mi)^\s*(?:Axiom|Conjecture|Hypotheses?|Parameters?)\b"
+    r"(?mi)^\s*(?:(?:Local|Global|Polymorphic|Monomorphic)\s+)*"
+    r"(?:Axiom|Conjecture|Hypotheses?|Parameters?|Variables?|Context)\b"
     r"|\b(?:Admitted|admit|Abort)\b"
 )
 
 
 def _default_coqc_command() -> list[str]:
-    opam = shutil.which("opam")
-    if opam is not None:
-        return [opam, "exec", "--switch=qcp-8.20", "--", "coqc"]
     coqc = shutil.which("coqc")
     if coqc is not None:
         return [coqc]
+    opam = shutil.which("opam")
+    if opam is not None:
+        return [opam, "exec", "--switch=qcp-8.20", "--", "coqc"]
     raise JobError("neither opam nor coqc is available for proof checking")
 
 
@@ -2835,7 +2952,6 @@ def _coq_load_path_args(
     args = ["-Q", str(vc_dir), ""]
     for flag, folder, logical in mappings:
         args.extend((flag, str(separation_logic / folder), logical))
-    qcip_root = separation_logic.parent
     if dependency_root is not None:
         args.extend(("-Q", str(dependency_root), ""))
     return args
@@ -2873,23 +2989,17 @@ def check_vc_proof(
     if any(path.parent != vc_dir for path in files.values()):
         raise JobError("all VC files must be direct children of the manifest directory")
 
-    immutable = _require_object(
-        manifest.get("immutable_sha256"), "VC immutable_sha256"
-    )
+    immutable = _require_object(manifest.get("immutable_sha256"), "VC immutable_sha256")
     for name in ("goal", "proof_auto", "goal_check"):
         expected = immutable.get(name)
         if not isinstance(expected, str) or _sha256(files[name]) != expected:
             raise JobError(f"generated VC file was modified: {files[name]}")
 
-    manual = files["proof_manual"].read_text(
-        encoding="utf-8", errors="replace"
-    )
+    manual = files["proof_manual"].read_text(encoding="utf-8", errors="replace")
     forbidden = _FORBIDDEN_MANUAL_PROOF.search(manual)
     if forbidden is not None:
         token = forbidden.group(0).strip().split()[0]
-        raise JobError(
-            f"manual proof still contains a forbidden proof escape: {token}"
-        )
+        raise JobError(f"manual proof still contains a forbidden proof escape: {token}")
     residual_goals = manifest.get("residual_goals")
     if not isinstance(residual_goals, list) or not all(
         isinstance(item, str) for item in residual_goals
@@ -2903,9 +3013,7 @@ def check_vc_proof(
     )
     missing = sorted(set(residual_goals) - proved)
     if missing:
-        raise JobError(
-            "manual proof is missing residual lemmas: " + ", ".join(missing)
-        )
+        raise JobError("manual proof is missing residual lemmas: " + ", ".join(missing))
 
     raw_root = manifest.get("qcip_root")
     if not isinstance(raw_root, str):
@@ -2932,17 +3040,13 @@ def check_vc_proof(
             or not isinstance(staged_raw, str)
             or not isinstance(expected, str)
         ):
-            raise JobError(
-                f"invalid VC manifest coq_dependencies[{index}]"
-            )
+            raise JobError(f"invalid VC manifest coq_dependencies[{index}]")
         staged = Path(staged_raw).expanduser().resolve()
         expected_path = (
             dependency_root / Path(*module.split(".")).with_suffix(".v")
         ).resolve()
         if staged != expected_path or not staged.is_file():
-            raise JobError(
-                f"invalid or missing staged Coq dependency: {staged}"
-            )
+            raise JobError(f"invalid or missing staged Coq dependency: {staged}")
         if _sha256(staged) != expected:
             raise JobError(f"staged Coq dependency was modified: {staged}")
         dependency_files.append(staged)
@@ -2976,7 +3080,10 @@ def check_vc_proof(
     started = time.time()
     compile_units = [
         *((f"dependency:{path.stem}", path) for path in dependency_files),
-        *((name, files[name]) for name in ("goal", "proof_auto", "proof_manual", "goal_check")),
+        *(
+            (name, files[name])
+            for name in ("goal", "proof_auto", "proof_manual", "goal_check")
+        ),
     ]
     for name, compile_path in compile_units:
         command = [*prefix, *load_paths, str(compile_path)]

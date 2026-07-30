@@ -13,6 +13,7 @@ from .core import (
     JobError,
     analyze_catalog,
     analyze_source,
+    read_source_text,
     run_job,
     source_with_local_includes,
 )
@@ -23,7 +24,9 @@ def _check_parser(prog: str = "qcp-spectest") -> argparse.ArgumentParser:
         prog=prog,
         description="Check a QCP-annotated implementation under concrete logic bindings.",
     )
-    parser.add_argument("job", type=Path, help="JSON job containing spec+impl and binds")
+    parser.add_argument(
+        "job", type=Path, help="JSON job containing spec+impl and binds"
+    )
     parser.add_argument(
         "--output-dir",
         type=Path,
@@ -72,10 +75,8 @@ def _run_analyze(argv: list[str]) -> int:
     args = _analyze_parser().parse_args(argv)
     try:
         source_path = args.source.expanduser().resolve()
-        source = source_path.read_text(encoding="utf-8")
-        include_dirs = tuple(
-            item.expanduser().resolve() for item in args.include_dir
-        )
+        source = read_source_text(source_path)
+        include_dirs = tuple(item.expanduser().resolve() for item in args.include_dir)
         signature_source = source_with_local_includes(
             source_path, include_dirs, primary_source=source
         )
@@ -97,9 +98,7 @@ def _run_analyze(argv: list[str]) -> int:
             target = args.write_binds.expanduser().resolve()
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_text(
-                json.dumps(
-                    analysis["binds_template"], ensure_ascii=False, indent=2
-                )
+                json.dumps(analysis["binds_template"], ensure_ascii=False, indent=2)
                 + "\n",
                 encoding="utf-8",
             )
@@ -146,9 +145,7 @@ def _run_parser() -> argparse.ArgumentParser:
         type=Path,
         help="artifact directory (default: .spectest/<source>-<function>)",
     )
-    parser.add_argument(
-        "--qcip-root", type=Path, default=bundled_qcip_root()
-    )
+    parser.add_argument("--qcip-root", type=Path, default=bundled_qcip_root())
     parser.add_argument(
         "--qcp-binary",
         type=Path,
@@ -194,11 +191,7 @@ def _run_source(argv: list[str]) -> int:
         output_dir = (
             args.output_dir.expanduser().resolve()
             if args.output_dir is not None
-            else (
-                Path.cwd()
-                / ".spectest"
-                / f"{source.stem}-{args.function}"
-            ).resolve()
+            else (Path.cwd() / ".spectest" / f"{source.stem}-{args.function}").resolve()
         )
         output_dir.mkdir(parents=True, exist_ok=True)
         job = {
@@ -264,9 +257,7 @@ def _proof_parser() -> argparse.ArgumentParser:
 def _run_proof(argv: list[str]) -> int:
     args = _proof_parser().parse_args(argv)
     try:
-        report = check_vc_proof(
-            args.manifest, timeout_seconds=args.timeout
-        )
+        report = check_vc_proof(args.manifest, timeout_seconds=args.timeout)
     except (JobError, OSError, subprocess.SubprocessError) as error:
         print(
             json.dumps(

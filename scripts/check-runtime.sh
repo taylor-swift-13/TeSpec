@@ -39,10 +39,10 @@ echo "QCP executor: $binary"
 echo "QCIP runtime: $runtime_root"
 echo "Compiled Coq modules: $coq_modules"
 
-if command -v opam >/dev/null 2>&1; then
-  coq_version=$(opam exec --switch=qcp-8.20 -- coqc -v 2>/dev/null | head -n 1 || true)
-elif command -v coqc >/dev/null 2>&1; then
+if command -v coqc >/dev/null 2>&1; then
   coq_version=$(coqc -v 2>/dev/null | head -n 1 || true)
+elif command -v opam >/dev/null 2>&1; then
+  coq_version=$(opam exec --switch=qcp-8.20 -- coqc -v 2>/dev/null | head -n 1 || true)
 else
   coq_version=
 fi

@@ -1,0 +1,6 @@
+Require Import m06_next1_wrong_flag__both_boundaries_other_mode_goal m06_next1_wrong_flag__both_boundaries_other_mode_proof_auto m06_next1_wrong_flag__both_boundaries_other_mode_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include m06_next1_wrong_flag__both_boundaries_other_mode_proof_auto.
+  Include m06_next1_wrong_flag__both_boundaries_other_mode_proof_manual.
+End VC_Correctness.

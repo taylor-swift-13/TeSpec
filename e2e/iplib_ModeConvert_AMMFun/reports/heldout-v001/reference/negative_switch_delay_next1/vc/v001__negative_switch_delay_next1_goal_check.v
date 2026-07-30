@@ -1,0 +1,6 @@
+Require Import v001__negative_switch_delay_next1_goal v001__negative_switch_delay_next1_proof_auto v001__negative_switch_delay_next1_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include v001__negative_switch_delay_next1_proof_auto.
+  Include v001__negative_switch_delay_next1_proof_manual.
+End VC_Correctness.

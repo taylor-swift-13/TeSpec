@@ -1,0 +1,6 @@
+Require Import h02_omit_next2_write__preserve_max_old_mode_goal h02_omit_next2_write__preserve_max_old_mode_proof_auto h02_omit_next2_write__preserve_max_old_mode_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include h02_omit_next2_write__preserve_max_old_mode_proof_auto.
+  Include h02_omit_next2_write__preserve_max_old_mode_proof_manual.
+End VC_Correctness.

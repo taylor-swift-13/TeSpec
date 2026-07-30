@@ -1,0 +1,14 @@
+With left right old_scratch old_output old_output_len
+Require
+  BinaryJobHeap::full(job, left, right,
+                      old_scratch, old_output, old_output_len) &&
+  CanonicalBits(left) &&
+  CanonicalBits(right) &&
+  BinaryJobCapacitySafe(job, left, right)
+Ensure
+  exists scratch_after output_after result,
+    BinaryJobHeap::full(job, left, right,
+                        scratch_after, output_after, Zlength(result)) &&
+    Prefix(result, output_after) &&
+    BinaryAddition(left, right, result) &&
+    __return == Zlength(result)

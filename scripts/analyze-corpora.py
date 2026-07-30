@@ -12,7 +12,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 WORKSPACE_ROOT = PROJECT_ROOT.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from spectest.core import (
+from spectest.core import (  # noqa: E402
     JobError,
     analyze_catalog,
     source_with_local_includes,
@@ -97,15 +97,9 @@ def main() -> int:
     parser = argparse.ArgumentParser(
         description="Build a complete spec/binding compatibility matrix."
     )
-    parser.add_argument(
-        "--qcp-root", type=Path, default=DEFAULT_CORPORA["qcp"]
-    )
-    parser.add_argument(
-        "--cav-root", type=Path, default=DEFAULT_CORPORA["cav"]
-    )
-    parser.add_argument(
-        "--xizi-root", type=Path, default=DEFAULT_CORPORA["xizi"]
-    )
+    parser.add_argument("--qcp-root", type=Path, default=DEFAULT_CORPORA["qcp"])
+    parser.add_argument("--cav-root", type=Path, default=DEFAULT_CORPORA["cav"])
+    parser.add_argument("--xizi-root", type=Path, default=DEFAULT_CORPORA["xizi"])
     parser.add_argument(
         "--output",
         type=Path,
@@ -125,20 +119,14 @@ def main() -> int:
         "duration_seconds": round(time.time() - started, 6),
         "summary": {
             "c_file_count": sum(item["c_file_count"] for item in corpora),
-            "analyzed_file_count": sum(
-                item["analyzed_file_count"] for item in corpora
-            ),
-            "parser_error_count": sum(
-                item["parser_error_count"] for item in corpora
-            ),
+            "analyzed_file_count": sum(item["analyzed_file_count"] for item in corpora),
+            "parser_error_count": sum(item["parser_error_count"] for item in corpora),
             "function_count": sum(item["function_count"] for item in corpora),
             "spec_count": sum(item["spec_count"] for item in corpora),
             "argument_binding_count": sum(
                 item["argument_binding_count"] for item in corpora
             ),
-            "value_binding_count": sum(
-                item["value_binding_count"] for item in corpora
-            ),
+            "value_binding_count": sum(item["value_binding_count"] for item in corpora),
             "unknown_binding_count": sum(
                 item["unknown_binding_count"] for item in corpora
             ),

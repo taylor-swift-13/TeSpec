@@ -1,0 +1,6 @@
+Require Import v001__large_inject_boundary_goal v001__large_inject_boundary_proof_auto v001__large_inject_boundary_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include v001__large_inject_boundary_proof_auto.
+  Include v001__large_inject_boundary_proof_manual.
+End VC_Correctness.

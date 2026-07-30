@@ -1,0 +1,6 @@
+Require Import h04_inject_adds_t0__late_other_mode_with_inject_goal h04_inject_adds_t0__late_other_mode_with_inject_proof_auto h04_inject_adds_t0__late_other_mode_with_inject_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include h04_inject_adds_t0__late_other_mode_with_inject_proof_auto.
+  Include h04_inject_adds_t0__late_other_mode_with_inject_proof_manual.
+End VC_Correctness.

@@ -1,0 +1,6 @@
+Require Import h02_omit_next2_write__next2_nonlate_inject_goal h02_omit_next2_write__next2_nonlate_inject_proof_auto h02_omit_next2_write__next2_nonlate_inject_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include h02_omit_next2_write__next2_nonlate_inject_proof_auto.
+  Include h02_omit_next2_write__next2_nonlate_inject_proof_manual.
+End VC_Correctness.

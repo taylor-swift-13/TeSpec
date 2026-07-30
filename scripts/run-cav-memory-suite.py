@@ -141,9 +141,7 @@ def main() -> int:
             else:
                 unexpected_unknown_count += 1
     max_manual_count = math.floor(bind_count * args.max_manual_rate)
-    manual_rate = (
-        manual_residual_count / bind_count if bind_count else 0.0
-    )
+    manual_rate = manual_residual_count / bind_count if bind_count else 0.0
     manual_gate_passed = manual_residual_count <= max_manual_count
     suite = {
         "schema": "qcp-spectest-cav-memory-suite/v1",

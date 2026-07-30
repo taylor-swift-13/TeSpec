@@ -251,11 +251,17 @@ python3 -m spectest check-proof .spectest/my-run/CASE/vc/manifest.json
 
 ## 模型辅助（可选）
 
-仓库内的 [qcp-spec-test skill](skills/qcp-spec-test/SKILL.md) 可以驱动 Codex：
+仓库按职责提供四个独立 skill：
 
-- 根据 `analyze` 结果帮助选择和填写 binds；
-- 诊断 `FAIL / UNKNOWN`；
-- 为 residual VC 编写明确标记为 manual 的 Coq 证明。
+- [qcp-spec-test](skills/qcp-spec-test/SKILL.md)：测试已有 QCP spec，填写
+  binds、诊断 `FAIL / UNKNOWN`、检查 residual proof；
+- [tespec-e2e](skills/tespec-e2e/SKILL.md)：从实现出发创建或修复 spec，
+  生成 30 个 binds 并进行 mutation 回归，产物统一写入 `e2e/`；
+- [tespec-four-class](skills/tespec-four-class/SKILL.md)：只以已有
+  impl/spec 为单题输入，做 `correct / soundness / complete / incomparable`
+  四分类；题目间 mutation 关系单独作为谱系元数据；
+- [tespec-artifacts](skills/tespec-artifacts/SKILL.md)：初始化、清理、哈希索引和
+  校验上述任务产物。
 
 人已经填写的 binds 会原样保留。模型不参与核心执行和自动结果分类。
 

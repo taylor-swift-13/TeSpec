@@ -1,0 +1,25 @@
+With l
+Require
+  IntArray::full(state, 3, l) &&
+  Zlength(l) == 3 &&
+  state != 0 &&
+  0 < area_length &&
+  area_length <= 1073741824 &&
+  0 <= data_length && data_length <= area_length &&
+  0 <= l[1] && l[1] < area_length &&
+  0 <= l[0] && l[0] < area_length
+Ensure
+  exists lr,
+    IntArray::full(state, 3, lr) &&
+    Zlength(lr) == 3 &&
+    (force@pre == 0 => lr[0] == l[0]) &&
+    (force@pre != 0 => lr[0] == lr[1]) &&
+    lr[2] == 1 &&
+    (l[1] + data_length@pre > area_length@pre =>
+       lr[1] == l[1] + data_length@pre - area_length@pre) &&
+    (l[1] + data_length@pre == area_length@pre =>
+       lr[1] == 0) &&
+    (l[1] + data_length@pre < area_length@pre =>
+       lr[1] == l[1] + data_length@pre) &&
+    lr[1] < area_length@pre &&
+    0 <= lr[1]

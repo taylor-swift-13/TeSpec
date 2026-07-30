@@ -1,0 +1,6 @@
+Require Import v002__inject_then_overwrite_next2_goal v002__inject_then_overwrite_next2_proof_auto v002__inject_then_overwrite_next2_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include v002__inject_then_overwrite_next2_proof_auto.
+  Include v002__inject_then_overwrite_next2_proof_manual.
+End VC_Correctness.

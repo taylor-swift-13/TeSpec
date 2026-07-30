@@ -1,0 +1,6 @@
+Require Import v002__negative_double_boundary_goal v002__negative_double_boundary_proof_auto v002__negative_double_boundary_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include v002__negative_double_boundary_proof_auto.
+  Include v002__negative_double_boundary_proof_manual.
+End VC_Correctness.

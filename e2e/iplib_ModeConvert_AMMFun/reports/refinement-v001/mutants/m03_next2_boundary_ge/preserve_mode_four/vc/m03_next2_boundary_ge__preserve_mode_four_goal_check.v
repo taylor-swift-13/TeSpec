@@ -1,0 +1,6 @@
+Require Import m03_next2_boundary_ge__preserve_mode_four_goal m03_next2_boundary_ge__preserve_mode_four_proof_auto m03_next2_boundary_ge__preserve_mode_four_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include m03_next2_boundary_ge__preserve_mode_four_proof_auto.
+  Include m03_next2_boundary_ge__preserve_mode_four_proof_manual.
+End VC_Correctness.

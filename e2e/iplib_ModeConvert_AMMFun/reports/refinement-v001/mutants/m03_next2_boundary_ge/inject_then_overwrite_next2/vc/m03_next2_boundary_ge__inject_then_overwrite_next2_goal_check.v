@@ -1,0 +1,6 @@
+Require Import m03_next2_boundary_ge__inject_then_overwrite_next2_goal m03_next2_boundary_ge__inject_then_overwrite_next2_proof_auto m03_next2_boundary_ge__inject_then_overwrite_next2_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include m03_next2_boundary_ge__inject_then_overwrite_next2_proof_auto.
+  Include m03_next2_boundary_ge__inject_then_overwrite_next2_proof_manual.
+End VC_Correctness.

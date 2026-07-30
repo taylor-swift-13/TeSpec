@@ -1,0 +1,6 @@
+Require Import m07_next1_wrong_value__negative_switch_delay_next1_goal m07_next1_wrong_value__negative_switch_delay_next1_proof_auto m07_next1_wrong_value__negative_switch_delay_next1_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include m07_next1_wrong_value__negative_switch_delay_next1_proof_auto.
+  Include m07_next1_wrong_value__negative_switch_delay_next1_proof_manual.
+End VC_Correctness.

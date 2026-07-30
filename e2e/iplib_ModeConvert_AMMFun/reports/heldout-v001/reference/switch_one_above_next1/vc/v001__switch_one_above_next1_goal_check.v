@@ -1,0 +1,6 @@
+Require Import v001__switch_one_above_next1_goal v001__switch_one_above_next1_proof_auto v001__switch_one_above_next1_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include v001__switch_one_above_next1_proof_auto.
+  Include v001__switch_one_above_next1_proof_manual.
+End VC_Correctness.

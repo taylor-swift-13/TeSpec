@@ -1,0 +1,6 @@
+Require Import v001__both_boundaries_other_mode_goal v001__both_boundaries_other_mode_proof_auto v001__both_boundaries_other_mode_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include v001__both_boundaries_other_mode_proof_auto.
+  Include v001__both_boundaries_other_mode_proof_manual.
+End VC_Correctness.

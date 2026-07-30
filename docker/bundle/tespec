@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+bundle_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+docker_bin=${DOCKER_BIN:-docker}
+image_tag=${TESPEC_IMAGE:-$(tr -d '\r\n' <"$bundle_dir/IMAGE_TAG")}
+
+exec "$docker_bin" run --rm --network none \
+  --user "$(id -u):$(id -g)" \
+  --env HOME=/tmp \
+  --volume "$PWD:/work" \
+  --workdir /work \
+  "$image_tag" "$@"

@@ -1,13 +1,19 @@
 from __future__ import annotations
 
+import json
 import os
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from spectest.core import (
+    _FORBIDDEN_MANUAL_PROOF,
     JobError,
+    _closed_generated_goal_value,
     _coq_required_modules,
+    _default_coqc_command,
     _parse_qcp_config,
     _resolve_source_coq_module,
     _source_coq_imports,
@@ -15,6 +21,7 @@ from spectest.core import (
     analyze_source,
     bundled_qcip_root,
     bundled_qcp_binary,
+    read_source_text,
     run_job,
     source_with_local_includes,
     specialize_source,
@@ -23,20 +30,16 @@ from spectest.core import (
 
 ROOT = Path(__file__).resolve().parents[1]
 QCIP = ROOT / "runtime/qcip"
-EXTERNAL_QCIP = Path(
-    os.environ.get("QCIP_SOURCE_DIR", str(ROOT.parent / "QCIP"))
-)
-QCP_SOURCE = Path(
-    os.environ.get("QCP_SOURCE_DIR", str(ROOT.parent / "sac_c_parser"))
-)
+EXTERNAL_QCIP = Path(os.environ.get("QCIP_SOURCE_DIR", str(ROOT.parent / "QCIP")))
+QCP_SOURCE = Path(os.environ.get("QCP_SOURCE_DIR", str(ROOT.parent / "sac_c_parser")))
 LOCAL_QCP = ROOT / "bin/qcp-symexec"
 
 
 class SpecializationTests(unittest.TestCase):
     def setUp(self) -> None:
-        self.source = (
-            ROOT / "cases/sll_first_value/sll_first_value.c"
-        ).read_text(encoding="utf-8")
+        self.source = (ROOT / "cases/sll_first_value/sll_first_value.c").read_text(
+            encoding="utf-8"
+        )
 
     def test_injects_all_bindings_into_require(self) -> None:
         specialized = specialize_source(
@@ -55,25 +58,66 @@ class SpecializationTests(unittest.TestCase):
         self.assertEqual(config.qcip_root, bundled_qcip_root().resolve())
         self.assertEqual(config.binary, bundled_qcp_binary().resolve())
         self.assertEqual(config.include_dirs, (ROOT.resolve(),))
-        self.assertFalse(
-            any(path.name == "providers" for path in config.include_dirs)
-        )
+        self.assertFalse(any(path.name == "providers" for path in config.include_dirs))
         self.assertTrue(config.binary.is_file())
-        self.assertTrue(
-            (config.qcip_root / "SeparationLogic/_CoqProject").is_file()
-        )
+        self.assertTrue((config.qcip_root / "SeparationLogic/_CoqProject").is_file())
+
+    def test_reads_utf8_and_gb18030_c_sources_strictly(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="qcp-source-encoding-") as temp:
+            root = Path(temp)
+            utf8_source = root / "utf8.c"
+            gb_source = root / "gb18030.c"
+            invalid_source = root / "invalid.c"
+            utf8_source.write_bytes("/* 星 */\nvoid f(void) {}\n".encode("utf-8"))
+            gb_source.write_bytes("/* 模式转换 */\nvoid g(void) {}\n".encode("gb18030"))
+            invalid_source.write_bytes(b"\x81")
+
+            self.assertIn("星", read_source_text(utf8_source))
+            self.assertIn("模式转换", read_source_text(gb_source))
+            with self.assertRaisesRegex(JobError, "cannot decode source"):
+                read_source_text(invalid_source)
+
+    def test_closed_generated_goal_detects_only_concrete_falsehoods(self) -> None:
+        goals = """
+Definition closed_false :=
+forall (H : (4096 <> 0)), (0 = 1).
+Definition vacuous_true :=
+forall (H : (0 <> 0)), (0 = 1).
+Definition closed_true :=
+forall (H : (3 < 4)), ((2 + 3 = 5) /\\ (7 <> 8)).
+Definition symbolic :=
+forall (x : Z), (x = x).
+Definition heap_goal := emp |-- emp.
+"""
+        self.assertIs(_closed_generated_goal_value(goals, "closed_false"), False)
+        self.assertIs(_closed_generated_goal_value(goals, "vacuous_true"), True)
+        self.assertIs(_closed_generated_goal_value(goals, "closed_true"), True)
+        self.assertIsNone(_closed_generated_goal_value(goals, "symbolic"))
+        self.assertIsNone(_closed_generated_goal_value(goals, "heap_goal"))
+
+    def test_proof_checker_prefers_the_active_coqc_over_an_opam_switch_name(
+        self,
+    ) -> None:
+        with patch(
+            "spectest.core.shutil.which",
+            side_effect=lambda name: {
+                "coqc": "/opt/coq/bin/coqc",
+                "opam": "/usr/local/bin/opam",
+            }.get(name),
+        ):
+            self.assertEqual(
+                _default_coqc_command(),
+                ["/opt/coq/bin/coqc"],
+            )
 
     def test_concrete_automation_has_no_regression_case_names(self) -> None:
         sources = (
             ROOT / "spectest/core.py",
             QCP_SOURCE / "SymExec/SymExec/ConcreteNormalize.c",
-            QCP_SOURCE
-            / "SymExec/CoqPrint/CoqSacEntailmentPrinter.c",
+            QCP_SOURCE / "SymExec/CoqPrint/CoqSacEntailmentPrinter.c",
         )
         text = "\n".join(
-            source.read_text(encoding="utf-8")
-            for source in sources
-            if source.is_file()
+            source.read_text(encoding="utf-8") for source in sources if source.is_file()
         )
         for forbidden in (
             "array_increment",
@@ -92,9 +136,7 @@ class SpecializationTests(unittest.TestCase):
             ROOT / "spectest/core.py",
             ROOT / "scripts/run-cav-memory-suite.py",
         )
-        text = "\n".join(
-            source.read_text(encoding="utf-8") for source in sources
-        )
+        text = "\n".join(source.read_text(encoding="utf-8") for source in sources)
         for forbidden in (
             "coq_auto",
             "proof_coq_auto",
@@ -134,10 +176,7 @@ From Domain.Nested Require Import First Second.
         with tempfile.TemporaryDirectory(prefix="qcp-case-dependency-") as temp:
             case = Path(temp) / "case"
             source = case / "source" / "subject.c"
-            module = (
-                case
-                / "dependencies/coq/SimpleC/EE/QCP_demos_LLM/swap_lib.v"
-            )
+            module = case / "dependencies/coq/SimpleC/EE/QCP_demos_LLM/swap_lib.v"
             source.parent.mkdir(parents=True)
             module.parent.mkdir(parents=True)
             source.write_text("void subject(void) {}", encoding="utf-8")
@@ -169,6 +208,100 @@ From Domain.Nested Require Import First Second.
         )
         self.assertIn("(x == (1))", specialized)
         self.assertIn("(xs == (cons(2, cons(3, nil))))", specialized)
+
+    def test_builds_large_repeat_bindings_without_quadratic_concatenation(
+        self,
+    ) -> None:
+        source = """
+void scan(void)
+/*@ With (xs: list Z)
+    Require emp
+    Ensure emp
+*/
+{
+}
+"""
+        specialized = specialize_source(
+            source,
+            "scan",
+            {"xs": {"repeat": 7, "count": 5000}},
+        )
+        self.assertEqual(specialized.count("cons(7, "), 5000)
+        self.assertIn("cons(7, nil)", specialized)
+
+    def test_rejects_prefixed_axioms_and_variable_proof_escapes(self) -> None:
+        for source in (
+            "Local Axiom unsound : False.",
+            "Global Conjecture unsound : False.",
+            "Variable unsound : False.",
+            "Context (unsound : False).",
+        ):
+            with self.subTest(source=source):
+                self.assertIsNotNone(_FORBIDDEN_MANUAL_PROOF.search(source))
+
+    def test_rejects_duplicate_bind_case_ids_before_writing_output(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="qcp-duplicate-id-") as temp:
+            root = Path(temp)
+            output = root / "output"
+            job = root / "job.json"
+            job.write_text(
+                json.dumps(
+                    {
+                        "source": str(ROOT / "cases/add_one/add_one.c"),
+                        "function": "add_one",
+                        "binds": [
+                            {
+                                "id": "same",
+                                "args": {"x": 1},
+                                "values": {"v": 1},
+                            },
+                            {
+                                "id": "same",
+                                "args": {"x": 2},
+                                "values": {"v": 2},
+                            },
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(JobError, "duplicate bind case id"):
+                run_job(job, output)
+            self.assertFalse(output.exists())
+
+    def test_rerun_does_not_reuse_stale_vc_files(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="qcp-stale-vc-") as temp:
+            root = Path(temp)
+            output = root / "output"
+            case_dir = output / "small"
+            stale_vc = case_dir / "vc"
+            stale_vc.mkdir(parents=True)
+            stale_marker = stale_vc / "old-proof.v"
+            stale_marker.write_text("stale", encoding="utf-8")
+
+            job = root / "job.json"
+            job.write_text(
+                json.dumps(
+                    {
+                        "source": str(ROOT / "cases/add_one/add_one.c"),
+                        "function": "add_one",
+                        "binds": [
+                            {
+                                "id": "small",
+                                "args": {"x": 1},
+                                "values": {"v": 1},
+                            }
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            completed = subprocess.CompletedProcess([], 0, "", "")
+            with patch("spectest.core.subprocess.run", return_value=completed):
+                report = run_job(job, output)
+
+            self.assertEqual(report["results"][0]["reason"], "qcp_vc_generation_error")
+            self.assertFalse(stale_marker.exists())
 
     def test_materializes_closed_derived_list_length(self) -> None:
         source = """
@@ -207,9 +340,7 @@ void scan(char *text)
             analysis["binds_template"][0]["values"],
             {"x": 0, "xs": [1, 2, 3]},
         )
-        self.assertEqual(
-            analysis["binds_template"][0]["args"], {"p": 4096}
-        )
+        self.assertEqual(analysis["binds_template"][0]["args"], {"p": 4096})
 
     def test_declared_signature_wins_over_nested_list_heuristic(self) -> None:
         source = """
@@ -311,17 +442,13 @@ int sample(int n)
 }
 """
         analysis = analyze_source(source, "sample")
-        variables = {
-            item["name"]: item for item in analysis["value_bindings"]
-        }
+        variables = {item["name"]: item for item in analysis["value_bindings"]}
         self.assertTrue(variables["N"]["required"])
         self.assertFalse(variables["alias"]["required"])
         self.assertEqual(variables["alias"]["derived_from"], "N")
         self.assertFalse(variables["fixed"]["required"])
         self.assertEqual(variables["fixed"]["derived_from"], "3")
-        self.assertEqual(
-            analysis["binds_template"][0]["values"], {"N": 0}
-        )
+        self.assertEqual(analysis["binds_template"][0]["values"], {"N": 0})
 
     def test_raw_qcp_binding_preserves_supported_assertion_syntax(self) -> None:
         specialized = specialize_source(
@@ -435,18 +562,13 @@ int keep(int n)
         if not source_path.is_file():
             self.skipTest("xizi AVL output is unavailable")
         source = source_path.read_text(encoding="utf-8")
-        signatures = source_with_local_includes(
-            source_path, primary_source=source
-        )
+        signatures = source_with_local_includes(source_path, primary_source=source)
         analysis = analyze_source(
             source,
             "xizi_avl_left_rotate",
             signature_source=signatures,
         )
-        types = {
-            item["name"]: item["type"]
-            for item in analysis["value_bindings"]
-        }
+        types = {item["name"]: item["type"] for item in analysis["value_bindings"]}
         self.assertEqual(types["root_data"], "Z")
         self.assertEqual(types["a"], "addr_avl_tree")
         self.assertEqual(types["before"], "addr_avl_tree")
@@ -520,9 +642,7 @@ class ConcreteLoopEndToEndTests(unittest.TestCase):
         ):
             with self.subTest(job=relative_job):
                 report = self._run(relative_job)
-                self.assertEqual(
-                    report["summary"]["PASS"], report["summary"]["total"]
-                )
+                self.assertEqual(report["summary"]["PASS"], report["summary"]["total"])
 
     def test_uchar_checksum_loop_ignores_source_invariant(self) -> None:
         report = self._run("cases/ip_check_cal08/job.json")
@@ -550,18 +670,14 @@ class ConcreteLoopEndToEndTests(unittest.TestCase):
         self.assertEqual(division["summary"]["UNKNOWN"], 3)
         self.assertEqual(division["summary"]["ERROR"], 1)
         invalid = next(
-            item
-            for item in division["results"]
-            if item["id"] == "zero_divisor_invalid"
+            item for item in division["results"] if item["id"] == "zero_divisor_invalid"
         )
         self.assertEqual(invalid["reason"], "bindings_violate_require")
         for result in division["results"]:
             if result["id"] != "zero_divisor_invalid":
                 self._assert_manual_residual(result)
 
-        equality = self._run(
-            "cases/float_operations/job_double_eq_branch.json"
-        )
+        equality = self._run("cases/float_operations/job_double_eq_branch.json")
         self.assertEqual(equality["summary"]["UNKNOWN"], 3)
         self.assertEqual(equality["summary"]["total"], 3)
         for result in equality["results"]:
@@ -600,9 +716,7 @@ class ConcreteLoopEndToEndTests(unittest.TestCase):
     def test_loop_limit_is_unknown_not_pass(self) -> None:
         report = self._run("cases/count_loop/job_limit.json")
         self.assertEqual(report["results"][0]["status"], "UNKNOWN")
-        self.assertEqual(
-            report["results"][0]["reason"], "loop_unroll_limit_exceeded"
-        )
+        self.assertEqual(report["results"][0]["reason"], "loop_unroll_limit_exceeded")
 
     def test_callee_arguments_and_heap_are_bound_at_call_time(self) -> None:
         for relative_job in (
@@ -644,9 +758,7 @@ class ConcreteLoopEndToEndTests(unittest.TestCase):
         report = self._run("cases/xizi_double_link_empty/job.json")
         self.assertEqual(report["summary"]["FAIL"], 0)
         self.assertEqual(report["summary"]["ERROR"], 0)
-        self.assertEqual(
-            report["summary"]["PASS"] + report["summary"]["UNKNOWN"], 2
-        )
+        self.assertEqual(report["summary"]["PASS"] + report["summary"]["UNKNOWN"], 2)
 
     def test_recursive_sll_nodes_can_contain_struct_arrays(self) -> None:
         report = self._run("cases/composite_recursive_sll/job.json")
@@ -661,9 +773,7 @@ class ConcreteLoopEndToEndTests(unittest.TestCase):
         self.assertEqual(report["summary"]["PASS"], 2)
 
     def test_recursive_predicates_can_nest_and_compose_arrays(self) -> None:
-        report = self._run(
-            "cases/recursive_nested_composition/job.json"
-        )
+        report = self._run("cases/recursive_nested_composition/job.json")
         self.assertEqual(
             [result["status"] for result in report["results"]],
             ["PASS", "PASS", "UNKNOWN"],
@@ -690,15 +800,11 @@ class ConcreteLoopEndToEndTests(unittest.TestCase):
     def test_binding_that_contradicts_require_is_rejected(self) -> None:
         report = self._run("cases/invalid_binding/job.json")
         self.assertEqual(report["results"][0]["status"], "ERROR")
-        self.assertEqual(
-            report["results"][0]["reason"], "bindings_violate_require"
-        )
+        self.assertEqual(report["results"][0]["reason"], "bindings_violate_require")
 
     def test_closed_znth_safety_vc_is_classified_as_auto(self) -> None:
         job = ROOT / "cases/znth_concrete_auto/job.json"
-        with tempfile.TemporaryDirectory(
-            prefix="qcp-spectest-znth-test-"
-        ) as temp:
+        with tempfile.TemporaryDirectory(prefix="qcp-spectest-znth-test-") as temp:
             report = run_job(job, Path(temp))
             self.assertEqual(report["summary"]["PASS"], 4)
             for result in report["results"]:
@@ -706,25 +812,17 @@ class ConcreteLoopEndToEndTests(unittest.TestCase):
                     self.assertEqual(result["vc"]["status"], "auto_proved")
 
                     files = result["vc"]["files"]
-                    proof_auto = Path(files["proof_auto"]).read_text(
-                        encoding="utf-8"
-                    )
+                    proof_auto = Path(files["proof_auto"]).read_text(encoding="utf-8")
                     proof_manual = Path(files["proof_manual"]).read_text(
                         encoding="utf-8"
                     )
-                    self.assertIn(
-                        "proof_of_square_first_safety_wit_", proof_auto
-                    )
-                    self.assertNotIn(
-                        "proof_of_square_first_safety_wit_", proof_manual
-                    )
+                    self.assertIn("proof_of_square_first_safety_wit_", proof_auto)
+                    self.assertNotIn("proof_of_square_first_safety_wit_", proof_manual)
 
     def test_call_depth_limit_is_unknown_not_pass(self) -> None:
         report = self._run("cases/callee_recursive/job_limit.json")
         self.assertEqual(report["results"][0]["status"], "UNKNOWN")
-        self.assertEqual(
-            report["results"][0]["reason"], "call_depth_limit_exceeded"
-        )
+        self.assertEqual(report["results"][0]["reason"], "call_depth_limit_exceeded")
 
 
 if __name__ == "__main__":

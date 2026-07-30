@@ -1,0 +1,6 @@
+Require Import m02_inject_wrong_value__large_late_next1_goal m02_inject_wrong_value__large_late_next1_proof_auto m02_inject_wrong_value__large_late_next1_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include m02_inject_wrong_value__large_late_next1_proof_auto.
+  Include m02_inject_wrong_value__large_late_next1_proof_manual.
+End VC_Correctness.

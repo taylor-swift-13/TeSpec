@@ -1,0 +1,6 @@
+Require Import m05_next2_wrong_value__next1_nonlate_preserve_goal m05_next2_wrong_value__next1_nonlate_preserve_proof_auto m05_next2_wrong_value__next1_nonlate_preserve_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include m05_next2_wrong_value__next1_nonlate_preserve_proof_auto.
+  Include m05_next2_wrong_value__next1_nonlate_preserve_proof_manual.
+End VC_Correctness.

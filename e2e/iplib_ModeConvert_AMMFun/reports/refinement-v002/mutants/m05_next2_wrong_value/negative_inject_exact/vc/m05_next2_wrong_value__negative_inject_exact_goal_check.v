@@ -1,0 +1,6 @@
+Require Import m05_next2_wrong_value__negative_inject_exact_goal m05_next2_wrong_value__negative_inject_exact_proof_auto m05_next2_wrong_value__negative_inject_exact_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include m05_next2_wrong_value__negative_inject_exact_proof_auto.
+  Include m05_next2_wrong_value__negative_inject_exact_proof_manual.
+End VC_Correctness.
