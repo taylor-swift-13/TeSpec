@@ -135,7 +135,22 @@ derives the label:
 If either axis lacks the required proof or counterexample, stop without
 finalizing. Never turn uncertainty into a four-class label.
 
-## 6. Finalize
+## 6. Classification-only mode
+
+Use this mode only when the caller explicitly asks for a best-effort label
+without a proof artifact. Still inspect both inputs and run the two
+counterexample searches independently. A found, valid counterexample decides
+the corresponding axis. When a search finds none, judge that axis from direct
+semantic analysis of all relevant branches, preconditions, postconditions,
+heap effects, and observable outputs; do not treat the empty search alone as
+proof.
+
+Return the requested four-class label even when the argument is not a formal
+certificate. Use `abstain` only when an input cannot be read or interpreted,
+not merely because a full inclusion proof is unavailable. Do not create
+`result.json` or claim machine-checked evidence in this mode.
+
+## 7. Finalize
 
 Clean allowlisted compiler caches, finalize with `tespec-artifacts`, and
 validate `artifact-manifest.json`. Deliver the complete root.
