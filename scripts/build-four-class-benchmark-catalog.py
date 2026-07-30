@@ -320,6 +320,7 @@ def curate(
     entries: list[dict[str, Any]],
     size: int,
     rejected_ids: set[str] | None = None,
+    rejected_body_hashes: set[str] | None = None,
 ) -> list[dict[str, Any]]:
     # Exact body duplicates occur in QCP's human/LLM mirrors. Prefer the
     # engineering/output copy, then the LLM benchmark, then CAV.
@@ -332,6 +333,7 @@ def curate(
     }
     unique: dict[str, dict[str, Any]] = {}
     rejected_ids = rejected_ids or set()
+    rejected_body_hashes = rejected_body_hashes or set()
     for entry in sorted(
         entries,
         key=lambda item: (
@@ -341,7 +343,11 @@ def curate(
             item["function"],
         ),
     ):
-        if excluded(entry) or entry["id"] in rejected_ids:
+        if (
+            excluded(entry)
+            or entry["id"] in rejected_ids
+            or entry["body_sha256"] in rejected_body_hashes
+        ):
             continue
         unique.setdefault(entry["body_sha256"], entry)
     pool = [
@@ -524,7 +530,10 @@ def main() -> int:
 
     rejected_payload = json.loads(NANO_REJECTIONS.read_text(encoding="utf-8"))
     rejected_ids = {item["base_id"] for item in rejected_payload.get("rejections", [])}
-    selected = curate(entries, args.size, rejected_ids)
+    rejected_body_hashes = {
+        entry["body_sha256"] for entry in entries if entry["id"] in rejected_ids
+    }
+    selected = curate(entries, args.size, rejected_ids, rejected_body_hashes)
     report = {
         "schema": "tespec-four-class-program-catalog/v1",
         "selection_status": "static-shortlist-requires-semantic-audit",
@@ -532,13 +541,14 @@ def main() -> int:
             "requested_size": args.size,
             "excluded_shapes": sorted(EXCLUDED_PATH_PARTS),
             "nano_rejected_base_ids": sorted(rejected_ids),
+            "nano_rejected_body_sha256": sorted(rejected_body_hashes),
             "notes": [
                 "A task is one annotated target function; source families stay together when splitting.",
                 "Exact normalized-body duplicates are removed.",
                 f"Every selected base has static difficulty score >= {MIN_SELECTED_DIFFICULTY_SCORE:g}.",
                 "Scores select difficult/diverse subjects but do not establish ground truth.",
                 "Feature coverage never overrides the minimum difficulty floor.",
-                "A base solved by the frozen gpt-5-nano gate is excluded before selection.",
+                "A base solved by the frozen gpt-5-nano gate and every exact implementation duplicate are excluded before selection.",
             ],
         },
         "inventory": summarize(entries),

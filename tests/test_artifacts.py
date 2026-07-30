@@ -311,6 +311,10 @@ class ArtifactManagementTests(unittest.TestCase):
         tasks = catalog["tasks"]
         rejected_ids = {item["base_id"] for item in rejections["rejections"]}
         selected_ids = {item["id"] for item in tasks}
+        selected_body_hashes = {item["body_sha256"] for item in tasks}
+        rejected_body_hashes = set(
+            catalog["selection_policy"]["nano_rejected_body_sha256"]
+        )
         self.assertEqual(len(tasks), 100)
         self.assertGreaterEqual(
             min(item["difficulty_score"] for item in tasks),
@@ -322,6 +326,8 @@ class ArtifactManagementTests(unittest.TestCase):
             catalog["selection_policy"]["nano_rejected_base_ids"],
             sorted(rejected_ids),
         )
+        self.assertTrue(rejected_body_hashes)
+        self.assertTrue(rejected_body_hashes.isdisjoint(selected_body_hashes))
         bundled_qcip = [item for item in tasks if item["corpus"] == "qcp"]
         self.assertGreaterEqual(len(bundled_qcip), 40)
         self.assertTrue(
