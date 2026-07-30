@@ -135,7 +135,7 @@ def main() -> int:
     parser.add_argument(
         "--qcip-root",
         type=Path,
-        default=WORKSPACE_ROOT / "QCIP",
+        default=PROJECT_ROOT / "runtime/qcip",
     )
     parser.add_argument(
         "--cav-ground-truth-root",

@@ -14,6 +14,8 @@ MANAGER = ROOT / "skills/tespec-artifacts/scripts/manage_artifacts.py"
 RESULT_WRITER = ROOT / "skills/tespec-four-class/scripts/write_result.py"
 DIFFICULTY_AUDITOR = ROOT / "scripts/audit-four-class-question-plan.py"
 QUESTION_PLAN = ROOT / "benchmark/catalog/question-plan-600.json"
+PROGRAM_CATALOG = ROOT / "benchmark/catalog/selected-programs.json"
+NANO_REJECTIONS = ROOT / "benchmark/catalog/nano-rejected-bases.json"
 
 
 class ArtifactManagementTests(unittest.TestCase):
@@ -302,6 +304,32 @@ class ArtifactManagementTests(unittest.TestCase):
                 report["authoritative_nano_gate_status"],
                 "pending-materialized-three-attempt-runs",
             )
+
+    def test_selected_bases_exclude_static_and_nano_simple_candidates(self) -> None:
+        catalog = json.loads(PROGRAM_CATALOG.read_text(encoding="utf-8"))
+        rejections = json.loads(NANO_REJECTIONS.read_text(encoding="utf-8"))
+        tasks = catalog["tasks"]
+        rejected_ids = {item["base_id"] for item in rejections["rejections"]}
+        selected_ids = {item["id"] for item in tasks}
+        self.assertEqual(len(tasks), 100)
+        self.assertGreaterEqual(
+            min(item["difficulty_score"] for item in tasks),
+            30,
+        )
+        self.assertTrue(rejected_ids)
+        self.assertTrue(rejected_ids.isdisjoint(selected_ids))
+        self.assertEqual(
+            catalog["selection_policy"]["nano_rejected_base_ids"],
+            sorted(rejected_ids),
+        )
+        bundled_qcip = [item for item in tasks if item["corpus"] == "qcp"]
+        self.assertGreaterEqual(len(bundled_qcip), 40)
+        self.assertTrue(
+            all(
+                item["source"].startswith("runtime/qcip/QCP_examples/")
+                for item in bundled_qcip
+            )
+        )
 
     def test_difficulty_auditor_rejects_downgraded_expert_item(self) -> None:
         payload = json.loads(QUESTION_PLAN.read_text(encoding="utf-8"))

@@ -149,6 +149,10 @@ quantifier、custom Coq definitions 和 relation inclusion。
 
 构造分数只用于在调用 nano 前提前拒绝明显简单的计划，不能证明题目真的困难，也不能
 代替 nano gate 或语义 gold。
+当前 base selection 直接读取仓库内 bundled `runtime/qcip/QCP_examples`，设置静态
+最低分 30，避免教程级标量题为了 feature 配额挤占难题。被三次 Nano gate 判为简单的
+已物化 base 会写入 `catalog/nano-rejected-bases.json`，在下一次 selection 前排除并
+等量补位。
 正式发布还必须具有：
 
 - `difficulty_gate_certificate`；

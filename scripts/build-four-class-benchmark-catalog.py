@@ -21,10 +21,13 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_ROOTS = {
     "cav": Path("/home/yangfp/CAV/main/CAV-bench/input"),
     "cav_os_float": Path("/home/yangfp/CAV/OS/CAV-bench/input/xizi"),
-    "qcp": Path("/home/yangfp/QCIP/QCP_examples"),
+    "qcp": PROJECT_ROOT / "runtime/qcip/QCP_examples",
     "qcip_output": Path("/home/yangfp/QCIP/OUTPUT"),
     "tespec": PROJECT_ROOT / "cases",
 }
+
+MIN_SELECTED_DIFFICULTY_SCORE = 30.0
+NANO_REJECTIONS = PROJECT_ROOT / "benchmark/catalog/nano-rejected-bases.json"
 
 CONTROL_WORDS = {
     "if",
@@ -183,6 +186,14 @@ def source_family(source: Path, corpus: str) -> str:
     return source.parent.name
 
 
+def portable_source_path(source: Path) -> str:
+    resolved = source.resolve()
+    try:
+        return resolved.relative_to(PROJECT_ROOT).as_posix()
+    except ValueError:
+        return str(resolved)
+
+
 def features_for(
     source: Path,
     corpus: str,
@@ -273,7 +284,7 @@ def features_for(
         "id": f"{corpus}:{source_family(source, corpus)}:{name}",
         "corpus": corpus,
         "family": source_family(source, corpus),
-        "source": str(source.resolve()),
+        "source": portable_source_path(source),
         "function": name,
         "body_sha256": hashlib.sha256(normalized_body.encode()).hexdigest(),
         "difficulty_score": round(score, 3),
@@ -305,7 +316,11 @@ def excluded(entry: dict[str, Any]) -> bool:
     return any(part in lowered for part in EXCLUDED_PATH_PARTS)
 
 
-def curate(entries: list[dict[str, Any]], size: int) -> list[dict[str, Any]]:
+def curate(
+    entries: list[dict[str, Any]],
+    size: int,
+    rejected_ids: set[str] | None = None,
+) -> list[dict[str, Any]]:
     # Exact body duplicates occur in QCP's human/LLM mirrors. Prefer the
     # engineering/output copy, then the LLM benchmark, then CAV.
     priority = {
@@ -316,6 +331,7 @@ def curate(entries: list[dict[str, Any]], size: int) -> list[dict[str, Any]]:
         "cav": 4,
     }
     unique: dict[str, dict[str, Any]] = {}
+    rejected_ids = rejected_ids or set()
     for entry in sorted(
         entries,
         key=lambda item: (
@@ -325,10 +341,14 @@ def curate(entries: list[dict[str, Any]], size: int) -> list[dict[str, Any]]:
             item["function"],
         ),
     ):
-        if excluded(entry):
+        if excluded(entry) or entry["id"] in rejected_ids:
             continue
         unique.setdefault(entry["body_sha256"], entry)
-    pool = list(unique.values())
+    pool = [
+        entry
+        for entry in unique.values()
+        if entry["difficulty_score"] >= MIN_SELECTED_DIFFICULTY_SCORE
+    ]
 
     selected: list[dict[str, Any]] = []
     selected_ids: set[str] = set()
@@ -355,9 +375,9 @@ def curate(entries: list[dict[str, Any]], size: int) -> list[dict[str, Any]]:
             if present >= target:
                 return
 
-    # Hard strata requested for the study. Categories overlap.
-    ensure_matching(lambda item: item["native_float"], 10, max_per_family=5)
-    ensure_matching(lambda item: item["float_model"], 12, max_per_family=2)
+    # Hard strata requested for the study. Categories overlap. Native floating
+    # point is not a quota: the bundled QCIP examples are tutorial-scale and
+    # must not displace substantially harder heap/relational candidates.
     ensure_matching(lambda item: item["multi_call"], 30, max_per_family=2)
     ensure_matching(lambda item: item["doubly_linked"], 8, max_per_family=2)
     ensure_matching(lambda item: item["singly_linked"], 14, max_per_family=2)
@@ -368,6 +388,11 @@ def curate(entries: list[dict[str, Any]], size: int) -> list[dict[str, Any]]:
         lambda item: item["quantified"] or item["custom_coq"],
         45,
         max_per_family=1,
+    )
+    ensure_matching(
+        lambda item: item["corpus"] in {"qcp", "qcip_output"},
+        55,
+        max_per_family=2,
     )
     ensure_matching(lambda item: True, size, max_per_family=1)
     return sorted(
@@ -497,18 +522,23 @@ def main() -> int:
                 for function in functions
             )
 
-    selected = curate(entries, args.size)
+    rejected_payload = json.loads(NANO_REJECTIONS.read_text(encoding="utf-8"))
+    rejected_ids = {item["base_id"] for item in rejected_payload.get("rejections", [])}
+    selected = curate(entries, args.size, rejected_ids)
     report = {
         "schema": "tespec-four-class-program-catalog/v1",
         "selection_status": "static-shortlist-requires-semantic-audit",
         "selection_policy": {
             "requested_size": args.size,
             "excluded_shapes": sorted(EXCLUDED_PATH_PARTS),
+            "nano_rejected_base_ids": sorted(rejected_ids),
             "notes": [
                 "A task is one annotated target function; source families stay together when splitting.",
                 "Exact normalized-body duplicates are removed.",
+                f"Every selected base has static difficulty score >= {MIN_SELECTED_DIFFICULTY_SCORE:g}.",
                 "Scores select difficult/diverse subjects but do not establish ground truth.",
-                "Float and multi-call programs are hard strata, not incidental tags.",
+                "Feature coverage never overrides the minimum difficulty floor.",
+                "A base solved by the frozen gpt-5-nano gate is excluded before selection.",
             ],
         },
         "inventory": summarize(entries),

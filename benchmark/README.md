@@ -36,6 +36,7 @@ Generated artifacts:
 - [catalog/analyzer-audit.json](catalog/analyzer-audit.json)
 - [catalog/question-plan-600.json](catalog/question-plan-600.json)
 - [catalog/difficulty-audit.json](catalog/difficulty-audit.json)
+- [catalog/nano-rejected-bases.json](catalog/nano-rejected-bases.json)
 
 The difficulty audit is a construction gate, not semantic gold. It rejects
 unbalanced tiers, shallow expert mutations, missing reasoning dimensions,
@@ -50,3 +51,10 @@ are simple and must be replaced without changing the 600-question class
 balance. Every scored trajectory must attest that the agent inspected both
 `impl.c` and `spec.qcp`; missing input access and infrastructure failures are
 unresolved, never evidence that a question is difficult.
+
+Base selection reads bundled `runtime/qcip/QCP_examples` directly and rejects
+static construction scores below 30. A materialized base question solved by
+Nano at least twice is recorded in `nano-rejected-bases.json`, excluded before
+selection, and replaced without changing the 100-base/600-question totals.
+Static scores only remove obvious tutorial-scale candidates; the three-run
+Nano result remains authoritative.
