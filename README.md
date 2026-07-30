@@ -251,7 +251,7 @@ python3 -m spectest check-proof .spectest/my-run/CASE/vc/manifest.json
 
 ## 模型辅助（可选）
 
-仓库按职责提供四个独立 skill：
+仓库按职责提供五个独立 skill：
 
 - [qcp-spec-test](skills/qcp-spec-test/SKILL.md)：测试已有 QCP spec，填写
   binds、诊断 `FAIL / UNKNOWN`、检查 residual proof；
@@ -260,6 +260,9 @@ python3 -m spectest check-proof .spectest/my-run/CASE/vc/manifest.json
 - [tespec-four-class](skills/tespec-four-class/SKILL.md)：只以已有
   impl/spec 为单题输入，做 `correct / soundness / complete / incomparable`
   四分类；题目间 mutation 关系单独作为谱系元数据；
+- [tespec-classify-ieee754-clamp](skills/tespec-classify-ieee754-clamp/SKILL.md)：
+  针对 `ieee754-clamp-expert` 分别搜索 `impl ∧ ¬spec` 和
+  `spec ∧ ¬impl` witness，避免混淆 Complete 与 Sound；
 - [tespec-artifacts](skills/tespec-artifacts/SKILL.md)：初始化、清理、哈希索引和
   校验上述任务产物。
 
