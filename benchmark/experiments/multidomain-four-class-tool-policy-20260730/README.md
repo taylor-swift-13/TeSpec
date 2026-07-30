@@ -6,7 +6,8 @@
 > C compiler harnesses, so this run measured ad-hoc implementation probing,
 > not the TeSpec tool skill.
 
-This experiment compares two reusable, question-independent four-class skills:
+This historical experiment compared two reusable, question-independent
+four-class skills:
 
 - `four-class-tool-forbidden` receives the complete impl/spec text inline and
   forbids every tool call;
@@ -31,8 +32,9 @@ concrete binds, and require successful `analyze` and `run` calls.
 
 `report.json` contains every prediction, gold label, duration, tool action
 count, direct-read audit, probe-success audit, input/skill hashes, and excluded
-pre-experiments. `build_datasets.py` reproduces both label-blind datasets, and
-`analyze_results.py` regenerates the aggregate report from raw traces.
+pre-experiments. The invalid condition skill snapshots and their dataset
+builder were removed; `analyze_results.py` still regenerates the aggregate
+report from preserved raw traces.
 
 The legacy pilot metadata had the h02/h03 axes reversed relative to the current
 contract. This experiment re-reviewed the actual pairs: h02 is Complete-only

@@ -1,10 +1,14 @@
 # GPT-5 Nano TeSpec binds-only ablation
 
-This experiment compares the same four mutation-related `impl.c`/`spec.qcp`
-pairs under two generic skills. The tool-enabled model may write only
+This historical experiment compared the same four mutation-related
+`impl.c`/`spec.qcp` pairs under two conditions. The tool-enabled model could
+write only
 `binds.json`; TeSpec deterministically attaches the immutable spec, executes
 the implementation, and checks the post-state. The control model is forbidden
 from calling tools.
+
+The condition skill snapshots and their dataset builder were removed after
+the run. `dataset-manifest.json` retains their historical hashes.
 
 The four questions cover `correct`, `complete`, `soundness`, and
 `incomparable`. `fixtures/smoke-binds.json` is maintainer-only validation data

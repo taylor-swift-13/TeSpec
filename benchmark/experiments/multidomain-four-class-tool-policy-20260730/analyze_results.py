@@ -242,12 +242,11 @@ def main() -> int:
                 args.dataset_manifest.resolve()
             ),
             "canonicalization_note": (
-                "After execution, one trailing blank line was removed from "
-                "each checked-in skill snapshot. build_datasets.py strips "
-                "skill trailing whitespace before inlining, so every TASK.md "
-                "byte is identical to the executed prompt. The per-condition "
-                "executed_artifact_sha256_by_question records retain the exact "
-                "packaged dependency hashes used by OpenHands."
+                "At execution time the dataset builder stripped skill trailing "
+                "whitespace before inlining, so every TASK.md byte matched the "
+                "executed prompt. The condition snapshots and builder were "
+                "later removed. Per-condition artifact hashes retain the exact "
+                "packaged dependency identity used by OpenHands."
             ),
         },
         "gold_review": {
