@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -16,6 +17,19 @@ LABELS = {
     (True, False): "soundness",
     (False, True): "complete",
     (False, False): "incomparable",
+}
+
+COUNTEREXAMPLE_POLARITIES = {
+    "sound": {
+        "direction": "spec_satisfied_impl_rejected",
+        "implementation_satisfied": False,
+        "specification_satisfied": True,
+    },
+    "complete": {
+        "direction": "impl_satisfied_spec_rejected",
+        "implementation_satisfied": True,
+        "specification_satisfied": False,
+    },
 }
 
 
@@ -35,6 +49,72 @@ def evidence_path(root: Path, raw: str, label: str) -> str:
     if not (root / path).is_file():
         raise ValueError(f"{label} does not exist: {raw}")
     return path.as_posix()
+
+
+def sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def payload_file(root: Path, raw: object, label: str) -> None:
+    if not isinstance(raw, str):
+        raise ValueError(f"{label} must be a relative file path")
+    evidence_path(root, raw, label)
+
+
+def validate_counterexample(root: Path, raw: str, property_name: str) -> None:
+    path = root / raw
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as error:
+        raise ValueError(f"{property_name} counterexample is invalid JSON") from error
+    if not isinstance(payload, dict):
+        raise ValueError(f"{property_name} counterexample must be an object")
+    expected = COUNTEREXAMPLE_POLARITIES[property_name]
+    if payload.get("schema") != "tespec-four-class-counterexample/v2":
+        raise ValueError(
+            f"{property_name} counterexample must use "
+            "tespec-four-class-counterexample/v2"
+        )
+    if payload.get("property") != property_name:
+        raise ValueError(f"{property_name} counterexample property is reversed")
+    if payload.get("witness_direction") != expected["direction"]:
+        raise ValueError(f"{property_name} counterexample direction is reversed")
+    inputs = payload.get("inputs_sha256")
+    if not isinstance(inputs, dict):
+        raise ValueError(f"{property_name} counterexample lacks input hashes")
+    current_hashes = {
+        "impl": sha256(root / "input" / "impl.c"),
+        "spec": sha256(root / "input" / "spec.qcp"),
+    }
+    if inputs != current_hashes:
+        raise ValueError(f"{property_name} counterexample input hashes are stale")
+    checks = payload.get("checks")
+    if not isinstance(checks, dict):
+        raise ValueError(f"{property_name} counterexample lacks checks")
+    for subject, satisfied_key in (
+        ("implementation", "implementation_satisfied"),
+        ("specification", "specification_satisfied"),
+    ):
+        check = checks.get(subject)
+        if not isinstance(check, dict):
+            raise ValueError(f"{property_name} counterexample lacks {subject} check")
+        if check.get("satisfied") is not expected[satisfied_key]:
+            raise ValueError(
+                f"{property_name} counterexample has reversed {subject} polarity"
+            )
+        payload_file(
+            root,
+            check.get("evidence"),
+            f"{property_name} {subject} check evidence",
+        )
+    payload_file(root, payload.get("case_file"), f"{property_name} case file")
+    rationale = payload.get("rationale")
+    if not isinstance(rationale, str) or not rationale.strip():
+        raise ValueError(f"{property_name} counterexample lacks rationale")
 
 
 def atomic_write(path: Path, value: dict[str, object]) -> None:
@@ -73,6 +153,10 @@ def main() -> int:
         completeness = evidence_path(
             root, args.completeness_evidence, "completeness evidence"
         )
+        if not args.sound:
+            validate_counterexample(root, soundness, "sound")
+        if not args.complete:
+            validate_counterexample(root, completeness, "complete")
         result = {
             "schema": "tespec-four-class-result/v1",
             "label": LABELS[(args.sound, args.complete)],

@@ -60,3 +60,22 @@ with:
 `FAIL` may contribute to a completeness counterexample. `UNKNOWN`, `ERROR`,
 timeout, crash, undefined behavior, or an invalid bind is unresolved evidence.
 Mutation lineage is provenance only.
+
+## Counterexample search matrix
+
+Keep the searches separate:
+
+| Property to refute | Candidate source | Must check true | Must check false | Set difference |
+|---|---|---|---|---|
+| Complete | actual safely terminating implementation execution | implementation behavior | specification acceptance | `B(I) \ R(S)` |
+| Sound | fully concrete spec-admitted behavior | specification acceptance | implementation membership | `R(S) \ B(I)` |
+
+Testing the implementation against the spec can find a Complete
+counterexample. It cannot by itself find a Sound counterexample, because a
+Sound counterexample may be a behavior the implementation never generates.
+For Sound, construct from the freedom left by the spec, positively validate
+the entire spec behavior, then exclude that behavior from the implementation
+relation on the same pre-state.
+
+Absence of a counterexample in either finite search is not evidence that the
+corresponding inclusion holds.

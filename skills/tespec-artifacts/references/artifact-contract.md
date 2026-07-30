@@ -81,6 +81,18 @@ For a false property, replace its certificate with
 `soundness_counterexample` or `completeness_counterexample`. Every evidence
 value is a relative path to a durable file.
 
+Canonical false-property evidence uses
+`tespec-four-class-counterexample/v2`. It records current impl/spec hashes, a
+concrete case file, separate implementation/specification check artifacts, and
+one of two fixed directions:
+
+- `complete`: `impl_satisfied_spec_rejected`;
+- `sound`: `spec_satisfied_impl_rejected`.
+
+Create it with
+`skills/tespec-four-class/scripts/write_counterexample.py`. The result writer
+rejects reversed polarity, stale input hashes, or missing underlying evidence.
+
 Classification truth table:
 
 | Label | Sound | Complete |

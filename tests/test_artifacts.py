@@ -12,6 +12,9 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 MANAGER = ROOT / "skills/tespec-artifacts/scripts/manage_artifacts.py"
 RESULT_WRITER = ROOT / "skills/tespec-four-class/scripts/write_result.py"
+COUNTEREXAMPLE_WRITER = (
+    ROOT / "skills/tespec-four-class/scripts/write_counterexample.py"
+)
 DIFFICULTY_AUDITOR = ROOT / "scripts/audit-four-class-question-plan.py"
 QUESTION_PLAN = ROOT / "benchmark/catalog/question-plan-600.json"
 PROGRAM_CATALOG = ROOT / "benchmark/catalog/selected-programs.json"
@@ -45,6 +48,46 @@ class ArtifactManagementTests(unittest.TestCase):
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(f"artifact: {relative}\n", encoding="utf-8")
 
+    def write_counterexample(self, root: Path, property_name: str) -> str:
+        axis = "soundness" if property_name == "sound" else "completeness"
+        evidence_root = root / "evidence" / axis
+        case = evidence_root / "case.json"
+        implementation = evidence_root / "implementation-check.json"
+        specification = evidence_root / "specification-check.json"
+        for path in (case, implementation, specification):
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text('{"checked": true}\n', encoding="utf-8")
+        completed = self.run_script(
+            COUNTEREXAMPLE_WRITER,
+            "--root",
+            str(root),
+            "--property",
+            property_name,
+            "--case-file",
+            case.relative_to(root).as_posix(),
+            "--implementation-check",
+            implementation.relative_to(root).as_posix(),
+            "--specification-check",
+            specification.relative_to(root).as_posix(),
+            "--rationale",
+            f"checked {property_name} counterexample",
+        )
+        payload = json.loads(completed.stdout)
+        expected = {
+            "sound": ("spec_satisfied_impl_rejected", False, True),
+            "complete": ("impl_satisfied_spec_rejected", True, False),
+        }[property_name]
+        self.assertEqual(payload["witness_direction"], expected[0])
+        self.assertIs(
+            payload["checks"]["implementation"]["satisfied"],
+            expected[1],
+        )
+        self.assertIs(
+            payload["checks"]["specification"]["satisfied"],
+            expected[2],
+        )
+        return f"evidence/{axis}/counterexample.json"
+
     def test_all_four_class_labels_finalize_and_validate(self) -> None:
         labels = {
             (True, True): "correct",
@@ -70,8 +113,20 @@ class ArtifactManagementTests(unittest.TestCase):
                     self.write_four_class_inputs(root)
                     soundness = root / "evidence/soundness/evidence.json"
                     completeness = root / "evidence/completeness/evidence.json"
-                    soundness.write_text("{}\n", encoding="utf-8")
-                    completeness.write_text("{}\n", encoding="utf-8")
+                    if sound:
+                        soundness.write_text("{}\n", encoding="utf-8")
+                        soundness_evidence = soundness.relative_to(root).as_posix()
+                    else:
+                        soundness_evidence = self.write_counterexample(root, "sound")
+                    if complete:
+                        completeness.write_text("{}\n", encoding="utf-8")
+                        completeness_evidence = completeness.relative_to(
+                            root
+                        ).as_posix()
+                    else:
+                        completeness_evidence = self.write_counterexample(
+                            root, "complete"
+                        )
                     self.run_script(
                         RESULT_WRITER,
                         "--root",
@@ -81,9 +136,9 @@ class ArtifactManagementTests(unittest.TestCase):
                         "--complete",
                         str(complete).lower(),
                         "--soundness-evidence",
-                        "evidence/soundness/evidence.json",
+                        soundness_evidence,
                         "--completeness-evidence",
-                        "evidence/completeness/evidence.json",
+                        completeness_evidence,
                     )
                     self.run_script(
                         MANAGER,
@@ -104,6 +159,52 @@ class ArtifactManagementTests(unittest.TestCase):
                         "--manifest",
                         str(manifest),
                     )
+
+    def test_result_writer_rejects_reversed_counterexample(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="tespec-reversed-witness-") as temp:
+            root = Path(temp)
+            self.run_script(
+                MANAGER,
+                "init",
+                "--kind",
+                "four-class",
+                "--task-id",
+                "reversed",
+                "--root",
+                str(root),
+            )
+            self.write_four_class_inputs(root)
+            soundness_evidence = self.write_counterexample(root, "sound")
+            soundness_path = root / soundness_evidence
+            payload = json.loads(soundness_path.read_text(encoding="utf-8"))
+            payload["witness_direction"] = "impl_satisfied_spec_rejected"
+            soundness_path.write_text(
+                json.dumps(payload, indent=2) + "\n", encoding="utf-8"
+            )
+            completeness = root / "evidence/completeness/certificate.json"
+            completeness.write_text("{}\n", encoding="utf-8")
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    str(RESULT_WRITER),
+                    "--root",
+                    str(root),
+                    "--sound",
+                    "false",
+                    "--complete",
+                    "true",
+                    "--soundness-evidence",
+                    soundness_evidence,
+                    "--completeness-evidence",
+                    completeness.relative_to(root).as_posix(),
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(completed.returncode, 2)
+            self.assertIn("direction is reversed", completed.stderr)
 
     def test_clean_removes_only_allowlisted_transients(self) -> None:
         with tempfile.TemporaryDirectory(prefix="tespec-artifact-clean-") as temp:
