@@ -384,6 +384,14 @@ def curate(
     # Hard strata requested for the study. Categories overlap. Native floating
     # point is not a quota: the bundled QCIP examples are tutorial-scale and
     # must not displace substantially harder heap/relational candidates.
+    # Reserve QCIP candidates first: later quotas may overlap with this pool,
+    # while reserving them after other strata can append beyond `size` and be
+    # silently discarded by the final slice.
+    ensure_matching(
+        lambda item: item["corpus"] in {"qcp", "qcip_output"},
+        55,
+        max_per_family=2,
+    )
     ensure_matching(lambda item: item["multi_call"], 30, max_per_family=2)
     ensure_matching(lambda item: item["doubly_linked"], 8, max_per_family=2)
     ensure_matching(lambda item: item["singly_linked"], 14, max_per_family=2)
@@ -394,11 +402,6 @@ def curate(
         lambda item: item["quantified"] or item["custom_coq"],
         45,
         max_per_family=1,
-    )
-    ensure_matching(
-        lambda item: item["corpus"] in {"qcp", "qcip_output"},
-        55,
-        max_per_family=2,
     )
     ensure_matching(lambda item: True, size, max_per_family=1)
     return sorted(

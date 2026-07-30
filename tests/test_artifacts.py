@@ -328,8 +328,11 @@ class ArtifactManagementTests(unittest.TestCase):
         )
         self.assertTrue(rejected_body_hashes)
         self.assertTrue(rejected_body_hashes.isdisjoint(selected_body_hashes))
-        bundled_qcip = [item for item in tasks if item["corpus"] == "qcp"]
-        self.assertGreaterEqual(len(bundled_qcip), 40)
+        qcip_candidates = [
+            item for item in tasks if item["corpus"] in {"qcp", "qcip_output"}
+        ]
+        self.assertGreaterEqual(len(qcip_candidates), 40)
+        bundled_qcip = [item for item in qcip_candidates if item["corpus"] == "qcp"]
         self.assertTrue(
             all(
                 item["source"].startswith("runtime/qcip/QCP_examples/")
