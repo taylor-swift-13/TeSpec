@@ -1,0 +1,124 @@
+{
+  "schema": "tespec-nano-skill-ablation/v1",
+  "experiment_id": "ieee754-clamp-expert-20260730",
+  "question": {
+    "id": "ieee754-clamp-expert",
+    "source": "benchmark/nano-probe/ieee754-clamp-expert",
+    "gold_label": "incomparable",
+    "reviewed_axes": {
+      "sound": false,
+      "complete": false
+    },
+    "review_rationale": {
+      "complete": "BatchDomain admits NaN; the implementation preserves it, while AllNonNaN(outputs) rejects that implementation behavior.",
+      "sound": "NumericEq admits the opposite signed-zero representation and flags_after is unconstrained beyond heap description, while bit patterns and flags are observable and the implementation is deterministic."
+    },
+    "artifact_sha256": {
+      "impl": "c10495a6bf897da3c2d49fe7dc9016adc0ba0b9924b017b7380be922393d427e",
+      "spec": "44d8b27863b4bb84e4b28b0c0a32e85e1b1b9e78c535a14eada89b7461962d3c",
+      "SEMANTICS.md": "e29d8627a84b30c34768bdaad548cefbb54604374df4d8fb4886451617252079",
+      "definitions.v": "516f0ae2760b344e4ca42ae228126943b48896298d1c5fe6ef091731da6f6e71"
+    }
+  },
+  "execution": {
+    "model": "openai/gpt-5-nano",
+    "reasoning_effort": "high",
+    "api_mode": "chat_completions",
+    "api_base": "https://yunwu.ai/v1",
+    "attempts_per_condition": 3,
+    "concurrency": 3,
+    "timeout_seconds_per_attempt": 600,
+    "runner_sha256": "19fbe881fc599b08961439243e59892ec2334757f4bacbd8ca1f27f46d2986a5",
+    "versions": {
+      "openhands_cli": "1.16.0",
+      "openhands_sdk": "1.21.0",
+      "litellm": "1.94.0"
+    }
+  },
+  "conditions": [
+    {
+      "id": "no_skill",
+      "raw_summary": "benchmark/results/openhands-gpt-5-nano-v2/ieee754-clamp-expert-yunwu-20260730/summary.json",
+      "raw_summary_sha256": "49e27a5e7e5fc7edddfb7df833a346df7ca4a87e2901603cb33767e4dce7f0df",
+      "task_sha256": "2369a57649eef6e66119ac41d9929db352433edb5953773bdc6189e304d5ae0e",
+      "predictions": ["correct", "correct", "soundness"],
+      "correct_attempts": 0,
+      "attempts": 3,
+      "wall_seconds": [284.772, 285.081, 330.367],
+      "mean_wall_seconds": 300.073,
+      "median_wall_seconds": 285.081,
+      "makespan_seconds": 330.433,
+      "input_access_complete": [true, true, true],
+      "infrastructure_failures": 0,
+      "protocol_failures": 0
+    },
+    {
+      "id": "workflow_only_skill",
+      "raw_summary": "benchmark/results/openhands-gpt-5-nano-v2/ieee754-clamp-expert-workflow-skill-fair-20260730/summary.json",
+      "raw_summary_sha256": "8c2b0a80eb7591de426637ba7ffb1ec760c534a5b18e3e13363000d6cf417cda",
+      "task_sha256": "48678677a39f2e1f872c29dbfa72b3a5687b149a3154eaf6fddd2d508921f099",
+      "skill_sha256": "276188931f5896daebbb41a974a437f7d13c7723057b3b77f686e5935ebb398c",
+      "predictions": ["correct", "correct", "correct"],
+      "correct_attempts": 0,
+      "attempts": 3,
+      "wall_seconds": [181.056, 249.231, 110.647],
+      "mean_wall_seconds": 180.311,
+      "median_wall_seconds": 181.056,
+      "makespan_seconds": 249.342,
+      "input_access_complete": [true, true, true],
+      "skill_file_opened": [true, true, false],
+      "compiler_probe_observed": [false, false, false],
+      "infrastructure_failures": 0,
+      "protocol_failures": 0
+    },
+    {
+      "id": "tool_backed_skill",
+      "raw_summary": "benchmark/results/openhands-gpt-5-nano-v2/ieee754-clamp-expert-tool-skill-fair-20260730/summary.json",
+      "raw_summary_sha256": "93f4fff6e9ace02cfef214efbf14d518258264e932d22a206a99691418ae3516",
+      "task_sha256": "8ca4419cd7ffebed2a56f8e8f2185b85b1ac3f09e5a0414c05b4eb0870f49ab0",
+      "skill_sha256": "f5e76b9ab5faa63f732d39bb02c915b01708f4241fcdeebdbe1820978d69bc3f",
+      "probe_sha256": "dae1b3b6ada8b54cd3ae83cf966d03e5d2996f0d211f56312977a05553fcea44",
+      "predictions": ["correct", "correct", "incomparable"],
+      "correct_attempts": 1,
+      "attempts": 3,
+      "wall_seconds": [145.245, 212.081, 98.892],
+      "mean_wall_seconds": 152.073,
+      "median_wall_seconds": 145.245,
+      "makespan_seconds": 212.191,
+      "input_access_complete": [true, true, true],
+      "skill_file_opened": [true, true, true],
+      "probe_output_observed": [true, true, true],
+      "probe_exit_zero": [true, true, true],
+      "infrastructure_failures": 0,
+      "protocol_failures": 0
+    }
+  ],
+  "excluded_pilots": [
+    {
+      "path": "benchmark/results/openhands-gpt-5-nano-v2/ieee754-clamp-expert-with-tespec-skill-20260730",
+      "reason": "Treatment task accidentally omitted the four-class truth table."
+    },
+    {
+      "path": "benchmark/results/openhands-gpt-5-nano-v2/ieee754-clamp-expert-with-tool-backed-skill-20260730",
+      "reason": "The truth table was omitted and the probe script was not declared as a copied dependency."
+    },
+    {
+      "path": "benchmark/results/openhands-gpt-5-nano-v2/ieee754-clamp-expert-with-tool-backed-skill-valid-20260730",
+      "reason": "The probe ran successfully, but the treatment task still omitted the four-class truth table."
+    }
+  ],
+  "result": {
+    "workflow_only_accuracy": 0.0,
+    "tool_backed_accuracy": 0.3333333333,
+    "absolute_accuracy_delta": 0.3333333333,
+    "no_skill_accuracy": 0.0,
+    "tool_backed_mean_wall_seconds_delta_vs_workflow": -28.238,
+    "interpretation": "The executable probe enabled one of three Nano attempts to recover both failed inclusions. Availability of prose workflow alone produced no correct attempt, and two tool-backed attempts still missed the expert interaction."
+  },
+  "limitations": [
+    "One question and three stochastic attempts per condition are insufficient for a general benchmark claim.",
+    "The no-skill baseline was frozen earlier on the same date rather than launched simultaneously with the two fair treatment batches.",
+    "The workflow-only assignment has one non-adherent attempt that did not explicitly open the skill file; assignment-level accuracy retains it.",
+    "The frozen runner writes a generic condition string into every raw summary; the condition ids in this report are authoritative."
+  ]
+}
