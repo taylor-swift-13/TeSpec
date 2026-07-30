@@ -1,5 +1,11 @@
 # GPT-5 Nano tool-policy comparison
 
+> **Invalid experiment — do not use the accuracy delta.** The nominal
+> tool-enabled condition never invoked `qcp-spectest` with the implementation,
+> QCP specification, and concrete binds. It only asked Nano to write ordinary
+> C compiler harnesses, so this run measured ad-hoc implementation probing,
+> not the TeSpec tool skill.
+
 This experiment compares two reusable, question-independent four-class skills:
 
 - `four-class-tool-forbidden` receives the complete impl/spec text inline and
@@ -17,16 +23,11 @@ per question with `openai/gpt-5-nano` through `https://yunwu.ai/v1`.
 | tools forbidden | 5/12 | 12/12 | 0/12 | 112.223 s |
 | tools enabled | 4/12 | 2/12 | 3/12 | 282.702 s |
 
-The tool-enabled skill did not improve this sample: allocated accuracy changed
-from 41.7% to 33.3% (−8.3 percentage points), and mean attempt time increased
-by 170.479 seconds. The only three successful executable probes all ended in
-wrong labels. Nano often tested ordinary implementation executions but failed
-to reason about behaviors admitted only by an underconstrained spec.
-
-The result does not show that tools are generally harmful. It shows that a
-generic instruction to invent C probes is not sufficient: the model needs a
-direction-aware tool that can validate both `I \ S` and `S \ I`, especially
-the spec-only Sound counterexample direction.
+The table is retained only as provenance for the invalid run. It cannot answer
+whether TeSpec improves Nano because the required spec-testing executable was
+absent from the treatment. A valid rerun must assemble the separate
+`impl.c/spec.qcp` inputs into the QCP source consumed by `qcp-spectest`, obtain
+concrete binds, and require successful `analyze` and `run` calls.
 
 `report.json` contains every prediction, gold label, duration, tool action
 count, direct-read audit, probe-success audit, input/skill hashes, and excluded

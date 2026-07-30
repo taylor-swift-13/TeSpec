@@ -8,7 +8,7 @@ description: Test a QCP-annotated C function against fully concrete top-level C 
 Keep the framework deterministic. Use model reasoning only to choose binds and
 to fill residual Coq proofs. Never add an LLM call to `spectest` itself.
 
-Set `SPEC_TEST_ROOT` to `/home/yangfp/specTest` when that directory exists.
+Set `SPEC_TEST_ROOT` to `/home/yangfp/teSpec` when that directory exists.
 Otherwise locate the directory containing `spectest/`, `pyproject.toml`, and
 `bin/qcp-symexec`. Run all commands from that directory.
 Use the bundled `runtime/qcip` by default. Do not refer to an external QCIP
@@ -26,14 +26,29 @@ logical module path while recursively staging direct and transitive imports.
 ## Workflow
 
 1. Identify the source file, target function, and optional named spec.
+   When implementation and spec are separate files, preserve them as separate
+   immutable inputs. Never ask the model to create a C harness or splice the
+   spec into the implementation; `--spec-file` performs that assembly
+   deterministically.
 2. Analyze the spec before inventing or editing binds:
 
    ```bash
-   python3 -m spectest analyze SOURCE --function FUNCTION [--spec SPEC]
+   python3 -m spectest analyze IMPL.c \
+     --spec-file SPEC.qcp \
+     --function FUNCTION \
+     --write-binds BINDS.json
    ```
+
+   Omit `--spec-file` only when the C source already contains its full QCP
+   spec. Use `--spec NAME` solely to select a named spec, not as a spec path.
 
 3. Obtain binds:
 
+   - In four-class benchmark runs, the model may write only the binds file.
+     It must not edit residual proofs, the implementation, the spec, a test
+     harness, a spec oracle, or a combined source. Outside that benchmark
+     protocol, edit a residual proof only when the caller explicitly requests
+     the manual-proof workflow below.
    - If the user supplied a binds file or concrete values, preserve them.
      Do not silently replace or broaden human test cases.
    - If binds are absent, read [references/binds.md](references/binds.md) and
@@ -58,15 +73,20 @@ logical module path while recursively staging direct and transitive imports.
      inductive data; use explicit `{"type": T, "qcp": term}` for any type the
      friendly encoder does not understand.
 
-4. Run the source directly:
+4. Run the implementation against the original spec:
 
    ```bash
-   python3 -m spectest run SOURCE \
+   python3 -m spectest run IMPL.c \
+     --spec-file SPEC.qcp \
      --function FUNCTION \
      [--spec SPEC] \
      --binds BINDS.json \
      --output-dir OUTPUT
    ```
+
+   This command executes the implementation and checks the resulting state
+   against the supplied spec. A successful C execution without a spec result
+   is not a TeSpec test.
 
    Add `-I` when the source uses an external C/QCP header or a declared
    strategy file. Paths such as `QCP_examples/QCP_demos_LLM` are resolved

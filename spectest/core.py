@@ -49,6 +49,68 @@ def read_source_text(path: Path) -> str:
     )
 
 
+def attach_spec_to_source(source: str, spec: str, function: str) -> str:
+    """Attach a separate full QCP spec to one C function definition.
+
+    Public four-class questions keep implementation and specification as two
+    inputs. QCP consumes one annotated translation unit, so this deterministic
+    adapter performs the mechanical assembly before analysis or execution.
+    """
+
+    if _NAME_RE.fullmatch(function) is None:
+        raise JobError(f"invalid C function name: {function!r}")
+    stripped = spec.strip()
+    if not stripped:
+        raise JobError("spec file is empty")
+    full_comment = re.fullmatch(r"/\*@(?P<body>.*?)\*/", stripped, re.DOTALL)
+    if full_comment is not None:
+        body = full_comment.group("body").strip()
+    else:
+        if "/*" in stripped or "*/" in stripped:
+            raise JobError(
+                "separate spec must be a raw QCP body or one complete /*@ ... */ block"
+            )
+        body = stripped
+    if re.search(r"\bRequire\b", body) is None:
+        raise JobError("separate spec has no Require clause")
+    if re.search(r"\bEnsure\b", body) is None:
+        raise JobError("separate spec has no Ensure clause")
+
+    pattern = re.compile(
+        rf"(?P<head>\b{re.escape(function)}\s*"
+        r"\((?P<parameters>[^;{}]*)\))\s*"
+        r"(?P<comments>(?:/\*@.*?\*/\s*)*)"
+        r"(?P<terminator>{)",
+        re.DOTALL,
+    )
+    matches = [
+        match
+        for match in pattern.finditer(source)
+        if not _inside_block_comment(source, match.start())
+    ]
+    if len(matches) != 1:
+        raise JobError(
+            f"expected exactly one definition of function {function!r}, "
+            f"found {len(matches)}"
+        )
+    match = matches[0]
+    if any(
+        re.search(r"\bRequire\b", item.group("body"))
+        for item in re.finditer(
+            r"/\*@(?P<body>.*?)\*/",
+            match.group("comments"),
+            re.DOTALL,
+        )
+    ):
+        raise JobError(
+            f"function {function!r} already has a full QCP spec; "
+            "do not also pass spec_file"
+        )
+    annotation = f"\n/*@ {body}\n*/"
+    insertion = match.end("head")
+    return source[:insertion] + annotation + source[insertion:]
+
+
 _NAME_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_]*\Z")
 _LOGIC_NAME_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_]*(?:::[A-Za-z_][A-Za-z0-9_]*)*\Z")
 _FORBIDDEN_EXPR_PARTS = (
@@ -2751,6 +2813,15 @@ def run_job(job_path: Path, output_override: Path | None = None) -> dict[str, An
     function = job.get("function")
     if not isinstance(function, str):
         raise JobError("function must be a string")
+    spec_file_value = job.get("spec_file")
+    spec_file_path: Path | None = None
+    if spec_file_value is not None:
+        spec_file_path = _resolve(base, spec_file_value, "spec_file")
+        source = attach_spec_to_source(
+            source,
+            read_source_text(spec_file_path),
+            function,
+        )
 
     raw_binds = job.get("binds")
     if not isinstance(raw_binds, list) or not raw_binds:
@@ -2888,6 +2959,7 @@ def run_job(job_path: Path, output_override: Path | None = None) -> dict[str, An
         "schema": "qcp-spectest-report/v1",
         "job": str(job_path),
         "source": str(source_path),
+        "spec_file": str(spec_file_path) if spec_file_path is not None else None,
         "function": function,
         "qcp_binary": str(config.binary),
         "results": results,

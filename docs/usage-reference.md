@@ -184,6 +184,7 @@ constructor 的多态实参；`type_args` 用于明确记录/校验输入意图�
 ```json
 {
   "source": "callee_heap.c",
+  "spec_file": "optional_separate_spec.qcp",
   "function": "callee_heap",
   "spec": "optional_named_spec",
   "binds": [
@@ -211,6 +212,11 @@ constructor 的多态实参；`type_args` 用于明确记录/校验输入意图�
   }
 }
 ```
+
+`spec_file` 用于公开输入分离为 implementation 与 QCP spec 的情况。工具会在
+内存中把该 full spec 附着到 `function`，不会修改任一输入文件。若 `source`
+已经包含 full spec，应省略 `spec_file`；两者同时提供会被拒绝。`spec` 仍表示
+同一函数存在多个 named spec 时的名称选择，不是文件路径。
 
 `qcip_root` 和 `binary` 通常不需要填写；默认分别解析为当前项目的
 `runtime/qcip` 和 `bin/qcp-symexec`。只有显式测试另一套运行时时才覆盖它们。

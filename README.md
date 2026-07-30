@@ -63,6 +63,10 @@ residual proof 时需要 Coq 8.20.x。
 implementation 与 QCP spec 的 C 文件；如果 spec 导入了 Coq 模块或 strategy，
 同时提供这些依赖文件。
 
+若公开题面把两者保存为独立的 `impl.c` 和 `spec.qcp`，保持两份输入不变并在
+下面的命令中添加 `--spec-file spec.qcp`。TeSpec 会确定性组装供 QCP 使用的临时
+source；模型只需要填写 binds。
+
 推荐把一道新题组织成：
 
 ```text
@@ -82,6 +86,15 @@ my-problem/
 
 ```bash
 python3 -m spectest analyze /path/to/SOURCE.c \
+  --function FUNCTION \
+  --write-binds binds.json
+```
+
+分离输入等价写法：
+
+```bash
+python3 -m spectest analyze impl.c \
+  --spec-file spec.qcp \
   --function FUNCTION \
   --write-binds binds.json
 ```
@@ -140,6 +153,16 @@ python3 -m spectest run /path/to/SOURCE.c \
   --output-dir .spectest/my-run
 ```
 
+分离输入使用同一份 binds：
+
+```bash
+python3 -m spectest run impl.c \
+  --spec-file spec.qcp \
+  --function FUNCTION \
+  --binds binds.json \
+  --output-dir .spectest/my-run
+```
+
 有限循环或递归较深时，可显式调整安全上限：
 
 ```bash
@@ -167,8 +190,8 @@ python3 -m spectest run /path/to/SOURCE.c \
 
 | 接口 | 用途 |
 |---|---|
-| `analyze SOURCE --function F [--spec S]` | 分析 spec，并可用 `--write-binds` 生成模板 |
-| `run SOURCE --function F --binds binds.json [-I DIR]` | 直接测试一道新题及其本地依赖 |
+| `analyze SOURCE --function F [--spec-file S]` | 分析内嵌或独立 spec，并可用 `--write-binds` 生成模板 |
+| `run SOURCE --function F --binds binds.json [--spec-file S]` | 用 concrete binds 执行 implementation 并检查原始 spec |
 | `check job.json` | 运行已保存、可复用的 job |
 | `check-proof vc/manifest.json` | 检查已填写的 manual residual Coq 证明 |
 

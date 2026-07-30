@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 
 from .core import (
+    attach_spec_to_source,
     bundled_qcip_root,
     bundled_qcp_binary,
     check_vc_proof,
@@ -45,7 +46,11 @@ def _analyze_parser() -> argparse.ArgumentParser:
         prog="qcp-spectest analyze",
         description="Analyze a QCP function spec and generate a binds template.",
     )
-    parser.add_argument("source", type=Path, help="C file containing spec+impl")
+    parser.add_argument(
+        "source",
+        type=Path,
+        help="C implementation, optionally already containing its QCP spec",
+    )
     parser.add_argument(
         "--function",
         help="target function name; omit it to catalog every full spec in the file",
@@ -53,6 +58,11 @@ def _analyze_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--spec",
         help="named spec to analyze when the function has multiple full specs",
+    )
+    parser.add_argument(
+        "--spec-file",
+        type=Path,
+        help="separate QCP spec body to attach to --function before analysis",
     )
     parser.add_argument(
         "--write-binds",
@@ -76,6 +86,14 @@ def _run_analyze(argv: list[str]) -> int:
     try:
         source_path = args.source.expanduser().resolve()
         source = read_source_text(source_path)
+        if args.spec_file is not None:
+            if args.function is None:
+                raise JobError("--spec-file requires --function")
+            source = attach_spec_to_source(
+                source,
+                read_source_text(args.spec_file.expanduser().resolve()),
+                args.function,
+            )
         include_dirs = tuple(item.expanduser().resolve() for item in args.include_dir)
         signature_source = source_with_local_includes(
             source_path, include_dirs, primary_source=source
@@ -131,9 +149,18 @@ def _run_parser() -> argparse.ArgumentParser:
         prog="qcp-spectest run",
         description="Check a source file using a human- or model-written binds file.",
     )
-    parser.add_argument("source", type=Path, help="C file containing spec+impl")
+    parser.add_argument(
+        "source",
+        type=Path,
+        help="C implementation, optionally already containing its QCP spec",
+    )
     parser.add_argument("--function", required=True, help="target function name")
     parser.add_argument("--spec", help="named spec when the function has several")
+    parser.add_argument(
+        "--spec-file",
+        type=Path,
+        help="separate QCP spec body to attach before execution",
+    )
     parser.add_argument(
         "--binds",
         required=True,
@@ -208,6 +235,8 @@ def _run_source(argv: list[str]) -> int:
                 "timeout_seconds": args.timeout,
             },
         }
+        if args.spec_file is not None:
+            job["spec_file"] = str(args.spec_file.expanduser().resolve())
         if args.spec is not None:
             job["spec"] = args.spec
         job_path = output_dir / "job.json"

@@ -211,6 +211,16 @@ def main() -> int:
     output = {
         "schema": "tespec-nano-tool-policy-ablation/v1",
         "experiment_id": "multidomain-four-class-tool-policy-20260730",
+        "valid": False,
+        "invalidation": {
+            "code": "tespec_not_invoked",
+            "reason": (
+                "The nominal tool-enabled condition used ad-hoc compiler "
+                "harnesses and never invoked qcp-spectest with implementation, "
+                "QCP specification, and concrete binds. Its accuracy delta "
+                "does not measure the TeSpec tool skill."
+            ),
+        },
         "design": {
             "model": "openai/gpt-5-nano",
             "api_base": "https://yunwu.ai/v1",
@@ -251,6 +261,7 @@ def main() -> int:
         },
         "conditions": [forbidden, enabled],
         "comparison": {
+            "conclusion_valid": False,
             "tool_forbidden_allocated_accuracy": forbidden[
                 "allocated_accuracy"
             ],
@@ -267,10 +278,8 @@ def main() -> int:
                 / enabled["allocated_attempts"]
             ),
             "interpretation": (
-                "The generic tool-enabled skill did not improve Nano on this "
-                "balanced four-question sample. It lost one correct attempt, "
-                "was slower, and only a minority of attempts completed the "
-                "required direct input reads and a successful executable probe."
+                "No conclusion about TeSpec tool effectiveness is valid. The "
+                "treatment did not run the spec-testing tool."
             ),
         },
         "excluded_preexperiments": [

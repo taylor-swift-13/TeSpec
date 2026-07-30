@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -11,6 +13,7 @@ from unittest.mock import patch
 from spectest.core import (
     _FORBIDDEN_MANUAL_PROOF,
     JobError,
+    attach_spec_to_source,
     _closed_generated_goal_value,
     _coq_required_modules,
     _default_coqc_command,
@@ -76,6 +79,144 @@ class SpecializationTests(unittest.TestCase):
             self.assertIn("模式转换", read_source_text(gb_source))
             with self.assertRaisesRegex(JobError, "cannot decode source"):
                 read_source_text(invalid_source)
+
+    def test_attaches_a_separate_spec_without_model_rewriting(self) -> None:
+        annotated = (ROOT / "cases/add_one/add_one.c").read_text(encoding="utf-8")
+        match = re.search(r"/\*@(?P<body>.*?)\*/", annotated, re.DOTALL)
+        assert match is not None
+        implementation = annotated[: match.start()] + annotated[match.end() :]
+        combined = attach_spec_to_source(
+            implementation,
+            match.group("body"),
+            "add_one",
+        )
+        analysis = analyze_source(combined, "add_one")
+        self.assertEqual(
+            [item["name"] for item in analysis["argument_bindings"]],
+            ["x"],
+        )
+        self.assertEqual(
+            [item["name"] for item in analysis["value_bindings"]],
+            ["v"],
+        )
+
+    def test_separate_spec_file_runs_with_model_written_binds_only(self) -> None:
+        annotated = (ROOT / "cases/add_one/add_one.c").read_text(encoding="utf-8")
+        match = re.search(r"/\*@(?P<body>.*?)\*/", annotated, re.DOTALL)
+        assert match is not None
+        implementation = annotated[: match.start()] + annotated[match.end() :]
+        with tempfile.TemporaryDirectory(prefix="qcp-separate-spec-") as temp:
+            root = Path(temp)
+            impl_path = root / "impl.c"
+            spec_path = root / "spec.qcp"
+            job_path = root / "job.json"
+            impl_path.write_text(implementation, encoding="utf-8")
+            spec_path.write_text(match.group("body"), encoding="utf-8")
+            job_path.write_text(
+                json.dumps(
+                    {
+                        "source": "impl.c",
+                        "spec_file": "spec.qcp",
+                        "function": "add_one",
+                        "binds": [
+                            {
+                                "id": "small",
+                                "args": {"x": 1},
+                                "values": {"v": 1},
+                            }
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            report = run_job(job_path, root / "output")
+            self.assertEqual(report["summary"]["PASS"], 1)
+            self.assertEqual(report["spec_file"], str(spec_path))
+
+    def test_cli_accepts_impl_spec_and_only_a_binds_edit(self) -> None:
+        annotated = (ROOT / "cases/add_one/add_one.c").read_text(encoding="utf-8")
+        match = re.search(r"/\*@(?P<body>.*?)\*/", annotated, re.DOTALL)
+        assert match is not None
+        implementation = annotated[: match.start()] + annotated[match.end() :]
+        with tempfile.TemporaryDirectory(prefix="qcp-separate-spec-cli-") as temp:
+            root = Path(temp)
+            impl_path = root / "impl.c"
+            spec_path = root / "spec.qcp"
+            binds_path = root / "binds.json"
+            output_path = root / "output"
+            impl_path.write_text(implementation, encoding="utf-8")
+            spec_path.write_text(match.group("body"), encoding="utf-8")
+
+            analyze = subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "spectest",
+                    "analyze",
+                    str(impl_path),
+                    "--spec-file",
+                    str(spec_path),
+                    "--function",
+                    "add_one",
+                    "--write-binds",
+                    str(binds_path),
+                ],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(analyze.returncode, 0, analyze.stderr)
+            template = json.loads(binds_path.read_text(encoding="utf-8"))
+            self.assertEqual(set(template[0]["args"]), {"x"})
+            self.assertEqual(set(template[0]["values"]), {"v"})
+
+            # This is the sole model-authored artifact in the tool workflow.
+            binds_path.write_text(
+                json.dumps(
+                    [
+                        {
+                            "id": "boundary",
+                            "args": {"x": 2147483646},
+                            "values": {"v": 2147483646},
+                        }
+                    ]
+                ),
+                encoding="utf-8",
+            )
+            run = subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "spectest",
+                    "run",
+                    str(impl_path),
+                    "--spec-file",
+                    str(spec_path),
+                    "--function",
+                    "add_one",
+                    "--binds",
+                    str(binds_path),
+                    "--output-dir",
+                    str(output_path),
+                ],
+                cwd=ROOT,
+                text=True,
+                capture_output=True,
+                check=False,
+            )
+            self.assertEqual(run.returncode, 0, run.stderr)
+            report = json.loads((output_path / "report.json").read_text())
+            self.assertEqual(report["summary"]["PASS"], 1)
+
+    def test_separate_spec_rejects_an_already_annotated_function(self) -> None:
+        annotated = (ROOT / "cases/add_one/add_one.c").read_text(encoding="utf-8")
+        with self.assertRaisesRegex(JobError, "already has a full QCP spec"):
+            attach_spec_to_source(
+                annotated,
+                "With (v: Z) Require x == v Ensure __return == v + 1",
+                "add_one",
+            )
 
     def test_closed_generated_goal_detects_only_concrete_falsehoods(self) -> None:
         goals = """

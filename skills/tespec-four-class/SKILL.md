@@ -51,6 +51,11 @@ Use `qcp-spec-test` when it supports the candidate. A checked `FAIL` can prove
 case, implementation trace, and negative spec check under
 `evidence/completeness/`.
 
+For separate `impl.c` and `spec.qcp`, run `qcp-spec-test` with
+`--spec-file spec.qcp`. Let the model write only concrete binds; the tool must
+assemble the annotated source, execute the implementation, and check the
+original spec. Never substitute a model-written C harness for this check.
+
 If no counterexample is found, Complete remains unknown until an inclusion
 proof or checked adequacy certificate covers all defined implementation
 behaviors.
@@ -149,6 +154,12 @@ Return the requested four-class label even when the argument is not a formal
 certificate. Use `abstain` only when an input cannot be read or interpreted,
 not merely because a full inclusion proof is unavailable. Do not create
 `result.json` or claim machine-checked evidence in this mode.
+
+When tools are allowed, first analyze the actual impl/spec pair, write only
+`binds.json`, and run TeSpec. Judge the label from its spec-test results plus
+the two-axis semantic analysis. Do not write or edit any other file: in
+particular, do not write a replacement harness, combined source, oracle, or
+manual residual proof.
 
 ## 7. Finalize
 
