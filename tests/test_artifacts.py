@@ -233,6 +233,19 @@ class ArtifactManagementTests(unittest.TestCase):
             set(expected),
         )
         base_slots: dict[str, list[tuple[str, str]]] = {}
+        base_subquestion_indices: dict[str, set[int]] = {}
+        forbidden_strict_gold = {
+            "proof_spec_relation_subset_implementation",
+            "proof_implementation_subset_spec_relation",
+            "checked_spec_only_behavior_witness",
+            "checked_implementation_behavior_rejected_witness",
+        }
+        self.assertEqual(
+            payload["gold_policy"]["mode"],
+            "reviewed-semantic-judgment",
+        )
+        self.assertFalse(payload["gold_policy"]["formal_proof_required"])
+        self.assertFalse(payload["gold_policy"]["checked_counterexample_required"])
         for question in payload["questions"]:
             self.assertEqual(question["public_inputs"], ["impl.c", "spec.qcp"])
             self.assertNotIn("paired_impl_mutation", question)
@@ -245,6 +258,12 @@ class ArtifactManagementTests(unittest.TestCase):
                 "gpt5_nano_difficulty_gate",
                 question["required_gold"],
             )
+            self.assertIn("semantic_review_record", question["required_gold"])
+            self.assertIn("soundness_review_rationale", question["required_gold"])
+            self.assertIn("completeness_review_rationale", question["required_gold"])
+            self.assertTrue(forbidden_strict_gold.isdisjoint(question["required_gold"]))
+            self.assertEqual(question["subquestion_count"], 6)
+            self.assertIn(question["subquestion_index"], range(1, 7))
             tier = question["difficulty"]["tier"]
             minimum_score = 22 if tier == "hard" else 40
             minimum_steps = 1 if tier == "hard" else 2
@@ -261,11 +280,14 @@ class ArtifactManagementTests(unittest.TestCase):
             if tier == "expert":
                 self.assertTrue(question["mutation_lineage"]["spec"]["camouflage"])
                 self.assertIn(
-                    "composed_mutation_nonredundancy_certificate",
+                    "composed_mutation_nonredundancy_review",
                     question["required_gold"],
                 )
             base_slots.setdefault(question["base_id"], []).append(
                 (question["target_label"], tier)
+            )
+            base_subquestion_indices.setdefault(question["base_id"], set()).add(
+                question["subquestion_index"]
             )
         self.assertEqual(len(base_slots), 100)
         for slots in base_slots.values():
@@ -285,6 +307,12 @@ class ArtifactManagementTests(unittest.TestCase):
                         },
                         {"hard", "expert"},
                     )
+        self.assertTrue(
+            all(
+                indices == set(range(1, 7))
+                for indices in base_subquestion_indices.values()
+            )
+        )
 
     def test_difficulty_auditor_accepts_frozen_plan(self) -> None:
         with tempfile.TemporaryDirectory(prefix="tespec-difficulty-audit-") as temp:

@@ -39,7 +39,7 @@ LABEL_ROLES = {
 }
 EXACT_PUBLIC_INPUTS = ["impl.c", "spec.qcp"]
 COMMON_CHECKS = {
-    "semantic_gold_required",
+    "semantic_review_gold_required",
     "operator_and_label_hidden_from_public_input",
     "source_family_locked_to_single_split",
     "balanced_surface_statistics",
@@ -51,6 +51,10 @@ EXPERT_CHECKS = {
     "composed_mutation_nonredundancy",
 }
 COMMON_GOLD = {
+    "semantic_review_record",
+    "soundness_review_rationale",
+    "completeness_review_rationale",
+    "legal_input_domain_review",
     "difficulty_gate_certificate",
     "gpt5_nano_difficulty_gate",
     "surface_statistics_audit",
@@ -123,8 +127,20 @@ def audit(
     catalog_sha256: str,
 ) -> dict[str, Any]:
     errors: list[str] = []
-    if payload.get("schema") != "tespec-four-class-question-plan/v2":
+    if payload.get("schema") != "tespec-four-class-question-plan/v3":
         errors.append("root: unsupported question-plan schema")
+    if payload.get("questions_per_base") != 6:
+        errors.append("root: questions_per_base must be exactly 6")
+    gold_policy = payload.get("gold_policy", {})
+    if gold_policy != {
+        "mode": "reviewed-semantic-judgment",
+        "formal_proof_required": False,
+        "checked_counterexample_required": False,
+        "reviewer_must_inspect": ["impl.c", "spec.qcp"],
+        "required_axis_judgments": ["sound", "complete"],
+        "supporting_proofs_and_counterexamples": "optional",
+    }:
+        errors.append("root: semantic-review gold policy is not frozen")
     if payload.get("catalog_sha256") != catalog_sha256:
         errors.append("root: plan is not bound to the supplied catalog hash")
     authoritative_gate = payload.get("difficulty_policy", {}).get("authoritative_gate")
@@ -146,6 +162,7 @@ def audit(
 
     ids: set[str] = set()
     base_slots: dict[str, Counter[tuple[str, str]]] = defaultdict(Counter)
+    base_subquestion_indices: dict[str, set[int]] = defaultdict(set)
     labels: Counter[str] = Counter()
     tiers: Counter[str] = Counter()
     label_tiers: Counter[str] = Counter()
@@ -168,6 +185,15 @@ def audit(
         tiers[tier] += 1
         label_tiers[f"{label}:{tier}"] += 1
         base_slots[str(base_id)][(label, tier)] += 1
+        subquestion_index = question.get("subquestion_index")
+        if question.get("subquestion_count") != 6:
+            add_error(errors, question_id, "subquestion_count must be exactly 6")
+        if not isinstance(subquestion_index, int) or not 1 <= subquestion_index <= 6:
+            add_error(errors, question_id, "subquestion_index must be in 1..6")
+        elif subquestion_index in base_subquestion_indices[str(base_id)]:
+            add_error(errors, question_id, "duplicate subquestion_index in base")
+        else:
+            base_subquestion_indices[str(base_id)].add(subquestion_index)
 
         if label not in LABEL_BITS:
             add_error(errors, question_id, f"unsupported label {label!r}")
@@ -275,9 +301,7 @@ def audit(
             add_error(errors, question_id, "incomplete anti-shortcut checks")
         gold = set(question.get("required_gold", []))
         required_gold = COMMON_GOLD | (
-            {"composed_mutation_nonredundancy_certificate"}
-            if tier == "expert"
-            else set()
+            {"composed_mutation_nonredundancy_review"} if tier == "expert" else set()
         )
         if not required_gold <= gold:
             add_error(errors, question_id, "missing difficulty gold certificate")
@@ -302,6 +326,8 @@ def audit(
         base_index = catalog_indices.get(base_id)
         if base_index is None or slots != expected_base_slots(base_index):
             errors.append(f"{base_id}: incorrect six-question label/tier schedule")
+        if base_subquestion_indices[base_id] != set(range(1, 7)):
+            errors.append(f"{base_id}: subquestion indices must be exactly 1..6")
 
     return {
         "schema": "tespec-four-class-difficulty-audit/v1",

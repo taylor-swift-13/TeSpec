@@ -2,9 +2,11 @@
 """Build a balanced 600-question mutation plan with enforced difficulty.
 
 The output is a construction plan. It does not claim that a planned mutation
-has the requested semantics: every materialized question must later carry the
-checked certificates listed in ``required_gold``.  Difficulty is represented
-as a rejectable contract rather than a descriptive label.
+has the requested semantics: every materialized question must later receive
+an explicit two-axis semantic review. Formal inclusion proofs and checked
+counterexamples are useful supporting evidence, but are not release blockers.
+Difficulty is represented as a rejectable contract rather than a descriptive
+label.
 """
 
 from __future__ import annotations
@@ -279,7 +281,7 @@ def difficulty_contract(
     minimum_score = 22 if tier == "hard" else 40
     minimum_steps = 1 if tier == "hard" else 2
     checks = [
-        "semantic_gold_required",
+        "semantic_review_gold_required",
         "operator_and_label_hidden_from_public_input",
         "source_family_locked_to_single_split",
         "balanced_surface_statistics",
@@ -307,9 +309,11 @@ def difficulty_contract(
 
 
 def required_gold(label: str, tier: str) -> list[str]:
-    bits = LABEL_BITS[label]
     result: list[str] = [
-        "legal_input_domain_certificate",
+        "semantic_review_record",
+        "soundness_review_rationale",
+        "completeness_review_rationale",
+        "legal_input_domain_review",
         "implementation_hash",
         "spec_typecheck",
         "mutation_lineage_hash",
@@ -319,15 +323,7 @@ def required_gold(label: str, tier: str) -> list[str]:
         "label_blind_mutation_audit",
     ]
     if tier == "expert":
-        result.append("composed_mutation_nonredundancy_certificate")
-    if bits["sound"]:
-        result.append("proof_spec_relation_subset_implementation")
-    else:
-        result.append("checked_spec_only_behavior_witness")
-    if bits["complete"]:
-        result.append("proof_implementation_subset_spec_relation")
-    else:
-        result.append("checked_implementation_behavior_rejected_witness")
+        result.append("composed_mutation_nonredundancy_review")
     return result
 
 
@@ -342,6 +338,8 @@ def build_questions(tasks: list[dict[str, Any]]) -> list[dict[str, Any]]:
             questions.append(
                 {
                     "question_id": question_id,
+                    "subquestion_index": slot,
+                    "subquestion_count": 6,
                     "base_index": base_index,
                     "base_id": entry["id"],
                     "source_family": entry["family"],
@@ -425,9 +423,9 @@ def main() -> int:
             f"label_tiers={label_tier_counts}"
         )
     report = {
-        "schema": "tespec-four-class-question-plan/v2",
+        "schema": "tespec-four-class-question-plan/v3",
         "status": (
-            "mutation-plan-requires-materialization-gold-audit-and-gpt5-nano-gate"
+            "mutation-plan-requires-materialization-semantic-review-and-gpt5-nano-gate"
         ),
         "catalog_sha256": catalog_sha256,
         "base_program_count": len(tasks),
@@ -449,9 +447,18 @@ def main() -> int:
                 "surface camouflage, three reasoning dimensions, score >= 40"
             ),
             "release_rule": (
-                "a planned tier is not gold until every required certificate "
-                "and anti-shortcut audit passes"
+                "a planned label becomes reviewed gold after a reviewer inspects "
+                "the materialized impl/spec pair, records both axis judgments and "
+                "rationales, and the anti-shortcut/difficulty audits pass"
             ),
+        },
+        "gold_policy": {
+            "mode": "reviewed-semantic-judgment",
+            "formal_proof_required": False,
+            "checked_counterexample_required": False,
+            "reviewer_must_inspect": ["impl.c", "spec.qcp"],
+            "required_axis_judgments": ["sound", "complete"],
+            "supporting_proofs_and_counterexamples": "optional",
         },
         "class_semantics": {
             "correct": "sound=true, complete=true",

@@ -15,9 +15,10 @@ QCP/Rocq 定义和策略是工具依赖，不算第三个语义输入。题目�
 mutation 或 spec mutation 生成，题目之间的 mutation lineage 只保存在隐藏构造元数据
 中，不作为单题输入。
 
-隐藏的 gold package 包含合法输入域证书、基准语义关系、包含证明、反例 binds、
-规范化执行结果、mutation lineage 和内容哈希。模型看不到 gold label、父题或隐藏
-witness。
+隐藏的 gold package 至少包含审阅者对 Sound、Complete 两个轴的判断与理由、合法输入域
+审阅、mutation lineage 和内容哈希。包含证明、反例 binds 和规范化执行结果是推荐的
+增强证据，但不再作为题目进入 benchmark 的硬性条件。模型看不到 gold label、父题或
+隐藏审阅记录。
 
 本 benchmark 固定使用以下术语。由于文献中 `sound` 和 `complete` 的方向并不统一，
 论文和数据文件必须同时给出下面的逻辑定义，不能只写名称。
@@ -75,10 +76,9 @@ vacuity 当作匹配。
 它表示规范允许的每个行为都是 implementation 的真实行为，即规范没有放进实现做不到
 的行为。
 
-证伪 `Sound` 必须提交 \((x,y)\in R_S\setminus R_I\)：具体输入和 heap、冻结的合法
-`With` bindings、candidate positive polarity，以及 \(y\) 不是 implementation 行为的
-checked certificate。隐藏的 sibling mutation 可以帮助构造 witness，但不能作为单题
-输入或单独充当证明。
+审阅者判断 `Sound` 为假时，应说明规范允许了哪类 implementation 不可能产生的行为；
+具体输入、heap 和 checked counterexample 是优先采用的增强证据，但不是发布阻塞项。
+隐藏的 sibling mutation 可以帮助审阅，不能作为单题输入。
 
 ### 3.2 Complete
 
@@ -88,8 +88,9 @@ checked certificate。隐藏的 sibling mutation 可以帮助构造 witness，�
 \]
 
 它表示 implementation 的每个定义良好行为都被规范接纳，即规范没有排除实现真实行为。
-证伪 `Complete` 必须提交 \((x,B(I,x))\in R_I\setminus R_S\)：具体执行 trace 和
-candidate negative polarity。首版 benchmark 只纳入确定性 sequential C。
+审阅者判断 `Complete` 为假时，应说明哪类真实 implementation 行为被规范排除；具体执行
+trace 和 candidate negative polarity 是推荐增强证据。首版 benchmark 只纳入确定性
+sequential C。
 
 ## 4. 四分类
 
@@ -109,8 +110,9 @@ candidate negative polarity。首版 benchmark 只纳入确定性 sequential C�
 
 ## 5. 600 道题
 
-选择 100 个 base program。每个 base 通过 impl/spec mutation graph 生成 6 个
-`impl + spec` 实例，共 600 道题；公开题包仍只包含当前节点的两个输入。
+选择 100 个 base program。每个 base 必须通过 impl/spec mutation graph 生成恰好 6 个
+`impl + spec` 小题，共 600 道题；每个小题显式记录 `subquestion_index` 1 到 6，公开题包
+仍只包含当前节点的两个输入。
 
 每个 base 至少含四类各一道，额外两道按 base index 在相邻类别对之间循环。难度在不增加
 题量的前提下分层：
@@ -125,9 +127,21 @@ candidate negative polarity。首版 benchmark 只纳入确定性 sequential C�
 
 自动生成的计划位于
 [`catalog/question-plan-600.json`](catalog/question-plan-600.json)。其中的
-`target_label` 只是 mutation 生成目标；在 gold audit 完成前，不能作为已成立标签。
+`target_label` 是 mutation 生成目标；审阅者实际阅读物化后的 impl/spec、记录两个轴的
+判断和理由后，它才成为 reviewed gold。
 
-### 5.1 可执行难度门槛
+### 5.1 Gold 审阅口径
+
+正式 gold 采用 `reviewed-semantic-judgment`：
+
+- 审阅者必须读取当前小题的 `impl.c` 和 `spec.qcp`；
+- 分别记录 `sound`、`complete` 判断及理由，并由真值表导出四分类；
+- 不允许只根据 mutation operator 或目标标签填写结果；
+- inclusion proof、Coq certificate、checked counterexample 和执行 trace 均为可选增强
+  证据，不是发布阻塞项；
+- 难度 gate、输入哈希、spec typecheck、隐藏 lineage 和防捷径审计仍然必须保留。
+
+### 5.2 可执行难度门槛
 
 正式难度判据是冻结的 OpenHands + `openai/gpt-5-nano`
 `generic-agent-without-tespec-two-input` 基线。每道物化题独立运行三次：
@@ -160,8 +174,8 @@ quantifier、custom Coq definitions 和 relation inclusion。
 - 类间 token length、conjunct 数和 edit distance 的
   `surface_statistics_audit`；
 - 不读取 operator/label 的 `label_blind_mutation_audit`；
-- `expert` 专属的 `composed_mutation_nonredundancy_certificate`；
-- 四分类本身所需的 inclusion proof 或 checked counterexample。
+- `expert` 专属的 `composed_mutation_nonredundancy_review`；
+- 双轴 `semantic_review_record` 及 Sound/Complete 理由。
 
 [`catalog/difficulty-audit.json`](catalog/difficulty-audit.json) 是确定性审计结果。
 `scripts/audit-four-class-question-plan.py` 会拒绝类别/难度不平衡、公开输入泄漏、expert
@@ -169,24 +183,24 @@ quantifier、custom Coq definitions 和 relation inclusion。
 
 ## 6. 如何构造四类 mutation
 
-每个 base 具有可信行为关系 \(R_I\)，candidate spec 的关系记为 \(R_S\)。构造阶段用
-关系包含证明和执行 witness 双重检查：
+每个 base 具有可信行为关系 \(R_I\)，candidate spec 的关系记为 \(R_S\)。构造阶段由
+审阅者直接比较当前 impl/spec 的关系；proof 和执行 witness 可用于增强信心：
 
-- `correct`：证明 \(R_I\subseteq R_S\) 且
+- `correct`：审阅判断 \(R_I\subseteq R_S\) 且
   \(R_S\subseteq R_I\)。使用 alpha-renaming、结合律重排、透明定义
   fold/unfold、等价 old-state 正规化等语义保持变换。
-- `soundness`：证明 \(R_S\subseteq R_I\)，并给出
-  \(R_I\setminus R_S\) 的 implementation witness。典型变换是收窄合法输入、添加错误的
+- `soundness`：审阅判断 \(R_S\subseteq R_I\) 且存在
+  \(R_I\setminus R_S\) 行为；witness 可选。典型变换是收窄合法输入、添加错误的
   return/heap/float/list 限制或过度约束 globals/call effects。
-- `complete`：证明 \(R_I\subseteq R_S\)，并给出
-  \(R_S\setminus R_I\) 的可检查 witness。典型变换是删除 post conjunct、放宽数值
+- `complete`：审阅判断 \(R_I\subseteq R_S\) 且存在
+  \(R_S\setminus R_I\) 行为；witness 可选。典型变换是删除 post conjunct、放宽数值
   边界、删除 heap effect、量词、排序、permutation、call event 或 `next/prev` 约束。
-- `incomparable`：同时实施一项 weakening 和一项 strengthening，并分别保存
-  implementation witness 与 spec-only witness，证明两个差集都非空。
+- `incomparable`：同时实施一项 weakening 和一项 strengthening，审阅判断两个差集均
+  非空；implementation witness 与 spec-only witness 均为可选增强证据。
 
 不能根据 mutation operator 直接赋标签。删除的 conjunct 可能冗余，mutant 可能等价，
-strengthening 也可能由原规范蕴含。没有 checked inclusion 或 required witness 的
-mutation 必须丢弃并重新生成。
+strengthening 也可能由原规范蕴含。审阅理由无法自洽或审阅者无法判断的 mutation 必须
+丢弃并重新生成；不再因为缺少形式化 inclusion proof 而单独淘汰。
 
 ## 7. Mutation lineage
 
@@ -234,7 +248,7 @@ QCIP output 和已有 TeSpec cases。静态特征包括：
 - implementation 与隐藏语义 contract 已检查；
 - QCP/Rocq 依赖可打包到题目本地；
 - input domain、observable footprint 和 binding adequacy 已冻结；
-- 六个 mutation 全部具有相应 gold proof/witness 和难度证书；
+- 六个小题全部具有双轴语义审阅记录和难度证书；
 - TeSpec strict evaluation mode 能重放同一个 heap；
 - 不属于 tree、unrestricted graph、concurrency、UB 或未建模外设语义。
 
@@ -260,25 +274,18 @@ QCIP output 和已有 TeSpec cases。静态特征包括：
   "label": "incomparable",
   "sound": false,
   "complete": false,
-  "soundness_counterexample": {
-    "binds": "soundness_cex.json",
-    "spec_behavior_hash": "...",
-    "non_implementation_proof_hash": "..."
+  "review": {
+    "soundness_rationale": "...",
+    "completeness_rationale": "...",
+    "reviewer_inspected": ["impl.c", "spec.qcp"]
   },
-  "completeness_counterexample": {
-    "binds": "completeness_cex.json",
-    "implementation_trace_hash": "...",
-    "candidate_rejection_proof_hash": "..."
-  },
-  "positive_axis_proofs": [],
+  "optional_supporting_evidence": [],
   "mutation_lineage_hash": "...",
   "toolchain_hashes": {"...": "..."}
 }
 ```
 
-`correct` 保存两个 positive-axis proofs；`soundness` 保存 sound proof 和 complete
-counterexample；`complete` 保存 sound counterexample 和 complete proof；
-`incomparable` 保存两类 counterexample。
+四类都必须保存两个轴的审阅理由；proof、counterexample 和 trace 按可获得性附加。
 
 ## 10. 模型/Agent 提交格式
 
@@ -293,8 +300,7 @@ counterexample；`complete` 保存 sound counterexample 和 complete proof；
 }
 ```
 
-若某一维预测为 `false`，必须提交对应 counterexample。分类分数和证书分数分开报告：
-幸运猜中 label 不能计为证书成功。
+counterexample 为可选提交。分类分数与解释/证据质量分开报告。
 
 ## 11. 无工具与 TeSpec 对照
 
@@ -321,7 +327,7 @@ proposition。TeSpec 不直接读取 gold label、parent 或 mutation lineage，
 - four-class accuracy；
 - macro-F1；
 - `sound` 与 `complete` 两个轴的 balanced accuracy；
-- exact certificate success：label 正确且所有必需反例通过 deterministic checker。
+- reviewed-rationale agreement：label 正确且双轴解释与隐藏审阅记录一致。
 
 辅助指标：
 

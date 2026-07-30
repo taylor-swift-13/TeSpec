@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tespec.dev/schema/semantic-review/v1",
+  "title": "TeSpec reviewed semantic judgment",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "question_id",
+    "impl_sha256",
+    "spec_sha256",
+    "reviewer_inspected",
+    "sound",
+    "complete",
+    "label",
+    "soundness_rationale",
+    "completeness_rationale"
+  ],
+  "properties": {
+    "schema": {
+      "const": "tespec-semantic-review/v1"
+    },
+    "question_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "impl_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "spec_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "reviewer_inspected": {
+      "const": [
+        "impl.c",
+        "spec.qcp"
+      ]
+    },
+    "sound": {
+      "type": "boolean"
+    },
+    "complete": {
+      "type": "boolean"
+    },
+    "label": {
+      "enum": [
+        "correct",
+        "soundness",
+        "complete",
+        "incomparable"
+      ]
+    },
+    "soundness_rationale": {
+      "type": "string",
+      "minLength": 1
+    },
+    "completeness_rationale": {
+      "type": "string",
+      "minLength": 1
+    },
+    "confidence": {
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ]
+    },
+    "optional_supporting_evidence": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    }
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "sound": {"const": true},
+        "complete": {"const": true},
+        "label": {"const": "correct"}
+      }
+    },
+    {
+      "properties": {
+        "sound": {"const": true},
+        "complete": {"const": false},
+        "label": {"const": "soundness"}
+      }
+    },
+    {
+      "properties": {
+        "sound": {"const": false},
+        "complete": {"const": true},
+        "label": {"const": "complete"}
+      }
+    },
+    {
+      "properties": {
+        "sound": {"const": false},
+        "complete": {"const": false},
+        "label": {"const": "incomparable"}
+      }
+    }
+  ]
+}
