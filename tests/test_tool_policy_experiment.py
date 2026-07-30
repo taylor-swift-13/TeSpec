@@ -6,19 +6,14 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPERIMENT = (
-    ROOT
-    / "benchmark/experiments/multidomain-four-class-tool-policy-20260730"
-)
+EXPERIMENT = ROOT / "benchmark/experiments/multidomain-four-class-tool-policy-20260730"
 ANALYZE = EXPERIMENT / "analyze_results.py"
 
 
 class ToolPolicyExperimentTests(unittest.TestCase):
     def test_experiments_do_not_publish_skill_snapshots(self) -> None:
         snapshots = list(
-            (ROOT / "benchmark/experiments").glob(
-                "*/conditions/*/SKILL.md"
-            )
+            (ROOT / "benchmark/experiments").glob("*/conditions/*/SKILL.md")
         )
         self.assertEqual(snapshots, [])
 
