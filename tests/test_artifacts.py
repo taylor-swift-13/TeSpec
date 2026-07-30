@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections import Counter
 import json
 from pathlib import Path
 import subprocess
@@ -11,6 +12,8 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 MANAGER = ROOT / "skills/tespec-artifacts/scripts/manage_artifacts.py"
 RESULT_WRITER = ROOT / "skills/tespec-four-class/scripts/write_result.py"
+DIFFICULTY_AUDITOR = ROOT / "scripts/audit-four-class-question-plan.py"
+QUESTION_PLAN = ROOT / "benchmark/catalog/question-plan-600.json"
 
 
 class ArtifactManagementTests(unittest.TestCase):
@@ -208,27 +211,140 @@ class ArtifactManagementTests(unittest.TestCase):
                 str(root / "artifact-manifest.json"),
             )
 
-    def test_question_plan_uses_only_canonical_four_class_labels(self) -> None:
-        payload = json.loads(
-            (ROOT / "benchmark/catalog/question-plan-600.json").read_text(
-                encoding="utf-8"
-            )
-        )
+    def test_question_plan_is_balanced_and_difficulty_gated(self) -> None:
+        payload = json.loads(QUESTION_PLAN.read_text(encoding="utf-8"))
         expected = {
             "correct": 150,
             "soundness": 150,
             "complete": 150,
             "incomparable": 150,
         }
+        self.assertEqual(payload["question_count"], 600)
+        self.assertEqual(payload["questions_per_base"], 6)
         self.assertEqual(payload["class_counts"], expected)
+        self.assertEqual(
+            payload["difficulty_tier_counts"],
+            {"hard": 300, "expert": 300},
+        )
         self.assertEqual(
             {question["target_label"] for question in payload["questions"]},
             set(expected),
         )
+        base_slots: dict[str, list[tuple[str, str]]] = {}
         for question in payload["questions"]:
             self.assertEqual(question["public_inputs"], ["impl.c", "spec.qcp"])
             self.assertNotIn("paired_impl_mutation", question)
             self.assertEqual(question["mutation_lineage"]["visibility"], "hidden")
+            self.assertIn(
+                "gpt5_nano_three_attempt_gate",
+                question["difficulty"]["anti_shortcut_checks"],
+            )
+            self.assertIn(
+                "gpt5_nano_difficulty_gate",
+                question["required_gold"],
+            )
+            tier = question["difficulty"]["tier"]
+            minimum_score = 22 if tier == "hard" else 40
+            minimum_steps = 1 if tier == "hard" else 2
+            minimum_dimensions = 2 if tier == "hard" else 3
+            self.assertGreaterEqual(question["difficulty"]["score"], minimum_score)
+            self.assertGreaterEqual(
+                question["difficulty"]["spec_mutation_step_count"],
+                minimum_steps,
+            )
+            self.assertGreaterEqual(
+                len(set(question["difficulty"]["reasoning_dimensions"])),
+                minimum_dimensions,
+            )
+            if tier == "expert":
+                self.assertTrue(question["mutation_lineage"]["spec"]["camouflage"])
+                self.assertIn(
+                    "composed_mutation_nonredundancy_certificate",
+                    question["required_gold"],
+                )
+            base_slots.setdefault(question["base_id"], []).append(
+                (question["target_label"], tier)
+            )
+        self.assertEqual(len(base_slots), 100)
+        for slots in base_slots.values():
+            self.assertEqual(len(slots), 6)
+            self.assertEqual(
+                Counter(tier for _label, tier in slots),
+                {"hard": 3, "expert": 3},
+            )
+            self.assertEqual({label for label, _tier in slots}, set(expected))
+            for label, count in Counter(label for label, _tier in slots).items():
+                if count == 2:
+                    self.assertEqual(
+                        {
+                            tier
+                            for current_label, tier in slots
+                            if current_label == label
+                        },
+                        {"hard", "expert"},
+                    )
+
+    def test_difficulty_auditor_accepts_frozen_plan(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="tespec-difficulty-audit-") as temp:
+            output = Path(temp) / "audit.json"
+            self.run_script(
+                DIFFICULTY_AUDITOR,
+                "--plan",
+                str(QUESTION_PLAN),
+                "--output",
+                str(output),
+            )
+            report = json.loads(output.read_text(encoding="utf-8"))
+            self.assertTrue(report["passed"])
+            self.assertEqual(report["error_count"], 0)
+            self.assertFalse(report["release_ready"])
+            self.assertEqual(
+                report["authoritative_nano_gate_status"],
+                "pending-materialized-three-attempt-runs",
+            )
+
+    def test_difficulty_auditor_rejects_downgraded_expert_item(self) -> None:
+        payload = json.loads(QUESTION_PLAN.read_text(encoding="utf-8"))
+        expert = next(
+            question
+            for question in payload["questions"]
+            if question["difficulty"]["tier"] == "expert"
+        )
+        expert["mutation_lineage"]["spec"]["operators"] = [
+            expert["mutation_lineage"]["spec"]["operators"][0]
+        ]
+        expert["difficulty"]["spec_mutation_step_count"] = 1
+        with tempfile.TemporaryDirectory(prefix="tespec-difficulty-reject-") as temp:
+            root = Path(temp)
+            plan = root / "plan.json"
+            output = root / "audit.json"
+            plan.write_text(
+                json.dumps(payload, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    str(DIFFICULTY_AUDITOR),
+                    "--plan",
+                    str(plan),
+                    "--output",
+                    str(output),
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(completed.returncode, 1)
+            report = json.loads(output.read_text(encoding="utf-8"))
+            self.assertFalse(report["passed"])
+            self.assertTrue(
+                any(
+                    "at least 2 spec mutation steps" in error
+                    for error in report["errors"]
+                )
+            )
 
 
 if __name__ == "__main__":

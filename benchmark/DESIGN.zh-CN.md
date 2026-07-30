@@ -112,19 +112,56 @@ candidate negative polarity。首版 benchmark 只纳入确定性 sequential C�
 选择 100 个 base program。每个 base 通过 impl/spec mutation graph 生成 6 个
 `impl + spec` 实例，共 600 道题；公开题包仍只包含当前节点的两个输入。
 
-每个 base 至少含四类各一道。额外两道按 base index 循环：
+每个 base 至少含四类各一道，额外两道按 base index 在相邻类别对之间循环。难度在不增加
+题量的前提下分层：
 
-1. `(correct, soundness)`；
-2. `(soundness, complete)`；
-3. `(complete, incomparable)`；
-4. `(incomparable, correct)`。
+1. 每个 base 恰好 3 道 `hard` 和 3 道 `expert`；
+2. `hard` 使用单步或最小复合语义 mutation；
+3. `expert` 至少使用两步顺序复合且非冗余的 spec mutation，其中包含不改变目标关系的
+   surface camouflage。
 
-100 个 base 分为 25 个四题循环组，因此四类最终恰好各 150 道，不需要通过丢弃失败
-mutation 来事后平衡。
+因此四类最终各 150 道，每类均为 75 道 `hard` 和 75 道 `expert`，不需要通过丢弃
+失败 mutation 来事后平衡。
 
 自动生成的计划位于
 [`catalog/question-plan-600.json`](catalog/question-plan-600.json)。其中的
 `target_label` 只是 mutation 生成目标；在 gold audit 完成前，不能作为已成立标签。
+
+### 5.1 可执行难度门槛
+
+正式难度判据是冻结的 OpenHands + `openai/gpt-5-nano`
+`generic-agent-without-tespec-two-input` 基线。每道物化题独立运行三次：
+
+- 答对 0/3 或 1/3：保留；
+- 答对 2/3 或 3/3：判为简单题，必须用同类别的新难题替换；
+- 每次可计分轨迹必须包含读取 `impl.c` 和 `spec.qcp` 的 agent tool action；
+- 超时、认证失败、网关错误、输出不可解析、未读取两个输入或缺少 attempt：记为
+  unresolved，不能算作模型答错，也不能作为题目困难的证据。
+
+替换后必须对新题重新运行完整三次，直到 600 道题全部通过 gate。旧 paired-mutant
+pilot 的 nano 分数使用不同输入和标签，不能复用。
+
+每道题携带隐藏的 `difficulty` contract。`hard` 至少包含一次 spec 语义变换、两个独立
+推理维度且构造分数不低于 22；`expert` 至少包含两次顺序复合的非冗余 spec 变换、三个
+推理维度、surface camouflage，且构造分数不低于 40。推理维度包括 path-sensitive
+control、heap/alias、interprocedural effects、floating-point、inductive shape、
+quantifier、custom Coq definitions 和 relation inclusion。
+
+构造分数只用于在调用 nano 前提前拒绝明显简单的计划，不能证明题目真的困难，也不能
+代替 nano gate 或语义 gold。
+正式发布还必须具有：
+
+- `difficulty_gate_certificate`；
+- 三次 nano 运行及 `gpt5_nano_difficulty_gate`；
+- 类间 token length、conjunct 数和 edit distance 的
+  `surface_statistics_audit`；
+- 不读取 operator/label 的 `label_blind_mutation_audit`；
+- `expert` 专属的 `composed_mutation_nonredundancy_certificate`；
+- 四分类本身所需的 inclusion proof 或 checked counterexample。
+
+[`catalog/difficulty-audit.json`](catalog/difficulty-audit.json) 是确定性审计结果。
+`scripts/audit-four-class-question-plan.py` 会拒绝类别/难度不平衡、公开输入泄漏、expert
+退化为单步 mutation、缺少推理维度或缺少证书要求的计划。
 
 ## 6. 如何构造四类 mutation
 
@@ -193,7 +230,7 @@ QCIP output 和已有 TeSpec cases。静态特征包括：
 - implementation 与隐藏语义 contract 已检查；
 - QCP/Rocq 依赖可打包到题目本地；
 - input domain、observable footprint 和 binding adequacy 已冻结；
-- 六个 mutation 全部具有相应 gold proof/witness；
+- 六个 mutation 全部具有相应 gold proof/witness 和难度证书；
 - TeSpec strict evaluation mode 能重放同一个 heap；
 - 不属于 tree、unrestricted graph、concurrency、UB 或未建模外设语义。
 

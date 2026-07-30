@@ -86,7 +86,9 @@ def artifact_hashes(pilot: Path, question: dict[str, Any]) -> dict[str, str]:
     return {name: sha256_file(path) for name, path in paths.items()}
 
 
-def select_questions(catalog: dict[str, Any], requested: list[str]) -> list[dict[str, Any]]:
+def select_questions(
+    catalog: dict[str, Any], requested: list[str]
+) -> list[dict[str, Any]]:
     questions = catalog["questions"]
     if requested == ["all"]:
         return questions
@@ -101,9 +103,7 @@ def prepare_workspace(pilot: Path, question: dict[str, Any], workspace: Path) ->
     public_files = {
         "reference.c": question_path(pilot, question, "reference", "reference.c"),
         "domain.qcp": question_path(pilot, question, "domain", "domain.qcp"),
-        "candidate.qcp": question_path(
-            pilot, question, "candidate", "candidate.qcp"
-        ),
+        "candidate.qcp": question_path(pilot, question, "candidate", "candidate.qcp"),
         "mutant.c": question_path(pilot, question, "mutant", "mutant.c"),
         "TASK.md": question_path(pilot, question, "task", "TASK.template.md"),
     }
@@ -323,8 +323,7 @@ def print_record(record: dict[str, Any]) -> None:
             else record["prediction"]["parser_status"]
         )
         print(
-            f"{qid}: infrastructure_failure={reason} "
-            f"time={record['wall_seconds']:.1f}s"
+            f"{qid}: infrastructure_failure={reason} time={record['wall_seconds']:.1f}s"
         )
 
 
