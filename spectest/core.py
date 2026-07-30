@@ -1614,7 +1614,7 @@ def _classify(returncode: int, output: str) -> tuple[str, bool | None, str]:
     if "Concrete bindings violate selected Require clause" in output:
         return "ERROR", None, "bindings_violate_require"
     conclusive_failures = (
-        "is inconsistent after solve",
+        "inconsistent after solve",
         "SMT find a False Prop",
     )
     if any(marker in output for marker in conclusive_failures):

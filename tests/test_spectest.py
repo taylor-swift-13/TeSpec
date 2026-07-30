@@ -14,6 +14,7 @@ from spectest.core import (
     _FORBIDDEN_MANUAL_PROOF,
     JobError,
     attach_spec_to_source,
+    _classify,
     _closed_generated_goal_value,
     _coq_required_modules,
     _default_coqc_command,
@@ -79,6 +80,16 @@ class SpecializationTests(unittest.TestCase):
             self.assertIn("模式转换", read_source_text(gb_source))
             with self.assertRaisesRegex(JobError, "cannot decode source"):
                 read_source_text(invalid_source)
+
+    def test_classifies_all_inconsistent_return_branches_as_fail(self) -> None:
+        self.assertEqual(
+            _classify(
+                1,
+                "WitnessTrySolve: all return post branches are inconsistent "
+                "after solve",
+            ),
+            ("FAIL", False, "qcp_found_inconsistent_obligation"),
+        )
 
     def test_attaches_a_separate_spec_without_model_rewriting(self) -> None:
         annotated = (ROOT / "cases/add_one/add_one.c").read_text(encoding="utf-8")
