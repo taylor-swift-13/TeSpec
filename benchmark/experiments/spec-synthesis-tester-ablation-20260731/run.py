@@ -11,6 +11,7 @@ from pathlib import Path
 import re
 import signal
 import subprocess
+import sys
 import tempfile
 import time
 from typing import Any
@@ -22,8 +23,26 @@ CASE = ROOT / "e2e/iplib_ModeConvert_AMMFun"
 PUBLIC_IMPL = EXPERIMENT / "input/impl.c"
 PUBLIC_SPEC = EXPERIMENT / "input/spec.qcp"
 PUBLIC_INTERFACE = EXPERIMENT / "input/interface.h"
-DEMO_IMPL = EXPERIMENT / "demo/add_one.c"
-DEMO_SPEC = EXPERIMENT / "demo/add_one.qcp"
+DEMOS = (
+    (
+        "add_one",
+        EXPERIMENT / "demo/add_one.c",
+        EXPERIMENT / "demo/add_one.qcp",
+        EXPERIMENT / "demo/add_one.annotated.c",
+    ),
+    (
+        "increment_cell",
+        EXPERIMENT / "demo/increment_cell.c",
+        EXPERIMENT / "demo/increment_cell.qcp",
+        EXPERIMENT / "demo/increment_cell.annotated.c",
+    ),
+    (
+        "struct_override",
+        EXPERIMENT / "demo/struct_override.c",
+        EXPERIMENT / "demo/struct_override.qcp",
+        EXPERIMENT / "demo/struct_override.annotated.c",
+    ),
+)
 SOURCE_BINDS = CASE / "tests/binds.json"
 MUTANT_DIRS = (CASE / "mutants/refinement", CASE / "mutants/heldout")
 MATRIX_RUNNER = ROOT / "skills/tespec-e2e/scripts/run_mutation_matrix.py"
@@ -31,6 +50,7 @@ SYNTAX_CHECKER = EXPERIMENT / "syntax_checker.py"
 SPLIT = EXPERIMENT / "split.json"
 SPEC_SCHEMA = EXPERIMENT / "output-schema.json"
 CODE_SCHEMA = EXPERIMENT / "code-output-schema.json"
+QCP_BINARY = ROOT / "bin/qcp-symexec"
 MODEL = "gpt-5-nano"
 PROVIDER_CONFIG = (
     'model_providers.yunwu={name="Yunwu",'
@@ -38,6 +58,11 @@ PROVIDER_CONFIG = (
     'env_key="YUNWU_API_KEY",wire_api="responses",request_max_retries=10}'
 )
 ANNOTATION = re.compile(r"/\*@(?P<body>.*?)\*/", re.DOTALL)
+
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from spectest.core import JobError, attach_spec_to_source  # noqa: E402
 
 
 def parse_args() -> argparse.Namespace:
@@ -49,7 +74,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--condition",
-        choices=("syntax-tool", "no-tool", "all"),
+        choices=("no-tool", "qcp-tool", "tespec-tool", "all"),
         default="all",
     )
     parser.add_argument("--attempts", type=int, default=1)
@@ -323,9 +348,53 @@ def fenced(name: str, content: str, language: str) -> str:
     return f"### `{name}`\n\n```{language}\n{content.rstrip()}\n```"
 
 
-def task_prompt(direction: str) -> str:
-    demo_impl = DEMO_IMPL.read_text(encoding="utf-8")
-    demo_spec = DEMO_SPEC.read_text(encoding="utf-8")
+def demo_prompt() -> str:
+    sections = []
+    for name, implementation, specification, annotated in DEMOS:
+        sections.extend(
+            [
+                fenced(
+                    f"demo/{name}.c",
+                    implementation.read_text(encoding="utf-8"),
+                    "c",
+                ),
+                fenced(
+                    f"demo/{name}.qcp",
+                    specification.read_text(encoding="utf-8"),
+                    "text",
+                ),
+                fenced(
+                    f"demo/{name}.annotated.c",
+                    annotated.read_text(encoding="utf-8"),
+                    "c",
+                ),
+            ]
+        )
+    return "\n\n".join(sections)
+
+
+def condition_prompt(condition: str) -> str:
+    if condition == "qcp-tool":
+        return (
+            "After each submission, the harness deterministically inserts the "
+            "candidate annotation and runs the original `qcp-symexec` binary. "
+            "The next stateless call receives its raw return code, stdout, and "
+            "stderr. This tool has no hidden binds or mutations."
+        )
+    if condition == "tespec-tool":
+        return (
+            "After each submission, the harness runs TeSpec's public checker. "
+            "The next stateless call receives its normalized attachment, "
+            "binding-analysis, parser, or C-interface diagnostic. This tool "
+            "has no hidden binds or mutations."
+        )
+    return (
+        "This is the no-tool condition. No execution or parser report is "
+        "returned between stateless calls; review the candidate yourself."
+    )
+
+
+def task_prompt(direction: str, condition: str) -> str:
     if direction == "code-to-spec":
         return "\n\n".join(
             [
@@ -340,16 +409,21 @@ def task_prompt(direction: str) -> str:
                     "mutation feedback are available. A vacuous postcondition "
                     "is incorrect."
                 ),
+                condition_prompt(condition),
                 (
-                    "The optional public checker reports only whether the spec "
-                    "can be attached, parsed, and used to generate a VC. It "
-                    "does not report semantic correctness. Do not call any "
-                    "Codex tool; the harness invokes the checker between "
-                    "stateless generation calls when the condition permits it."
+                    "Do not call Codex tools yourself; the harness invokes only "
+                    "the tool selected for this ablation condition."
                 ),
-                "Unrelated format example:",
-                fenced("demo/add_one.c", demo_impl, "c"),
-                fenced("demo/add_one.qcp", demo_spec, "text"),
+                (
+                    "Follow the demonstrated QCP grammar exactly. Bind logical "
+                    "pre-state values with `With`; describe memory with "
+                    "`data_at` or `store`; use `p@pre` for pre-state program "
+                    "pointers; and express cases with `&&`, `!`, and `=>`. "
+                    "QCP does not use C ternaries, `old(...)`, or "
+                    "`If ... Then ... Else`."
+                ),
+                "Unrelated QCP examples:",
+                demo_prompt(),
                 "Target input:",
                 fenced("input/impl.c", PUBLIC_IMPL.read_text(encoding="utf-8"), "c"),
             ]
@@ -364,14 +438,21 @@ def task_prompt(direction: str) -> str:
             ),
             (
                 "The final answer is judged once by hidden semantic tests. No "
-                "test inputs or results are available. The optional public "
-                "checker reports only C/interface syntax validity. Do not call "
-                "any Codex tool; the harness invokes the checker between "
-                "stateless generation calls when the condition permits it."
+                "test inputs or results are available."
             ),
-            "Unrelated format example:",
-            fenced("demo/add_one.qcp", demo_spec, "text"),
-            fenced("demo/add_one.c", demo_impl, "c"),
+            condition_prompt(condition),
+            (
+                "Do not call Codex tools yourself; the harness invokes only "
+                "the tool selected for this ablation condition."
+            ),
+            (
+                "The examples are complete implementations of their specs. "
+                "Generate only the requested function definition using names "
+                "from the supplied interface. Do not add includes or use "
+                "undeclared macros such as `NULL`."
+            ),
+            "Unrelated Code/QCP examples:",
+            demo_prompt(),
             "Target inputs:",
             fenced(
                 "input/interface.h",
@@ -385,34 +466,35 @@ def task_prompt(direction: str) -> str:
 
 def revision_prompt(
     direction: str,
+    condition: str,
     candidate: str,
-    syntax_report: dict[str, Any] | None,
+    tool_report: dict[str, Any] | None,
 ) -> str:
     field = "spec" if direction == "code-to-spec" else "code"
     parts = [
-        task_prompt(direction),
+        task_prompt(direction, condition),
         (
             f"Return a complete replacement `{field}`. Recheck syntax and all "
             "semantics yourself."
         ),
         fenced(f"current.{field}", candidate, "text" if field == "spec" else "c"),
     ]
-    if syntax_report is not None:
+    if tool_report is not None:
         parts.extend(
             [
                 (
-                    "The public syntax-only checker returned the following. It "
-                    "contains no test case, mutation, or semantic verdict:"
+                    "The selected public tool returned the following. It "
+                    "contains no hidden test case or mutation:"
                 ),
                 fenced(
-                    "syntax-check.json",
-                    json.dumps(syntax_report, ensure_ascii=False, indent=2),
+                    f"{condition}-report.json",
+                    json.dumps(tool_report, ensure_ascii=False, indent=2),
                     "json",
                 ),
             ]
         )
     else:
-        parts.append("This condition has no checker; perform syntax review yourself.")
+        parts.append("No tool report is available; perform the review yourself.")
     return "\n\n".join(parts)
 
 
@@ -567,6 +649,86 @@ def check_syntax(
     return report
 
 
+def check_with_original_qcp(
+    direction: str,
+    candidate: str,
+    output_dir: Path,
+) -> dict[str, Any]:
+    try:
+        if direction == "code-to-spec":
+            source = attach_spec_to_source(
+                PUBLIC_IMPL.read_text(encoding="utf-8"),
+                candidate,
+                "ModeConvert_AMMFun",
+            )
+        else:
+            implementation = (
+                PUBLIC_INTERFACE.read_text(encoding="utf-8")
+                + "\n"
+                + candidate.strip()
+                + "\n"
+            )
+            source = attach_spec_to_source(
+                implementation,
+                PUBLIC_SPEC.read_text(encoding="utf-8"),
+                "ModeConvert_AMMFun",
+            )
+    except (JobError, OSError, UnicodeError) as error:
+        report = {
+            "schema": "qcp-original-tool-report/v1",
+            "accepted": False,
+            "stage": "attach",
+            "returncode": None,
+            "stdout": "",
+            "stderr": str(error),
+        }
+        write_json(output_dir / "qcp-tool-report.json", report)
+        return report
+
+    source_path = output_dir / "qcp-tool-input.annotated.c"
+    source_path.write_text(source, encoding="utf-8")
+    try:
+        completed = subprocess.run(
+            [
+                str(QCP_BINARY),
+                "--no-coq-gen",
+                "--function",
+                "ModeConvert_AMMFun",
+                str(source_path),
+            ],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            timeout=60,
+            check=False,
+        )
+    except subprocess.TimeoutExpired as error:
+        report = {
+            "schema": "qcp-original-tool-report/v1",
+            "accepted": False,
+            "stage": "symbolic-execution",
+            "returncode": None,
+            "stdout": (error.stdout or "")[-6000:],
+            "stderr": ((error.stderr or "") + "\nQCP timed out after 60 seconds")[
+                -6000:
+            ],
+        }
+        write_json(output_dir / "qcp-tool-report.json", report)
+        return report
+    (output_dir / "qcp-tool.stdout.txt").write_text(completed.stdout, encoding="utf-8")
+    (output_dir / "qcp-tool.stderr.txt").write_text(completed.stderr, encoding="utf-8")
+    report = {
+        "schema": "qcp-original-tool-report/v1",
+        "accepted": completed.returncode == 0,
+        "stage": "symbolic-execution",
+        "returncode": completed.returncode,
+        "stdout": completed.stdout[-6000:],
+        "stderr": completed.stderr[-6000:],
+    }
+    write_json(output_dir / "qcp-tool-report.json", report)
+    return report
+
+
 def run_attempt(
     direction: str,
     condition: str,
@@ -580,19 +742,20 @@ def run_attempt(
     attempt_dir = output_dir / direction / condition / f"attempt-{attempt:03d}"
     attempt_dir.mkdir(parents=True)
     candidate = None
-    syntax_report = None
+    tool_report = None
     calls = []
     schema = SPEC_SCHEMA if direction == "code-to-spec" else CODE_SCHEMA
     with tempfile.TemporaryDirectory(prefix="tespec-bidirectional-model-") as temp:
         workspace = Path(temp)
         for round_number in range(1, rounds + 1):
             prompt = (
-                task_prompt(direction)
+                task_prompt(direction, condition)
                 if round_number == 1
                 else revision_prompt(
                     direction,
+                    condition,
                     candidate or "",
-                    syntax_report if condition == "syntax-tool" else None,
+                    tool_report,
                 )
             )
             call = run_codex(workspace, prompt, schema, timeout)
@@ -604,9 +767,15 @@ def run_attempt(
             parsed = parse_candidate(call["stdout"], direction)
             if parsed is not None:
                 candidate = parsed
-            checker_ran = condition == "syntax-tool" and candidate is not None
-            if checker_ran:
-                syntax_report = check_syntax(direction, candidate, round_dir)
+            tool_ran = condition != "no-tool" and candidate is not None
+            if tool_ran and condition == "qcp-tool":
+                tool_report = check_with_original_qcp(
+                    direction,
+                    candidate,
+                    round_dir,
+                )
+            elif tool_ran:
+                tool_report = check_syntax(direction, candidate, round_dir)
             calls.append(
                 {
                     "round": round_number,
@@ -615,10 +784,14 @@ def run_attempt(
                     "wall_seconds": call["wall_seconds"],
                     "candidate_parsed": parsed is not None,
                     "model_action_audit": audit,
-                    "syntax_checker_ran": checker_ran,
-                    "syntax_valid": (
-                        syntax_report.get("syntax_valid")
-                        if checker_ran and syntax_report is not None
+                    "tool": condition if condition != "no-tool" else None,
+                    "tool_ran": tool_ran,
+                    "tool_accepted": (
+                        tool_report.get(
+                            "syntax_valid",
+                            tool_report.get("accepted"),
+                        )
+                        if tool_ran and tool_report is not None
                         else None
                     ),
                 }
@@ -692,7 +865,7 @@ def oracle_audit(
 def summarize(results: list[dict[str, Any]]) -> dict[str, Any]:
     cells = {}
     for direction in ("code-to-spec", "spec-to-code"):
-        for condition in ("syntax-tool", "no-tool"):
+        for condition in ("no-tool", "qcp-tool", "tespec-tool"):
             selected = [
                 item
                 for item in results
@@ -747,7 +920,9 @@ def main() -> int:
         else (args.direction,)
     )
     conditions = (
-        ("syntax-tool", "no-tool") if args.condition == "all" else (args.condition,)
+        ("no-tool", "qcp-tool", "tespec-tool")
+        if args.condition == "all"
+        else (args.condition,)
     )
     results = [
         run_attempt(

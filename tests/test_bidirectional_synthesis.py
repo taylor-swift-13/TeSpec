@@ -26,6 +26,10 @@ class BidirectionalSynthesisTests(unittest.TestCase):
         self.assertEqual(manifest["judge"]["hidden_bind_count"], 30)
         self.assertEqual(manifest["judge"]["hidden_mutant_count"], 12)
         self.assertFalse(manifest["public_interface"]["semantic_feedback"])
+        self.assertEqual(
+            manifest["public_interface"]["conditions"],
+            ["no-tool", "qcp-tool", "tespec-tool"],
+        )
         for relative, expected in manifest["sha256"].items():
             path = (
                 ROOT / relative
@@ -44,10 +48,11 @@ class BidirectionalSynthesisTests(unittest.TestCase):
         self.assertTrue(all(len(group["cases"]) == 5 for group in split["groups"]))
         self.assertEqual(len(binds), 30)
 
-        prompts = (
-            self.runner["task_prompt"]("code-to-spec"),
-            self.runner["task_prompt"]("spec-to-code"),
-        )
+        prompts = [
+            self.runner["task_prompt"](direction, condition)
+            for direction in ("code-to-spec", "spec-to-code")
+            for condition in ("no-tool", "qcp-tool", "tespec-tool")
+        ]
         mutant_names = {
             path.name
             for directory in self.runner["MUTANT_DIRS"]
@@ -56,6 +61,18 @@ class BidirectionalSynthesisTests(unittest.TestCase):
         for prompt in prompts:
             self.assertTrue(all(item["id"] not in prompt for item in binds))
             self.assertTrue(all(name not in prompt for name in mutant_names))
+
+    def test_examples_include_raw_and_annotated_qcp_forms(self) -> None:
+        for name, implementation, specification, annotated in self.runner["DEMOS"]:
+            self.assertTrue(implementation.is_file(), name)
+            self.assertTrue(specification.is_file(), name)
+            self.assertTrue(annotated.is_file(), name)
+            text = annotated.read_text(encoding="utf-8")
+            self.assertIn("/*@", text)
+            self.assertIn(
+                " ".join(specification.read_text(encoding="utf-8").split()),
+                " ".join(text.split()),
+            )
 
     def test_public_syntax_checkers_accept_both_gold_artifacts(self) -> None:
         spec_report = self.checker["check_spec"](
@@ -75,6 +92,23 @@ class BidirectionalSynthesisTests(unittest.TestCase):
             )
         self.assertTrue(code_report["syntax_valid"])
         self.assertNotIn("bind", json.dumps(spec_report).lower())
+
+    def test_original_qcp_tool_accepts_both_gold_artifacts(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="tespec-original-qcp-test-") as temp:
+            root = Path(temp)
+            for direction, candidate in (
+                ("code-to-spec", (EXPERIMENT / "input/spec.qcp").read_text()),
+                ("spec-to-code", self.runner["gold_function"]()),
+            ):
+                output = root / direction
+                output.mkdir()
+                report = self.runner["check_with_original_qcp"](
+                    direction,
+                    candidate,
+                    output,
+                )
+                self.assertTrue(report["accepted"], direction)
+                self.assertEqual(report["returncode"], 0)
 
     def test_public_spec_checker_rejects_malformed_qcp(self) -> None:
         with tempfile.TemporaryDirectory(prefix="tespec-spec-syntax-test-") as temp:

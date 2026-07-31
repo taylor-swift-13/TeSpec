@@ -1,0 +1,14 @@
+With (reading: Z) (enabled: Z) (old_result: Z)
+Require
+  raw != 0 &&
+  store(&(((DemoState *)raw)->reading), reading) *
+  store(&(((DemoState *)raw)->enabled), enabled) *
+  store(&(((DemoState *)raw)->result), old_result)
+Ensure
+  exists (new_result: Z),
+    store(&(((DemoState *)raw@pre)->reading), reading) *
+    store(&(((DemoState *)raw@pre)->enabled), enabled) *
+    store(&(((DemoState *)raw@pre)->result), new_result) &&
+    (enabled == 1 => new_result == 2) &&
+    (enabled != 1 && reading >= 10 => new_result == 1) &&
+    (enabled != 1 && !(reading >= 10) => new_result == old_result)

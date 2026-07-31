@@ -7,8 +7,9 @@ The active benchmark evaluates two inverse generation tasks:
   ABI declarations.
 
 There is no training split and no semantic feedback loop. The model receives
-one unrelated format example and, in the tool condition, syntax-only
-diagnostics. Final submissions are frozen before the hidden test machine runs.
+three unrelated QCP examples in raw and annotated forms. The three ablation
+conditions provide no tool, the original QCP symbolic executor, or TeSpec.
+Final submissions are frozen before the hidden test machine runs.
 
 The current audited task is
 [`experiments/spec-synthesis-tester-ablation-20260731`](experiments/spec-synthesis-tester-ablation-20260731).

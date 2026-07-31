@@ -16,23 +16,25 @@ revision feedback.
 
 Each direction exposes only:
 
-1. one unrelated `add_one` example showing the expected Code/QCP format; and
-2. a syntax-only checker.
+1. three unrelated examples showing scalar, pointer-heap, and struct-field
+   Code/QCP patterns in separate and `/*@ ... */` annotated forms; and
+2. the public tool selected by the ablation condition.
 
-For `code-to-spec`, the checker attaches the candidate spec, analyzes its
-bindings, and asks QCP to parse it and generate a VC. For `spec-to-code`, it
-checks the required function definition with the C parser. The checker returns
-only syntax validity, stage, and parser diagnostics. It never returns a bind,
-execution result, mutation, counterexample, or semantic verdict.
+The original-QCP condition deterministically attaches the candidate annotation
+and returns the raw result of `qcp-symexec`. The TeSpec condition analyzes the
+separate candidate and returns a normalized attachment, binding-analysis,
+QCP-parser, or C-interface report. Neither tool receives a hidden bind,
+mutation, counterexample, or final semantic verdict.
 
 The ablation conditions use the same number of stateless Nano calls:
 
-- `syntax-tool`: a revision may see the public syntax-check report;
-- `no-tool`: a revision must self-check syntax.
+- `no-tool`: a revision must self-check;
+- `qcp-tool`: a revision may see the original symbolic executor's report;
+- `tespec-tool`: a revision may see TeSpec's normalized public report.
 
-Internal Codex tools are forbidden and their event traces are audited in both
-conditions. Any such action invalidates the attempt. “Tool” here refers only
-to the explicitly scoped syntax interface invoked by the harness.
+Internal Codex tools are forbidden and their event traces are audited in all
+conditions. Any such action invalidates the attempt. “Tool” refers only to the
+explicitly scoped interface invoked by the harness.
 
 ## One-shot hidden judgment
 
@@ -73,6 +75,6 @@ python3 benchmark/experiments/spec-synthesis-tester-ablation-20260731/run.py \
   --direction both --condition all --attempts 1 --rounds 2
 ```
 
-Raw submissions, traces, syntax reports, and hidden-machine artifacts are
+Raw submissions, traces, public-tool reports, and hidden-machine artifacts are
 written under ignored `benchmark/results/bidirectional-synthesis/`. The API key
 is read only from `YUNWU_API_KEY` and is never persisted.
