@@ -1,6 +1,0 @@
-Require Import m02_inject_wrong_value__preserve_mode_four_goal m02_inject_wrong_value__preserve_mode_four_proof_auto m02_inject_wrong_value__preserve_mode_four_proof_manual.
-
-Module VC_Correctness : VC_Correct.
-  Include m02_inject_wrong_value__preserve_mode_four_proof_auto.
-  Include m02_inject_wrong_value__preserve_mode_four_proof_manual.
-End VC_Correctness.

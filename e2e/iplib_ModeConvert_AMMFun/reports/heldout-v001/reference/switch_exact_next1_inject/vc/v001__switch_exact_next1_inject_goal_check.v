@@ -1,6 +1,0 @@
-Require Import v001__switch_exact_next1_inject_goal v001__switch_exact_next1_inject_proof_auto v001__switch_exact_next1_inject_proof_manual.
-
-Module VC_Correctness : VC_Correct.
-  Include v001__switch_exact_next1_inject_proof_auto.
-  Include v001__switch_exact_next1_inject_proof_manual.
-End VC_Correctness.

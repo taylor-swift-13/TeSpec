@@ -1,6 +1,0 @@
-Require Import h01_inject_reversed_le__late_next2_without_inject_goal h01_inject_reversed_le__late_next2_without_inject_proof_auto h01_inject_reversed_le__late_next2_without_inject_proof_manual.
-
-Module VC_Correctness : VC_Correct.
-  Include h01_inject_reversed_le__late_next2_without_inject_proof_auto.
-  Include h01_inject_reversed_le__late_next2_without_inject_proof_manual.
-End VC_Correctness.

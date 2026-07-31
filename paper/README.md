@@ -14,18 +14,6 @@ The benchmark section defines the bidirectional `code-to-spec` and
 `spec-to-code` generation tasks, syntax-only versus no-tool comparison, frozen
 submissions, and hidden semantic testing with implementation mutations.
 
-Supporting theory material is retained separately:
-
-- `theory-heavy-draft.tex`: archived theory-oriented English draft;
-- `theory.zh-CN.md`: strict Chinese theory notes;
-- `theorems.zh-CN.md`: Chinese translations of the old draft's formal
-  statements;
-- `qcp-theory-audit.zh-CN.md`: audit of what follows from the QCP paper versus
-  what would require new TeSpec proofs.
-
-The SE draft treats this material as design rationale and assurance notes, not
-as its primary contribution.
-
 Build:
 
 ```bash

@@ -1,6 +1,0 @@
-Require Import h03_omit_next1_write__late_other_mode_with_inject_goal h03_omit_next1_write__late_other_mode_with_inject_proof_auto h03_omit_next1_write__late_other_mode_with_inject_proof_manual.
-
-Module VC_Correctness : VC_Correct.
-  Include h03_omit_next1_write__late_other_mode_with_inject_proof_auto.
-  Include h03_omit_next1_write__late_other_mode_with_inject_proof_manual.
-End VC_Correctness.

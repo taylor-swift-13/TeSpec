@@ -1,6 +1,0 @@
-Require Import h01_inject_reversed_le__all_zero_inject_boundary_goal h01_inject_reversed_le__all_zero_inject_boundary_proof_auto h01_inject_reversed_le__all_zero_inject_boundary_proof_manual.
-
-Module VC_Correctness : VC_Correct.
-  Include h01_inject_reversed_le__all_zero_inject_boundary_proof_auto.
-  Include h01_inject_reversed_le__all_zero_inject_boundary_proof_manual.
-End VC_Correctness.

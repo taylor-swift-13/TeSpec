@@ -13,9 +13,8 @@ Run the frozen reference tests from the TeSpec root:
 
 ```bash
 python3 -m spectest run \
-  tespec-e2e/iplib_ModeConvert_AMMFun/spec/final_spec.c \
+  e2e/iplib_ModeConvert_AMMFun/spec/final_spec.c \
   --function ModeConvert_AMMFun \
-  --binds tespec-e2e/iplib_ModeConvert_AMMFun/tests/binds.json \
+  --binds e2e/iplib_ModeConvert_AMMFun/tests/binds.json \
   --output-dir .spectest/iplib_ModeConvert_AMMFun
 ```
-

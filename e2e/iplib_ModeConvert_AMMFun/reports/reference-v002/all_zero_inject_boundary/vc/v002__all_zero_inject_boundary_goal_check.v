@@ -1,6 +1,0 @@
-Require Import v002__all_zero_inject_boundary_goal v002__all_zero_inject_boundary_proof_auto v002__all_zero_inject_boundary_proof_manual.
-
-Module VC_Correctness : VC_Correct.
-  Include v002__all_zero_inject_boundary_proof_auto.
-  Include v002__all_zero_inject_boundary_proof_manual.
-End VC_Correctness.

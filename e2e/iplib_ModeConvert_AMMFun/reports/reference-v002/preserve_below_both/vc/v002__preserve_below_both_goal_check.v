@@ -1,6 +1,0 @@
-Require Import v002__preserve_below_both_goal v002__preserve_below_both_proof_auto v002__preserve_below_both_proof_manual.
-
-Module VC_Correctness : VC_Correct.
-  Include v002__preserve_below_both_proof_auto.
-  Include v002__preserve_below_both_proof_manual.
-End VC_Correctness.

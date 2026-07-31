@@ -1,6 +1,0 @@
-Require Import v001__negative_late_next2_goal v001__negative_late_next2_proof_auto v001__negative_late_next2_proof_manual.
-
-Module VC_Correctness : VC_Correct.
-  Include v001__negative_late_next2_proof_auto.
-  Include v001__negative_late_next2_proof_manual.
-End VC_Correctness.

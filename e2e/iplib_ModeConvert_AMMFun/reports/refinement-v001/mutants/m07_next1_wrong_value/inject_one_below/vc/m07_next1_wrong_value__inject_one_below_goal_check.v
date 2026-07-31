@@ -1,6 +1,0 @@
-Require Import m07_next1_wrong_value__inject_one_below_goal m07_next1_wrong_value__inject_one_below_proof_auto m07_next1_wrong_value__inject_one_below_proof_manual.
-
-Module VC_Correctness : VC_Correct.
-  Include m07_next1_wrong_value__inject_one_below_proof_auto.
-  Include m07_next1_wrong_value__inject_one_below_proof_manual.
-End VC_Correctness.

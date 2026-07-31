@@ -1,6 +1,0 @@
-Require Import v002__next2_nonlate_inject_goal v002__next2_nonlate_inject_proof_auto v002__next2_nonlate_inject_proof_manual.
-
-Module VC_Correctness : VC_Correct.
-  Include v002__next2_nonlate_inject_proof_auto.
-  Include v002__next2_nonlate_inject_proof_manual.
-End VC_Correctness.

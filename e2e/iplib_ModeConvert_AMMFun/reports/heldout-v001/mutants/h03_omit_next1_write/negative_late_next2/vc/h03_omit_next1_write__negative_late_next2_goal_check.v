@@ -1,6 +1,0 @@
-Require Import h03_omit_next1_write__negative_late_next2_goal h03_omit_next1_write__negative_late_next2_proof_auto h03_omit_next1_write__negative_late_next2_proof_manual.
-
-Module VC_Correctness : VC_Correct.
-  Include h03_omit_next1_write__negative_late_next2_proof_auto.
-  Include h03_omit_next1_write__negative_late_next2_proof_manual.
-End VC_Correctness.

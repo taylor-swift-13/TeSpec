@@ -1,6 +1,0 @@
-Require Import m01_inject_strict_gt__inject_one_below_goal m01_inject_strict_gt__inject_one_below_proof_auto m01_inject_strict_gt__inject_one_below_proof_manual.
-
-Module VC_Correctness : VC_Correct.
-  Include m01_inject_strict_gt__inject_one_below_proof_auto.
-  Include m01_inject_strict_gt__inject_one_below_proof_manual.
-End VC_Correctness.

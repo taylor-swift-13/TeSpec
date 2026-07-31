@@ -1,6 +1,0 @@
-Require Import h01_inject_reversed_le__negative_inject_delay_goal h01_inject_reversed_le__negative_inject_delay_proof_auto h01_inject_reversed_le__negative_inject_delay_proof_manual.
-
-Module VC_Correctness : VC_Correct.
-  Include h01_inject_reversed_le__negative_inject_delay_proof_auto.
-  Include h01_inject_reversed_le__negative_inject_delay_proof_manual.
-End VC_Correctness.

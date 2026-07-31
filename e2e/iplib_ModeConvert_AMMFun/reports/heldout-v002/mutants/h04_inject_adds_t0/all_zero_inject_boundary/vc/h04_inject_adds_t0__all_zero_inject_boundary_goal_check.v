@@ -1,6 +1,0 @@
-Require Import h04_inject_adds_t0__all_zero_inject_boundary_goal h04_inject_adds_t0__all_zero_inject_boundary_proof_auto h04_inject_adds_t0__all_zero_inject_boundary_proof_manual.
-
-Module VC_Correctness : VC_Correct.
-  Include h04_inject_adds_t0__all_zero_inject_boundary_proof_auto.
-  Include h04_inject_adds_t0__all_zero_inject_boundary_proof_manual.
-End VC_Correctness.
