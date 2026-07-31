@@ -36,6 +36,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--reference", type=Path, required=True)
     parser.add_argument("--function", required=True)
     parser.add_argument("--spec")
+    parser.add_argument(
+        "--spec-file",
+        type=Path,
+        help=(
+            "separate candidate QCP spec applied unchanged to the reference and "
+            "every mutant"
+        ),
+    )
     parser.add_argument("--binds", type=Path, required=True)
     parser.add_argument("--mutants", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
@@ -99,6 +107,7 @@ def run_source(
     source: Path,
     function: str,
     spec: str | None,
+    spec_file: Path | None,
     binds: list[dict[str, Any]],
     output_dir: Path,
     args: argparse.Namespace,
@@ -120,6 +129,8 @@ def run_source(
     }
     if spec is not None:
         job["spec"] = spec
+    if spec_file is not None:
+        job["spec_file"] = str(spec_file)
     job_path = output_dir / "job.json"
     write_json(job_path, job)
     return run_job(job_path, output_dir)
@@ -142,9 +153,14 @@ def main() -> int:
     mutants_dir = args.mutants.expanduser().resolve()
     output_dir = args.output_dir.expanduser().resolve()
     artifact_root = args.artifact_root.expanduser().resolve()
+    spec_file = (
+        args.spec_file.expanduser().resolve() if args.spec_file is not None else None
+    )
     args.include_dir = [item.expanduser().resolve() for item in args.include_dir]
     for path in (reference, binds_path, mutants_dir, output_dir):
         artifact_path(artifact_root, path)
+    if spec_file is not None:
+        artifact_path(artifact_root, spec_file)
     binds = load_binds(binds_path)
     if len(binds) != args.expected_binds:
         raise SystemExit(
@@ -159,30 +175,39 @@ def main() -> int:
         raise SystemExit(f"output directory already exists: {output_dir}")
     output_dir.mkdir(parents=True)
 
-    reference_text = reference.read_text(encoding="utf-8")
-    reference_spec = _find_function_spec(reference_text, args.function, args.spec).body
-    invalid_spec_mutants: list[str] = []
-    for mutant in mutants:
-        mutant_spec = _find_function_spec(
-            mutant.read_text(encoding="utf-8"), args.function, args.spec
+    if spec_file is None:
+        reference_text = reference.read_text(encoding="utf-8")
+        reference_spec = _find_function_spec(
+            reference_text, args.function, args.spec
         ).body
-        if mutant_spec != reference_spec:
-            invalid_spec_mutants.append(mutant.name)
-    if invalid_spec_mutants:
-        write_json(
-            output_dir / "matrix.json",
-            {
-                "status": "ERROR",
-                "reason": "mutant_changed_frozen_spec",
-                "mutants": invalid_spec_mutants,
-            },
-        )
-        return 2
+        invalid_spec_mutants: list[str] = []
+        for mutant in mutants:
+            mutant_spec = _find_function_spec(
+                mutant.read_text(encoding="utf-8"), args.function, args.spec
+            ).body
+            if mutant_spec != reference_spec:
+                invalid_spec_mutants.append(mutant.name)
+        if invalid_spec_mutants:
+            write_json(
+                output_dir / "matrix.json",
+                {
+                    "status": "ERROR",
+                    "reason": "mutant_changed_frozen_spec",
+                    "mutants": invalid_spec_mutants,
+                },
+            )
+            return 2
+        spec_sha256 = hashlib.sha256(reference_spec.encode("utf-8")).hexdigest()
+    else:
+        if not spec_file.is_file():
+            raise SystemExit(f"spec file does not exist: {spec_file}")
+        spec_sha256 = sha256(spec_file)
 
     reference_report = run_source(
         reference,
         args.function,
         args.spec,
+        spec_file,
         binds,
         output_dir / "reference",
         args,
@@ -198,6 +223,7 @@ def main() -> int:
                 mutant,
                 args.function,
                 args.spec,
+                spec_file,
                 binds,
                 output_dir / "mutants" / mutant.stem,
                 args,
@@ -257,11 +283,14 @@ def main() -> int:
         "spec_version": args.spec_version,
         "function": args.function,
         "spec": args.spec,
+        "spec_file": (
+            artifact_path(artifact_root, spec_file) if spec_file is not None else None
+        ),
         "artifact_root": ".",
         "reference": {
             "source": artifact_path(artifact_root, reference),
             "source_sha256": sha256(reference),
-            "spec_sha256": hashlib.sha256(reference_spec.encode("utf-8")).hexdigest(),
+            "spec_sha256": spec_sha256,
             "counts": reference_counts,
             "report": artifact_path(
                 artifact_root, output_dir / "reference" / "report.json"

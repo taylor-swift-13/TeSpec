@@ -1,0 +1,33 @@
+With (star_time: Z)
+     (tm3: Z)
+     (next_mode: Z)
+     (old_mode: Z)
+     (orbit_t0: Z)
+     (orbit_inject_delay: Z)
+     (switch_delay: Z)
+Require
+  p != 0 &&
+  store(&(((ModeConvert_AMM *)p)->m_starTime), star_time) *
+  store(&(((ModeConvert_AMM *)p)->tm3), tm3) *
+  store(&(((ModeConvert_AMM *)p)->csMnvData_F_MnvNextMode), next_mode) *
+  store(&(((ModeConvert_AMM *)p)->m_WorkMode), old_mode) *
+  store(&(((ModeConvert_AMM *)p)->csOrb19_Para_I_t0), orbit_t0) *
+  store(&(((ModeConvert_AMM *)p)->csModePara_dt_OrbitInject), orbit_inject_delay) *
+  store(&(((ModeConvert_AMM *)p)->LmtT_ModeSwitch_AMM), switch_delay)
+Ensure
+  exists (new_mode: Z),
+    store(&(((ModeConvert_AMM *)p@pre)->m_starTime), star_time) *
+    store(&(((ModeConvert_AMM *)p@pre)->tm3), tm3) *
+    store(&(((ModeConvert_AMM *)p@pre)->csMnvData_F_MnvNextMode), next_mode) *
+    store(&(((ModeConvert_AMM *)p@pre)->m_WorkMode), new_mode) *
+    store(&(((ModeConvert_AMM *)p@pre)->csOrb19_Para_I_t0), orbit_t0) *
+    store(&(((ModeConvert_AMM *)p@pre)->csModePara_dt_OrbitInject), orbit_inject_delay) *
+    store(&(((ModeConvert_AMM *)p@pre)->LmtT_ModeSwitch_AMM), switch_delay) &&
+    (star_time > tm3 + switch_delay && next_mode == 1 => new_mode == 2) &&
+    (star_time > tm3 + switch_delay && next_mode == 2 => new_mode == 5) &&
+    (!(star_time > tm3 + switch_delay && next_mode == 1) &&
+     !(star_time > tm3 + switch_delay && next_mode == 2) &&
+     star_time - orbit_t0 >= orbit_inject_delay => new_mode == 1) &&
+    (!(star_time > tm3 + switch_delay && next_mode == 1) &&
+     !(star_time > tm3 + switch_delay && next_mode == 2) &&
+     !(star_time - orbit_t0 >= orbit_inject_delay) => new_mode == old_mode)
