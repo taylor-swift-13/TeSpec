@@ -15,18 +15,11 @@ from typing import Any, Iterable
 
 
 SCHEMA = "tespec-artifact-manifest/v1"
-FOUR_CLASS_SCHEMA = "tespec-four-class-result/v1"
 MANIFEST_NAME = "artifact-manifest.json"
 TASK_ID_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*\Z")
 TRANSIENT_SUFFIXES = {".aux", ".glob", ".pyc", ".tmp", ".vo", ".vok", ".vos"}
 TRANSIENT_NAMES = {".lia.cache", ".nia.cache", ".nra.cache"}
 TRANSIENT_DIRS = {"__pycache__", ".pytest_cache", ".mypy_cache"}
-LABEL_PROPERTIES = {
-    "correct": (True, True),
-    "soundness": (True, False),
-    "complete": (False, True),
-    "incomparable": (False, False),
-}
 LAYOUTS = {
     "e2e": (
         "source/original",
@@ -35,14 +28,6 @@ LAYOUTS = {
         "mutants/refinement",
         "mutants/heldout",
         "evidence",
-        "reports",
-    ),
-    "four-class": (
-        "input",
-        "dependencies",
-        "relations",
-        "evidence/soundness",
-        "evidence/completeness",
         "reports",
     ),
 }
@@ -106,7 +91,7 @@ def relative_path(root: Path, path: Path) -> str:
 
 def artifact_role(relative: str) -> str:
     first = relative.split("/", 1)[0]
-    if first in {"source", "input", "dependencies", "spec", "tests", "mutants"}:
+    if first in {"source", "spec", "tests", "mutants"}:
         return "input"
     if first == "evidence" or relative.endswith(".v"):
         return "evidence"
@@ -129,31 +114,10 @@ def validate_task_id(task_id: str) -> None:
 def required_paths(kind: str) -> tuple[str, ...]:
     if kind == "e2e":
         return ("spec/final_spec.c", "tests/binds.json", "manifest.json")
-    if kind == "four-class":
-        return (
-            "input/impl.c",
-            "input/spec.qcp",
-            "result.json",
-        )
     raise ArtifactError(f"unsupported artifact kind: {kind}")
 
 
 def require_layout(root: Path, kind: str) -> None:
-    if kind == "four-class":
-        input_root = root / "input"
-        input_files = (
-            {
-                path.relative_to(input_root).as_posix()
-                for path in input_root.rglob("*")
-                if path.is_file()
-            }
-            if input_root.is_dir()
-            else set()
-        )
-        if input_files != {"impl.c", "spec.qcp"}:
-            raise ArtifactError(
-                "four-class input must contain only impl.c and spec.qcp"
-            )
     missing = [
         relative for relative in required_paths(kind) if not (root / relative).is_file()
     ]
@@ -171,61 +135,6 @@ def load_json(path: Path, label: str) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise ArtifactError(f"{label} must be a JSON object")
     return value
-
-
-def validate_evidence_path(root: Path, evidence: dict[str, Any], key: str) -> None:
-    raw = evidence.get(key)
-    if not isinstance(raw, str) or not raw:
-        raise ArtifactError(f"four-class result requires evidence.{key}")
-    path = Path(raw)
-    if path.is_absolute() or ".." in path.parts:
-        raise ArtifactError(f"evidence.{key} must be root-relative")
-    resolved = root / path
-    if not resolved.is_file() or is_transient(path):
-        raise ArtifactError(f"missing durable evidence file: {raw}")
-
-
-def four_class_outcome(root: Path) -> dict[str, Any]:
-    result = load_json(root / "result.json", "four-class result")
-    if result.get("schema") != FOUR_CLASS_SCHEMA:
-        raise ArtifactError(f"four-class result schema must be {FOUR_CLASS_SCHEMA}")
-    raw_label = result.get("label")
-    if not isinstance(raw_label, str):
-        raise ArtifactError("four-class result label must be a string")
-    label = raw_label
-    if label not in LABEL_PROPERTIES:
-        raise ArtifactError(
-            "four-class label must be correct, soundness, complete, or incomparable"
-        )
-    properties = result.get("properties")
-    if not isinstance(properties, dict):
-        raise ArtifactError("four-class result properties must be an object")
-    expected_sound, expected_complete = LABEL_PROPERTIES[label]
-    if (
-        properties.get("sound") is not expected_sound
-        or properties.get("complete") is not expected_complete
-    ):
-        raise ArtifactError(f"properties do not match four-class label {label}")
-    evidence = result.get("evidence")
-    if not isinstance(evidence, dict):
-        raise ArtifactError("four-class result evidence must be an object")
-    validate_evidence_path(
-        root,
-        evidence,
-        "soundness_certificate" if expected_sound else "soundness_counterexample",
-    )
-    validate_evidence_path(
-        root,
-        evidence,
-        "completeness_certificate"
-        if expected_complete
-        else "completeness_counterexample",
-    )
-    return {
-        "classification": label,
-        "sound": expected_sound,
-        "complete": expected_complete,
-    }
 
 
 def inventory(root: Path) -> list[dict[str, Any]]:
@@ -273,14 +182,12 @@ def initialize(root: Path, kind: str, task_id: str) -> None:
 def finalize(root: Path, kind: str, task_id: str) -> None:
     validate_task_id(task_id)
     require_layout(root, kind)
-    outcome = four_class_outcome(root) if kind == "four-class" else {}
     records = inventory(root)
     manifest = {
         "schema": SCHEMA,
         "kind": kind,
         "task_id": task_id,
         "lifecycle": "finalized",
-        **outcome,
         "inventory": records,
         "summary": {
             "files": len(records),
@@ -303,11 +210,6 @@ def validate_manifest(manifest_path: Path) -> None:
     validate_task_id(task_id)
     root = manifest_path.parent
     require_layout(root, kind)
-    if kind == "four-class":
-        outcome = four_class_outcome(root)
-        for key, value in outcome.items():
-            if manifest.get(key) != value:
-                raise ArtifactError(f"manifest {key} does not match result.json")
     current = inventory(root)
     recorded = manifest.get("inventory")
     if recorded != current:

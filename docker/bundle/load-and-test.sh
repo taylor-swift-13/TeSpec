@@ -54,10 +54,6 @@ cp "$bundle_dir/examples/binds.json" "$test_root/"
   grep -q '"PASS": 2' output/report.json
   "$bundle_dir/tespec" skill tespec-e2e >tespec-e2e.SKILL.md
   grep -q 'Generate exactly 30 tests per spec' tespec-e2e.SKILL.md
-  "$bundle_dir/tespec" skill tespec-four-class \
-    >tespec-four-class.SKILL.md
-  grep -q 'correct.*soundness.*complete.*incomparable' \
-    tespec-four-class.SKILL.md
   "$bundle_dir/tespec" skill tespec-artifacts \
     >tespec-artifacts.SKILL.md
   grep -q 'artifact-manifest.json' tespec-artifacts.SKILL.md

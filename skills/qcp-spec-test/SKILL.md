@@ -44,11 +44,6 @@ logical module path while recursively staging direct and transitive imports.
 
 3. Obtain binds:
 
-   - In four-class benchmark runs, the model may write only the binds file.
-     It must not edit residual proofs, the implementation, the spec, a test
-     harness, a spec oracle, or a combined source. Outside that benchmark
-     protocol, edit a residual proof only when the caller explicitly requests
-     the manual-proof workflow below.
    - If the user supplied a binds file or concrete values, preserve them.
      Do not silently replace or broaden human test cases.
    - If binds are absent, read [references/binds.md](references/binds.md) and

@@ -10,13 +10,9 @@ property-based testing, a worked minimum-subarray motivation example, workflow
 and implementation, binding interface, engineering assurances, threats to
 validity, and related work.
 
-The benchmark section defines the four-class `correct` / `soundness` /
-`complete` / `incomparable` task, the 100-program by six-question construction
-with balanced hard/expert tiers, hidden
-proof/counterexample gold, and the paired agent-versus-agent+TeSpec protocol.
-The empirical-results subsection remains intentionally blank: measurements
-must be filled from a frozen 600-question artifact rather than internal
-regression runs.
+The benchmark section defines the bidirectional `code-to-spec` and
+`spec-to-code` generation tasks, syntax-only versus no-tool comparison, frozen
+submissions, and hidden semantic testing with implementation mutations.
 
 Supporting theory material is retained separately:
 

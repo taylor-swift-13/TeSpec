@@ -9,9 +9,7 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parents[1]
-EXPERIMENT = (
-    ROOT / "benchmark/experiments/spec-synthesis-tester-ablation-20260731"
-)
+EXPERIMENT = ROOT / "benchmark/experiments/spec-synthesis-tester-ablation-20260731"
 
 
 class BidirectionalSynthesisTests(unittest.TestCase):
@@ -29,7 +27,11 @@ class BidirectionalSynthesisTests(unittest.TestCase):
         self.assertEqual(manifest["judge"]["hidden_mutant_count"], 12)
         self.assertFalse(manifest["public_interface"]["semantic_feedback"])
         for relative, expected in manifest["sha256"].items():
-            path = ROOT / relative if relative.startswith("e2e/") else EXPERIMENT / relative
+            path = (
+                ROOT / relative
+                if relative.startswith("e2e/")
+                else EXPERIMENT / relative
+            )
             self.assertEqual(
                 hashlib.sha256(path.read_bytes()).hexdigest(),
                 expected,

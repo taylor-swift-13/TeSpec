@@ -36,7 +36,9 @@ def result(valid: bool, stage: str, diagnostic: str = "") -> dict[str, Any]:
     }
 
 
-def check_spec(implementation: Path, specification: Path, function: str) -> dict[str, Any]:
+def check_spec(
+    implementation: Path, specification: Path, function: str
+) -> dict[str, Any]:
     try:
         source = implementation.read_text(encoding="utf-8")
         spec = specification.read_text(encoding="utf-8")

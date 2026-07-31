@@ -41,7 +41,6 @@ Python、QCP、Coq、SMT 或网络，只需要可运行 amd64 容器的 Docker E
 
 ```bash
 /path/to/bundle/tespec skill tespec-e2e
-/path/to/bundle/tespec skill tespec-four-class
 /path/to/bundle/tespec skill tespec-artifacts
 ```
 

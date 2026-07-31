@@ -15,7 +15,7 @@ case "$1" in
     ;;
   skill)
     if [[ $# -ne 2 ]]; then
-      echo "usage: tespec skill qcp-spec-test|tespec-e2e|tespec-four-class|tespec-artifacts" >&2
+      echo "usage: tespec skill qcp-spec-test|tespec-e2e|tespec-artifacts" >&2
       exit 2
     fi
     skill_file="$TESPEC_ROOT/skills/$2/SKILL.md"

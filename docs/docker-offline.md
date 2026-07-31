@@ -29,7 +29,6 @@ headers 和 strategies 应与题目一起放在该目录下。
 
 ```bash
 /path/to/bundle/tespec skill tespec-e2e
-/path/to/bundle/tespec skill tespec-four-class
 /path/to/bundle/tespec skill tespec-artifacts
 ```
 

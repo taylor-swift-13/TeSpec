@@ -600,172 +600,55 @@ CLI can surface a QCP-reported inconsistent obligation, but the paper reserves
 Diagnostic-only failures must therefore remain outside semantic rejection
 counts.
 
-\section{Benchmark Design}
+\section{Bidirectional Synthesis Benchmark}
 \label{sec:evaluation}
 
-\subsection{A four-class task without supplied test cases}
+The active benchmark evaluates artifact generation rather than relation
+classification.  It contains two inverse tasks over the same program:
+\emph{code-to-spec} exposes a C implementation and asks the subject to emit a
+QCP contract, while \emph{spec-to-code} exposes a QCP contract and ABI
+declarations and asks for the C function definition.
 
-The benchmark evaluates whether an LLM or agent can classify a candidate
-contract, rather than whether it can answer a preselected instance.  A
-question exposes exactly one implementation \(I\) and one QCP contract \(S\).
-It does \emph{not} provide concrete test inputs, parent implementations, or
-mutation metadata.  Mutation relationships between questions are hidden
-construction lineage and cannot substitute for evidence about the current
-pair.  A subject that predicts a negative property must discover and submit
-its own C arguments, initial heap, and logical bindings as a checkable
-counterexample.
+\subsection{Public surface and hidden judgment}
 
-For a legal typed state \(x=(a,H_0)\), let \(B(I,x)\) be the safely terminating
-observable behavior, including return value, canonical final heap, modeled
-globals, and external-call events.  Let \(R_I\) contain all
-\((x,B(I,x))\), and let \(R_S\) contain all \((x,y)\) admitted by the
-contract's \texttt{Require} and \texttt{Ensure} under logical bindings frozen
-from the initial state.  We define:
-\[
-\begin{split}
-\mathsf{Sound}(S,I) &\triangleq R_S\subseteq R_I,\\
-\mathsf{Complete}(S,I) &\triangleq R_I\subseteq R_S.
-\end{split}
-\]
-Thus soundness says that the specification admits no behavior the
-implementation cannot produce, while completeness says that it omits no
-defined implementation behavior.  The first benchmark version is
-deterministic and sequential.
+There is no training split and no semantic feedback loop.  The public package
+contains one unrelated format example.  In the tool condition, a syntax-only
+checker reports whether a candidate can be parsed and attached to the declared
+interface; it never returns a test input, execution result, mutation,
+counterexample, or semantic verdict.  The no-tool condition receives the same
+number of stateless model calls and must self-check syntax.  Model-side shell,
+file, web, and MCP actions are forbidden and audited in both conditions.
 
-\begin{center}
-\small
-\begin{tabular}{lccp{0.47\linewidth}}
-\toprule
-label & Sound & Complete & interpretation\\
-\midrule
-\textsf{CORRECT}      & yes & yes & equals the implementation behavior
-                                         relation\\
-\textsf{SOUNDNESS}    & yes & no  & is too strong and omits some
-                                         implementation behavior\\
-\textsf{COMPLETE}     & no  & yes & is too weak and admits behavior the
-                                         implementation cannot produce\\
-\textsf{INCOMPARABLE} & no  & no  & both omits implementation behavior and
-                                         admits non-implementation behavior\\
-\bottomrule
-\end{tabular}
-\end{center}
+The final artifact is frozen before entering the hidden test machine.  A
+generated implementation must satisfy the supplied contract for every hidden
+binding.  A generated specification must accept the reference implementation
+for every hidden binding and reject a suite of incorrect implementation
+mutants.  Positive tests prevent over-strong contracts; mutation rejection
+prevents vacuous contracts such as \texttt{Ensure true}.
 
-The class names \textsf{SOUNDNESS} and \textsf{COMPLETE} mean sound-only and
-complete-only in this table.  We give the formulas because prior work uses
-these words in both inclusion directions.
+\subsection{Current audited task}
 
-\subsection{Counterexample certificates}
+The current QCIP-derived task contains 30 hidden bindings divided into six
+semantic groups of five: state preservation, orbit-injection behavior, two
+mode-switch branches, write precedence, and combined boundary behavior.  The
+specification direction additionally uses twelve hidden mutants.  Correctness
+requires all 30 reference checks and all twelve mutation checks; the
+implementation direction requires all 30 contract checks.  Per-group scores
+make local weaknesses visible without exposing cases before submission.
 
-A soundness counterexample is a checked witness
-\[
-  (x,y)\in R_S\setminus R_I.
-\]
-A completeness counterexample is a checked witness
-\[
-  (x,B(I,x))\in R_I\setminus R_S.
-\]
-Both certificates contain concrete C arguments, the complete relevant initial
-heap, pre-state logical bindings, and checked candidate polarity.  A
-soundness counterexample additionally proves that the admitted behavior is
-not the implementation behavior; a completeness counterexample archives the
-implementation trace and the candidate rejection.  We exclude undefined,
-crashing, nonterminating, and unmodeled-I/O executions from semantic evidence.
+The oracle implementation and oracle contract pass all checks.  Durable input,
+runner, checker, split, and judge-input hashes are recorded in a dataset
+manifest.  Raw model traces and judge artifacts remain outside version control.
 
-The benchmark has binary gold values for the two properties, but an evaluated
-tool may abstain.  Failure to find a counterexample never establishes a
-positive property.  Gold \textsf{yes} axes therefore require a checked
-inclusion proof (or an explicitly complete finite-domain certificate), while
-gold \textsf{no} axes require the counterexamples above.
+\subsection{Model and syntax-tool comparison}
 
-\subsection{One hundred programs and six questions each}
-
-We shortlist 100 difficult annotated target functions and construct six
-implementation/specification questions per function, for 600 questions.
-Every base contributes at least one question from each class, three
-\emph{hard} questions, and three \emph{expert} questions.  The two additional
-class occurrences rotate across bases, yielding exactly 150 questions per
-class, with 75 in each class/difficulty cell.
-Hard items require at least one semantic specification transformation and two
-reasoning dimensions.  Expert items require at least two sequential,
-nonredundant transformations, surface camouflage, and three reasoning
-dimensions.  Base selection rejects tutorial-scale candidates below a frozen
-static complexity floor and draws QCIP candidates from the bundled runtime.
-This floor is only a prefilter: bases rejected by a materialized Nano probe are
-recorded in a persistent rejection catalog and replaced before regeneration.
-
-The subject pool deliberately combines arrays, strings, closed structures,
-singly and doubly linked lists, nested control flow, visible calls,
-floating-point models, quantifiers, and custom Rocq definitions. Selection
-occurs at the target-function level, but all targets from one source family
-remain in one data split.
-
-Mutation recipes include equivalent fold/unfold and logical rewrites;
-weakenings that omit return, heap, ordering, quantifier, call-event, or
-link-consistency constraints; strengthenings that overconstrain an input,
-return, heap cell, floating result, or list relation; and mixed mutations for
-the incomparable class.  Implementation mutations cover branches, loop
-bounds, indices, writes, fields, calls, floating operators, and list links.
-An operator name does not determine a label: redundant edits and equivalent
-mutants are discarded after semantic auditing.
-
-\subsection{Gold construction, difficulty, and leakage control}
-
-For implementation relation \(R_I\) and candidate relation \(R_S\), a correct
-item stores proofs of both inclusions.  A sound-only item stores
-\(R_S\subseteq R_I\) and an implementation-only witness.  A complete-only item
-stores \(R_I\subseteq R_S\) and a specification-only witness.  An incomparable
-item stores both witnesses.  Each item also archives source and dependency
-hashes, canonical heaps and traces, selected QCP specification,
-binding-adequacy evidence, normalized propositions, proof polarity, and
-checker version.
-
-Difficulty scores reject obviously shallow construction plans but are not
-the authoritative difficulty criterion.  Each materialized question receives
-three independent runs of the frozen OpenHands plus
-\texttt{openai/gpt-5-nano} generic-agent baseline.  We retain questions solved
-in at most one run and replace questions solved in at least two runs with a
-fresh question of the same class.  Infrastructure failures remain unresolved
-rather than counting as model errors.  A scored trajectory must also attest
-that the agent inspected both public semantic inputs; a label emitted without
-reading either input is unresolved.  Release additionally requires this Nano
-gate, a difficulty-gate certificate, balanced surface-statistics audit,
-label-blind mutation review, and, for expert items, a composed-mutation
-nonredundancy certificate.
-
-The train/development/test split is grouped by project, source family, and
-predicate family; all six questions for a base program stay together.
-Mutation and label names are removed from the model-visible package.  We
-balance edit size and contract length across classes and hold out mutation
-families to test whether a model learned semantics rather than the generator's
-surface pattern.
-
-\subsection{Model and tool comparison}
-
-We use a paired protocol for each model:
-
-\begin{enumerate}[leftmargin=1.4em]
-  \item direct LLM classification from the source package;
-  \item a generic coding agent with ordinary repository and shell tools; and
-  \item the same agent and budget with the \tespec{} skill and CLI available.
-\end{enumerate}
-
-The third condition may use \tespec{} to analyze bindings, execute the
-implementation, replay canonical heaps, and check both candidate proposition
-polarities.  The tool does not receive the hidden class and does not emit the
-four-way answer.  We report four-class accuracy and macro-F1, balanced
-accuracy on each Boolean axis, and \emph{certificate success}, which requires
-both the correct label and valid counterexamples for every predicted-false
-axis.  Cost, time, calls, abstention, proof provenance, and feature-stratified
-results are secondary metrics.  Confidence intervals use a
-base-program-clustered bootstrap because six questions from one program are not
-independent observations.
-
-\subsection{Empirical results}
-
-\noindent\textit{The empirical results are intentionally left blank in this
-draft.  They will be populated only after all 600 questions pass the frozen
-gold audit; the static shortlist and internal regression runs are not reported
-as benchmark results.}
+For each direction we compare a syntax-tool condition with a no-tool condition
+under the same model and call budget.  Primary outcomes are exact task success
+and normalized hidden-test score.  We additionally record syntax validity,
+protocol adherence, per-group scores, cost, and runtime.  Because the syntax
+checker provides no semantic observations, any semantic improvement must come
+from producing an executable artifact and reasoning from the public source or
+contract, not from adapting to test cases.
 
 \section{Engineering Assurances}
 

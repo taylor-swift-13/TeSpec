@@ -52,9 +52,9 @@ def read_source_text(path: Path) -> str:
 def attach_spec_to_source(source: str, spec: str, function: str) -> str:
     """Attach a separate full QCP spec to one C function definition.
 
-    Public four-class questions keep implementation and specification as two
-    inputs. QCP consumes one annotated translation unit, so this deterministic
-    adapter performs the mechanical assembly before analysis or execution.
+    Some workflows keep implementation and specification as separate inputs.
+    QCP consumes one annotated translation unit, so this deterministic adapter
+    performs the mechanical assembly before analysis or execution.
     """
 
     if _NAME_RE.fullmatch(function) is None:

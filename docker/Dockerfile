@@ -48,7 +48,6 @@ RUN set -eux; \
       /opt/tespec/docker/entrypoint.sh \
       /opt/tespec/docker/offline-selftest.sh \
       /opt/tespec/skills/tespec-e2e/scripts/run_mutation_matrix.py \
-      /opt/tespec/skills/tespec-four-class/scripts/write_result.py \
       /opt/tespec/skills/tespec-artifacts/scripts/manage_artifacts.py \
     ; \
     install -m 0755 /opt/tespec/docker/entrypoint.sh /usr/local/bin/tespec; \

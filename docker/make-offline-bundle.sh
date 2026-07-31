@@ -31,7 +31,6 @@ cp "$script_dir/bundle/examples/callee_heap.c" "$bundle_dir/examples/"
 cp "$script_dir/bundle/examples/binds.json" "$bundle_dir/examples/"
 cp -R "$project_root/skills/qcp-spec-test" "$bundle_dir/skills/"
 cp -R "$project_root/skills/tespec-e2e" "$bundle_dir/skills/"
-cp -R "$project_root/skills/tespec-four-class" "$bundle_dir/skills/"
 cp -R "$project_root/skills/tespec-artifacts" "$bundle_dir/skills/"
 
 printf '%s\n' "$image_tag" >"$bundle_dir/IMAGE_TAG"

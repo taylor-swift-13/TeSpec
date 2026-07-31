@@ -10,7 +10,6 @@ grep -q 'version 8.20' "$selftest_root/coq-version.txt"
 
 test -s "$tespec_root/skills/qcp-spec-test/SKILL.md"
 test -s "$tespec_root/skills/tespec-e2e/SKILL.md"
-test -s "$tespec_root/skills/tespec-four-class/SKILL.md"
 test -s "$tespec_root/skills/tespec-artifacts/SKILL.md"
 python3 "$tespec_root/skills/tespec-e2e/scripts/run_mutation_matrix.py" \
   --help >"$selftest_root/mutation-matrix-help.txt"

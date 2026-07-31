@@ -169,12 +169,8 @@ def evaluate_spec(
         text=True,
         check=False,
     )
-    (output_dir / "runner.stdout.txt").write_text(
-        completed.stdout, encoding="utf-8"
-    )
-    (output_dir / "runner.stderr.txt").write_text(
-        completed.stderr, encoding="utf-8"
-    )
+    (output_dir / "runner.stdout.txt").write_text(completed.stdout, encoding="utf-8")
+    (output_dir / "runner.stderr.txt").write_text(completed.stderr, encoding="utf-8")
     matrix_path = matrix_dir / "matrix.json"
     return {
         "returncode": completed.returncode,
@@ -219,18 +215,21 @@ def evaluate_code(
         },
     )
     completed = subprocess.run(
-        [os.sys.executable, "-m", "spectest", str(job), "--output-dir", str(report_dir)],
+        [
+            os.sys.executable,
+            "-m",
+            "spectest",
+            str(job),
+            "--output-dir",
+            str(report_dir),
+        ],
         cwd=ROOT,
         capture_output=True,
         text=True,
         check=False,
     )
-    (output_dir / "runner.stdout.txt").write_text(
-        completed.stdout, encoding="utf-8"
-    )
-    (output_dir / "runner.stderr.txt").write_text(
-        completed.stderr, encoding="utf-8"
-    )
+    (output_dir / "runner.stdout.txt").write_text(completed.stdout, encoding="utf-8")
+    (output_dir / "runner.stderr.txt").write_text(completed.stderr, encoding="utf-8")
     report_path = report_dir / "report.json"
     return {
         "returncode": completed.returncode,
@@ -250,17 +249,12 @@ def score_spec(evaluation: dict[str, Any], split: dict[str, Any]) -> dict[str, A
     reference = json.loads(
         (matrix_dir / "reference/report.json").read_text(encoding="utf-8")
     )
-    reference_status = {
-        item["id"]: item["status"] for item in reference["results"]
-    }
+    reference_status = {item["id"]: item["status"] for item in reference["results"]}
     mutant_status = {}
     for item in matrix["mutants"]:
         report = json.loads(
             (
-                matrix_dir
-                / "mutants"
-                / Path(item["mutant"]).stem
-                / "report.json"
+                matrix_dir / "mutants" / Path(item["mutant"]).stem / "report.json"
             ).read_text(encoding="utf-8")
         )
         mutant_status[item["mutant"]] = {
@@ -605,12 +599,8 @@ def run_attempt(
             audit = action_audit(call["stdout"])
             round_dir = attempt_dir / f"round-{round_number:02d}"
             round_dir.mkdir()
-            (round_dir / "trace.jsonl").write_text(
-                call["stdout"], encoding="utf-8"
-            )
-            (round_dir / "stderr.txt").write_text(
-                call["stderr"], encoding="utf-8"
-            )
+            (round_dir / "trace.jsonl").write_text(call["stdout"], encoding="utf-8")
+            (round_dir / "stderr.txt").write_text(call["stderr"], encoding="utf-8")
             parsed = parse_candidate(call["stdout"], direction)
             if parsed is not None:
                 candidate = parsed
@@ -657,9 +647,7 @@ def run_attempt(
         "calls": calls,
         "hidden": hidden,
     }
-    if any(
-        call["model_action_audit"]["action_count"] != 0 for call in calls
-    ):
+    if any(call["model_action_audit"]["action_count"] != 0 for call in calls):
         result["protocol_valid"] = False
         result["hidden"]["correct"] = False
         result["hidden"]["protocol_violation"] = "model used an undeclared tool"
@@ -743,10 +731,14 @@ def main() -> int:
     if args.oracle_audit:
         report = oracle_audit(output_dir, split, binds)
         print(json.dumps(report, ensure_ascii=False, indent=2))
-        return 0 if all(
-            report[direction]["correct"]
-            for direction in ("code_to_spec", "spec_to_code")
-        ) else 1
+        return (
+            0
+            if all(
+                report[direction]["correct"]
+                for direction in ("code_to_spec", "spec_to_code")
+            )
+            else 1
+        )
     if "YUNWU_API_KEY" not in os.environ:
         raise SystemExit("YUNWU_API_KEY is required for live model runs")
     directions = (
@@ -755,9 +747,7 @@ def main() -> int:
         else (args.direction,)
     )
     conditions = (
-        ("syntax-tool", "no-tool")
-        if args.condition == "all"
-        else (args.condition,)
+        ("syntax-tool", "no-tool") if args.condition == "all" else (args.condition,)
     )
     results = [
         run_attempt(
