@@ -16,6 +16,7 @@ strategies** 和具体 **binds**，直接得到逐测试用例的
 [`测试一道新题`](#测试一道新题) ·
 [`命令行接口`](#命令行接口) ·
 [`Binds`](#binds-输入) ·
+[`开发交接`](HANDOFF.md) ·
 [`完整参考`](docs/usage-reference.md)
 
 </div>
