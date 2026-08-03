@@ -18,6 +18,7 @@ submissions must also reject all hidden incorrect-program mutations. Hidden
 cases record concrete C object states; candidate-specific QCP binds are derived
 structurally from `Require store(...)` terms only after submission freeze.
 
-Raw model traces and judge artifacts belong under the ignored
-`benchmark/results/` path. Durable protocol inputs and their SHA-256 values are
-recorded in the experiment's `dataset-manifest.json`.
+Raw model traces and judge artifacts are not part of the benchmark. By default,
+the runner writes them outside the repository under
+`../teSpec-artifacts/benchmark-results/`. Durable protocol inputs and their
+SHA-256 values are recorded in the experiment's `dataset-manifest.json`.

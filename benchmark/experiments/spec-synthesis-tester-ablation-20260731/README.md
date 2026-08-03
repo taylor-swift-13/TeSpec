@@ -83,5 +83,7 @@ python3 benchmark/experiments/spec-synthesis-tester-ablation-20260731/run.py \
 ```
 
 Raw submissions, traces, public-tool reports, and hidden-machine artifacts are
-written under ignored `benchmark/results/bidirectional-synthesis/`. The API key
-is read only from `YUNWU_API_KEY` and is never persisted.
+not stored in the benchmark. By default they are written outside the repository
+under `../teSpec-artifacts/benchmark-results/bidirectional-synthesis/`; set
+`TESPEC_ARTIFACT_ROOT` or pass `--output-dir` to choose another external
+location. The API key is read only from `YUNWU_API_KEY` and is never persisted.

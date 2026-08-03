@@ -51,6 +51,15 @@ SPLIT = EXPERIMENT / "split.json"
 SPEC_SCHEMA = EXPERIMENT / "output-schema.json"
 CODE_SCHEMA = EXPERIMENT / "code-output-schema.json"
 QCP_BINARY = ROOT / "bin/qcp-symexec"
+DEFAULT_RESULTS_ROOT = (
+    Path(
+        os.environ.get(
+            "TESPEC_ARTIFACT_ROOT",
+            str(ROOT.parent / f"{ROOT.name}-artifacts"),
+        )
+    ).expanduser()
+    / "benchmark-results"
+)
 MODEL = "gpt-5-nano"
 PROVIDER_CONFIG = (
     'model_providers.yunwu={name="Yunwu",'
@@ -930,8 +939,8 @@ def main() -> int:
     output_dir = (
         args.output_dir.expanduser().resolve()
         if args.output_dir is not None
-        else ROOT
-        / "benchmark/results/bidirectional-synthesis"
+        else DEFAULT_RESULTS_ROOT
+        / "bidirectional-synthesis"
         / time.strftime("%Y%m%d-%H%M%S")
     )
     if output_dir.exists():

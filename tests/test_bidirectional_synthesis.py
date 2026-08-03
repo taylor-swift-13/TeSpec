@@ -63,6 +63,11 @@ class BidirectionalSynthesisTests(unittest.TestCase):
             self.assertTrue(all(item["id"] not in prompt for item in states))
             self.assertTrue(all(name not in prompt for name in mutant_names))
 
+    def test_default_results_directory_is_outside_the_repository(self) -> None:
+        results_root = self.runner["DEFAULT_RESULTS_ROOT"].resolve()
+        self.assertNotEqual(results_root, ROOT)
+        self.assertNotIn(ROOT, results_root.parents)
+
     def test_hidden_cases_record_c_states_not_gold_binders(self) -> None:
         _, states = self.runner["load_protocol"]()
         forbidden = {
