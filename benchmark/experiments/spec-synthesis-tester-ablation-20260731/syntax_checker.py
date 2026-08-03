@@ -16,8 +16,9 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[3]
 TARGET = Path(__file__).resolve().parent
 
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
+for import_root in (ROOT, TARGET):
+    if str(import_root) not in sys.path:
+        sys.path.insert(0, str(import_root))
 
 from spectest.core import (  # noqa: E402
     JobError,
@@ -25,6 +26,7 @@ from spectest.core import (  # noqa: E402
     attach_spec_to_source,
     run_job,
 )
+from state_adapter import StateBindingError, candidate_field_binders  # noqa: E402
 
 
 def result(valid: bool, stage: str, diagnostic: str = "") -> dict[str, Any]:
@@ -50,6 +52,11 @@ def check_spec(
                 "analyze",
                 str(analysis.get("unsupported_reason") or "unsupported QCP binding"),
             )
+        if function == "ModeConvert_AMMFun":
+            try:
+                candidate_field_binders(spec)
+            except StateBindingError as error:
+                return result(False, "state-interface", str(error))
     except (JobError, OSError, UnicodeError) as error:
         return result(False, "analyze", str(error))
 

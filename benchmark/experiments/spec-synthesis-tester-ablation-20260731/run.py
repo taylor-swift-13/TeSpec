@@ -43,7 +43,7 @@ DEMOS = (
         EXPERIMENT / "demo/struct_override.annotated.c",
     ),
 )
-SOURCE_BINDS = CASE / "tests/binds.json"
+HIDDEN_STATES = EXPERIMENT / "hidden/states.json"
 MUTANT_DIRS = (CASE / "mutants/refinement", CASE / "mutants/heldout")
 MATRIX_RUNNER = ROOT / "skills/tespec-e2e/scripts/run_mutation_matrix.py"
 SYNTAX_CHECKER = EXPERIMENT / "syntax_checker.py"
@@ -59,10 +59,12 @@ PROVIDER_CONFIG = (
 )
 ANNOTATION = re.compile(r"/\*@(?P<body>.*?)\*/", re.DOTALL)
 
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
+for import_root in (ROOT, EXPERIMENT):
+    if str(import_root) not in sys.path:
+        sys.path.insert(0, str(import_root))
 
 from spectest.core import JobError, attach_spec_to_source  # noqa: E402
+from state_adapter import StateBindingError, bind_states_for_spec  # noqa: E402
 
 
 def parse_args() -> argparse.Namespace:
@@ -110,16 +112,24 @@ def strip_spec(source: str) -> str:
 
 def load_protocol() -> tuple[dict[str, Any], list[dict[str, Any]]]:
     split = json.loads(SPLIT.read_text(encoding="utf-8"))
-    payload = json.loads(SOURCE_BINDS.read_text(encoding="utf-8"))
-    binds = payload["binds"] if isinstance(payload, dict) else payload
-    bind_ids = {item["id"] for item in binds}
+    payload = json.loads(HIDDEN_STATES.read_text(encoding="utf-8"))
+    if payload.get("schema") != "tespec-c-state-suite/v1":
+        raise ValueError("hidden states use an unsupported schema")
+    if payload.get("function") != "ModeConvert_AMMFun":
+        raise ValueError("hidden states target the wrong function")
+    states = payload.get("cases")
+    if not isinstance(states, list):
+        raise ValueError("hidden state suite must contain a cases array")
+    state_ids = {item["id"] for item in states}
     listed = [case for group in split["groups"] for case in group["cases"]]
     if len(split["groups"]) != 6:
         raise ValueError("the task must have exactly six semantic groups")
     if (
-        len(listed) != 30
+        len(states) != 30
+        or len(state_ids) != 30
+        or len(listed) != 30
         or len(set(listed)) != 30
-        or set(listed) != bind_ids
+        or set(listed) != state_ids
         or any(len(group["cases"]) != 5 for group in split["groups"])
     ):
         raise ValueError("six groups must partition all 30 hidden cases as 6 x 5")
@@ -131,7 +141,8 @@ def load_protocol() -> tuple[dict[str, Any], list[dict[str, Any]]]:
     for group in split["groups"]:
         if not set(group["mutants"]) <= mutant_names:
             raise ValueError(f"unknown group mutant in {group['id']}")
-    return split, binds
+    bind_states_for_spec(PUBLIC_SPEC.read_text(encoding="utf-8"), states)
+    return split, states
 
 
 def prepare_mutants(target_dir: Path) -> None:
@@ -150,16 +161,25 @@ def prepare_mutants(target_dir: Path) -> None:
 def evaluate_spec(
     candidate: str,
     output_dir: Path,
-    binds: list[dict[str, Any]],
+    states: list[dict[str, Any]],
 ) -> dict[str, Any]:
     output_dir.mkdir(parents=True)
     reference = output_dir / "reference.c"
     spec = output_dir / "candidate.qcp"
-    binds_path = output_dir / "hidden-binds.json"
+    binds_path = output_dir / "candidate-binds.json"
     mutants = output_dir / "hidden-mutants"
     matrix_dir = output_dir / "matrix"
     reference.write_text(PUBLIC_IMPL.read_text(encoding="utf-8"), encoding="utf-8")
     spec.write_text(candidate.strip() + "\n", encoding="utf-8")
+    try:
+        binds = bind_states_for_spec(candidate, states)
+    except StateBindingError as error:
+        return {
+            "returncode": None,
+            "matrix": None,
+            "matrix_dir": matrix_dir,
+            "interface_error": str(error),
+        }
     write_json(binds_path, {"binds": binds})
     prepare_mutants(mutants)
     completed = subprocess.run(
@@ -220,7 +240,7 @@ def candidate_translation_unit(code: str) -> str:
 def evaluate_code(
     candidate: str,
     output_dir: Path,
-    binds: list[dict[str, Any]],
+    states: list[dict[str, Any]],
 ) -> dict[str, Any]:
     output_dir.mkdir(parents=True)
     source = output_dir / "candidate.c"
@@ -229,6 +249,7 @@ def evaluate_code(
     report_dir = output_dir / "report"
     source.write_text(candidate_translation_unit(candidate), encoding="utf-8")
     spec.write_text(PUBLIC_SPEC.read_text(encoding="utf-8"), encoding="utf-8")
+    binds = bind_states_for_spec(PUBLIC_SPEC.read_text(encoding="utf-8"), states)
     write_json(
         job,
         {
@@ -267,6 +288,14 @@ def evaluate_code(
 
 
 def score_spec(evaluation: dict[str, Any], split: dict[str, Any]) -> dict[str, Any]:
+    if evaluation.get("interface_error"):
+        return {
+            "correct": False,
+            "score": 0.0,
+            "groups": [],
+            "error": False,
+            "invalid_spec_interface": evaluation["interface_error"],
+        }
     matrix = evaluation["matrix"]
     if not isinstance(matrix, dict) or "reference" not in matrix:
         return {"correct": False, "score": 0.0, "groups": [], "error": True}
@@ -379,14 +408,14 @@ def condition_prompt(condition: str) -> str:
             "After each submission, the harness deterministically inserts the "
             "candidate annotation and runs the original `qcp-symexec` binary. "
             "The next stateless call receives its raw return code, stdout, and "
-            "stderr. This tool has no hidden binds or mutations."
+            "stderr. This tool has no hidden C states or mutations."
         )
     if condition == "tespec-tool":
         return (
             "After each submission, the harness runs TeSpec's public checker. "
             "The next stateless call receives its normalized attachment, "
             "binding-analysis, parser, or C-interface diagnostic. This tool "
-            "has no hidden binds or mutations."
+            "has no hidden C states or mutations."
         )
     return (
         "This is the no-tool condition. No execution or parser report is "
@@ -421,6 +450,13 @@ def task_prompt(direction: str, condition: str) -> str:
                     "pointers; and express cases with `&&`, `!`, and `=>`. "
                     "QCP does not use C ternaries, `old(...)`, or "
                     "`If ... Then ... Else`."
+                ),
+                (
+                    "Hidden tests are concrete C states, so binder spelling is "
+                    "arbitrary. To make state binding structural, every `With` "
+                    "input variable must occur exactly once as the direct value "
+                    "of one `Require store(field_address, variable)` term; each "
+                    "field and variable must be unique."
                 ),
                 "Unrelated QCP examples:",
                 demo_prompt(),
@@ -737,7 +773,7 @@ def run_attempt(
     timeout: int,
     output_dir: Path,
     split: dict[str, Any],
-    binds: list[dict[str, Any]],
+    states: list[dict[str, Any]],
 ) -> dict[str, Any]:
     attempt_dir = output_dir / direction / condition / f"attempt-{attempt:03d}"
     attempt_dir.mkdir(parents=True)
@@ -805,12 +841,12 @@ def run_attempt(
         evaluation_dir = attempt_dir / "hidden-test-machine"
         if direction == "code-to-spec":
             hidden = score_spec(
-                evaluate_spec(candidate, evaluation_dir, binds),
+                evaluate_spec(candidate, evaluation_dir, states),
                 split,
             )
         else:
             hidden = score_code(
-                evaluate_code(candidate, evaluation_dir, binds),
+                evaluate_code(candidate, evaluation_dir, states),
                 split,
             )
     result = {
@@ -839,18 +875,18 @@ def gold_function() -> str:
 def oracle_audit(
     output_dir: Path,
     split: dict[str, Any],
-    binds: list[dict[str, Any]],
+    states: list[dict[str, Any]],
 ) -> dict[str, Any]:
     spec = PUBLIC_SPEC.read_text(encoding="utf-8")
     code = gold_function()
     report = {
         "schema": "tespec-bidirectional-oracle-audit/v1",
         "code_to_spec": score_spec(
-            evaluate_spec(spec, output_dir / "code-to-spec", binds),
+            evaluate_spec(spec, output_dir / "code-to-spec", states),
             split,
         ),
         "spec_to_code": score_code(
-            evaluate_code(code, output_dir / "spec-to-code", binds),
+            evaluate_code(code, output_dir / "spec-to-code", states),
             split,
         ),
         "inputs": {
@@ -890,7 +926,7 @@ def main() -> int:
     args = parse_args()
     if args.attempts < 1 or args.rounds < 1:
         raise SystemExit("attempts and rounds must be positive")
-    split, binds = load_protocol()
+    split, states = load_protocol()
     output_dir = (
         args.output_dir.expanduser().resolve()
         if args.output_dir is not None
@@ -902,7 +938,7 @@ def main() -> int:
         raise SystemExit(f"output directory already exists: {output_dir}")
     output_dir.mkdir(parents=True)
     if args.oracle_audit:
-        report = oracle_audit(output_dir, split, binds)
+        report = oracle_audit(output_dir, split, states)
         print(json.dumps(report, ensure_ascii=False, indent=2))
         return (
             0
@@ -933,7 +969,7 @@ def main() -> int:
             args.timeout,
             output_dir,
             split,
-            binds,
+            states,
         )
         for direction in directions
         for condition in conditions

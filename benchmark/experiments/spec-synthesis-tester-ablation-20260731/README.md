@@ -7,8 +7,8 @@ program:
 - `spec-to-code`: receive the QCP specification plus ABI declarations and
   generate the C function definition.
 
-There is no training set and no semantic feedback loop. All 30 binds and all
-12 incorrect-program mutations are private inputs of the final test machine.
+There is no training set and no semantic feedback loop. All 30 concrete C
+states and all 12 incorrect-program mutations are private inputs of the final test machine.
 They are neither copied into the model workspace nor included in prompts or
 revision feedback.
 
@@ -23,8 +23,15 @@ Each direction exposes only:
 The original-QCP condition deterministically attaches the candidate annotation
 and returns the raw result of `qcp-symexec`. The TeSpec condition analyzes the
 separate candidate and returns a normalized attachment, binding-analysis,
-QCP-parser, or C-interface report. Neither tool receives a hidden bind,
+state-interface, QCP-parser, or C-interface report. Neither tool receives a hidden state,
 mutation, counterexample, or final semantic verdict.
+
+Hidden cases store C arguments, object addresses, types, and field values—not
+gold-spec binder names. After freezing a generated spec, the judge parses each
+direct `Require store(field_address, with_variable)` term and creates ephemeral
+candidate-specific binds. Binder renaming therefore cannot change the score.
+Ambiguous, computed, duplicate, or unmapped input binders are reported as an
+invalid public state interface.
 
 The ablation conditions use the same number of stateless Nano calls:
 
@@ -41,10 +48,10 @@ explicitly scoped interface invoked by the harness.
 The final artifact is frozen before entering the test machine.
 
 - A generated spec must accept the reference implementation on all 30 hidden
-  binds and kill all 12 hidden mutants. Its score is the mean of positive pass
+  C states and kill all 12 hidden mutants. Its score is the mean of positive pass
   rate and mutation score, so a vacuous postcondition cannot pass.
 - A generated implementation is checked against the supplied target spec on
-  all 30 hidden binds and must pass every one.
+  all 30 hidden C states and must pass every one.
 
 Both directions report six semantic sub-scores of five hidden cases:
 preservation, injection, next-mode 1, next-mode 2, write precedence, and

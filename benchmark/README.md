@@ -14,7 +14,9 @@ Final submissions are frozen before the hidden test machine runs.
 The current audited task is
 [`experiments/spec-synthesis-tester-ablation-20260731`](experiments/spec-synthesis-tester-ablation-20260731).
 It contains six semantic groups of five hidden cases. Specification
-submissions must also reject all hidden incorrect-program mutations.
+submissions must also reject all hidden incorrect-program mutations. Hidden
+cases record concrete C object states; candidate-specific QCP binds are derived
+structurally from `Require store(...)` terms only after submission freeze.
 
 Raw model traces and judge artifacts belong under the ignored
 `benchmark/results/` path. Durable protocol inputs and their SHA-256 values are
