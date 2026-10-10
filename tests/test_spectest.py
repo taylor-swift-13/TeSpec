@@ -14,10 +14,11 @@ from spectest.core import (
     _FORBIDDEN_MANUAL_PROOF,
     JobError,
     attach_spec_to_source,
-    _classify,
-    _closed_generated_goal_value,
+    _executor_result,
+    _relocate_strategy_includes,
     _coq_required_modules,
     _default_coqc_command,
+    _qcp_command,
     _parse_qcp_config,
     _resolve_source_coq_module,
     _source_coq_imports,
@@ -36,10 +37,50 @@ ROOT = Path(__file__).resolve().parents[1]
 QCIP = ROOT / "runtime/qcip"
 EXTERNAL_QCIP = Path(os.environ.get("QCIP_SOURCE_DIR", str(ROOT.parent / "QCIP")))
 QCP_SOURCE = Path(os.environ.get("QCP_SOURCE_DIR", str(ROOT.parent / "sac_c_parser")))
-LOCAL_QCP = ROOT / "bin/qcp-symexec"
+LOCAL_QCP = bundled_qcp_binary()
 
 
 class SpecializationTests(unittest.TestCase):
+    def test_instance_trace_option_is_typed_and_opt_in(self):
+        self.assertFalse(_parse_qcp_config({}, ROOT, ROOT).instance_trace)
+        self.assertTrue(
+            _parse_qcp_config(
+                {"qcp": {"instance_trace": True}}, ROOT, ROOT
+            ).instance_trace
+        )
+        with self.assertRaises(JobError):
+            _parse_qcp_config({"qcp": {"instance_trace": "false"}}, ROOT, ROOT)
+
+    def test_legacy_executor_cannot_claim_initial_sat(self):
+        result = _executor_result(
+            json.dumps({"verificationStatus": "proved"}),
+            0,
+            {"status": "auto_proved", "residual_goals": []},
+        )
+        self.assertEqual(result["status"], "UNKNOWN")
+        self.assertEqual(result["phases"]["precondition"], "NOT_CHECKED")
+        self.assertEqual(result["reason"], "legacy_executor_missing_test_semantics")
+
+    def test_natural_language_success_is_not_a_verdict(self):
+        result = _executor_result(
+            "Successfully finished full automation check",
+            0,
+            {"status": "auto_proved", "residual_goals": []},
+        )
+        self.assertEqual(result["status"], "ERROR")
+        self.assertEqual(result["reason"], "invalid_executor_json")
+
+    def test_relative_strategy_import_survives_source_relocation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "src").mkdir()
+            strategy = root / "rules.strategies"
+            strategy.write_text("/* domain rules */")
+            source = '/*@ include strategies "../rules.strategies" */\nvoid f(void) {}'
+            relocated = _relocate_strategy_includes(source, root / "src" / "case.c")
+            self.assertIn(str(strategy), relocated)
+            self.assertIn("void f(void) {}", relocated)
+
     def setUp(self) -> None:
         self.source = (ROOT / "cases/sll_first_value/sll_first_value.c").read_text(
             encoding="utf-8"
@@ -66,6 +107,24 @@ class SpecializationTests(unittest.TestCase):
         self.assertTrue(config.binary.is_file())
         self.assertTrue((config.qcip_root / "SeparationLogic/_CoqProject").is_file())
 
+    def test_no_expand_mode_uses_ordinary_qcp_vcs(self) -> None:
+        config = _parse_qcp_config({"qcp": {"execution_mode": "no-expand"}}, ROOT, ROOT)
+        command = _qcp_command(
+            config, ROOT / "generated.c", "sample", None, ROOT / "vc"
+        )
+        self.assertIn("--spec-test-no-expand", command)
+        self.assertNotIn("--concrete-bindings", command)
+        self.assertNotIn("--loop-unroll-limit", command)
+
+    def test_no_expand_mode_passes_execution_budget(self) -> None:
+        config = _parse_qcp_config(
+            {"qcp": {"execution_mode": "no-expand", "loop_unroll_limit": 8}}, ROOT, ROOT
+        )
+        command = _qcp_command(
+            config, ROOT / "generated.c", "sample", None, ROOT / "vc"
+        )
+        self.assertEqual(command[command.index("--loop-unroll-limit") + 1], "8")
+
     def test_reads_utf8_and_gb18030_c_sources_strictly(self) -> None:
         with tempfile.TemporaryDirectory(prefix="qcp-source-encoding-") as temp:
             root = Path(temp)
@@ -80,16 +139,6 @@ class SpecializationTests(unittest.TestCase):
             self.assertIn("模式转换", read_source_text(gb_source))
             with self.assertRaisesRegex(JobError, "cannot decode source"):
                 read_source_text(invalid_source)
-
-    def test_classifies_all_inconsistent_return_branches_as_fail(self) -> None:
-        self.assertEqual(
-            _classify(
-                1,
-                "WitnessTrySolve: all return post branches are inconsistent "
-                "after solve",
-            ),
-            ("FAIL", False, "qcp_found_inconsistent_obligation"),
-        )
 
     def test_attaches_a_separate_spec_without_model_rewriting(self) -> None:
         annotated = (ROOT / "cases/add_one/add_one.c").read_text(encoding="utf-8")
@@ -229,24 +278,6 @@ class SpecializationTests(unittest.TestCase):
                 "add_one",
             )
 
-    def test_closed_generated_goal_detects_only_concrete_falsehoods(self) -> None:
-        goals = """
-Definition closed_false :=
-forall (H : (4096 <> 0)), (0 = 1).
-Definition vacuous_true :=
-forall (H : (0 <> 0)), (0 = 1).
-Definition closed_true :=
-forall (H : (3 < 4)), ((2 + 3 = 5) /\\ (7 <> 8)).
-Definition symbolic :=
-forall (x : Z), (x = x).
-Definition heap_goal := emp |-- emp.
-"""
-        self.assertIs(_closed_generated_goal_value(goals, "closed_false"), False)
-        self.assertIs(_closed_generated_goal_value(goals, "vacuous_true"), True)
-        self.assertIs(_closed_generated_goal_value(goals, "closed_true"), True)
-        self.assertIsNone(_closed_generated_goal_value(goals, "symbolic"))
-        self.assertIsNone(_closed_generated_goal_value(goals, "heap_goal"))
-
     def test_proof_checker_prefers_the_active_coqc_over_an_opam_switch_name(
         self,
     ) -> None:
@@ -340,9 +371,10 @@ From Domain.Nested Require Import First Second.
             )
             self.assertEqual(resolved, module.resolve())
 
-    def test_rejects_missing_binding(self) -> None:
-        with self.assertRaisesRegex(JobError, "missing With bindings"):
-            specialize_source(self.source, "sll_first_value", {"x": "1"})
+    def test_partial_logic_binding_is_accepted(self) -> None:
+        specialized = specialize_source(self.source, "sll_first_value", {"x": "1"})
+        self.assertIn("(x == (1))", specialized)
+        self.assertNotIn("(xs ==", specialized)
 
     def test_rejects_comment_injection(self) -> None:
         with self.assertRaisesRegex(JobError, "forbidden syntax"):
@@ -425,7 +457,7 @@ void scan(void)
         with tempfile.TemporaryDirectory(prefix="qcp-stale-vc-") as temp:
             root = Path(temp)
             output = root / "output"
-            case_dir = output / "small"
+            case_dir = output / "artifacts" / "small"
             stale_vc = case_dir / "vc"
             stale_vc.mkdir(parents=True)
             stale_marker = stale_vc / "old-proof.v"
@@ -449,13 +481,18 @@ void scan(void)
                 encoding="utf-8",
             )
             completed = subprocess.CompletedProcess([], 0, "", "")
-            with patch("spectest.core.subprocess.run", return_value=completed):
+            with patch(
+                "spectest.core._run_measured", return_value=(completed, None, None)
+            ):
                 report = run_job(job, output)
 
-            self.assertEqual(report["results"][0]["reason"], "qcp_vc_generation_error")
+            self.assertEqual(report["results"][0]["reason"], "invalid_executor_json")
+            self.assertIn("duration_seconds", report["results"][0])
+            self.assertIn("peak_rss_kb", report["results"][0])
+            self.assertIn("peak_rss_kb", report["summary"])
             self.assertFalse(stale_marker.exists())
 
-    def test_materializes_closed_derived_list_length(self) -> None:
+    def test_leaves_derived_length_to_shared_executor_normalizer(self) -> None:
         source = """
 void scan(char *text)
 /*@ With (contents: list Z) (n: Z)
@@ -472,7 +509,8 @@ void scan(char *text)
             argument_bindings={"text": 4096},
         )
         self.assertIn("(contents == (cons(65, cons(66, cons(67, nil)))))", specialized)
-        self.assertIn("(n == (3))", specialized)
+        self.assertNotIn("(n == (3))", specialized)
+        self.assertIn("Zlength(contents) == n", specialized)
 
     def test_analyzes_required_bindings(self) -> None:
         analysis = analyze_source(self.source, "sll_first_value")
@@ -482,7 +520,7 @@ void scan(char *text)
                 (item["name"], item["declaration"], item["required"])
                 for item in analysis["argument_bindings"]
             ],
-            [("p", "struct list *p", True)],
+            [("p", "struct list *p", False)],
         )
         self.assertEqual(
             [(item["name"], item["type"]) for item in analysis["value_bindings"]],
@@ -492,7 +530,9 @@ void scan(char *text)
             analysis["binds_template"][0]["values"],
             {"x": 0, "xs": [1, 2, 3]},
         )
-        self.assertEqual(analysis["binds_template"][0]["args"], {"p": 4096})
+        self.assertEqual(
+            analysis["binds_template"][0]["args"], {"p": {"symbolic": True}}
+        )
 
     def test_declared_signature_wins_over_nested_list_heuristic(self) -> None:
         source = """
@@ -515,14 +555,18 @@ void sort_like(int n)
             [("pts", "list point"), ("gx", "Z"), ("gy", "Z")],
         )
 
-    def test_requires_every_top_level_c_argument_when_args_are_enabled(self) -> None:
-        with self.assertRaisesRegex(JobError, "missing C argument bindings: p"):
-            specialize_source(
+    def test_pointer_arguments_can_remain_symbolic(self) -> None:
+        for arguments in ({}, {"p": {"symbolic": True}}):
+            specialized = specialize_source(
                 self.source,
                 "sll_first_value",
                 {"x": 1, "xs": [2, 3]},
-                argument_bindings={},
+                argument_bindings=arguments,
             )
+            self.assertNotIn("(p == (", specialized)
+        analysis = analyze_source(self.source, "sll_first_value")
+        self.assertFalse(analysis["argument_bindings"][0]["required"])
+        self.assertEqual(analysis["binds_template"][0]["args"]["p"], {"symbolic": True})
         with self.assertRaisesRegex(
             JobError, "bindings not declared as C parameters: extra"
         ):
@@ -706,20 +750,26 @@ int keep(int n)
         self.assertIn("(value: option Z)", specialized)
         self.assertIn("(value == (Some(9)))", specialized)
 
-    def test_xizi_include_signatures_infer_non_list_coq_types(self) -> None:
-        source_path = (
-            EXTERNAL_QCIP
-            / "OUTPUT/xizi/xizi_avl_left_rotate/source/xizi_avl_left_rotate.c"
-        )
-        if not source_path.is_file():
-            self.skipTest("xizi AVL output is unavailable")
-        source = source_path.read_text(encoding="utf-8")
-        signatures = source_with_local_includes(source_path, primary_source=source)
-        analysis = analyze_source(
-            source,
-            "xizi_avl_left_rotate",
-            signature_source=signatures,
-        )
+    def test_include_signatures_infer_non_list_coq_types(self) -> None:
+        # Generated external OUTPUT/ files change with proof sessions. Keep
+        # this include/type-inference contract independent of those outputs.
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "tree.h").write_text(
+                "/*@ Extern Coq (addr_avl_tree :: *)\n"
+                " (node : Z -> addr_avl_tree -> addr_avl_tree -> addr_avl_tree)\n"
+                " (tree_store : Z -> addr_avl_tree -> Assertion) */\n"
+            )
+            source = """#include "tree.h"
+int sample(int *p)
+/*@ With root_data a b before
+    Require before == node(root_data,a,b) && tree_store(p,before)
+    Ensure tree_store(p,before) */;
+"""
+            source_path = root / "sample.c"
+            source_path.write_text(source)
+            signatures = source_with_local_includes(source_path, primary_source=source)
+            analysis = analyze_source(source, "sample", signature_source=signatures)
         types = {item["name"]: item["type"] for item in analysis["value_bindings"]}
         self.assertEqual(types["root_data"], "Z")
         self.assertEqual(types["a"], "addr_avl_tree")
@@ -749,15 +799,19 @@ class EndToEndTests(unittest.TestCase):
         with tempfile.TemporaryDirectory(prefix="qcp-spectest-test-") as temp:
             return run_job(job_path, Path(temp))
 
-    def test_correct_linked_list_spec_passes(self) -> None:
+    def test_opaque_list_requires_existence_proof(self) -> None:
         report = self._run("cases/sll_first_value/job.json")
-        self.assertEqual(report["summary"]["PASS"], 2)
+        self.assertEqual(report["summary"]["UNKNOWN"], 2)
         self.assertEqual(report["summary"]["total"], 2)
+        for result in report["results"]:
+            self.assertEqual(result["phases"]["precondition"], "UNKNOWN")
+            self.assertEqual(result["phases"]["postcondition"], "PASS")
 
-    def test_wrong_postcondition_fails(self) -> None:
+    def test_wrong_postcondition_retains_unproved_vc(self) -> None:
         report = self._run("cases/sll_first_value_wrong/job.json")
-        self.assertEqual(report["results"][0]["status"], "FAIL")
-        self.assertFalse(report["results"][0]["satisfied"])
+        self.assertEqual(report["results"][0]["status"], "UNKNOWN")
+        self.assertIsNone(report["results"][0]["satisfied"])
+        self.assertTrue(report["results"][0]["vc"]["residual_goals"])
 
     def test_scalar_and_heap_examples_pass(self) -> None:
         for relative_job in (
@@ -768,6 +822,7 @@ class EndToEndTests(unittest.TestCase):
             with self.subTest(job=relative_job):
                 report = self._run(relative_job)
                 self.assertEqual(report["summary"]["PASS"], report["summary"]["total"])
+                self.assertEqual(report["itp_vcs"], [])
 
 
 @unittest.skipUnless(LOCAL_QCP.is_file(), "local concrete QCP binary is unavailable")
@@ -779,7 +834,10 @@ class ConcreteLoopEndToEndTests(unittest.TestCase):
 
     def _assert_manual_residual(self, result: dict) -> None:
         self.assertEqual(result["status"], "UNKNOWN")
-        self.assertEqual(result["reason"], "residual_vc_requires_proof")
+        self.assertIn(
+            result["reason"],
+            {"residual_vc_requires_proof", "precondition_requires_proof"},
+        )
         self.assertEqual(result["vc"]["status"], "residual")
         self.assertNotIn("automatic_concrete_proof", result["vc"])
         self.assertNotIn("automatic_concrete_refutation", result["vc"])
@@ -790,11 +848,17 @@ class ConcreteLoopEndToEndTests(unittest.TestCase):
             "cases/count_for/job.json",
             "cases/count_do_while/job.json",
             "cases/nested_loop/job.json",
-            "cases/sll_length_loop/job.json",
         ):
             with self.subTest(job=relative_job):
                 report = self._run(relative_job)
                 self.assertEqual(report["summary"]["PASS"], report["summary"]["total"])
+
+    def test_opaque_list_loop_preserves_execution_proofs(self) -> None:
+        report = self._run("cases/sll_length_loop/job.json")
+        self.assertEqual(report["summary"]["UNKNOWN"], 3)
+        for result in report["results"]:
+            self.assertEqual(result["phases"]["precondition"], "UNKNOWN")
+            self.assertEqual(result["phases"]["execution"], "PASS")
 
     def test_uchar_checksum_loop_ignores_source_invariant(self) -> None:
         report = self._run("cases/ip_check_cal08/job.json")
@@ -819,21 +883,21 @@ class ConcreteLoopEndToEndTests(unittest.TestCase):
 
     def test_float_arithmetic_signed_zero_and_struct_store(self) -> None:
         division = self._run("cases/float_operations/job_float_div.json")
-        self.assertEqual(division["summary"]["UNKNOWN"], 3)
-        self.assertEqual(division["summary"]["ERROR"], 1)
+        self.assertEqual(division["summary"]["PASS"], 3)
+        self.assertEqual(division["summary"]["INVALID"], 1)
         invalid = next(
             item for item in division["results"] if item["id"] == "zero_divisor_invalid"
         )
         self.assertEqual(invalid["reason"], "bindings_violate_require")
         for result in division["results"]:
             if result["id"] != "zero_divisor_invalid":
-                self._assert_manual_residual(result)
+                self.assertEqual(result["phases"]["postcondition"], "PASS")
 
         equality = self._run("cases/float_operations/job_double_eq_branch.json")
-        self.assertEqual(equality["summary"]["UNKNOWN"], 3)
+        self.assertEqual(equality["summary"]["PASS"], 3)
         self.assertEqual(equality["summary"]["total"], 3)
         for result in equality["results"]:
-            self._assert_manual_residual(result)
+            self.assertEqual(result["phases"]["postcondition"], "PASS")
 
         struct_store = self._run("cases/float_store/job_struct.json")
         self.assertEqual(struct_store["summary"]["UNKNOWN"], 2)
@@ -860,15 +924,16 @@ class ConcreteLoopEndToEndTests(unittest.TestCase):
                     report["summary"]["total"],
                 )
 
-    def test_wrong_loop_postcondition_fails(self) -> None:
+    def test_wrong_loop_postcondition_retains_unproved_vc(self) -> None:
         report = self._run("cases/count_loop_wrong/job.json")
-        self.assertEqual(report["results"][0]["status"], "FAIL")
-        self.assertFalse(report["results"][0]["satisfied"])
+        self.assertEqual(report["results"][0]["status"], "UNKNOWN")
+        self.assertIsNone(report["results"][0]["satisfied"])
+        self.assertTrue(report["results"][0]["vc"]["residual_goals"])
 
     def test_loop_limit_is_unknown_not_pass(self) -> None:
         report = self._run("cases/count_loop/job_limit.json")
         self.assertEqual(report["results"][0]["status"], "UNKNOWN")
-        self.assertEqual(report["results"][0]["reason"], "loop_unroll_limit_exceeded")
+        self.assertEqual(report["results"][0]["reason"], "loop_unroll_limit")
 
     def test_callee_arguments_and_heap_are_bound_at_call_time(self) -> None:
         for relative_job in (
@@ -903,8 +968,10 @@ class ConcreteLoopEndToEndTests(unittest.TestCase):
         report = self._run("cases/xizi_single_link_empty/job.json")
         self.assertEqual(report["summary"]["FAIL"], 0)
         self.assertEqual(report["summary"]["ERROR"], 0)
-        self.assertEqual(report["results"][0]["status"], "PASS")
-        self.assertIn(report["results"][1]["status"], {"PASS", "UNKNOWN"})
+        self.assertEqual(report["results"][0]["status"], "UNKNOWN")
+        self.assertEqual(report["results"][0]["phases"]["postcondition"], "PASS")
+        self.assertEqual(report["results"][0]["phases"]["precondition"], "UNKNOWN")
+        self.assertEqual(report["results"][1]["status"], "UNKNOWN")
 
     def test_xizi_custom_double_link_layout_executes(self) -> None:
         report = self._run("cases/xizi_double_link_empty/job.json")
@@ -938,20 +1005,29 @@ class ConcreteLoopEndToEndTests(unittest.TestCase):
     def test_concrete_output_list_witness_is_a_manual_residual(self) -> None:
         report = self._run("cases/ip_thruster_ctrl_logic/job.json")
         self.assertEqual(report["summary"]["UNKNOWN"], 3)
+        self.assertEqual(len(report["itp_vcs"]), 3)
+        self.assertEqual(
+            report["vc_policy"]["loops"],
+            "execute_iterations",
+        )
+        self.assertEqual(
+            report["vc_policy"]["defined_function_calls"], "execute_bodies"
+        )
         for result in report["results"]:
             with self.subTest(case=result["id"]):
                 self._assert_manual_residual(result)
 
-    def test_concrete_callees_compose_with_external_spec_call(self) -> None:
+    def test_concrete_callees_stop_at_bodyless_external_call(self) -> None:
         report = self._run("cases/ip_jet_ctrl_send/job.json")
         self.assertEqual(report["summary"]["UNKNOWN"], 3)
         for result in report["results"]:
             with self.subTest(case=result["id"]):
-                self._assert_manual_residual(result)
+                self.assertEqual(result["reason"], "missing_function_body")
+                self.assertEqual(result["phases"]["execution"], "UNKNOWN")
 
     def test_binding_that_contradicts_require_is_rejected(self) -> None:
         report = self._run("cases/invalid_binding/job.json")
-        self.assertEqual(report["results"][0]["status"], "ERROR")
+        self.assertEqual(report["results"][0]["status"], "INVALID")
         self.assertEqual(report["results"][0]["reason"], "bindings_violate_require")
 
     def test_closed_znth_safety_vc_is_classified_as_auto(self) -> None:
@@ -974,7 +1050,7 @@ class ConcreteLoopEndToEndTests(unittest.TestCase):
     def test_call_depth_limit_is_unknown_not_pass(self) -> None:
         report = self._run("cases/callee_recursive/job_limit.json")
         self.assertEqual(report["results"][0]["status"], "UNKNOWN")
-        self.assertEqual(report["results"][0]["reason"], "call_depth_limit_exceeded")
+        self.assertEqual(report["results"][0]["reason"], "call_depth_limit")
 
 
 if __name__ == "__main__":

@@ -11,6 +11,7 @@ from .core import (
     bundled_qcip_root,
     bundled_qcp_binary,
     check_vc_proof,
+    _write_vc_manifest,
     JobError,
     analyze_catalog,
     analyze_source,
@@ -172,6 +173,20 @@ def _run_parser() -> argparse.ArgumentParser:
         type=Path,
         help="artifact directory (default: .spectest/<source>-<function>)",
     )
+    parser.add_argument(
+        "--execution-mode",
+        choices=("expand", "no-expand"),
+        default="expand",
+        help="execute loops/calls in both modes; no-expand also checks intermediate boundaries",
+    )
+    parser.add_argument(
+        "--annotation-policy", choices=("ignore", "check-preserve", "qcp")
+    )
+    parser.add_argument(
+        "--instance-trace",
+        action="store_true",
+        help="record current logical formulas and memory in executor JSON",
+    )
     parser.add_argument("--qcip-root", type=Path, default=bundled_qcip_root())
     parser.add_argument(
         "--qcp-binary",
@@ -181,8 +196,8 @@ def _run_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--loop-unroll-limit",
         type=int,
-        default=64,
-        help="concrete loop bound (default: 64)",
+        default=None,
+        help="concrete loop bound (default: 64 in expand mode)",
     )
     parser.add_argument(
         "--call-depth-limit",
@@ -230,16 +245,23 @@ def _run_source(argv: list[str]) -> int:
                 "qcip_root": str(args.qcip_root.expanduser().resolve()),
                 "binary": str(args.qcp_binary.expanduser().resolve()),
                 "loop_unroll_limit": args.loop_unroll_limit,
+                "execution_mode": args.execution_mode,
+                "annotation_policy": args.annotation_policy,
+                "instance_trace": args.instance_trace,
                 "call_depth_limit": args.call_depth_limit,
                 "include_dirs": args.include_dir,
                 "timeout_seconds": args.timeout,
             },
         }
+        job["qcp"]["loop_unroll_limit"] = (
+            args.loop_unroll_limit if args.loop_unroll_limit is not None else 64
+        )
         if args.spec_file is not None:
             job["spec_file"] = str(args.spec_file.expanduser().resolve())
         if args.spec is not None:
             job["spec"] = args.spec
-        job_path = output_dir / "job.json"
+        job_path = output_dir / "artifacts" / "job.json"
+        job_path.parent.mkdir(parents=True, exist_ok=True)
         job_path.write_text(
             json.dumps(job, ensure_ascii=False, indent=2) + "\n",
             encoding="utf-8",
@@ -283,6 +305,56 @@ def _proof_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def _prepare_proof_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        prog="qcp-spectest prepare-proof",
+        description="Create a hash-pinned manifest for generated QCP proof files.",
+    )
+    parser.add_argument("vc_dir", type=Path, help="directory containing generated VCs")
+    parser.add_argument("generated_source", type=Path, help="source copied into vc_dir")
+    parser.add_argument(
+        "original_source", type=Path, help="original source with Coq imports"
+    )
+    parser.add_argument("--function", required=True)
+    parser.add_argument("--case-id", required=True)
+    parser.add_argument("--qcip-root", type=Path, default=bundled_qcip_root())
+    parser.add_argument(
+        "--dependency-source", help="alternate source text for dependency discovery"
+    )
+    parser.add_argument("--compact", action="store_true")
+    return parser
+
+
+def _run_prepare_proof(argv: list[str]) -> int:
+    args = _prepare_proof_parser().parse_args(argv)
+    try:
+        manifest = _write_vc_manifest(
+            args.vc_dir.expanduser().resolve(),
+            args.generated_source.expanduser().resolve(),
+            args.original_source.expanduser().resolve(),
+            args.qcip_root.expanduser().resolve(),
+            args.function,
+            args.case_id,
+            args.dependency_source,
+        )
+    except (JobError, OSError, ValueError) as error:
+        print(
+            json.dumps(
+                {
+                    "schema": "qcp-spectest-error/v1",
+                    "status": "ERROR",
+                    "error": str(error),
+                },
+                ensure_ascii=False,
+                indent=None if args.compact else 2,
+            ),
+            file=sys.stderr,
+        )
+        return 2
+    print(json.dumps(manifest, ensure_ascii=False, indent=None if args.compact else 2))
+    return 0 if not manifest["missing_files"] else 1
+
+
 def _run_proof(argv: list[str]) -> int:
     args = _proof_parser().parse_args(argv)
     try:
@@ -319,6 +391,8 @@ def main(argv: list[str] | None = None) -> int:
         return _run_source(argv[1:])
     if argv and argv[0] == "check-proof":
         return _run_proof(argv[1:])
+    if argv and argv[0] == "prepare-proof":
+        return _run_prepare_proof(argv[1:])
     if argv and argv[0] == "check":
         argv = argv[1:]
     args = _check_parser("qcp-spectest check").parse_args(argv)

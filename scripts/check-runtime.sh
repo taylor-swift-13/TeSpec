@@ -4,7 +4,7 @@ set -euo pipefail
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 project_root="$(cd "$script_dir/.." && pwd)"
 runtime_root="$project_root/runtime/qcip"
-binary="$project_root/bin/qcp-symexec"
+binary="$project_root/bin/tespec-symexec"
 
 required_paths=(
   "$binary"

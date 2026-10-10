@@ -6,7 +6,7 @@
 
 输入 **C implementation + QCP spec**、spec 引用的 **Coq definitions /
 strategies** 和具体 **binds**，直接得到逐测试用例的
-`PASS / FAIL / UNKNOWN / ERROR`。
+`PASS / FAIL / UNKNOWN / ERROR / INVALID`。
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![Coq 8.20](https://img.shields.io/badge/Coq-8.20-7C3AED)](https://coq.inria.fr/)
@@ -23,14 +23,18 @@ strategies** 和具体 **binds**，直接得到逐测试用例的
 
 ---
 
-TeSpec 检查的是：
+TeSpec 先检查实例化的 Require 是否可满足，再检查安全性和 Ensure。指针地址默认符号化；通过逻辑变量绑定内存内容，允许部分实例化。
 
-> 在这一组具体 C 参数和逻辑变量绑定下，真实执行目标函数后得到的终态是否满足
-> 原始 `Ensure`。
+两种模式共用 sac 的表达式求值模块：
 
-每个 bind 是一条独立测试用例。框架会执行有限循环、可见 callee 和相关 heap
-读写；不要求循环不变式，也不要求填写 callee binds。核心执行、VC 归约、结果分类
-均不调用大模型。
+- `--execution-mode expand`：展开函数体和循环，持续化简实际状态；证明注解默认忽略。`--annotation-policy check-preserve` 在状态副本上检查注解。
+- `--execution-mode no-expand`：同样实际执行循环和函数体，并在每次经过注解、调用及返回时复用 QCP 生成检查 VC；检查不修改执行状态。
+
+只有声明且有规约的目标执行 Require 检查，安全性和 Ensure 为 `NOT_RUN`；执行中调用只有声明时报告 `UNKNOWN/missing_function_body`，没有契约时报错。前条件不满足为 `INVALID`，未关闭 VC 为 `UNKNOWN`。自动流程不启动证明 Agent。
+
+新默认执行器为 `bin/tespec-symexec`，旧的 `bin/qcp-symexec` 保留给已冻结的历史实验。运行目录只保留 `report.json` 和 `artifacts/`；每例记录分阶段结果、VC、墙钟时间、CPU 时间和最大进程 RSS。
+
+[本次实现与验收记录](docs/evaluation/spec-test-implementation.md)包含两种模式的使用方式、实际测试结果和剩余障碍。
 
 ## 使用流程
 
@@ -57,6 +61,10 @@ scripts/check-runtime.sh
 
 运行 spec test 需要 Linux x86-64、glibc 和 Python 3.10+。只有检查 manual
 residual proof 时需要 Coq 8.20.x。
+
+运行时无需 QCP/sac 源码，使用仓库自带的 `bin/tespec-symexec` 和
+`runtime/qcip`（验证头文件、策略和逻辑库）。重新构建执行器才需要仓库外的
+sac checkout；teSpec 不收录 sac 执行器、编译器或 SMT solver 源码。
 
 ## 测试一道新题
 
@@ -229,18 +237,19 @@ python3 -m spectest check-proof --help
 构造子可以递归嵌套，因此 `option`、pair、tree 和用户自定义 inductive 不需要
 Python 预先认识。无法唯一推断的任意 Coq 类型可以使用显式 `type + qcp` 形式。
 
-指针使用具体数值地址。不同且不可别名的对象应使用不同地址；只有测试故意要求
-别名时才复用地址。更多格式见
+指针地址可以保持符号化；用逻辑值实例化内存内容和结构，别名关系由 Require 中的
+等式与空间断言表达。只有测试地址本身的数值性质时才需要绑定具体地址。更多格式见
 [binds reference](skills/qcp-spec-test/references/binds.md)。
 
 ## 结果解释
 
 | 状态 | 含义 |
 |---|---|
-| `PASS` | QCP/SMT 已关闭该 bind 的全部 VC |
+| `PASS` | Require 已判定 SAT，执行已完成，所选 VC 已关闭；仅声明的目标另标注 specification-only |
+| `INVALID` | 实例化 Require 不可满足 |
 | `FAIL` | 某个具体 obligation 确定为假，该执行不满足 spec |
 | `UNKNOWN` | 存在 residual VC，或达到循环/调用深度上限；绝不视为成功 |
-| `ERROR` | binds、parser、依赖、超时或运行环境错误 |
+| `ERROR` | binds、parser、依赖或运行环境错误 |
 
 自动证明只来自通用 assertion 归约与 QCP/SMT，保存为 `proof_auto.v`。核心没有
 二级 `coq_auto`，也不会自动填写 `proof_manual.v`。
@@ -294,3 +303,18 @@ python3 -m spectest check-proof .spectest/my-run/CASE/vc/manifest.json
 <div align="center">
 <sub>Concrete tests · explicit proof provenance · no hidden model calls</sub>
 </div>
+
+### 执行状态与诊断
+
+两种模式都从实例化 Require 出发，实际执行循环和有函数体的调用，并持续化简当前公式 P。
+Assert、Inv、Require、Ensure 只在副本上生成检查义务，不替换 P。每次调用创建新鲜参数和局部存储，指针所指的堆保持共享，返回全部实际可行结果。
+
+可添加 `--instance-trace`，或设置 `qcp.instance_trace: true`。
+该兼容选项记录逐程序点的 P、内存和纯约束；它不维护另一份可变实例状态。
+轨迹位于 `artifacts/<case>/executor.json`，默认关闭。
+
+详见 [形式化](paper/instance-semantics.md) 和
+[执行保持语义的回归记录](docs/evaluation/inline-preserve-implementation.md)。
+
+分类端到端测试见 [测试说明](benchmark/executor_e2e/README.md)：18 类、1,322 次运行，
+含原生 C/Python oracle、错误后条件和程序变异；[结果](docs/evaluation/executor-e2e-results.json)。

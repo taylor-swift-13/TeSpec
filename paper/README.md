@@ -25,3 +25,12 @@ pdflatex main
 ```
 
 The current PDF is `main.pdf`.
+
+## Execution-preserving instance semantics (October 2026)
+
+- [Chinese specification](instance-semantics.md): entry bindings, one logical execution state, actual loops and inlined calls, observational VC boundaries, and implementation correspondence.
+- [Formalization PDF](instance-semantics.pdf), with [LaTeX source](instance-semantics.tex).
+
+Build the standalone formalization with `pdflatex instance-semantics.tex` twice.
+
+Categorized end-to-end evidence: [executor-e2e-results.json](executor-e2e-results.json).

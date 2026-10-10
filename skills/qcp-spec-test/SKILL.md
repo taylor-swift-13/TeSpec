@@ -1,6 +1,6 @@
 ---
 name: qcp-spec-test
-description: Test a QCP-annotated C function against fully concrete top-level C arguments and logical-variable bindings, including linked lists, arrays, heap predicates, function calls, and finite loops without invariants. Use when Codex needs to discover required C args or QCP With variables, create or consume human-written binds, run the deterministic qcp-spectest tool, diagnose FAIL/UNKNOWN results, or prove residual Coq VCs that QCP automation did not close.
+description: Test a QCP-annotated C function against partially instantiated C arguments and typed logical-variable bindings, including linked lists, arrays, heap predicates, function calls, and finite loops without invariants. Use when Codex needs to discover required C args or QCP With variables, create or consume human-written binds, run the deterministic qcp-spectest tool, diagnose FAIL/UNKNOWN results, or prove residual Coq VCs that QCP automation did not close.
 ---
 
 # QCP Spec Test
@@ -68,12 +68,26 @@ logical module path while recursively staging direct and transitive imports.
      inductive data; use explicit `{"type": T, "qcp": term}` for any type the
      friendly encoder does not understand.
 
-4. Run the implementation against the original spec:
+4. Choose the execution mode before running the automatic stage:
+
+   - `expand` (default): instantiate bindings, unroll loops, execute available
+     function bodies, and simplify the symbolic state as each statement runs.
+     Use this mode for concrete path tests.
+   - `no-expand`: execute the same actual loop iterations and function bodies,
+     while generating QCP VCs at visited assertions, invariants, call entries
+     and returns. Checks operate on copies and never replace execution state.
+     This compatibility name selects the boundary-checking policy.
+   - A reached call without a body is UNKNOWN; a contract cannot stand in for
+     execution. A declaration-only test target may check Require only.
+   - Both modes apply loop and call-depth budgets. Exhaustion is UNKNOWN.
+
+   Run the implementation against the original spec:
 
    ```bash
    python3 -m spectest run IMPL.c \
      --spec-file SPEC.qcp \
      --function FUNCTION \
+     --execution-mode expand|no-expand \
      [--spec SPEC] \
      --binds BINDS.json \
      --output-dir OUTPUT
@@ -81,7 +95,13 @@ logical module path while recursively staging direct and transitive imports.
 
    This command executes the implementation and checks the resulting state
    against the supplied spec. A successful C execution without a spec result
-   is not a TeSpec test.
+   is not a TeSpec test. The automatic stage writes each generated VC manifest
+   and records every residual ITP VC in `report.json` under `itp_vcs`.
+
+   The report records `inline-preserve/v1` and the chosen boundary policy in
+   `vc_policy`. In either mode, reaching an execution bound produces UNKNOWN.
+   Increase the bound for finite inputs. Retained intermediate VCs use the
+   same ITP inventory as final-return and Require obligations.
 
    Add `-I` when the source uses an external C/QCP header or a declared
    strategy file. Paths such as `QCP_examples/QCP_demos_LLM` are resolved
@@ -119,7 +139,10 @@ logical module path while recursively staging direct and transitive imports.
    the supplied default.  An opaque `Extern Coq` predicate that has no
    executable QCP definition remains a legitimate manual residual.
 
-5. Process every bind independently:
+5. Finish the automatic stage for every bind before starting any proof Agent.
+   If `report.json` has an empty `itp_vcs` array, stop after reporting the
+   automatic results; do not start the Agent flow. Otherwise process every
+   listed manifest and goal:
 
    - `PASS / qcp_full_auto_passed`: QCP/SMT closed every VC in
      `proof_auto`.
@@ -131,25 +154,32 @@ logical module path while recursively staging direct and transitive imports.
      concrete execution is finite; otherwise preserve UNKNOWN.
    - `UNKNOWN / call_depth_limit_exceeded`: increase the call-depth bound for
      known finite recursion; otherwise preserve UNKNOWN.
-   - `UNKNOWN / residual_vc_requires_proof`: follow the residual proof
-     workflow below.
-   - Any other UNKNOWN or ERROR: inspect that case's stdout, stderr, generated
-     source, and manifest. Never convert uncertainty into PASS.
+- `UNKNOWN / residual_vc_requires_proof`: follow the residual proof
+  workflow below.
+- Any other UNKNOWN or ERROR: inspect that case's stdout, stderr, generated
+  source, and manifest. Never convert uncertainty into PASS.
+
+The report's top-level `itp_vcs` array is the complete proof queue. It contains
+one entry per residual VC manifest, with all residual goal names for that
+manifest. The automatic stage must finish the whole array before invoking the
+Agent phase; an empty array means the Agent phase is skipped entirely.
 
 ## Prove residual VCs
 
 Read [references/residual-vc.md](references/residual-vc.md) whenever a case
 contains a residual VC manifest.
 
-Edit only the manifest's `proof_manual` file. Fill every listed
-`residual_goals` lemma with a real proof, then run:
+Use one Agent for the complete ITP stage. It processes every manifest in the
+automatic report's `itp_vcs` inventory, edits each listed `proof_manual` file,
+and invokes the fixed checker itself:
 
 ```bash
 python3 -m spectest check-proof PATH/TO/vc/manifest.json
 ```
 
-Repeat proof editing and deterministic checking until it returns PASS or a
-genuine blocker remains. Do not edit the C implementation, function
+Repeat proof repair and deterministic checking until it returns PASS or a
+genuine blocker remains. The Agent that edits a proof also invokes
+`check-proof` and reads the report. Do not edit the C implementation, function
 `Require`/`Ensure`, generated goal, generated auto proof, generated goal check,
 or manifest hashes. Do not use `Admitted`, `admit`, `Abort`, new axioms,
 parameters, hypotheses, or conjectures.
@@ -160,6 +190,12 @@ satisfied manual result. A model-written proof is still manual for provenance;
 never describe it as QCP or core automation. CoqGym is not part of this
 workflow and must not be added unless a later, measured need justifies the
 extra dependency.
+
+For `--check-preconditions`, follow
+[references/precondition-check.md](references/precondition-check.md): an
+UNKNOWN Require needs separate SAT and UNSAT proof candidates. The same single
+Agent processes and checks all candidate VCs. Without Agent proof work, leave
+unresolved results UNKNOWN.
 
 ## Report
 
@@ -177,8 +213,10 @@ listed concrete logical bindings and explored finite paths.
 
 ## Dedicated model runner
 
-Normally perform bind selection and proof work directly as the active model.
-For an unattended external run explicitly requested by the user, execute
-`scripts/run-agent.sh`. It follows the CAV Codex runner shape and pins the
+For an unattended run explicitly requested by the user, first run the
+deterministic automatic stage, then pass its `report.json` to
+`scripts/run-agent.sh`. The script checks the `itp_vcs` inventory and exits
+without launching an Agent when it is empty. Otherwise it launches one Agent
+to prove every listed VC and run every fixed checker. The runner pins the
 model-only layer to `gpt-5.4-mini` with medium reasoning; the core tool remains
 model-free.

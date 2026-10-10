@@ -1,5 +1,10 @@
 # TeSpec 开发交接
 
+当前交付约束见 [AGENTS.md](AGENTS.md)，执行语义与验收结果见
+[inline-preserve/v1](docs/evaluation/inline-preserve-implementation.md)。
+teSpec 使用打包的 `bin/tespec-symexec` 与 `runtime/qcip`，运行无需 sac 源码；
+下文保留 2026-08-03 的历史交接内容。
+
 更新日期：2026-08-03
 
 仓库：`https://github.com/taylor-swift-13/TeSpec`

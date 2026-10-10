@@ -1,14 +1,16 @@
 from __future__ import annotations
 
-import ast
 import json
+import math
 import hashlib
+import os
 import re
+import signal
 import shutil
 import subprocess
 import time
 from dataclasses import dataclass
-from itertools import product
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -47,6 +49,22 @@ def read_source_text(path: Path) -> str:
         + "; ".join(failures)
         + ")"
     )
+
+
+def _relocate_strategy_includes(source: str, original: Path) -> str:
+    """Preserve source-relative strategy imports after moving a translation unit."""
+    pattern = re.compile(r'(/\*@\s*include\s+strategies\s+")([^"\n]+)("\s*\*/)', re.I)
+
+    def replace(match: re.Match[str]) -> str:
+        path = Path(match.group(2))
+        if path.is_absolute():
+            return match.group(0)
+        resolved = (original.parent / path).resolve()
+        if not resolved.is_file():
+            return match.group(0)
+        return match.group(1) + str(resolved) + match.group(3)
+
+    return pattern.sub(replace, source)
 
 
 def attach_spec_to_source(source: str, spec: str, function: str) -> str:
@@ -128,6 +146,9 @@ class QcpConfig:
     binary: Path
     include_dirs: tuple[Path, ...]
     timeout_seconds: float
+    execution_mode: str
+    annotation_policy: str | None
+    instance_trace: bool
     loop_unroll_limit: int
     call_depth_limit: int
 
@@ -174,7 +195,7 @@ def bundled_qcip_root() -> Path:
 def bundled_qcp_binary() -> Path:
     """Return the modified QCP executor shipped beside the Python package."""
 
-    return Path(__file__).resolve().parents[1] / "bin" / "qcp-symexec"
+    return Path(__file__).resolve().parents[1] / "bin" / "tespec-symexec"
 
 
 def _require_object(value: Any, label: str) -> dict[str, Any]:
@@ -359,6 +380,14 @@ def _format_native_binding(value: Any, logic_type: str | None, variable: str) ->
         return _validate_expression(value, variable)
     if isinstance(value, bool):
         return "true" if value else "false"
+    if isinstance(value, (int, float)) and logic_type in {"fp32", "fp64"}:
+        if not math.isfinite(value):
+            raise JobError(
+                f"binding {variable!r}: use an explicit QCP term for NaN or infinity"
+            )
+        # Serialization only: floating evaluation remains in the executor.
+        literal = str(value) if isinstance(value, float) else f"{value}.0"
+        return f"{logic_type}({literal})"
     if isinstance(value, int):
         return str(value)
     if isinstance(value, list):
@@ -811,71 +840,6 @@ def _derived_with_bindings(
     return derived
 
 
-def _closed_qcp_list_length(expression: str) -> int | None:
-    """Return the length of a closed ``nil``/``cons`` QCP list term."""
-
-    term = _strip_outer_parentheses(expression.strip())
-    if term in {"nil", "@nil Z", "(@nil Z)"}:
-        return 0
-    matched = re.fullmatch(r"cons\s*\((?P<args>.*)\)", term, re.DOTALL)
-    if matched is None:
-        return None
-    arguments = _split_top_level(matched.group("args"), ",")
-    if len(arguments) != 2:
-        return None
-    tail_length = _closed_qcp_list_length(arguments[1])
-    return None if tail_length is None else tail_length + 1
-
-
-def _materialize_derived_bindings(
-    analysis: WithAnalysis,
-    normalized: dict[str, str],
-) -> dict[str, str]:
-    """Evaluate derived With variables when their inputs are closed.
-
-    Keeping the original Require equality is useful to QCP, but a concrete
-    loop controller or heap extent must also be injected as a literal so
-    concrete execution does not depend on a solver rewriting the equality at
-    exactly the right time.  This evaluator is intentionally small and
-    syntax-driven: integer constants, aliases, and lengths of closed QCP list
-    constructor terms.
-    """
-
-    materialized = dict(normalized)
-    pending = dict(analysis.derived)
-    while pending:
-        progressed = False
-        for name, expression in tuple(pending.items()):
-            if name in materialized:
-                del pending[name]
-                progressed = True
-                continue
-            value: str | None = None
-            if re.fullmatch(r"[-+]?[0-9]+", expression):
-                value = str(int(expression))
-            elif expression in materialized:
-                value = materialized[expression]
-            else:
-                length = re.fullmatch(
-                    r"Zlength\s*\(\s*([A-Za-z_][A-Za-z0-9_]*)\s*\)",
-                    expression,
-                )
-                if length is not None:
-                    dependency = materialized.get(length.group(1))
-                    if dependency is not None:
-                        closed_length = _closed_qcp_list_length(dependency)
-                        if closed_length is not None:
-                            value = str(closed_length)
-            if value is None:
-                continue
-            materialized[name] = value
-            del pending[name]
-            progressed = True
-        if not progressed:
-            break
-    return materialized
-
-
 def _with_analysis(
     spec_body: str,
     signatures: dict[str, tuple[str, ...]] | None = None,
@@ -977,20 +941,17 @@ def _analyze_candidate(
     variables: list[dict[str, Any]] = []
     example_arguments: dict[str, Any] = {}
     example_values: dict[str, Any] = {}
-    next_address = 4096
     argument_bindings: list[dict[str, Any]] = []
     for parameter in parameters:
-        example = next_address if parameter.pointer_like else 0
-        if parameter.pointer_like:
-            next_address += 4096
+        example = {"symbolic": True} if parameter.pointer_like else 0
         example_arguments[parameter.name] = example
         argument_bindings.append(
             {
                 "name": parameter.name,
                 "declaration": parameter.declaration,
-                "required": True,
+                "required": not parameter.pointer_like,
                 "input": (
-                    "concrete numeric address or raw QCP expression"
+                    "symbolic by default; optional numeric address or raw QCP expression"
                     if parameter.pointer_like
                     else "JSON integer/boolean or raw QCP expression"
                 ),
@@ -1199,7 +1160,7 @@ def specialize_source(
     signature_source: str | None = None,
     argument_bindings: dict[str, Any] | None = None,
 ) -> str:
-    """Constrain Require with complete C arguments and logical bind values."""
+    """Serialize bindings into Require; unbound logical inputs stay symbolic."""
 
     bindings = _require_object(bindings, "bindings")
     type_bindings = _require_object(type_bindings or {}, "type bindings")
@@ -1214,7 +1175,11 @@ def specialize_source(
             name for name in provided_arguments if _NAME_RE.fullmatch(name) is None
         )
         unknown_arguments = sorted(provided_arguments - declared_arguments)
-        missing_arguments = sorted(declared_arguments - provided_arguments)
+        missing_arguments = sorted(
+            parameter.name
+            for parameter in parameters
+            if not parameter.pointer_like and parameter.name not in provided_arguments
+        )
         if invalid_arguments:
             raise JobError(
                 "invalid C argument binding names: " + ", ".join(invalid_arguments)
@@ -1230,10 +1195,20 @@ def specialize_source(
         normalized_arguments = {
             parameter.name: _format_native_binding(
                 argument_bindings[parameter.name],
-                None,
+                (
+                    "fp32"
+                    if re.search(r"\bfloat\b", parameter.declaration)
+                    else "fp64"
+                    if re.search(r"\bdouble\b", parameter.declaration)
+                    else None
+                )
+                if not parameter.pointer_like
+                else None,
                 f"C argument {parameter.name}",
             )
             for parameter in parameters
+            if parameter.name in argument_bindings
+            and not _is_symbolic_binding(argument_bindings[parameter.name])
         }
     start, end, spec_body = candidate.start, candidate.end, candidate.body
     signatures = _extern_logic_signatures(signature_source or source)
@@ -1251,11 +1226,8 @@ def specialize_source(
     if invalid_names:
         raise JobError(f"invalid binding names: {', '.join(invalid_names)}")
     unknown = sorted(provided - declared)
-    missing = sorted(declared - set(analysis.derived) - provided)
     if unknown:
         raise JobError(f"bindings not declared by With: {', '.join(unknown)}")
-    if missing:
-        raise JobError(f"missing With bindings: {', '.join(missing)}")
     if not declared and not normalized_arguments:
         if spec_body == candidate.body:
             return source
@@ -1267,7 +1239,6 @@ def specialize_source(
         for name in sorted(bindings)
         if not _is_symbolic_binding(bindings[name])
     }
-    normalized = _materialize_derived_bindings(analysis, normalized)
     require_match = re.search(r"\bRequire\b", spec_body)
     assert require_match is not None
     constraints = " && ".join(
@@ -1318,6 +1289,20 @@ def _parse_qcp_config(job: dict[str, Any], base: Path, source_dir: Path) -> QcpC
     timeout = raw.get("timeout_seconds", 30)
     if not isinstance(timeout, (int, float)) or timeout <= 0:
         raise JobError("qcp.timeout_seconds must be positive")
+    execution_mode = raw.get("execution_mode", "expand")
+    if execution_mode not in ("expand", "no-expand"):
+        raise JobError("qcp.execution_mode must be 'expand' or 'no-expand'")
+    instance_trace = raw.get("instance_trace", False)
+    if not isinstance(instance_trace, bool):
+        raise JobError("qcp.instance_trace must be a boolean")
+    annotation_policy = raw.get("annotation_policy")
+    permitted = (
+        (None, "qcp", "check-preserve")
+        if execution_mode == "no-expand"
+        else (None, "ignore", "check-preserve")
+    )
+    if annotation_policy not in permitted:
+        raise JobError("annotation policy conflicts with execution mode")
     loop_unroll_limit = raw.get("loop_unroll_limit", 0)
     if (
         isinstance(loop_unroll_limit, bool)
@@ -1339,6 +1324,9 @@ def _parse_qcp_config(job: dict[str, Any], base: Path, source_dir: Path) -> QcpC
         binary=binary,
         include_dirs=tuple(dict.fromkeys(includes)),
         timeout_seconds=float(timeout),
+        execution_mode=execution_mode,
+        annotation_policy=raw.get("annotation_policy"),
+        instance_trace=instance_trace,
         loop_unroll_limit=loop_unroll_limit,
         call_depth_limit=call_depth_limit,
     )
@@ -1355,8 +1343,8 @@ def _qcp_command(
         str(config.binary),
         f"--input-file={generated_source}",
         "--full-auto",
+        "--Json-output",
         "--emit-residual-vc",
-        "--concrete-bindings",
         "--no-strategy-gen",
         "--gen-and-backup",
         "--coq-output-dir",
@@ -1367,6 +1355,14 @@ def _qcp_command(
         "--function",
         function,
     ]
+    if config.execution_mode == "expand":
+        command.append("--concrete-bindings")
+    else:
+        command.append("--spec-test-no-expand")
+    if config.instance_trace:
+        command.append("--instance-trace")
+    if config.annotation_policy is not None:
+        command.extend(("--annotation-policy", config.annotation_policy))
     if spec_name is not None:
         command.extend(("--spec", spec_name))
     command.extend(f"-I{path}" for path in config.include_dirs)
@@ -1382,6 +1378,49 @@ def _sha256(path: Path) -> str:
         for chunk in iter(lambda: source.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def _run_measured(
+    command: list[str], *, cwd: Path, timeout: float, metrics_path: Path
+) -> tuple[subprocess.CompletedProcess[str], int | None, float | None]:
+    """Measure executor and children with GNU time (RSS is max, not tree sum)."""
+
+    time_binary = shutil.which("/usr/bin/time")
+    metrics_path.unlink(missing_ok=True)
+    measured_command = (
+        [time_binary, "-q", "-f", "%M %U %S", "-o", str(metrics_path), "--", *command]
+        if time_binary
+        else command
+    )
+    process = subprocess.Popen(
+        measured_command,
+        cwd=cwd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        start_new_session=True,
+    )
+    try:
+        stdout, stderr = process.communicate(timeout=timeout)
+    except subprocess.TimeoutExpired:
+        # Kill the executor and all subprocesses, not only the time wrapper.
+        try:
+            os.killpg(process.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        stdout, stderr = process.communicate()
+        raise subprocess.TimeoutExpired(command, timeout, output=stdout, stderr=stderr)
+    completed = subprocess.CompletedProcess(command, process.returncode, stdout, stderr)
+    try:
+        rss, user, system = metrics_path.read_text(encoding="utf-8").split()
+        peak_rss_kb = int(rss)
+        cpu_seconds = round(float(user) + float(system), 6)
+    except (OSError, ValueError):
+        peak_rss_kb = None
+        cpu_seconds = None
+    finally:
+        metrics_path.unlink(missing_ok=True)
+    return completed, peak_rss_kb, cpu_seconds
 
 
 _SOURCE_COQ_IMPORT_RE = re.compile(
@@ -1555,16 +1594,6 @@ def _write_vc_manifest(
             manual,
         )
     counterexample_goals: list[str] = []
-    if residual_goals and paths["goal"].is_file():
-        goal_source = paths["goal"].read_text(encoding="utf-8", errors="replace")
-        counterexample_goals = [
-            lemma
-            for lemma in residual_goals
-            if _closed_generated_goal_value(
-                goal_source, lemma.removeprefix("proof_of_")
-            )
-            is False
-        ]
     coq_dependencies = _stage_source_coq_dependencies(
         generated_source,
         original_source,
@@ -1610,38 +1639,116 @@ def _write_vc_manifest(
     return manifest
 
 
-def _classify(returncode: int, output: str) -> tuple[str, bool | None, str]:
-    if "Concrete bindings violate selected Require clause" in output:
-        return "ERROR", None, "bindings_violate_require"
-    conclusive_failures = (
-        "inconsistent after solve",
-        "SMT find a False Prop",
+def _executor_result(
+    output: str, returncode: int, vc: dict[str, Any]
+) -> dict[str, Any]:
+    """Consume executor JSON. Missing fields are explicitly unknown, not success."""
+    try:
+        executor = json.loads(output)
+    except json.JSONDecodeError:
+        executor = None
+    if not isinstance(executor, dict):
+        return {
+            "status": "ERROR",
+            "overall": "ERROR",
+            "satisfied": None,
+            "reason": "invalid_executor_json",
+            "phases": {
+                "precondition": "NOT_CHECKED",
+                "safety": "NOT_CHECKED",
+                "postcondition": "NOT_CHECKED",
+                "annotations": "NOT_CHECKED",
+            },
+        }
+    result = executor.get("spec_test")
+    if not isinstance(result, dict) or result.get("schema") != "sac-spec-test/v1":
+        return {
+            "status": "UNKNOWN" if not executor.get("errormessage") else "ERROR",
+            "overall": "UNKNOWN" if not executor.get("errormessage") else "ERROR",
+            "satisfied": None,
+            "reason": "legacy_executor_missing_test_semantics",
+            "scope": "NOT_REPORTED",
+            "phases": {
+                "precondition": "NOT_CHECKED",
+                "safety": "NOT_CHECKED",
+                "postcondition": "NOT_CHECKED",
+                "annotations": "NOT_CHECKED",
+            },
+            "legacy_verification_status": executor.get("verificationStatus"),
+        }
+    required_phases = {"precondition", "safety", "postcondition", "annotations"}
+    if (
+        not isinstance(result.get("phases"), dict)
+        or not required_phases.issubset(result["phases"])
+        or result.get("scope") not in {"execution", "specification-only"}
+        or result.get("mode") not in {"expand", "no-expand"}
+        or "certificate" not in result
+    ):
+        return {
+            "status": "ERROR",
+            "overall": "ERROR",
+            "satisfied": None,
+            "reason": "incomplete_executor_schema",
+        }
+    status = result.get("overall")
+    if status not in {"PASS", "FAIL", "UNKNOWN", "ERROR", "INVALID"}:
+        raise JobError("invalid structured executor verdict")
+    phases = dict(result["phases"])
+    phases["execution"] = (
+        "NOT_RUN"
+        if result["scope"] == "specification-only"
+        or phases["safety"] == phases["postcondition"] == "NOT_RUN"
+        else "PASS"
+        if result.get("completed") is True
+        or (
+            "completed" not in result
+            and phases["safety"] == phases["postcondition"] == "PASS"
+        )
+        else "UNKNOWN"
     )
-    if any(marker in output for marker in conclusive_failures):
-        return "FAIL", False, "qcp_found_inconsistent_obligation"
-
-    unresolved = (
-        "Entailment Check Failed",
-        "Return Check Failed",
-        "Witness cannot be solved",
+    if status == "PASS" and (returncode != 0 or phases["precondition"] != "SAT"):
+        status = "ERROR"
+    if status == "PASS" and vc["status"] == "not_generated":
+        status = "ERROR"
+    if status == "PASS" and vc["residual_goals"]:
+        status = "UNKNOWN"
+    reason = (
+        result.get("limit_reason")
+        or {
+            "PASS": "qcp_full_auto_passed",
+            "INVALID": "bindings_violate_require",
+            "ERROR": "qcp_execution_error",
+            "UNKNOWN": "residual_vc_requires_proof",
+            "FAIL": "confirmed_counterexample",
+        }[status]
     )
-    if "Loop unroll limit exceeded" in output:
-        return "UNKNOWN", None, "loop_unroll_limit_exceeded"
-    if "Concrete call depth limit exceeded" in output:
-        return "UNKNOWN", None, "call_depth_limit_exceeded"
-    if "Concrete predicate unfold limit exceeded" in output:
-        return "UNKNOWN", None, "predicate_unfold_limit_exceeded"
-    if any(marker in output for marker in unresolved):
-        return "UNKNOWN", None, "qcp_could_not_discharge_obligation"
-
-    # Older QCIP binaries print explicit success markers.  Current QCP uses
-    # LogLine for those markers, so --no-exec-info intentionally suppresses
-    # them.  Both implementations report a completed full-auto check with
-    # exit status zero; all parser, execution, and proof failures are nonzero.
-    if returncode == 0:
-        return "PASS", True, "qcp_full_auto_passed"
-
-    return "ERROR", None, "qcp_execution_error"
+    if (
+        status == "UNKNOWN"
+        and phases["precondition"] == "UNKNOWN"
+        and not result.get("limit_reason")
+    ):
+        reason = "precondition_requires_proof"
+    return {
+        "status": status,
+        "overall": status,
+        "satisfied": True if status == "PASS" else None,
+        "reason": reason,
+        "phases": phases,
+        "scope": result["scope"],
+        "mode": result["mode"],
+        "execution_semantics": result.get("execution_semantics"),
+        "execution_completed": result.get("completed"),
+        "annotation_policy": result.get("annotation_policy"),
+        "preconditions": executor.get("preconditions", []),
+        "abstraction_events": result.get("abstraction_events", []),
+        "architecture_bits": result.get("architecture_bits"),
+        "executor_error": executor.get("errormessage"),
+        "residual_vcs": vc["residual_goals"],
+        "evidence": {
+            "decision_backend": "qcp-smt",
+            "certificate": result["certificate"],
+        },
+    }
 
 
 def _safe_case_id(raw: Any, index: int) -> str:
@@ -1668,7 +1775,7 @@ def _parse_bind_cases(raw_binds: list[Any], default_spec: Any) -> tuple[BindCase
         cases.append(
             BindCase(
                 case_id=case_id,
-                arguments=_require_object(case.get("args"), f"binds[{index}].args"),
+                arguments=_require_object(case.get("args", {}), f"binds[{index}].args"),
                 values=_require_object(case.get("values"), f"binds[{index}].values"),
                 types=_require_object(case.get("types", {}), f"binds[{index}].types"),
                 spec=selected_spec,
@@ -1685,1118 +1792,19 @@ def _subprocess_text(value: str | bytes | None) -> str:
     return value
 
 
-def _coq_definition_body(source: str, name: str) -> str | None:
-    """Return one generated Coq definition body.
-
-    QCP emits both ``body\\n.`` and parenthesized ``body).`` endings.  Scan to
-    the first top-level command terminator so qualified names such as
-    ``UCharArray.full`` and periods inside comments/strings are not mistaken
-    for the end of the definition.
-    """
-
-    match = re.search(
-        rf"^Definition\s+{re.escape(name)}\s*:=\s*",
-        source,
-        re.MULTILINE,
-    )
-    if match is None:
-        return None
-    start = match.end()
-    depths = {"(": 0, "[": 0, "{": 0}
-    closing = {")": "(", "]": "[", "}": "{"}
-    index = start
-    comment_depth = 0
-    in_string = False
-    while index < len(source):
-        pair = source[index : index + 2]
-        character = source[index]
-        if comment_depth:
-            if pair == "(*":
-                comment_depth += 1
-                index += 2
-                continue
-            if pair == "*)":
-                comment_depth -= 1
-                index += 2
-                continue
-            index += 1
-            continue
-        if in_string:
-            if character == '"':
-                if index + 1 < len(source) and source[index + 1] == '"':
-                    index += 2
-                    continue
-                in_string = False
-            index += 1
-            continue
-        if pair == "(*":
-            comment_depth = 1
-            index += 2
-            continue
-        if character == '"':
-            in_string = True
-            index += 1
-            continue
-        if character in depths:
-            depths[character] += 1
-        elif character in closing:
-            opener = closing[character]
-            if depths[opener] > 0:
-                depths[opener] -= 1
-        elif character == "." and not any(depths.values()):
-            return source[start:index]
-        index += 1
-    return None
-
-
-def _closed_coq_proposition_value(expression: str) -> bool | None:
-    """Evaluate a deliberately small, closed fragment of Coq propositions.
-
-    This is used only to recognize concrete counterexamples, never to prove a
-    residual VC.  Free variables, calls, quantifiers, heap entailments, and
-    unsupported operators conservatively return ``None``.
-    """
-
-    compact = re.sub(r"\s+", " ", expression).strip()
-    if not compact or len(compact) > 4096:
-        return None
-    compact = compact.strip("“”").strip()
-    if any(
-        marker in compact
-        for marker in ("|--", "EX ", "exists ", "forall ", "->", "#", "&(")
-    ):
-        return None
-    python_expression = compact
-    python_expression = python_expression.replace("/\\", " and ")
-    python_expression = python_expression.replace("\\/", " or ")
-    python_expression = python_expression.replace("<>", "!=")
-    python_expression = re.sub(r"(?<![<>=!])=(?!=)", "==", python_expression)
-    python_expression = re.sub(r"(?<![A-Za-z0-9_])~\s*", " not ", python_expression)
-    try:
-        parsed = ast.parse(python_expression, mode="eval")
-    except SyntaxError:
-        return None
-
-    def evaluate(node: ast.AST) -> int | bool | None:
-        if isinstance(node, ast.Expression):
-            return evaluate(node.body)
-        if isinstance(node, ast.Constant):
-            if isinstance(node.value, bool):
-                return node.value
-            if isinstance(node.value, int):
-                return node.value
-            return None
-        if isinstance(node, ast.UnaryOp):
-            operand = evaluate(node.operand)
-            if operand is None:
-                return None
-            if isinstance(node.op, ast.Not) and isinstance(operand, bool):
-                return not operand
-            if isinstance(operand, bool) or not isinstance(operand, int):
-                return None
-            if isinstance(node.op, ast.USub):
-                return -operand
-            if isinstance(node.op, ast.UAdd):
-                return operand
-            return None
-        if isinstance(node, ast.BinOp):
-            left = evaluate(node.left)
-            right = evaluate(node.right)
-            if (
-                left is None
-                or right is None
-                or isinstance(left, bool)
-                or isinstance(right, bool)
-                or not isinstance(left, int)
-                or not isinstance(right, int)
+@lru_cache(maxsize=8)
+def _runtime_source_digest(root: Path) -> str:
+    """Pin the source runtime at the start of this controller process."""
+    digest = hashlib.sha256()
+    for directory in (root / "SeparationLogic", root / "QCP_examples"):
+        for path in sorted(directory.rglob("*")):
+            if path.is_file() and (
+                path.suffix in {".v", ".h", ".strategies"} or path.name == "_CoqProject"
             ):
-                return None
-            if isinstance(node.op, ast.Add):
-                return left + right
-            if isinstance(node.op, ast.Sub):
-                return left - right
-            if isinstance(node.op, ast.Mult):
-                return left * right
-            return None
-        if isinstance(node, ast.BoolOp):
-            values = [evaluate(item) for item in node.values]
-            if not all(isinstance(item, bool) for item in values):
-                return None
-            if isinstance(node.op, ast.And):
-                return all(values)
-            if isinstance(node.op, ast.Or):
-                return any(values)
-            return None
-        if isinstance(node, ast.Compare):
-            left = evaluate(node.left)
-            if left is None or isinstance(left, bool):
-                return None
-            for operator, comparator in zip(node.ops, node.comparators):
-                right = evaluate(comparator)
-                if right is None or isinstance(right, bool):
-                    return None
-                if isinstance(operator, ast.Eq):
-                    result = left == right
-                elif isinstance(operator, ast.NotEq):
-                    result = left != right
-                elif isinstance(operator, ast.Lt):
-                    result = left < right
-                elif isinstance(operator, ast.LtE):
-                    result = left <= right
-                elif isinstance(operator, ast.Gt):
-                    result = left > right
-                elif isinstance(operator, ast.GtE):
-                    result = left >= right
-                else:
-                    return None
-                if not result:
-                    return False
-                left = right
-            return True
-        return None
-
-    value = evaluate(parsed)
-    return value if isinstance(value, bool) else None
-
-
-def _closed_generated_goal_value(goal_source: str, goal_name: str) -> bool | None:
-    """Decide a generated goal with only closed proof-hypothesis binders."""
-
-    body = _coq_definition_body(goal_source, goal_name)
-    if body is None or "|--" in body:
-        return None
-    remaining = re.sub(r"\s+", " ", body).strip()
-    while remaining.startswith("forall"):
-        cursor = len("forall")
-        binder_types: list[str] = []
-        found = False
-        while True:
-            while cursor < len(remaining) and remaining[cursor].isspace():
-                cursor += 1
-            if cursor >= len(remaining) or remaining[cursor] != "(":
-                break
-            found = True
-            start = cursor + 1
-            depth = 1
-            cursor += 1
-            while cursor < len(remaining) and depth:
-                if remaining[cursor] == "(":
-                    depth += 1
-                elif remaining[cursor] == ")":
-                    depth -= 1
-                cursor += 1
-            if depth:
-                return None
-            declaration = remaining[start : cursor - 1]
-            colon = _top_level_colon(declaration)
-            if colon is None:
-                return None
-            binder_types.append(declaration[colon + 1 :].strip())
-        while cursor < len(remaining) and remaining[cursor].isspace():
-            cursor += 1
-        if not found or cursor >= len(remaining) or remaining[cursor] != ",":
-            return None
-        for binder_type in binder_types:
-            value = _closed_coq_proposition_value(binder_type)
-            if value is None:
-                return None
-            if value is False:
-                return True
-        remaining = remaining[cursor + 1 :].strip()
-    return _closed_coq_proposition_value(remaining)
-
-
-def _finite_z_interval(body: str) -> tuple[str, int, int] | None:
-    """Recognize a concrete, bounded outer ``forall (x : Z)`` guard.
-
-    QCP deliberately leaves pointwise array postconditions quantified even
-    after all test inputs are concrete.  Enumerating a small closed interval
-    is complete for that concrete guard and is independent of the predicate,
-    program, and array element expression inside the implication.
-    """
-
-    compact = re.sub(r"\s+", " ", body).strip()
-    integer = r"(?P<{name}>-?\s*[0-9]+)"
-    intervals: list[tuple[str, int, int]] = []
-    remaining = compact
-    while re.match(r"^forall\b", remaining):
-        cursor = len("forall")
-        binders: list[tuple[list[str], str]] = []
-        while True:
-            while cursor < len(remaining) and remaining[cursor].isspace():
-                cursor += 1
-            if cursor >= len(remaining) or remaining[cursor] != "(":
-                break
-            start = cursor + 1
-            depth = 1
-            cursor += 1
-            while cursor < len(remaining) and depth:
-                if remaining[cursor] == "(":
-                    depth += 1
-                elif remaining[cursor] == ")":
-                    depth -= 1
-                cursor += 1
-            if depth:
-                return None
-            content = remaining[start : cursor - 1]
-            nested = 0
-            colon = None
-            for position, character in enumerate(content):
-                if character == "(":
-                    nested += 1
-                elif character == ")":
-                    nested -= 1
-                elif character == ":" and nested == 0:
-                    colon = position
-                    break
-            if colon is None:
-                return None
-            names = content[:colon].strip().split()
-            binder_type = content[colon + 1 :].strip()
-            binders.append((names, binder_type))
-        while cursor < len(remaining) and remaining[cursor].isspace():
-            cursor += 1
-        if cursor >= len(remaining) or remaining[cursor] != ",":
-            return None
-        tail = remaining[cursor + 1 :].lstrip()
-        z_names = [
-            name
-            for names, binder_type in binders
-            if binder_type == "Z"
-            for name in names
-            if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", name)
-        ]
-        for var in z_names:
-            patterns = (
-                (
-                    rf"^\s*\(*\s*{integer.format(name='lo')}\s*<=\s*"
-                    rf"{re.escape(var)}\s*\)*\s*/\\\s*\(*\s*"
-                    rf"{re.escape(var)}\s*<\s*"
-                    rf"{integer.format(name='hi')}",
-                    0,
-                    0,
-                ),
-                (
-                    rf"^\s*\(*\s*{integer.format(name='lo')}\s*<=\s*"
-                    rf"{re.escape(var)}\s*\)*\s*/\\\s*\(*\s*"
-                    rf"{re.escape(var)}\s*<=\s*"
-                    rf"{integer.format(name='hi')}",
-                    0,
-                    1,
-                ),
-                (
-                    rf"^\s*\(*\s*{integer.format(name='lo')}\s*<\s*"
-                    rf"{re.escape(var)}\s*\)*\s*/\\\s*\(*\s*"
-                    rf"{re.escape(var)}\s*<\s*"
-                    rf"{integer.format(name='hi')}",
-                    1,
-                    0,
-                ),
-                (
-                    rf"^\s*\(*\s*{integer.format(name='lo')}\s*<\s*"
-                    rf"{re.escape(var)}\s*\)*\s*/\\\s*\(*\s*"
-                    rf"{re.escape(var)}\s*<=\s*"
-                    rf"{integer.format(name='hi')}",
-                    1,
-                    1,
-                ),
-                (
-                    rf"^\s*\(*\s*{re.escape(var)}\s*>=\s*"
-                    rf"{integer.format(name='lo')}\s*\)*\s*/\\\s*\(*\s*"
-                    rf"{re.escape(var)}\s*<\s*"
-                    rf"{integer.format(name='hi')}",
-                    0,
-                    0,
-                ),
-                (
-                    rf"^\s*\(*\s*{re.escape(var)}\s*>=\s*"
-                    rf"{integer.format(name='lo')}\s*\)*\s*/\\\s*\(*\s*"
-                    rf"{re.escape(var)}\s*<=\s*"
-                    rf"{integer.format(name='hi')}",
-                    0,
-                    1,
-                ),
-            )
-            for pattern, low_adjustment, high_adjustment in patterns:
-                bounds = re.search(pattern, tail)
-                if bounds is None:
-                    continue
-                low = int(bounds.group("lo").replace(" ", "")) + low_adjustment
-                high = int(bounds.group("hi").replace(" ", "")) + high_adjustment
-                # Keep generated proof size linear and bounded.  Larger
-                # concrete domains remain sound residual VCs.
-                if 0 <= high - low <= 256:
-                    intervals.append((var, low, high))
-                break
-        remaining = tail
-    # The last matching outer binder is the pointwise conclusion QCP split.
-    return intervals[-1] if intervals else None
-
-
-def _finite_z_interval_proof(goal_name: str, goal_source: str) -> str | None:
-    body = _coq_definition_body(goal_source, goal_name)
-    interval = _finite_z_interval(body) if body is not None else None
-    if interval is None:
-        return None
-    var, low, high = interval
-    lines = [
-        "Proof.",
-        f"  unfold {goal_name}.",
-        f"  intros until {var}.",
-        "  intros Hrange.",
-    ]
-    for offset, value in enumerate(range(low, high)):
-        neq_name = f"Hneq_{offset}"
-        lines.extend(
-            [
-                f"  destruct (Z.eq_dec {var} ({value})) as [-> | {neq_name}];",
-                "    [vm_compute; intuition congruence | idtac].",
-            ]
-        )
-    lines.extend(["  exfalso; lia.", "Qed."])
-    return "\n".join(lines)
-
-
-def _leading_forall_z_binders(body: str) -> list[str]:
-    """Collect top-level ``Z`` binders from a generated proposition."""
-
-    remaining = re.sub(r"\s+", " ", body).strip()
-    result: list[str] = []
-    while re.match(r"^forall\b", remaining):
-        cursor = len("forall")
-        found_group = False
-        while True:
-            while cursor < len(remaining) and remaining[cursor].isspace():
-                cursor += 1
-            if cursor >= len(remaining) or remaining[cursor] != "(":
-                break
-            found_group = True
-            start = cursor + 1
-            depth = 1
-            cursor += 1
-            while cursor < len(remaining) and depth:
-                if remaining[cursor] == "(":
-                    depth += 1
-                elif remaining[cursor] == ")":
-                    depth -= 1
-                cursor += 1
-            if depth:
-                return []
-            declaration = remaining[start : cursor - 1]
-            colon = _top_level_colon(declaration)
-            if colon is None:
-                continue
-            names = declaration[:colon].strip().split()
-            binder_type = declaration[colon + 1 :].strip()
-            if binder_type == "Z":
-                result.extend(
-                    name
-                    for name in names
-                    if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", name)
-                )
-        while cursor < len(remaining) and remaining[cursor].isspace():
-            cursor += 1
-        if not found_group or cursor >= len(remaining) or remaining[cursor] != ",":
-            break
-        remaining = remaining[cursor + 1 :].lstrip()
-    return result
-
-
-def _small_closed_z_domain(body: str) -> tuple[int, ...]:
-    """Infer one finite integer domain shared by closed index quantifiers."""
-
-    compact = re.sub(r"\s+", " ", body)
-    integer = r"-?\s*[0-9]+"
-    name = r"[A-Za-z_][A-Za-z0-9_]*"
-    lows: list[int] = []
-    highs: list[int] = []
-    for matched in re.finditer(
-        rf"(?P<value>{integer})\s*(?P<op><=|<)\s*(?P<var>{name})",
-        compact,
-    ):
-        value = int(matched.group("value").replace(" ", ""))
-        lows.append(value + (1 if matched.group("op") == "<" else 0))
-    for matched in re.finditer(
-        rf"(?P<var>{name})\s*(?P<op><=|<)\s*(?P<value>{integer})",
-        compact,
-    ):
-        value = int(matched.group("value").replace(" ", ""))
-        highs.append(value + (1 if matched.group("op") == "<=" else 0))
-    if not highs:
-        return ()
-    low = min(lows) if lows else 0
-    high = max(highs)
-    if low > high or high - low > 32:
-        return ()
-    return tuple(range(low, high))
-
-
-def _z_case_proposition(variable: str, values: tuple[int, ...]) -> str:
-    return r" \/ ".join(f"{variable} = ({value})" for value in values)
-
-
-def _z_case_pattern(values: tuple[int, ...]) -> str:
-    if len(values) == 1:
-        return "Hsingle"
-    pattern = "->"
-    for _value in values[:-1]:
-        pattern = f"[-> | {pattern}]"
-    return pattern
-
-
-def _finite_closed_quantifier_proof(goal_name: str, goal_source: str) -> str | None:
-    """Close concrete bounded quantifier combinations by finite enumeration."""
-
-    body = _coq_definition_body(goal_source, goal_name)
-    if body is None or "|--" in body:
-        return None
-    values = _small_closed_z_domain(body)
-    if not values:
-        return None
-    interval = _finite_z_interval(body)
-    outer_variables = (
-        [interval[0]] if interval is not None else _leading_forall_z_binders(body)
-    )
-    if not outer_variables:
-        return None
-    if len(values) ** len(outer_variables) > 4096:
-        return None
-
-    existential = re.search(
-        r"exists\s+\((?P<var>[A-Za-z_][A-Za-z0-9_]*)\s*:\s*Z\)\s*,",
-        body,
-    )
-    nested_variables: list[str] = []
-    if existential is not None:
-        nested_variables = list(
-            dict.fromkeys(
-                re.findall(
-                    r"forall\s+\(([A-Za-z_][A-Za-z0-9_]*)\s*:\s*Z\)",
-                    body[existential.end() :],
-                )
-            )
-        )
-
-    lines = ["Proof.", f"  unfold {goal_name}.", "  intros."]
-    for index, variable in enumerate(outer_variables):
-        proposition = _z_case_proposition(variable, values)
-        if len(values) == 1:
-            prefix = "  " if index == 0 else "  all: "
-            lines.append(
-                f"{prefix}assert ({variable} = ({values[0]})) by lia; subst {variable}."
-            )
-            continue
-        prefix = "  " if index == 0 else "  all: "
-        lines.append(f"{prefix}assert ({proposition}) as Hcases_{index} by lia.")
-        destruct = _z_case_pattern(values)
-        lines.append(
-            f"{'  ' if index == 0 else '  all: '}destruct Hcases_{index} as {destruct}."
-        )
-
-    if existential is None:
-        lines.extend(
-            [
-                "  all: try lia.",
-                "  all: vm_compute; intuition congruence.",
-                "Qed.",
-            ]
-        )
-        return "\n".join(lines)
-
-    attempts: list[str] = []
-    for witness in values:
-        tactics = [
-            f"exists ({witness})",
-            "repeat split",
-            "try lia",
-            "try reflexivity",
-            "try solve [vm_compute; intuition congruence]",
-        ]
-        if nested_variables:
-            tactics.append("intros")
-            for index, variable in enumerate(nested_variables):
-                proposition = _z_case_proposition(variable, values)
-                if len(values) == 1:
-                    tactics.extend(
-                        [
-                            f"assert ({variable} = ({values[0]})) by lia",
-                            f"subst {variable}",
-                        ]
-                    )
-                else:
-                    tactics.extend(
-                        [
-                            f"assert ({proposition}) as Hinner_{index} by lia",
-                            f"destruct Hinner_{index} as {_z_case_pattern(values)}",
-                        ]
-                    )
-        tactics.extend(["try lia", "vm_compute", "intuition congruence"])
-        attempts.append("solve [" + "; ".join(tactics) + "]")
-    lines.extend(
-        [
-            "  all: first [",
-            "    " + "\n  | ".join(attempts),
-            "  ].",
-            "Qed.",
-        ]
-    )
-    return "\n".join(lines)
-
-
-def _concrete_permutation_proof(goal_name: str, goal_source: str) -> str | None:
-    """Decide a closed ``Permutation (list Z) (list Z)`` proposition."""
-
-    body = _coq_definition_body(goal_source, goal_name)
-    if body is None or "|--" in body or "Permutation" not in body:
-        return None
-    values = sorted(
-        {
-            int(value.replace(" ", ""))
-            for value in re.findall(r"\bcons\s+\(+\s*(-?\s*[0-9]+)\s*\)+", body)
-        }
-    )
-    lines = [
-        "Proof.",
-        f"  unfold {goal_name}.",
-    ]
-    if not values:
-        lines.extend(["  apply Permutation_refl.", "Qed."])
-        return "\n".join(lines)
-    lines.extend(
-        [
-            "  apply (proj2 (@Permutation_count_occ Z Z.eq_dec _ _)).",
-            "  intro x.",
-            "  cbn [List.count_occ].",
-        ]
-    )
-    for value in values:
-        lines.append(f"  destruct (Z.eq_dec ({value}) x);")
-    lines.extend(["  simpl; lia.", "Qed."])
-    return "\n".join(lines)
-
-
-def _concrete_z_list_witness(body: str | None) -> str | None:
-    """Recover a closed ``list Z`` witness from concrete ``Znth`` facts.
-
-    Concrete execution records each final array/list cell in the residual
-    return VC.  When those facts cover exactly ``0 .. Zlength - 1``, they
-    determine the existential list without knowing the function, predicate,
-    struct, or field names involved.
-    """
-
-    if body is None:
-        return None
-    declarations = re.finditer(
-        r"EX\s+\((?P<var>[A-Za-z_][A-Za-z0-9_]*)\s*:\s*"
-        r"\(@list\s+Z\)\)\s*,",
-        body,
-    )
-    propositions = re.findall(r"“(?P<body>.*?)”", body, re.DOTALL)
-    for declaration in declarations:
-        variable = declaration.group("var")
-        length: int | None = None
-        values: dict[int, int] = {}
-        conflict = False
-        for proposition in propositions:
-            length_match = re.search(
-                rf"Zlength\s*\(\s*{re.escape(variable)}\s*\)"
-                r"\s*\)*\s*=\s*\(*\s*(?P<length>[0-9]+)",
-                proposition,
-            )
-            if length_match is not None:
-                candidate_length = int(length_match.group("length"))
-                if length is not None and length != candidate_length:
-                    conflict = True
-                length = candidate_length
-
-            cell_match = re.search(
-                r"(?P<value>.*?)=\s*"
-                r"\(Znth\s*\(\s*(?P<index>[0-9]+)\s*\)\s*"
-                rf"\(\s*{re.escape(variable)}\s*\)\s*"
-                r"\([^)]*\)\)",
-                proposition,
-                re.DOTALL,
-            )
-            if cell_match is None:
-                continue
-            integer_match = re.fullmatch(
-                r"\s*\(*\s*(?P<value>-?\s*[0-9]+)\s*\)*\s*",
-                cell_match.group("value"),
-            )
-            if integer_match is None:
-                continue
-            index = int(cell_match.group("index"))
-            value = int(integer_match.group("value").replace(" ", ""))
-            if index in values and values[index] != value:
-                conflict = True
-            values[index] = value
-
-        # Some concrete array postconditions constrain only the witness
-        # length and its final IntArray::full heap, without spelling out
-        # pointwise Znth equalities.  Recover those cells from the closed
-        # low-level stores left by concrete execution.  This is based only on
-        # the generic IntArray heap shape, not on a function or predicate
-        # name.
-        target = re.search(
-            r"IntArray\.full\s+\(*\s*(?P<base>-?\s*[0-9]+)\s*\)*\s+"
-            r"\(*\s*(?P<length>[0-9]+)\s*\)*\s+"
-            rf"\(*\s*{re.escape(variable)}\s*\)*",
-            body,
-        )
-        if target is not None:
-            target_base = int(target.group("base").replace(" ", ""))
-            target_length = int(target.group("length"))
-            if length is None:
-                length = target_length
-            elif length != target_length:
-                conflict = True
-            for line in body.splitlines():
-                cell = re.search(
-                    r"(?P<base>-?\s*[0-9]+)\s*\+\s*"
-                    r"\(\s*(?P<index>[0-9]+)\s*\*\s*sizeof\(INT\)\s*\)"
-                    r".*?#\s*Int\s*\|->\s*\(*\s*"
-                    r"(?P<value>-?\s*[0-9]+)\s*\)*",
-                    line,
-                )
-                if cell is None:
-                    continue
-                base = int(cell.group("base").replace(" ", ""))
-                if base != target_base:
-                    continue
-                index = int(cell.group("index"))
-                value = int(cell.group("value").replace(" ", ""))
-                if index in values and values[index] != value:
-                    conflict = True
-                values[index] = value
-        if (
-            conflict
-            or length is None
-            or length > 256
-            or set(values) != set(range(length))
-        ):
-            continue
-        witness = "(@nil Z)"
-        for index in reversed(range(length)):
-            witness = f"(cons ({values[index]}) ({witness}))"
-        return witness
-    return None
-
-
-def _parse_closed_coq_z_list(
-    source: str, start: int
-) -> tuple[tuple[int, ...], int] | None:
-    """Parse QCP's parenthesized ``list Z`` constructor syntax.
-
-    The generated Coq printer freely adds redundant parentheses, including
-    forms such as ``cons ((-1)) ((@nil Z))``.  Parsing the constructor spine
-    keeps witness discovery independent of the array predicate and of any
-    case-local list transformer used by the specification.
-    """
-
-    def skip_space(position: int) -> int:
-        while position < len(source) and source[position].isspace():
-            position += 1
-        return position
-
-    def parse_integer(position: int) -> tuple[int, int] | None:
-        position = skip_space(position)
-        wrappers = 0
-        while position < len(source) and source[position] == "(":
-            wrappers += 1
-            position = skip_space(position + 1)
-        matched = re.match(r"-?\s*[0-9]+", source[position:])
-        if matched is None:
-            return None
-        value = int(matched.group(0).replace(" ", ""))
-        position = skip_space(position + matched.end())
-        for _ in range(wrappers):
-            if position >= len(source) or source[position] != ")":
-                return None
-            position = skip_space(position + 1)
-        return value, position
-
-    def parse_list(position: int) -> tuple[tuple[int, ...], int] | None:
-        position = skip_space(position)
-        wrappers = 0
-        while position < len(source) and source[position] == "(":
-            wrappers += 1
-            position = skip_space(position + 1)
-        if source.startswith("@nil", position):
-            position = skip_space(position + len("@nil"))
-            if not source.startswith("Z", position):
-                return None
-            values: tuple[int, ...] = ()
-            position = skip_space(position + 1)
-        elif re.match(r"cons\b", source[position:]):
-            position = skip_space(position + len("cons"))
-            head = parse_integer(position)
-            if head is None:
-                return None
-            value, position = head
-            tail = parse_list(position)
-            if tail is None:
-                return None
-            tail_values, position = tail
-            values = (value, *tail_values)
-        else:
-            return None
-        for _ in range(wrappers):
-            if position >= len(source) or source[position] != ")":
-                return None
-            position = skip_space(position + 1)
-        return values, position
-
-    return parse_list(start)
-
-
-def _coq_z_list_term(values: tuple[int, ...]) -> str:
-    result = "(@nil Z)"
-    for value in reversed(values):
-        result = f"(cons ({value}) ({result}))"
-    return result
-
-
-def _closed_z_list_witnesses(body: str | None) -> list[str]:
-    """Return bounded closed list terms already present in a concrete VC.
-
-    Every nested constructor is also a valid suffix candidate.  This covers
-    common ``exists tail, final = app prefix tail`` postconditions without
-    evaluating a case-specific filter/map function in Python; Coq checks the
-    candidate after unfolding the case-local transparent definitions.
-    """
-
-    if body is None:
-        return []
-    values: set[tuple[int, ...]] = {()}
-    for matched in re.finditer(r"@nil\b|\bcons\b", body):
-        parsed = _parse_closed_coq_z_list(body, matched.start())
-        if parsed is None:
-            continue
-        items, _end = parsed
-        if len(items) <= 256:
-            values.add(items)
-            values.update(items[index:] for index in range(len(items) + 1))
-    ordered = sorted(values, key=lambda items: (len(items), items))
-    return [_coq_z_list_term(items) for items in ordered]
-
-
-def _concrete_bounded_z_witnesses(body: str | None) -> list[int]:
-    """Enumerate closed bounded ``EX (x : Z)`` witnesses in a return VC.
-
-    Concrete early-return specifications commonly express success as
-    ``exists k, 0 <= k < n /\ ...``.  Once ``n`` and the heap are concrete,
-    trying the finite interval is complete for that existential and avoids
-    asking a model to guess an index.
-    """
-
-    if body is None:
-        return []
-    witnesses: set[int] = set()
-    for declaration in re.finditer(
-        r"EX\s+\((?P<var>[A-Za-z_][A-Za-z0-9_]*)\s*:\s*Z\)\s*,",
-        body,
-    ):
-        variable = declaration.group("var")
-        lower = re.search(
-            rf"\(?\s*(?P<low>-?\s*[0-9]+)\s*<=\s*"
-            rf"{re.escape(variable)}\s*\)?",
-            body[declaration.end() :],
-        )
-        upper = re.search(
-            rf"\(?\s*{re.escape(variable)}\s*<\s*"
-            r"(?P<high>-?\s*[0-9]+)\s*\)?",
-            body[declaration.end() :],
-        )
-        if lower is None or upper is None:
-            continue
-        low = int(lower.group("low").replace(" ", ""))
-        high = int(upper.group("high").replace(" ", ""))
-        if 0 <= high - low <= 256:
-            witnesses.update(range(low, high))
-    return sorted(witnesses)
-
-
-def _concrete_bounded_z_witness_tuples(
-    body: str | None,
-) -> list[tuple[int, ...]]:
-    """Enumerate grouped QCP ``EX (x : Z) (y : Z),`` witnesses."""
-
-    if body is None:
-        return []
-    tuples: set[tuple[int, ...]] = set()
-    for declaration in re.finditer(
-        r"EX\s+(?P<binders>(?:"
-        r"\([A-Za-z_][A-Za-z0-9_]*\s*:\s*Z\)\s*)+),",
-        body,
-    ):
-        names = re.findall(
-            r"\(([A-Za-z_][A-Za-z0-9_]*)\s*:\s*Z\)",
-            declaration.group("binders"),
-        )
-        if not names:
-            continue
-        tail = body[declaration.end() :]
-        if len(names) == 1:
-            variable = names[0]
-            lower = re.search(
-                rf"\(?\s*(?P<low>-?\s*[0-9]+)\s*<=\s*"
-                rf"{re.escape(variable)}\s*\)?",
-                tail,
-            )
-            upper = re.search(
-                rf"\(?\s*{re.escape(variable)}\s*<\s*"
-                r"(?P<high>-?\s*[0-9]+)\s*\)?",
-                tail,
-            )
-            if lower is not None and upper is not None:
-                low = int(lower.group("low").replace(" ", ""))
-                high = int(upper.group("high").replace(" ", ""))
-                if 0 <= high - low <= 256:
-                    tuples.update((value,) for value in range(low, high))
-            continue
-        domain = _small_closed_z_domain(tail)
-        if not domain or len(domain) ** len(names) > 4096:
-            continue
-        tuples.update(product(domain, repeat=len(names)))
-    return sorted(tuples)
-
-
-def _concrete_int_array_witness(
-    body: str | None,
-) -> tuple[int, tuple[int, ...], str] | None:
-    """Recover a closed existential ``list Z`` and its flat IntArray cells."""
-
-    if body is None:
-        return None
-    propositions = re.findall(r"“(?P<body>.*?)”", body, re.DOTALL)
-    for declaration in re.finditer(
-        r"EX\s+\((?P<var>[A-Za-z_][A-Za-z0-9_]*)\s*:\s*"
-        r"\(@list\s+Z\)\)\s*,",
-        body,
-    ):
-        variable = declaration.group("var")
-        length: int | None = None
-        for proposition in propositions:
-            matched_length = re.search(
-                rf"Zlength\s*\(\s*{re.escape(variable)}\s*\)"
-                r"\s*\)*\s*=\s*\(*\s*(?P<length>[0-9]+)",
-                proposition,
-            )
-            if matched_length is not None:
-                length = int(matched_length.group("length"))
-                break
-        target = re.search(
-            r"IntArray\.full\s+\(*\s*(?P<base>-?\s*[0-9]+)\s*\)*\s+"
-            r"\(*\s*(?P<length>[0-9]+)\s*\)*\s+"
-            rf"\(*\s*{re.escape(variable)}\s*\)*",
-            body,
-        )
-        if target is None:
-            continue
-        target_length = int(target.group("length"))
-        if length is None:
-            length = target_length
-        if length != target_length or length > 256:
-            continue
-        base = int(target.group("base").replace(" ", ""))
-        values: dict[int, int] = {}
-        conflict = False
-        for line in body.splitlines():
-            cell = re.search(
-                r"(?P<base>-?\s*[0-9]+)\s*\+\s*"
-                r"\(\s*(?P<index>[0-9]+)\s*\*\s*sizeof\(INT\)\s*\)"
-                r".*?#\s*Int\s*\|->\s*\(*\s*"
-                r"(?P<value>-?\s*[0-9]+)\s*\)*",
-                line,
-            )
-            if cell is None:
-                continue
-            if int(cell.group("base").replace(" ", "")) != base:
-                continue
-            index = int(cell.group("index"))
-            value = int(cell.group("value").replace(" ", ""))
-            if index in values and values[index] != value:
-                conflict = True
-            values[index] = value
-        if conflict or set(values) != set(range(length)):
-            continue
-        ordered = tuple(values[index] for index in range(length))
-        witness = "(@nil Z)"
-        for value in reversed(ordered):
-            witness = f"(cons ({value}) ({witness}))"
-        return base, ordered, witness
-    return None
-
-
-def _int_array_return_attempt(
-    side: str, base: int, values: tuple[int, ...], witness: str
-) -> str:
-    tactics = [side, "try intros", f"Exists {witness}"]
-
-    def list_term(items: tuple[int, ...]) -> str:
-        result = "(@nil Z)"
-        for item in reversed(items):
-            result = f"(cons ({item}) ({result}))"
-        return result
-
-    for index, value in enumerate(values):
-        tactics.append(f"sep_apply (IntArray.seg_single {base} {index} ({value}))")
-    for index in range(len(values)):
-        tactics.append(f"replace ({index} + 1) with {index + 1} by lia")
-    if len(values) > 1:
-        prefix = list_term(values[:1])
-        for index in range(1, len(values)):
-            cell = list_term(values[index : index + 1])
-            tactics.append(
-                "sep_apply "
-                "(derivable1_sepcon_comm "
-                f"(IntArray.seg {base} {index} {index + 1} {cell}) "
-                f"(IntArray.seg {base} 0 {index} {prefix}))"
-            )
-            tactics.append(
-                "sep_apply "
-                f"(IntArray.seg_merge_to_seg {base} 0 {index} "
-                f"{index + 1} {prefix} {cell})"
-            )
-            tactics.append("try lia")
-            prefix = list_term(values[: index + 1])
-    if values:
-        tactics.append(
-            f"sep_apply (IntArray.seg_to_full {base} 0 {len(values)} {witness})"
-        )
-        tactics.append(f"replace ({base} + 0 * sizeof (INT)) with {base} by lia")
-        tactics.append(f"replace ({len(values)} - 0) with {len(values)} by lia")
-    tactics.append("entailer!")
-    return "solve [" + "; ".join(tactics) + "]"
-
-
-def _closed_return_disjunction_proof(
-    goal_name: str, return_body: str, dependency_source: str = ""
-) -> str | None:
-    """Build a conservative proof search for QCP's two return alternatives."""
-
-    if r"\/" not in return_body and "||" not in return_body:
-        return None
-    attempts: list[str] = []
-    list_witness = _concrete_z_list_witness(return_body)
-    suffix_witnesses = _closed_z_list_witnesses(return_body)
-    int_array_witness = _concrete_int_array_witness(return_body)
-    z_witnesses = _concrete_bounded_z_witness_tuples(return_body)
-    definitions, _lemmas = _local_coq_declarations(dependency_source)
-    body_symbols = set(re.findall(r"[A-Za-z_][A-Za-z0-9_']*", return_body))
-    used_definitions = [name for name in definitions if name in body_symbols][:64]
-    reduce_local = (
-        "cbn [" + ", ".join(used_definitions) + "] in *; " if used_definitions else ""
-    )
-    sides = ("right", "left") if r"\/" in return_body else ("Left", "Right")
-    for side in sides:
-        if int_array_witness is not None:
-            base, values, array_witness = int_array_witness
-            attempts.append(
-                _int_array_return_attempt(side, base, values, array_witness)
-            )
-        if list_witness is not None:
-            attempts.append(
-                f"solve [{side}; try intros; Exists {list_witness}; "
-                f"{reduce_local}entailer!]"
-            )
-            attempts.append(
-                f"solve [{side}; try intros; Exists {list_witness}; "
-                f"{reduce_local}entailer!; vm_compute; "
-                "intuition congruence]"
-            )
-        for suffix_witness in suffix_witnesses:
-            if suffix_witness == list_witness:
-                continue
-            attempts.append(
-                f"solve [{side}; try intros; Exists {suffix_witness}; "
-                f"{reduce_local}entailer!; vm_compute; "
-                "intuition congruence]"
-            )
-        for witnesses in z_witnesses:
-            terms = " ".join(f"({witness})" for witness in witnesses)
-            attempts.append(
-                f"solve [{side}; try intros; Exists {terms}; {reduce_local}entailer!]"
-            )
-        attempts.append(f"solve [{side}; try intros; {reduce_local}entailer!]")
-    return (
-        "Proof.\n"
-        f"  unfold {goal_name}.\n"
-        "  first [\n    " + "\n  | ".join(attempts) + "\n  ].\n"
-        "Qed."
-    )
-
-
-def _local_coq_declarations(
-    dependency_source: str,
-) -> tuple[list[str], list[str]]:
-    """Collect case-local transparent definitions and reusable proof lemmas."""
-
-    definitions = re.findall(
-        r"(?m)^\s*(?:Local\s+)?"
-        r"(?:Definition|Fixpoint|CoFixpoint)\s+"
-        r"([A-Za-z_][A-Za-z0-9_']*)\b",
-        dependency_source,
-    )
-    lemmas = re.findall(
-        r"(?m)^\s*(?:Local\s+)?"
-        r"(?:Lemma|Theorem|Fact|Corollary|Proposition)\s+"
-        r"([A-Za-z_][A-Za-z0-9_']*)\b",
-        dependency_source,
-    )
-    return list(dict.fromkeys(definitions)), list(dict.fromkeys(lemmas))
-
-
-def _local_definition_split_proof(
-    goal_name: str,
-    goal_source: str,
-    dependency_source: str,
-) -> str | None:
-    """Build a name-independent proof from definitions owned by the case.
-
-    Concrete execution deliberately retains true branch propositions.  Once
-    an opaque Ensure predicate is unfolded, its fields are therefore usually
-    assumptions, reflexive facts, or consequences of helper lemmas shipped in
-    the same case library.
-    """
-
-    body = _coq_definition_body(goal_source, goal_name)
-    if body is None or not dependency_source:
-        return None
-    definitions, lemmas = _local_coq_declarations(dependency_source)
-    body_symbols = set(re.findall(r"[A-Za-z_][A-Za-z0-9_']*", body))
-    used_definitions = [name for name in definitions if name in body_symbols]
-    if not used_definitions:
-        return None
-
-    # Prefer helpers from the same logical vocabulary as the concrete goal.
-    # A small case library may safely offer all of its lemmas; for a larger
-    # library, prefix filtering avoids an unbounded eauto search.
-    if len(lemmas) <= 64:
-        used_lemmas = lemmas
-    else:
-        prefixes = {symbol.split("_", 1)[0] for symbol in body_symbols if "_" in symbol}
-        used_lemmas = [name for name in lemmas if name.split("_", 1)[0] in prefixes][
-            :64
-        ]
-
-    unfold = ", ".join(used_definitions)
-    eauto = (
-        "intuition eauto using " + ", ".join(used_lemmas)
-        if used_lemmas
-        else "intuition eauto"
-    )
-    return (
-        "Proof.\n"
-        f"  unfold {goal_name}.\n"
-        "  intros.\n"
-        f"  unfold {unfold} in *.\n"
-        "  first [\n"
-        f"    solve [{eauto}]\n"
-        "  | vm_compute; intuition congruence\n"
-        "  ].\n"
-        "Qed."
-    )
+                digest.update(str(path.relative_to(root)).encode())
+                digest.update(b"\0")
+                digest.update(hashlib.sha256(path.read_bytes()).digest())
+    return digest.hexdigest()
 
 
 def run_job(job_path: Path, output_override: Path | None = None) -> dict[str, Any]:
@@ -2842,17 +1850,17 @@ def run_job(job_path: Path, output_override: Path | None = None) -> dict[str, An
     )
 
     results: list[dict[str, Any]] = []
-    started = time.time()
+    started = time.monotonic()
     for case in bind_cases:
-        case_dir = output_dir / case.case_id
+        case_dir = output_dir / "artifacts" / case.case_id
         if case_dir.is_symlink() or (case_dir.exists() and not case_dir.is_dir()):
             raise JobError(f"case output path is not a directory: {case_dir}")
         if case_dir.exists():
             shutil.rmtree(case_dir)
         case_dir.mkdir(parents=True, exist_ok=True)
-        generated_source = case_dir / f"{source_path.stem}__{case.case_id}.c"
-        stdout_path = case_dir / "qcp.stdout.txt"
-        stderr_path = case_dir / "qcp.stderr.txt"
+        generated_source = case_dir / "input.c"
+        stdout_path = case_dir / "executor.json"
+        stderr_path = case_dir / "stderr.log"
         vc_dir = case_dir / "vc"
 
         case_result: dict[str, Any] = {
@@ -2873,6 +1881,7 @@ def run_job(job_path: Path, output_override: Path | None = None) -> dict[str, An
                 signature_source=signature_source,
                 argument_bindings=case.arguments,
             )
+            specialized = _relocate_strategy_includes(specialized, source_path)
             generated_source.write_text(specialized, encoding="utf-8")
             command = _qcp_command(
                 config,
@@ -2881,20 +1890,16 @@ def run_job(job_path: Path, output_override: Path | None = None) -> dict[str, An
                 case.spec,
                 vc_dir,
             )
-            run_started = time.time()
-            completed = subprocess.run(
+            run_started = time.monotonic()
+            completed, peak_rss_kb, cpu_seconds = _run_measured(
                 command,
                 cwd=config.binary.parent.parent,
-                capture_output=True,
-                text=True,
                 timeout=config.timeout_seconds,
-                check=False,
+                metrics_path=case_dir / ".qcp-rss-kb",
             )
-            duration = time.time() - run_started
+            duration = time.monotonic() - run_started
             stdout_path.write_text(completed.stdout, encoding="utf-8")
             stderr_path.write_text(completed.stderr, encoding="utf-8")
-            combined = completed.stdout + "\n" + completed.stderr
-            status, satisfied, reason = _classify(completed.returncode, combined)
             vc = _write_vc_manifest(
                 vc_dir,
                 generated_source,
@@ -2904,25 +1909,14 @@ def run_job(job_path: Path, output_override: Path | None = None) -> dict[str, An
                 case.case_id,
                 signature_source,
             )
-            if status == "PASS" and vc["status"] == "counterexample":
-                status = "FAIL"
-                satisfied = False
-                reason = "closed_concrete_vc_is_false"
-            elif status == "PASS" and vc["status"] == "residual":
-                status = "UNKNOWN"
-                satisfied = None
-                reason = "residual_vc_requires_proof"
-            elif status == "PASS" and vc["status"] == "not_generated":
-                status = "ERROR"
-                satisfied = None
-                reason = "qcp_vc_generation_error"
             case_result.update(
                 {
-                    "status": status,
-                    "satisfied": satisfied,
-                    "reason": reason,
+                    **_executor_result(completed.stdout, completed.returncode, vc),
                     "returncode": completed.returncode,
+                    "generated_source_sha256": _sha256(generated_source),
                     "duration_seconds": round(duration, 6),
+                    "peak_rss_kb": peak_rss_kb,
+                    "cpu_seconds": cpu_seconds,
                     "command": command,
                     "stdout": str(stdout_path),
                     "stderr": str(stderr_path),
@@ -2939,22 +1933,91 @@ def run_job(job_path: Path, output_override: Path | None = None) -> dict[str, An
                 }
             )
         except subprocess.TimeoutExpired as error:
+            rss_path = case_dir / ".qcp-rss-kb"
+            try:
+                timeout_peak_rss_kb = int(
+                    rss_path.read_text(encoding="utf-8").split()[0]
+                )
+            except (OSError, ValueError, IndexError):
+                timeout_peak_rss_kb = None
+            rss_path.unlink(missing_ok=True)
             stdout_path.write_text(_subprocess_text(error.stdout), encoding="utf-8")
             stderr_path.write_text(_subprocess_text(error.stderr), encoding="utf-8")
             case_result.update(
                 {
-                    "status": "ERROR",
+                    "status": "UNKNOWN",
                     "satisfied": None,
                     "reason": "qcp_timeout",
                     "error": f"QCP exceeded {config.timeout_seconds:g} seconds",
+                    "stdout": str(stdout_path),
+                    "stderr": str(stderr_path),
+                    "command": command,
+                    "phases": {
+                        name: "UNKNOWN"
+                        for name in (
+                            "precondition",
+                            "safety",
+                            "postcondition",
+                            "annotations",
+                        )
+                    },
+                    "vc": _write_vc_manifest(
+                        vc_dir,
+                        generated_source,
+                        source_path,
+                        config.qcip_root,
+                        function,
+                        case.case_id,
+                        signature_source,
+                    ),
+                    "duration_seconds": round(time.monotonic() - run_started, 6),
+                    "peak_rss_kb": timeout_peak_rss_kb,
                 }
             )
+        case_result.setdefault(
+            "residual_vcs", case_result.get("vc", {}).get("residual_goals", [])
+        )
+        case_result.setdefault(
+            "phases",
+            {
+                name: "NOT_CHECKED"
+                for name in ("precondition", "safety", "postcondition", "annotations")
+            },
+        )
+        case_result.setdefault("scope", "NOT_REPORTED")
+        case_result.setdefault("abstraction_events", [])
+        case_result.setdefault("overall", case_result["status"])
+        case_result.setdefault("mode", config.execution_mode)
+        case_result.setdefault(
+            "evidence", {"decision_backend": "qcp-smt", "certificate": "NOT_CHECKED"}
+        )
+        case_result.setdefault(
+            "resources",
+            {
+                "wall_seconds": case_result.get("duration_seconds"),
+                "cpu_seconds": case_result.get("cpu_seconds"),
+                "measurement": "GNU time; executor and children; maximum process RSS",
+                "peak_rss_kib": case_result.get("peak_rss_kb"),
+            },
+        )
         results.append(case_result)
 
     counts = {
         status: sum(result["status"] == status for result in results)
-        for status in ("PASS", "FAIL", "UNKNOWN", "ERROR")
+        for status in ("PASS", "FAIL", "UNKNOWN", "ERROR", "INVALID")
     }
+    itp_vcs = [
+        {
+            "case_id": result["id"],
+            "function": function,
+            "manifest": result["vc"]["manifest"],
+            "goals": result["vc"]["residual_goals"],
+        }
+        for result in results
+        if isinstance(result.get("vc"), dict)
+        and result["vc"].get("status") == "residual"
+        and result["vc"].get("residual_goals")
+    ]
     report = {
         "schema": "qcp-spectest-report/v1",
         "job": str(job_path),
@@ -2962,11 +2025,55 @@ def run_job(job_path: Path, output_override: Path | None = None) -> dict[str, An
         "spec_file": str(spec_file_path) if spec_file_path is not None else None,
         "function": function,
         "qcp_binary": str(config.binary),
+        "provenance": {
+            "source_sha256": _sha256(source_path),
+            "job_sha256": _sha256(job_path),
+            "binary_sha256": _sha256(config.binary),
+            "runtime_source_sha256": _runtime_source_digest(config.qcip_root),
+            "runtime_digest_scope": "SeparationLogic and QCP_examples: .v, .h, .strategies, _CoqProject",
+            "included_source_sha256": hashlib.sha256(
+                signature_source.encode()
+            ).hexdigest(),
+            "spec_sha256": _sha256(spec_file_path) if spec_file_path else None,
+        },
+        "vc_policy": {
+            "mode": config.execution_mode,
+            "execution_semantics": "inline-preserve/v1",
+            "loops": "execute_iterations",
+            "defined_function_calls": "execute_bodies",
+            "intermediate_boundaries": (
+                config.annotation_policy not in (None, "ignore")
+                or config.execution_mode == "no-expand"
+            ),
+            "declaration_calls": "unknown_missing_body",
+            "call_depth_limit": config.call_depth_limit,
+            "loop_unroll_limit": config.loop_unroll_limit or 1024,
+        },
         "results": results,
+        "itp_vcs": itp_vcs,
         "summary": {
             "total": len(results),
             **counts,
-            "duration_seconds": round(time.time() - started, 6),
+            "specification_only": sum(
+                result.get("scope") == "specification-only" for result in results
+            ),
+            "duration_seconds": round(time.monotonic() - started, 6),
+            "executor_cpu_seconds": (
+                round(sum(result["cpu_seconds"] for result in results), 6)
+                if all(
+                    isinstance(result.get("cpu_seconds"), (int, float))
+                    for result in results
+                )
+                else None
+            ),
+            "peak_rss_kb": max(
+                (
+                    result["peak_rss_kb"]
+                    for result in results
+                    if isinstance(result.get("peak_rss_kb"), int)
+                ),
+                default=None,
+            ),
         },
     }
     report_path = output_dir / "report.json"
@@ -3072,6 +2179,12 @@ def check_vc_proof(
     if forbidden is not None:
         token = forbidden.group(0).strip().split()[0]
         raise JobError(f"manual proof still contains a forbidden proof escape: {token}")
+    automatic = files["proof_auto"].read_text(encoding="utf-8", errors="replace")
+    if _FORBIDDEN_MANUAL_PROOF.search(automatic):
+        raise JobError(
+            "automatic proof contains unchecked placeholders; "
+            "the VC group has no replayable certificate"
+        )
     residual_goals = manifest.get("residual_goals")
     if not isinstance(residual_goals, list) or not all(
         isinstance(item, str) for item in residual_goals
@@ -3149,7 +2262,7 @@ def check_vc_proof(
     stdout_parts: list[str] = []
     stderr_parts: list[str] = []
     compiled: list[str] = []
-    started = time.time()
+    started = time.monotonic()
     compile_units = [
         *((f"dependency:{path.stem}", path) for path in dependency_files),
         *(
@@ -3213,7 +2326,7 @@ def check_vc_proof(
         "residual_goals": residual_goals,
         "compiled": compiled,
         "coq_version": version_output.strip().splitlines()[0],
-        "duration_seconds": round(time.time() - started, 6),
+        "duration_seconds": round(time.monotonic() - started, 6),
         "stdout": str(stdout_log),
         "stderr": str(stderr_log),
     }
