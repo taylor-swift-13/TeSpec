@@ -1,0 +1,5 @@
+Require Import Coverage.
+Set Printing Width 1000000.
+Print Assumptions Coverage.Checked.proof_of_square_cell_safety_wit_1.
+Print Assumptions Coverage.Checked.proof_of_square_cell_return_wit_1.
+Print Assumptions Coverage.Checked.proof_of_square_cell_precondition_wit_1.

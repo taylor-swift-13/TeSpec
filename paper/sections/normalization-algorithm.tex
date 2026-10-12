@@ -1,0 +1,53 @@
+\subsection{Joint heap and value normalization}
+\label{sec:normalization-algorithm}
+\label{sec:normalization}
+The continuation can refer to logical values outside the current heap formula.
+Eliminating $r$ from $\exists r.\ r=2\land\mathit{cell}(p,1)$ while leaving a
+return term that refers to $r$ loses its value constraint. The normalization
+interface therefore preserves the assertion $P$ together with every live term
+$\bar t$, including results and saved call values. Define
+\[
+\obs(P,\bar t)(s,\bar v)=\exists\eta.\ P(s,\eta)\land
+                  \bar v=\operatorname{eval}(\bar t)_{s,\eta}.
+\]
+Each admitted rewrite preserves this relation. Its composition consequently
+preserves the observations used by entry and boundary checks.
+
+\begin{lstlisting}[language={},caption={Normalization of the state and its live values.},label={lst:normalize}]
+Normalize(Gamma, P, liveTerms, budget):
+  while budget > 0 and an admitted reduction exists:
+    resolve its definition and interpretation
+    establish its guard; freshen typed local witnesses
+    replace the occurrence by the complete equivalent body
+    update dependent liveTerms consistently
+    simplify exposed computations
+    budget := budget - 1
+  return (P, liveTerms)
+\end{lstlisting}
+
+\paragraph{Admitting reductions.}
+Closed computations and known constructors expose reducible expressions.
+Definition unfolding retains every pure conjunct, spatial resource, and typed
+witness. For a guarded clause, activation requires
+$g(\bar a)\Rightarrow(H(\bar a)\equiv\exists\bar w.\,B(\bar a,\bar w))$
+in the selected interpretation. The executor establishes $g$ from the current
+state. Unresolved guards retain the predicate application. Budgeted rewriting
+terminates while preserving the meaning of residual terms.
+
+For optional external rules, the controller checks the equation and its
+association with the program's qualified definitions, constructors, spatial
+notation, and layout. This prevents a same-named imported definition from
+changing the meaning of an accepted equation. Imported predicates otherwise
+use QCP's existing strategies. A checked pure consequence can be exposed by
+$H\equiv H\land G$, retaining the original spatial predicate and its witnesses.
+This path supports local proof progress without requiring a full layout
+translation.
+
+\paragraph{Preserving witnesses and symbolic addresses.}
+Existing live variables remain protected during expansion. An unused witness
+of nominal type $T$ requires inhabitance:
+$(\exists w:T.\,P)\equiv(\mathit{inhabited}(T)\land P)$ when $w$ is absent
+from $P$. Integer and list types supply canonical witnesses; an arbitrary
+nominal type retains its existence obligation. Shared-base offset reductions
+and closed list slices simplify operations with symbolic pointers. Their
+ordinary C bounds and arithmetic safety obligations remain in the VC interface.

@@ -1,0 +1,139 @@
+\subsection{Definition-driven normalization}
+\label{sec:normalization-algorithm}
+
+Normalization changes the representation of the current state, not the set of
+executions being tested. Its input is the assertion $P$, the tuple $\bar t$ of
+terms used by the continuation, a definition environment $\Gamma$, and a finite
+budget $b$. The environment records qualified definitions, constructor and
+binder types, and the interpretation of spatial notation. An admitted rewrite
+must retain the joint observations of $P$ and $\bar t$.
+
+\paragraph{Admission and branch selection.}
+For a definition $H(\bar x)$, let a clause supply a guard $g_i$, fresh witnesses
+$\bar w_i$, and body $B_i$. A licensed clause establishes, in the selected
+interpretation,
+\[
+ g_i(\bar a) \Longrightarrow
+ \bigl(H(\bar a)\ \equiv\ \exists\bar w_i.\,B_i[\bar a/\bar x]\bigr).
+\]
+The body includes every pure conjunct, spatial conjunct and typed existential;
+a heap-only consequence of the body is insufficient. Constructor matching
+can establish the guard without solving a new logical problem. Otherwise a
+branch is selected only when its guard is established from the current state,
+using admitted computation or checked reasoning. Pending annotations cannot
+supply branch-selection assumptions. Unknown guards retain the application;
+a symbolic case split is sound only if its alternatives cover the original
+state and all branch conditions remain explicit.
+
+Quoted logical conjunctions are parsed by nesting depth, outside field-name
+strings. A supported $G_1\land G_2$ is lowered to separate pure conjuncts,
+using $pure(G_1\land G_2)\equiv pure(G_1)\land pure(G_2)$ in the selected
+assertion interpretation. All conjuncts and typed witnesses remain in the
+clause; an unsupported conjunct rejects the clause rather than disappearing.
+The generated full branch equality checks this lowering against the original
+definition, including any library-specific notation interpretation.
+
+Closed arithmetic and Boolean operations use their defined interpretation.
+A known constructor enables match reduction, and a nonrecursive definition can
+be unfolded with symbolic arguments if its complete body is representable.
+A recursive definition unfolds when its selected branch is available; known
+list or tree constructors often expose a smaller recursive argument. A
+symbolic pointer does not prevent unfolding when the logical shape is known.
+Neither heap ownership nor an unproved strategy consequence licenses a new
+pure fact. Unknown definitions, unsupported binders or operators, and unresolved
+layout interpretations remain residual terms.
+
+\paragraph{Shared-base offsets and list slices.}
+A symbolic base does not prevent evaluating a difference of known offsets.
+For structurally identical residual bases, normalization applies
+\[
+ (b+u)-(b+v)=u-v,\qquad
+ \operatorname{quot}((b+is)-(b+js),s)=i-j\quad(s\ne0).
+\]
+Offsets are computed with arbitrary-precision constants; a result outside the
+AST constant representation is retained. Different residual bases are not
+cancelled. These logical equalities retain the executor's C safety obligations;
+they do not establish that unrelated pointers may be subtracted.
+
+The standard QCP list primitive uses
+$sublist(lo,hi,L)=skipn(Z.to\_nat(lo),firstn(Z.to\_nat(hi),L))$.
+For a known constructor spine of length $m$, set
+$a=\min(m,\max(0,lo))$ and $z=\min(m,\max(0,hi))$.
+Evaluation returns the original elements at indices $a,\ldots,z-1$, or the
+empty list when $z\le a$. Elements may remain symbolic; constructors, element
+types and ordering are preserved. Unknown spines remain applications. The
+implementation limits spine inspection to 4096 nodes and clamps large bounds
+before conversion to a machine integer. In particular, negative lower bounds
+follow QCP's two conversions rather than a naive length $hi-lo$.
+
+\begin{lstlisting}[language={},numbers=left,caption={Budgeted normalization contract.}]
+Normalize(Gamma, P, liveTerms, budget):
+  while budget > 0:
+    choose an occurrence with an admitted reduction
+    if no occurrence exists: return (P, liveTerms, residuals)
+    if the reduction unfolds a definition:
+      resolve the original qualified definition
+      match evaluated arguments; establish the clause guard
+      freshen all local binders, preserving their types
+      substitute arguments into the complete clause body
+    replace the occurrence by its licensed equivalent
+    rewrite every dependent live term consistently
+    simplify newly exposed admitted computations
+    budget := budget - 1
+  return (P, liveTerms, remaining occurrences)
+\end{lstlisting}
+
+Each admitted rewrite consumes budget, including recursive unfolding. Thus the
+algorithm terminates even when structural decrease cannot be established. An
+unexpanded application retains its original meaning, so budget exhaustion
+reduces automation rather than establishing a successful test. Rewriting an
+unused existential requires a witness of its type; the algorithm cannot
+silently discard a possibly empty nominal domain. The implementation's
+constructor patterns and expression evaluator instantiate this contract for
+their supported fragment. Definition and interpretation certificates license
+external clauses; the parser and strategy encoding remain implementation
+correspondence obligations. The algorithm does not certify arbitrary imported
+strategies as equivalences.
+
+A complementary reduction exposes a checked pure consequence without
+replacing the spatial predicate. For a clause $H(\bar a)$ and a pure condition
+$G(\bar a)$ independent of its local existential witnesses, the translator
+proposes
+\[
+ H(\bar a) \equiv H(\bar a)\land G(\bar a).
+\]
+The kernel checks this equality against the original definition. Retaining
+$H$ preserves its resources and witnesses; no heap-layout conversion is needed
+when $G$ contains no field addresses. The generated rule adds the condition
+only when absent, both at normalization points and between proof-search steps
+that expose further recursive applications. Pure-fact closure delays removal of tautologies until the
+closure finishes, preventing repeated insertion of a condition such as
+$4096\ne0$. This mechanism can preserve facts before an imported proof-search
+strategy weakens an assertion. It does not certify that subsequent strategy as
+an equivalence or establish the completeness of predicate unfolding.
+
+For example, a nonempty list clause expands to
+\[
+ sll(p,a::xs)\equiv
+ p\ne0\ \land\ \exists q.\;
+ data(p,a)*next(p,q)*sll(q,xs).
+\]
+Removing $p\ne0$ yields only a weaker assertion and can make a subsequent
+folding VC unprovable. The same requirement applies to bounds, ordering
+relations, tree invariants and abstract pure predicates in any definition;
+it is independent of the predicate's name.
+
+For a logical environment $\eta$, state $s$ and observed tuple $\bar v$, define
+\[
+ \operatorname{Obs}(P,\bar t)(s,\bar v)
+ = \exists\eta.\;P(s,\eta)\land
+             \bar v=\operatorname{eval}(\bar t)_{s,\eta}.
+\]
+The normalization obligation is equality of this relation before and after
+rewriting. Composition of licensed steps preserves the relation. Consequently
+it preserves initial nonemptiness and the validity of obligations over the
+represented observations. These are conditional semantic results: connecting
+actual AST rewrites, layouts and substitutions to the licensed steps is a
+separate implementation task. A residual obligation is sent unchanged to QCP's
+solvers, and to independently checked ITP when automatic reasoning remains
+inconclusive.

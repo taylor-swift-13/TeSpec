@@ -1,0 +1,84 @@
+\section{A Running Example}
+\label{sec:example}
+Consider a routine that replaces an owned integer by its least nonnegative
+integer square root rounded upward. The contract relates the initial value
+$x$, the returned value, and the final cell contents. Its imported Rocq
+proposition is
+\begin{equation}
+\label{eq:least-root}
+\begin{split}
+\mathsf{LeastRoot}(n,r)\equiv{}&0\le r\ \land\\[-2pt]
+ &\forall k\in\mathbb Z.\;0\le k\Rightarrow
+       (r\le k\Leftrightarrow n\le k^2).
+\end{split}
+\end{equation}
+Listing~\ref{lst:root} shows the C body and abbreviated annotations of the
+archived instance. We use $p\mapsto_{\mathrm{int}}v$ for typed cell ownership;
+the artifact uses QCP's \texttt{data\_at} notation.
+
+\begin{lstlisting}[caption={Least-root instance with an intermediate observation. The imported relation is Equation~\eqref{eq:least-root}.},label={lst:root}]
+int root_cell(int *p)
+/*@ With x
+    Require 0 <= x && x <= 100 &&
+            data_at(p, int, x)
+    Ensure least_root(x, __return) &&
+           data_at(p, int, __return) */
+{
+  int n = *p;
+  int r = 0;
+  /*@ Inv n == x && 0 <= r && r <= 10 &&
+      (r == 0 || (r-1)*(r-1) < n) &&
+      data_at(p, int, x) */
+  while (r*r < n) { r = r + 1; }
+  /*@ Assert least_root(n, r) &&
+              data_at(p, int, x) */
+  *p = r;
+  return r;
+}
+\end{lstlisting}
+
+\paragraph{A logical instance.}
+The binding $\theta=\{x\mapsto13\}$ fixes the logical input and retains the
+address $p$. The spatial precondition describes the cell at that symbolic
+address. Loop execution produces $r=0,1,2,3,4$ at its five invariant boundaries;
+then the body writes 4 and returns 4. The final observation is
+\[
+\mathsf{LeastRoot}(13,4)\land p\mapsto_{\mathrm{int}}4.
+\]
+Local scalar storage is handled by the observation frame described in
+Section~\ref{sec:boundaries}. The imported relation remains a proposition in
+the verification logic. Automatic execution establishes the entry and safety
+phases, and proof completion checks the remaining functional and observation
+obligations against their original generated statements.
+
+\paragraph{Testing an intermediate specification.}
+Replacing the assertion by $\mathsf{LeastRoot}(n,r-1)$ changes the observation
+while leaving the C body and final contract intact. At that boundary the
+program still has $n=13,r=4$, so the candidate asks for
+$\mathsf{LeastRoot}(13,3)$. Instantiating its universal quantifier with $k=3$
+exposes the contradiction $13\le9$. The paired artifact proves the negation
+of the complete generated assertion VC and checks the other 26 obligations.
+This archived negative proof records the falsity of the quantified goal.
+Its execution verdict remains unresolved until reachability evidence is
+admitted, as detailed in Section~\ref{sec:verdicts}. Both variants
+follow the same program computation.
+
+\paragraph{Original assertions and executable reformulations.}
+The pinned Fulminate, Bennet, and Darcy configurations reject the original
+quantified \emph{postcondition} because they cannot infer an upper bound for
+$k$. An executable reformulation is
+\begin{equation}
+\label{eq:finite-root}
+0\le r\land n\le r^2\land
+   \bigl(r=0\lor(r-1)^2<n\bigr).
+\end{equation}
+The artifact proves the equivalence of Equations~\eqref{eq:least-root} and
+\eqref{eq:finite-root} over mathematical integers; the C contract bounds inputs
+to control machine arithmetic. The reformulated postcondition passes
+Fulminate on the same fixture. This comparison identifies the concrete benefit:
+\tespec{} can check the original verification assertion, while the executable
+route requires constructing and justifying its monitor form. The intermediate
+assertion translation has a separate unresolved baseline diagnostic and is
+excluded from this expressiveness comparison.
+
+\input{figures/overview}

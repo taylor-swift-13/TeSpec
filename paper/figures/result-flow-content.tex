@@ -1,0 +1,29 @@
+\begin{tikzpicture}[x=1cm,y=1cm,>=Latex,font=\small,
+ box/.style={draw=black!45,rounded corners=2pt,align=center,inner sep=6pt},
+ flow/.style={->,line width=.75pt},
+ tag/.style={font=\footnotesize,fill=white,inner sep=2pt}]
+\node[box,text width=3.2cm,minimum height=1.2cm,fill=blue!4] (vc) at (0,0)
+ {\textbf{Original path obligation}\\$\phi:\ P\vdash A$\\frozen goal and interpretation};
+\node[box,text width=3.65cm,minimum height=1.2cm,fill=blue!4] (reason) at (5.1,0)
+ {\textbf{Proof-capable oracle}\\entailment + SMT;\\Rocq checks residual proofs};
+\node[box,text width=3.65cm,minimum height=1.2cm,fill=teal!5] (valid) at (10.55,0)
+ {\textbf{VALID}\\original obligation\\established};
+\draw[flow] (vc)--(reason);
+\draw[flow] (reason)--node[tag]{positive}(valid);
+\node[box,text width=3.65cm,minimum height=1.25cm,fill=orange!7] (gate) at (5.1,-2.1)
+ {\textbf{Negative evidence gate}\\check refutation;\\admit path reachability};
+\node[box,text width=3.65cm,minimum height=1.25cm,fill=orange!7] (negative) at (10.55,-2.1)
+ {admitted: \textbf{INVALID}\\otherwise: \textbf{UNKNOWN}\\with retained proof evidence};
+\draw[flow] (reason)--node[tag,right]{negative candidate}(gate);
+\draw[flow] (gate)--(negative);
+\node[align=left,font=\footnotesize,text width=3.45cm] at (0,-2.1)
+ {Entry uses an existence query.\\[3pt]
+ Unfinished proof attempts retain UNKNOWN. Proof construction can be manual or agent-assisted.};
+\node[box,text width=14.3cm,fill=black!3] (agg) at (5.1,-4.15)
+ {\textbf{Aggregate entry, execution coverage, and selected obligations}\\[4pt]
+ \textbf{PASS}: entry SAT + complete execution + every obligation VALID\\
+ \textbf{FAIL}: entry UNSAT (empty domain), or admitted execution violation\\
+ \textbf{UNKNOWN}: remaining cases, including incomplete execution};
+\draw[flow] (valid.east)-- ++(.38,0) |- (agg.east);
+\draw[flow] (negative.south)--(agg.north -| negative.south);
+\end{tikzpicture}

@@ -1,0 +1,128 @@
+\section{Checking Stateful Instances}
+\label{sec:approach}
+The implementation connects QCP's execution and reasoning infrastructure through
+three interfaces: an instantiated entry domain, observations of program-derived
+states, and immutable obligations for proof completion. Figure~\ref{fig:overview}
+shows the separation between the execution and evidence paths.
+
+\subsection{Entry domains and actual execution}
+Typed bindings specialize the root specification. Logical entry values remain
+immutable as C variables and memory change. Recursive calls instantiate the
+original reusable contract with fresh logical variables and the current actual
+arguments. This distinction lets a root binding fix a recursion counter while
+subsequent calls decrease it normally.
+
+The entry checker simplifies the instantiated Require and checks value ranges,
+binding consistency, and separation of owned cells. A faithful automatic
+encoding can establish nonemptiness. For an unresolved spatial predicate, the
+controller exports an existential Rocq obligation in the selected memory
+interpretation. Entry existence and execution coverage are checked separately:
+an existence witness supplies one model, while execution retains the entire
+symbolic domain.
+
+The test reuses QCP to evaluate C expressions and update the symbolic heap.
+Logical bindings and ownership assertions supply the input without constructing
+a native heap or compiling an instrumented test binary. Known guards select
+a successor; unresolved guards retain every successor whose infeasibility has
+not been established. Calls evaluate actual arguments, allocate fresh parameter
+slots, and enter available bodies. Pointer arguments preserve the identity of
+shared storage. On return, the executor keeps the actual result and heap writes,
+retires local storage, and restores the caller context. Loops execute their
+conditions and bodies, including break, continue, and early return. An exhausted
+budget records an unfinished leaf. A declaration-only target supports an
+explicitly scoped Require-only check.
+
+\subsection{Observations on checking copies}
+\label{sec:boundaries}
+At a selected boundary, the executor copies $P$, resolves the annotation, and
+emits $P\vdash A*F_{P,A}$. Execution continues with $P$ regardless of whether
+the proof closes. Callee preconditions and postconditions are matched on such
+copies; the actual body supplies the caller's successor state. Invariant
+observations use each visited loop state.
+
+\paragraph{Exact local frames.}
+QCP represents scalar C locals as owned cells. An auxiliary annotation can
+omit live local slots outside its footprint. The checker resolves goal-local
+witnesses using the current program-id/address map, then places precisely those
+unmentioned slots in $F_{P,A}$, preserving their types and values. User heap
+resources remain part of the checked footprint. If a local pointer holds
+$\&i$, resolving its value before choosing the frame exposes the $i$ cell and
+prevents framing it twice.
+
+Let $m$ identify admitted local addresses and split $h$ into $h_m$ and
+$h_{\neg m}$. The scalar-cell model establishes, for extensional $A$,
+\[
+  (A*\mathit{exact}(h_m))(h)\ \Longleftrightarrow\ A(h_{\neg m}).
+\]
+With a goal witness $w$, the mask can depend on that witness; the theorem
+extends to $\exists w.\,(A_w*\mathit{exact}(h_{m_w}))(h)$.
+Checking one chosen witness proves an existential goal when successful;
+a failure for that witness leaves the existential obligation unresolved.
+
+\paragraph{Boundary coverage.}
+The two compatibility policies, \texttt{expand} and \texttt{no-expand}, execute
+the same available bodies and loops. Both check entry existence, safety, and
+the target return. The second additionally observes selected internal
+annotations. An unlabelled annotation with several named alternatives generates
+their complete disjunction. Explicit routing retains the selected alternative.
+Unresolved matching and opaque local resources are recorded as coverage gaps.
+
+\input{sections/normalization-algorithm}
+
+\subsection{Proof completion and evidence}
+\label{sec:evidence}
+Automatic entailment and SMT reasoning attempt the generated obligations.
+Residual goals remain Rocq propositions. An optional proof agent or a developer
+constructs proofs; a fixed controller checks them against the frozen original
+module interface. The manifest binds source, logical dependencies, target
+interpretation, goal identities, and proof polarity. Whole-instance proof
+completion replays every original obligation, including entry existence and
+automatically discharged goals, audits transitive assumptions, and runs an
+independent kernel check. Execution errors and unfinished leaves retain their
+execution status after proof replay.
+
+The assumption audit checks the logical environment as well as proof coverage.
+In both examined QCP runtimes, an inverse-field-address axiom together with
+evaluation and congruence axioms admits a contradiction by equating distinct
+syntax constructors. The retained adversarial proof compiles and is then
+rejected by the admission policy. This probe establishes why kernel checking
+and an explicit assumption policy are both part of the certificate interface.
+
+\paragraph{Guarantee boundary.}
+The mechanized results cover the reference observation schedule, finite
+execution-tree interfaces, scalar frames, and joint normalization relation.
+The implementation must realize those interfaces through C expression
+semantics, target layouts, complete successor generation, and correct VC
+emission. Automatically accepted results additionally trust the executor and
+solver. A kernel certificate checks the exported statements in the admitted
+interpretation. These dependencies define the interpretation of each reported
+result.
+
+\subsection{Result aggregation}
+Figure~\ref{fig:result-flow} distinguishes proof polarity from an execution
+violation. A positive proof closes its original VC. For a path obligation
+$P\vdash A$, a negative proof or a model of $P\land\neg A$ establishes a
+violation only when the admitted path evidence supplies reachability from
+$D_\theta$. The executable negative checker uses a private copy of the original
+path state, retaining pure constraints and owned scalar cells. Unsupported
+encodings and unresolved existential choices retain their obligations.
+
+Entry SAT and valid VCs contribute true; entry UNSAT and admitted path
+violations contribute false; unresolved obligations and incomplete execution
+contribute unknown. The test conjunction returns PASS when all components are
+true, FAIL when any component is false, and UNKNOWN otherwise. An empty entry
+has the explicit reason ``unsatisfiable entry'' and stops execution.
+Historical report labels are preserved in the evaluation: INVALID denotes an
+empty entry there, and a checked VC refutation without reachability remains
+separate proof evidence.
+
+\begin{figure*}[t]
+\centering
+\input{figures/result-flow-content}
+\caption{Evidence required for a test verdict. Proof polarity is checked against
+the original obligation. A path-VC refutation requires admitted reachability
+evidence to yield a confirmed execution violation. Unfinished execution remains
+an unknown component. The entry gate reports an empty domain separately from
+a violated execution property.}
+\label{fig:result-flow}
+\end{figure*}

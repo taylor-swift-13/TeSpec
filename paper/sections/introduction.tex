@@ -1,0 +1,107 @@
+\section{Introduction}
+A functional specification relates what a C program computes to mathematical
+values, quantified properties, and abstract data models. Verification can establish
+such a relation by proof. Testing usually needs a procedure that decides it on
+each observed state. For proof-oriented specifications, constructing that
+procedure can require reformulating the property and proving the reformulation
+correct. We formulate specification testing as instance-specialized symbolic verification:
+the verifier executes the program symbolically on a partially bound input domain
+and checks the original assertion, including instances whose truth requires
+deduction. This reuses both the execution engine and the functional proof oracle.
+
+For heap-manipulating C, the criterion must account for ownership, aliasing,
+shared writes, and the states inside loops and calls. A final return value can
+be correct even when an intermediate assertion is false. The test therefore
+needs both program-derived states and a proof-capable oracle for those states.
+
+Existing work provides two foundations. Fulminate translates CN separation-logic
+contracts into runtime ownership and functional checks~\cite{banerjee2025fulminate}.
+Bennet supplies generated heap inputs~\cite{aamer2025bennet}; the subsequent
+Code-Specify-Test-Debug-Prove workflow adds loop-invariant and lemma testing
+and explicit ghost arguments~\cite{aamer2026workflow}. This testing path compiles supported assertions into executable checks and
+runs the instrumented program on concrete heaps.
+COINS takes a proof-based route: it specializes declarative Rocq specifications
+on trusted examples and checks the resulting obligations~\cite{yang2026coins}.
+The opportunity is to perform both state generation and property checking
+inside the verification infrastructure. Symbolic execution supplies the heap
+states, computation reduces the instantiated assertions, and proofs establish
+residual functional relations. This removes the need for a native test harness
+and an executable monitor for the residual property.
+
+Table~\ref{tab:positioning} locates this design relative to the closest approaches.
+\input{tables/positioning}
+
+\paragraph{The obstacle: specializing data does not decide the assertion.}
+A verification assertion can contain an unbounded quantifier or an abstract
+relation whose instance still requires deduction. Consider a routine that
+replaces an owned integer $n$ by its least nonnegative rounded-up square root
+$r$. One specification is
+\[
+  0\le r\ \land\ \forall k\in\mathbb Z.\;
+  0\le k\Rightarrow(r\le k\Leftrightarrow n\le k^2).
+\]
+Binding $n=13$ determines the loop computation and its result $r=4$, while
+leaving a quantified mathematical proposition to check. In our pinned CN
+testing configurations, the original postcondition is rejected because an
+upper quantifier bound cannot be inferred. Fulminate accepts a proved equivalent
+finite reformulation. \tespec{} checks the original assertion through Rocq,
+allowing the verification formula itself to serve as the instance oracle.
+
+\paragraph{The challenge: observing a contract must preserve execution.}
+Symbolic verification commonly uses invariants and callee contracts to summarize
+execution. In a specification test, these summaries are themselves candidates
+under evaluation. Suppose a helper increments a cell from 3 to 4 but promises
+only an existential final value. Executing the helper retains the value 4;
+replacing its effects with that weak summary loses the information needed by
+the next check. Likewise, assuming a candidate invariant can exclude the very
+state that violates it. A proof-capable test oracle therefore needs a precise
+separation between program transitions and annotation observations.
+
+\paragraph{Testing through symbolic verification.}
+\tespec{} specializes a precondition with typed partial bindings. The result
+is a domain of initial heaps whose data can be fixed while addresses remain
+symbolic. It first checks that this domain is inhabited, then executes actual
+bodies, branches, and loops. At each selected assertion, invariant visit, or
+call boundary, it generates an obligation on a copy of the current state and
+continues from the original state. Computation and automatic reasoning simplify
+the obligation; residual mathematical properties remain in the verification
+logic for checked proof completion. The proof controller binds certificates
+to the complete original goal interface and its admitted assumptions.
+
+This design yields a test over a symbolic domain: successful checking covers
+all feasible executions represented by the completed execution tree. The
+technical work is to preserve that meaning across state normalization,
+local-storage framing, call entry and return, and proof completion.
+QCP supplies symbolic execution, separation-logic reasoning, and the Rocq
+backend~\cite{wu2026qcp}. \tespec{} organizes these capabilities around
+execution-derived observations of candidate specifications.
+
+We make three contributions:
+\begin{enumerate}
+\item \textbf{Specification testing as specialized symbolic verification.}
+We reuse symbolic execution to generate test states and the verification logic
+to check functional assertions. Tests share the verifier's heap model, logical
+definitions, and proof libraries.
+Partial logical bindings define heap domains with an explicit existence check;
+a boundary schedule
+selects observations along actual executions. We mechanize observation erasure
+and lifting, and nonvacuous acceptance under explicit execution-coverage and
+obligation-generation interfaces (Section~\ref{sec:semantics}).
+\item \textbf{A checking discipline for stateful proof oracles.}
+We connect copied-state observations, exact local frames, and joint heap/value
+normalization to a common VC interface. Complete-goal replay and assumption
+auditing support proof completion in the original logic
+(Section~\ref{sec:approach}).
+\item \textbf{An evidence-based account of capability and cost.}
+Matched contract configurations, complete proof groups, and mechanism probes
+show where retaining the original assertion helps and what it costs.
+The least-root observation instance checks all 27 obligations. Eleven paired
+contract configurations and seven complete proof groups characterize automatic
+feedback, proof completion, and replay cost
+(Section~\ref{sec:evaluation}).
+\end{enumerate}
+The resulting workflow lets developers test logical instances before completing
+a universal proof, while retaining the functional specification and its proof
+library. Testing and verification differ in the domain they establish; both
+use the same logical property. This is especially useful for quantified and
+relational contracts whose instances can be proved with existing lemmas.

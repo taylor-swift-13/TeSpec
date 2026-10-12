@@ -1,0 +1,874 @@
+\section{Evaluation}
+The measurements below retain their archived executor and certificate results.
+The subsequent three-state VC interface is checked by focused regressions;
+archived unresolved mutations are not relabelled as new FAIL measurements.
+\label{sec:evaluation}
+
+The current evidence comprises executor regressions, a full QCP corpus scan,
+an isolated deployment replay, and a first paired baseline smoke test. The
+comparative study is governed by \texttt{research-protocol.md}; complete
+Fulminate/CN experiments and proof-agent cost measurements remain in progress.
+
+\subsection{Categorized executor regressions}
+
+The development suite contains 52 functional programs with four inputs each,
+three variants (reference, incorrect postcondition, and program mutation),
+and two boundary policies. A further 37 diagnostic scenarios run under both
+policies, yielding 1,322 checks across 18 categories. Functional expectations
+are computed independently in Python and cross-checked against defined native
+C executions. The engine itself uses symbolic addresses. The suite includes
+779 negative checks, including intentionally wrong specifications and explicitly
+unsupported execution scenarios.
+
+All 1,322 recorded expectations are met: 541 runs return PASS, 757 UNKNOWN,
+14 ERROR and 10 INVALID. No expected negative case is incorrectly accepted,
+and no functional native oracle disagrees with the independent expected value.
+Every one of the 52 body mutations is distinguished by at least one input.
+UNKNOWN on an incorrect postcondition means that the engine retains an
+obligation; it is not a proof of violation. The same matrix meets its
+expectations under ASan/UBSan with leak detection disabled, and in a filesystem
+namespace exposing only system libraries and the packaged teSpec tree.
+
+The suite covers scalar control flow, C integer operations, loops, recursion,
+calls, arrays, strings, aliases, structures, linked structures, trees and
+sharing, allocator patterns, logical predicates, entry checks, safety,
+declarations, incompleteness and annotation boundaries. It exposed an
+existential-elimination bug that previously lost return constraints and caused
+eight false acceptances. Preserving pre-existing witnesses during predicate
+expansion removes those false acceptances; the associated negative cases now
+retain return obligations.
+
+\subsection{QCP corpus inventory}
+
+A broad scan inventories 267 C files and 1,147 specifications and performs
+5,160 executions, with another 287 cases requiring explicit typed bindings.
+The execution outcomes are 1,086 PASS, 1,022 INVALID, 2,416 UNKNOWN and 636 ERROR.
+These automatically generated small bindings are smoke inputs, not independently
+labelled correctness tests. Entry invalidity and unresolved abstract predicates
+therefore require separate interpretation from executor errors. Common execution
+obstacles include unavailable readable/writable ownership, unbound proof
+identifiers and annotation-branch handling. The comparison dataset will retain
+these cases and report their feature categories and denominators.
+
+\subsection{Baseline installation and first paired case}
+
+CN is installed in a separate OCaml 5.2.0 environment at source revision
+\texttt{181d0477}, with its pinned Cerberus dependency and Z3 4.13.3.
+A smoke test uses the same C body in CN and QCP syntax: a function increments
+an owned integer cell. The valid contract requires $0\leq v<100$ and returns
+the cell with $v+1$; a mutated contract instead demands $v+2$.
+
+\begin{center}
+\small
+\begin{tabular}{lll}
+\toprule
+Tool/task & Valid contract & Incorrect contract\\
+\midrule
+CN universal verification & Verified & Unprovable constraint\\
+Fulminate, native cell $3$ & Check passes & Runtime check fails\\
+\tespec{}, logical cell $3$ & PASS & UNKNOWN, residual VC\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The two instance tests agree on the initial cell value while \tespec{} leaves
+the address symbolic. CN's verifier checks the broader precondition domain;
+its result is recorded separately from matched instance checking. These six
+runs validate installation and interfaces. They do not establish comparative
+performance or overall superiority. Exact commands, outputs, source hashes and
+resource measurements are retained by \texttt{run-comparison-smoke.py}.
+
+Four further paired cases cover disjoint-cell exchange, structure fields,
+nested calls and heap-updating loops. Each runs both postcondition variants
+through the three tools; the call and loop cases additionally exercise
+\tespec{}'s intermediate-boundary checking policy. These 36 additional runs
+meet their installation expectations. The incorrect postconditions remain
+unresolved in \tespec{} and fail Fulminate's runtime checks. These outcomes
+motivate completing proof-backed failure classification before comparing
+confirmed bug detection.
+
+Two additional categories exercise shared aliases and pointer-valued storage.
+In the first, two equal pointer arguments update the same owned integer; in
+the second, the program loads a stored pointer and modifies its referent.
+Identical C bodies and matched logical/native value 3 are used. Both \tespec{}
+modes accept the valid contracts and leave the wrong postconditions UNKNOWN;
+CN verifies the valid domains, and Fulminate detects the mutated postconditions
+at runtime. Four unmodified-QCP runs discharge the valid targets and retain
+one residual obligation per mutated target. The 24 CN/Fulminate/\tespec{}
+invocations include repeated baseline runs for the two mode directories;
+they represent two added subjects, not 24 independent subjects. Full logs and
+VCs are archived in \texttt{memory-additions-20261011}. These concurrent probes
+measure interface coverage; their resource records are not isolated timing
+comparisons.
+
+A recursive heap-update fixture adds a direct state-preservation probe. Its
+helper increments an owned cell and recurses with a decreasing counter. With
+logical value 3 and counter 3, \tespec{} enters the helper four times; boundary
+mode also checks four helper contracts. Both modes pass with the exact helper
+postcondition. Replacing that postcondition by an existential value bounded
+below by the input preserves \tespec{}'s exact final value 6 and all selected
+boundary checks. Fulminate also passes this concrete execution. Modular CN
+verification and unmodified QCP retain an obligation for the top-level exact
+postcondition because the helper summary is too weak. Thus the probe isolates
+the effect of executing calls while checking contracts, rather than treating a
+candidate contract as the next execution state. Mutating the top-level result
+still produces a Fulminate runtime failure and a \tespec{} UNKNOWN result.
+The 22 invocations and original weak-summary verification failures are retained
+in \texttt{recursive-calls-20261011}; they cover two contract versions of one
+C body.
+
+\paragraph{Direct recursive-entry regression.}
+Testing the recursive helper directly exposed an entry-specialization defect:
+root bindings had also constrained its recursive call contract. A grid over
+counters 0--3, values 0, 3 and $100-n$, three helper specifications and both
+modes produced 18 unresolved valid boundary-mode cases without residual VCs.
+Separating the named root instance from reusable contracts resolves all 48
+valid-contract cases. The remaining 24 cases use a helper postcondition false
+at the recursion base: boundary mode leaves all 12 unresolved with residual
+obligations, while expand mode passes nine non-base cases with nested
+annotations excluded and leaves the three base postconditions unresolved.
+All 72 phase-aware expectations pass. The complete 1,322-case regression also
+retains all expectations, including 779 negative checks with zero false passes.
+The before/fixed outputs and the unsuccessful specification-ordering attempt
+are retained in \texttt{entry-isolation-20261011}. These tests establish the
+observed implementation behavior separately from the generic semantic proofs.
+
+A further 25 instances exercise mutual recursion over a shared cell, including
+an explicit selection of the original named contract on the return call. Both
+functions update the cell before recursing. Valid cases preserve exact results
+in both modes; a changed increment leaves obligations precisely on inputs that
+reach the changed statement. Native outputs match independently calculated
+values for both versions. These probes and a persistent integration test extend
+the entry-isolation evidence to mutual and explicitly named calls.
+
+
+An independently built, unmodified QCP executor at \texttt{e7745ada}, with
+its pinned SMT revision \texttt{94d89c78}, checks the same five QCP-annotated
+translation units over their full precondition domains. Four correct target
+contracts are discharged automatically. The loop case retains a return
+entailment whose invariant does not identify the current pointer with its
+entry value. Adding a logical entry pointer and retaining that equality in
+the invariant closes the remaining obligation; the C body is unchanged.
+The original and refined annotations are both retained. All five incorrect
+contracts, including the refined loop variant, retain proof obligations.
+These are automatic solver results, separately labelled from kernel-checked
+certificates: the upstream generated auto-proof files contain admitted
+placeholders. The measurement covers all functions in the translation unit,
+while outcomes are extracted specifically for the target function.
+
+A separate April 2026 CN source snapshot at \texttt{39efc873} also runs the
+paired cell checks successfully using its typed-integer annotation syntax.
+Bennet and Darcy each complete ten generated tests of the valid contract at
+seed zero and expose the incorrect contract with a reported cell containing
+zero. Build dependencies and generated-harness compilers are recorded
+separately. This source snapshot is distinguished from the archived paper
+artifact, whose exact environment and original subjects are being reproduced.
+
+The published v3 image has now been retrieved and checked against its published
+digest. It contains the same CN revision and allocator revision
+\texttt{2840aab7}, distinct from the later source-catalog snapshot. Using its
+original user-space environment under rootless filesystem isolation on the
+WSL2 host, the original quick script passes native Fulminate checks, 100 Darcy
+tests of \texttt{list\_add}, the EL2 suite and CN verification of
+\texttt{list\_add}. All stage logs are retained. The full original script subsequently completes in 22,989 seconds with eight
+visible CPUs. Both trial CSVs contain all 250 prescribed observations: 220
+reported detections in Darcy's symbolic mode and 30 in Bennet's random mode.
+These are reproduction observations under the authors' unequal budgets
+(180 and 30 seconds), with overwritten per-trial logs; they do not constitute
+a matched detection comparison with \tespec{}. EL2 reports all tests successful,
+and all 57 expected CN targets have individual pass markers. The verification
+wrapper returns Error 123 because its worker ends with a false conditional
+following a successful target, yielding exit status 1; this shell behavior
+is independently reproduced. Evidence is in \texttt{artifact-full-20261011}.
+The outer isolation process's resource counters are excluded from workload
+performance measurements.
+
+\subsection{Original allocator subjects: inventory probe}
+
+We also run all 24 entries in the original pKVM allocator bug catalog with
+Bennet and Darcy. Each subject uses the repository's prescribed base revision,
+workaround patch and individual bug patch in an isolated worktree. This first
+probe uses seed zero, ten requested samples and a 120-second limit covering
+generation, compilation and execution.
+
+\begin{center}
+\small
+\input{tables/allocator-inventory}
+\end{center}
+
+Failures in the table are tool-reported test failures. The original driver's
+disabled replay option suppresses concrete-input printing; these observations
+are distinct from independently replayed witnesses. Generation failures and
+timeouts are retained separately. The small sample budget also limits input
+generation's discard allowance, so these counts are not the original paper's
+long-trial detection rates. All 24 Darcy controls, obtained by reversing only
+the selected bug patch, pass the same requested sample budget. Pairing by case,
+generator and trial yields 19 failures with passing controls, four pairs of
+sampled passes and one inconclusive buggy run. Commands and seeds match within
+each pair; changed predicates can nevertheless generate different concrete
+inputs. A matched \tespec{} translation of these original
+allocator subjects remains to be established.
+
+We separately execute the repository's unchanged native allocator harness using
+Fulminate from the April CN snapshot and Clang 18. Each run records checkout,
+patching, preprocessing, instrumentation, compilation and execution as separate
+stages. All seven partial-specification variants pass, as does their complete
+control. Among the 24 bug-catalog variants, 13 trigger runtime check failures
+and 11 pass this harness; the complete control also passes. All 33 runs reach
+execution, so the failure count contains no build or instrumentation failures.
+These are single-harness observations under the recorded source snapshot, with
+the original embedded seed, distinct from generated-input trials and from an
+exact replay of the published artifact. The archive retains all stage logs,
+hashes, commands, elapsed times and peak process memory measurements.
+
+Architecture matching is a prerequisite for translating the allocator. The
+packaged executor uses a 32-bit frontend; selecting a 64-bit pointer option
+alone originally left \texttt{unsigned long} at 32 bits. We added a target
+consistency check and built a separate candidate using the upstream frontend's
+existing 64-bit compilation option. Four size probes agree with Clang:
+pointers and unsigned long occupy eight bytes, doubly linked nodes sixteen,
+and explicit-padding chunk headers thirty-two. All eight generated return and
+entry-satisfiability VCs have closed proofs independently accepted by
+\texttt{coqchk} against an upstream parameterized logical runtime. These probes
+establish selected ABI prerequisites; byte-level ownership translation and
+the allocator's execution dependencies remain required for the matched port.
+
+A separate LP64 pointer-cell test exercises ownership beyond these layout
+queries. Both addresses remain symbolic; the body reads and returns the stored
+pointer. The automatic run completes with an unresolved Require obligation.
+An agent constructs an eight-byte mathematical heap witness and proves both
+original VCs against the actual 64-bit storage definitions. Independent
+certificate replay accepts both proofs with no global assumptions. The checked
+pipeline takes 440.935 seconds in a run concurrent with other proof checks;
+the exploratory agent construction reports 36 seconds and one compilation.
+This establishes a 64-bit primitive ownership proof path while broader
+allocator translation and isolated cost measurements remain pending.
+
+A candidate field-address translation adds frontend-computed byte offsets to
+symbolic bases. A 28-run matrix crosses seven layout and negative-control
+cases with two target widths and two VC policies. GCC static assertions
+independently validate the selected offsets; every emitted layout-marker check
+passes. On 32 bits, ten positive runs prove automatically, two wrong
+postconditions remain unresolved, and two overlapping-union preconditions are
+rejected as unsatisfiable. Extending necessary interval constraints to 64-bit
+field addresses rejects both union-overlap cases on that target as well;
+the other twelve 64-bit entry checks remain unresolved automatically.
+A separate two-field example has all three original VCs independently replayed
+on each target, including a satisfiability proof constructing disjoint
+byte cells without field-address axioms. These results distinguish successful
+layout translation from completed specification tests. Imported predicates
+with abstract field-address semantics require a compatible interpretation
+before this candidate can become the default translation.
+
+A separate re-elaboration experiment retains the original QCP list predicate
+definitions and interprets their address notation through the exported layout.
+The generic address evaluator, nested-field and array-index probes, pointer
+stride probes, and a definitional unfolding check pass independent kernel replay
+on both target widths. An unknown-field probe fails elaboration as intended.
+The two-node list Require additionally passes the complete VC controller on
+both target widths with no transitive assumptions. The input fixes logical contents and leaves
+the pointer unbound. This declaration-only test establishes precondition
+satisfiability; execution, safety and return checks are not run. The archived
+experiment distinguishes this selected computational interpretation from
+equivalence to a previously compiled predicate using abstract addresses.
+
+The same layout generator also supports two further original predicate
+families: a three-node binary tree and a two-node doubly linked queue. Their
+precondition VCs pass the independent controller on both 32- and 64-bit
+targets, with empty assumption sets. The tree includes two recursive branches; the queue includes head/tail
+fields and forward/backward links. On both target widths, moving the fixed
+logical data from Require equalities into the public JSON binding interface
+produces byte-identical original Goal files and identical layouts. The tree
+input uses nested constructor objects, and the queue uses a JSON list. These
+are recursive-memory and instantiation checks, separate from evidence of an
+expressiveness advantage over an executable monitor.
+
+Negative counterparts equate two symbolic roots while requiring separated
+copies of the same nonempty recursive predicate, using the public binding
+interface for logical contents. The list, tree and queue cases each pass
+independent refutation replay on both 32- and 64-bit targets with empty
+assumption sets. The controller
+merges these certificates into Require=\texttt{UNSAT} and
+\texttt{INVALID}, preserving declaration-only scope. The contradiction arises
+from duplicate ownership of the root's first byte, not from a chosen numerical
+address. These checks validate negative initial-domain classification; the
+six target/family combinations are independently accepted. Sources, manifests, proof
+attempts and controller logs are archived separately from the positive cases.
+
+\subsection{Independent replay of a complete heap VC group}
+
+For the cell-increment case with logical contents $3$ and an unbound pointer,
+an exploratory proof-agent run produced proofs for all four original VCs:
+two arithmetic safety conditions, the return entailment, and initial
+satisfiability. A separate controller pins the generated goal and dependencies,
+checks the complete original module interface, audits transitive assumptions,
+and runs \texttt{coqchk}. Automatic proof placeholders are excluded from this
+certificate. The satisfiability proof supplies a mathematical heap witness;
+the pointer remains unbound in the test itself.
+
+All four proofs compile and pass independent replay. The return and
+satisfiability lemmas are closed under the global context; the safety statements
+depend on QCP's existing local-address interpretation parameter. Full-library
+kernel replay takes approximately 130 seconds in this exploratory run.
+An earlier 120-second replay budget produced UNKNOWN and is retained in the
+data. Agent-reported proof construction took 139 seconds and ten candidate
+compilations; token usage was unavailable and is recorded as missing.
+These observations establish the certificate path for one generated VC group;
+the controlled agent study measures its cost and coverage across subjects.
+
+A second heap example leaves a genuine residual obligation: a function squares
+an owned integer, with postcondition \texttt{is\_square} on its return and
+ownership of the updated cell. An imported Rocq definition states
+$\mathit{is\_square}(z)\equiv\exists k\in\mathbb{Z}.\ z=k^2$.
+For the binding $n=13$, the automatic phase completes execution but leaves
+the mathematical relation unresolved. The agent supplies $k=13$ and proves
+all three original interface obligations, including safety and initial
+satisfiability; the external controller independently replays them.
+This exercises proof completion for an imported definition without supplying
+a runtime decision procedure. It does not establish that an equivalent
+executable checker cannot be written in a baseline system.
+
+A paired negative case changes the postcondition to
+$\mathit{is\_square}(\mathit{return}+1)$, leaving the implementation and
+binding unchanged. The agent proves that $170$ is not an integer square,
+refutes both branches of the original return VC, and proves the other two
+interface obligations. Independent replay accepts this certificate in
+132.841 seconds and records an independently checked negative proof. The refutation and initial
+satisfiability proofs are closed under the global context. This result certifies
+the falsity of the generated VC; a confirmed execution violation additionally
+requires a reachable-state witness. The automatic UNKNOWN result is therefore
+retained separately. The exploratory agent attempt reused earlier heap lemmas
+and reported 30 seconds and one candidate compilation; token usage is missing.
+
+A third case places the imported relation at intermediate boundaries. Starting
+from a cell containing zero, a loop calls a helper three times to add $2i+1$;
+the helper's postcondition states only that the cell contains some square.
+Both execution modes retain the sequence $0,1,4,9$ despite this weak contract.
+Boundary checking adds four invariant checks, three assertions and three call
+contract checks. Ten intermediate entailments and the return entailment remain
+unresolved automatically. An agent proves all 44 original interface obligations,
+including safety, call-precondition matching and initial satisfiability, and
+the independent checker accepts the group in 137.473 seconds. The ten
+entailments, return and satisfiability proofs are closed under the global
+context. The remaining proofs use the existing local-address interpretation
+parameter. This case exercises the combination of actual calls and loops,
+state-preserving boundaries and proof completion for imported predicates.
+Its exploratory proof construction reused earlier lemmas and took an
+agent-reported 51 seconds and two candidate compilations.
+
+A fourth case compares an original assertion with a proved equivalent runtime
+form. A loop computes the least nonnegative integer $r$ whose square is at
+least the initial cell value $n$, then stores and returns $r$. Its postcondition
+retains $0\le r\land\forall k\ge0.\ (r\le k\leftrightarrow n\le k^2)$.
+For $n=13$ and a symbolic cell address, \tespec{} executes four iterations and
+checks five invariant states. Automatic checking leaves the imported relation
+unresolved; an agent proves all 26 original VCs, independently replayed in
+132.063 seconds. The exploratory construction reuses earlier heap lemmas and
+reports 21 seconds and one candidate compilation.
+
+On the pinned October CN version, Fulminate instrumentation rejects the original
+quantification because it cannot infer its upper bound. An identical C program
+with the equivalent postcondition
+$0\le r\land n\le r^2\land(r=0\lor(r-1)^2<n)$ compiles and passes native
+checking on the same input. \texttt{LeastRootRewrite.v} proves this equivalence
+over mathematical integers. The experiment therefore isolates direct assertion
+support while retaining a successful rewritten-monitor control. CN universal
+verification leaves multiplication safety unproved for both forms and reports
+that nonlinear arithmetic is treated as uninterpreted; those failures are
+recorded separately from instrumentation outcomes and execution violations.
+
+\paragraph{Proof replay after entry isolation.}
+The previously archived complete cell proof and square-loop boundary proof
+both replay against freshly generated VCs after the entry-isolation change.
+The latter completes the whole-run controller and retains checks for loop
+invariants, assertions and call contracts. These are compatibility replays of
+existing proofs, not additional proof-agent authoring trials.
+
+\paragraph{Array contract translation.}
+A two-cell array update provides a further paired target. Its final contracts
+use typed offsets $p+0$ and $p+1$. CN verifies the valid contract, and Fulminate
+and \tespec{} accept the matching concrete/logical inputs. The incorrect return
+condition fails at runtime in Fulminate and remains UNKNOWN in \tespec{}.
+Unmodified QCP discharges six target obligations once the native main fixture
+is removed; the target's bytes are unchanged. The mutated target produces a
+fatal return-obligation inconsistency diagnostic. Earlier indexing and offset
+translation errors are archived separately and do not establish tool coverage
+limitations. Full-unit failures after completing the target are distinguished
+from target-only verification in \texttt{array-cells-20261011}.
+
+
+\paragraph{Candidate and dependency regressions.}
+The candidate executor with target-layout metadata passes the complete
+1,322-case matrix after entry isolation, with the same status counts as the
+packaged executor and zero false passes among 779 negative checks. It remains
+a separately pinned candidate. A dependency replay additionally imports the
+square relation through a module using \texttt{Require Export}; staging
+includes both modules and excludes a fictitious import inside a nested
+comment. The existing whole-instance proof passes independent replay and
+run-level reconciliation. This tests transitive definition availability without
+counting a new logical property or proof-agent success.
+
+\paragraph{Complete-library layout interpretation.}
+Three further compatibility replays retain the complete original singly linked
+list, binary-search-tree, and doubly linked queue libraries (222, 1,696, and
+223 lines). Importing the generated computational field-layout interpretation
+after the original notation scope allows all three libraries, including their
+existing proofs, to compile. Their two-node list, three-node tree, and two-node
+queue instances then pass independent whole-run certificate checking with
+empty global assumption sets. The tree proof required an explicit integer
+notation scope in the candidate; its initial failed compilation is retained.
+These 32-bit declaration-only cases establish Require satisfiability under the
+selected interpretation. They test complete-library compatibility, rather
+than adding independent proof examples or establishing equivalence to the
+legacy abstract-address semantics. The archive
+\texttt{proof-audit/full-layout-libraries} contains the original and transformed
+sources, frozen goals, candidates, reports, and compressed stage logs.
+
+\paragraph{Recursive traversal of a linked heap.}
+A further matched target recursively computes the length of a singly linked
+list while preserving its contents. CN's recursive content predicate and QCP's
+original list predicate describe the same two-node fixture, with an upper
+length bound of 100. CN verifies the correct contract after an explicit
+unfolding hint for its mathematical length function; Fulminate accepts the
+matching execution. Changing the specified result to length plus one produces
+an unprovable CN constraint and a Fulminate runtime failure. In both execution
+modes, \tespec{} completes the recursive traversal and automatically checks
+safety and the correct return condition; boundary mode also checks the actual
+recursive call contracts. Initial satisfiability remains UNKNOWN in the
+original-library run, so neither valid run is counted as an overall success.
+Unmodified QCP produces four automatic and four residual target obligations
+for each variant. A target-only control separates these results from a later
+failure in the native main fixture. The archive \texttt{list-length-20261011}
+retains final runs and earlier translation corrections; they represent one
+subject, and their concurrent timings are diagnostic measurements.
+
+The linked-list regression additionally varies length from zero through five
+and changes the recursive increment from one to two. All 24 symbolic runs
+(two bodies, six inputs, two modes) finish. Correct-body postconditions pass
+throughout; the mutant passes only on the empty list and leaves a residual
+postcondition for every nonempty input. Twelve separately compiled native
+fixtures agree with the arithmetic oracles $n$ and $2n$. Initial satisfiability
+remains unresolved in these original-library runs, so the grid contributes
+phase-level regression evidence rather than overall success or confirmed
+symbolic counterexamples. Inputs, native fixtures, and reports are archived in
+\texttt{list-length-grid-20261011}.
+
+\paragraph{Proof completion for the recursive linked heap.}
+A separate interpretation experiment re-elaborates the complete original list
+library using explicit frontend field offsets and checks the actual two-node
+recursive execution in boundary mode. The proof agent closes all 19 original
+interface obligations, including initial satisfiability, safety, recursive
+call boundaries, and final return. Independent controller compilation,
+assumption auditing, and kernel replay accept the complete group and merge
+all execution phases to success. The initial satisfiability theorem is closed;
+the complete group additionally depends on the runtime's local-variable
+address parameter and functional and propositional extensionality, with no
+unexpected assumptions. Authoring takes 236 seconds over seven compilation
+attempts; independent checking takes 140.12 seconds. These concurrent
+development measurements include two terminated tactic attempts, and token
+telemetry is unavailable. The evidence is archived in
+\texttt{proof-audit/list-execution}. This result establishes execution under
+the selected computational layout; the original-library automatic outcome
+remains separately recorded as UNKNOWN.
+
+\paragraph{Binary-tree execution barrier.}
+An additional coverage probe recursively counts both subtrees of a three-node
+binary tree. Fulminate accepts the valid fixture and detects the mutated return
+condition after renaming ghost constructors to avoid a generated-C identifier
+collision. The first CN annotation leaves the nonnegative subtree-size fact unproved
+at the recursive call. Adding nonnegativity assertions for both recursive
+predicate outputs lets CN verify the valid contract and reject the mutated
+postcondition as unproved; the same fixtures pass and fail Fulminate runtime
+checks respectively. Structural nonnegativity is separately proved in Rocq.
+This retains the repaired baseline result alongside the initial annotation failure. \tespec{} fails at the first child-field read because the
+original external \texttt{store\_tree} predicate remains opaque in its
+execution state. Providing the full Rocq definition as a proof dependency
+does not automatically expose it to executable predicate normalization.
+This is an execution-coverage gap, distinct from the linked-list example's
+initial satisfiability obligation. Both annotation attempts and the exact
+failure states are retained in \texttt{tree-size-20261011}; the probe is
+reported separately from the reviewed paired table.
+
+\paragraph{Definition-driven unfolding probe.}
+A subsequent experiment translates constructor clauses of imported heap
+predicates into QCP strategy proposals and Rocq branch equations from a shared
+intermediate representation. The same translator handles the original tree,
+list, and list-segment predicates. All six branch equations compile and pass
+an independent \texttt{coqchk} run. A renamed predicate with different
+constructor and field names also compiles; deleting one owned field from its
+proposed expansion causes the equation proof to fail. With the generated tree
+rules supplied explicitly, both execution modes complete all six recursive
+calls of the three-node fixture and retain return value 3. The valid and
+mutated postconditions both remain UNKNOWN: pure logical-function evaluation,
+initial satisfiability, and internal contract binding still require further
+work. Thus this probe removes the observed field-read barrier without
+establishing a complete test verdict. The equations certify the logical branch
+reconstruction; the translation to QCP strategy syntax remains part of the
+trusted implementation. The mechanism is experimental and not enabled by
+default. Sources, proofs, the rejected mutation, and all four execution runs
+are retained in \texttt{proof-audit/rocq-predicate-lowering}.
+
+\paragraph{Reconstructing callee model arguments.}
+Further probes isolate the contract-binding gap after expansion: a callee
+requires an abstract tree value, whereas the caller exposes its fields.
+Goal-side constructor inference restores this value without changing the
+execution state. Both literal and symbolic forms of base-case guards must be
+handled. An initial 28-run grid exposes four remaining binding failures;
+after supporting both forms, all 14 repeated no-expand runs infer their
+callee arguments successfully. These runs cover seven tree shapes, including
+empty, left- and right-skewed, and balanced trees of up to seven nodes, with
+both the original traversal and a mutation that counts each node twice.
+The top-level return literals in the generated VCs agree with $n$ and $2n$,
+respectively. All runs remain UNKNOWN because the logical size function and
+initial satisfiability still require proof; successful argument inference
+is not counted as a proved contract or detected mutation. Six generated
+constructor-substitution lemmas compile alongside the branch equations; all
+three generated modules also pass an independent \texttt{coqchk} run.
+The attempts and final grid are retained in
+\texttt{proof-audit/rocq-predicate-inference}.
+
+\paragraph{Complete binary-tree execution certificate.}
+A subsequent three-node fixture combines generic constructor unfolding and
+model inference with the explicit 32-bit computational layout. Actual execution
+performs six recursive calls and returns 3. The independent controller accepts
+all 44 original obligations, including initial satisfiability, safety, call
+returns, the final return and auxiliary entailments. All return proofs retain
+the complete heap branch. The assumptions are the existing address-interpretation
+parameter, functional extensionality and propositional extensionality; legacy
+field-address axioms are absent. Replay takes 386.405 seconds, including
+261.559 seconds for \texttt{coqchk}, in this exploratory run. Evidence is in
+\texttt{proof-audit/tree-execution}. The result uses the selected computational
+interpretation; the earlier original-library coverage outcomes remain recorded
+separately. Agent token and full attempt telemetry are unavailable.
+
+\paragraph{Ground logical evaluation.}
+A generic Rocq evaluation service computes the logical tree-size function on
+the seven instantiated shapes and generates seven equality certificates.
+All certificates compile with no global assumptions and pass independent
+\texttt{coqchk}. A separate recursive weighted-tree function exercises negative
+integer results; opaque terms remain UNKNOWN, and a corrupted computed result
+fails proof checking. Connecting the certificates to the actual three-node
+return VC exposes a namespace problem: an imported heap notation shadows
+integer addition in the emitted goal. Restoring the integer scope in the
+executor's generated headers permits the unedited, regenerated goal to compile.
+Rewriting with the computed equalities then proves its return-arithmetic
+subgoal with no global assumptions. This closes one real VC component;
+initial satisfiability and remaining spatial obligations still determine the
+overall UNKNOWN result. The candidate binary, failed attempts, successful
+proofs, and per-process resource measurements are identified in
+\texttt{proof-audit/rocq-ground-evaluation}. The packaged executor and the
+earlier paired observations remain unchanged.
+
+\paragraph{Audited paired observation table.}
+Table~\ref{tab:paired-observations} consolidates 11 paired subjects and 102
+individual tool invocations from the final development probes. The deterministic
+summary validates source and log hashes and reads \tespec{} phase results
+directly, independently of the smoke runner's expected-outcome flags. Repeated
+CN/Fulminate invocations across \tespec{} modes remain repeated observations
+of the same subject. Earlier setup attempts, deliberately invalid helper
+contracts, and proof-completed replays are separate strata.
+\input{tables/paired-observations}
+
+\subsection{Comparative experiment design}
+
+The main experiment will combine original Fulminate/Bennet/PLDI artifact
+subjects, the complete QCP inventory, and paired common-fragment programs.
+Expression-level and ownership-level contract translations require review for
+semantic equivalence. Proof-oriented separating examples form a distinct
+stratum so logical expressiveness is measured independently of supported C
+features. Input generation and checking a supplied input are measured separately.
+
+Four paired experiments connect each comparative claim to its mechanism.
+First, original quantified or relational assertions are paired with executable
+rewrites whose equivalence is checked, measuring direct assertion support and
+rewrite effort. Second, mutations of assertions, invariants, and call contracts
+preserve the final output while changing an intermediate logical obligation,
+measuring observation coverage for the same rich property. Third, fixed logical
+data with symbolic addresses are paired with concrete layouts and aliasing
+controls, measuring the input domain established by a completed instance.
+Fourth, normalization, unfolding, and proof completion are ablated on the same
+subjects, separating automatic simplification from residual proof work.
+Subjects and feature categories are registered before outcomes are collected.
+
+The primary unit is a complete instance: initial nonemptiness, execution safety,
+and all selected boundary obligations must be checked. Individual discharged
+VCs measure automation within that unit. The current interface reports FAIL when an admitted original path VC is
+INVALID; unresolved proof obligations remain UNKNOWN. Archived negative proof
+replays retain their recorded evidence scope. Common-fragment controls quantify overhead,
+and capability-separating subjects quantify the additional original assertions
+that obtain complete verdicts. Together these strata measure the benefit and
+cost of retaining the verification logic as the oracle.
+
+Outcomes include certified success, confirmed violation, invalid input,
+unsupported behavior, error and timeout. Ablations compare normalization,
+SMT-only checking, checked ITP completion and intermediate-boundary policies.
+Agent experiments record attempts, models, prompts, tokens, time, proof replay
+and assumptions. Deterministic timing uses repeated isolated runs; stochastic
+conditions use recorded independent trials and fixed budgets. All exclusions
+and unsuccessful runs remain in the released data.
+
+\section{Mechanized Semantic Core}
+
+The accompanying \texttt{InstanceChecking.v} defines typed partial bindings,
+their instance domains, finite symbolic execution trees, and proof obligations.
+Its central theorem states that a closed tree establishes safe, terminating
+behavior for every state represented at its root. Step nodes require progress
+and coverage of every concrete successor; terminal nodes require safety and
+the postcondition. Normalization requires semantic equivalence. Boundary nodes
+require the annotation and retain the same successor assertion. An unfinished
+node has no certificate.
+
+An acceptance theorem combines this coverage result with a separate nonemptiness
+proof, yielding nonvacuous instance correctness. Further theorems establish
+domain inclusion under stronger bindings and preservation of joint assertion/
+return observations. A mechanized counterexample shows why existential
+projection that preserves the closed assertion can still corrupt return-value
+checking. The development compiles with Coq 8.20.1; its principal theorems have
+no additional global axioms and its compiled library is independently replayed
+with \texttt{coqchk}.
+
+The negative-result model requires a bad state reachable from a member of the
+initial instance domain. It proves that an accepted execution certificate
+excludes such a witness, and that a bad model of a boundary assertion yields
+a counterexample when every model of that assertion is reachable. A separate
+mechanized example demonstrates why refuting an implication over an
+overapproximation alone is insufficient: the implication may fail only on
+states that no execution reaches.
+
+The initial oracle has a separate four-statement mechanization in
+\texttt{PreconditionOracle.v}. For the emitted proposition
+$\exists\eta.\,\neg\forall h.\,(R(\eta,h)\rightarrow\bot)$, a concrete logical
+witness implies the VC constructively; the converse uses excluded middle as
+an explicit premise. Negating the VC is constructively equivalent to emptiness
+of the entire initial domain. A counterexample preserves a satisfiable
+alternative when another branch is refuted. A further eight statements in
+\texttt{AffineOffsets.v} establish common-base integer cancellation and
+byte-interval simplification, including preservation of other query constraints
+and rejection of overlapping offsets. The observation module adds nine
+statements for exact local framing, visible-heap uniqueness, resource retention
+and rejection of an unmentioned user cell, including witness-dependent frames. A further five statements establish finite integer-list equality reflection,
+append/reverse comparison and preservation of owned heap observations.
+Seven further statements establish typed-witness inhabitance, empty-type
+refutation, self-equality preservation and safe elimination for integer/list
+types. The budgeted definition-normalization module adds seven statements preserving
+joint observations, nonemptiness, validity and countermodels under licensed
+rewrites. Across the ten standard-library modules, 82 principal statements have closed global contexts and pass
+independent kernel replay. The classical premise is part of the stated
+positive equivalence, not an additional global assumption.
+
+These theorems parameterize the operational relation and assertion
+interpretation. Establishing that the C executor generates obligations satisfying
+those interfaces remains an implementation-refinement obligation, including
+call-frame lifetime, C arithmetic and layout, substitution and SMT encoding.
+The generic theorem and the implementation tests are separate evidence.
+
+An additional nested-field regression executes two function calls and observes
+three invariant states and a final assertion without replacing the execution
+state. Its no-expand controller checks the definition equations and their
+association with the program's memory interpretation before execution.
+Local scalar framing and normalized field-strategy matching preserve the
+existing heap tests; the current packaged executor passes 274 tests, with ten additional
+tests skipped. Wrong field values, wrong local values and omitted user resources
+remain unresolved rather than becoming false successes. Local-pointer alias observations now select current goal witnesses before
+framing, including double indirection, rebindings and symbolic branches. These results measure implementation
+coverage; they establish no comparative advantage without a matched baseline.
+
+A further dependency-context check unfolds the original functional-queue
+predicate under its original module identity. Its five branch and standard-list
+identity obligations pass independent replay without manually importing the
+auxiliary list module. Four retained association checks accept the matching
+environment and reject constructor, relation and jointly shadowed predicate
+bindings. In the last case both ordinary aliases agree, but the additional
+qualified-definition identity fails. These checks validate definition selection;
+they do not constitute a completed queue execution. Evidence is retained in
+\texttt{proof-audit/qualified-normalization}.
+
+Typed nested-pattern translation extends the same library scan to 23 parsed
+and five unsupported declarations. Three original tree-context predicates,
+including the parent-pointer variant, pass all 24 unfolding, list-constructor
+identity and model-choice obligations under their original module identities.
+A constructed nested-model memory read completes the controller with initial
+SAT and execution safety and return PASS. Ten direct executor regressions in
+the two boundary policies include actual loops and calls: six pass, two reject
+inconsistent inputs, and two retain incorrect return properties as unresolved.
+These outcomes exercise generic constructor translation and preserve the
+distinction between a rejected input and an unclosed execution proof.
+Evidence and unsuccessful preparation attempts are retained in
+\texttt{proof-audit/typed-constructor-patterns}.
+
+Nominal-witness and pure-relation support advances the same scan to 26 parsed
+declarations and two layout barriers. The original \texttt{Bst.store\_map}
+definitions in two BST libraries each pass an independently checked unfolding
+equation, preserving existential tree witnesses and their \texttt{SearchTree}
+and \texttt{Abs} relations. An empty nominal type exposed a frontend erasure
+bug: its unused witness disappeared and the old executor accepted an impossible
+Require. The repaired executor retains the typed witness and reports UNKNOWN
+until checked proof completes the result. Two complete three-VC groups yield
+INVALID for the empty type and PASS for a constructor-inhabited type.
+Renaming, strategy-generated witnesses, both boundary policies and typed
+assertion/invariant regressions check the preservation mechanism; the latter
+continue the actual loop and prove its return despite unresolved annotations.
+A fresh normalization controller also passes definition equations and program
+association before the nested-model heap read completes with automatic SAT
+and safety/return PASS. The execution verdict uses the ordinary solver; its
+VCs have no separate kernel replay in this controller run. Evidence is retained
+in \texttt{proof-audit/nominal-existentials}.
+
+The address-term extension also parses the original pointer-segment predicate
+\texttt{sllbseg}, including its recursive next-field argument. Both branch
+equations pass independent replay under the original runtime module identity.
+Program association still rejects its abstract layout for computational
+execution. A separate explicit-layout recursive predicate completes the
+no-expand controller with initial SAT, an actual heap read, safety and return
+PASS. The untouched three-element insertion-sort instance executes but retains
+unproved initial and relational obligations. The library scan has 18 parsed
+declarations and ten unsupported declarations; neither parsing nor an unfolding
+equation counts as a completed program test. Sources and all results are retained
+in \texttt{proof-audit/recursive-address-arguments}.
+
+The layout bridge contributes eighteen of these closed theorems over explicit
+object and field layouts. Addresses are computed by adding byte offsets;
+nested paths compose these additions. The theorems establish bounds,
+containment, inherited alignment, positive addresses and byte-domain
+disjointness under explicit layout conditions. In particular, disjointness of
+enclosing fields implies disjointness of their contained paths, independently
+of structure names or nesting depth. Connecting frontend metadata and the
+generated heap predicates to this interpretation remains necessary for
+certifying the frontend translation as a whole. The instance certificates
+above separately establish the selected generated heap obligations.
+
+A runtime-dependent development adds nine closed lemmas for the partial address
+evaluator, including mutual correctness results for lvalue and rvalue address
+expressions relative to an inductive interpretation. These lemmas are replayed
+separately on both memory runtimes, alongside four layout probes and one
+predicate-unfolding lemma per target. Their scope is address computation for a
+given layout environment. Frontend layout correctness and C memory safety
+remain distinct obligations.
+
+\paragraph{Paired quantified intermediate observation.}
+A further pair keeps the least-root routine, data binding $n=13$, and final
+postcondition unchanged, and changes only the assertion before the heap write
+from $\mathit{least\_root}(n,r)$ to
+$\mathit{least\_root}(n,r-1)$. Both tests execute four loop iterations and
+visit five invariant boundaries. Automatic execution establishes initial SAT
+and safety, leaving the quantified observation and postcondition unresolved.
+The fixed controller checks all 27 original obligations of the positive case
+and produces an overall PASS report. For the negative case, it checks the
+negation of the complete assertion VC, including both generated alternatives,
+and proves the other 26 obligations. This archived replay records a negative VC proof, rather than
+an execution FAIL in the archived controller: a reachable execution counterexample certificate was still
+required. Full certificate checks take approximately 124.45 and 125.86 seconds,
+respectively; the positive end-to-end report records its separate controller
+replay. Proofs in this audit were supplied during development, so these costs
+do not measure automatic proof-agent performance. CN translations of the
+intermediate assertions remain unresolved and supply no comparative advantage
+result. Sources, diagnostics, checked proofs, and final reports are archived in
+\texttt{proof-audit/intermediate-quantifier-pair}.
+
+\paragraph{Checked pure consequences during recursive unfolding.}
+The original imported \texttt{sll\_first\_value} instance binds the head to
+$1$ and the logical tail to $[2,3]$. Its numerical pointer address remains
+unbound in a no-expand replay. The imported left-unfolding strategy can discard
+the non-null conditions of tail nodes. We certify witness-independent pure
+consequences against the original definition, retaining each predicate, and
+apply these consequences between strategy steps as further applications
+appear. Independent equation and program-association checks pass. The actual
+read, safety and return obligation pass automatically; initial nonemptiness
+remains unresolved, so the overall result is \textsf{UNKNOWN}. A companion
+expand replay with a bound head address also passes its return obligation.
+The symbolic-address controller takes 130.28 seconds including cold kernel
+replay; automatic execution takes 0.0145 seconds with 5,348 KiB peak process
+RSS. These are development measurements, not proof-agent performance results.
+The packaged regression replay passes 301 tests, with 12 environment-dependent
+skips. Library inventories identify eligible pure-fact proposals in 14 of 28
+human-library definitions and 16 of 38 LLM-library definitions; these counts
+measure preparation, not successful proofs or program coverage.
+Evidence is archived under \texttt{proof-audit/pure-fact-projection}.
+
+\paragraph{Measured benefit of optional external normalization.}
+Matched ordinary-strategy baselines for the two configurations above leave
+both initial existence and the root return obligation unresolved. Checked
+pure consequences remove the root return obligation in each configuration,
+reducing root residual obligations from two to one; split subgoals are not
+counted separately. Both overall outcomes remain \textsf{UNKNOWN}, yielding
+zero additional complete passes. These are two configurations of one program
+and one logical instance, not two independent benchmarks. Baseline executor
+times are 0.0120 and 0.0125 seconds; projection executor times are 0.0105 and
+0.0145 seconds. Single runs do not establish a speedup. Cold checked-projection
+controller costs are 129.41 and 130.28 seconds. A full-expansion attempt spends
+123.99 seconds before the computational field-interpretation gate rejects it;
+it does not execute and demonstrates no solver benefit. Accordingly, imported
+definitions remain opaque by default. The results support a scoped pure-fact
+optimization for this fixture, rather than mandatory full expansion or a
+claim of dataset-wide improvement. Pairing checks and reports are archived in
+\texttt{proof-audit/external-expansion-benefit}; historical projection reports
+lack the baseline report's full provenance block, as recorded in that audit.
+
+\paragraph{Default workflow on original external programs.}
+A fresh replay without added external definition rules covers eight instances:
+empty and three-element original insertion-sort inputs, a nonempty original
+queue-dequeue input, and a declaration-only reverse input, each in both modes.
+All four sort executions complete actual loops and helper bodies, but their
+initial existence and functional obligations remain unresolved. Both reverse
+instances produce only initial-existence tasks and report implementation
+execution and postcondition checking as not run. Both queue instances report
+an error on reading a field hidden by the opaque queue predicate; the imported
+queue strategies have no left exposure rule. Thus these runs yield six unknown
+and two error results, with no complete pass. They distinguish executed but
+unproved tests from absent bodies and inaccessible resources. ITP preparation
+also exposed a controller omission: QCP emits a spatial split child as well as
+numbered pure children. The repaired reconciler recognizes both forms only
+when the complete original parent belongs to the certificate interface.
+Prepared sort groups retain all original obligations: 5 and 18 in expand mode,
+6 and 42 in no-expand mode for empty and three-element inputs respectively.
+Preparation is not proof completion. Sources, reports, initial failed
+preparations and corrected tasks are in
+\texttt{proof-audit/default-external-workflow}.
+
+\paragraph{Broad original-corpus smoke coverage.}
+A default-strategy replay inventories all 81 sources in the original human
+and LLM demo directories and selects 327 specifications. Ninety-three require
+explicit typed bindings; the remaining specifications generate 1,404 smoke
+cases using synthetic sizes zero, one and two, both modes and symbolic
+pointers. The fixed executor reports 448 passes, 726 unknowns, 128 invalid
+inputs and 102 errors. Of the passes, 212 are execution cases and 236 are
+specification-only; the latter do not verify implementations. The unknown
+results include 61 timeouts, 55 loop-budget outcomes and 208 missing-body
+outcomes. These generated inputs have no independent outcome oracle and are
+engineering coverage, not a comparative benchmark. A generic repair prompted
+by six named-invariant routing errors lets all six affected original
+bubble-sort cases finish execution; their final outcomes remain unknown.
+The complete fixed corpus denominator, generated artifacts and subsequent
+repair replays are archived in \texttt{proof-audit/default-corpus-20261012}
+and \texttt{proof-audit/unrouted-observation} respectively.
+
+\paragraph{Eliminating spurious pointer-difference paths.}
+Matched original array-sum inputs $[1]$ and $[1,2]$ leave addresses symbolic.
+The previous executor fails both modes by retaining a guard whose numerator
+subtracts two offsets of the same base; the resulting spurious path reads
+past the array. Generic shared-base difference normalization removes this
+path. Standard \texttt{sublist} evaluation then reduces closed slices in the
+visited invariants, allowing QCP's existing sum rules to close them. Both
+inputs pass completely in both modes. No added external spatial-definition
+scope or program-specific sum rule is used. The generic regressions preserve
+unknown list spines, symbolic elements, negative-bound semantics and distinct
+pointer bases. Two additional closed arithmetic statements establish
+common-base difference and exact typed quotient cancellation. Six examples
+against QCP's actual imported slicing definition pass independent kernel
+replay. These are component proofs, not a whole-executor C refinement.
+Evidence and the matched frozen old/final reports are in
+\texttt{proof-audit/shared-base-and-sublist}. The intermediate build was not
+frozen and is not reported as a reproducible ablation arm.
+
+\paragraph{Separating inconsistent inputs from memory-read limits.}
+A restored-executor trace for an original AVL rotation shows that native rules
+already expose node fields. Its synthetic zero binding requires
+$store\_non\_empty\_tree(0)$; the original definition contains $0\ne0$.
+Two standalone Rocq lemmas refute this predicate and the complete instantiated
+rotation Require for every symbolic root, followed by independent kernel replay.
+Their assumptions are the original abstract address evaluator and functional
+extensionality. This explains that one input without establishing outcomes for
+other AVL bindings. The automatic report remains initial UNKNOWN and execution
+ERROR: attaching the standalone refutation to an immutable generated Require
+VC remains necessary. Failure before VC emission is a pipeline barrier, not
+proof that the original Require is satisfiable.

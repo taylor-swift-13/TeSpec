@@ -1,0 +1,41 @@
+\begin{tikzpicture}[x=1cm,y=1cm,>=Latex,
+ font=\small,
+ box/.style={draw=black!45,rounded corners=2pt,align=center,inner sep=5pt},
+ state/.style={box,fill=blue!4,draw=blue!55!black,text width=3.75cm,minimum height=.9cm},
+ goal/.style={box,fill=teal!5,draw=teal!60!black,text width=3.75cm,minimum height=1.0cm},
+ flow/.style={->,line width=.8pt},
+ tag/.style={font=\footnotesize,fill=white,inner sep=2pt}]
+\node[box,text width=14.9cm,fill=black!3] at (5.2,0)
+ {\textbf{Testing and verification share symbolic execution and proof logic}\\
+ $\mathsf{LeastRoot}(n,r)\equiv 0\le r\land
+ \forall k\in\mathbb Z.\;0\le k\Rightarrow(r\le k\Leftrightarrow n\le k^2)$};
+\node[anchor=west,font=\footnotesize\bfseries,text=blue!55!black] at (-2.3,-.83)
+ {SYMBOLIC EXECUTION \quad logical input $n=13$; address $p$ remains symbolic};
+\node[state] (entry) at (0,-1.6)
+ {\textbf{Initial domain}\\$p\mapsto_{\rm int}13$};
+\node[state] (loop) at (5.2,-1.6)
+ {\textbf{Symbolic loop states}\\$r=0,1,2,3,4$};
+\node[state] (ret) at (10.4,-1.6)
+ {\textbf{Symbolic write and return}\\$p\mapsto_{\rm int}4,\quad\mathit{ret}=4$};
+\draw[flow] (entry)--node[tag]{execute}(loop);
+\draw[flow] (loop)--node[tag]{execute}(ret);
+\node[goal] (exists) at (0,-3.25)
+ {\textbf{Entry obligation}\\$\exists z.\,D_\theta(z)$};
+\node[goal] (mid) at (5.2,-3.25)
+ {\textbf{Intermediate obligations}\\visited invariants;\\$\mathsf{LeastRoot}(13,4)$};
+\node[goal] (post) at (10.4,-3.25)
+ {\textbf{Return obligation}\\$\mathsf{LeastRoot}(13,4)\land$\\$p\mapsto_{\rm int}4$};
+\draw[flow] (entry)--node[tag,right]{instantiate}(exists);
+\draw[flow] (loop)--node[tag,right]{observe copy}(mid);
+\draw[flow] (ret)--node[tag,right]{observe copy}(post);
+\node[box,text width=14.9cm,fill=teal!5,draw=teal!60!black] (oracle) at (5.2,-4.95)
+ {\textbf{Reuse the verification oracle for functional correctness}\\
+ evaluate computable terms $\longrightarrow$ automatic reasoning
+ $\longrightarrow$ checked proofs for residual properties};
+\draw[flow] (exists.south)--(oracle.north -| exists.south);
+\draw[flow] (mid.south)--(oracle.north);
+\draw[flow] (post.south)--(oracle.north -| post.south);
+\node[anchor=north,align=center,font=\footnotesize,text width=15.0cm] at (5.2,-5.62)
+ {Changing the intermediate assertion to $\mathsf{LeastRoot}(13,3)$ changes its proof obligation.\\
+ The program still writes and returns 4. Quantified properties retain their original logical form.};
+\end{tikzpicture}

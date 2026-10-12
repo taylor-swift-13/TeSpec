@@ -1,0 +1,506 @@
+\section{Tool Overview and Semantic Model}
+
+A test consists of an annotated C function, its logical dependencies, a typed
+partial binding $\theta$, and an execution/checking policy. The binding may fix
+scalar arguments, logical data, lengths, or constructor terms. Pointer addresses
+can remain symbolic. The spatial precondition describes memory through the
+ordinary QCP assertions; the controller does not construct a native heap.
+
+Let $R$ and $E$ be the entry and return assertions. An initial state includes
+the C environment and heap, and an interpretation of unbound logical variables.
+The instance domain is
+\[
+  D_\theta = \{\sigma \mid \sigma \models R[\theta]\}.
+\]
+The entry check asks whether $D_\theta$ is nonempty. Execution checking is
+universal over this domain. A witness used to establish nonemptiness does not
+silently replace the instance by that witness. For example, fixing a list
+length to two need not fix node addresses or every payload value.
+
+The implementation records entry satisfiability, execution completion, safety,
+return obligations and checks at intermediate boundaries separately. A completed
+execution test passes only if the entry is satisfiable and all selected
+obligations close. An unsatisfiable entry fails the entry check. A remaining VC,
+execution budget exhaustion, or unsupported call leaves an inconclusive result.
+A failed attempt to prove a VC establishes neither its negation nor a reachable
+counterexample. Proof-certified results additionally require checked evidence
+covering the relevant obligations and an explicit account of trusted assumptions.
+
+Comparative evaluations must freeze the input domain independently of the
+candidate under evaluation. Changing a candidate's Require can change
+$D_\theta$ even when $\theta$ is unchanged. Accordingly, the experimental
+protocol separates contract-driven interactive tests from matched, independently
+specified input domains and reports entry rejection separately from functional
+violations.
+
+\section{Approach}
+
+\subsection{Typed instantiation and entry satisfiability}
+
+The analyzer identifies C parameters, typed \texttt{With} variables and imported
+logical dependencies. Bindings denote a capture-avoiding substitution on logical
+variable identities. Each call and quantified definition is freshened before
+substitution. Logical inputs are immutable entry values even when the program
+subsequently changes its parameters or reachable memory.
+
+The instantiated Require is simplified before checking satisfiability.
+The checker detects binding conflicts, impossible value ranges and overlapping
+separately owned memory. A positive SMT result is sufficient only for a
+faithfully encoded fragment; an abstraction containing necessary constraints
+can establish inconsistency but cannot alone establish spatial satisfiability.
+Unresolved spatial and logical requirements produce an existential Rocq goal
+with the relevant definitions and layout information. Arbitrary spatial
+predicates are never accepted merely because disjoint addresses seem available.
+
+\subsection{One evolving logical state}
+
+The execution configuration contains the current control location, QCP assertion
+$P$, call stack, accumulated obligations and remaining budget. QCP evaluates
+program expressions, reads and writes memory, and produces successor assertions.
+Simplification runs on these assertions throughout execution. A determined
+condition selects its feasible successor; a symbolic condition retains every
+successor whose infeasibility has not been established. No external numerical
+address or native execution is needed to choose an owned symbolic cell.
+
+\input{sections/normalization-algorithm}
+
+The normalizer evaluates available closed expressions and unfolds definitions
+when their arguments and guards permit it. The current implementation expands
+frontend predicate definitions and supported executable logical operations,
+and uses supplied entailment strategies. Staging an imported Rocq definition
+for proof does not itself make that definition executable by the normalizer.
+Other terms remain logical terms; an opaque heap predicate can therefore
+prevent a required memory read even when its definition is available to ITP.
+External definition expansion is optional and disabled by default. Ordinary
+runs retain imported predicates and use QCP's supplied strategies. Availability
+of a definition alone is not evidence of solver benefit; the controlled
+comparison below separates predicate-preserving pure consequences from full
+spatial expansion and counts complete test outcomes as well as residual VCs.
+The candidate executor additionally accepts a dedicated scope of checked
+definition equations. Its controller freezes the module identity, notation
+environment and generated rules, then compiles the equations, audits assumptions
+and replays them in the Rocq kernel. Activation pins a dedicated file stem and
+the certified left-rule IDs; unrelated rules in the same scope are excluded,
+and duplicate file/ID identities are rejected. The executor uses QCP's matcher to apply
+only left-side unfolding actions at state updates and precondition checking;
+goal-side model proposals remain proof obligations. The explicit controller
+checks both the equations and their association with a selected program instance.
+A parse-only preflight exports the actual layout and Rocq import context.
+The association certificate captures the program's interpretation of each
+referenced predicate and constructor before importing the equation context,
+then establishes identity with the corresponding frozen equation bindings.
+The generated equation context imports the selected definition's declared
+dependencies before the definition module. The equation's left-hand side,
+recursive occurrences and model-choice statements use the selected predicate's
+fully qualified name. Writing $f=M.p$ for that definition, $b_p$ for its frozen
+equation binding and $c_p$ for the program binding captured before imports,
+activation requires both $c_p=b_p$ and $b_p=M.p$. The second obligation anchors
+the selected definition even when both unqualified contexts resolve $p$ to the
+same replacement. Dependency visibility therefore does not establish identity;
+the association proof does.
+Its inventory includes right-hand-side predicate applications and the empty
+heap. This prevents a later import from certifying a different constructor or
+callee under the same name. Association also checks the selected memory-rule
+module and the elaborated interpretations of the formula's notation: empty
+heap, pure embedding, conjunction, separating conjunction, typed existential
+quantifiers and each used scalar-storage form. For example, both contexts
+capture the function $\lambda(a,v).\;a\mathbin{\#}\mathrm{Int}\mapsto v$
+before importing the equation bindings and prove equality of those functions.
+This detects a changed storage notation even when the named predicate itself
+is unchanged. Certificates lacking this interpretation coverage cannot
+authorize execution. Computational field rules require the selected
+field notation and layout modules to match the generated target interpretation.
+Constants lowered to executor integers have the same integer meaning on the
+equation's right-hand side; the original definition must prove that equation.
+The generator also accepts ordinary Assertion definitions. A definition
+without a constructor match produces one unconditional unfolding clause;
+a matching definition uses the same branch representation as a Fixpoint.
+Explicit existential binders retain their types and order. Scalar, list and
+registered nominal witnesses become fresh logical variables of the corresponding
+executor type, while the Rocq equation retains the original typed quantifiers.
+Unfolding exposes resources without selecting witness values. Constructor
+selection proposals are generated only for matching clauses. Unsupported
+types and terms remain explicit normalization barriers.
+Nested list patterns are translated as typed constructor trees. Simple local
+type aliases are resolved with cycle and ambiguity checks; each nested
+constructor must have a unique declared signature with the expected result
+type and arity. Binder leaves retain their inferred argument types, while
+constructor and nominal-type identities enter the association inventory.
+The same tree supplies the strategy pattern, its Rocq equation and any
+goal-side model proposal. Implicit existential binders are admitted when an
+address or scalar-storage occurrence determines a scalar witness, or a unique
+explicitly typed definition determines the type of a direct argument; their
+explicitly typed equations still require independent proof. Known aggregate
+values cannot be lowered to scalar storage.
+Pure logical applications remain opaque unless an admitted computation rule
+reduces them. Definitions inside submodules retain their qualified identities
+in both the executor strategies and the proof equations.
+
+Witness existence is part of the assertion's semantics. For a witness absent
+from the body, the valid equivalence is
+\[
+  (\exists w:A.\,P(h))\ \Longleftrightarrow\
+  (\mathit{inhabited}(A)\land P(h)).
+\]
+The executor may erase an unused integer or list witness because zero and the
+empty list supply inhabitants. A registered nominal type retains its witness
+and nonemptiness obligation. Before frontend registration, typed binders are
+made syntactically live with the equivalent form
+$\exists w:A.\,(w=w\land P)$; this also preserves empty-type quantifiers.
+An unresolved inhabitance obligation remains a VC for checked proof.
+Nested structure and union fields use the exported target layout. For a root
+type $T_0$, symbolic base $a_0=p$, and field sequence $f_1,\ldots,f_k$, the
+generator requires an admitted lookup
+$(\delta_i,T_i)=\mathit{lookup}(T_{i-1},f_i)$ and constructs
+$a_i=a_{i-1}+\delta_i$. Each intermediate type must support the next field
+selection; a pointer introduces no implicit dereference. The emitted equation
+retains this addition order and checks the original field assertion against
+the corresponding scalar resource. The layout bytes and digest are frozen,
+and association checks them against the actual execution target. The shared
+executor normalizer uses the same admitted field metadata to normalize memory
+accesses and owned cells. Integer storage retains its width and signedness.
+The existing mechanized path-composition and interval lemmas describe this
+address arithmetic; the generator and its connection to frontend metadata
+remain part of the implementation trust boundary.
+The controller pins source, header, strategy and logical dependency inputs,
+executes the selected instance, and compares the resulting layout, import
+context and dependency inventory with the preflight. Equation and association
+proofs retain separate scopes from the execution VCs. This interface currently
+handles one selected instance per invocation; batch activation and certificate
+caching remain subsequent integration work.
+Normalization must preserve the joint interpretation of $P$ and every term
+referenced by the continuation, including return values and call frames.
+Assertion equivalence alone is insufficient: eliminating $r$ from
+$\exists r.\ r=2 \land \mathit{cell}(p,1)$ while an external return term still
+refers to $r$ loses the return constraint. The implementation protects variables
+existing before predicate expansion and only eliminates suitable fresh
+definition-local witnesses. C arithmetic still emits the ordinary safety
+obligations for overflow, division, shifts and memory operations.
+
+\paragraph{Recovering logical models at a checking boundary.}
+Expanding a heap predicate can expose the fields needed for execution while
+removing the syntactic predicate application used to infer a callee's logical
+arguments. Our experimental rule generator reconstructs such arguments by
+proposing constructor witnesses on the goal side. For a predicate $H$, a
+constructor $C$, and fresh constructor arguments $\bar u$, the refinement is
+\[
+\frac{P \vdash \exists\bar u.\ t=C(\bar u) \land H(p,C(\bar u))}
+     {P \vdash H(p,t)}.
+\]
+The constructor equality and every resource required by its defining clause
+remain obligations. Pure guards guide witness selection; they do not become
+new assumptions. Literal guard matching and matching an existing symbolic
+equality are both needed because simplification can remove a tautological
+guard. Generated Rocq lemmas check constructor substitution and branch
+reconstruction. This prototype operates on the boundary's checking copy;
+the execution assertion continues independently. Search may remain incomplete,
+and the strategy-syntax translation remains trusted.
+
+\paragraph{Proof-producing evaluation of ground integer terms.}
+An experimental evaluation service uses Rocq's evaluator on closed logical
+terms in their imported definition environment. A computed integer $n$ for
+an expression $e$ is a candidate: the service separately generates and checks
+the equality $e=n$. An opaque term or a failed check produces no equality.
+These equalities can rewrite residual VCs while preserving the original
+definitions. The prototype accepts integer-valued applications and arithmetic;
+it is not yet connected to every expression encountered during execution.
+Evaluation and proof compilation record wall time, CPU time, and peak process
+memory separately from the execution run.
+
+\subsection{State-preserving checking boundaries}
+
+For an annotation $A$, boundary processing has the form
+\[
+  (P,\Omega) \longmapsto
+  \bigl(P,\Omega \cup \{\mathit{copy}(P)\vdash\mathit{resolve}(A)\}\bigr).
+\]
+The goal uses the current program-variable environment and the call's logical
+entry bindings. The original $P$ continues unchanged. This rule applies to
+supported assertions, visited invariant locations and contract boundaries.
+Checking a visited invariant establishes its property at those instance states;
+it does not by itself establish an inductive invariant for arbitrary inputs.
+
+\paragraph{Named observation alternatives.}
+Proof-only branch-routing commands do not change the executing state. If a
+checking boundary has alternatives $A_1,\ldots,A_k$ but its source has no
+routing label, its target is their complete disjunction:
+$P\vdash\bigvee_{i=1}^{k}\mathit{resolve}(A_i)$, with the observation frame
+computed for each alternative. Selecting only the first alternative is not
+this query. Existing explicit routing labels retain QCP's selected-case
+behavior. The fallback applies on private checking copies; neither a selected
+case nor a disjunct becomes an assumption of the continuation.
+
+\paragraph{Local storage in auxiliary observations.}
+C variable storage is represented by owned cells in the symbolic assertion.
+An auxiliary heap assertion need not repeat every live scalar stack slot.
+For a goal $A$, the observation interface identifies unmentioned local scalar
+cells through the current program-id/address map and copies their resources
+into a frame $F_{P,A}$ on the checking goal. The emitted obligation is
+$P\vdash\mathit{resolve}(A)*F_{P,A}$; the continuation remains $P$.
+A cell whose address is already described in the goal is not framed again.
+This interface retains actual values and types, admits no arbitrary user-heap
+frame, and leaves aggregate or opaque local storage as an explicit coverage
+barrier. Instantiated call-precondition queries also use the shared expression
+and address normalizer on private query copies before resource matching.
+
+Goal-local existential values are resolved before frame selection. Suppose the
+goal contains $\exists z.\,\mathit{cell}_t(a,z)*B(z)$ and the current assertion
+owns $\mathit{cell}_t(a,v)$ at a mapped local address. The checker chooses $v$
+as the goal witness, yielding $\mathit{cell}_t(a,v)*B(v)$ on the query copy.
+It requires matching addresses and types, a bare existential variable and no
+self-reference in $v$. Every substitution removes one goal existential, so
+this witness-selection pass terminates. It then normalizes the goal and
+selects its frame. For example, the goal generated by
+\texttt{data\_at(q,int,1)} reads a local pointer slot through an existential
+value. If the current slot holds $\&i$, choosing that value exposes the
+already-described $i$ cell before framing. Each execution branch uses its own
+current state; neither entry values nor another branch's witnesses are assumed.
+
+The mechanized observation model gives this interface an exact interpretation.
+Let $m$ identify the admitted frame addresses and decompose a heap $h$ into
+$h_m$ and $h_{\neg m}$. For an extensional assertion $A$,
+\[
+ (A*\mathit{exact}(h_m))(h)\ \Longleftrightarrow\ A(h_{\neg m}).
+\]
+The proof establishes disjoint decomposition and uniqueness of the visible
+component, and shows that both stack and visible cells are retained. An extra
+visible cell prevents an empty-heap observation from succeeding. Thus local
+framing does not make separation logic affine. The abstract mask and typed
+cell interpretation remain parameters; linking them to C frontend metadata
+is part of the implementation-refinement obligation.
+For existential observations, the address mask depends on the witness:
+\[
+ \exists w.\,(A_w*\mathit{exact}(h_{m_w}))(h)
+ \ \Longleftrightarrow\ \exists w.\,A_w(h_{\neg m_w}).
+\]
+The mechanization proves this equivalence and the sufficiency of a checked
+chosen witness. Failure with that witness leaves an obligation; it does not
+refute all possible witnesses.
+
+The compatibility flags \texttt{expand} and \texttt{no-expand} both execute
+available bodies and loops. The former ignores intermediate annotations by
+default, while the latter checks them on state copies. Both always check entry
+satisfiability, safety and the target's final Ensure. The execution semantics
+therefore remain the same across the two policies.
+
+\subsection{Function calls and loops}
+
+Each call first evaluates its actual arguments using QCP, retaining each
+resulting path and its value tuple. The executor allocates fresh parameter and
+local storage for the invocation and saves the caller's environment. Passing a
+pointer copies its value into a fresh parameter slot; it preserves the identity
+of the pointed-to storage and hence aliasing and shared writes. Structure-value
+arguments use QCP's typed record-copy rules. The callee's real body is executed
+with its own control-flow state, including recursive invocations.
+
+When boundary checking is enabled, QCP's usual contract matching runs on a
+state copy to produce Require and frame obligations and bind the callee's
+logical inputs. Those entry bindings also determine its return checks. Each
+actual return preserves its value, shared heap updates and feasible path.
+After typed local cleanup and caller-environment restoration, the executor
+checks the instantiated Ensure with its frame and actual return-value relation,
+then resumes the caller from the actual returned state. The Ensure never
+supplies the caller's execution state. Failed contract binding is reported
+explicitly; some current failures still prevent execution and remain coverage
+gaps.
+
+We mechanize the frame discipline separately in a scalar-cell reference model.
+For already evaluated arguments $v_0,\ldots,v_{m-1}$ and fresh logical identity
+$b$, entry installs $H(b+i)=v_i$, maps parameter $i$ to $b+i$, and pushes
+$(b,\rho_{\mathrm{caller}})$. Pointer values are copied unchanged. Local
+allocation advances the fresh-identity counter. On return, the model retains
+the returned value and heap writes, retires callee cells in the allocated
+interval, restores $\rho_{\mathrm{caller}}$, and pops the frame. The counter
+remains monotone. Thirteen closed Rocq theorems establish argument copying,
+alias preservation, shared-write preservation, environment restoration and
+local-storage retirement, including nested calls and escaped local addresses.
+These are reference semantics for scalar stack cells; correspondence with C
+argument evaluation, aggregate layout and dynamic allocation is a separate
+implementation obligation.
+
+Loops repeatedly evaluate their conditions and execute their bodies, respecting
+\texttt{break}, \texttt{continue} and early return. Each selected invariant
+boundary observes the current iteration state. Budget exhaustion records an
+incomplete execution and cannot produce a completed-test success. Execution
+currently requires available callee bodies; a declaration-only target can
+instead perform an explicitly labelled Require-only test.
+
+\subsection{Proof completion and evidence}
+
+The automatic controller produces a run report and immutable VC/dependency
+artifacts. QCP's entailment strategies and SMT solver attempt automatic
+discharge. Residual obligations are exposed as Rocq statements, with a
+separate optional agent workflow for proof construction. A fixed external
+checker verifies the submitted proof files against the frozen goals and records
+time, memory and available agent token usage.
+
+For the computational field-address candidate, the executor also exports a
+target-layout record containing address width, byte order, memory rules,
+aggregate identities, and each field's offset, size, alignment and type.
+Aggregate references use identities, so recursive pointer types have finite
+descriptions. The VC printer and interval checker share the same field-layout
+admission test. The layout record travels with the original VC manifest and
+is included in the certificate manifest held by the controller. This binds
+proof artifacts to the reported interpretation; it does not establish that
+legacy imported predicates use that interpretation. Such predicates require
+consistent re-elaboration of their address and memory definitions.
+
+The candidate interpretation uses a partial evaluator
+$\mathit{addrEval}_{\Lambda}(e)$, where $\Lambda$ resolves type identities,
+aggregate sizes and field descriptors. Field selection adds the declared byte
+offset; array indexing and pointer arithmetic scale by the resolved element
+size. The result contains both the address expression and its type, allowing
+nested selections to compose. Unknown fields, ambiguous names and unsupported
+address forms have no result. A generated Rocq notation applies this evaluator
+while elaborating predicate definitions, retaining symbolic bases and indices
+in the resulting arithmetic expression. Thus the predicate's own field
+assertions use the same layout as the generated VC. Re-elaboration selects
+this explicit interpretation; already compiled predicates retain their
+original interpretation. Successful address evaluation establishes neither
+ownership nor bounds, which remain separate proof obligations.
+
+Definition lowering uses the same admitted address-term translation for storage
+atoms and spatial-predicate arguments. Parentheses delimit application arguments,
+so a recursive call carrying a field address retains that term as a single
+argument. Known nested paths compose layout offsets; an unknown layout or
+implicit pointer traversal leaves the definition unsupported. The controller
+checks branch equations separately from program association: a valid equation
+over an abstract field interpretation does not authorize a computed address in
+execution.
+
+Typed logical terms retain their function identities through lowering. Standard
+list append and reverse use polymorphic list interfaces; their generated
+certificates also require equality with the standard functions and list
+constructors. Program association captures those names before importing the
+equation context, rejecting same-named replacements. After ordinary evaluation,
+the shared simplifier decides equality of finite integer lists whose type,
+constructor shape and elements are known. Unknown elements or tails and exhausted
+comparison budgets retain the formula. Five closed theorems establish the
+denotation-level comparison contract and preservation of owned heap observations;
+closure checks and integer decoding remain implementation-refinement obligations.
+
+Run-level proof completion freezes the automatic report and links each proof
+bundle to its original case and VC manifest. The external controller replays
+the complete original VC interface, including initial satisfiability, before
+updating that case's verdict. Completed executions with accepted certificates
+can move from unresolved to accepted; execution limits and errors retain their
+original verdicts. A Require-only target retains its specification-only scope,
+and ignored annotations remain unchecked. Runs without eligible proof tasks
+skip proof construction and replay.
+
+Evidence is tracked by scope. Automatically accepted execution results rely on
+the executor and solver trusted base; kernel-checked residual proofs certify
+their stated obligations. A whole-instance certificate additionally needs
+complete VC coverage and a transitive assumption audit. Existing automatic
+proof stubs cannot be counted as checked proofs. This distinction is part of
+the experimental data model and proof-workflow evaluation.
+
+The assumption audit is operationally necessary. In the two QCP logical
+runtime versions examined, an inverse-field-address axiom equates expression
+syntax trees whenever their field addresses coincide. Combined with existing
+evaluation and congruence axioms, it permits a proof of false by equating two
+distinct syntax constructors. Our adversarial regression compiles this
+candidate and then rejects it through the fixed transitive-assumption policy
+in both runtimes. Thus, compilation success alone cannot serve as the test
+oracle; imported domain axioms must satisfy the certificate admission policy.
+
+\subsection{VC states and test verdicts}
+
+Figure~\ref{fig:result-flow} connects the precondition, intermediate
+annotation, and postcondition of one program to their generated obligations.
+The precondition asks whether the input domain is inhabited; the remaining
+VCs ask whether the selected property holds on the corresponding path state.
+Each obligation first goes to ATP, including SMT. A decided result is recorded
+immediately. An unresolved obligation goes to the agent and ITP: the agent
+assesses the proposition, chooses a proof direction, and submits a proof of
+$\phi_i$ or $\neg\phi_i$. ITP checks that proof. If the first direction cannot
+be established, the other direction remains available; if neither direction
+is established, the result is UNKNOWN.
+
+\begin{figure*}[t]
+  \centering
+  \resizebox{\textwidth}{!}{\input{figures/result-flow-content}}
+  \caption{From program positions to a test result. The precondition generates
+  a satisfiability query; annotations and the postcondition generate validity
+  queries. Every query goes first to ATP and then, if unresolved, to Agent+ITP.
+  Checked positive and negative proofs determine the corresponding true and
+  false results; unsuccessful attempts in both directions leave UNKNOWN.
+  Three-valued conjunction aggregates the individual results.}
+  \label{fig:result-flow}
+\end{figure*}
+
+Each selected obligation has state \valid{}, \invalid{}, or \unknown{}.
+The SMT interface can check $P\land\neg A$ for $P\vdash A$ and provide a
+counterexample candidate. Path infeasibility is a separate satisfiability
+query on $P$; its UNSAT result prunes the path. A candidate only establishes
+\invalid{} after the negative obligation and reachable path witness are
+admitted. This separation prevents an inconsistent antecedent from being
+reported as an invalid VC.
+
+The implementation checks violations against a private copy of the original
+path assertion, before entailment strategies transform it. Its admitted
+satisfiability procedure retains pure constraints and heap ownership. It can
+establish a failed pure condition or a conflicting value in an owned scalar
+cell. Disjunctive observations are checked jointly. Conditions depending on
+unresolved goal-local witnesses cannot justify rejection of all witnesses;
+unsupported formulas remain \unknown{}. A positive ITP proof changes a VC to
+\valid{}. For residual VCs, the agent may try both $\mathrm{VC}$ and
+$\neg\mathrm{VC}$, and ITP checks either submitted proof. Failed attempts in
+both directions leave the VC unresolved.
+
+Entry results are SAT, UNSAT, or UNKNOWN. To aggregate all obligations,
+SAT and VALID map to $\mathsf T$, UNSAT and INVALID to $\mathsf F$, and UNKNOWN
+to $\mathsf U$. Three-valued conjunction yields FAIL if any component is
+$\mathsf F$, PASS if every component is $\mathsf T$, and UNKNOWN otherwise.
+An incomplete execution contributes $\mathsf U$. An UNSAT entry stops execution
+and reports FAIL with an unsatisfiable-entry reason. The executor continues
+from the original state after an observation, so a failing annotation does
+not replace the state used by later checks.
+
+\paragraph{Regression acceptance.}
+End-to-end regression checks compare the final test verdict with the case's
+expected behavior. Positive cases require PASS. For negative cases, the weak
+criterion accepts FAIL or UNKNOWN; the strong criterion requires FAIL.
+A negative case returning PASS fails both criteria. Reports record the chosen
+criterion and retain the original execution verdict, so an UNKNOWN result
+accepted under the weak criterion remains distinguishable from a confirmed
+negative result.
+
+Certificate replay records proof polarity separately from VC state. A checked
+negative proof of the original entry-existence obligation establishes UNSAT.
+A checked negative proof of a selected path VC establishes \invalid{} when
+the path is admitted as reachable. Archived negative proofs without that
+reachability evidence remain proof evidence rather than an execution \fail{}.
+
+\paragraph{Root instances and reusable contracts.}
+The substitution $\theta$ specializes the root precondition, not the reusable
+contract of every invocation of the same function. At a recursive call, actual
+arguments and the current heap determine a fresh contract instance. Reusing
+root bindings there would, for example, incorrectly require a decreasing
+counter to retain its initial value. The frontend preserves the original
+contracts and emits a fresh named root specification selected by QCP's entry
+option. Its position preserves QCP's default call-contract selection, and
+explicitly named calls continue to reference the original names. C bodies and
+call expressions are unchanged. Declaration-only checks retain a single
+initial-domain obligation.
+
+
+\paragraph{External definition closure.}
+Certificate preparation stages locally resolved logical dependencies in
+import order, including \texttt{Require Import}, \texttt{Require Export} and
+plain \texttt{Require}. Nested comments and string literals are masked before
+collecting imports. Source and dependency hashes are frozen before proof
+production; successful compilation and independent replay remain necessary
+for accepting the resulting closure.
+
+
+\paragraph{Explicit library interpretation.}
+A preparation utility accepts target-layout metadata and selected logical
+source modules. It preserves their names, declarations, and proofs, inserting
+the computational address notation at a unique existing scope boundary.
+Comments and strings are excluded when locating that boundary. The bundle
+records original and transformed source hashes and starts in an unchecked
+state. Compilation and the normal certificate controller provide the subsequent
+acceptance gates. Selecting modules for this interpretation is explicit;
+preparation does not certify equivalence to previously compiled abstract
+address definitions or infer a reinterpretation of all imported dependencies.

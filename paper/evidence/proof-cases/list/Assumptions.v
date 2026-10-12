@@ -1,0 +1,21 @@
+Require Import Coverage.
+Set Printing Width 1000000.
+Print Assumptions Coverage.Checked.proof_of_sample_safety_wit_1.
+Print Assumptions Coverage.Checked.proof_of_sample_safety_wit_2.
+Print Assumptions Coverage.Checked.proof_of_sample_safety_wit_3.
+Print Assumptions Coverage.Checked.proof_of_sample_safety_wit_4.
+Print Assumptions Coverage.Checked.proof_of_sample_safety_wit_5.
+Print Assumptions Coverage.Checked.proof_of_sample_safety_wit_6.
+Print Assumptions Coverage.Checked.proof_of_sample_safety_wit_7.
+Print Assumptions Coverage.Checked.proof_of_sample_safety_wit_8.
+Print Assumptions Coverage.Checked.proof_of_sample_safety_wit_9.
+Print Assumptions Coverage.Checked.proof_of_sample_safety_wit_10.
+Print Assumptions Coverage.Checked.proof_of_sample_entail_wit_1.
+Print Assumptions Coverage.Checked.proof_of_sample_entail_wit_2.
+Print Assumptions Coverage.Checked.proof_of_sample_return_wit_1.
+Print Assumptions Coverage.Checked.proof_of_sample_partial_solve_wit_1.
+Print Assumptions Coverage.Checked.proof_of_sample_partial_solve_wit_2_pure.
+Print Assumptions Coverage.Checked.proof_of_sample_partial_solve_wit_2.
+Print Assumptions Coverage.Checked.proof_of_sample_partial_solve_wit_3_pure.
+Print Assumptions Coverage.Checked.proof_of_sample_partial_solve_wit_3.
+Print Assumptions Coverage.Checked.proof_of_sample_precondition_wit_1.
