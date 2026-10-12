@@ -1,0 +1,136 @@
+{
+  "id": "cn_swap",
+  "origin_family": "cn-tutorial",
+  "category": "disjoint ownership",
+  "difficulty": "easy",
+  "function": "swap",
+  "sources": [
+    {
+      "path": "sources/cn-tutorial/src/exercises/swap.c",
+      "sha256": "015cbb16cd14e6cb90cc42686df84ba04f84d8ccb4bc0784a481628dcf273a43"
+    }
+  ],
+  "adaptations": [],
+  "variants": [
+    "reference",
+    "wrong_post"
+  ],
+  "mutations": {
+    "cn": [
+      "P_post == Q && Q_post == P",
+      "P_post == P && Q_post == Q"
+    ],
+    "qcp": [
+      "Ensure data_at(p, unsigned int, Q) * data_at(q, unsigned int, P)",
+      "Ensure data_at(p, unsigned int, P) * data_at(q, unsigned int, Q)"
+    ]
+  },
+  "inputs": [
+    {
+      "id": "input_0",
+      "qcp_bind": {
+        "id": "input_0",
+        "args": {},
+        "values": {
+          "P": 0,
+          "Q": 1
+        }
+      },
+      "native_setup": "unsigned int a=0U,b=1U; swap(&a,&b);",
+      "native_check": "a == 1U && b == 0U",
+      "expected": {
+        "a": 1,
+        "b": 0
+      },
+      "logical_input": {
+        "args": {},
+        "values": {
+          "P": 0,
+          "Q": 1
+        }
+      },
+      "wrong_post_violated": true
+    },
+    {
+      "id": "input_1",
+      "qcp_bind": {
+        "id": "input_1",
+        "args": {},
+        "values": {
+          "P": 3,
+          "Q": 5
+        }
+      },
+      "native_setup": "unsigned int a=3U,b=5U; swap(&a,&b);",
+      "native_check": "a == 5U && b == 3U",
+      "expected": {
+        "a": 5,
+        "b": 3
+      },
+      "logical_input": {
+        "args": {},
+        "values": {
+          "P": 3,
+          "Q": 5
+        }
+      },
+      "wrong_post_violated": true
+    },
+    {
+      "id": "input_2",
+      "qcp_bind": {
+        "id": "input_2",
+        "args": {},
+        "values": {
+          "P": 9,
+          "Q": 2
+        }
+      },
+      "native_setup": "unsigned int a=9U,b=2U; swap(&a,&b);",
+      "native_check": "a == 2U && b == 9U",
+      "expected": {
+        "a": 2,
+        "b": 9
+      },
+      "logical_input": {
+        "args": {},
+        "values": {
+          "P": 9,
+          "Q": 2
+        }
+      },
+      "wrong_post_violated": true
+    },
+    {
+      "id": "input_3",
+      "qcp_bind": {
+        "id": "input_3",
+        "args": {},
+        "values": {
+          "P": 4294967295,
+          "Q": 0
+        }
+      },
+      "native_setup": "unsigned int a=4294967295U,b=0U; swap(&a,&b);",
+      "native_check": "a == 0U && b == 4294967295U",
+      "expected": {
+        "a": 0,
+        "b": 4294967295
+      },
+      "logical_input": {
+        "args": {},
+        "values": {
+          "P": 4294967295,
+          "Q": 0
+        }
+      },
+      "wrong_post_violated": true
+    }
+  ],
+  "qcp_include_dirs": [
+    "runtime/qcip/QCP_examples/QCP_demos_human"
+  ],
+  "spec_relation": "manual corresponding translation; no machine-checked CN/QCP equivalence claim",
+  "harness_policy": "Input construction and target call only in tool runs; native oracle checks run separately.",
+  "role": "common-set"
+}

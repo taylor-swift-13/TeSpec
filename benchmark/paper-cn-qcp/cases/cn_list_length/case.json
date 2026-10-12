@@ -1,0 +1,181 @@
+{
+  "id": "cn_list_length",
+  "origin_family": "cn-tutorial",
+  "category": "recursive predicate and recursion",
+  "difficulty": "medium",
+  "function": "length",
+  "sources": [
+    {
+      "path": "sources/cn-tutorial/src/exercises/list/length.c",
+      "sha256": "dda36b11ddfe90f23bd4ce25ebdd53638ad3400d1cde2b3845c63feb30428729"
+    },
+    {
+      "path": "sources/cn-tutorial/src/exercises/list/c_types.h",
+      "sha256": "9209033627287a34c560e68c35d4f038af195d4814eb4b1605c23a8d5fe4bff6"
+    },
+    {
+      "path": "sources/cn-tutorial/src/exercises/list/cn_types.h",
+      "sha256": "298c263ae4bfc6201e64528fb8270787f6dae1f2368f3a94c3674ed649f0a97e"
+    }
+  ],
+  "adaptations": [
+    "Rename sllist/head/tail to list/data/next in both versions to share the QCP list library; preserve layout and algorithm.",
+    "Flatten CN headers and give the corresponding predicate the name Nodes."
+  ],
+  "variants": [
+    "reference",
+    "wrong_post"
+  ],
+  "mutations": {
+    "cn": [
+      "return == Length(xs)",
+      "return == Length(xs) + 1"
+    ],
+    "qcp": [
+      "__return == Zlength(xs)",
+      "__return == Zlength(xs) + 1"
+    ]
+  },
+  "inputs": [
+    {
+      "id": "input_0",
+      "qcp_bind": {
+        "id": "input_0",
+        "args": {
+          "l": 0
+        },
+        "values": {
+          "xs": []
+        }
+      },
+      "native_setup": " unsigned int r=length(0);",
+      "native_check": "r == 0U",
+      "expected": {
+        "return": 0
+      },
+      "logical_input": {
+        "args": {
+          "l": 0
+        },
+        "values": {
+          "xs": []
+        }
+      },
+      "wrong_post_violated": true
+    },
+    {
+      "id": "input_1",
+      "qcp_bind": {
+        "id": "input_1",
+        "args": {
+          "l": 4096
+        },
+        "values": {
+          "xs": [
+            7
+          ]
+        }
+      },
+      "native_setup": "struct list a0 = {7,0}; unsigned int r=length(&a0);",
+      "native_check": "r == 1U",
+      "expected": {
+        "return": 1
+      },
+      "logical_input": {
+        "args": {
+          "l": 4096
+        },
+        "values": {
+          "xs": [
+            7
+          ]
+        }
+      },
+      "wrong_post_violated": true
+    },
+    {
+      "id": "input_2",
+      "qcp_bind": {
+        "id": "input_2",
+        "args": {
+          "l": 4096
+        },
+        "values": {
+          "xs": [
+            4,
+            -1,
+            8
+          ]
+        }
+      },
+      "native_setup": "struct list a2 = {8,0}; struct list a1 = {-1,&a2}; struct list a0 = {4,&a1}; unsigned int r=length(&a0);",
+      "native_check": "r == 3U",
+      "expected": {
+        "return": 3
+      },
+      "logical_input": {
+        "args": {
+          "l": 4096
+        },
+        "values": {
+          "xs": [
+            4,
+            -1,
+            8
+          ]
+        }
+      },
+      "wrong_post_violated": true
+    },
+    {
+      "id": "input_3",
+      "qcp_bind": {
+        "id": "input_3",
+        "args": {
+          "l": 4096
+        },
+        "values": {
+          "xs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ]
+        }
+      },
+      "native_setup": "struct list a7 = {8,0}; struct list a6 = {7,&a7}; struct list a5 = {6,&a6}; struct list a4 = {5,&a5}; struct list a3 = {4,&a4}; struct list a2 = {3,&a3}; struct list a1 = {2,&a2}; struct list a0 = {1,&a1}; unsigned int r=length(&a0);",
+      "native_check": "r == 8U",
+      "expected": {
+        "return": 8
+      },
+      "logical_input": {
+        "args": {
+          "l": 4096
+        },
+        "values": {
+          "xs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ]
+        }
+      },
+      "wrong_post_violated": true
+    }
+  ],
+  "qcp_include_dirs": [
+    "runtime/qcip/QCP_examples/QCP_demos_human"
+  ],
+  "spec_relation": "manual corresponding translation; no machine-checked CN/QCP equivalence claim",
+  "harness_policy": "Input construction and target call only in tool runs; native oracle checks run separately.",
+  "role": "common-set"
+}

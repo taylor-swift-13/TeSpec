@@ -12,12 +12,12 @@ Use either a binds array:
 [
   {
     "id": "empty",
-    "args": {"p": 4096, "n": 0},
+    "args": {"p": {"symbolic": true}, "n": 0},
     "values": {"N": 0, "xs": []}
   },
   {
     "id": "some",
-    "args": {"p": 8192, "n": 3},
+    "args": {"n": 3},
     "types": {"A": "option Z"},
     "values": {
       "n": 3,
@@ -30,12 +30,13 @@ Use either a binds array:
 or an object containing that array:
 
 ```json
-{"binds": [{"id": "case_001", "args": {"p": 4096}, "values": {"v": 7}}]}
+{"binds": [{"id": "case_001", "args": {}, "values": {"v": 7}}]}
 ```
 
-IDs must match `[A-Za-z_][A-Za-z0-9_]*`. Each `args` object must contain all
-and only names in `argument_bindings`. Each `values` object must contain all
-and only value-level variables whose analysis entry has `"required": true`.
+IDs must match `[A-Za-z_][A-Za-z0-9_]*`. An `args` object may use only names in
+`argument_bindings`; include required non-pointer arguments. Pointer arguments
+may be omitted or supplied as `{"symbolic": true}`. A `values` object contains
+declared value-level variables, including every required entry.
 Value variables marked `"binding_mode": "derived"` may be omitted, or supplied
 explicitly to fix control flow during semi-concrete execution. A case may include a
 `types` object containing only type-level `With` variables reported by
@@ -52,9 +53,9 @@ be typed unambiguously.
 - Use `{"symbolic": true}` for a large logical heap value that need not be
   inspected element-by-element. Its original `Require` constraints and
   separation predicate remain in force, but no binding equality is injected.
-  Bind every scalar that controls a branch, loop bound, address, or call
-  argument concretely; this is a semi-concrete test, not a single fully
-  concrete heap.
+  Bind logical contents and sizes needed to evaluate the intended traversal.
+  Symbolic branches may represent several feasible executions; completion
+  still requires all of them to finish within the execution budgets.
 - Use `{"type": "list Z", "value": [1, 2]}` when an untyped `With` cannot be
   inferred reliably.
 - Use recursive constructor objects for arbitrary inductive values:
@@ -66,27 +67,25 @@ be typed unambiguously.
   higher-order values. Raw `{"qcp": "<expression>"}` is also accepted when the
   declared type is already known.
 
-Bind both layers. For `sll(p, xs)`, bind the top-level C input as
-`"args": {"p": 4096}` and the logical contents as
-`"values": {"xs": [1, 2]}`. QCP materializes the heap described by the
-precondition at that concrete address. Assign distinct addresses to objects
-that must be separated; reuse an address only to request aliasing permitted by
-the `Require`. Predicate execution is definition-driven:
-`Let` bodies are unfolded and `Extern Coq` predicates require source-declared
-strategies. For array predicates, bind the logical length and contents
-consistently with `Require`.
+For `sll(p, xs)`, a typical binding is `"args": {}` and
+`"values": {"xs": [1, 2]}`. The instantiated predicate is the initial symbolic
+heap; no native allocation or numerical address assignment is required.
+Separation and alias constraints remain in Require and participate in its
+satisfiability check. Numeric pointer bindings may be used when the test is
+specifically about address-dependent behavior. Ordinary dereferencing uses the
+symbolic pointer and its owned memory; it does not require a number.
 
-An equality does not remove the need to supply top-level input:
-`Require n == N` requires `args.n` and (when reported required) `values.N`.
-The tool checks their consistency through `Require`. Derivation is safe for
-constants and dependencies among logical binds, such as `alias == N` or
-`N == Zlength(xs)`.
+The available predicate definitions and declared strategies determine
+unfolding. For arrays, bind length and contents consistently. The tool checks
+binding conflicts rather than silently repairing user inputs. Follow analysis
+metadata for non-pointer C arguments and derived logical values; type bindings
+remain separate from values.
 
-Never add callee binds. Callee C parameters are created at the call site from
-evaluated caller arguments, and the current separation-logic heap is carried
-into and back out of the callee automatically. Callee `With` variables are not
-used when a function body is available because concrete mode executes the
-body instead of applying its spec.
+Never add callee bind files. Arguments are evaluated in the caller, fresh
+parameter/local cells are created for each invocation, and actual shared writes
+and return values flow back. Under `no-expand`, callee With variables are also
+matched to the actual call state for contract checks. Those contracts observe
+execution rather than replacing it.
 
 ## Model-generated cases
 

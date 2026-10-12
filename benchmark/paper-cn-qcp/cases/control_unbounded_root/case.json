@@ -1,0 +1,134 @@
+{
+  "id": "control_unbounded_root",
+  "origin_family": "tespec-quantifier-control",
+  "category": "unbounded universal quantification",
+  "difficulty": "hard",
+  "function": "root_cell",
+  "sources": [
+    {
+      "path": "sources/tespec/benchmark/comparison/proof-oriented/least-root/subject.cn.c",
+      "sha256": "b13e07227f42ae8ae06fa601cd317c224818a809b5f6283ac99489f58acedc77"
+    }
+  ],
+  "adaptations": [
+    "Synthetic mechanism control with the identical unbounded universal relation in both contracts. No finite monitor rewrite is included."
+  ],
+  "variants": [
+    "reference",
+    "wrong_post"
+  ],
+  "mutations": {
+    "cn": [
+      "y == return;",
+      "y == return + 1;"
+    ],
+    "qcp": [
+      "data_at(p,int,r)",
+      "data_at(p,int,r+1)"
+    ]
+  },
+  "inputs": [
+    {
+      "id": "input_0",
+      "qcp_bind": {
+        "id": "input_0",
+        "args": {},
+        "values": {
+          "x": 0
+        }
+      },
+      "native_setup": "int x=0; int r=root_cell(&x);",
+      "native_check": "r==0 && x==0",
+      "expected": {
+        "return": 0,
+        "cell": 0
+      },
+      "logical_input": {
+        "args": {},
+        "values": {
+          "x": 0
+        }
+      },
+      "wrong_post_violated": true
+    },
+    {
+      "id": "input_1",
+      "qcp_bind": {
+        "id": "input_1",
+        "args": {},
+        "values": {
+          "x": 1
+        }
+      },
+      "native_setup": "int x=1; int r=root_cell(&x);",
+      "native_check": "r==1 && x==1",
+      "expected": {
+        "return": 1,
+        "cell": 1
+      },
+      "logical_input": {
+        "args": {},
+        "values": {
+          "x": 1
+        }
+      },
+      "wrong_post_violated": true
+    },
+    {
+      "id": "input_2",
+      "qcp_bind": {
+        "id": "input_2",
+        "args": {},
+        "values": {
+          "x": 13
+        }
+      },
+      "native_setup": "int x=13; int r=root_cell(&x);",
+      "native_check": "r==4 && x==4",
+      "expected": {
+        "return": 4,
+        "cell": 4
+      },
+      "logical_input": {
+        "args": {},
+        "values": {
+          "x": 13
+        }
+      },
+      "wrong_post_violated": true
+    },
+    {
+      "id": "input_3",
+      "qcp_bind": {
+        "id": "input_3",
+        "args": {},
+        "values": {
+          "x": 100
+        }
+      },
+      "native_setup": "int x=100; int r=root_cell(&x);",
+      "native_check": "r==10 && x==10",
+      "expected": {
+        "return": 10,
+        "cell": 10
+      },
+      "logical_input": {
+        "args": {},
+        "values": {
+          "x": 100
+        }
+      },
+      "wrong_post_violated": true
+    }
+  ],
+  "qcp_include_dirs": [
+    "runtime/qcip/QCP_examples/QCP_demos_human"
+  ],
+  "spec_relation": "manual corresponding translation; no machine-checked CN/QCP equivalence claim",
+  "support_files": [
+    "RootSpec.v"
+  ],
+  "harness_policy": "Input construction and target call only in tool runs; native oracle checks run separately.",
+  "role": "case-study",
+  "itp_reference": "proofs"
+}

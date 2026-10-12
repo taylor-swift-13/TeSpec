@@ -79,6 +79,7 @@ def main():
     ap.add_argument("--program", action="append", default=[])
     ap.add_argument("--jobs", type=int, default=4)
     ap.add_argument("--cc", default="cc")
+    ap.add_argument("--negative-standard", choices=("weak", "strong"), default="weak")
     args = ap.parse_args()
     if args.jobs < 1:
         ap.error("--jobs must be positive")
@@ -274,6 +275,14 @@ def main():
                 "reason": result["reason"],
                 "scope": result["scope"],
             }
+            negative = want.get("negative") is True
+            allowed = {"FAIL", "UNKNOWN"} if args.negative_standard == "weak" else {"FAIL"}
+            canonical = result.get("test_result")
+            if canonical not in {"PASS", "FAIL", "UNKNOWN"}:
+                canonical = "UNKNOWN"
+            overall_matches = canonical in allowed if negative else got["overall"] == want.get("overall")
+            if want.get("overall") == "INVALID" and want.get("precondition") == "UNSAT":
+                overall_matches = got["overall"] == "FAIL"
             differences = {
                 key: {"expected": val, "actual": got.get(key)}
                 for key, val in want.items()
@@ -286,7 +295,10 @@ def main():
                     "expect_artifacts",
                 ]
                 and got.get(key) != val
+                and not (key == "overall" and overall_matches)
             }
+            if negative and not overall_matches:
+                differences["overall"] = {"expected": sorted(allowed), "actual": canonical}
             files = result.get("vc", {}).get("files", {})
             for key in ["goal", "proof_auto", "proof_manual", "goal_check"]:
                 if want.get("expect_artifacts", True) and (
@@ -329,6 +341,7 @@ def main():
                     "mode": mode,
                     "case": result["id"],
                     "status": result["status"],
+                    "test_result": canonical,
                     "phases": result["phases"],
                     "negative": want["negative"],
                     "differences": differences,
@@ -378,6 +391,7 @@ def main():
     report = {
         "schema": "tespec-executor-e2e/v1",
         "execution_semantics": "inline-preserve/v1",
+        "negative_standard": args.negative_standard,
         "binary_sha256": binary_sha256,
         "binary_unchanged": digest(args.binary) == binary_sha256,
         "case_generator_sha256": digest(ROOT / "benchmark/executor_e2e/cases.py"),
@@ -401,6 +415,9 @@ def main():
             "false_passes": sum(
                 r.get("negative", False) and r["status"] == "PASS" for r in results
             ),
+            "negative_resolved": sum(r.get("negative", False) and r["status"] == "FAIL" for r in results),
+            "negative_diagnostic_errors": sum(r.get("negative", False) and r["status"] == "ERROR" for r in results),
+            "negative_unresolved": sum(r.get("negative", False) and r.get("test_result") == "UNKNOWN" for r in results),
             "native_failures": len(native_failures),
             "verdicts": dict(Counter(r["status"] for r in results)),
             "wall_seconds": round(time.monotonic() - started, 3),

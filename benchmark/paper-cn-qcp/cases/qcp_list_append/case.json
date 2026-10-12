@@ -1,0 +1,198 @@
+{
+  "id": "qcp_list_append",
+  "origin_family": "qcp-sll",
+  "category": "iterative linked structure",
+  "difficulty": "medium",
+  "function": "append",
+  "sources": [
+    {
+      "path": "sources/qcp/sll.c",
+      "sha256": "5d3528e5e58b0bfb4c9b4cd87a883f29e40df50bfc6413748ebcd806fe9daa6a"
+    }
+  ],
+  "adaptations": [
+    "Select one original function; retain C body and entry/exit meaning.",
+    "Intermediate QCP proof annotations omitted; this primary dataset tests function contracts. CN universal verification of loops may require additional invariants."
+  ],
+  "variants": [
+    "reference",
+    "wrong_post"
+  ],
+  "mutations": {
+    "cn": [
+      "zs == Append(xs,ys)",
+      "zs == Append(Append(xs,ys),Cons{Head:0,Tail:Nil{}})"
+    ],
+    "qcp": [
+      "sll(__return,app(xs,ys))",
+      "sll(__return,app(app(xs,ys),cons(0,nil)))"
+    ]
+  },
+  "inputs": [
+    {
+      "id": "input_0",
+      "qcp_bind": {
+        "id": "input_0",
+        "args": {
+          "x": 0,
+          "y": 0
+        },
+        "values": {
+          "xs": [],
+          "ys": []
+        }
+      },
+      "native_setup": " struct list *r=append(0,0); ",
+      "native_check": "1",
+      "expected": {
+        "list": []
+      },
+      "logical_input": {
+        "args": {
+          "x": 0,
+          "y": 0
+        },
+        "values": {
+          "xs": [],
+          "ys": []
+        }
+      },
+      "wrong_post_violated": true,
+      "native_oracle_statements": "if (r != 0) return 11;"
+    },
+    {
+      "id": "input_1",
+      "qcp_bind": {
+        "id": "input_1",
+        "args": {
+          "x": 0,
+          "y": 8192
+        },
+        "values": {
+          "xs": [],
+          "ys": [
+            7
+          ]
+        }
+      },
+      "native_setup": "struct list b0 = {7,0}; struct list *r=append(0,&b0); ",
+      "native_check": "1",
+      "expected": {
+        "list": [
+          7
+        ]
+      },
+      "logical_input": {
+        "args": {
+          "x": 0,
+          "y": 8192
+        },
+        "values": {
+          "xs": [],
+          "ys": [
+            7
+          ]
+        }
+      },
+      "wrong_post_violated": true,
+      "native_oracle_statements": "if (r == 0 || r->data != 7) return 10; r=r->next; if (r != 0) return 11;"
+    },
+    {
+      "id": "input_2",
+      "qcp_bind": {
+        "id": "input_2",
+        "args": {
+          "x": 4096,
+          "y": 0
+        },
+        "values": {
+          "xs": [
+            4,
+            -1
+          ],
+          "ys": []
+        }
+      },
+      "native_setup": "struct list a1 = {-1,0}; struct list a0 = {4,&a1}; struct list *r=append(&a0,0); ",
+      "native_check": "1",
+      "expected": {
+        "list": [
+          4,
+          -1
+        ]
+      },
+      "logical_input": {
+        "args": {
+          "x": 4096,
+          "y": 0
+        },
+        "values": {
+          "xs": [
+            4,
+            -1
+          ],
+          "ys": []
+        }
+      },
+      "wrong_post_violated": true,
+      "native_oracle_statements": "if (r == 0 || r->data != 4) return 10; r=r->next; if (r == 0 || r->data != -1) return 10; r=r->next; if (r != 0) return 11;"
+    },
+    {
+      "id": "input_3",
+      "qcp_bind": {
+        "id": "input_3",
+        "args": {
+          "x": 4096,
+          "y": 8192
+        },
+        "values": {
+          "xs": [
+            1,
+            2
+          ],
+          "ys": [
+            3,
+            4,
+            5
+          ]
+        }
+      },
+      "native_setup": "struct list a1 = {2,0}; struct list a0 = {1,&a1};struct list b2 = {5,0}; struct list b1 = {4,&b2}; struct list b0 = {3,&b1}; struct list *r=append(&a0,&b0); ",
+      "native_check": "1",
+      "expected": {
+        "list": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "logical_input": {
+        "args": {
+          "x": 4096,
+          "y": 8192
+        },
+        "values": {
+          "xs": [
+            1,
+            2
+          ],
+          "ys": [
+            3,
+            4,
+            5
+          ]
+        }
+      },
+      "wrong_post_violated": true,
+      "native_oracle_statements": "if (r == 0 || r->data != 1) return 10; r=r->next; if (r == 0 || r->data != 2) return 10; r=r->next; if (r == 0 || r->data != 3) return 10; r=r->next; if (r == 0 || r->data != 4) return 10; r=r->next; if (r == 0 || r->data != 5) return 10; r=r->next; if (r != 0) return 11;"
+    }
+  ],
+  "qcp_include_dirs": [
+    "runtime/qcip/QCP_examples/QCP_demos_human"
+  ],
+  "spec_relation": "manual corresponding translation; no machine-checked CN/QCP equivalence claim",
+  "harness_policy": "Input construction and target call only in tool runs; native oracle checks run separately.",
+  "role": "common-set"
+}

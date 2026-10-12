@@ -1,55 +1,59 @@
-# Residual VC proof workflow
+# Complete VC certificate workflow
 
-## Trust boundary
+`prepare-run-certificates` freezes the automatic report and creates a separate
+proof bundle per eligible case. The editable file is `Candidate.v`. Goals,
+coverage interface, audit module, dependencies and runtime hashes are immutable.
+The complete original `VC_Correct` interface is checked, including automatic
+obligations and initial satisfiability. Explicit `--refute-precondition CASE_ID`
+requests the negation of the original initial proposition, with the remaining
+interface unchanged; see [Require checks](precondition-check.md).
+Generated auto proof placeholders are
+not evidence for a complete certificate.
 
-The manifest lists four Coq files:
+The controller retains the returned digest before giving the proof Agent its
+candidate paths. Use one Agent for all candidates. It reads each `Goal.v` and
+its imported definitions, fills every required proof, and may run `coqc` for
+local diagnostics. It does not change the original C program, binds, goals,
+contracts, manifests, dependency definitions or library sources.
 
-- `goal`: immutable definitions of all generated VCs;
-- `proof_auto`: immutable QCP-accepted automatic obligations;
-- `proof_manual`: the only editable target;
-- `goal_check`: immutable module-level completeness check.
+The external controller performs acceptance:
 
-The boundary is provenance-based:
+```bash
+python3 -m spectest check-run-certificates OUTPUT/proof/run-manifest.json \
+  --manifest-sha256 CONTROLLER_HELD_DIGEST --timeout 600
+```
 
-- `qcp_auto` is QCP/SMT output in `proof_auto`;
-- `manual` is any proof written into `proof_manual` by a model or human.
+This recompiles candidates, checks interface coverage, audits transitive
+assumptions and replays the libraries with `coqchk`. The final report is
+`OUTPUT/proof/report.json`. Existing automatic results are preserved; a
+completed eligible instance becomes PASS only after its complete certificate
+passes. Execution limits and errors cannot be repaired merely by proving the
+VCs emitted before execution stopped.
 
-`spectest check-proof` verifies hashes for the immutable generated files,
-rejects proof escapes in `proof_manual`, and compiles the complete proof with
-Coq 8.20.1. The core runner has no secondary Coq automation and never edits
-`proof_manual`. CoqGym is not required.
+No `Admitted`, `admit`, new axioms, parameters or hypotheses may remain
+in a submitted candidate. `Abort` supplies no theorem: interface coverage
+fails and the result remains UNKNOWN. Imported domain axioms also require scrutiny: kernel
+compilation alone cannot establish their consistency, and the controller uses
+a fixed assumption policy. Do not broaden that policy to make a proof pass.
 
-## Proof loop
+Use definitions and proved lemmas from staged dependencies and the selected
+runtime. Common tactics include `Intros`, `Exists`, `sep_apply`, rewriting and
+`lia`, but some runtime tactics use unapproved axioms; inspect `Print Assumptions`
+for the final theorem. A failed compilation, timeout or rejected assumption
+leaves the result UNKNOWN. Feedback may be returned to the same proof Agent.
 
-1. Read `manifest.json`, the referenced goal definitions, and
-   `proof_manual.v`.
-2. Search the official QCP proof examples for the same VC/tactic shape:
+The lower-level `prepare-certificate` / `check-certificate` commands support
+individual original VC groups and explicit refutation. Legacy `check-proof`
+checks residual proofs relative to automatic obligations; its report alone
+must not be promoted to a complete run certificate.
 
-   - `$SPEC_TEST_ROOT/runtime/qcip/SeparationLogic/examples/QCP_demos_LLM`
-   - `$SPEC_TEST_ROOT/runtime/qcip/SeparationLogic/examples/QCP_demos_human`
-   - `$SPEC_TEST_ROOT/runtime/qcip/SeparationLogic/examples/Applications_human`
-   - `$SPEC_TEST_ROOT/runtime/qcip/SeparationLogic/examples/LLM_bench`
+## Negative original VCs
 
-   Search by suffix such as `return_wit`, `entail_wit`, `safety_wit`,
-   `split_goal`, and by predicates appearing in the goal.
-3. Replace each generated `Abort`/`Admitted` hole in `proof_manual.v` with a
-   proof ending in `Qed`.
-4. Run `python3 -m spectest check-proof MANIFEST`.
-5. Read the first Coq error from `proof_check.stderr.txt`, change only the
-   manual proof, and repeat.
-
-Common starting tactics in QCP examples include `pre_process`,
-`aggressive_pre_process`, `entailer!`, `Intros`, `Exists`, `Left`, `Right`,
-`sep_apply`, `rewrite`, and `lia`. Use them only when they match the actual
-goal; compile immediately instead of guessing a long script.
-
-## Non-negotiable rules
-
-- Do not modify the implementation or weaken `Require`/`Ensure`.
-- Do not modify generated theorem statements or immutable files.
-- Do not introduce `Admitted`, `admit`, `Abort`, `Axiom`, `Parameter`,
-  `Hypothesis`, or `Conjecture`.
-- Do not treat one failed tactic or a Coq timeout as evidence that the VC is
-  false.
-- If the VC is actually false, preserve the case as unresolved and explain
-  the concrete contradiction; do not forge a proof.
+The Agent may request a negative proof using the controller's `proof-plan.json`
+routing file. The controller checks the positive attempt before preparing the
+negative request. `--refute-vc CASE_ID=PROOF_NAME` selects a negative statement
+explicitly. Immutable original interfaces and dependencies are checked in both
+rounds. A kernel-checked proof of the selected original VC's negation establishes
+INVALID and the whole test FAIL, even with other unresolved obligations.
+Agent judgement alone never establishes a result. If neither polarity is proved,
+the obligation remains UNKNOWN.

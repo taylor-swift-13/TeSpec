@@ -1,0 +1,136 @@
+{
+  "id": "cn_transpose",
+  "origin_family": "cn-tutorial",
+  "category": "structure fields",
+  "difficulty": "easy",
+  "function": "transpose",
+  "sources": [
+    {
+      "path": "sources/cn-tutorial/src/exercises/transpose.c",
+      "sha256": "6a100643389c5b6dbd3c99add511ca92783133bb5182027d0678dfb2c01bf697"
+    }
+  ],
+  "adaptations": [],
+  "variants": [
+    "reference",
+    "wrong_post"
+  ],
+  "mutations": {
+    "cn": [
+      "P_post.x == P.y",
+      "P_post.x == P.x"
+    ],
+    "qcp": [
+      "Ensure data_at(&(p->x), unsigned int, y)",
+      "Ensure data_at(&(p->x), unsigned int, x)"
+    ]
+  },
+  "inputs": [
+    {
+      "id": "input_0",
+      "qcp_bind": {
+        "id": "input_0",
+        "args": {},
+        "values": {
+          "x": 0,
+          "y": 1
+        }
+      },
+      "native_setup": "struct point p={0U,1U}; transpose(&p);",
+      "native_check": "p.x == 1U && p.y == 0U",
+      "expected": {
+        "x": 1,
+        "y": 0
+      },
+      "logical_input": {
+        "args": {},
+        "values": {
+          "x": 0,
+          "y": 1
+        }
+      },
+      "wrong_post_violated": true
+    },
+    {
+      "id": "input_1",
+      "qcp_bind": {
+        "id": "input_1",
+        "args": {},
+        "values": {
+          "x": 3,
+          "y": 5
+        }
+      },
+      "native_setup": "struct point p={3U,5U}; transpose(&p);",
+      "native_check": "p.x == 5U && p.y == 3U",
+      "expected": {
+        "x": 5,
+        "y": 3
+      },
+      "logical_input": {
+        "args": {},
+        "values": {
+          "x": 3,
+          "y": 5
+        }
+      },
+      "wrong_post_violated": true
+    },
+    {
+      "id": "input_2",
+      "qcp_bind": {
+        "id": "input_2",
+        "args": {},
+        "values": {
+          "x": 9,
+          "y": 2
+        }
+      },
+      "native_setup": "struct point p={9U,2U}; transpose(&p);",
+      "native_check": "p.x == 2U && p.y == 9U",
+      "expected": {
+        "x": 2,
+        "y": 9
+      },
+      "logical_input": {
+        "args": {},
+        "values": {
+          "x": 9,
+          "y": 2
+        }
+      },
+      "wrong_post_violated": true
+    },
+    {
+      "id": "input_3",
+      "qcp_bind": {
+        "id": "input_3",
+        "args": {},
+        "values": {
+          "x": 4294967295,
+          "y": 0
+        }
+      },
+      "native_setup": "struct point p={4294967295U,0U}; transpose(&p);",
+      "native_check": "p.x == 0U && p.y == 4294967295U",
+      "expected": {
+        "x": 0,
+        "y": 4294967295
+      },
+      "logical_input": {
+        "args": {},
+        "values": {
+          "x": 4294967295,
+          "y": 0
+        }
+      },
+      "wrong_post_violated": true
+    }
+  ],
+  "qcp_include_dirs": [
+    "runtime/qcip/QCP_examples/QCP_demos_human"
+  ],
+  "spec_relation": "manual corresponding translation; no machine-checked CN/QCP equivalence claim",
+  "harness_policy": "Input construction and target call only in tool runs; native oracle checks run separately.",
+  "role": "common-set"
+}

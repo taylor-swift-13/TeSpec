@@ -1,0 +1,184 @@
+{
+  "id": "cav_binary_search",
+  "origin_family": "cav-bench",
+  "category": "bounded nested quantification and search",
+  "difficulty": "medium",
+  "function": "binary_search",
+  "sources": [
+    {
+      "path": "sources/cav-bench/input/algo/binary_search.c",
+      "sha256": "9cdb64bda2c44354333693b2c07802ce1b018ccf213869930db0d3ebcadc1cd1"
+    }
+  ],
+  "adaptations": [
+    "Original contract translated with finite index quantifiers; no algorithm changes.",
+    "CN linearizes bounded index pairs as k=i*n+j, preserving the original universal relation; absence condition uses implication outside the disjunction. No search algorithm or monitor is added."
+  ],
+  "variants": [
+    "reference",
+    "wrong_post"
+  ],
+  "mutations": {
+    "cn": [
+      "0 <= return && return < n && A[return] == target",
+      "1 <= return && return <= n && A[return-1] == target"
+    ],
+    "qcp": [
+      "0 <= __return && __return < n && l[__return] == target",
+      "1 <= __return && __return <= n && l[__return-1] == target"
+    ]
+  },
+  "inputs": [
+    {
+      "id": "input_0",
+      "qcp_bind": {
+        "id": "input_0",
+        "args": {
+          "n": 0,
+          "target": 3,
+          "a": 4096
+        },
+        "values": {
+          "l": []
+        }
+      },
+      "native_setup": "int a[]={0}; int r=binary_search(0,a,3);",
+      "native_check": "r==-1",
+      "expected": {
+        "return": -1
+      },
+      "logical_input": {
+        "args": {
+          "n": 0,
+          "target": 3,
+          "a": 4096
+        },
+        "values": {
+          "l": []
+        }
+      },
+      "wrong_post_violated": false
+    },
+    {
+      "id": "input_1",
+      "qcp_bind": {
+        "id": "input_1",
+        "args": {
+          "n": 1,
+          "target": 1,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            1
+          ]
+        }
+      },
+      "native_setup": "int a[]={1}; int r=binary_search(1,a,1);",
+      "native_check": "r==0",
+      "expected": {
+        "return": 0
+      },
+      "logical_input": {
+        "args": {
+          "n": 1,
+          "target": 1,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            1
+          ]
+        }
+      },
+      "wrong_post_violated": true
+    },
+    {
+      "id": "input_2",
+      "qcp_bind": {
+        "id": "input_2",
+        "args": {
+          "n": 4,
+          "target": 4,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -3,
+            0,
+            4,
+            9
+          ]
+        }
+      },
+      "native_setup": "int a[]={-3,0,4,9}; int r=binary_search(4,a,4);",
+      "native_check": "r==2",
+      "expected": {
+        "return": 2
+      },
+      "logical_input": {
+        "args": {
+          "n": 4,
+          "target": 4,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -3,
+            0,
+            4,
+            9
+          ]
+        }
+      },
+      "wrong_post_violated": true
+    },
+    {
+      "id": "input_3",
+      "qcp_bind": {
+        "id": "input_3",
+        "args": {
+          "n": 4,
+          "target": 2,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -3,
+            0,
+            4,
+            9
+          ]
+        }
+      },
+      "native_setup": "int a[]={-3,0,4,9}; int r=binary_search(4,a,2);",
+      "native_check": "r==-1",
+      "expected": {
+        "return": -1
+      },
+      "logical_input": {
+        "args": {
+          "n": 4,
+          "target": 2,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -3,
+            0,
+            4,
+            9
+          ]
+        }
+      },
+      "wrong_post_violated": false
+    }
+  ],
+  "qcp_include_dirs": [
+    "runtime/qcip/QCP_examples/QCP_demos_human"
+  ],
+  "spec_relation": "manual corresponding translation; no machine-checked CN/QCP equivalence claim",
+  "harness_policy": "Input construction and target call only in tool runs; native oracle checks run separately.",
+  "mutation_class": "one_based_index",
+  "role": "common-set"
+}

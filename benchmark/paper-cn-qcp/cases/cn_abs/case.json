@@ -1,0 +1,126 @@
+{
+  "id": "cn_abs",
+  "origin_family": "cn-tutorial",
+  "category": "signed arithmetic and branches",
+  "difficulty": "easy",
+  "function": "bench_abs",
+  "sources": [
+    {
+      "path": "sources/cn-tutorial/src/exercises/abs.c",
+      "sha256": "f5e0674514d71cca5c2eec3721510cefb8d9b40f87670b58b90f1e7e74ff1a71"
+    }
+  ],
+  "adaptations": [
+    "Rename abs to bench_abs in both versions and drivers to prevent the native compiler from replacing calls with its standard-library builtin and bypassing instrumentation."
+  ],
+  "variants": [
+    "reference",
+    "wrong_post"
+  ],
+  "mutations": {
+    "cn": [
+      "return == ((x >= 0) ? x : (0-x))",
+      "return == ((x >= 0) ? x : (0-x)) - 1"
+    ],
+    "qcp": [
+      "((__return == x && x >= 0) || (__return == -x && x < 0))",
+      "((__return == x - 1 && x >= 0) || (__return == -x - 1 && x < 0))"
+    ]
+  },
+  "inputs": [
+    {
+      "id": "input_0",
+      "qcp_bind": {
+        "id": "input_0",
+        "args": {
+          "x": -2147483647
+        },
+        "values": {}
+      },
+      "native_setup": "int r = bench_abs(-2147483647);",
+      "native_check": "r == 2147483647",
+      "expected": {
+        "return": 2147483647
+      },
+      "logical_input": {
+        "args": {
+          "x": -2147483647
+        },
+        "values": {}
+      },
+      "wrong_post_violated": true
+    },
+    {
+      "id": "input_1",
+      "qcp_bind": {
+        "id": "input_1",
+        "args": {
+          "x": -7
+        },
+        "values": {}
+      },
+      "native_setup": "int r = bench_abs(-7);",
+      "native_check": "r == 7",
+      "expected": {
+        "return": 7
+      },
+      "logical_input": {
+        "args": {
+          "x": -7
+        },
+        "values": {}
+      },
+      "wrong_post_violated": true
+    },
+    {
+      "id": "input_2",
+      "qcp_bind": {
+        "id": "input_2",
+        "args": {
+          "x": 0
+        },
+        "values": {}
+      },
+      "native_setup": "int r = bench_abs(0);",
+      "native_check": "r == 0",
+      "expected": {
+        "return": 0
+      },
+      "logical_input": {
+        "args": {
+          "x": 0
+        },
+        "values": {}
+      },
+      "wrong_post_violated": true
+    },
+    {
+      "id": "input_3",
+      "qcp_bind": {
+        "id": "input_3",
+        "args": {
+          "x": 2147483647
+        },
+        "values": {}
+      },
+      "native_setup": "int r = bench_abs(2147483647);",
+      "native_check": "r == 2147483647",
+      "expected": {
+        "return": 2147483647
+      },
+      "logical_input": {
+        "args": {
+          "x": 2147483647
+        },
+        "values": {}
+      },
+      "wrong_post_violated": true
+    }
+  ],
+  "qcp_include_dirs": [
+    "runtime/qcip/QCP_examples/QCP_demos_human"
+  ],
+  "spec_relation": "manual corresponding translation; no machine-checked CN/QCP equivalence claim",
+  "harness_policy": "Input construction and target call only in tool runs; native oracle checks run separately.",
+  "role": "common-set"
+}

@@ -189,6 +189,13 @@ def _run_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--qcip-root", type=Path, default=bundled_qcip_root())
     parser.add_argument(
+        "--architecture-bits",
+        type=int,
+        choices=(32, 64),
+        default=32,
+        help="target width; requires a matching executor build and proof runtime",
+    )
+    parser.add_argument(
         "--qcp-binary",
         type=Path,
         default=bundled_qcp_binary(),
@@ -244,6 +251,7 @@ def _run_source(argv: list[str]) -> int:
             "qcp": {
                 "qcip_root": str(args.qcip_root.expanduser().resolve()),
                 "binary": str(args.qcp_binary.expanduser().resolve()),
+                "architecture_bits": args.architecture_bits,
                 "loop_unroll_limit": args.loop_unroll_limit,
                 "execution_mode": args.execution_mode,
                 "annotation_policy": args.annotation_policy,
@@ -383,8 +391,119 @@ def _run_proof(argv: list[str]) -> int:
     return 0 if report["status"] == "PASS" else 1
 
 
+def _run_certificate_command(command: str, argv: list[str]) -> int:
+    from .certificates import check_certificate, prepare_certificate
+    from .run_certificates import check_run_certificates, prepare_run_certificates
+
+    whole_run = command in {"prepare-run-certificates", "check-run-certificates"}
+    prepare = command.startswith("prepare-")
+    parser = argparse.ArgumentParser(prog="qcp-spectest " + command)
+    parser.add_argument(
+        "input", type=Path, metavar="input" if whole_run else "manifest"
+    )
+    if prepare:
+        parser.add_argument("--output", type=Path, required=True)
+        if whole_run:
+            parser.add_argument(
+                "--refute-vc", action="append", default=[], metavar="CASE_ID=PROOF_NAME",
+                help="prove the negation of an original path VC in this case",
+            )
+            parser.add_argument(
+                "--refute-precondition",
+                action="append",
+                default=[],
+                metavar="CASE_ID",
+                help="prove the negation of this case's unique unresolved Require SAT VC",
+            )
+        else:
+            parser.add_argument(
+                "--only", action="append", metavar="PROOF_NAME",
+                help="check only these original VCs; retain other obligations unresolved",
+            )
+            parser.add_argument(
+                "--refute",
+                help="prove the negation of one original VC",
+            )
+    else:
+        parser.add_argument(
+            "--manifest-sha256",
+            required=True,
+            help="digest recorded by the controller at preparation",
+        )
+        parser.add_argument("--switch", default="qcp-8.20")
+        parser.add_argument("--timeout", type=float, default=120)
+    args = parser.parse_args(argv)
+    try:
+        if prepare:
+            operation = prepare_run_certificates if whole_run else prepare_certificate
+            refute_vcs = {}
+            if whole_run:
+                for item in args.refute_vc:
+                    case, separator, target = item.partition("=")
+                    if not separator or not case or not target or case in refute_vcs:
+                        raise JobError("--refute-vc expects one CASE_ID=PROOF_NAME per case")
+                    refute_vcs[case] = target
+            options = (
+                {"refute_preconditions": set(args.refute_precondition), "refute_vcs": refute_vcs}
+                if whole_run
+                else {"refute": args.refute, "only": set(args.only) if args.only else None}
+            )
+            result = operation(args.input, args.output, **options)
+        else:
+            operation = check_run_certificates if whole_run else check_certificate
+            result = operation(
+                args.input,
+                args.manifest_sha256,
+                switch=args.switch,
+                timeout=args.timeout,
+            )
+    except (JobError, OSError, ValueError, KeyError) as error:
+        print(json.dumps({"status": "ERROR", "error": str(error)}), file=sys.stderr)
+        return 2
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    if whole_run:
+        return (
+            0 if prepare or all(c["status"] == "PASS" for c in result["results"]) else 1
+        )
+    return (
+        0
+        if result.get("status", "PASS") == "PASS"
+        or result.get("proof_status") == "VALID"
+        else 1
+    )
+
+
 def main(argv: list[str] | None = None) -> int:
     argv = list(sys.argv[1:] if argv is None else argv)
+    if argv in (["--help"], ["-h"]):
+        parser = argparse.ArgumentParser(
+            prog="qcp-spectest",
+            usage="%(prog)s COMMAND [OPTIONS]",
+            description="Instance checking of QCP specifications and C programs.",
+            formatter_class=argparse.RawDescriptionHelpFormatter,
+            epilog=(
+                "Commands:\n"
+                "  analyze                   Analyze specs and create a binds template\n"
+                "  run                       Test a source file with binds\n"
+                "  check                     Replay a saved job\n"
+                "  prepare-run-certificates  Prepare all proof tasks from a report\n"
+                "  check-run-certificates    Check the complete run certificate\n"
+                "  prepare-certificate       Prepare one VC group's certificate\n"
+                "  check-certificate         Check one VC group's certificate\n"
+                "  prepare-proof             Collect an existing VC manifest\n"
+                "  check-proof               Check an existing residual proof\n\n"
+                "Use COMMAND --help for options. A bare job.json remains accepted."
+            ),
+        )
+        parser.print_help()
+        return 0
+    if argv and argv[0] in {
+        "prepare-run-certificates",
+        "check-run-certificates",
+        "prepare-certificate",
+        "check-certificate",
+    }:
+        return _run_certificate_command(argv[0], argv[1:])
     if argv and argv[0] == "analyze":
         return _run_analyze(argv[1:])
     if argv and argv[0] == "run":

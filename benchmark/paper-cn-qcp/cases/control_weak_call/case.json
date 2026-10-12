@@ -1,0 +1,132 @@
+{
+  "id": "control_weak_call",
+  "origin_family": "tespec-mechanism-control",
+  "category": "recursive_heap_weak",
+  "difficulty": "medium",
+  "function": "sample",
+  "sources": [
+    {
+      "path": "sources/tespec/benchmark/comparison/paired/recursive_heap_weak/case.cn.c",
+      "sha256": "9530d197c9dda7a505810a2976fad875ecfbb8fc14860b330ee35ac25cb60c62"
+    },
+    {
+      "path": "sources/tespec/benchmark/comparison/paired/recursive_heap_weak/case.qcp.c",
+      "sha256": "59ea9f2e9c66be6713ceaaa497ea59e6e6622d239a34794b3cde90c4a3ec01fe"
+    }
+  ],
+  "adaptations": [
+    "Reuse existing paired mechanism case; explicitly synthetic, not an upstream tutorial sample."
+  ],
+  "variants": [
+    "reference",
+    "wrong_post"
+  ],
+  "mutations": {
+    "cn": [
+      "w == v + 3",
+      "w == v + 4"
+    ],
+    "qcp": [
+      "Ensure data_at(p, int, v + 3)",
+      "Ensure data_at(p, int, v + 4)"
+    ]
+  },
+  "inputs": [
+    {
+      "id": "input_0",
+      "qcp_bind": {
+        "id": "input_0",
+        "args": {},
+        "values": {
+          "v": 0
+        }
+      },
+      "native_setup": "int x=0; sample(&x);",
+      "native_check": "x==3",
+      "expected": {
+        "cell": 3
+      },
+      "logical_input": {
+        "args": {},
+        "values": {
+          "v": 0
+        }
+      },
+      "wrong_post_violated": true
+    },
+    {
+      "id": "input_1",
+      "qcp_bind": {
+        "id": "input_1",
+        "args": {},
+        "values": {
+          "v": 3
+        }
+      },
+      "native_setup": "int x=3; sample(&x);",
+      "native_check": "x==6",
+      "expected": {
+        "cell": 6
+      },
+      "logical_input": {
+        "args": {},
+        "values": {
+          "v": 3
+        }
+      },
+      "wrong_post_violated": true
+    },
+    {
+      "id": "input_2",
+      "qcp_bind": {
+        "id": "input_2",
+        "args": {},
+        "values": {
+          "v": 42
+        }
+      },
+      "native_setup": "int x=42; sample(&x);",
+      "native_check": "x==45",
+      "expected": {
+        "cell": 45
+      },
+      "logical_input": {
+        "args": {},
+        "values": {
+          "v": 42
+        }
+      },
+      "wrong_post_violated": true
+    },
+    {
+      "id": "input_3",
+      "qcp_bind": {
+        "id": "input_3",
+        "args": {},
+        "values": {
+          "v": 97
+        }
+      },
+      "native_setup": "int x=97; sample(&x);",
+      "native_check": "x==100",
+      "expected": {
+        "cell": 100
+      },
+      "logical_input": {
+        "args": {},
+        "values": {
+          "v": 97
+        }
+      },
+      "wrong_post_violated": true
+    }
+  ],
+  "qcp_include_dirs": [
+    "runtime/qcip/QCP_examples",
+    "runtime/qcip/QCP_examples/QCP_demos_human"
+  ],
+  "support_files": [],
+  "spec_relation": "manual corresponding translation; no machine-checked equivalence claim",
+  "harness_policy": "Input construction and target call only in tool runs; native oracle checks run separately.",
+  "role": "common-set"
+}

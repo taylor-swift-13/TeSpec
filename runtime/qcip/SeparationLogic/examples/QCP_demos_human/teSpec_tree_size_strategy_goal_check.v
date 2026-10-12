@@ -1,0 +1,5 @@
+From SimpleC.EE.QCP_demos_human Require Import teSpec_tree_size_strategy_goal teSpec_tree_size_strategy_proof.
+
+Module teSpec_tree_size_Strategy_Correctness : teSpec_tree_size_Strategy_Correct.
+  Include teSpec_tree_size_strategy_proof.
+End teSpec_tree_size_Strategy_Correctness.

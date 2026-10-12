@@ -88,8 +88,8 @@ class MutationMatrixTests(unittest.TestCase):
             )
             matrix = json.loads((output / "matrix.json").read_text(encoding="utf-8"))
             self.assertEqual(matrix["reference"]["counts"]["PASS"], 1)
-            self.assertEqual(matrix["mutation_summary"]["killed"], 0)
-            self.assertEqual(matrix["mutation_summary"]["unresolved"], 1)
+            self.assertEqual(matrix["mutation_summary"]["killed"], 1)
+            self.assertEqual(matrix["mutation_summary"]["unresolved"], 0)
             self.assertEqual(matrix["spec_file"], "candidate.qcp")
 
 

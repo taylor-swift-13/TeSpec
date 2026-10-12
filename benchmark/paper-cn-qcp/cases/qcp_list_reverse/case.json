@@ -1,0 +1,192 @@
+{
+  "id": "qcp_list_reverse",
+  "origin_family": "qcp-sll",
+  "category": "iterative linked structure",
+  "difficulty": "medium",
+  "function": "reverse",
+  "sources": [
+    {
+      "path": "sources/qcp/sll.c",
+      "sha256": "5d3528e5e58b0bfb4c9b4cd87a883f29e40df50bfc6413748ebcd806fe9daa6a"
+    }
+  ],
+  "adaptations": [
+    "Select one original function; retain C body and entry/exit meaning.",
+    "Intermediate QCP proof annotations omitted; this primary dataset tests function contracts. CN universal verification of loops may require additional invariants."
+  ],
+  "variants": [
+    "reference",
+    "wrong_post"
+  ],
+  "mutations": {
+    "cn": [
+      "ys == Reverse(xs)",
+      "ys == Append(Reverse(xs),Cons{Head:0,Tail:Nil{}})"
+    ],
+    "qcp": [
+      "sll(__return,rev(xs))",
+      "sll(__return,app(rev(xs),cons(0,nil)))"
+    ]
+  },
+  "inputs": [
+    {
+      "id": "input_0",
+      "qcp_bind": {
+        "id": "input_0",
+        "args": {
+          "p": 0
+        },
+        "values": {
+          "xs": []
+        }
+      },
+      "native_setup": " struct list *r=reverse(0); ",
+      "native_check": "1",
+      "expected": {
+        "list": []
+      },
+      "logical_input": {
+        "args": {
+          "p": 0
+        },
+        "values": {
+          "xs": []
+        }
+      },
+      "wrong_post_violated": true,
+      "native_oracle_statements": "if (r != 0) return 11;"
+    },
+    {
+      "id": "input_1",
+      "qcp_bind": {
+        "id": "input_1",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "xs": [
+            7
+          ]
+        }
+      },
+      "native_setup": "struct list a0 = {7,0}; struct list *r=reverse(&a0); ",
+      "native_check": "1",
+      "expected": {
+        "list": [
+          7
+        ]
+      },
+      "logical_input": {
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "xs": [
+            7
+          ]
+        }
+      },
+      "wrong_post_violated": true,
+      "native_oracle_statements": "if (r == 0 || r->data != 7) return 10; r=r->next; if (r != 0) return 11;"
+    },
+    {
+      "id": "input_2",
+      "qcp_bind": {
+        "id": "input_2",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "xs": [
+            4,
+            -1,
+            8
+          ]
+        }
+      },
+      "native_setup": "struct list a2 = {8,0}; struct list a1 = {-1,&a2}; struct list a0 = {4,&a1}; struct list *r=reverse(&a0); ",
+      "native_check": "1",
+      "expected": {
+        "list": [
+          8,
+          -1,
+          4
+        ]
+      },
+      "logical_input": {
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "xs": [
+            4,
+            -1,
+            8
+          ]
+        }
+      },
+      "wrong_post_violated": true,
+      "native_oracle_statements": "if (r == 0 || r->data != 8) return 10; r=r->next; if (r == 0 || r->data != -1) return 10; r=r->next; if (r == 0 || r->data != 4) return 10; r=r->next; if (r != 0) return 11;"
+    },
+    {
+      "id": "input_3",
+      "qcp_bind": {
+        "id": "input_3",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "xs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ]
+        }
+      },
+      "native_setup": "struct list a7 = {8,0}; struct list a6 = {7,&a7}; struct list a5 = {6,&a6}; struct list a4 = {5,&a5}; struct list a3 = {4,&a4}; struct list a2 = {3,&a3}; struct list a1 = {2,&a2}; struct list a0 = {1,&a1}; struct list *r=reverse(&a0); ",
+      "native_check": "1",
+      "expected": {
+        "list": [
+          8,
+          7,
+          6,
+          5,
+          4,
+          3,
+          2,
+          1
+        ]
+      },
+      "logical_input": {
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "xs": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ]
+        }
+      },
+      "wrong_post_violated": true,
+      "native_oracle_statements": "if (r == 0 || r->data != 8) return 10; r=r->next; if (r == 0 || r->data != 7) return 10; r=r->next; if (r == 0 || r->data != 6) return 10; r=r->next; if (r == 0 || r->data != 5) return 10; r=r->next; if (r == 0 || r->data != 4) return 10; r=r->next; if (r == 0 || r->data != 3) return 10; r=r->next; if (r == 0 || r->data != 2) return 10; r=r->next; if (r == 0 || r->data != 1) return 10; r=r->next; if (r != 0) return 11;"
+    }
+  ],
+  "qcp_include_dirs": [
+    "runtime/qcip/QCP_examples/QCP_demos_human"
+  ],
+  "spec_relation": "manual corresponding translation; no machine-checked CN/QCP equivalence claim",
+  "harness_policy": "Input construction and target call only in tool runs; native oracle checks run separately.",
+  "role": "common-set"
+}

@@ -66,7 +66,24 @@ class PrepareProofManifestTests(unittest.TestCase):
         script = ROOT / "skills/qcp-spec-test/scripts/run-agent.sh"
         with tempfile.TemporaryDirectory(prefix="qcp-no-itp-agent-") as temp:
             report = Path(temp) / "report.json"
-            report.write_text(json.dumps({"itp_vcs": []}), encoding="utf-8")
+            report.write_text(
+                json.dumps(
+                    {
+                        "schema": "qcp-spectest-report/v1",
+                        "function": "f",
+                        "results": [
+                            {
+                                "id": "x",
+                                "status": "PASS",
+                                "evidence": {"certificate": "NOT_CHECKED"},
+                            }
+                        ],
+                        "summary": {},
+                        "itp_vcs": [],
+                    }
+                ),
+                encoding="utf-8",
+            )
             environment = os.environ.copy()
             environment["CODEX_BIN"] = str(Path(temp) / "codex-must-not-run")
             completed = subprocess.run(
@@ -78,9 +95,15 @@ class PrepareProofManifestTests(unittest.TestCase):
                 check=False,
             )
             self.assertEqual(completed.returncode, 0, completed.stderr)
-            self.assertIn("Agent flow skipped", completed.stdout)
+            result = json.loads(completed.stdout)
+            final = json.loads(Path(result["report"]).read_text())
+            self.assertEqual(final["proof_completion"]["agent"]["status"], "SKIPPED")
+            self.assertEqual(
+                final["results"][0]["evidence"]["certificate"], "NOT_CHECKED"
+            )
+            shutil.rmtree(Path(result["agent_report"]).parent)
 
-    def test_agent_report_records_usage_time_and_proof_status(self) -> None:
+    def test_forged_old_proof_report_cannot_establish_success(self) -> None:
         script = ROOT / "skills/qcp-spec-test/scripts/run-agent.sh"
         with tempfile.TemporaryDirectory(prefix="qcp-agent-report-") as temp:
             root = Path(temp)
@@ -115,18 +138,8 @@ class PrepareProofManifestTests(unittest.TestCase):
                 text=True,
                 check=False,
             )
-            self.assertEqual(completed.returncode, 0, completed.stderr)
-            lines = completed.stdout.splitlines()
-            report_path = Path(lines[-2])
-            agent_dir = Path(lines[-3])
-            try:
-                report = json.loads(report_path.read_text(encoding="utf-8"))
-                self.assertEqual(report["status"], "PASS")
-                self.assertEqual(report["token_usage"]["input_tokens"], 12)
-                self.assertEqual(report["duration_seconds"] >= 0, True)
-                self.assertEqual(report["proof_reports"][0]["status"], "PASS")
-            finally:
-                shutil.rmtree(agent_dir, ignore_errors=True)
+            self.assertNotEqual(completed.returncode, 0)
+            self.assertIn("expected an automatic spec-test report", completed.stderr)
 
 
 if __name__ == "__main__":

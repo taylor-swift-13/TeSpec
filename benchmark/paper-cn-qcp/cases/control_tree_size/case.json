@@ -1,0 +1,150 @@
+{
+  "id": "control_tree_size",
+  "origin_family": "tespec-mechanism-control",
+  "category": "recursive_binary_tree",
+  "difficulty": "medium",
+  "function": "sample",
+  "sources": [
+    {
+      "path": "sources/tespec/benchmark/comparison/paired/tree_size/case.cn.c",
+      "sha256": "bdad5b4aba7c0257c2aab68edd088a2463cdeee0ac86a7fd5fc9bdbee2f42ab1"
+    },
+    {
+      "path": "sources/tespec/benchmark/comparison/paired/tree_size/case.qcp.c",
+      "sha256": "8e94fc44b92d4e5369465c5269b48bcf1dd31f8799ce327679f0b6de5ae163ed"
+    }
+  ],
+  "adaptations": [
+    "Reuse existing paired mechanism case; explicitly synthetic, not an upstream tutorial sample."
+  ],
+  "variants": [
+    "reference",
+    "wrong_post"
+  ],
+  "mutations": {
+    "cn": [
+      "return == Size(t)",
+      "return == Size(t) + 1"
+    ],
+    "qcp": [
+      "__return == tree_size(t)",
+      "__return == tree_size(t) + 1"
+    ]
+  },
+  "inputs": [
+    {
+      "id": "input_0",
+      "qcp_bind": {
+        "id": "input_0",
+        "args": {
+          "p": 0
+        },
+        "values": {
+          "t": "empty"
+        }
+      },
+      "native_setup": "int r=sample(0);",
+      "native_check": "r==0",
+      "expected": {
+        "return": 0
+      },
+      "logical_input": {
+        "args": {
+          "p": 0
+        },
+        "values": {
+          "t": "empty"
+        }
+      },
+      "wrong_post_violated": true
+    },
+    {
+      "id": "input_1",
+      "qcp_bind": {
+        "id": "input_1",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "t": "make_tree(empty,1,10,empty)"
+        }
+      },
+      "native_setup": "struct tree a={1,10,0,0};int r=sample(&a);",
+      "native_check": "r==1",
+      "expected": {
+        "return": 1
+      },
+      "logical_input": {
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "t": "make_tree(empty,1,10,empty)"
+        }
+      },
+      "wrong_post_violated": true
+    },
+    {
+      "id": "input_2",
+      "qcp_bind": {
+        "id": "input_2",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "t": "make_tree(make_tree(empty,1,10,empty),2,20,make_tree(empty,3,30,empty))"
+        }
+      },
+      "native_setup": "struct tree a={1,10,0,0}; struct tree b={3,30,0,0}; struct tree c={2,20,&a,&b};int r=sample(&c);",
+      "native_check": "r==3",
+      "expected": {
+        "return": 3
+      },
+      "logical_input": {
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "t": "make_tree(make_tree(empty,1,10,empty),2,20,make_tree(empty,3,30,empty))"
+        }
+      },
+      "wrong_post_violated": true
+    },
+    {
+      "id": "input_3",
+      "qcp_bind": {
+        "id": "input_3",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "t": "make_tree(empty,1,10,make_tree(empty,2,20,make_tree(empty,3,30,make_tree(empty,4,40,empty))))"
+        }
+      },
+      "native_setup": "struct tree d={4,40,0,0}; struct tree c={3,30,0,&d}; struct tree b={2,20,0,&c}; struct tree a={1,10,0,&b};int r=sample(&a);",
+      "native_check": "r==4",
+      "expected": {
+        "return": 4
+      },
+      "logical_input": {
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "t": "make_tree(empty,1,10,make_tree(empty,2,20,make_tree(empty,3,30,make_tree(empty,4,40,empty))))"
+        }
+      },
+      "wrong_post_violated": true
+    }
+  ],
+  "qcp_include_dirs": [
+    "runtime/qcip/QCP_examples",
+    "runtime/qcip/QCP_examples/QCP_demos_human"
+  ],
+  "support_files": [
+    "TreeMeasure.v"
+  ],
+  "spec_relation": "manual corresponding translation; no machine-checked equivalence claim",
+  "harness_policy": "Input construction and target call only in tool runs; native oracle checks run separately.",
+  "role": "common-set"
+}

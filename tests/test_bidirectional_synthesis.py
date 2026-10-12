@@ -126,10 +126,10 @@ class BidirectionalSynthesisTests(unittest.TestCase):
                 ),
                 split,
             )
-        self.assertFalse(score["correct"])
+        self.assertTrue(score["correct"])
         self.assertEqual(score["reference_counts"]["PASS"], 30)
-        self.assertEqual(score["mutation_summary"]["killed"], 0)
-        self.assertEqual(score["mutation_summary"]["unresolved"], 12)
+        self.assertEqual(score["mutation_summary"]["killed"], 12)
+        self.assertEqual(score["mutation_summary"]["unresolved"], 0)
 
     def test_state_binding_rejects_computed_or_unmapped_inputs(self) -> None:
         _, states = self.runner["load_protocol"]()
@@ -283,13 +283,13 @@ class BidirectionalSynthesisTests(unittest.TestCase):
             {"schema", "syntax_valid", "stage", "diagnostic"},
         )
 
-    def test_legacy_oracle_does_not_treat_unproved_mutants_as_counterexamples(
+    def test_path_vc_oracle_rejects_confirmed_mutants(
         self,
     ) -> None:
         split, states = self.runner["load_protocol"]()
         with tempfile.TemporaryDirectory(prefix="tespec-bidirectional-oracle-") as temp:
             report = self.runner["oracle_audit"](Path(temp), split, states)
-        self.assertFalse(report["code_to_spec"]["correct"])
+        self.assertTrue(report["code_to_spec"]["correct"])
         self.assertTrue(report["spec_to_code"]["correct"])
         self.assertEqual(
             [item["hidden_tests_passed"] for item in report["code_to_spec"]["groups"]],

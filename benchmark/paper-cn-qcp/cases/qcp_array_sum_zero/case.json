@@ -1,0 +1,212 @@
+{
+  "id": "qcp_array_sum_zero",
+  "origin_family": "qcp-sum",
+  "category": "array reduction and destructive update",
+  "difficulty": "medium",
+  "function": "arr_sum_update",
+  "sources": [
+    {
+      "path": "sources/qcp/sum.c",
+      "sha256": "80e2c298da18de53403e5581d28d4d8ba6dc8cb9b844e9843369d08128e52548"
+    }
+  ],
+  "adaptations": [
+    "Intermediate proof hints/invariants omitted from both primary function-contract versions.",
+    "Two reduction functions share one upstream source family; report both function-level and family-level aggregates."
+  ],
+  "variants": [
+    "reference",
+    "wrong_post"
+  ],
+  "mutations": {
+    "cn": [
+      "return == Sum(A,n)",
+      "return == Sum(A,n)+1"
+    ],
+    "qcp": [
+      "__return == sum(l)",
+      "__return == sum(l)+1"
+    ]
+  },
+  "inputs": [
+    {
+      "id": "input_0",
+      "qcp_bind": {
+        "id": "input_0",
+        "args": {
+          "n": 1,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            0
+          ]
+        }
+      },
+      "native_setup": "int a[]={0}; int r=arr_sum_update(1,a);",
+      "native_check": "r==0 && a[0]==0",
+      "expected": {
+        "return": 0,
+        "array": [
+          0
+        ]
+      },
+      "logical_input": {
+        "args": {
+          "n": 1,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            0
+          ]
+        }
+      },
+      "wrong_post_violated": true
+    },
+    {
+      "id": "input_1",
+      "qcp_bind": {
+        "id": "input_1",
+        "args": {
+          "n": 2,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            3,
+            5
+          ]
+        }
+      },
+      "native_setup": "int a[]={3,5}; int r=arr_sum_update(2,a);",
+      "native_check": "r==8 && a[0]==0 && a[1]==0",
+      "expected": {
+        "return": 8,
+        "array": [
+          0,
+          0
+        ]
+      },
+      "logical_input": {
+        "args": {
+          "n": 2,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            3,
+            5
+          ]
+        }
+      },
+      "wrong_post_violated": true
+    },
+    {
+      "id": "input_2",
+      "qcp_bind": {
+        "id": "input_2",
+        "args": {
+          "n": 4,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            99,
+            0,
+            1,
+            42
+          ]
+        }
+      },
+      "native_setup": "int a[]={99,0,1,42}; int r=arr_sum_update(4,a);",
+      "native_check": "r==142 && a[0]==0 && a[1]==0 && a[2]==0 && a[3]==0",
+      "expected": {
+        "return": 142,
+        "array": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "logical_input": {
+        "args": {
+          "n": 4,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            99,
+            0,
+            1,
+            42
+          ]
+        }
+      },
+      "wrong_post_violated": true
+    },
+    {
+      "id": "input_3",
+      "qcp_bind": {
+        "id": "input_3",
+        "args": {
+          "n": 8,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ]
+        }
+      },
+      "native_setup": "int a[]={1,2,3,4,5,6,7,8}; int r=arr_sum_update(8,a);",
+      "native_check": "r==36 && a[0]==0 && a[1]==0 && a[2]==0 && a[3]==0 && a[4]==0 && a[5]==0 && a[6]==0 && a[7]==0",
+      "expected": {
+        "return": 36,
+        "array": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "logical_input": {
+        "args": {
+          "n": 8,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8
+          ]
+        }
+      },
+      "wrong_post_violated": true
+    }
+  ],
+  "qcp_include_dirs": [
+    "runtime/qcip/QCP_examples/QCP_demos_human"
+  ],
+  "spec_relation": "manual corresponding translation; no machine-checked CN/QCP equivalence claim",
+  "harness_policy": "Input construction and target call only in tool runs; native oracle checks run separately.",
+  "role": "common-set"
+}

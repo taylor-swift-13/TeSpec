@@ -1,0 +1,220 @@
+{
+  "id": "cn_array_swap",
+  "origin_family": "cn-tutorial",
+  "category": "indexed array update",
+  "difficulty": "medium",
+  "function": "array_swap",
+  "sources": [
+    {
+      "path": "sources/cn-tutorial/src/exercises/array_swap.c",
+      "sha256": "6ce2523cf01f45a093d721895b66c0f6e67f3f65445bba4bfafa05d72c6de0d6"
+    }
+  ],
+  "adaptations": [
+    "CN focus/instantiate proof hints omitted from paired executable body; function contract retained."
+  ],
+  "variants": [
+    "reference",
+    "wrong_post"
+  ],
+  "mutations": {
+    "cn": [
+      "B == A[i: A[j], j: A[i]]",
+      "B == A"
+    ],
+    "qcp": [
+      "replace_Znth(j,Znth(i,l,0),replace_Znth(i,Znth(j,l,0),l))",
+      "l"
+    ]
+  },
+  "inputs": [
+    {
+      "id": "input_0",
+      "qcp_bind": {
+        "id": "input_0",
+        "args": {
+          "n": 2,
+          "i": 0,
+          "j": 1,
+          "p": 4096
+        },
+        "values": {
+          "l": [
+            1,
+            2
+          ]
+        }
+      },
+      "native_setup": "int a[]={1,2}; array_swap(a,2,0,1);",
+      "native_check": "a[0] == 2 && a[1] == 1",
+      "expected": {
+        "array": [
+          2,
+          1
+        ]
+      },
+      "logical_input": {
+        "args": {
+          "n": 2,
+          "i": 0,
+          "j": 1,
+          "p": 4096
+        },
+        "values": {
+          "l": [
+            1,
+            2
+          ]
+        }
+      },
+      "wrong_post_violated": true
+    },
+    {
+      "id": "input_1",
+      "qcp_bind": {
+        "id": "input_1",
+        "args": {
+          "n": 3,
+          "i": 0,
+          "j": 2,
+          "p": 4096
+        },
+        "values": {
+          "l": [
+            3,
+            1,
+            7
+          ]
+        }
+      },
+      "native_setup": "int a[]={3,1,7}; array_swap(a,3,0,2);",
+      "native_check": "a[0] == 7 && a[1] == 1 && a[2] == 3",
+      "expected": {
+        "array": [
+          7,
+          1,
+          3
+        ]
+      },
+      "logical_input": {
+        "args": {
+          "n": 3,
+          "i": 0,
+          "j": 2,
+          "p": 4096
+        },
+        "values": {
+          "l": [
+            3,
+            1,
+            7
+          ]
+        }
+      },
+      "wrong_post_violated": true
+    },
+    {
+      "id": "input_2",
+      "qcp_bind": {
+        "id": "input_2",
+        "args": {
+          "n": 4,
+          "i": 1,
+          "j": 3,
+          "p": 4096
+        },
+        "values": {
+          "l": [
+            -5,
+            0,
+            8,
+            2
+          ]
+        }
+      },
+      "native_setup": "int a[]={-5,0,8,2}; array_swap(a,4,1,3);",
+      "native_check": "a[0] == -5 && a[1] == 2 && a[2] == 8 && a[3] == 0",
+      "expected": {
+        "array": [
+          -5,
+          2,
+          8,
+          0
+        ]
+      },
+      "logical_input": {
+        "args": {
+          "n": 4,
+          "i": 1,
+          "j": 3,
+          "p": 4096
+        },
+        "values": {
+          "l": [
+            -5,
+            0,
+            8,
+            2
+          ]
+        }
+      },
+      "wrong_post_violated": true
+    },
+    {
+      "id": "input_3",
+      "qcp_bind": {
+        "id": "input_3",
+        "args": {
+          "n": 5,
+          "i": 4,
+          "j": 0,
+          "p": 4096
+        },
+        "values": {
+          "l": [
+            9,
+            4,
+            3,
+            2,
+            1
+          ]
+        }
+      },
+      "native_setup": "int a[]={9,4,3,2,1}; array_swap(a,5,4,0);",
+      "native_check": "a[0] == 1 && a[1] == 4 && a[2] == 3 && a[3] == 2 && a[4] == 9",
+      "expected": {
+        "array": [
+          1,
+          4,
+          3,
+          2,
+          9
+        ]
+      },
+      "logical_input": {
+        "args": {
+          "n": 5,
+          "i": 4,
+          "j": 0,
+          "p": 4096
+        },
+        "values": {
+          "l": [
+            9,
+            4,
+            3,
+            2,
+            1
+          ]
+        }
+      },
+      "wrong_post_violated": true
+    }
+  ],
+  "qcp_include_dirs": [
+    "runtime/qcip/QCP_examples/QCP_demos_human"
+  ],
+  "spec_relation": "manual corresponding translation; no machine-checked CN/QCP equivalence claim",
+  "harness_policy": "Input construction and target call only in tool runs; native oracle checks run separately.",
+  "role": "common-set"
+}

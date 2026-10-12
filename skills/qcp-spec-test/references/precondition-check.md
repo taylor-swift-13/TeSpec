@@ -1,77 +1,60 @@
-# Require satisfiability workflow
+# Require satisfiability
 
-Use this flow when testing whether a QCP `Require` is satisfiable without
-executing the function body. Keep the test's logical bindings explicit; a
-pointer may stay symbolic when only its identity/alias constraints matter.
+The automatic stage instantiates selected logical inputs and checks Require
+before using it as an initial symbolic state. Pointer addresses can remain
+symbolic. SAT requires a nonempty represented state class; UNSAT makes the
+test FAIL. UNKNOWN permits further proof work but is not evidence of
+existence or inconsistency.
 
-## Automatic stage
+For an unresolved positive satisfiability VC, use the complete run-certificate
+workflow in [residual-vc.md](residual-vc.md). A proof may construct a mathematical
+heap witness internally without adding numerical pointer bindings to the test.
+Use the actual selected runtime's typed storage and separation definitions.
+Do not assume fields are disjoint, invent layout facts, or assume Require as
+a premise of its own satisfiability proof.
 
-1. Run the symexec precondition checker with the selected source, function,
-   spec, and logical bindings. SMT `SAT` and `UNSAT` are final automatic
-   results. Preserve `UNKNOWN` for the proof stage; SMT unknown is neither
-   satisfiability nor contradiction.
-2. If Agent/ITP mode is enabled, create two isolated VC candidates for each
-   `UNKNOWN`, both for the same instantiated `Require`:
-   - SAT candidate: prove the generated positive satisfiability proposition.
-   - UNSAT candidate: rerun with `--precondition-proof-negation` and prove
-     the generated negated satisfiability proposition.
-3. This automatic stage always runs, whether or not Agent proof work is
-   enabled. Do not skip instantiation or SMT when Agent mode is off. With Agent
-   mode disabled, return automatic `SAT`/`UNSAT` results as usual and leave
-   only unresolved SMT `UNKNOWN` cases as `UNKNOWN`; candidate VCs are not
-   needed in that mode.
-4. In Agent/ITP mode, do not turn either candidate's failed or incomplete
-   proof into a result.
-
-The generated candidate directories and manifests must be separate so each
-proof has its own immutable goal and `proof_manual` file. Use the existing
-symexec/QCP VC generation and prepare each manifest from the generated files:
+For an unresolved initial satisfiability VC, the controller can select a
+negative certificate before handing the frozen bundle to the proof Agent:
 
 ```bash
-python3 -m spectest prepare-proof PATH/TO/CANDIDATE \
-  PATH/TO/CANDIDATE/GENERATED.c PATH/TO/ORIGINAL.c \
-  --function FUNCTION --case-id CASE_ID
+python3 -m spectest prepare-run-certificates OUTPUT/report.json \
+  --output OUTPUT/refutation --refute-precondition CASE_ID
 ```
 
-Add `--qcip-root` only when using a non-bundled QCP tree, and
-`--dependency-source` when the generated C source does not carry the original
-Coq imports. The manifest preparer pins generated goals and stages their
-dependencies. Do not reconstruct the assertion or omit definitions imported
-by the VC.
+The option is repeatable and is also accepted by `run-agent.sh`. It requires
+one original initial-satisfiability goal for each selected case. A disjunction
+inside that goal is refuted as a whole; refuting only one alternative is
+insufficient. Already negated precondition goals cannot be selected again.
+The prepared candidate negates the selected original proposition and retains
+the other interface obligations. The Agent must preserve these statements.
 
-## Single-Agent ITP stage
+The controller runs `check-run-certificates` with its held preparation digest.
+An accepted negative initial certificate sets Require to UNSAT and the case to
+FAIL, recording `CHECKED_PRECONDITION_REFUTATION`. This establishes an empty
+initial domain, not a program execution error. The command exits 1 for FAIL;
+inspect the report to distinguish it from a failed certificate. Failed proofs
+remain UNKNOWN. Declaration-only cases retain their specification-only scope.
 
-The automatic stage must finish first and emit all candidate VC manifests. If
-its ITP VC inventory is empty, skip the Agent flow. Otherwise start one Agent
-for the complete proof stage. That Agent handles every SAT and UNSAT candidate
-in the inventory, edits each candidate's `proof_manual` file, and runs the
-fixed checker. Do not create a separate proof sub-agent or delegate checker
-calls.
+The Agent first assesses each original VC and attempts a positive proof. If it
+judges a VC false, it can write `proof-plan.json` with
+`{"refute_vcs": {"CASE_ID": "PROOF_NAME"}, "refute_preconditions": ["CASE_ID"]}`.
+This plan only selects proof polarity. The controller first checks the positive
+attempt, then prepares immutable negative statements for unresolved cases.
+A second attempt must prove the original statement's negation. Neither judgement
+nor an unsuccessful positive attempt establishes INVALID.
 
-For full program spec tests, select `expand` or `no-expand` before the
-automatic stage. Expand mode unrolls loops and executes available function
-bodies, simplifying states during execution. No-expand mode follows ordinary
-QCP symbolic execution with instantiated formulas, invariant and contract VCs,
-and continuous expression simplification. The report's `vc_policy` records
-which path produced its proof queue.
+Explicit `--refute-vc CASE_ID=PROOF_NAME` is accepted by the runner and
+`prepare-run-certificates`. It freezes one selected original VC; a checked
+negative proof sets that VC to INVALID and the case to FAIL, while unrelated
+VCs may remain UNKNOWN. A standalone negative certificate reports VC validity
+without claiming that a complete execution was checked. Failed attempts remain
+UNKNOWN. Entry UNSAT and other VC INVALID remain distinct obligation results.
 
-After filling a candidate proof, the Agent invokes the fixed checker:
+One proof Agent handles the requested positive and negative candidates; the
+external controller handles acceptance. Failed attempts remain UNKNOWN. If
+both polarities appear accepted for the same frozen proposition, keep the case
+unresolved and investigate dependency consistency and proof scope.
 
-```bash
-python3 -m spectest check-proof PATH/TO/CANDIDATE/manifest.json
-```
-
-Use only successful checker reports to classify:
-
-- SAT proof passes, UNSAT proof does not: `SAT`.
-- UNSAT proof passes, SAT proof does not: `UNSAT`.
-- Neither passes: `UNKNOWN`.
-- Both pass: report an inconsistent proof result and keep the case unresolved;
-  do not choose one outcome.
-
-A proof error, timeout, or rejected proof is simply a failed candidate. The
-Agent may revise the proof and rerun the checker. Proof files remain manual
-artifacts even when checked successfully. The deterministic symexec and
-`spectest` layers never launch an Agent. Agent mode adds ITP only for cases
-left UNKNOWN after that same automatic flow; it does not replace automatic
-checking.
+Both execution modes actually execute loops and available function bodies.
+They differ in intermediate checking boundaries. A declaration-only target
+can perform a Require-only check; success retains `specification-only` scope.

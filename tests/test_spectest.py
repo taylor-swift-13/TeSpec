@@ -30,6 +30,7 @@ from spectest.core import (
     run_job,
     source_with_local_includes,
     specialize_source,
+    specialize_entry_source,
 )
 
 
@@ -41,6 +42,47 @@ LOCAL_QCP = bundled_qcp_binary()
 
 
 class SpecializationTests(unittest.TestCase):
+    def test_entry_specialization_preserves_named_call_contract_and_avoids_collision(
+        self,
+    ):
+        source = """int __tespec_entry;
+int f(int n)
+/*@ original With v Require n == v && emp Ensure __return == v */
+{ if (n == 0) return 0; return f(n - 1) + 1; }
+"""
+        generated, name = specialize_entry_source(
+            source, "f", {"v": 3}, "original", argument_bindings={"n": 3}
+        )
+        self.assertEqual(name, "__tespec_entry_")
+        original = analyze_source(source, "f", "original")
+        preserved = analyze_source(generated, "f", "original")
+        self.assertEqual(original["value_bindings"], preserved["value_bindings"])
+        self.assertIn("/*@ original With v Require n == v && emp", generated)
+        self.assertLess(
+            generated.index("/*@ __tespec_entry_"), generated.index("/*@ original")
+        )
+        self.assertIn("(n == (3)) && (v == (3))", generated)
+
+    def test_declaration_entry_keeps_one_satisfiability_domain(self):
+        source = "int f(int n) /*@ Require n >= 0 && emp Ensure emp */;"
+        generated, name = specialize_entry_source(
+            source, "f", {}, argument_bindings={"n": 2}
+        )
+        self.assertIsNone(name)
+        self.assertEqual(generated.count("Require"), 1)
+
+    def test_architecture_option_requires_an_explicit_supported_integer(self):
+        self.assertEqual(_parse_qcp_config({}, ROOT, ROOT).architecture_bits, 32)
+        self.assertEqual(
+            _parse_qcp_config(
+                {"qcp": {"architecture_bits": 64}}, ROOT, ROOT
+            ).architecture_bits,
+            64,
+        )
+        for value in (True, "64", 64.0, 16, None):
+            with self.subTest(value=value), self.assertRaises(JobError):
+                _parse_qcp_config({"qcp": {"architecture_bits": value}}, ROOT, ROOT)
+
     def test_instance_trace_option_is_typed_and_opt_in(self):
         self.assertFalse(_parse_qcp_config({}, ROOT, ROOT).instance_trace)
         self.assertTrue(
@@ -69,6 +111,157 @@ class SpecializationTests(unittest.TestCase):
         )
         self.assertEqual(result["status"], "ERROR")
         self.assertEqual(result["reason"], "invalid_executor_json")
+
+    def test_pass_requires_complete_execution_and_all_selected_checks(self):
+        import copy
+
+        base = {
+            "schema": "sac-spec-test/v1",
+            "scope": "execution",
+            "mode": "no-expand",
+            "certificate": "AUTO",
+            "overall": "PASS",
+            "completed": True,
+            "phases": {
+                "precondition": "SAT",
+                "safety": "PASS",
+                "postcondition": "PASS",
+                "annotations": "PASS",
+            },
+        }
+        vc = {"status": "auto_proved", "residual_goals": []}
+        for field, value in [
+            ("completed", False),
+            ("completed", None),
+            ("safety", "UNKNOWN"),
+            ("postcondition", "UNKNOWN"),
+            ("annotations", "UNKNOWN"),
+            ("annotations", "NOT_RUN"),
+        ]:
+            with self.subTest(field=field, value=value):
+                candidate = copy.deepcopy(base)
+                if field == "completed":
+                    candidate[field] = value
+                else:
+                    candidate["phases"][field] = value
+                result = _executor_result(json.dumps({"spec_test": candidate}), 0, vc)
+                self.assertEqual(result["status"], "ERROR")
+        self.assertEqual(
+            _executor_result(json.dumps({"spec_test": base}), 0, vc)["status"], "PASS"
+        )
+        base["mode"] = "expand"
+        base["phases"]["annotations"] = "NOT_RUN"
+        self.assertEqual(
+            _executor_result(json.dumps({"spec_test": base}), 0, vc)["status"], "PASS"
+        )
+        self.assertEqual(
+            _executor_result(
+                json.dumps({"spec_test": base, "errormessage": "error"}), 0, vc
+            )["status"],
+            "ERROR",
+        )
+        base["annotation_policy"] = "check-preserve"
+        self.assertEqual(
+            _executor_result(json.dumps({"spec_test": base}), 0, vc)["status"], "ERROR"
+        )
+
+    def test_executor_failure_claim_without_path_certificate_stays_unknown(self):
+        base = {
+            "schema": "sac-spec-test/v1",
+            "scope": "execution",
+            "mode": "no-expand",
+            "certificate": "CHECKED",
+            "overall": "FAIL",
+            "completed": True,
+            "phases": {
+                "precondition": "SAT",
+                "safety": "PASS",
+                "postcondition": "PASS",
+                "annotations": "UNKNOWN",
+            },
+            "execution_counterexample": "CONFIRMED",
+        }
+        vc = {"status": "auto_proved", "residual_goals": []}
+        result = _executor_result(json.dumps({"spec_test": base}), 0, vc)
+        self.assertEqual(result["status"], "UNKNOWN")
+        self.assertEqual(result["executor_reported_status"], "FAIL")
+        self.assertEqual(result["reason"], "execution_counterexample_not_checked")
+        self.assertEqual(result["evidence"]["certificate"], "NOT_CHECKED")
+        self.assertIsNone(result["satisfied"])
+
+    def test_invalid_requires_proved_unsatisfiable_require(self):
+        base = {
+            "schema": "sac-spec-test/v1",
+            "scope": "execution",
+            "mode": "expand",
+            "certificate": "AUTO",
+            "overall": "INVALID",
+            "completed": False,
+            "phases": {
+                "precondition": "UNSAT",
+                "safety": "NOT_RUN",
+                "postcondition": "NOT_RUN",
+                "annotations": "NOT_RUN",
+            },
+        }
+        vc = {"status": "auto_proved", "residual_goals": []}
+        for precondition in ("SAT", "UNKNOWN", "NOT_CHECKED", "UNSAT"):
+            with self.subTest(precondition=precondition):
+                base["phases"]["precondition"] = precondition
+                result = _executor_result(json.dumps({"spec_test": base}), 0, vc)
+                self.assertEqual(
+                    result["status"], "INVALID" if precondition == "UNSAT" else "ERROR"
+                )
+
+    def test_specification_only_pass_cannot_claim_implementation_checks(self):
+        base = {
+            "schema": "sac-spec-test/v1",
+            "scope": "specification-only",
+            "mode": "no-expand",
+            "certificate": "AUTO",
+            "overall": "PASS",
+            "completed": True,
+            "phases": {
+                "precondition": "SAT",
+                "safety": "NOT_RUN",
+                "postcondition": "NOT_RUN",
+                "annotations": "NOT_RUN",
+            },
+        }
+        vc = {"status": "auto_proved", "residual_goals": []}
+        result = _executor_result(json.dumps({"spec_test": base}), 0, vc)
+        self.assertEqual(result["status"], "PASS")
+        self.assertFalse(result["execution_completed"])
+        base["phases"]["postcondition"] = "PASS"
+        self.assertEqual(
+            _executor_result(json.dumps({"spec_test": base}), 0, vc)["status"], "ERROR"
+        )
+
+    def test_completed_declaration_analysis_does_not_claim_execution(self):
+        output = {
+            "spec_test": {
+                "schema": "sac-spec-test/v1",
+                "scope": "specification-only",
+                "mode": "no-expand",
+                "certificate": "RESIDUAL",
+                "overall": "UNKNOWN",
+                "completed": True,
+                "phases": {
+                    "precondition": "UNKNOWN",
+                    "safety": "NOT_RUN",
+                    "postcondition": "NOT_RUN",
+                    "annotations": "NOT_RUN",
+                },
+            }
+        }
+        result = _executor_result(
+            json.dumps(output),
+            3,
+            {"status": "residual", "residual_goals": ["proof_of_precondition"]},
+        )
+        self.assertFalse(result["execution_completed"])
+        self.assertEqual(result["phases"]["execution"], "NOT_RUN")
+        self.assertEqual(result["reason"], "precondition_requires_proof")
 
     def test_relative_strategy_import_survives_source_relocation(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -354,6 +547,25 @@ From Domain.Nested Require Import First Second.
                 "Domain.Nested.Second",
             ],
         )
+
+    def test_dependency_exports_plain_requires_and_noncode(self):
+        source = '''(* Require Hidden. (* nested *) Require Export HiddenToo. *)
+Definition text := "Require Fake. "" From Fake Require More. """.
+From Domain Require (* explanation *) Export First Second.
+Require Plain.Module.
+Require Import Other.
+'''
+        self.assertEqual(
+            _coq_required_modules(source),
+            ["Domain.First", "Domain.Second", "Plain.Module", "Other"],
+        )
+        self.assertEqual(
+            _source_coq_imports("/*@ Import Coq From Domain Require Export First */"),
+            ["Domain.First"],
+        )
+        for broken in ("(* unfinished", 'Definition s := "unfinished'):
+            with self.subTest(broken=broken), self.assertRaises(JobError):
+                _coq_required_modules(broken)
 
     def test_case_local_coq_module_wins_over_shared_module(self) -> None:
         with tempfile.TemporaryDirectory(prefix="qcp-case-dependency-") as temp:
@@ -794,6 +1006,101 @@ int sample(int *p)
 
 @unittest.skipUnless(LOCAL_QCP.is_file(), "local QCP binary is unavailable")
 class EndToEndTests(unittest.TestCase):
+    def test_mutual_recursion_preserves_explicit_named_contracts(self):
+        source = (ROOT / "benchmark/comparison/mutual-entry/subject.c").read_text()
+        source = source.replace(
+            "first(p, n - 1);", "first(p, n - 1) /*@ where(original) */;"
+        )
+        for mutate in (False, True):
+            with self.subTest(mutate=mutate), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                subject = root / "subject.c"
+                subject.write_text(
+                    source.replace("*p = *p + 2", "*p = *p + 3") if mutate else source
+                )
+                job = root / "job.json"
+                job.write_text(
+                    json.dumps(
+                        {
+                            "source": str(subject),
+                            "function": "first",
+                            "binds": [
+                                {"id": f"n{n}", "args": {"n": n}, "values": {"v": 5}}
+                                for n in (0, 1, 4)
+                            ],
+                            "qcp": {"execution_mode": "no-expand"},
+                        }
+                    )
+                )
+                report = run_job(job, root / "output")
+                self.assertEqual(
+                    [r["status"] for r in report["results"]],
+                    ["PASS", "PASS", "FAIL" if mutate else "PASS"],
+                )
+                last = report["results"][-1]
+                self.assertTrue(last["execution_completed"])
+                self.assertNotEqual(last["reason"], "contract_binding_unknown")
+                calls = {
+                    event["function"]: event["count"]
+                    for event in last["abstraction_events"]
+                    if event["kind"] == "inline-call"
+                }
+                self.assertEqual(calls, {"first": 2, "second": 2})
+
+    def test_recursive_entry_bindings_do_not_constrain_nested_invocations(self):
+        for family in (
+            "recursive_heap",
+            "recursive_heap_weak",
+            "recursive_heap_bad_boundary",
+        ):
+            for mode in ("expand", "no-expand"):
+                with (
+                    self.subTest(family=family, mode=mode),
+                    tempfile.TemporaryDirectory() as tmp,
+                ):
+                    root = Path(tmp)
+                    job = root / "job.json"
+                    job.write_text(
+                        json.dumps(
+                            {
+                                "source": str(
+                                    ROOT
+                                    / "benchmark/comparison/paired"
+                                    / family
+                                    / "case.qcp.c"
+                                ),
+                                "function": "step",
+                                "binds": [
+                                    {
+                                        "id": f"n{n}",
+                                        "args": {"n": n},
+                                        "values": {"v": 100 - n},
+                                    }
+                                    for n in (0, 1, 3)
+                                ],
+                                "qcp": {"execution_mode": mode},
+                            }
+                        )
+                    )
+                    report = run_job(job, root / "output")
+                    for n, result in zip((0, 1, 3), report["results"]):
+                        bad = family == "recursive_heap_bad_boundary"
+                        expected = (
+                            "UNKNOWN"
+                            if bad and (n == 0 or mode == "no-expand")
+                            else "PASS"
+                        )
+                        self.assertEqual(result["status"], expected)
+                        self.assertTrue(result["execution_completed"])
+                        self.assertEqual(result["phases"]["precondition"], "SAT")
+                        self.assertNotEqual(
+                            result["reason"], "contract_binding_unknown"
+                        )
+                        if bad and n > 0 and mode == "no-expand":
+                            self.assertEqual(result["phases"]["postcondition"], "PASS")
+                            self.assertEqual(result["phases"]["annotations"], "UNKNOWN")
+                            self.assertTrue(result["residual_vcs"])
+
     def _run(self, relative_job: str) -> dict:
         job_path = ROOT / relative_job
         with tempfile.TemporaryDirectory(prefix="qcp-spectest-test-") as temp:
@@ -805,7 +1112,15 @@ class EndToEndTests(unittest.TestCase):
         self.assertEqual(report["summary"]["total"], 2)
         for result in report["results"]:
             self.assertEqual(result["phases"]["precondition"], "UNKNOWN")
-            self.assertEqual(result["phases"]["postcondition"], "PASS")
+            # The imported one-way unfolding strategy drops internal-node
+            # non-null facts; ownership alone cannot prove them in QCP's model.
+            # Keep the original return obligation instead of inventing facts.
+            self.assertEqual(result["phases"]["safety"], "PASS")
+            self.assertEqual(result["phases"]["execution"], "PASS")
+            self.assertEqual(result["phases"]["postcondition"], "UNKNOWN")
+            self.assertIn(
+                "proof_of_sll_first_value_return_wit_1", result["residual_vcs"]
+            )
 
     def test_wrong_postcondition_retains_unproved_vc(self) -> None:
         report = self._run("cases/sll_first_value_wrong/job.json")
@@ -884,7 +1199,7 @@ class ConcreteLoopEndToEndTests(unittest.TestCase):
     def test_float_arithmetic_signed_zero_and_struct_store(self) -> None:
         division = self._run("cases/float_operations/job_float_div.json")
         self.assertEqual(division["summary"]["PASS"], 3)
-        self.assertEqual(division["summary"]["INVALID"], 1)
+        self.assertEqual(division["summary"]["FAIL"], 1)
         invalid = next(
             item for item in division["results"] if item["id"] == "zero_divisor_invalid"
         )
@@ -924,10 +1239,13 @@ class ConcreteLoopEndToEndTests(unittest.TestCase):
                     report["summary"]["total"],
                 )
 
-    def test_wrong_loop_postcondition_retains_unproved_vc(self) -> None:
+    def test_wrong_loop_postcondition_reports_invalid_vc(self) -> None:
         report = self._run("cases/count_loop_wrong/job.json")
-        self.assertEqual(report["results"][0]["status"], "UNKNOWN")
-        self.assertIsNone(report["results"][0]["satisfied"])
+        self.assertEqual(report["results"][0]["status"], "FAIL")
+        self.assertFalse(report["results"][0]["satisfied"])
+        self.assertTrue(
+            any(v["status"] == "INVALID" for v in report["results"][0]["vc_results"])
+        )
         self.assertTrue(report["results"][0]["vc"]["residual_goals"])
 
     def test_loop_limit_is_unknown_not_pass(self) -> None:
@@ -995,8 +1313,11 @@ class ConcreteLoopEndToEndTests(unittest.TestCase):
         report = self._run("cases/recursive_nested_composition/job.json")
         self.assertEqual(
             [result["status"] for result in report["results"]],
-            ["PASS", "PASS", "UNKNOWN"],
+            ["PASS", "PASS", "FAIL"],
         )
+        self.assertTrue(any(
+            vc["status"] == "INVALID" for vc in report["results"][2]["vc_results"]
+        ))
 
     def test_arrays_of_closed_structs_can_contain_arrays(self) -> None:
         report = self._run("cases/closed_struct_array/job.json")
@@ -1027,7 +1348,7 @@ class ConcreteLoopEndToEndTests(unittest.TestCase):
 
     def test_binding_that_contradicts_require_is_rejected(self) -> None:
         report = self._run("cases/invalid_binding/job.json")
-        self.assertEqual(report["results"][0]["status"], "INVALID")
+        self.assertEqual(report["results"][0]["status"], "FAIL")
         self.assertEqual(report["results"][0]["reason"], "bindings_violate_require")
 
     def test_closed_znth_safety_vc_is_classified_as_auto(self) -> None:

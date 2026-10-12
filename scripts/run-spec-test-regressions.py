@@ -32,7 +32,11 @@ def main() -> int:
         for mode in ("expand", "no-expand"):
             directory = output / "artifacts" / f"{index:03d}" / mode
             directory.mkdir(parents=True, exist_ok=True)
-            source = args.examples.resolve() / entry["source"]
+            source = (
+                ROOT / entry["fixture_source"]
+                if "fixture_source" in entry
+                else args.examples.resolve() / entry["source"]
+            ).resolve()
             job = {
                 "source": str(source),
                 "function": entry["function"],

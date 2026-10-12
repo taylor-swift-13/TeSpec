@@ -475,7 +475,7 @@ def programs():
     ]
     # Finite symbolic-address shapes: no numeric heap addresses in Require.
     node = "struct Node { int value; struct Node *next; };"
-    shape = "data_at(&(p->value),int,v)*data_at(&(p->next),struct Node*,q)*data_at(&(q->value),int,2)*data_at(&(q->next),struct Node*,0)"
+    shape = "p!=0 && q!=0 && data_at(&(p->value),int,v)*data_at(&(p->next),struct Node*,q)*data_at(&(q->value),int,2)*data_at(&(q->next),struct Node*,0)"
     linked = heap_inputs(
         "struct Node q={{2,0}}; struct Node p={{{v},&q}};",
         "&p,&q",
@@ -508,7 +508,7 @@ def programs():
         ),
     ]
     tree = "struct Tree { int v; struct Tree *l; struct Tree *r; };"
-    tree_shape = " * ".join(
+    tree_shape = "p!=0 && a!=0 && b!=0 && " + " * ".join(
         [
             f"data_at(&({p}->v),int,{v}) * data_at(&({p}->l),struct Tree*,{l}) * data_at(&({p}->r),struct Tree*,{r})"
             for p, v, l, r in [
@@ -661,7 +661,7 @@ def programs():
             ("p->v++", "p->v+=2"),
         )
     )
-    dag_shape = "data_at(&(p->v),int,v)*data_at(&(p->l),struct Tree*,q)*data_at(&(p->r),struct Tree*,q)*data_at(&(q->v),int,2)*data_at(&(q->l),struct Tree*,0)*data_at(&(q->r),struct Tree*,0)"
+    dag_shape = "p!=0 && q!=0 && data_at(&(p->v),int,v)*data_at(&(p->l),struct Tree*,q)*data_at(&(p->r),struct Tree*,q)*data_at(&(q->v),int,2)*data_at(&(q->l),struct Tree*,0)*data_at(&(q->r),struct Tree*,0)"
     ps.append(
         heap(
             "shared_dag",
@@ -681,7 +681,7 @@ def programs():
         )
     )
     dnode = "struct DNode { int value; struct DNode *next; struct DNode *prev; };"
-    dshape = "data_at(&(p->value),int,v)*data_at(&(p->next),struct DNode*,q)*data_at(&(p->prev),struct DNode*,0)*data_at(&(q->value),int,2)*data_at(&(q->next),struct DNode*,0)*data_at(&(q->prev),struct DNode*,p)"
+    dshape = "p!=0 && q!=0 && data_at(&(p->value),int,v)*data_at(&(p->next),struct DNode*,q)*data_at(&(p->prev),struct DNode*,0)*data_at(&(q->value),int,2)*data_at(&(q->next),struct DNode*,0)*data_at(&(q->prev),struct DNode*,p)"
     dpost = "data_at(&(p->value),int,v)*data_at(&(p->next),struct DNode*,0)*data_at(&(p->prev),struct DNode*,q)*data_at(&(q->value),int,2)*data_at(&(q->next),struct DNode*,p)*data_at(&(q->prev),struct DNode*,0)"
     ps.append(
         heap(
@@ -800,7 +800,7 @@ def scenarios():
         "vc_boundaries",
         "int f(int x) /*@ Require x==99 && emp Ensure __return==3 && emp */ { return x+1; } int sample(void) /*@ Require emp Ensure __return==3 && emp */ { return f(2); }",
         passed,
-        {**bad_boundary, "negative_kind": None, "reason": "contract_binding_unknown"},
+        {**bad_boundary, "negative_kind": None, "reason": "invalid_path_vc"},
     )
     add(
         "weak_callee_ensure",

@@ -14,9 +14,8 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
-
-class JobError(ValueError):
-    """The job cannot be executed safely or unambiguously."""
+from .errors import JobError
+from .verdict import _executor_result, _executor_target_layout
 
 
 _C_SOURCE_ENCODINGS = ("utf-8-sig", "gb18030")
@@ -151,6 +150,7 @@ class QcpConfig:
     instance_trace: bool
     loop_unroll_limit: int
     call_depth_limit: int
+    architecture_bits: int
 
 
 @dataclass(frozen=True)
@@ -1263,6 +1263,35 @@ def specialize_source(
     return source[:start] + specialized_comment + source[end:]
 
 
+def specialize_entry_source(
+    source: str,
+    function: str,
+    bindings: dict[str, Any],
+    spec_name: str | None = None,
+    **kwargs: Any,
+) -> tuple[str, str | None]:
+    """Constrain the root entry without specializing contracts used by calls.
+
+    QCP selects the named entry for initial execution; ordinary and explicitly
+    named calls still see the original contracts in their original order.
+    Declaration-only checks keep their single original goal interface.
+    """
+    specialized = specialize_source(source, function, bindings, spec_name, **kwargs)
+    candidate = _find_function_spec(source, function, spec_name)
+    suffix = re.match(r"\s*(?:/\*@.*?\*/\s*)*([;{])", source[candidate.end :], re.S)
+    if specialized == source or suffix is None or suffix.group(1) == ";":
+        return specialized, spec_name
+    entry = _find_function_spec(specialized, function, spec_name)
+    start = re.search(r"\b(?:With|Require)\b", entry.body)
+    assert start is not None
+    names = set(re.findall(r"\b[A-Za-z_][A-Za-z0-9_]*\b", source))
+    name = "__tespec_entry"
+    while name in names:
+        name += "_"
+    comment = "\n/*@ " + name + " " + entry.body[start.start() :] + "*/"
+    return source[: candidate.start] + comment + "\n" + source[candidate.start :], name
+
+
 def _parse_qcp_config(job: dict[str, Any], base: Path, source_dir: Path) -> QcpConfig:
     raw = _require_object(job.get("qcp", {}), "qcp")
     qcip_root = (
@@ -1290,6 +1319,9 @@ def _parse_qcp_config(job: dict[str, Any], base: Path, source_dir: Path) -> QcpC
     if not isinstance(timeout, (int, float)) or timeout <= 0:
         raise JobError("qcp.timeout_seconds must be positive")
     execution_mode = raw.get("execution_mode", "expand")
+    architecture_bits = raw.get("architecture_bits", 32)
+    if type(architecture_bits) is not int or architecture_bits not in (32, 64):
+        raise JobError("qcp.architecture_bits must be 32 or 64")
     if execution_mode not in ("expand", "no-expand"):
         raise JobError("qcp.execution_mode must be 'expand' or 'no-expand'")
     instance_trace = raw.get("instance_trace", False)
@@ -1329,6 +1361,7 @@ def _parse_qcp_config(job: dict[str, Any], base: Path, source_dir: Path) -> QcpC
         instance_trace=instance_trace,
         loop_unroll_limit=loop_unroll_limit,
         call_depth_limit=call_depth_limit,
+        architecture_bits=architecture_bits,
     )
 
 
@@ -1341,6 +1374,7 @@ def _qcp_command(
 ) -> list[str]:
     command = [
         str(config.binary),
+        f"--arch={config.architecture_bits}",
         f"--input-file={generated_source}",
         "--full-auto",
         "--Json-output",
@@ -1426,14 +1460,14 @@ def _run_measured(
 _SOURCE_COQ_IMPORT_RE = re.compile(
     r"/\*@\s*Import\s+Coq\s+"
     r"(?:(?:From\s+(?P<prefix>[A-Za-z_][A-Za-z0-9_.]*)\s+)?"
-    r"Require\s+Import\s+)"
+    r"Require\s+(?:(?:Import|Export)\s+)?)"
     r"(?P<modules>.*?)\*/",
     re.DOTALL,
 )
 _COQ_LOGICAL_NAME = r"[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*"
 _COQ_REQUIRE_RE = re.compile(
-    rf"(?:(?:From\s+(?P<prefix>{_COQ_LOGICAL_NAME})\s+)?"
-    r"Require\s+Import\s+)"
+    rf"\b(?:(?:From\s+(?P<prefix>{_COQ_LOGICAL_NAME})\s+)?"
+    r"Require\s+(?:(?:Import|Export)\s+)?)"
     rf"(?P<modules>{_COQ_LOGICAL_NAME}"
     rf"(?:\s+{_COQ_LOGICAL_NAME})*)\s*\.",
 )
@@ -1460,11 +1494,47 @@ def _source_coq_imports(source: str) -> list[str]:
     return list(dict.fromkeys(modules))
 
 
+def _coq_dependency_code(source: str) -> str:
+    """Mask nested comments and strings before scanning vernacular imports."""
+    chars = list(source)
+    index, depth = 0, 0
+    quoted = False
+    while index < len(source):
+        pair = source[index : index + 2]
+        width = 1
+        masked = depth > 0 or quoted
+        if depth:
+            if pair == "(*":
+                depth += 1
+                width = 2
+            elif pair == "*)":
+                depth -= 1
+                width = 2
+        elif quoted:
+            if pair == '""':
+                width = 2
+            elif source[index] == '"':
+                quoted = False
+        elif pair == "(*":
+            depth = 1
+            width, masked = 2, True
+        elif source[index] == '"':
+            quoted, masked = True, True
+        if masked:
+            for pos in range(index, index + width):
+                if chars[pos] != "\n":
+                    chars[pos] = " "
+        index += width
+    if depth or quoted:
+        raise JobError("unterminated Rocq comment or string in dependency source")
+    return "".join(chars)
+
+
 def _coq_required_modules(source: str) -> list[str]:
     """Extract Coq source dependencies for case-local recursive staging."""
 
     modules: list[str] = []
-    for match in _COQ_REQUIRE_RE.finditer(source):
+    for match in _COQ_REQUIRE_RE.finditer(_coq_dependency_code(source)):
         modules.extend(
             _qualified_modules(match.group("prefix"), match.group("modules"))
         )
@@ -1512,12 +1582,29 @@ def _resolve_source_coq_module(
     return None
 
 
+def _runtime_coq_module(module: str, qcip_root: Path) -> Path | None:
+    """Resolve a runtime source by the same logical roots used by coqc."""
+    runtime = qcip_root / "SeparationLogic"
+    args = _coq_load_path_args(runtime, Path("."))
+    for index, flag in enumerate(args):
+        if flag not in {"-R", "-Q"}:
+            continue
+        physical, logical = args[index + 1 : index + 3]
+        if logical and module.startswith(logical + "."):
+            relative = module[len(logical) + 1 :]
+            path = Path(physical) / Path(*relative.split(".")).with_suffix(".v")
+            if path.is_file():
+                return path.resolve()
+    return None
+
+
 def _stage_source_coq_dependencies(
     generated_source: Path,
     original_source: Path,
     qcip_root: Path,
     vc_dir: Path,
     dependency_source: str | None = None,
+    runtime_dependencies: list[dict[str, Any]] | None = None,
 ) -> list[dict[str, str]]:
     """Copy explicit source-level Coq imports into an immutable VC-local tree.
 
@@ -1543,6 +1630,28 @@ def _stage_source_coq_dependencies(
         if module in staged_modules or module in visiting:
             return
         physical = _resolve_source_coq_module(module, original_source, qcip_root)
+        runtime_source = _runtime_coq_module(module, qcip_root)
+        if runtime_source is not None:
+            if physical is not None and _sha256(physical) != _sha256(runtime_source):
+                raise JobError(
+                    "source dependency shadows pinned runtime module: " + module
+                )
+            if runtime_dependencies is not None:
+                compiled = runtime_source.with_suffix(".vo")
+                runtime_dependencies.append(
+                    {
+                        "module": module,
+                        "source": str(runtime_source),
+                        "sha256": _sha256(runtime_source),
+                        "compiled": str(compiled) if compiled.is_file() else None,
+                        "compiled_sha256": _sha256(compiled)
+                        if compiled.is_file()
+                        else None,
+                        "origin": "pinned-runtime",
+                    }
+                )
+            staged_modules.add(module)
+            return
         if physical is None:
             return
         visiting.add(module)
@@ -1577,6 +1686,7 @@ def _write_vc_manifest(
     function: str,
     case_id: str,
     dependency_source: str | None = None,
+    executor_output: str | None = None,
 ) -> dict[str, Any]:
     stem = generated_source.stem
     paths = {
@@ -1594,12 +1704,14 @@ def _write_vc_manifest(
             manual,
         )
     counterexample_goals: list[str] = []
+    runtime_dependencies: list[dict[str, Any]] = []
     coq_dependencies = _stage_source_coq_dependencies(
         generated_source,
         original_source,
         qcip_root,
         vc_dir,
         dependency_source,
+        runtime_dependencies,
     )
     manifest = {
         "schema": "qcp-spectest-vc-manifest/v1",
@@ -1628,6 +1740,11 @@ def _write_vc_manifest(
             if paths[name].is_file()
         },
         "coq_dependencies": coq_dependencies,
+        "runtime_dependencies": runtime_dependencies,
+        # Embedded in the immutable certificate manifest during preparation.
+        # This records the selected interpretation, not a proof of frontend
+        # correctness or compatibility of legacy imported predicates.
+        "target_layout": _executor_target_layout(executor_output),
     }
     vc_dir.mkdir(parents=True, exist_ok=True)
     manifest_path = vc_dir / "manifest.json"
@@ -1637,118 +1754,6 @@ def _write_vc_manifest(
     )
     manifest["manifest"] = str(manifest_path)
     return manifest
-
-
-def _executor_result(
-    output: str, returncode: int, vc: dict[str, Any]
-) -> dict[str, Any]:
-    """Consume executor JSON. Missing fields are explicitly unknown, not success."""
-    try:
-        executor = json.loads(output)
-    except json.JSONDecodeError:
-        executor = None
-    if not isinstance(executor, dict):
-        return {
-            "status": "ERROR",
-            "overall": "ERROR",
-            "satisfied": None,
-            "reason": "invalid_executor_json",
-            "phases": {
-                "precondition": "NOT_CHECKED",
-                "safety": "NOT_CHECKED",
-                "postcondition": "NOT_CHECKED",
-                "annotations": "NOT_CHECKED",
-            },
-        }
-    result = executor.get("spec_test")
-    if not isinstance(result, dict) or result.get("schema") != "sac-spec-test/v1":
-        return {
-            "status": "UNKNOWN" if not executor.get("errormessage") else "ERROR",
-            "overall": "UNKNOWN" if not executor.get("errormessage") else "ERROR",
-            "satisfied": None,
-            "reason": "legacy_executor_missing_test_semantics",
-            "scope": "NOT_REPORTED",
-            "phases": {
-                "precondition": "NOT_CHECKED",
-                "safety": "NOT_CHECKED",
-                "postcondition": "NOT_CHECKED",
-                "annotations": "NOT_CHECKED",
-            },
-            "legacy_verification_status": executor.get("verificationStatus"),
-        }
-    required_phases = {"precondition", "safety", "postcondition", "annotations"}
-    if (
-        not isinstance(result.get("phases"), dict)
-        or not required_phases.issubset(result["phases"])
-        or result.get("scope") not in {"execution", "specification-only"}
-        or result.get("mode") not in {"expand", "no-expand"}
-        or "certificate" not in result
-    ):
-        return {
-            "status": "ERROR",
-            "overall": "ERROR",
-            "satisfied": None,
-            "reason": "incomplete_executor_schema",
-        }
-    status = result.get("overall")
-    if status not in {"PASS", "FAIL", "UNKNOWN", "ERROR", "INVALID"}:
-        raise JobError("invalid structured executor verdict")
-    phases = dict(result["phases"])
-    phases["execution"] = (
-        "NOT_RUN"
-        if result["scope"] == "specification-only"
-        or phases["safety"] == phases["postcondition"] == "NOT_RUN"
-        else "PASS"
-        if result.get("completed") is True
-        or (
-            "completed" not in result
-            and phases["safety"] == phases["postcondition"] == "PASS"
-        )
-        else "UNKNOWN"
-    )
-    if status == "PASS" and (returncode != 0 or phases["precondition"] != "SAT"):
-        status = "ERROR"
-    if status == "PASS" and vc["status"] == "not_generated":
-        status = "ERROR"
-    if status == "PASS" and vc["residual_goals"]:
-        status = "UNKNOWN"
-    reason = (
-        result.get("limit_reason")
-        or {
-            "PASS": "qcp_full_auto_passed",
-            "INVALID": "bindings_violate_require",
-            "ERROR": "qcp_execution_error",
-            "UNKNOWN": "residual_vc_requires_proof",
-            "FAIL": "confirmed_counterexample",
-        }[status]
-    )
-    if (
-        status == "UNKNOWN"
-        and phases["precondition"] == "UNKNOWN"
-        and not result.get("limit_reason")
-    ):
-        reason = "precondition_requires_proof"
-    return {
-        "status": status,
-        "overall": status,
-        "satisfied": True if status == "PASS" else None,
-        "reason": reason,
-        "phases": phases,
-        "scope": result["scope"],
-        "mode": result["mode"],
-        "execution_semantics": result.get("execution_semantics"),
-        "execution_completed": result.get("completed"),
-        "annotation_policy": result.get("annotation_policy"),
-        "preconditions": executor.get("preconditions", []),
-        "abstraction_events": result.get("abstraction_events", []),
-        "architecture_bits": result.get("architecture_bits"),
-        "executor_error": executor.get("errormessage"),
-        "residual_vcs": vc["residual_goals"],
-        "evidence": {
-            "decision_backend": "qcp-smt",
-            "certificate": result["certificate"],
-        },
-    }
 
 
 def _safe_case_id(raw: Any, index: int) -> str:
@@ -1805,6 +1810,21 @@ def _runtime_source_digest(root: Path) -> str:
                 digest.update(b"\0")
                 digest.update(hashlib.sha256(path.read_bytes()).digest())
     return digest.hexdigest()
+
+
+def _report_provenance(
+    source_path, job_path, binary, runtime, signature_source, spec_file=None
+):
+    """Use the same provenance vocabulary for ordinary and checked execution."""
+    return {
+        "source_sha256": _sha256(source_path),
+        "job_sha256": _sha256(job_path),
+        "binary_sha256": _sha256(binary),
+        "runtime_source_sha256": _runtime_source_digest(runtime),
+        "runtime_digest_scope": "SeparationLogic and QCP_examples: .v, .h, .strategies, _CoqProject",
+        "included_source_sha256": hashlib.sha256(signature_source.encode()).hexdigest(),
+        "spec_sha256": _sha256(spec_file) if spec_file else None,
+    }
 
 
 def run_job(job_path: Path, output_override: Path | None = None) -> dict[str, Any]:
@@ -1872,7 +1892,7 @@ def run_job(job_path: Path, output_override: Path | None = None) -> dict[str, An
             "generated_source": str(generated_source),
         }
         try:
-            specialized = specialize_source(
+            specialized, entry_spec = specialize_entry_source(
                 source,
                 function,
                 case.values,
@@ -1887,7 +1907,7 @@ def run_job(job_path: Path, output_override: Path | None = None) -> dict[str, An
                 config,
                 generated_source,
                 function,
-                case.spec,
+                entry_spec,
                 vc_dir,
             )
             run_started = time.monotonic()
@@ -1908,6 +1928,7 @@ def run_job(job_path: Path, output_override: Path | None = None) -> dict[str, An
                 function,
                 case.case_id,
                 signature_source,
+                executor_output=completed.stdout,
             )
             case_result.update(
                 {
@@ -1987,6 +2008,16 @@ def run_job(job_path: Path, output_override: Path | None = None) -> dict[str, An
         case_result.setdefault("scope", "NOT_REPORTED")
         case_result.setdefault("abstraction_events", [])
         case_result.setdefault("overall", case_result["status"])
+        entry = case_result["phases"].get("precondition")
+        case_result.setdefault(
+            "precondition_result", entry if entry in {"SAT", "UNSAT"} else "UNKNOWN"
+        )
+        case_result.setdefault(
+            "test_result",
+            case_result["status"]
+            if case_result["status"] in {"PASS", "FAIL", "UNKNOWN"}
+            else None,
+        )
         case_result.setdefault("mode", config.execution_mode)
         case_result.setdefault(
             "evidence", {"decision_backend": "qcp-smt", "certificate": "NOT_CHECKED"}
@@ -2025,17 +2056,14 @@ def run_job(job_path: Path, output_override: Path | None = None) -> dict[str, An
         "spec_file": str(spec_file_path) if spec_file_path is not None else None,
         "function": function,
         "qcp_binary": str(config.binary),
-        "provenance": {
-            "source_sha256": _sha256(source_path),
-            "job_sha256": _sha256(job_path),
-            "binary_sha256": _sha256(config.binary),
-            "runtime_source_sha256": _runtime_source_digest(config.qcip_root),
-            "runtime_digest_scope": "SeparationLogic and QCP_examples: .v, .h, .strategies, _CoqProject",
-            "included_source_sha256": hashlib.sha256(
-                signature_source.encode()
-            ).hexdigest(),
-            "spec_sha256": _sha256(spec_file_path) if spec_file_path else None,
-        },
+        "provenance": _report_provenance(
+            source_path,
+            job_path,
+            config.binary,
+            config.qcip_root,
+            signature_source,
+            spec_file_path,
+        ),
         "vc_policy": {
             "mode": config.execution_mode,
             "execution_semantics": "inline-preserve/v1",
