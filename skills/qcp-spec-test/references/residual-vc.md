@@ -5,8 +5,7 @@ proof bundle per eligible case. The editable file is `Candidate.v`. Goals,
 coverage interface, audit module, dependencies and runtime hashes are immutable.
 The complete original `VC_Correct` interface is checked, including automatic
 obligations and initial satisfiability. Explicit `--refute-precondition CASE_ID`
-requests the negation of the original initial proposition, with the remaining
-interface unchanged; see [Require checks](precondition-check.md).
+requests only the negation of the original initial proposition; see [Require checks](precondition-check.md).
 Generated auto proof placeholders are
 not evidence for a complete certificate.
 

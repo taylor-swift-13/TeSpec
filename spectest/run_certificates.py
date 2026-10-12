@@ -142,13 +142,13 @@ def prepare_run_certificates(
         refute = refute_entry or refute_vc
         prepared = prepare_certificate(
             original, output / f"case_{index:04d}", refute=refute,
-            only={refute_vc} if refute_vc is not None else None,
+            only={refute} if refute is not None else None,
         )
         bundle = json.loads(Path(prepared["manifest"]).read_text())
         statements = {g["statement"] for g in bundle["goals"]}
         proofs = {g["proof"] for g in bundle["goals"]}
         preconditions = case.get("preconditions", [])
-        if refute_vc is None and (
+        if refute is None and (
             not preconditions
             or any(
                 p.get("status") not in {"SAT", "UNKNOWN"}

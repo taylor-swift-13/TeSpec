@@ -25,8 +25,9 @@ The option is repeatable and is also accepted by `run-agent.sh`. It requires
 one original initial-satisfiability goal for each selected case. A disjunction
 inside that goal is refuted as a whole; refuting only one alternative is
 insufficient. Already negated precondition goals cannot be selected again.
-The prepared candidate negates the selected original proposition and retains
-the other interface obligations. The Agent must preserve these statements.
+The prepared candidate negates only the selected original entry proposition.
+Proving UNSAT decides FAIL without proofs of unrelated obligations. The Agent
+must preserve the supplied statement.
 
 The controller runs `check-run-certificates` with its held preparation digest.
 An accepted negative initial certificate sets Require to UNSAT and the case to

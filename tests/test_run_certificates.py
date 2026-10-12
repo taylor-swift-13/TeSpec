@@ -181,6 +181,26 @@ class RunCertificateTests(unittest.TestCase):
 
     @unittest.skipUnless(os.environ.get("TESPEC_COQ_INTEGRATION") == "1",
                          "set TESPEC_COQ_INTEGRATION=1 for real kernel checks")
+    def test_entry_unsat_does_not_require_proofs_of_other_obligations(self):
+        goal = Path(self.vc["files"]["goal"])
+        goal.write_text(goal.read_text().replace(":= True", ":= False"))
+        self.vc["immutable_sha256"]["goal"] = digest(goal)
+        Path(self.case["vc"]["manifest"]).write_text(json.dumps(self.vc))
+        self.unresolved_entry()
+        request = self.prepare(refute={"x"})
+        Path(request["editable"][0]).write_text(
+            "Require Import Goal. Module Proofs. "
+            "Lemma proof_of_entry : ~ Goal.entry. "
+            "Proof. intro H. exact H. Qed. End Proofs."
+        )
+        result = check_run_certificates(Path(request["manifest"]), request["manifest_sha256"])
+        case = result["results"][0]
+        self.assertEqual(case["precondition_result"], "UNSAT", result)
+        self.assertEqual(case["test_result"], "FAIL", result)
+        self.assertEqual(case["phases"]["postcondition"], "UNKNOWN", result)
+
+    @unittest.skipUnless(os.environ.get("TESPEC_COQ_INTEGRATION") == "1",
+                         "set TESPEC_COQ_INTEGRATION=1 for real kernel checks")
     def test_agent_judgement_routes_to_checked_negative_proof(self):
         goal = Path(self.vc["files"]["goal"])
         goal.write_text(goal.read_text().replace("result : Prop := True", "result : Prop := False"))
@@ -248,7 +268,7 @@ class RunCertificateTests(unittest.TestCase):
         request = self.prepare(refute={"x"})
         candidate = Path(request["editable"][0]).read_text()
         self.assertIn("proof_of_entry : ~ Goal.entry.", candidate)
-        self.assertIn("proof_of_result : Goal.result.", candidate)
+        self.assertNotIn("proof_of_result :", candidate)
         result, calls = self.check(request, "NEGATIVE_PROOF", "proof_of_entry")
         self.assertEqual(calls, 1)
         case = result["results"][0]
