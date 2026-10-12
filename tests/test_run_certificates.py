@@ -50,6 +50,7 @@ class RunCertificateTests(unittest.TestCase):
             id="x",
             status="UNKNOWN",
             overall="UNKNOWN",
+            test_result="UNKNOWN",
             satisfied=None,
             reason="residual_vc_requires_proof",
             scope="execution",
@@ -154,7 +155,7 @@ class RunCertificateTests(unittest.TestCase):
 
     @unittest.skipUnless(os.environ.get("TESPEC_COQ_INTEGRATION") == "1",
                          "set TESPEC_COQ_INTEGRATION=1 for real kernel checks")
-    def test_kernel_checked_refutation_dominates_other_unknown_vcs(self):
+    def test_kernel_checked_refutation_preserves_unknown_without_reachability(self):
         goal = Path(self.vc["files"]["goal"])
         goal.write_text(
             "Definition entry : Prop := True.\nDefinition result : Prop := False.\n"
@@ -173,7 +174,7 @@ class RunCertificateTests(unittest.TestCase):
         )
         result = check_run_certificates(Path(request["manifest"]), request["manifest_sha256"])
         case = result["results"][0]
-        self.assertEqual(case["test_result"], "FAIL", result)
+        self.assertEqual(case["test_result"], "UNKNOWN", result)
         self.assertIn("proof_of_unresolved", case["residual_vcs"])
         audit = result["proof_completion"]["certificates"][0]["certificate"]
         self.assertEqual(audit["vc_status"], "INVALID", audit)
@@ -231,13 +232,13 @@ class RunCertificateTests(unittest.TestCase):
         self.assertEqual(completed.returncode, 1, completed.stderr)
         self.assertTrue(completed.stdout.strip(), completed.stderr)
         final = json.loads(Path(json.loads(completed.stdout)["report"]).read_text())
-        self.assertEqual(final["results"][0]["test_result"], "FAIL", final)
+        self.assertEqual(final["results"][0]["test_result"], "UNKNOWN", final)
         self.assertEqual(len(final["proof_completion"]["agent"]["attempts"]), 2)
         certificate = final["proof_completion"]["certificates"][0]["certificate"]
         self.assertEqual(certificate["vc_status"], "INVALID", certificate)
         self.assertEqual(certificate["stages"][-1]["stage"], "kernel_replay", certificate)
 
-    def test_selected_original_refutation_fails_without_proving_other_goals(self):
+    def test_selected_refutation_requires_reachability_before_execution_fail(self):
         request = self.prepare(refute_vcs={"x": "proof_of_result"})
         candidate = Path(request["editable"][0]).read_text()
         self.assertIn("proof_of_result : ~ Goal.result.", candidate)
@@ -245,9 +246,23 @@ class RunCertificateTests(unittest.TestCase):
         result, calls = self.check(request, "NEGATIVE_PROOF", "proof_of_result")
         case = result["results"][0]
         self.assertEqual(calls, 1)
-        self.assertEqual(case["test_result"], "FAIL")
-        self.assertFalse(case["satisfied"])
+        self.assertEqual(case["test_result"], "UNKNOWN")
+        self.assertIsNone(case["satisfied"])
+        self.assertEqual(result["summary"]["FAIL"], 0)
+        self.assertEqual(case["evidence"]["execution_counterexample"], "NOT_ESTABLISHED")
         self.assertTrue(any(v["status"] == "INVALID" for v in case["vc_results"]))
+
+    def test_refuted_path_with_unknown_entry_cannot_be_execution_failure(self):
+        self.unresolved_entry()
+        result, _ = self.check(
+            self.prepare(refute_vcs={"x": "proof_of_result"}),
+            "NEGATIVE_PROOF", "proof_of_result",
+        )
+        case = result["results"][0]
+        self.assertEqual(case["status"], "UNKNOWN")
+        self.assertEqual(case["phases"]["precondition"], "UNKNOWN")
+        self.assertEqual(case["evidence"]["vc_judgement"], "VC_REFUTED")
+        self.assertEqual(result["summary"]["FAIL"], 0)
 
     def test_unchecked_negative_judgement_remains_unknown(self):
         request = self.prepare(refute_vcs={"x": "proof_of_result"})

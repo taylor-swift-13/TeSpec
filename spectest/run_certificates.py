@@ -243,10 +243,10 @@ def check_run_certificates(
             if not proved_invalid:
                 continue
             case["automatic_status"] = case["status"]
-            case.update(
-                status="FAIL", overall="FAIL", test_result="FAIL",
-                satisfied=False, reason="original_vc_refutation_checked",
-            )
+            # A strategy may weaken a symbolic state. Refuting its VC proves
+            # an invalid entailment, not reachability from the original Require.
+            # Keep the execution verdict until a reachability certificate exists.
+            case["reason"] = "vc_refuted_reachability_not_established"
             obligations = case.setdefault("vc_results", [])
             target = next((v for v in obligations if v.get("name") in {
                 refute_vc, refute_vc.removeprefix("proof_of_")
@@ -263,6 +263,8 @@ def check_run_certificates(
             case["evidence"] = {
                 "decision_backend": "qcp-smt+rocq",
                 "certificate": "CHECKED_VC_REFUTATION",
+                "vc_judgement": "VC_REFUTED",
+                "execution_counterexample": "NOT_ESTABLISHED",
                 "manifest_sha256": entry["manifest_sha256"],
                 "refuted_goal": refute_vc,
             }
