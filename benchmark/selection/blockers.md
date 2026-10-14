@@ -1,32 +1,31 @@
-# Fulminate 原例的当前执行障碍
+# Fulminate 原例：迁移结果与剩余工作
 
-这里按原始 C 代码和当前 teSpec 的执行接口区分能力缺口。历史 CN 版本尚未全部完成 QCP 移植；以下是源码与接口核对结果，不是对这些原始文件新跑出的逐例 verdict。
+先用 QCP 验证，再判断 teSpec 的缺口。本轮已经迁移 12 个原始文件中的 25 个目标函数，详见 [迁移报告](qcp-migration/README.md) 和 [原始证据](qcp-migration/evidence/20261014/report.json)。分配、释放、链表、队列和栈不能仅凭涉及动态内存就归入“不支持”。
 
-## 明确需要执行器或运行接口支持
+## 已经迁移并运行
 
-| 原例 | 原始操作 | 当前缺口 |
+| 原例 | 原生 QCP 结果 | teSpec 的当前情况 |
 |---|---|---|
-| `slf10_basic_ref.c` 及 ref 派生例 | `refUnsignedInt` 调用 `cn_malloc`，创建新对象 | teSpec 缺少该外部接口的完整分配模型；只声明契约不能完成实际执行 |
-| `slf17_get_and_free.c` | 读取后调用 `cn_free_sized` | 需要对象失效、释放权限和分配块生命周期语义 |
-| `list_all.c` | 构造、复制、释放列表；累计长度辅助单元 | 完整程序调用分配释放；已有节点上的 length/reverse/append 可以单独测试 |
-| `queue_all.c` | 创建队列、push 分配、pop 释放 | 完整操作序列需要新节点和释放模型，另外要保持首尾所有权关系 |
-| `slf_sized_stack.c` | 创建、push、pop 与动态节点 | 同时需要生命周期和大小/内容关系检查 |
-| `mergesort.c` | main 构造节点，再执行 split/merge/sort | 原始完整驱动需要分配接口；排序本身不应归为“不能执行” |
-| `runtime-extras/bad_free.broken.c`、`double_free.broken.c` | 非法释放、重复释放 | 需要明确的分配块身份与已释放状态，不能以 UNKNOWN 作为检出 |
-| pKVM buddy allocator | 页池初始化、切分、引用计数、释放和合并 | 完整 CN/QCP 契约对应、指针宽度/字节编码/页资源转换与整段轨迹尚未完成 |
+| `slf10_basic_ref.c` | 分配后写入的目标义务自动消解 | 缺少分配接口的执行体 |
+| `slf11_basic_ref_greater.c` | 无符号回绕相关义务仍有残留 | 执行到分配接口后未完成 |
+| `slf12_basic_ref_greater_abstract.c`、`slf13_basic_ref_with_frame.c` | 两个目标义务自动消解 | 执行到分配接口后未完成 |
+| `slf16_basic_succ_using_incr.c` | 目标义务消解，辅助函数 incr 有残留 | 需要分配、释放接口 |
+| `slf17_get_and_free.c` | 读取后释放的目标义务自动消解 | 缺少释放接口的执行体 |
+| `list_all.c` | 7 个目标完成运行；构造器自动消解，6 个目标有残留 | 分配/释放接口、入口证明与调用绑定分别记录；不是全部无法执行 |
+| `queue_all.c` | empty、push、pop 全部自动消解；保留原版可信 push 引理 | 需要分配、释放接口 |
+| `slf_sized_stack.c` | create、sizeOf 自动消解；push、top、pop 有残留 | 创建/更新涉及接口；只读操作仍需入口证明 |
+| `slf18_two_dice.c` | two_dice 目标义务消解；val_rand 有残留 | 缺少 rand 执行接口与共享轨迹 |
+| `runtime-extras/same_func_malloc_free.c`、`double_free.broken.c` | 单次释放消解；第二次释放的 Require 被拒绝 | 当前停在分配接口，尚未执行到重复释放 |
 
-原始 CN 输入位于 [sources/fulminate-cn/src/examples](sources/fulminate-cn/src/examples)。当前控制器对缺少实现的被调用函数保留 `missing_function_body`；相关回归是 `tests/test_candidate_executor.py` 的外部函数测试。pKVM 的具体布局检查见 [ABI 审计](../paper-cn-qcp/expansion80/evidence/pkvm-qcp-abi-20261013/report.json)，现有单边及内存扩展见 [内存报告](../paper-cn-qcp/review-20261014/memory-expansion/summary.json)。
+自动消解是自动证明阶段的结果，尚未独立通过 Coq 内核检查。表中按目标函数报告，不将辅助函数的残留义务或未迁移的原始 main 隐去。
 
-## 可以通过实验接口补齐
+teSpec 的两种模式目前都执行调用；为普通外部函数声明一个后置条件，不能替代它的执行体。此次 192 次重放为 UNKNOWN：148 次缺少函数体，36 次需入口证明，8 次调用绑定未完成。原生 QCP 则能使用外部函数的契约进行模块化推理。这是本轮测出的具体差异。
 
-`slf18_two_dice.c` 调用 `rand()`。需要固定双方相同的随机状态或随机结果轨迹，并记录接口语义。这属于可重放输入与外部函数支持问题，不能据此推断算法无法处理该例。
+## 尚待迁移与验证
 
-历史版本还使用旧 CN 语法、`cn_malloc` 和 `cn_free_sized` 等接口。移植时保留原版快照，另存现代版本、变更说明和规约对应依据。已有现代教程版本的 PASS 不直接归给历史原版。
+- `list_all.c` 的其余函数、`queue_all.c` 的另一版 push、完整驱动仍待迁移。
+- `mergesort.c` 的 split/merge/mergesort 仍待迁移。锁定版本的 main 为空；不能把该文件说成因 main 中分配节点而无法运行。
+- 双链表、其余 runtime-extras 和其他 CN 原例保留在完整清单中。`bad_free.broken.c` 的问题涉及缺少所有权契约，不能仅凭文件名判断为普通 C 的非法 free。
+- pKVM buddy allocator 需要完整契约对应、指针宽度/字节编码及页资源转换，见 [ABI 审计](../paper-cn-qcp/expansion80/evidence/pkvm-qcp-abi-20261013/report.json)。
 
-## 执行能力与证明完成分开
-
-`runtime-extras/leaky.broken.c`、`return_owned_local.broken.c` 涉及所有权丢失或局部对象生命周期。完整驱动也依赖分配接口，但提取被测函数后能否检出原错误，还需要核对原始义务和当前函数边界规则；仅凭文件名不能列为已确认的不支持项。
-
-链表、树、递归、复杂后条件本身不是自动排除理由。已有 ABI32 链表实验完成了三个参考批次，每批 128 个输入，见 [证明进度](../paper-cn-qcp/expansion80/list-proof-progress-20261013.md)。其中冻结 ATP 结果与后续 ITP 结果分别保存；未决的负例仍报告 UNKNOWN。
-
-对每个完整原例，清单保留“源文件已收录、配对待完成”的状态。后续先建立最小分配/释放语义及共享外部接口，再运行真实原始调用序列；不使用返回固定指针、空 free 或手写最终状态替代原程序。
+后续先实现或接入语义明确的类型化分配、释放接口，再重放真实调用序列；同时继续补证明和迁移剩余原例。不能以固定指针、空 free 或手写最终状态代替这些操作。原始 CN 输入始终保存在 [来源快照](sources/fulminate-cn/src/examples)，不会用现代教程的成功结果冒充历史版本的覆盖。

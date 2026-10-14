@@ -1,0 +1,22 @@
+#include "verification_stdlib.h"
+
+
+unsigned int *mallocUnsignedInt()
+/*@ Require emp Ensure __return != 0 && undef_data_at(__return, unsigned int) */;
+void freeUnsignedInt(unsigned int *p)
+/*@ Require undef_data_at(p, unsigned int) Ensure emp */;
+
+
+unsigned int *refUnsignedInt (unsigned int v)
+/*@ With v0 Require v == v0 && emp Ensure data_at(__return, unsigned int, v0) */
+{
+    unsigned int *res = mallocUnsignedInt();
+    *res = v;
+    return res;
+}
+
+unsigned int *triple_ref_with_frame(unsigned int *p_, unsigned int v)
+/*@ With old v0 Require v == v0 && data_at(p_,unsigned int,old) Ensure data_at(p_,unsigned int,old) * data_at(__return,unsigned int,v0) */
+{
+  return refUnsignedInt(v);
+}

@@ -633,14 +633,39 @@
       },
       "upstream_path": "src/examples/list_all.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "function-subset-migrated",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-and-tespec-run; CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces.",
-        "Whole-program replay needs CN allocation/free runtime integration and lifecycle semantics; allocation-free target functions can be evaluated separately."
+        "Finish remaining functions and original CN/QCP pairing; this is function-subset coverage.",
+        "Native automatic obligations are not kernel-certified; inspect helper and target residuals separately.",
+        "teSpec execution gaps and proof obligations are recorded per input in the migration report."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/manifest.json",
+          "sha256": "cf50b54cfd4509fbfbcaf9df5e7ca9458e41829cf0535e16f054ec114ac45c3c"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/evidence/20261014/report.json",
+          "sha256": "680c00b3aaa7f7cb9036098fecb8f182ff3b2a7a948f94b9a2e05f09a3cb163a"
+        }
+      ],
+      "qcp_bind_count": 28,
+      "migration_targets": {
+        "IntList_cons": "AUTOMATICALLY_DISCHARGED",
+        "IntList_copy": "RESIDUAL",
+        "IntList_free_list": "RESIDUAL",
+        "IntList_length": "RESIDUAL",
+        "IntList_rev": "RESIDUAL",
+        "IntList_append": "RESIDUAL",
+        "IntList_append2": "RESIDUAL"
+      },
+      "migration_notes": [
+        "Function subset; sorting, iterative reverse and the original main remain separate obligations.",
+        "Bijective layout rename: int_list/head/tail to QCP list/data/next.",
+        "CN IntList is QCP sll; CN sequence constructors are Coq list constructors."
+      ]
     },
     {
       "id": "fulminate-cn/mergesort.c",
@@ -683,14 +708,35 @@
       },
       "upstream_path": "src/examples/queue_all.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "function-subset-migrated",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-and-tespec-run; CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces.",
-        "Whole-program replay needs CN allocation/free runtime integration and lifecycle semantics; allocation-free target functions can be evaluated separately."
+        "Finish remaining functions and original CN/QCP pairing; this is function-subset coverage.",
+        "Native automatic obligations are not kernel-certified; inspect helper and target residuals separately.",
+        "teSpec execution gaps and proof obligations are recorded per input in the migration report."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/manifest.json",
+          "sha256": "cf50b54cfd4509fbfbcaf9df5e7ca9458e41829cf0535e16f054ec114ac45c3c"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/evidence/20261014/report.json",
+          "sha256": "680c00b3aaa7f7cb9036098fecb8f182ff3b2a7a948f94b9a2e05f09a3cb163a"
+        }
+      ],
+      "qcp_bind_count": 9,
+      "migration_targets": {
+        "IntQueue_empty": "AUTOMATICALLY_DISCHARGED",
+        "IntQueue_pop": "AUTOMATICALLY_DISCHARGED",
+        "IntQueue_push": "AUTOMATICALLY_DISCHARGED"
+      },
+      "migration_notes": [
+        "IntQueuePtr and IntQueueFB become an explicit empty/nonempty disjunction using sllseg.",
+        "The original trusted push_lemma remains a declared trusted lemma; its proof is not claimed.",
+        "The alternate push_induction and original main remain separate obligations."
+      ]
     },
     {
       "id": "fulminate-cn/read.broken.c",
@@ -807,15 +853,33 @@
       },
       "upstream_path": "src/examples/runtime-extras/double_free.broken.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "function-subset-migrated",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-and-tespec-run; CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces.",
-        "Whole-program replay needs CN allocation/free runtime integration and lifecycle semantics; allocation-free target functions can be evaluated separately.",
-        "Establish the violated obligation and original driver witness before assigning a negative label."
+        "Finish remaining functions and original CN/QCP pairing; this is function-subset coverage.",
+        "Native automatic obligations are not kernel-certified; inspect helper and target residuals separately.",
+        "teSpec execution gaps and proof obligations are recorded per input in the migration report."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/manifest.json",
+          "sha256": "cf50b54cfd4509fbfbcaf9df5e7ca9458e41829cf0535e16f054ec114ac45c3c"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/evidence/20261014/report.json",
+          "sha256": "680c00b3aaa7f7cb9036098fecb8f182ff3b2a7a948f94b9a2e05f09a3cb163a"
+        }
+      ],
+      "qcp_bind_count": 1,
+      "migration_targets": {
+        "main": "TOOL_ERROR"
+      },
+      "migration_notes": [
+        "Original trusted driver is checked here, with only unsigned-int-sized allocation admitted.",
+        "Paired positive/negative lifetime control: the negative driver performs a second free.",
+        "The C99 implicit return 0 at the end of main is made explicit for native QCP."
+      ]
     },
     {
       "id": "fulminate-cn/runtime-extras/down_malloc_up_free.c",
@@ -935,14 +999,33 @@
       },
       "upstream_path": "src/examples/runtime-extras/same_func_malloc_free.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "function-subset-migrated",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-and-tespec-run; CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces.",
-        "Whole-program replay needs CN allocation/free runtime integration and lifecycle semantics; allocation-free target functions can be evaluated separately."
+        "Finish remaining functions and original CN/QCP pairing; this is function-subset coverage.",
+        "Native automatic obligations are not kernel-certified; inspect helper and target residuals separately.",
+        "teSpec execution gaps and proof obligations are recorded per input in the migration report."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/manifest.json",
+          "sha256": "cf50b54cfd4509fbfbcaf9df5e7ca9458e41829cf0535e16f054ec114ac45c3c"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/evidence/20261014/report.json",
+          "sha256": "680c00b3aaa7f7cb9036098fecb8f182ff3b2a7a948f94b9a2e05f09a3cb163a"
+        }
+      ],
+      "qcp_bind_count": 1,
+      "migration_targets": {
+        "main": "AUTOMATICALLY_DISCHARGED"
+      },
+      "migration_notes": [
+        "Original trusted driver is checked here, with only unsigned-int-sized allocation admitted.",
+        "Paired positive/negative lifetime control: the negative driver performs a second free.",
+        "The C99 implicit return 0 at the end of main is made explicit for native QCP."
+      ]
     },
     {
       "id": "fulminate-cn/runtime-extras/swap_array.c",
@@ -1132,14 +1215,29 @@
       },
       "upstream_path": "src/examples/slf10_basic_ref.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "function-subset-migrated",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-and-tespec-run; CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces.",
-        "Whole-program replay needs CN allocation/free runtime integration and lifecycle semantics; allocation-free target functions can be evaluated separately."
+        "Finish remaining functions and original CN/QCP pairing; this is function-subset coverage.",
+        "Native automatic obligations are not kernel-certified; inspect helper and target residuals separately.",
+        "teSpec execution gaps and proof obligations are recorded per input in the migration report."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/manifest.json",
+          "sha256": "cf50b54cfd4509fbfbcaf9df5e7ca9458e41829cf0535e16f054ec114ac45c3c"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/evidence/20261014/report.json",
+          "sha256": "680c00b3aaa7f7cb9036098fecb8f182ff3b2a7a948f94b9a2e05f09a3cb163a"
+        }
+      ],
+      "qcp_bind_count": 6,
+      "migration_targets": {
+        "refUnsignedInt": "AUTOMATICALLY_DISCHARGED"
+      },
+      "migration_notes": []
     },
     {
       "id": "fulminate-cn/slf11_basic_ref_greater.c",
@@ -1157,14 +1255,31 @@
       },
       "upstream_path": "src/examples/slf11_basic_ref_greater.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "function-subset-migrated",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-and-tespec-run; CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces.",
-        "Whole-program replay needs CN allocation/free runtime integration and lifecycle semantics; allocation-free target functions can be evaluated separately."
+        "Finish remaining functions and original CN/QCP pairing; this is function-subset coverage.",
+        "Native automatic obligations are not kernel-certified; inspect helper and target residuals separately.",
+        "teSpec execution gaps and proof obligations are recorded per input in the migration report."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/manifest.json",
+          "sha256": "cf50b54cfd4509fbfbcaf9df5e7ca9458e41829cf0535e16f054ec114ac45c3c"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/evidence/20261014/report.json",
+          "sha256": "680c00b3aaa7f7cb9036098fecb8f182ff3b2a7a948f94b9a2e05f09a3cb163a"
+        }
+      ],
+      "qcp_bind_count": 6,
+      "migration_targets": {
+        "ref_greater": "RESIDUAL"
+      },
+      "migration_notes": [
+        "CN u32 addition becomes modulo 2^32; the abstract version excludes wraparound."
+      ]
     },
     {
       "id": "fulminate-cn/slf12_basic_ref_greater_abstract.c",
@@ -1182,14 +1297,31 @@
       },
       "upstream_path": "src/examples/slf12_basic_ref_greater_abstract.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "function-subset-migrated",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-and-tespec-run; CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces.",
-        "Whole-program replay needs CN allocation/free runtime integration and lifecycle semantics; allocation-free target functions can be evaluated separately."
+        "Finish remaining functions and original CN/QCP pairing; this is function-subset coverage.",
+        "Native automatic obligations are not kernel-certified; inspect helper and target residuals separately.",
+        "teSpec execution gaps and proof obligations are recorded per input in the migration report."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/manifest.json",
+          "sha256": "cf50b54cfd4509fbfbcaf9df5e7ca9458e41829cf0535e16f054ec114ac45c3c"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/evidence/20261014/report.json",
+          "sha256": "680c00b3aaa7f7cb9036098fecb8f182ff3b2a7a948f94b9a2e05f09a3cb163a"
+        }
+      ],
+      "qcp_bind_count": 5,
+      "migration_targets": {
+        "ref_greater": "AUTOMATICALLY_DISCHARGED"
+      },
+      "migration_notes": [
+        "CN u32 addition becomes modulo 2^32; the abstract version excludes wraparound."
+      ]
     },
     {
       "id": "fulminate-cn/slf13_basic_ref_with_frame.c",
@@ -1207,14 +1339,29 @@
       },
       "upstream_path": "src/examples/slf13_basic_ref_with_frame.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "function-subset-migrated",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-and-tespec-run; CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces.",
-        "Whole-program replay needs CN allocation/free runtime integration and lifecycle semantics; allocation-free target functions can be evaluated separately."
+        "Finish remaining functions and original CN/QCP pairing; this is function-subset coverage.",
+        "Native automatic obligations are not kernel-certified; inspect helper and target residuals separately.",
+        "teSpec execution gaps and proof obligations are recorded per input in the migration report."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/manifest.json",
+          "sha256": "cf50b54cfd4509fbfbcaf9df5e7ca9458e41829cf0535e16f054ec114ac45c3c"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/evidence/20261014/report.json",
+          "sha256": "680c00b3aaa7f7cb9036098fecb8f182ff3b2a7a948f94b9a2e05f09a3cb163a"
+        }
+      ],
+      "qcp_bind_count": 6,
+      "migration_targets": {
+        "triple_ref_with_frame": "AUTOMATICALLY_DISCHARGED"
+      },
+      "migration_notes": []
     },
     {
       "id": "fulminate-cn/slf14_basic_succ_using_incr_attempt.broken.c",
@@ -1281,14 +1428,29 @@
       },
       "upstream_path": "src/examples/slf16_basic_succ_using_incr.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "function-subset-migrated",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-and-tespec-run; CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces.",
-        "Whole-program replay needs CN allocation/free runtime integration and lifecycle semantics; allocation-free target functions can be evaluated separately."
+        "Finish remaining functions and original CN/QCP pairing; this is function-subset coverage.",
+        "Native automatic obligations are not kernel-certified; inspect helper and target residuals separately.",
+        "teSpec execution gaps and proof obligations are recorded per input in the migration report."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/manifest.json",
+          "sha256": "cf50b54cfd4509fbfbcaf9df5e7ca9458e41829cf0535e16f054ec114ac45c3c"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/evidence/20261014/report.json",
+          "sha256": "680c00b3aaa7f7cb9036098fecb8f182ff3b2a7a948f94b9a2e05f09a3cb163a"
+        }
+      ],
+      "qcp_bind_count": 6,
+      "migration_targets": {
+        "succ_using_incr": "AUTOMATICALLY_DISCHARGED"
+      },
+      "migration_notes": []
     },
     {
       "id": "fulminate-cn/slf17_get_and_free.c",
@@ -1306,14 +1468,31 @@
       },
       "upstream_path": "src/examples/slf17_get_and_free.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "function-subset-migrated",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-and-tespec-run; CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces.",
-        "Whole-program replay needs CN allocation/free runtime integration and lifecycle semantics; allocation-free target functions can be evaluated separately."
+        "Finish remaining functions and original CN/QCP pairing; this is function-subset coverage.",
+        "Native automatic obligations are not kernel-certified; inspect helper and target residuals separately.",
+        "teSpec execution gaps and proof obligations are recorded per input in the migration report."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/manifest.json",
+          "sha256": "cf50b54cfd4509fbfbcaf9df5e7ca9458e41829cf0535e16f054ec114ac45c3c"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/evidence/20261014/report.json",
+          "sha256": "680c00b3aaa7f7cb9036098fecb8f182ff3b2a7a948f94b9a2e05f09a3cb163a"
+        }
+      ],
+      "qcp_bind_count": 6,
+      "migration_targets": {
+        "get_and_free": "AUTOMATICALLY_DISCHARGED"
+      },
+      "migration_notes": [
+        "freeUnsignedInt is an external adapter contract, matching the CN free interface."
+      ]
     },
     {
       "id": "fulminate-cn/slf18_two_dice.c",
@@ -1331,14 +1510,32 @@
       },
       "upstream_path": "src/examples/slf18_two_dice.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "function-subset-migrated",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-and-tespec-run; CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces.",
-        "Pin rand() state or a shared replayable random trace on both sides."
+        "Finish remaining functions and original CN/QCP pairing; this is function-subset coverage.",
+        "Native automatic obligations are not kernel-certified; inspect helper and target residuals separately.",
+        "teSpec execution gaps and proof obligations are recorded per input in the migration report."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/manifest.json",
+          "sha256": "cf50b54cfd4509fbfbcaf9df5e7ca9458e41829cf0535e16f054ec114ac45c3c"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/evidence/20261014/report.json",
+          "sha256": "680c00b3aaa7f7cb9036098fecb8f182ff3b2a7a948f94b9a2e05f09a3cb163a"
+        }
+      ],
+      "qcp_bind_count": 5,
+      "migration_targets": {
+        "val_rand": "RESIDUAL",
+        "two_dice": "AUTOMATICALLY_DISCHARGED"
+      },
+      "migration_notes": [
+        "rand is a nondeterministic external contract with the C nonnegative-int result range; no random trace replay is claimed."
+      ]
     },
     {
       "id": "fulminate-cn/slf1_basic_example_let.c",
@@ -1741,14 +1938,36 @@
       },
       "upstream_path": "src/examples/slf_sized_stack.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "function-subset-migrated",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-and-tespec-run; CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces.",
-        "Whole-program replay needs CN allocation/free runtime integration and lifecycle semantics; allocation-free target functions can be evaluated separately."
+        "Finish remaining functions and original CN/QCP pairing; this is function-subset coverage.",
+        "Native automatic obligations are not kernel-certified; inspect helper and target residuals separately.",
+        "teSpec execution gaps and proof obligations are recorded per input in the migration report."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/manifest.json",
+          "sha256": "cf50b54cfd4509fbfbcaf9df5e7ca9458e41829cf0535e16f054ec114ac45c3c"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/evidence/20261014/report.json",
+          "sha256": "680c00b3aaa7f7cb9036098fecb8f182ff3b2a7a948f94b9a2e05f09a3cb163a"
+        }
+      ],
+      "qcp_bind_count": 17,
+      "migration_targets": {
+        "create": "AUTOMATICALLY_DISCHARGED",
+        "sizeOf": "AUTOMATICALLY_DISCHARGED",
+        "push": "RESIDUAL",
+        "top": "RESIDUAL",
+        "pop": "RESIDUAL"
+      },
+      "migration_notes": [
+        "SizedStack is unfolded into size, data and sll with size = length modulo 2^32.",
+        "The original pop postcondition specifies the remaining stack, not the returned value; retained."
+      ]
     },
     {
       "id": "fulminate-cn/swap.c",

@@ -132,6 +132,14 @@ def cn_blockers(name: str) -> list[str]:
 
 def cn_records(lock: dict) -> list[dict]:
     records = []
+    migration_dir = HERE / "qcp-migration"
+    migrations = read(migration_dir / "manifest.json")
+    migration_report_path = migration_dir / "evidence/20261014/report.json"
+    migration_report = read(migration_report_path)
+    if migration_report["manifest_sha256"] != sha(migration_dir / "manifest.json"):
+        raise ValueError("QCP migration report does not match the migration manifest")
+    translated = {row["upstream"]: row for row in migrations["cases"]}
+    native = {row["case"]: row for row in migration_report["native"]}
     for name in source_inventory(lock):
         relative = Path(name).relative_to("src/examples")
         core = len(relative.parts) == 1 and "broken" not in name
@@ -158,6 +166,35 @@ def cn_records(lock: dict) -> list[dict]:
                 "evidence": [],
             }
         )
+        if relative.as_posix() in translated:
+            migration = translated[relative.as_posix()]
+            if migration["upstream_sha256"] != sha(SNAPSHOT / name):
+                raise ValueError(f"Migration has a different upstream source: {name}")
+            result = native[migration["id"]]
+            record = records[-1]
+            record.update(
+                qcp_translation="function-subset-migrated",
+                replay_status="native-qcp-and-tespec-run; CN-pairing-pending",
+                qcp_bind_count=sum(len(t["binds"]) for t in migration["targets"]),
+                migration_targets={
+                    t["function"]: result["functions"]
+                    .get(t["function"], {})
+                    .get("status", "MISSING_TARGET")
+                    if result["status"] == "COMPLETED"
+                    else result["status"]
+                    for t in migration["targets"]
+                },
+                migration_notes=migration["notes"],
+                evidence=[
+                    reference(migration_dir / "manifest.json"),
+                    reference(migration_report_path),
+                ],
+                blockers=[
+                    "Finish remaining functions and original CN/QCP pairing; this is function-subset coverage.",
+                    "Native automatic obligations are not kernel-certified; inspect helper and target residuals separately.",
+                    "teSpec execution gaps and proof obligations are recorded per input in the migration report.",
+                ],
+            )
     return records
 
 

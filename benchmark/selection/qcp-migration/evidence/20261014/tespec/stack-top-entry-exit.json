@@ -1,0 +1,1489 @@
+{
+  "schema": "qcp-spectest-report/v1",
+  "job": "/tmp/fulminate-qcp-ym442dve/job.json",
+  "source": "/tmp/teSpec-tespec-sync/benchmark/selection/qcp-migration/cases/stack.c",
+  "spec_file": null,
+  "function": "top",
+  "qcp_binary": "/tmp/teSpec-tespec-sync/bin/tespec-symexec",
+  "provenance": {
+    "source_sha256": "8840a459f7b52799efb6a4478b77b1aad0eacac39206f041c6177232baa58ec0",
+    "job_sha256": "d6d55ddf6ead908febbc4093fe4b93f8cf57996c6e48a826563b5749880f7ddc",
+    "binary_sha256": "4b6a46f38aafbac9f9de679133c69a22aac1f6eb7c634dcc1de7ddca211a32cc",
+    "runtime_source_sha256": "08b41c971d404d9fe6ae40dce420752af8eb023179017c55737dc5a7df89f56a",
+    "runtime_digest_scope": "SeparationLogic and QCP_examples: .v, .h, .strategies, _CoqProject",
+    "included_source_sha256": "5d9845a7855204dfb9e15044b0f95a885d41f02eeb764acbe51cdc320a13d402",
+    "spec_sha256": null
+  },
+  "vc_policy": {
+    "mode": "entry-exit",
+    "execution_semantics": "inline-preserve/v1",
+    "loops": "execute_iterations",
+    "defined_function_calls": "execute_bodies",
+    "intermediate_boundaries": false,
+    "declaration_calls": "unknown_missing_body",
+    "call_depth_limit": 64,
+    "loop_unroll_limit": 1024
+  },
+  "results": [
+    {
+      "id": "input_0",
+      "arguments": {
+        "p": 4096
+      },
+      "bindings": {
+        "h": 9,
+        "l": [],
+        "d": 8192
+      },
+      "type_bindings": {},
+      "spec": null,
+      "generated_source": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_0/input.c",
+      "status": "UNKNOWN",
+      "overall": "UNKNOWN",
+      "precondition_result": "UNKNOWN",
+      "test_result": "UNKNOWN",
+      "result_semantics": "three-valued-conjunction/v1",
+      "executor_reported_status": "UNKNOWN",
+      "satisfied": null,
+      "reason": "precondition_requires_proof",
+      "phases": {
+        "precondition": "UNKNOWN",
+        "safety": "PASS",
+        "postcondition": "PASS",
+        "annotations": "NOT_RUN",
+        "execution": "PASS"
+      },
+      "scope": "execution",
+      "mode": "entry-exit",
+      "execution_semantics": "inline-preserve/v1",
+      "execution_completed": true,
+      "annotation_policy": "ignore",
+      "preconditions": [
+        {
+          "goal": "top_precondition_wit_1",
+          "status": "UNKNOWN",
+          "proof": "manual"
+        }
+      ],
+      "abstraction_events": [],
+      "architecture_bits": 32,
+      "target_layout": {
+        "schema": "sac-target-layout/v1",
+        "architecture_bits": 32,
+        "byte_order": "big",
+        "pointer_size": 4,
+        "memory_rules": "naive_C_Rules",
+        "field_address_semantics": "base-plus-byte-offset/v1",
+        "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+        "aggregates": [
+          {
+            "id": 420,
+            "kind": "struct",
+            "name": "sized_stack",
+            "defined": true,
+            "size": 8,
+            "alignment": 4,
+            "fields": [
+              {
+                "id": 422,
+                "name": "size",
+                "offset": 0,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "basic",
+                  "name": "unsigned_int"
+                },
+                "computational": true
+              },
+              {
+                "id": 421,
+                "name": "data",
+                "offset": 4,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "pointer",
+                  "target": {
+                    "kind": "struct",
+                    "id": 369
+                  }
+                },
+                "computational": true
+              }
+            ]
+          },
+          {
+            "id": 369,
+            "kind": "struct",
+            "name": "list",
+            "defined": true,
+            "size": 8,
+            "alignment": 4,
+            "fields": [
+              {
+                "id": 371,
+                "name": "data",
+                "offset": 0,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "basic",
+                  "name": "int"
+                },
+                "computational": true
+              },
+              {
+                "id": 370,
+                "name": "next",
+                "offset": 4,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "pointer",
+                  "target": {
+                    "kind": "struct",
+                    "id": 369
+                  }
+                },
+                "computational": true
+              }
+            ]
+          }
+        ],
+        "aliases": []
+      },
+      "executor_error": null,
+      "residual_vcs": [
+        "proof_of_top_precondition_wit_1"
+      ],
+      "vc_results": [
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 57,
+          "status": "VALID",
+          "path": "EX p_pre_size_519 \nPROP[\n  p_pre_size_519 == 1 ]\nLOCAL[\n  Temp p p_515_addr ]\nSEP[\n  store(p_515_addr, 4096, struct sized_stack*);\n  store(4096, 1, unsigned int);\n  store(4100, 8192, struct list*);\n  sll (8192, cons(Z_1, 9, nil(Z_1))) ]\n",
+          "goal": "PROP[\n  0 <= INT_MAX;\n  (- 2147483648) <= 0 ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "return",
+          "name": null,
+          "line": 58,
+          "status": "VALID",
+          "path": "PROP[\n  y_556_free == 0;\n  p_pre_size_519 == 1 ]\nLOCAL[]\nSEP[\n  store(8192, 9, signed int);\n  store(8196, 0, struct list*);\n  store(4096, 1, unsigned int);\n  store(4100, 8192, struct list*) ]\n",
+          "goal": "EX p_pre_size_522 \nPROP[\n  p_pre_size_522 == 1 ]\nLOCAL[]\nSEP[\n  store(4096, 1, unsigned int);\n  store(4100, 8192, struct list*);\n  sll (8192, cons(Z_1, 9, nil(Z_1))) ]\n"
+        }
+      ],
+      "evidence": {
+        "decision_backend": "qcp-smt",
+        "certificate": "NOT_CHECKED"
+      },
+      "returncode": 3,
+      "generated_source_sha256": "2497cb6654cbfe8793941813e080b7bc7d0031527759bbdf989b1fdba0b744cb",
+      "duration_seconds": 0.021532,
+      "peak_rss_kb": 5820,
+      "cpu_seconds": 0.01,
+      "command": [
+        "/tmp/teSpec-tespec-sync/bin/tespec-symexec",
+        "--arch=32",
+        "--input-file=/tmp/fulminate-qcp-ym442dve/run/artifacts/input_0/input.c",
+        "--full-auto",
+        "--Json-output",
+        "--emit-residual-vc",
+        "--no-strategy-gen",
+        "--gen-and-backup",
+        "--coq-output-dir",
+        "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_0/vc",
+        "--no-logic-path",
+        "--disable-solver-info",
+        "--no-exec-info",
+        "--function",
+        "top",
+        "--concrete-bindings",
+        "--spec",
+        "__tespec_entry",
+        "-I/tmp/teSpec-tespec-sync/benchmark/selection/qcp-migration/cases",
+        "-I/tmp/teSpec-tespec-sync/runtime/qcip/QCP_examples/QCP_demos_human",
+        "--call-depth-limit",
+        "64"
+      ],
+      "stdout": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_0/executor.json",
+      "stderr": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_0/stderr.log",
+      "vc": {
+        "schema": "qcp-spectest-vc-manifest/v1",
+        "case_id": "input_0",
+        "function": "top",
+        "source": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_0/input.c",
+        "qcip_root": "/tmp/teSpec-tespec-sync/runtime/qcip",
+        "status": "residual",
+        "residual_goals": [
+          "proof_of_top_precondition_wit_1"
+        ],
+        "counterexample_goals": [],
+        "files": {
+          "goal": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_0/vc/input_goal.v",
+          "proof_auto": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_0/vc/input_proof_auto.v",
+          "proof_manual": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_0/vc/input_proof_manual.v",
+          "goal_check": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_0/vc/input_goal_check.v"
+        },
+        "missing_files": [],
+        "immutable_sha256": {
+          "goal": "c1f7e9c2c178f3a3d094f815407e51dccf537bd9548831152637c37743e2407a",
+          "proof_auto": "15b067f25868fedd023991a8d617b42195de88b4c30502244cf9064308ae72b5",
+          "goal_check": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e"
+        },
+        "coq_dependencies": [],
+        "runtime_dependencies": [
+          {
+            "module": "SimpleC.EE.QCP_demos_human.sll_lib",
+            "source": "/tmp/teSpec-tespec-sync/runtime/qcip/SeparationLogic/examples/QCP_demos_human/sll_lib.v",
+            "sha256": "91d172559c4b3e21b108c7e2a005476cc76d56337213ef65fb5a9ef1d433a9ad",
+            "compiled": null,
+            "compiled_sha256": null,
+            "origin": "pinned-runtime"
+          }
+        ],
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [
+            {
+              "id": 420,
+              "kind": "struct",
+              "name": "sized_stack",
+              "defined": true,
+              "size": 8,
+              "alignment": 4,
+              "fields": [
+                {
+                  "id": 422,
+                  "name": "size",
+                  "offset": 0,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "basic",
+                    "name": "unsigned_int"
+                  },
+                  "computational": true
+                },
+                {
+                  "id": 421,
+                  "name": "data",
+                  "offset": 4,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "pointer",
+                    "target": {
+                      "kind": "struct",
+                      "id": 369
+                    }
+                  },
+                  "computational": true
+                }
+              ]
+            },
+            {
+              "id": 369,
+              "kind": "struct",
+              "name": "list",
+              "defined": true,
+              "size": 8,
+              "alignment": 4,
+              "fields": [
+                {
+                  "id": 371,
+                  "name": "data",
+                  "offset": 0,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "basic",
+                    "name": "int"
+                  },
+                  "computational": true
+                },
+                {
+                  "id": 370,
+                  "name": "next",
+                  "offset": 4,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "pointer",
+                    "target": {
+                      "kind": "struct",
+                      "id": 369
+                    }
+                  },
+                  "computational": true
+                }
+              ]
+            }
+          ],
+          "aliases": []
+        },
+        "manifest": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_0/vc/manifest.json"
+      },
+      "resources": {
+        "wall_seconds": 0.021532,
+        "cpu_seconds": 0.01,
+        "measurement": "GNU time; executor and children; maximum process RSS",
+        "peak_rss_kib": 5820
+      },
+      "embedded_artifacts": {
+        "stdout": "{\n  \"spec_test\": {\n    \"schema\": \"sac-spec-test/v1\",\n    \"execution_semantics\": \"inline-preserve/v1\",\n    \"mode\": \"expand\",\n    \"scope\": \"execution\",\n    \"annotation_policy\": \"ignore\",\n    \"completed\": true,\n    \"overall\": \"UNKNOWN\",\n    \"precondition_result\": \"UNKNOWN\",\n    \"test_result\": \"UNKNOWN\",\n    \"result_semantics\": \"three-valued-conjunction/v1\",\n    \"vc_semantics\": \"path-vc/v1\",\n    \"vc_results\": [\n      {\n        \"kind\": \"safety\",\n        \"name\": null,\n        \"line\": 57,\n        \"status\": \"VALID\",\n        \"path\": \"EX p_pre_size_519 \\nPROP[\\n  p_pre_size_519 == 1 ]\\nLOCAL[\\n  Temp p p_515_addr ]\\nSEP[\\n  store(p_515_addr, 4096, struct sized_stack*);\\n  store(4096, 1, unsigned int);\\n  store(4100, 8192, struct list*);\\n  sll (8192, cons(Z_1, 9, nil(Z_1))) ]\\n\",\n        \"goal\": \"PROP[\\n  0 <= INT_MAX;\\n  (- 2147483648) <= 0 ]\\nLOCAL[]\\nSEP[]\\n\"\n      },\n      {\n        \"kind\": \"return\",\n        \"name\": null,\n        \"line\": 58,\n        \"status\": \"VALID\",\n        \"path\": \"PROP[\\n  y_556_free == 0;\\n  p_pre_size_519 == 1 ]\\nLOCAL[]\\nSEP[\\n  store(8192, 9, signed int);\\n  store(8196, 0, struct list*);\\n  store(4096, 1, unsigned int);\\n  store(4100, 8192, struct list*) ]\\n\",\n        \"goal\": \"EX p_pre_size_522 \\nPROP[\\n  p_pre_size_522 == 1 ]\\nLOCAL[]\\nSEP[\\n  store(4096, 1, unsigned int);\\n  store(4100, 8192, struct list*);\\n  sll (8192, cons(Z_1, 9, nil(Z_1))) ]\\n\"\n      }\n    ],\n    \"phases\": {\n      \"precondition\": \"UNKNOWN\",\n      \"safety\": \"PASS\",\n      \"postcondition\": \"PASS\",\n      \"annotations\": \"NOT_RUN\"\n    },\n    \"abstraction_events\": [],\n    \"limit_reason\": null,\n    \"architecture_bits\": 32,\n    \"target_layout\": {\n      \"schema\": \"sac-target-layout/v1\",\n      \"architecture_bits\": 32,\n      \"byte_order\": \"big\",\n      \"pointer_size\": 4,\n      \"memory_rules\": \"naive_C_Rules\",\n      \"field_address_semantics\": \"base-plus-byte-offset/v1\",\n      \"imported_predicate_semantics\": \"definition-bound; compatibility-not-certified\",\n      \"aggregates\": [\n        {\n          \"id\": 420,\n          \"kind\": \"struct\",\n          \"name\": \"sized_stack\",\n          \"defined\": true,\n          \"size\": 8,\n          \"alignment\": 4,\n          \"fields\": [\n            {\n              \"id\": 422,\n              \"name\": \"size\",\n              \"offset\": 0,\n              \"size\": 4,\n              \"alignment\": 4,\n              \"type\": {\n                \"kind\": \"basic\",\n                \"name\": \"unsigned_int\"\n              },\n              \"computational\": true\n            },\n            {\n              \"id\": 421,\n              \"name\": \"data\",\n              \"offset\": 4,\n              \"size\": 4,\n              \"alignment\": 4,\n              \"type\": {\n                \"kind\": \"pointer\",\n                \"target\": {\n                  \"kind\": \"struct\",\n                  \"id\": 369\n                }\n              },\n              \"computational\": true\n            }\n          ]\n        },\n        {\n          \"id\": 369,\n          \"kind\": \"struct\",\n          \"name\": \"list\",\n          \"defined\": true,\n          \"size\": 8,\n          \"alignment\": 4,\n          \"fields\": [\n            {\n              \"id\": 371,\n              \"name\": \"data\",\n              \"offset\": 0,\n              \"size\": 4,\n              \"alignment\": 4,\n              \"type\": {\n                \"kind\": \"basic\",\n                \"name\": \"int\"\n              },\n              \"computational\": true\n            },\n            {\n              \"id\": 370,\n              \"name\": \"next\",\n              \"offset\": 4,\n              \"size\": 4,\n              \"alignment\": 4,\n              \"type\": {\n                \"kind\": \"pointer\",\n                \"target\": {\n                  \"kind\": \"struct\",\n                  \"id\": 369\n                }\n              },\n              \"computational\": true\n            }\n          ]\n        }\n      ],\n      \"aliases\": []\n    },\n    \"certificate\": \"NOT_CHECKED\"\n  },\n  \"preconditions\": [\n    {\n      \"goal\": \"top_precondition_wit_1\",\n      \"status\": \"UNKNOWN\",\n      \"proof\": \"manual\"\n    }\n  ],\n  \"fileName\": \"/tmp/fulminate-qcp-ym442dve/run/artifacts/input_0/input.c\",\n  \"functionName\": \"top\",\n  \"loaded_strategies\": [\n    \"sll\",\n    \"common\",\n    \"string_literal\"\n  ],\n  \"result\": \"success\",\n  \"verificationStatus\": \"unproved\",\n  \"has_manual_obligations\": true,\n  \"manual_obligation_count\": 1,\n  \"manual_obligations\": [\n    {\n      \"kind\": \"precondition\",\n      \"goal\": \"top_precondition_wit_1\"\n    }\n  ],\n  \"errormessage\": null,\n  \"warningmessage\": null,\n  \"current_assertions\": null,\n  \"FunctionDerivation\": null,\n  \"WitnessList\": [\n    {\n      \"functionName\": \"top\",\n      \"Witness\": {\n        \"safety_checker_wit\": {\n          \"total\": 1,\n          \"auto_solved\": 1,\n          \"manual\": 0,\n          \"manual_witness\": null\n        },\n        \"entailment_checker_wit\": {\n          \"total\": 0,\n          \"auto_solved\": 0,\n          \"manual\": 0,\n          \"manual_witness\": null\n        },\n        \"return_checker_wit\": {\n          \"total\": 1,\n          \"auto_solved\": 1,\n          \"manual\": 0,\n          \"manual_witness\": null\n        },\n        \"partial_solve_wit\": {\n          \"total\": 1,\n          \"auto_solved\": 1,\n          \"manual\": 0,\n          \"manual_witness\": null\n        },\n        \"which_implies_wit\": {\n          \"total\": 0,\n          \"auto_solved\": 0,\n          \"manual\": 0,\n          \"manual_witness\": null\n        },\n        \"total_witness_count\": {\n          \"auto_solved\": 3,\n          \"manual\": 0\n        }\n      }\n    }\n  ]\n}",
+        "stderr": "[precondition] top_precondition_wit_1: UNKNOWN (manual)\n",
+        "generated_source": "#include \"verification_stdlib.h\"\n#include \"sll_def.h\"\n\n\nstruct list *mallocIntList()\n/*@ Require emp Ensure __return != 0 &&\n    undef_data_at(&(__return->data), int) *\n    undef_data_at(&(__return->next), struct list *) */;\nvoid freeIntList(struct list *p)\n/*@ Require undef_data_at(&(p->data), int) *\n            undef_data_at(&(p->next), struct list *) Ensure emp */;\nstruct sized_stack { unsigned int size; struct list *data; };\nstruct sized_stack *malloc_sized_stack()\n/*@ Require emp Ensure __return != 0 &&\n    undef_data_at(&(__return->size),unsigned int) *\n    undef_data_at(&(__return->data),struct list *) */;\n\n\nstruct list* IntList_cons(int h, struct list* t)\n/*@ With h0 (l: list Z) Require h == h0 && sll(t,l) Ensure sll(__return,cons(h0,l)) */\n{\n  struct list *p = mallocIntList();\n  p->data = h;\n  p->next = t;\n  return p;\n}\n\nstruct sized_stack* create()\n/*@ Require emp Ensure __return->size == 0 && __return->data == 0 */\n{\n  struct sized_stack *p = malloc_sized_stack();\n  p->size = 0;\n  p->data = 0;\n  return p;\n}\n\nunsigned int sizeOf (struct sized_stack *p)\n/*@ With d (l: list Z) Require p->size == Zlength(l) % 4294967296 && (p->data == d) * sll(d,l) Ensure __return == Zlength(l) % 4294967296 && p->size == Zlength(l) % 4294967296 && (p->data == d) * sll(d,l) */\n{\n  return p->size;\n}\n\nvoid push (struct sized_stack *p, int x)\n/*@ With d x0 (l: list Z) Require x == x0 && p->size == Zlength(l) % 4294967296 && (p->data == d) * sll(d,l) Ensure exists d2, p->size == (Zlength(l)+1) % 4294967296 && (p->data == d2) * sll(d2,cons(x0,l)) */\n{\n  struct list *data = IntList_cons(x, p->data);\n  p->size++;\n  p->data = data;\n}\n\nint top (struct sized_stack *p)\n\n/*@ __tespec_entry With d h (l: list Z) Require\n      (p == (4096)) && (d == (8192)) && (h == (9)) && (l == (nil)) && (Zlength(l)+1) % 4294967296 > 0 && p->size == (Zlength(l)+1) % 4294967296 && (p->data == d) * sll(d,cons(h,l)) Ensure __return == h && p->size == (Zlength(l)+1) % 4294967296 && (p->data == d) * sll(d,cons(h,l)) */\n/*@ With d h (l: list Z) Require (Zlength(l)+1) % 4294967296 > 0 && p->size == (Zlength(l)+1) % 4294967296 && (p->data == d) * sll(d,cons(h,l)) Ensure __return == h && p->size == (Zlength(l)+1) % 4294967296 && (p->data == d) * sll(d,cons(h,l)) */\n{\n  if (p->data != 0) {\n    return (p->data)->data;\n  }\n  else {\n    return 42;\n  }\n}\n\nint pop (struct sized_stack *p)\n/*@ With d h (l: list Z) Require (Zlength(l)+1) % 4294967296 > 0 && p->size == (Zlength(l)+1) % 4294967296 && (p->data == d) * sll(d,cons(h,l)) Ensure exists d2, p->size == Zlength(l) % 4294967296 && (p->data == d2) * sll(d2,l) */\n{\n  struct list *data = p->data;\n  if (data != 0) {\n    int head = data->data;\n    struct list *tail = data->next;\n    freeIntList(data);\n    p->data = tail;\n    p->size--;\n    return head;\n  }\n  return 42;\n}\n",
+        "vc_files": {
+          "goal": "Require Import Coq.ZArith.ZArith.\nRequire Import Coq.Bool.Bool.\nRequire Import Coq.Strings.String.\nRequire Import Coq.Strings.Ascii.\nRequire Import Coq.Lists.List.\nRequire Import Coq.Classes.RelationClasses.\nRequire Import Coq.Classes.Morphisms.\nRequire Import Coq.micromega.Psatz.\nRequire Import Coq.Sorting.Permutation.\nFrom AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.\nRequire Import SetsClass.SetsClass. Import SetsNotation.\nFrom SimpleC.SL Require Import Mem SeparationLogic.\nRequire Import Logic.LogicGenerator.demo932.Interface.\nLocal Open Scope Z_scope.\nLocal Open Scope sets.\nLocal Open Scope string_scope.\nLocal Open Scope list.\nImport naive_C_Rules.\nRequire Import SimpleC.EE.QCP_demos_human.sll_lib.\nLocal Open Scope sac.\nLocal Open Scope Z_scope.\n\n(*----- Function top -----*)\n\nDefinition top_safety_wit_1 := \nforall (p_pre_size: Z) (PreH1 : (p_pre_size = 1)) ,\n  ((( &( \"p_spec_515\" ) )) # Ptr  |-> 4096)\n  **  ((4096) # UInt  |-> 1)\n  **  ((4100) # Ptr  |-> 8192)\n  **  (sll 8192 (cons (9) ((@nil Z))) )\n|--\n  “ (0 <= INT_MAX) ” \n  &&  “ ((INT_MIN) <= 0) ”\n.\n\nDefinition top_return_wit_1 := \nforall (p_pre_size_2: Z) (y: Z) (PreH1 : (y = 0)) (PreH2 : (p_pre_size_2 = 1)) ,\n  ((8192) # Int  |-> 9)\n  **  ((8196) # Ptr  |-> 0)\n  **  ((4096) # UInt  |-> 1)\n  **  ((4100) # Ptr  |-> 8192)\n|--\n  EX (p_pre_size: Z) ,\n  “ (9 = 9) ” \n  &&  “ (p_pre_size = 1) ”\n  &&  ((4096) # UInt  |-> 1)\n  **  ((4100) # Ptr  |-> 8192)\n  **  (sll 8192 (cons (9) ((@nil Z))) )\n.\n\nDefinition top_partial_solve_wit_1 := \nforall (p_pre_size: Z) (PreH1 : (p_pre_size = 1)) ,\n  ((4096) # UInt  |-> 1)\n  **  ((4100) # Ptr  |-> 8192)\n  **  (sll 8192 (cons (9) ((@nil Z))) )\n|--\n  EX (y: Z) ,\n  “ (y = 0) ” \n  &&  “ (p_pre_size = 1) ”\n  &&  ((8192) # Int  |-> 9)\n  **  ((8196) # Ptr  |-> y)\n  **  ((4096) # UInt  |-> 1)\n  **  ((4100) # Ptr  |-> 8192)\n.\n\nDefinition top_precondition_wit_1 :=\n~ ((  EX (p_pre_size: Z) ,\n  “ (4096 = 4096) ” \n  &&  “ (8192 = 8192) ” \n  &&  “ (9 = 9) ” \n  &&  “ ((@nil Z) = (@nil Z)) ” \n  &&  “ ((((Zlength ((@nil Z))) + 1 ) % ( 4294967296 ) ) > 0) ” \n  &&  “ (p_pre_size = (((Zlength ((@nil Z))) + 1 ) % ( 4294967296 ) )) ”\n  &&  (((* tespec-target-field-address-v1: bits=32; offset=0; size=4; align=4 *) (4096 + 0)) # UInt  |-> p_pre_size)\n  **  (((* tespec-target-field-address-v1: bits=32; offset=4; size=4; align=4 *) (4096 + 4)) # Ptr  |-> 8192)\n  **  (sll 8192 (cons (9) ((@nil Z))) )) |-- “ False ”).\n\nModule Type VC_Correct.\n\nAxiom proof_of_top_safety_wit_1 : top_safety_wit_1.\nAxiom proof_of_top_return_wit_1 : top_return_wit_1.\nAxiom proof_of_top_partial_solve_wit_1 : top_partial_solve_wit_1.\nAxiom proof_of_top_precondition_wit_1 : top_precondition_wit_1.\n\nEnd VC_Correct.\n",
+          "proof_auto": "Require Import Coq.ZArith.ZArith.\nRequire Import Coq.Bool.Bool.\nRequire Import Coq.Strings.String.\nRequire Import Coq.Strings.Ascii.\nRequire Import Coq.Lists.List.\nRequire Import Coq.Classes.RelationClasses.\nRequire Import Coq.Classes.Morphisms.\nRequire Import Coq.micromega.Psatz.\nRequire Import Coq.Sorting.Permutation.\nFrom AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.\nRequire Import SetsClass.SetsClass. Import SetsNotation.\nFrom SimpleC.SL Require Import Mem SeparationLogic.\nRequire Import input_goal.\nRequire Import Logic.LogicGenerator.demo932.Interface.\nLocal Open Scope Z_scope.\nLocal Open Scope sets.\nLocal Open Scope string_scope.\nLocal Open Scope list.\nImport naive_C_Rules.\nRequire Import SimpleC.EE.QCP_demos_human.sll_lib.\nLocal Open Scope sac.\nLocal Open Scope Z_scope.\n\nLemma proof_of_top_safety_wit_1 : top_safety_wit_1.\nProof. Admitted. \n\nLemma proof_of_top_return_wit_1 : top_return_wit_1.\nProof. Admitted. \n\nLemma proof_of_top_partial_solve_wit_1 : top_partial_solve_wit_1.\nProof. Admitted. \n\n",
+          "proof_manual": "Require Import Coq.ZArith.ZArith.\nRequire Import Coq.Bool.Bool.\nRequire Import Coq.Strings.String.\nRequire Import Coq.Strings.Ascii.\nRequire Import Coq.Lists.List.\nRequire Import Coq.Classes.RelationClasses.\nRequire Import Coq.Classes.Morphisms.\nRequire Import Coq.micromega.Psatz.\nRequire Import Coq.Sorting.Permutation.\nFrom AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.\nRequire Import SetsClass.SetsClass. Import SetsNotation.\nFrom SimpleC.SL Require Import Mem SeparationLogic.\nRequire Import input_goal.\nRequire Import input_proof_auto.\nRequire Import Logic.LogicGenerator.demo932.Interface.\nLocal Open Scope Z_scope.\nLocal Open Scope sets.\nLocal Open Scope string_scope.\nLocal Open Scope list.\nImport naive_C_Rules.\nRequire Import SimpleC.EE.QCP_demos_human.sll_lib.\nLocal Open Scope sac.\nLocal Open Scope Z_scope.\n\nLemma proof_of_top_precondition_wit_1 : top_precondition_wit_1.\nProof. Admitted. \n\n",
+          "goal_check": "Require Import input_goal input_proof_auto input_proof_manual.\n\nModule VC_Correctness : VC_Correct.\n  Include input_proof_auto.\n  Include input_proof_manual.\nEnd VC_Correctness.\n"
+        }
+      }
+    },
+    {
+      "id": "input_1",
+      "arguments": {
+        "p": 4096
+      },
+      "bindings": {
+        "h": 9,
+        "l": [
+          1
+        ],
+        "d": 8192
+      },
+      "type_bindings": {},
+      "spec": null,
+      "generated_source": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_1/input.c",
+      "status": "UNKNOWN",
+      "overall": "UNKNOWN",
+      "precondition_result": "UNKNOWN",
+      "test_result": "UNKNOWN",
+      "result_semantics": "three-valued-conjunction/v1",
+      "executor_reported_status": "UNKNOWN",
+      "satisfied": null,
+      "reason": "precondition_requires_proof",
+      "phases": {
+        "precondition": "UNKNOWN",
+        "safety": "PASS",
+        "postcondition": "UNKNOWN",
+        "annotations": "NOT_RUN",
+        "execution": "PASS"
+      },
+      "scope": "execution",
+      "mode": "entry-exit",
+      "execution_semantics": "inline-preserve/v1",
+      "execution_completed": true,
+      "annotation_policy": "ignore",
+      "preconditions": [
+        {
+          "goal": "top_precondition_wit_1",
+          "status": "UNKNOWN",
+          "proof": "manual"
+        }
+      ],
+      "abstraction_events": [],
+      "architecture_bits": 32,
+      "target_layout": {
+        "schema": "sac-target-layout/v1",
+        "architecture_bits": 32,
+        "byte_order": "big",
+        "pointer_size": 4,
+        "memory_rules": "naive_C_Rules",
+        "field_address_semantics": "base-plus-byte-offset/v1",
+        "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+        "aggregates": [
+          {
+            "id": 420,
+            "kind": "struct",
+            "name": "sized_stack",
+            "defined": true,
+            "size": 8,
+            "alignment": 4,
+            "fields": [
+              {
+                "id": 422,
+                "name": "size",
+                "offset": 0,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "basic",
+                  "name": "unsigned_int"
+                },
+                "computational": true
+              },
+              {
+                "id": 421,
+                "name": "data",
+                "offset": 4,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "pointer",
+                  "target": {
+                    "kind": "struct",
+                    "id": 369
+                  }
+                },
+                "computational": true
+              }
+            ]
+          },
+          {
+            "id": 369,
+            "kind": "struct",
+            "name": "list",
+            "defined": true,
+            "size": 8,
+            "alignment": 4,
+            "fields": [
+              {
+                "id": 371,
+                "name": "data",
+                "offset": 0,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "basic",
+                  "name": "int"
+                },
+                "computational": true
+              },
+              {
+                "id": 370,
+                "name": "next",
+                "offset": 4,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "pointer",
+                  "target": {
+                    "kind": "struct",
+                    "id": 369
+                  }
+                },
+                "computational": true
+              }
+            ]
+          }
+        ],
+        "aliases": []
+      },
+      "executor_error": null,
+      "residual_vcs": [
+        "proof_of_top_return_wit_1_split_goal_1",
+        "proof_of_top_return_wit_1_split_goal_2",
+        "proof_of_top_return_wit_1",
+        "proof_of_top_precondition_wit_1"
+      ],
+      "vc_results": [
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 57,
+          "status": "VALID",
+          "path": "EX p_pre_size_519 \nPROP[\n  p_pre_size_519 == 2 ]\nLOCAL[\n  Temp p p_515_addr ]\nSEP[\n  store(p_515_addr, 4096, struct sized_stack*);\n  store(4096, 2, unsigned int);\n  store(4100, 8192, struct list*);\n  sll (8192, cons(Z_1, 9, cons(Z_1, 1, nil(Z_1)))) ]\n",
+          "goal": "PROP[\n  0 <= INT_MAX;\n  (- 2147483648) <= 0 ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "return",
+          "name": null,
+          "line": 58,
+          "status": "UNKNOWN",
+          "path": "PROP[\n  y_559_free == 0;\n  p_pre_size_519 == 2 ]\nLOCAL[]\nSEP[\n  store(8192, 9, signed int);\n  store((y_558_free + 4), 0, struct list*);\n  store(y_558_free, 1, signed int);\n  store(8196, y_558_free, struct list*);\n  store(4096, 2, unsigned int);\n  store(4100, 8192, struct list*) ]\n",
+          "goal": "EX p_pre_size_522 \nPROP[\n  p_pre_size_522 == 2 ]\nLOCAL[]\nSEP[\n  store(4096, 2, unsigned int);\n  store(4100, 8192, struct list*);\n  sll (8192, cons(Z_1, 9, cons(Z_1, 1, nil(Z_1)))) ]\n"
+        }
+      ],
+      "evidence": {
+        "decision_backend": "qcp-smt",
+        "certificate": "NOT_CHECKED"
+      },
+      "returncode": 3,
+      "generated_source_sha256": "d9a2db798eb73c9b9f84f1d2860959b1842de5e590d48c7f16fabd47811ce505",
+      "duration_seconds": 0.022964,
+      "peak_rss_kb": 5864,
+      "cpu_seconds": 0.01,
+      "command": [
+        "/tmp/teSpec-tespec-sync/bin/tespec-symexec",
+        "--arch=32",
+        "--input-file=/tmp/fulminate-qcp-ym442dve/run/artifacts/input_1/input.c",
+        "--full-auto",
+        "--Json-output",
+        "--emit-residual-vc",
+        "--no-strategy-gen",
+        "--gen-and-backup",
+        "--coq-output-dir",
+        "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_1/vc",
+        "--no-logic-path",
+        "--disable-solver-info",
+        "--no-exec-info",
+        "--function",
+        "top",
+        "--concrete-bindings",
+        "--spec",
+        "__tespec_entry",
+        "-I/tmp/teSpec-tespec-sync/benchmark/selection/qcp-migration/cases",
+        "-I/tmp/teSpec-tespec-sync/runtime/qcip/QCP_examples/QCP_demos_human",
+        "--call-depth-limit",
+        "64"
+      ],
+      "stdout": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_1/executor.json",
+      "stderr": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_1/stderr.log",
+      "vc": {
+        "schema": "qcp-spectest-vc-manifest/v1",
+        "case_id": "input_1",
+        "function": "top",
+        "source": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_1/input.c",
+        "qcip_root": "/tmp/teSpec-tespec-sync/runtime/qcip",
+        "status": "residual",
+        "residual_goals": [
+          "proof_of_top_return_wit_1_split_goal_1",
+          "proof_of_top_return_wit_1_split_goal_2",
+          "proof_of_top_return_wit_1",
+          "proof_of_top_precondition_wit_1"
+        ],
+        "counterexample_goals": [],
+        "files": {
+          "goal": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_1/vc/input_goal.v",
+          "proof_auto": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_1/vc/input_proof_auto.v",
+          "proof_manual": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_1/vc/input_proof_manual.v",
+          "goal_check": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_1/vc/input_goal_check.v"
+        },
+        "missing_files": [],
+        "immutable_sha256": {
+          "goal": "ac9361d92be7584d09db7d771ba592afdc6e418ecca096f3219b95c9f2f4d86c",
+          "proof_auto": "ac7197c8bc75855f33824e777ac0cf3aebfa15696bea8854fb3273ddaf6a2bf7",
+          "goal_check": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e"
+        },
+        "coq_dependencies": [],
+        "runtime_dependencies": [
+          {
+            "module": "SimpleC.EE.QCP_demos_human.sll_lib",
+            "source": "/tmp/teSpec-tespec-sync/runtime/qcip/SeparationLogic/examples/QCP_demos_human/sll_lib.v",
+            "sha256": "91d172559c4b3e21b108c7e2a005476cc76d56337213ef65fb5a9ef1d433a9ad",
+            "compiled": null,
+            "compiled_sha256": null,
+            "origin": "pinned-runtime"
+          }
+        ],
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [
+            {
+              "id": 420,
+              "kind": "struct",
+              "name": "sized_stack",
+              "defined": true,
+              "size": 8,
+              "alignment": 4,
+              "fields": [
+                {
+                  "id": 422,
+                  "name": "size",
+                  "offset": 0,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "basic",
+                    "name": "unsigned_int"
+                  },
+                  "computational": true
+                },
+                {
+                  "id": 421,
+                  "name": "data",
+                  "offset": 4,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "pointer",
+                    "target": {
+                      "kind": "struct",
+                      "id": 369
+                    }
+                  },
+                  "computational": true
+                }
+              ]
+            },
+            {
+              "id": 369,
+              "kind": "struct",
+              "name": "list",
+              "defined": true,
+              "size": 8,
+              "alignment": 4,
+              "fields": [
+                {
+                  "id": 371,
+                  "name": "data",
+                  "offset": 0,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "basic",
+                    "name": "int"
+                  },
+                  "computational": true
+                },
+                {
+                  "id": 370,
+                  "name": "next",
+                  "offset": 4,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "pointer",
+                    "target": {
+                      "kind": "struct",
+                      "id": 369
+                    }
+                  },
+                  "computational": true
+                }
+              ]
+            }
+          ],
+          "aliases": []
+        },
+        "manifest": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_1/vc/manifest.json"
+      },
+      "resources": {
+        "wall_seconds": 0.022964,
+        "cpu_seconds": 0.01,
+        "measurement": "GNU time; executor and children; maximum process RSS",
+        "peak_rss_kib": 5864
+      },
+      "embedded_artifacts": {
+        "stdout": "{\n  \"spec_test\": {\n    \"schema\": \"sac-spec-test/v1\",\n    \"execution_semantics\": \"inline-preserve/v1\",\n    \"mode\": \"expand\",\n    \"scope\": \"execution\",\n    \"annotation_policy\": \"ignore\",\n    \"completed\": true,\n    \"overall\": \"UNKNOWN\",\n    \"precondition_result\": \"UNKNOWN\",\n    \"test_result\": \"UNKNOWN\",\n    \"result_semantics\": \"three-valued-conjunction/v1\",\n    \"vc_semantics\": \"path-vc/v1\",\n    \"vc_results\": [\n      {\n        \"kind\": \"safety\",\n        \"name\": null,\n        \"line\": 57,\n        \"status\": \"VALID\",\n        \"path\": \"EX p_pre_size_519 \\nPROP[\\n  p_pre_size_519 == 2 ]\\nLOCAL[\\n  Temp p p_515_addr ]\\nSEP[\\n  store(p_515_addr, 4096, struct sized_stack*);\\n  store(4096, 2, unsigned int);\\n  store(4100, 8192, struct list*);\\n  sll (8192, cons(Z_1, 9, cons(Z_1, 1, nil(Z_1)))) ]\\n\",\n        \"goal\": \"PROP[\\n  0 <= INT_MAX;\\n  (- 2147483648) <= 0 ]\\nLOCAL[]\\nSEP[]\\n\"\n      },\n      {\n        \"kind\": \"return\",\n        \"name\": null,\n        \"line\": 58,\n        \"status\": \"UNKNOWN\",\n        \"path\": \"PROP[\\n  y_559_free == 0;\\n  p_pre_size_519 == 2 ]\\nLOCAL[]\\nSEP[\\n  store(8192, 9, signed int);\\n  store((y_558_free + 4), 0, struct list*);\\n  store(y_558_free, 1, signed int);\\n  store(8196, y_558_free, struct list*);\\n  store(4096, 2, unsigned int);\\n  store(4100, 8192, struct list*) ]\\n\",\n        \"goal\": \"EX p_pre_size_522 \\nPROP[\\n  p_pre_size_522 == 2 ]\\nLOCAL[]\\nSEP[\\n  store(4096, 2, unsigned int);\\n  store(4100, 8192, struct list*);\\n  sll (8192, cons(Z_1, 9, cons(Z_1, 1, nil(Z_1)))) ]\\n\"\n      }\n    ],\n    \"phases\": {\n      \"precondition\": \"UNKNOWN\",\n      \"safety\": \"PASS\",\n      \"postcondition\": \"UNKNOWN\",\n      \"annotations\": \"NOT_RUN\"\n    },\n    \"abstraction_events\": [],\n    \"limit_reason\": null,\n    \"architecture_bits\": 32,\n    \"target_layout\": {\n      \"schema\": \"sac-target-layout/v1\",\n      \"architecture_bits\": 32,\n      \"byte_order\": \"big\",\n      \"pointer_size\": 4,\n      \"memory_rules\": \"naive_C_Rules\",\n      \"field_address_semantics\": \"base-plus-byte-offset/v1\",\n      \"imported_predicate_semantics\": \"definition-bound; compatibility-not-certified\",\n      \"aggregates\": [\n        {\n          \"id\": 420,\n          \"kind\": \"struct\",\n          \"name\": \"sized_stack\",\n          \"defined\": true,\n          \"size\": 8,\n          \"alignment\": 4,\n          \"fields\": [\n            {\n              \"id\": 422,\n              \"name\": \"size\",\n              \"offset\": 0,\n              \"size\": 4,\n              \"alignment\": 4,\n              \"type\": {\n                \"kind\": \"basic\",\n                \"name\": \"unsigned_int\"\n              },\n              \"computational\": true\n            },\n            {\n              \"id\": 421,\n              \"name\": \"data\",\n              \"offset\": 4,\n              \"size\": 4,\n              \"alignment\": 4,\n              \"type\": {\n                \"kind\": \"pointer\",\n                \"target\": {\n                  \"kind\": \"struct\",\n                  \"id\": 369\n                }\n              },\n              \"computational\": true\n            }\n          ]\n        },\n        {\n          \"id\": 369,\n          \"kind\": \"struct\",\n          \"name\": \"list\",\n          \"defined\": true,\n          \"size\": 8,\n          \"alignment\": 4,\n          \"fields\": [\n            {\n              \"id\": 371,\n              \"name\": \"data\",\n              \"offset\": 0,\n              \"size\": 4,\n              \"alignment\": 4,\n              \"type\": {\n                \"kind\": \"basic\",\n                \"name\": \"int\"\n              },\n              \"computational\": true\n            },\n            {\n              \"id\": 370,\n              \"name\": \"next\",\n              \"offset\": 4,\n              \"size\": 4,\n              \"alignment\": 4,\n              \"type\": {\n                \"kind\": \"pointer\",\n                \"target\": {\n                  \"kind\": \"struct\",\n                  \"id\": 369\n                }\n              },\n              \"computational\": true\n            }\n          ]\n        }\n      ],\n      \"aliases\": []\n    },\n    \"certificate\": \"NOT_CHECKED\"\n  },\n  \"preconditions\": [\n    {\n      \"goal\": \"top_precondition_wit_1\",\n      \"status\": \"UNKNOWN\",\n      \"proof\": \"manual\"\n    }\n  ],\n  \"fileName\": \"/tmp/fulminate-qcp-ym442dve/run/artifacts/input_1/input.c\",\n  \"functionName\": \"top\",\n  \"loaded_strategies\": [\n    \"sll\",\n    \"common\",\n    \"string_literal\"\n  ],\n  \"result\": \"success\",\n  \"verificationStatus\": \"unproved\",\n  \"has_manual_obligations\": true,\n  \"manual_obligation_count\": 2,\n  \"manual_obligations\": [\n    {\n      \"kind\": \"return_checker_wit\",\n      \"functionName\": \"top\",\n      \"fileName\": \"/tmp/fulminate-qcp-ym442dve/run/artifacts/input_1/input.c\",\n      \"line\": 58,\n      \"column\": 12,\n      \"summary\": \"Cannot automatically prove that a return path satisfies the postcondition.\",\n      \"goal\": \"y_559 == 0 &&\\np_size_519 == 2 &&\\n__return == 9 &&\\n(*8192 == 9) *\\n(*(*8196 + 4) == 0) *\\n(**8196 == 1) *\\n(*4096 == 2) *\\n(*4100 == 8192)\\n\\n|--\\nexists p_size_522,\\n    9 == 9 &&\\n    p_size_522 == 2 &&\\n    __return == 9 &&\\n    (*4096 == 2) *\\n    (*4100 == 8192) *\\n    sll(8192, cons(9, cons(1, nil)))\\n\"\n    },\n    {\n      \"kind\": \"precondition\",\n      \"goal\": \"top_precondition_wit_1\"\n    }\n  ],\n  \"errormessage\": null,\n  \"warningmessage\": null,\n  \"current_assertions\": null,\n  \"FunctionDerivation\": null,\n  \"WitnessList\": [\n    {\n      \"functionName\": \"top\",\n      \"Witness\": {\n        \"safety_checker_wit\": {\n          \"total\": 1,\n          \"auto_solved\": 1,\n          \"manual\": 0,\n          \"manual_witness\": null\n        },\n        \"entailment_checker_wit\": {\n          \"total\": 0,\n          \"auto_solved\": 0,\n          \"manual\": 0,\n          \"manual_witness\": null\n        },\n        \"return_checker_wit\": {\n          \"total\": 1,\n          \"auto_solved\": 0,\n          \"manual\": 1,\n          \"manual_witness\": [\n            {\n              \"line\": 58,\n              \"column\": 12,\n              \"fileName\": \"/tmp/fulminate-qcp-ym442dve/run/artifacts/input_1/input.c\",\n              \"goal\": \"y_559 == 0 &&\\np_size_519 == 2 &&\\n__return == 9 &&\\n(*8192 == 9) *\\n(*(*8196 + 4) == 0) *\\n(**8196 == 1) *\\n(*4096 == 2) *\\n(*4100 == 8192)\\n\\n|--\\nexists p_size_522,\\n    9 == 9 &&\\n    p_size_522 == 2 &&\\n    __return == 9 &&\\n    (*4096 == 2) *\\n    (*4100 == 8192) *\\n    sll(8192, cons(9, cons(1, nil)))\\n\"\n            }\n          ]\n        },\n        \"partial_solve_wit\": {\n          \"total\": 1,\n          \"auto_solved\": 1,\n          \"manual\": 0,\n          \"manual_witness\": null\n        },\n        \"which_implies_wit\": {\n          \"total\": 0,\n          \"auto_solved\": 0,\n          \"manual\": 0,\n          \"manual_witness\": null\n        },\n        \"total_witness_count\": {\n          \"auto_solved\": 2,\n          \"manual\": 1\n        }\n      }\n    }\n  ]\n}",
+        "stderr": "[precondition] top_precondition_wit_1: UNKNOWN (manual)\n",
+        "generated_source": "#include \"verification_stdlib.h\"\n#include \"sll_def.h\"\n\n\nstruct list *mallocIntList()\n/*@ Require emp Ensure __return != 0 &&\n    undef_data_at(&(__return->data), int) *\n    undef_data_at(&(__return->next), struct list *) */;\nvoid freeIntList(struct list *p)\n/*@ Require undef_data_at(&(p->data), int) *\n            undef_data_at(&(p->next), struct list *) Ensure emp */;\nstruct sized_stack { unsigned int size; struct list *data; };\nstruct sized_stack *malloc_sized_stack()\n/*@ Require emp Ensure __return != 0 &&\n    undef_data_at(&(__return->size),unsigned int) *\n    undef_data_at(&(__return->data),struct list *) */;\n\n\nstruct list* IntList_cons(int h, struct list* t)\n/*@ With h0 (l: list Z) Require h == h0 && sll(t,l) Ensure sll(__return,cons(h0,l)) */\n{\n  struct list *p = mallocIntList();\n  p->data = h;\n  p->next = t;\n  return p;\n}\n\nstruct sized_stack* create()\n/*@ Require emp Ensure __return->size == 0 && __return->data == 0 */\n{\n  struct sized_stack *p = malloc_sized_stack();\n  p->size = 0;\n  p->data = 0;\n  return p;\n}\n\nunsigned int sizeOf (struct sized_stack *p)\n/*@ With d (l: list Z) Require p->size == Zlength(l) % 4294967296 && (p->data == d) * sll(d,l) Ensure __return == Zlength(l) % 4294967296 && p->size == Zlength(l) % 4294967296 && (p->data == d) * sll(d,l) */\n{\n  return p->size;\n}\n\nvoid push (struct sized_stack *p, int x)\n/*@ With d x0 (l: list Z) Require x == x0 && p->size == Zlength(l) % 4294967296 && (p->data == d) * sll(d,l) Ensure exists d2, p->size == (Zlength(l)+1) % 4294967296 && (p->data == d2) * sll(d2,cons(x0,l)) */\n{\n  struct list *data = IntList_cons(x, p->data);\n  p->size++;\n  p->data = data;\n}\n\nint top (struct sized_stack *p)\n\n/*@ __tespec_entry With d h (l: list Z) Require\n      (p == (4096)) && (d == (8192)) && (h == (9)) && (l == (cons(1, nil))) && (Zlength(l)+1) % 4294967296 > 0 && p->size == (Zlength(l)+1) % 4294967296 && (p->data == d) * sll(d,cons(h,l)) Ensure __return == h && p->size == (Zlength(l)+1) % 4294967296 && (p->data == d) * sll(d,cons(h,l)) */\n/*@ With d h (l: list Z) Require (Zlength(l)+1) % 4294967296 > 0 && p->size == (Zlength(l)+1) % 4294967296 && (p->data == d) * sll(d,cons(h,l)) Ensure __return == h && p->size == (Zlength(l)+1) % 4294967296 && (p->data == d) * sll(d,cons(h,l)) */\n{\n  if (p->data != 0) {\n    return (p->data)->data;\n  }\n  else {\n    return 42;\n  }\n}\n\nint pop (struct sized_stack *p)\n/*@ With d h (l: list Z) Require (Zlength(l)+1) % 4294967296 > 0 && p->size == (Zlength(l)+1) % 4294967296 && (p->data == d) * sll(d,cons(h,l)) Ensure exists d2, p->size == Zlength(l) % 4294967296 && (p->data == d2) * sll(d2,l) */\n{\n  struct list *data = p->data;\n  if (data != 0) {\n    int head = data->data;\n    struct list *tail = data->next;\n    freeIntList(data);\n    p->data = tail;\n    p->size--;\n    return head;\n  }\n  return 42;\n}\n",
+        "vc_files": {
+          "goal": "Require Import Coq.ZArith.ZArith.\nRequire Import Coq.Bool.Bool.\nRequire Import Coq.Strings.String.\nRequire Import Coq.Strings.Ascii.\nRequire Import Coq.Lists.List.\nRequire Import Coq.Classes.RelationClasses.\nRequire Import Coq.Classes.Morphisms.\nRequire Import Coq.micromega.Psatz.\nRequire Import Coq.Sorting.Permutation.\nFrom AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.\nRequire Import SetsClass.SetsClass. Import SetsNotation.\nFrom SimpleC.SL Require Import Mem SeparationLogic.\nRequire Import Logic.LogicGenerator.demo932.Interface.\nLocal Open Scope Z_scope.\nLocal Open Scope sets.\nLocal Open Scope string_scope.\nLocal Open Scope list.\nImport naive_C_Rules.\nRequire Import SimpleC.EE.QCP_demos_human.sll_lib.\nLocal Open Scope sac.\nLocal Open Scope Z_scope.\n\n(*----- Function top -----*)\n\nDefinition top_safety_wit_1 := \nforall (p_pre_size: Z) (PreH1 : (p_pre_size = 2)) ,\n  ((( &( \"p_spec_515\" ) )) # Ptr  |-> 4096)\n  **  ((4096) # UInt  |-> 2)\n  **  ((4100) # Ptr  |-> 8192)\n  **  (sll 8192 (cons (9) ((cons (1) ((@nil Z))))) )\n|--\n  “ (0 <= INT_MAX) ” \n  &&  “ ((INT_MIN) <= 0) ”\n.\n\nDefinition top_return_wit_1 := \n(\nforall (p_pre_size_2: Z) (y: Z) (y_2: Z) (PreH1 : (y_2 = 0)) (PreH2 : (p_pre_size_2 = 2)) ,\n  ((8192) # Int  |-> 9)\n  **  (((y + 4 )) # Ptr  |-> 0)\n  **  ((y) # Int  |-> 1)\n  **  ((8196) # Ptr  |-> y)\n  **  ((4096) # UInt  |-> 2)\n  **  ((4100) # Ptr  |-> 8192)\n|--\n  EX (p_pre_size: Z) ,\n  “ (9 = 9) ” \n  &&  “ (p_pre_size = 2) ”\n  &&  ((4096) # UInt  |-> 2)\n  **  ((4100) # Ptr  |-> 8192)\n  **  (sll 8192 (cons (9) ((cons (1) ((@nil Z))))) )\n) \\/\n(\nforall (p_pre_size_2: Z) (y: Z) (y_2: Z) (PreH1 : (y_2 = 0)) (PreH2 : (p_pre_size_2 = 2)) ,\n  TT && emp \n|--\n  “ (y <> 0) ” \n  &&  “ (8192 <> 0) ”\n  &&  emp\n).\n\nDefinition top_return_wit_1_split_goal_1 := \nforall (p_pre_size_2: Z) (y: Z) (y_2: Z) (PreH1 : (y_2 = 0)) (PreH2 : (p_pre_size_2 = 2)) ,\n  (y <> 0)\n.\n\nDefinition top_return_wit_1_split_goal_2 := \nforall (p_pre_size_2: Z) (y_2: Z) (PreH1 : (y_2 = 0)) (PreH2 : (p_pre_size_2 = 2)) ,\n  (8192 <> 0)\n.\n\nDefinition top_partial_solve_wit_1 := \nforall (p_pre_size: Z) (PreH1 : (p_pre_size = 2)) ,\n  ((4096) # UInt  |-> 2)\n  **  ((4100) # Ptr  |-> 8192)\n  **  (sll 8192 (cons (9) ((cons (1) ((@nil Z))))) )\n|--\n  EX (y: Z)  (y_2: Z) ,\n  “ (y_2 = 0) ” \n  &&  “ (p_pre_size = 2) ”\n  &&  ((8192) # Int  |-> 9)\n  **  (((y + 4 )) # Ptr  |-> y_2)\n  **  ((y) # Int  |-> 1)\n  **  ((8196) # Ptr  |-> y)\n  **  ((4096) # UInt  |-> 2)\n  **  ((4100) # Ptr  |-> 8192)\n.\n\nDefinition top_precondition_wit_1 :=\n~ ((  EX (p_pre_size: Z) ,\n  “ (4096 = 4096) ” \n  &&  “ (8192 = 8192) ” \n  &&  “ (9 = 9) ” \n  &&  “ ((cons (1) ((@nil Z))) = (cons (1) ((@nil Z)))) ” \n  &&  “ ((((Zlength ((cons (1) ((@nil Z))))) + 1 ) % ( 4294967296 ) ) > 0) ” \n  &&  “ (p_pre_size = (((Zlength ((cons (1) ((@nil Z))))) + 1 ) % ( 4294967296 ) )) ”\n  &&  (((* tespec-target-field-address-v1: bits=32; offset=0; size=4; align=4 *) (4096 + 0)) # UInt  |-> p_pre_size)\n  **  (((* tespec-target-field-address-v1: bits=32; offset=4; size=4; align=4 *) (4096 + 4)) # Ptr  |-> 8192)\n  **  (sll 8192 (cons (9) ((cons (1) ((@nil Z))))) )) |-- “ False ”).\n\nModule Type VC_Correct.\n\nAxiom proof_of_top_safety_wit_1 : top_safety_wit_1.\nAxiom proof_of_top_return_wit_1 : top_return_wit_1.\nAxiom proof_of_top_partial_solve_wit_1 : top_partial_solve_wit_1.\nAxiom proof_of_top_precondition_wit_1 : top_precondition_wit_1.\n\nEnd VC_Correct.\n",
+          "proof_auto": "Require Import Coq.ZArith.ZArith.\nRequire Import Coq.Bool.Bool.\nRequire Import Coq.Strings.String.\nRequire Import Coq.Strings.Ascii.\nRequire Import Coq.Lists.List.\nRequire Import Coq.Classes.RelationClasses.\nRequire Import Coq.Classes.Morphisms.\nRequire Import Coq.micromega.Psatz.\nRequire Import Coq.Sorting.Permutation.\nFrom AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.\nRequire Import SetsClass.SetsClass. Import SetsNotation.\nFrom SimpleC.SL Require Import Mem SeparationLogic.\nRequire Import input_goal.\nRequire Import Logic.LogicGenerator.demo932.Interface.\nLocal Open Scope Z_scope.\nLocal Open Scope sets.\nLocal Open Scope string_scope.\nLocal Open Scope list.\nImport naive_C_Rules.\nRequire Import SimpleC.EE.QCP_demos_human.sll_lib.\nLocal Open Scope sac.\nLocal Open Scope Z_scope.\n\nLemma proof_of_top_safety_wit_1 : top_safety_wit_1.\nProof. Admitted. \n\nLemma proof_of_top_partial_solve_wit_1 : top_partial_solve_wit_1.\nProof. Admitted. \n\n",
+          "proof_manual": "Require Import Coq.ZArith.ZArith.\nRequire Import Coq.Bool.Bool.\nRequire Import Coq.Strings.String.\nRequire Import Coq.Strings.Ascii.\nRequire Import Coq.Lists.List.\nRequire Import Coq.Classes.RelationClasses.\nRequire Import Coq.Classes.Morphisms.\nRequire Import Coq.micromega.Psatz.\nRequire Import Coq.Sorting.Permutation.\nFrom AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.\nRequire Import SetsClass.SetsClass. Import SetsNotation.\nFrom SimpleC.SL Require Import Mem SeparationLogic.\nRequire Import input_goal.\nRequire Import input_proof_auto.\nRequire Import Logic.LogicGenerator.demo932.Interface.\nLocal Open Scope Z_scope.\nLocal Open Scope sets.\nLocal Open Scope string_scope.\nLocal Open Scope list.\nImport naive_C_Rules.\nRequire Import SimpleC.EE.QCP_demos_human.sll_lib.\nLocal Open Scope sac.\nLocal Open Scope Z_scope.\n\nLemma proof_of_top_return_wit_1_split_goal_1 : top_return_wit_1_split_goal_1.\nProof. Abort.\n\nLemma proof_of_top_return_wit_1_split_goal_2 : top_return_wit_1_split_goal_2.\nProof. Abort.\n\nLemma proof_of_top_return_wit_1 : top_return_wit_1.\nProof. Admitted. \n\nLemma proof_of_top_precondition_wit_1 : top_precondition_wit_1.\nProof. Admitted. \n\n",
+          "goal_check": "Require Import input_goal input_proof_auto input_proof_manual.\n\nModule VC_Correctness : VC_Correct.\n  Include input_proof_auto.\n  Include input_proof_manual.\nEnd VC_Correctness.\n"
+        }
+      }
+    },
+    {
+      "id": "input_2",
+      "arguments": {
+        "p": 4096
+      },
+      "bindings": {
+        "h": 9,
+        "l": [
+          2,
+          1
+        ],
+        "d": 8192
+      },
+      "type_bindings": {},
+      "spec": null,
+      "generated_source": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_2/input.c",
+      "status": "UNKNOWN",
+      "overall": "UNKNOWN",
+      "precondition_result": "UNKNOWN",
+      "test_result": "UNKNOWN",
+      "result_semantics": "three-valued-conjunction/v1",
+      "executor_reported_status": "UNKNOWN",
+      "satisfied": null,
+      "reason": "precondition_requires_proof",
+      "phases": {
+        "precondition": "UNKNOWN",
+        "safety": "PASS",
+        "postcondition": "UNKNOWN",
+        "annotations": "NOT_RUN",
+        "execution": "PASS"
+      },
+      "scope": "execution",
+      "mode": "entry-exit",
+      "execution_semantics": "inline-preserve/v1",
+      "execution_completed": true,
+      "annotation_policy": "ignore",
+      "preconditions": [
+        {
+          "goal": "top_precondition_wit_1",
+          "status": "UNKNOWN",
+          "proof": "manual"
+        }
+      ],
+      "abstraction_events": [],
+      "architecture_bits": 32,
+      "target_layout": {
+        "schema": "sac-target-layout/v1",
+        "architecture_bits": 32,
+        "byte_order": "big",
+        "pointer_size": 4,
+        "memory_rules": "naive_C_Rules",
+        "field_address_semantics": "base-plus-byte-offset/v1",
+        "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+        "aggregates": [
+          {
+            "id": 420,
+            "kind": "struct",
+            "name": "sized_stack",
+            "defined": true,
+            "size": 8,
+            "alignment": 4,
+            "fields": [
+              {
+                "id": 422,
+                "name": "size",
+                "offset": 0,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "basic",
+                  "name": "unsigned_int"
+                },
+                "computational": true
+              },
+              {
+                "id": 421,
+                "name": "data",
+                "offset": 4,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "pointer",
+                  "target": {
+                    "kind": "struct",
+                    "id": 369
+                  }
+                },
+                "computational": true
+              }
+            ]
+          },
+          {
+            "id": 369,
+            "kind": "struct",
+            "name": "list",
+            "defined": true,
+            "size": 8,
+            "alignment": 4,
+            "fields": [
+              {
+                "id": 371,
+                "name": "data",
+                "offset": 0,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "basic",
+                  "name": "int"
+                },
+                "computational": true
+              },
+              {
+                "id": 370,
+                "name": "next",
+                "offset": 4,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "pointer",
+                  "target": {
+                    "kind": "struct",
+                    "id": 369
+                  }
+                },
+                "computational": true
+              }
+            ]
+          }
+        ],
+        "aliases": []
+      },
+      "executor_error": null,
+      "residual_vcs": [
+        "proof_of_top_return_wit_1_split_goal_1",
+        "proof_of_top_return_wit_1_split_goal_2",
+        "proof_of_top_return_wit_1_split_goal_3",
+        "proof_of_top_return_wit_1",
+        "proof_of_top_precondition_wit_1"
+      ],
+      "vc_results": [
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 57,
+          "status": "VALID",
+          "path": "EX p_pre_size_519 \nPROP[\n  p_pre_size_519 == 3 ]\nLOCAL[\n  Temp p p_515_addr ]\nSEP[\n  store(p_515_addr, 4096, struct sized_stack*);\n  store(4096, 3, unsigned int);\n  store(4100, 8192, struct list*);\n  sll (8192, cons(Z_1, 9, cons(Z_1, 2, cons(Z_1, 1, nil(Z_1))))) ]\n",
+          "goal": "PROP[\n  0 <= INT_MAX;\n  (- 2147483648) <= 0 ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "return",
+          "name": null,
+          "line": 58,
+          "status": "UNKNOWN",
+          "path": "PROP[\n  y_562_free == 0;\n  p_pre_size_519 == 3 ]\nLOCAL[]\nSEP[\n  store(8192, 9, signed int);\n  store((y_561_free + 4), 0, struct list*);\n  store(y_561_free, 1, signed int);\n  store((y_560_free + 4), y_561_free, struct list*);\n  store(y_560_free, 2, signed int);\n  store(8196, y_560_free, struct list*);\n  store(4096, 3, unsigned int);\n  store(4100, 8192, struct list*) ]\n",
+          "goal": "EX p_pre_size_522 \nPROP[\n  p_pre_size_522 == 3 ]\nLOCAL[]\nSEP[\n  store(4096, 3, unsigned int);\n  store(4100, 8192, struct list*);\n  sll (8192, cons(Z_1, 9, cons(Z_1, 2, cons(Z_1, 1, nil(Z_1))))) ]\n"
+        }
+      ],
+      "evidence": {
+        "decision_backend": "qcp-smt",
+        "certificate": "NOT_CHECKED"
+      },
+      "returncode": 3,
+      "generated_source_sha256": "33c7caae9d7e1c618a6280e337d08cee4bd383ddc6d90dd254d4dc7815ececce",
+      "duration_seconds": 0.027218,
+      "peak_rss_kb": 6044,
+      "cpu_seconds": 0.02,
+      "command": [
+        "/tmp/teSpec-tespec-sync/bin/tespec-symexec",
+        "--arch=32",
+        "--input-file=/tmp/fulminate-qcp-ym442dve/run/artifacts/input_2/input.c",
+        "--full-auto",
+        "--Json-output",
+        "--emit-residual-vc",
+        "--no-strategy-gen",
+        "--gen-and-backup",
+        "--coq-output-dir",
+        "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_2/vc",
+        "--no-logic-path",
+        "--disable-solver-info",
+        "--no-exec-info",
+        "--function",
+        "top",
+        "--concrete-bindings",
+        "--spec",
+        "__tespec_entry",
+        "-I/tmp/teSpec-tespec-sync/benchmark/selection/qcp-migration/cases",
+        "-I/tmp/teSpec-tespec-sync/runtime/qcip/QCP_examples/QCP_demos_human",
+        "--call-depth-limit",
+        "64"
+      ],
+      "stdout": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_2/executor.json",
+      "stderr": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_2/stderr.log",
+      "vc": {
+        "schema": "qcp-spectest-vc-manifest/v1",
+        "case_id": "input_2",
+        "function": "top",
+        "source": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_2/input.c",
+        "qcip_root": "/tmp/teSpec-tespec-sync/runtime/qcip",
+        "status": "residual",
+        "residual_goals": [
+          "proof_of_top_return_wit_1_split_goal_1",
+          "proof_of_top_return_wit_1_split_goal_2",
+          "proof_of_top_return_wit_1_split_goal_3",
+          "proof_of_top_return_wit_1",
+          "proof_of_top_precondition_wit_1"
+        ],
+        "counterexample_goals": [],
+        "files": {
+          "goal": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_2/vc/input_goal.v",
+          "proof_auto": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_2/vc/input_proof_auto.v",
+          "proof_manual": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_2/vc/input_proof_manual.v",
+          "goal_check": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_2/vc/input_goal_check.v"
+        },
+        "missing_files": [],
+        "immutable_sha256": {
+          "goal": "2adc62388cacf6e31d0f52001e82c40fbc2b9d5edfe548fcf49335d74255221e",
+          "proof_auto": "ac7197c8bc75855f33824e777ac0cf3aebfa15696bea8854fb3273ddaf6a2bf7",
+          "goal_check": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e"
+        },
+        "coq_dependencies": [],
+        "runtime_dependencies": [
+          {
+            "module": "SimpleC.EE.QCP_demos_human.sll_lib",
+            "source": "/tmp/teSpec-tespec-sync/runtime/qcip/SeparationLogic/examples/QCP_demos_human/sll_lib.v",
+            "sha256": "91d172559c4b3e21b108c7e2a005476cc76d56337213ef65fb5a9ef1d433a9ad",
+            "compiled": null,
+            "compiled_sha256": null,
+            "origin": "pinned-runtime"
+          }
+        ],
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [
+            {
+              "id": 420,
+              "kind": "struct",
+              "name": "sized_stack",
+              "defined": true,
+              "size": 8,
+              "alignment": 4,
+              "fields": [
+                {
+                  "id": 422,
+                  "name": "size",
+                  "offset": 0,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "basic",
+                    "name": "unsigned_int"
+                  },
+                  "computational": true
+                },
+                {
+                  "id": 421,
+                  "name": "data",
+                  "offset": 4,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "pointer",
+                    "target": {
+                      "kind": "struct",
+                      "id": 369
+                    }
+                  },
+                  "computational": true
+                }
+              ]
+            },
+            {
+              "id": 369,
+              "kind": "struct",
+              "name": "list",
+              "defined": true,
+              "size": 8,
+              "alignment": 4,
+              "fields": [
+                {
+                  "id": 371,
+                  "name": "data",
+                  "offset": 0,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "basic",
+                    "name": "int"
+                  },
+                  "computational": true
+                },
+                {
+                  "id": 370,
+                  "name": "next",
+                  "offset": 4,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "pointer",
+                    "target": {
+                      "kind": "struct",
+                      "id": 369
+                    }
+                  },
+                  "computational": true
+                }
+              ]
+            }
+          ],
+          "aliases": []
+        },
+        "manifest": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_2/vc/manifest.json"
+      },
+      "resources": {
+        "wall_seconds": 0.027218,
+        "cpu_seconds": 0.02,
+        "measurement": "GNU time; executor and children; maximum process RSS",
+        "peak_rss_kib": 6044
+      },
+      "embedded_artifacts": {
+        "stdout": "{\n  \"spec_test\": {\n    \"schema\": \"sac-spec-test/v1\",\n    \"execution_semantics\": \"inline-preserve/v1\",\n    \"mode\": \"expand\",\n    \"scope\": \"execution\",\n    \"annotation_policy\": \"ignore\",\n    \"completed\": true,\n    \"overall\": \"UNKNOWN\",\n    \"precondition_result\": \"UNKNOWN\",\n    \"test_result\": \"UNKNOWN\",\n    \"result_semantics\": \"three-valued-conjunction/v1\",\n    \"vc_semantics\": \"path-vc/v1\",\n    \"vc_results\": [\n      {\n        \"kind\": \"safety\",\n        \"name\": null,\n        \"line\": 57,\n        \"status\": \"VALID\",\n        \"path\": \"EX p_pre_size_519 \\nPROP[\\n  p_pre_size_519 == 3 ]\\nLOCAL[\\n  Temp p p_515_addr ]\\nSEP[\\n  store(p_515_addr, 4096, struct sized_stack*);\\n  store(4096, 3, unsigned int);\\n  store(4100, 8192, struct list*);\\n  sll (8192, cons(Z_1, 9, cons(Z_1, 2, cons(Z_1, 1, nil(Z_1))))) ]\\n\",\n        \"goal\": \"PROP[\\n  0 <= INT_MAX;\\n  (- 2147483648) <= 0 ]\\nLOCAL[]\\nSEP[]\\n\"\n      },\n      {\n        \"kind\": \"return\",\n        \"name\": null,\n        \"line\": 58,\n        \"status\": \"UNKNOWN\",\n        \"path\": \"PROP[\\n  y_562_free == 0;\\n  p_pre_size_519 == 3 ]\\nLOCAL[]\\nSEP[\\n  store(8192, 9, signed int);\\n  store((y_561_free + 4), 0, struct list*);\\n  store(y_561_free, 1, signed int);\\n  store((y_560_free + 4), y_561_free, struct list*);\\n  store(y_560_free, 2, signed int);\\n  store(8196, y_560_free, struct list*);\\n  store(4096, 3, unsigned int);\\n  store(4100, 8192, struct list*) ]\\n\",\n        \"goal\": \"EX p_pre_size_522 \\nPROP[\\n  p_pre_size_522 == 3 ]\\nLOCAL[]\\nSEP[\\n  store(4096, 3, unsigned int);\\n  store(4100, 8192, struct list*);\\n  sll (8192, cons(Z_1, 9, cons(Z_1, 2, cons(Z_1, 1, nil(Z_1))))) ]\\n\"\n      }\n    ],\n    \"phases\": {\n      \"precondition\": \"UNKNOWN\",\n      \"safety\": \"PASS\",\n      \"postcondition\": \"UNKNOWN\",\n      \"annotations\": \"NOT_RUN\"\n    },\n    \"abstraction_events\": [],\n    \"limit_reason\": null,\n    \"architecture_bits\": 32,\n    \"target_layout\": {\n      \"schema\": \"sac-target-layout/v1\",\n      \"architecture_bits\": 32,\n      \"byte_order\": \"big\",\n      \"pointer_size\": 4,\n      \"memory_rules\": \"naive_C_Rules\",\n      \"field_address_semantics\": \"base-plus-byte-offset/v1\",\n      \"imported_predicate_semantics\": \"definition-bound; compatibility-not-certified\",\n      \"aggregates\": [\n        {\n          \"id\": 420,\n          \"kind\": \"struct\",\n          \"name\": \"sized_stack\",\n          \"defined\": true,\n          \"size\": 8,\n          \"alignment\": 4,\n          \"fields\": [\n            {\n              \"id\": 422,\n              \"name\": \"size\",\n              \"offset\": 0,\n              \"size\": 4,\n              \"alignment\": 4,\n              \"type\": {\n                \"kind\": \"basic\",\n                \"name\": \"unsigned_int\"\n              },\n              \"computational\": true\n            },\n            {\n              \"id\": 421,\n              \"name\": \"data\",\n              \"offset\": 4,\n              \"size\": 4,\n              \"alignment\": 4,\n              \"type\": {\n                \"kind\": \"pointer\",\n                \"target\": {\n                  \"kind\": \"struct\",\n                  \"id\": 369\n                }\n              },\n              \"computational\": true\n            }\n          ]\n        },\n        {\n          \"id\": 369,\n          \"kind\": \"struct\",\n          \"name\": \"list\",\n          \"defined\": true,\n          \"size\": 8,\n          \"alignment\": 4,\n          \"fields\": [\n            {\n              \"id\": 371,\n              \"name\": \"data\",\n              \"offset\": 0,\n              \"size\": 4,\n              \"alignment\": 4,\n              \"type\": {\n                \"kind\": \"basic\",\n                \"name\": \"int\"\n              },\n              \"computational\": true\n            },\n            {\n              \"id\": 370,\n              \"name\": \"next\",\n              \"offset\": 4,\n              \"size\": 4,\n              \"alignment\": 4,\n              \"type\": {\n                \"kind\": \"pointer\",\n                \"target\": {\n                  \"kind\": \"struct\",\n                  \"id\": 369\n                }\n              },\n              \"computational\": true\n            }\n          ]\n        }\n      ],\n      \"aliases\": []\n    },\n    \"certificate\": \"NOT_CHECKED\"\n  },\n  \"preconditions\": [\n    {\n      \"goal\": \"top_precondition_wit_1\",\n      \"status\": \"UNKNOWN\",\n      \"proof\": \"manual\"\n    }\n  ],\n  \"fileName\": \"/tmp/fulminate-qcp-ym442dve/run/artifacts/input_2/input.c\",\n  \"functionName\": \"top\",\n  \"loaded_strategies\": [\n    \"sll\",\n    \"common\",\n    \"string_literal\"\n  ],\n  \"result\": \"success\",\n  \"verificationStatus\": \"unproved\",\n  \"has_manual_obligations\": true,\n  \"manual_obligation_count\": 2,\n  \"manual_obligations\": [\n    {\n      \"kind\": \"return_checker_wit\",\n      \"functionName\": \"top\",\n      \"fileName\": \"/tmp/fulminate-qcp-ym442dve/run/artifacts/input_2/input.c\",\n      \"line\": 58,\n      \"column\": 12,\n      \"summary\": \"Cannot automatically prove that a return path satisfies the postcondition.\",\n      \"goal\": \"y_562 == 0 &&\\np_size_519 == 3 &&\\n__return == 9 &&\\n(*8192 == 9) *\\n(*(*(*8196 + 4) + 4) == 0) *\\n(**(*8196 + 4) == 1) *\\n(**8196 == 2) *\\n(*4096 == 3) *\\n(*4100 == 8192)\\n\\n|--\\nexists p_size_522,\\n    9 == 9 &&\\n    p_size_522 == 3 &&\\n    __return == 9 &&\\n    (*4096 == 3) *\\n    (*4100 == 8192) *\\n    sll(8192, cons(9, cons(2, cons(1, nil))))\\n\"\n    },\n    {\n      \"kind\": \"precondition\",\n      \"goal\": \"top_precondition_wit_1\"\n    }\n  ],\n  \"errormessage\": null,\n  \"warningmessage\": null,\n  \"current_assertions\": null,\n  \"FunctionDerivation\": null,\n  \"WitnessList\": [\n    {\n      \"functionName\": \"top\",\n      \"Witness\": {\n        \"safety_checker_wit\": {\n          \"total\": 1,\n          \"auto_solved\": 1,\n          \"manual\": 0,\n          \"manual_witness\": null\n        },\n        \"entailment_checker_wit\": {\n          \"total\": 0,\n          \"auto_solved\": 0,\n          \"manual\": 0,\n          \"manual_witness\": null\n        },\n        \"return_checker_wit\": {\n          \"total\": 1,\n          \"auto_solved\": 0,\n          \"manual\": 1,\n          \"manual_witness\": [\n            {\n              \"line\": 58,\n              \"column\": 12,\n              \"fileName\": \"/tmp/fulminate-qcp-ym442dve/run/artifacts/input_2/input.c\",\n              \"goal\": \"y_562 == 0 &&\\np_size_519 == 3 &&\\n__return == 9 &&\\n(*8192 == 9) *\\n(*(*(*8196 + 4) + 4) == 0) *\\n(**(*8196 + 4) == 1) *\\n(**8196 == 2) *\\n(*4096 == 3) *\\n(*4100 == 8192)\\n\\n|--\\nexists p_size_522,\\n    9 == 9 &&\\n    p_size_522 == 3 &&\\n    __return == 9 &&\\n    (*4096 == 3) *\\n    (*4100 == 8192) *\\n    sll(8192, cons(9, cons(2, cons(1, nil))))\\n\"\n            }\n          ]\n        },\n        \"partial_solve_wit\": {\n          \"total\": 1,\n          \"auto_solved\": 1,\n          \"manual\": 0,\n          \"manual_witness\": null\n        },\n        \"which_implies_wit\": {\n          \"total\": 0,\n          \"auto_solved\": 0,\n          \"manual\": 0,\n          \"manual_witness\": null\n        },\n        \"total_witness_count\": {\n          \"auto_solved\": 2,\n          \"manual\": 1\n        }\n      }\n    }\n  ]\n}",
+        "stderr": "[precondition] top_precondition_wit_1: UNKNOWN (manual)\n",
+        "generated_source": "#include \"verification_stdlib.h\"\n#include \"sll_def.h\"\n\n\nstruct list *mallocIntList()\n/*@ Require emp Ensure __return != 0 &&\n    undef_data_at(&(__return->data), int) *\n    undef_data_at(&(__return->next), struct list *) */;\nvoid freeIntList(struct list *p)\n/*@ Require undef_data_at(&(p->data), int) *\n            undef_data_at(&(p->next), struct list *) Ensure emp */;\nstruct sized_stack { unsigned int size; struct list *data; };\nstruct sized_stack *malloc_sized_stack()\n/*@ Require emp Ensure __return != 0 &&\n    undef_data_at(&(__return->size),unsigned int) *\n    undef_data_at(&(__return->data),struct list *) */;\n\n\nstruct list* IntList_cons(int h, struct list* t)\n/*@ With h0 (l: list Z) Require h == h0 && sll(t,l) Ensure sll(__return,cons(h0,l)) */\n{\n  struct list *p = mallocIntList();\n  p->data = h;\n  p->next = t;\n  return p;\n}\n\nstruct sized_stack* create()\n/*@ Require emp Ensure __return->size == 0 && __return->data == 0 */\n{\n  struct sized_stack *p = malloc_sized_stack();\n  p->size = 0;\n  p->data = 0;\n  return p;\n}\n\nunsigned int sizeOf (struct sized_stack *p)\n/*@ With d (l: list Z) Require p->size == Zlength(l) % 4294967296 && (p->data == d) * sll(d,l) Ensure __return == Zlength(l) % 4294967296 && p->size == Zlength(l) % 4294967296 && (p->data == d) * sll(d,l) */\n{\n  return p->size;\n}\n\nvoid push (struct sized_stack *p, int x)\n/*@ With d x0 (l: list Z) Require x == x0 && p->size == Zlength(l) % 4294967296 && (p->data == d) * sll(d,l) Ensure exists d2, p->size == (Zlength(l)+1) % 4294967296 && (p->data == d2) * sll(d2,cons(x0,l)) */\n{\n  struct list *data = IntList_cons(x, p->data);\n  p->size++;\n  p->data = data;\n}\n\nint top (struct sized_stack *p)\n\n/*@ __tespec_entry With d h (l: list Z) Require\n      (p == (4096)) && (d == (8192)) && (h == (9)) && (l == (cons(2, cons(1, nil)))) && (Zlength(l)+1) % 4294967296 > 0 && p->size == (Zlength(l)+1) % 4294967296 && (p->data == d) * sll(d,cons(h,l)) Ensure __return == h && p->size == (Zlength(l)+1) % 4294967296 && (p->data == d) * sll(d,cons(h,l)) */\n/*@ With d h (l: list Z) Require (Zlength(l)+1) % 4294967296 > 0 && p->size == (Zlength(l)+1) % 4294967296 && (p->data == d) * sll(d,cons(h,l)) Ensure __return == h && p->size == (Zlength(l)+1) % 4294967296 && (p->data == d) * sll(d,cons(h,l)) */\n{\n  if (p->data != 0) {\n    return (p->data)->data;\n  }\n  else {\n    return 42;\n  }\n}\n\nint pop (struct sized_stack *p)\n/*@ With d h (l: list Z) Require (Zlength(l)+1) % 4294967296 > 0 && p->size == (Zlength(l)+1) % 4294967296 && (p->data == d) * sll(d,cons(h,l)) Ensure exists d2, p->size == Zlength(l) % 4294967296 && (p->data == d2) * sll(d2,l) */\n{\n  struct list *data = p->data;\n  if (data != 0) {\n    int head = data->data;\n    struct list *tail = data->next;\n    freeIntList(data);\n    p->data = tail;\n    p->size--;\n    return head;\n  }\n  return 42;\n}\n",
+        "vc_files": {
+          "goal": "Require Import Coq.ZArith.ZArith.\nRequire Import Coq.Bool.Bool.\nRequire Import Coq.Strings.String.\nRequire Import Coq.Strings.Ascii.\nRequire Import Coq.Lists.List.\nRequire Import Coq.Classes.RelationClasses.\nRequire Import Coq.Classes.Morphisms.\nRequire Import Coq.micromega.Psatz.\nRequire Import Coq.Sorting.Permutation.\nFrom AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.\nRequire Import SetsClass.SetsClass. Import SetsNotation.\nFrom SimpleC.SL Require Import Mem SeparationLogic.\nRequire Import Logic.LogicGenerator.demo932.Interface.\nLocal Open Scope Z_scope.\nLocal Open Scope sets.\nLocal Open Scope string_scope.\nLocal Open Scope list.\nImport naive_C_Rules.\nRequire Import SimpleC.EE.QCP_demos_human.sll_lib.\nLocal Open Scope sac.\nLocal Open Scope Z_scope.\n\n(*----- Function top -----*)\n\nDefinition top_safety_wit_1 := \nforall (p_pre_size: Z) (PreH1 : (p_pre_size = 3)) ,\n  ((( &( \"p_spec_515\" ) )) # Ptr  |-> 4096)\n  **  ((4096) # UInt  |-> 3)\n  **  ((4100) # Ptr  |-> 8192)\n  **  (sll 8192 (cons (9) ((cons (2) ((cons (1) ((@nil Z))))))) )\n|--\n  “ (0 <= INT_MAX) ” \n  &&  “ ((INT_MIN) <= 0) ”\n.\n\nDefinition top_return_wit_1 := \n(\nforall (p_pre_size_2: Z) (y: Z) (y_2: Z) (y_3: Z) (PreH1 : (y_3 = 0)) (PreH2 : (p_pre_size_2 = 3)) ,\n  ((8192) # Int  |-> 9)\n  **  (((y_2 + 4 )) # Ptr  |-> 0)\n  **  ((y_2) # Int  |-> 1)\n  **  (((y + 4 )) # Ptr  |-> y_2)\n  **  ((y) # Int  |-> 2)\n  **  ((8196) # Ptr  |-> y)\n  **  ((4096) # UInt  |-> 3)\n  **  ((4100) # Ptr  |-> 8192)\n|--\n  EX (p_pre_size: Z) ,\n  “ (9 = 9) ” \n  &&  “ (p_pre_size = 3) ”\n  &&  ((4096) # UInt  |-> 3)\n  **  ((4100) # Ptr  |-> 8192)\n  **  (sll 8192 (cons (9) ((cons (2) ((cons (1) ((@nil Z))))))) )\n) \\/\n(\nforall (p_pre_size_2: Z) (y: Z) (y_2: Z) (y_3: Z) (PreH1 : (y_3 = 0)) (PreH2 : (p_pre_size_2 = 3)) ,\n  TT && emp \n|--\n  “ (y_2 <> 0) ” \n  &&  “ (y <> 0) ” \n  &&  “ (8192 <> 0) ”\n  &&  emp\n).\n\nDefinition top_return_wit_1_split_goal_1 := \nforall (p_pre_size_2: Z) (y_2: Z) (y_3: Z) (PreH1 : (y_3 = 0)) (PreH2 : (p_pre_size_2 = 3)) ,\n  (y_2 <> 0)\n.\n\nDefinition top_return_wit_1_split_goal_2 := \nforall (p_pre_size_2: Z) (y: Z) (y_3: Z) (PreH1 : (y_3 = 0)) (PreH2 : (p_pre_size_2 = 3)) ,\n  (y <> 0)\n.\n\nDefinition top_return_wit_1_split_goal_3 := \nforall (p_pre_size_2: Z) (y_3: Z) (PreH1 : (y_3 = 0)) (PreH2 : (p_pre_size_2 = 3)) ,\n  (8192 <> 0)\n.\n\nDefinition top_partial_solve_wit_1 := \nforall (p_pre_size: Z) (PreH1 : (p_pre_size = 3)) ,\n  ((4096) # UInt  |-> 3)\n  **  ((4100) # Ptr  |-> 8192)\n  **  (sll 8192 (cons (9) ((cons (2) ((cons (1) ((@nil Z))))))) )\n|--\n  EX (y: Z)  (y_2: Z)  (y_3: Z) ,\n  “ (y_3 = 0) ” \n  &&  “ (p_pre_size = 3) ”\n  &&  ((8192) # Int  |-> 9)\n  **  (((y_2 + 4 )) # Ptr  |-> y_3)\n  **  ((y_2) # Int  |-> 1)\n  **  (((y + 4 )) # Ptr  |-> y_2)\n  **  ((y) # Int  |-> 2)\n  **  ((8196) # Ptr  |-> y)\n  **  ((4096) # UInt  |-> 3)\n  **  ((4100) # Ptr  |-> 8192)\n.\n\nDefinition top_precondition_wit_1 :=\n~ ((  EX (p_pre_size: Z) ,\n  “ (4096 = 4096) ” \n  &&  “ (8192 = 8192) ” \n  &&  “ (9 = 9) ” \n  &&  “ ((cons (2) ((cons (1) ((@nil Z))))) = (cons (2) ((cons (1) ((@nil Z)))))) ” \n  &&  “ ((((Zlength ((cons (2) ((cons (1) ((@nil Z))))))) + 1 ) % ( 4294967296 ) ) > 0) ” \n  &&  “ (p_pre_size = (((Zlength ((cons (2) ((cons (1) ((@nil Z))))))) + 1 ) % ( 4294967296 ) )) ”\n  &&  (((* tespec-target-field-address-v1: bits=32; offset=0; size=4; align=4 *) (4096 + 0)) # UInt  |-> p_pre_size)\n  **  (((* tespec-target-field-address-v1: bits=32; offset=4; size=4; align=4 *) (4096 + 4)) # Ptr  |-> 8192)\n  **  (sll 8192 (cons (9) ((cons (2) ((cons (1) ((@nil Z))))))) )) |-- “ False ”).\n\nModule Type VC_Correct.\n\nAxiom proof_of_top_safety_wit_1 : top_safety_wit_1.\nAxiom proof_of_top_return_wit_1 : top_return_wit_1.\nAxiom proof_of_top_partial_solve_wit_1 : top_partial_solve_wit_1.\nAxiom proof_of_top_precondition_wit_1 : top_precondition_wit_1.\n\nEnd VC_Correct.\n",
+          "proof_auto": "Require Import Coq.ZArith.ZArith.\nRequire Import Coq.Bool.Bool.\nRequire Import Coq.Strings.String.\nRequire Import Coq.Strings.Ascii.\nRequire Import Coq.Lists.List.\nRequire Import Coq.Classes.RelationClasses.\nRequire Import Coq.Classes.Morphisms.\nRequire Import Coq.micromega.Psatz.\nRequire Import Coq.Sorting.Permutation.\nFrom AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.\nRequire Import SetsClass.SetsClass. Import SetsNotation.\nFrom SimpleC.SL Require Import Mem SeparationLogic.\nRequire Import input_goal.\nRequire Import Logic.LogicGenerator.demo932.Interface.\nLocal Open Scope Z_scope.\nLocal Open Scope sets.\nLocal Open Scope string_scope.\nLocal Open Scope list.\nImport naive_C_Rules.\nRequire Import SimpleC.EE.QCP_demos_human.sll_lib.\nLocal Open Scope sac.\nLocal Open Scope Z_scope.\n\nLemma proof_of_top_safety_wit_1 : top_safety_wit_1.\nProof. Admitted. \n\nLemma proof_of_top_partial_solve_wit_1 : top_partial_solve_wit_1.\nProof. Admitted. \n\n",
+          "proof_manual": "Require Import Coq.ZArith.ZArith.\nRequire Import Coq.Bool.Bool.\nRequire Import Coq.Strings.String.\nRequire Import Coq.Strings.Ascii.\nRequire Import Coq.Lists.List.\nRequire Import Coq.Classes.RelationClasses.\nRequire Import Coq.Classes.Morphisms.\nRequire Import Coq.micromega.Psatz.\nRequire Import Coq.Sorting.Permutation.\nFrom AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.\nRequire Import SetsClass.SetsClass. Import SetsNotation.\nFrom SimpleC.SL Require Import Mem SeparationLogic.\nRequire Import input_goal.\nRequire Import input_proof_auto.\nRequire Import Logic.LogicGenerator.demo932.Interface.\nLocal Open Scope Z_scope.\nLocal Open Scope sets.\nLocal Open Scope string_scope.\nLocal Open Scope list.\nImport naive_C_Rules.\nRequire Import SimpleC.EE.QCP_demos_human.sll_lib.\nLocal Open Scope sac.\nLocal Open Scope Z_scope.\n\nLemma proof_of_top_return_wit_1_split_goal_1 : top_return_wit_1_split_goal_1.\nProof. Abort.\n\nLemma proof_of_top_return_wit_1_split_goal_2 : top_return_wit_1_split_goal_2.\nProof. Abort.\n\nLemma proof_of_top_return_wit_1_split_goal_3 : top_return_wit_1_split_goal_3.\nProof. Abort.\n\nLemma proof_of_top_return_wit_1 : top_return_wit_1.\nProof. Admitted. \n\nLemma proof_of_top_precondition_wit_1 : top_precondition_wit_1.\nProof. Admitted. \n\n",
+          "goal_check": "Require Import input_goal input_proof_auto input_proof_manual.\n\nModule VC_Correctness : VC_Correct.\n  Include input_proof_auto.\n  Include input_proof_manual.\nEnd VC_Correctness.\n"
+        }
+      }
+    },
+    {
+      "id": "input_3",
+      "arguments": {
+        "p": 4096
+      },
+      "bindings": {
+        "h": 9,
+        "l": [
+          -1,
+          0,
+          3
+        ],
+        "d": 8192
+      },
+      "type_bindings": {},
+      "spec": null,
+      "generated_source": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_3/input.c",
+      "status": "UNKNOWN",
+      "overall": "UNKNOWN",
+      "precondition_result": "UNKNOWN",
+      "test_result": "UNKNOWN",
+      "result_semantics": "three-valued-conjunction/v1",
+      "executor_reported_status": "UNKNOWN",
+      "satisfied": null,
+      "reason": "precondition_requires_proof",
+      "phases": {
+        "precondition": "UNKNOWN",
+        "safety": "PASS",
+        "postcondition": "UNKNOWN",
+        "annotations": "NOT_RUN",
+        "execution": "PASS"
+      },
+      "scope": "execution",
+      "mode": "entry-exit",
+      "execution_semantics": "inline-preserve/v1",
+      "execution_completed": true,
+      "annotation_policy": "ignore",
+      "preconditions": [
+        {
+          "goal": "top_precondition_wit_1",
+          "status": "UNKNOWN",
+          "proof": "manual"
+        }
+      ],
+      "abstraction_events": [],
+      "architecture_bits": 32,
+      "target_layout": {
+        "schema": "sac-target-layout/v1",
+        "architecture_bits": 32,
+        "byte_order": "big",
+        "pointer_size": 4,
+        "memory_rules": "naive_C_Rules",
+        "field_address_semantics": "base-plus-byte-offset/v1",
+        "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+        "aggregates": [
+          {
+            "id": 420,
+            "kind": "struct",
+            "name": "sized_stack",
+            "defined": true,
+            "size": 8,
+            "alignment": 4,
+            "fields": [
+              {
+                "id": 422,
+                "name": "size",
+                "offset": 0,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "basic",
+                  "name": "unsigned_int"
+                },
+                "computational": true
+              },
+              {
+                "id": 421,
+                "name": "data",
+                "offset": 4,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "pointer",
+                  "target": {
+                    "kind": "struct",
+                    "id": 369
+                  }
+                },
+                "computational": true
+              }
+            ]
+          },
+          {
+            "id": 369,
+            "kind": "struct",
+            "name": "list",
+            "defined": true,
+            "size": 8,
+            "alignment": 4,
+            "fields": [
+              {
+                "id": 371,
+                "name": "data",
+                "offset": 0,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "basic",
+                  "name": "int"
+                },
+                "computational": true
+              },
+              {
+                "id": 370,
+                "name": "next",
+                "offset": 4,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "pointer",
+                  "target": {
+                    "kind": "struct",
+                    "id": 369
+                  }
+                },
+                "computational": true
+              }
+            ]
+          }
+        ],
+        "aliases": []
+      },
+      "executor_error": null,
+      "residual_vcs": [
+        "proof_of_top_return_wit_1_split_goal_1",
+        "proof_of_top_return_wit_1_split_goal_2",
+        "proof_of_top_return_wit_1_split_goal_3",
+        "proof_of_top_return_wit_1_split_goal_4",
+        "proof_of_top_return_wit_1",
+        "proof_of_top_precondition_wit_1"
+      ],
+      "vc_results": [
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 57,
+          "status": "VALID",
+          "path": "EX p_pre_size_519 \nPROP[\n  p_pre_size_519 == 4 ]\nLOCAL[\n  Temp p p_515_addr ]\nSEP[\n  store(p_515_addr, 4096, struct sized_stack*);\n  store(4096, 4, unsigned int);\n  store(4100, 8192, struct list*);\n  sll (8192, cons(Z_1, 9, cons(Z_1, (- 1), cons(Z_1, 0, cons(Z_1, 3, nil(Z_1)))))) ]\n",
+          "goal": "PROP[\n  0 <= INT_MAX;\n  (- 2147483648) <= 0 ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "return",
+          "name": null,
+          "line": 58,
+          "status": "UNKNOWN",
+          "path": "PROP[\n  y_565_free == 0;\n  p_pre_size_519 == 4 ]\nLOCAL[]\nSEP[\n  store(8192, 9, signed int);\n  store((y_564_free + 4), 0, struct list*);\n  store(y_564_free, 3, signed int);\n  store((y_563_free + 4), y_564_free, struct list*);\n  store(y_563_free, 0, signed int);\n  store((y_562_free + 4), y_563_free, struct list*);\n  store(y_562_free, (- 1), signed int);\n  store(8196, y_562_free, struct list*);\n  store(4096, 4, unsigned int);\n  store(4100, 8192, struct list*) ]\n",
+          "goal": "EX p_pre_size_522 \nPROP[\n  p_pre_size_522 == 4 ]\nLOCAL[]\nSEP[\n  store(4096, 4, unsigned int);\n  store(4100, 8192, struct list*);\n  sll (8192, cons(Z_1, 9, cons(Z_1, (- 1), cons(Z_1, 0, cons(Z_1, 3, nil(Z_1)))))) ]\n"
+        }
+      ],
+      "evidence": {
+        "decision_backend": "qcp-smt",
+        "certificate": "NOT_CHECKED"
+      },
+      "returncode": 3,
+      "generated_source_sha256": "884a08ba4a74d9b8b87a1dea1bc744fbd5c341187f89f971e09f4fb8422b4e85",
+      "duration_seconds": 0.035789,
+      "peak_rss_kb": 6012,
+      "cpu_seconds": 0.02,
+      "command": [
+        "/tmp/teSpec-tespec-sync/bin/tespec-symexec",
+        "--arch=32",
+        "--input-file=/tmp/fulminate-qcp-ym442dve/run/artifacts/input_3/input.c",
+        "--full-auto",
+        "--Json-output",
+        "--emit-residual-vc",
+        "--no-strategy-gen",
+        "--gen-and-backup",
+        "--coq-output-dir",
+        "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_3/vc",
+        "--no-logic-path",
+        "--disable-solver-info",
+        "--no-exec-info",
+        "--function",
+        "top",
+        "--concrete-bindings",
+        "--spec",
+        "__tespec_entry",
+        "-I/tmp/teSpec-tespec-sync/benchmark/selection/qcp-migration/cases",
+        "-I/tmp/teSpec-tespec-sync/runtime/qcip/QCP_examples/QCP_demos_human",
+        "--call-depth-limit",
+        "64"
+      ],
+      "stdout": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_3/executor.json",
+      "stderr": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_3/stderr.log",
+      "vc": {
+        "schema": "qcp-spectest-vc-manifest/v1",
+        "case_id": "input_3",
+        "function": "top",
+        "source": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_3/input.c",
+        "qcip_root": "/tmp/teSpec-tespec-sync/runtime/qcip",
+        "status": "residual",
+        "residual_goals": [
+          "proof_of_top_return_wit_1_split_goal_1",
+          "proof_of_top_return_wit_1_split_goal_2",
+          "proof_of_top_return_wit_1_split_goal_3",
+          "proof_of_top_return_wit_1_split_goal_4",
+          "proof_of_top_return_wit_1",
+          "proof_of_top_precondition_wit_1"
+        ],
+        "counterexample_goals": [],
+        "files": {
+          "goal": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_3/vc/input_goal.v",
+          "proof_auto": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_3/vc/input_proof_auto.v",
+          "proof_manual": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_3/vc/input_proof_manual.v",
+          "goal_check": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_3/vc/input_goal_check.v"
+        },
+        "missing_files": [],
+        "immutable_sha256": {
+          "goal": "2d2ba88a14f8abc51f56a2a14441a9440ed2216965557b6370ea8c7c2614ace5",
+          "proof_auto": "ac7197c8bc75855f33824e777ac0cf3aebfa15696bea8854fb3273ddaf6a2bf7",
+          "goal_check": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e"
+        },
+        "coq_dependencies": [],
+        "runtime_dependencies": [
+          {
+            "module": "SimpleC.EE.QCP_demos_human.sll_lib",
+            "source": "/tmp/teSpec-tespec-sync/runtime/qcip/SeparationLogic/examples/QCP_demos_human/sll_lib.v",
+            "sha256": "91d172559c4b3e21b108c7e2a005476cc76d56337213ef65fb5a9ef1d433a9ad",
+            "compiled": null,
+            "compiled_sha256": null,
+            "origin": "pinned-runtime"
+          }
+        ],
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [
+            {
+              "id": 420,
+              "kind": "struct",
+              "name": "sized_stack",
+              "defined": true,
+              "size": 8,
+              "alignment": 4,
+              "fields": [
+                {
+                  "id": 422,
+                  "name": "size",
+                  "offset": 0,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "basic",
+                    "name": "unsigned_int"
+                  },
+                  "computational": true
+                },
+                {
+                  "id": 421,
+                  "name": "data",
+                  "offset": 4,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "pointer",
+                    "target": {
+                      "kind": "struct",
+                      "id": 369
+                    }
+                  },
+                  "computational": true
+                }
+              ]
+            },
+            {
+              "id": 369,
+              "kind": "struct",
+              "name": "list",
+              "defined": true,
+              "size": 8,
+              "alignment": 4,
+              "fields": [
+                {
+                  "id": 371,
+                  "name": "data",
+                  "offset": 0,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "basic",
+                    "name": "int"
+                  },
+                  "computational": true
+                },
+                {
+                  "id": 370,
+                  "name": "next",
+                  "offset": 4,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "pointer",
+                    "target": {
+                      "kind": "struct",
+                      "id": 369
+                    }
+                  },
+                  "computational": true
+                }
+              ]
+            }
+          ],
+          "aliases": []
+        },
+        "manifest": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_3/vc/manifest.json"
+      },
+      "resources": {
+        "wall_seconds": 0.035789,
+        "cpu_seconds": 0.02,
+        "measurement": "GNU time; executor and children; maximum process RSS",
+        "peak_rss_kib": 6012
+      },
+      "embedded_artifacts": {
+        "stdout": "{\n  \"spec_test\": {\n    \"schema\": \"sac-spec-test/v1\",\n    \"execution_semantics\": \"inline-preserve/v1\",\n    \"mode\": \"expand\",\n    \"scope\": \"execution\",\n    \"annotation_policy\": \"ignore\",\n    \"completed\": true,\n    \"overall\": \"UNKNOWN\",\n    \"precondition_result\": \"UNKNOWN\",\n    \"test_result\": \"UNKNOWN\",\n    \"result_semantics\": \"three-valued-conjunction/v1\",\n    \"vc_semantics\": \"path-vc/v1\",\n    \"vc_results\": [\n      {\n        \"kind\": \"safety\",\n        \"name\": null,\n        \"line\": 57,\n        \"status\": \"VALID\",\n        \"path\": \"EX p_pre_size_519 \\nPROP[\\n  p_pre_size_519 == 4 ]\\nLOCAL[\\n  Temp p p_515_addr ]\\nSEP[\\n  store(p_515_addr, 4096, struct sized_stack*);\\n  store(4096, 4, unsigned int);\\n  store(4100, 8192, struct list*);\\n  sll (8192, cons(Z_1, 9, cons(Z_1, (- 1), cons(Z_1, 0, cons(Z_1, 3, nil(Z_1)))))) ]\\n\",\n        \"goal\": \"PROP[\\n  0 <= INT_MAX;\\n  (- 2147483648) <= 0 ]\\nLOCAL[]\\nSEP[]\\n\"\n      },\n      {\n        \"kind\": \"return\",\n        \"name\": null,\n        \"line\": 58,\n        \"status\": \"UNKNOWN\",\n        \"path\": \"PROP[\\n  y_565_free == 0;\\n  p_pre_size_519 == 4 ]\\nLOCAL[]\\nSEP[\\n  store(8192, 9, signed int);\\n  store((y_564_free + 4), 0, struct list*);\\n  store(y_564_free, 3, signed int);\\n  store((y_563_free + 4), y_564_free, struct list*);\\n  store(y_563_free, 0, signed int);\\n  store((y_562_free + 4), y_563_free, struct list*);\\n  store(y_562_free, (- 1), signed int);\\n  store(8196, y_562_free, struct list*);\\n  store(4096, 4, unsigned int);\\n  store(4100, 8192, struct list*) ]\\n\",\n        \"goal\": \"EX p_pre_size_522 \\nPROP[\\n  p_pre_size_522 == 4 ]\\nLOCAL[]\\nSEP[\\n  store(4096, 4, unsigned int);\\n  store(4100, 8192, struct list*);\\n  sll (8192, cons(Z_1, 9, cons(Z_1, (- 1), cons(Z_1, 0, cons(Z_1, 3, nil(Z_1)))))) ]\\n\"\n      }\n    ],\n    \"phases\": {\n      \"precondition\": \"UNKNOWN\",\n      \"safety\": \"PASS\",\n      \"postcondition\": \"UNKNOWN\",\n      \"annotations\": \"NOT_RUN\"\n    },\n    \"abstraction_events\": [],\n    \"limit_reason\": null,\n    \"architecture_bits\": 32,\n    \"target_layout\": {\n      \"schema\": \"sac-target-layout/v1\",\n      \"architecture_bits\": 32,\n      \"byte_order\": \"big\",\n      \"pointer_size\": 4,\n      \"memory_rules\": \"naive_C_Rules\",\n      \"field_address_semantics\": \"base-plus-byte-offset/v1\",\n      \"imported_predicate_semantics\": \"definition-bound; compatibility-not-certified\",\n      \"aggregates\": [\n        {\n          \"id\": 420,\n          \"kind\": \"struct\",\n          \"name\": \"sized_stack\",\n          \"defined\": true,\n          \"size\": 8,\n          \"alignment\": 4,\n          \"fields\": [\n            {\n              \"id\": 422,\n              \"name\": \"size\",\n              \"offset\": 0,\n              \"size\": 4,\n              \"alignment\": 4,\n              \"type\": {\n                \"kind\": \"basic\",\n                \"name\": \"unsigned_int\"\n              },\n              \"computational\": true\n            },\n            {\n              \"id\": 421,\n              \"name\": \"data\",\n              \"offset\": 4,\n              \"size\": 4,\n              \"alignment\": 4,\n              \"type\": {\n                \"kind\": \"pointer\",\n                \"target\": {\n                  \"kind\": \"struct\",\n                  \"id\": 369\n                }\n              },\n              \"computational\": true\n            }\n          ]\n        },\n        {\n          \"id\": 369,\n          \"kind\": \"struct\",\n          \"name\": \"list\",\n          \"defined\": true,\n          \"size\": 8,\n          \"alignment\": 4,\n          \"fields\": [\n            {\n              \"id\": 371,\n              \"name\": \"data\",\n              \"offset\": 0,\n              \"size\": 4,\n              \"alignment\": 4,\n              \"type\": {\n                \"kind\": \"basic\",\n                \"name\": \"int\"\n              },\n              \"computational\": true\n            },\n            {\n              \"id\": 370,\n              \"name\": \"next\",\n              \"offset\": 4,\n              \"size\": 4,\n              \"alignment\": 4,\n              \"type\": {\n                \"kind\": \"pointer\",\n                \"target\": {\n                  \"kind\": \"struct\",\n                  \"id\": 369\n                }\n              },\n              \"computational\": true\n            }\n          ]\n        }\n      ],\n      \"aliases\": []\n    },\n    \"certificate\": \"NOT_CHECKED\"\n  },\n  \"preconditions\": [\n    {\n      \"goal\": \"top_precondition_wit_1\",\n      \"status\": \"UNKNOWN\",\n      \"proof\": \"manual\"\n    }\n  ],\n  \"fileName\": \"/tmp/fulminate-qcp-ym442dve/run/artifacts/input_3/input.c\",\n  \"functionName\": \"top\",\n  \"loaded_strategies\": [\n    \"sll\",\n    \"common\",\n    \"string_literal\"\n  ],\n  \"result\": \"success\",\n  \"verificationStatus\": \"unproved\",\n  \"has_manual_obligations\": true,\n  \"manual_obligation_count\": 2,\n  \"manual_obligations\": [\n    {\n      \"kind\": \"return_checker_wit\",\n      \"functionName\": \"top\",\n      \"fileName\": \"/tmp/fulminate-qcp-ym442dve/run/artifacts/input_3/input.c\",\n      \"line\": 58,\n      \"column\": 12,\n      \"summary\": \"Cannot automatically prove that a return path satisfies the postcondition.\",\n      \"goal\": \"y_565 == 0 &&\\np_size_519 == 4 &&\\n__return == 9 &&\\n(*8192 == 9) *\\n(*(*(*(*8196 + 4) + 4) + 4) == 0) *\\n(**(*(*8196 + 4) + 4) == 3) *\\n(**(*8196 + 4) == 0) *\\n(**8196 == -1) *\\n(*4096 == 4) *\\n(*4100 == 8192)\\n\\n|--\\nexists p_size_522,\\n    9 == 9 &&\\n    p_size_522 == 4 &&\\n    __return == 9 &&\\n    (*4096 == 4) *\\n    (*4100 == 8192) *\\n    sll(8192, cons(9, cons(-1, cons(0, cons(3, nil)))))\\n\"\n    },\n    {\n      \"kind\": \"precondition\",\n      \"goal\": \"top_precondition_wit_1\"\n    }\n  ],\n  \"errormessage\": null,\n  \"warningmessage\": null,\n  \"current_assertions\": null,\n  \"FunctionDerivation\": null,\n  \"WitnessList\": [\n    {\n      \"functionName\": \"top\",\n      \"Witness\": {\n        \"safety_checker_wit\": {\n          \"total\": 1,\n          \"auto_solved\": 1,\n          \"manual\": 0,\n          \"manual_witness\": null\n        },\n        \"entailment_checker_wit\": {\n          \"total\": 0,\n          \"auto_solved\": 0,\n          \"manual\": 0,\n          \"manual_witness\": null\n        },\n        \"return_checker_wit\": {\n          \"total\": 1,\n          \"auto_solved\": 0,\n          \"manual\": 1,\n          \"manual_witness\": [\n            {\n              \"line\": 58,\n              \"column\": 12,\n              \"fileName\": \"/tmp/fulminate-qcp-ym442dve/run/artifacts/input_3/input.c\",\n              \"goal\": \"y_565 == 0 &&\\np_size_519 == 4 &&\\n__return == 9 &&\\n(*8192 == 9) *\\n(*(*(*(*8196 + 4) + 4) + 4) == 0) *\\n(**(*(*8196 + 4) + 4) == 3) *\\n(**(*8196 + 4) == 0) *\\n(**8196 == -1) *\\n(*4096 == 4) *\\n(*4100 == 8192)\\n\\n|--\\nexists p_size_522,\\n    9 == 9 &&\\n    p_size_522 == 4 &&\\n    __return == 9 &&\\n    (*4096 == 4) *\\n    (*4100 == 8192) *\\n    sll(8192, cons(9, cons(-1, cons(0, cons(3, nil)))))\\n\"\n            }\n          ]\n        },\n        \"partial_solve_wit\": {\n          \"total\": 1,\n          \"auto_solved\": 1,\n          \"manual\": 0,\n          \"manual_witness\": null\n        },\n        \"which_implies_wit\": {\n          \"total\": 0,\n          \"auto_solved\": 0,\n          \"manual\": 0,\n          \"manual_witness\": null\n        },\n        \"total_witness_count\": {\n          \"auto_solved\": 2,\n          \"manual\": 1\n        }\n      }\n    }\n  ]\n}",
+        "stderr": "[precondition] top_precondition_wit_1: UNKNOWN (manual)\n",
+        "generated_source": "#include \"verification_stdlib.h\"\n#include \"sll_def.h\"\n\n\nstruct list *mallocIntList()\n/*@ Require emp Ensure __return != 0 &&\n    undef_data_at(&(__return->data), int) *\n    undef_data_at(&(__return->next), struct list *) */;\nvoid freeIntList(struct list *p)\n/*@ Require undef_data_at(&(p->data), int) *\n            undef_data_at(&(p->next), struct list *) Ensure emp */;\nstruct sized_stack { unsigned int size; struct list *data; };\nstruct sized_stack *malloc_sized_stack()\n/*@ Require emp Ensure __return != 0 &&\n    undef_data_at(&(__return->size),unsigned int) *\n    undef_data_at(&(__return->data),struct list *) */;\n\n\nstruct list* IntList_cons(int h, struct list* t)\n/*@ With h0 (l: list Z) Require h == h0 && sll(t,l) Ensure sll(__return,cons(h0,l)) */\n{\n  struct list *p = mallocIntList();\n  p->data = h;\n  p->next = t;\n  return p;\n}\n\nstruct sized_stack* create()\n/*@ Require emp Ensure __return->size == 0 && __return->data == 0 */\n{\n  struct sized_stack *p = malloc_sized_stack();\n  p->size = 0;\n  p->data = 0;\n  return p;\n}\n\nunsigned int sizeOf (struct sized_stack *p)\n/*@ With d (l: list Z) Require p->size == Zlength(l) % 4294967296 && (p->data == d) * sll(d,l) Ensure __return == Zlength(l) % 4294967296 && p->size == Zlength(l) % 4294967296 && (p->data == d) * sll(d,l) */\n{\n  return p->size;\n}\n\nvoid push (struct sized_stack *p, int x)\n/*@ With d x0 (l: list Z) Require x == x0 && p->size == Zlength(l) % 4294967296 && (p->data == d) * sll(d,l) Ensure exists d2, p->size == (Zlength(l)+1) % 4294967296 && (p->data == d2) * sll(d2,cons(x0,l)) */\n{\n  struct list *data = IntList_cons(x, p->data);\n  p->size++;\n  p->data = data;\n}\n\nint top (struct sized_stack *p)\n\n/*@ __tespec_entry With d h (l: list Z) Require\n      (p == (4096)) && (d == (8192)) && (h == (9)) && (l == (cons(-1, cons(0, cons(3, nil))))) && (Zlength(l)+1) % 4294967296 > 0 && p->size == (Zlength(l)+1) % 4294967296 && (p->data == d) * sll(d,cons(h,l)) Ensure __return == h && p->size == (Zlength(l)+1) % 4294967296 && (p->data == d) * sll(d,cons(h,l)) */\n/*@ With d h (l: list Z) Require (Zlength(l)+1) % 4294967296 > 0 && p->size == (Zlength(l)+1) % 4294967296 && (p->data == d) * sll(d,cons(h,l)) Ensure __return == h && p->size == (Zlength(l)+1) % 4294967296 && (p->data == d) * sll(d,cons(h,l)) */\n{\n  if (p->data != 0) {\n    return (p->data)->data;\n  }\n  else {\n    return 42;\n  }\n}\n\nint pop (struct sized_stack *p)\n/*@ With d h (l: list Z) Require (Zlength(l)+1) % 4294967296 > 0 && p->size == (Zlength(l)+1) % 4294967296 && (p->data == d) * sll(d,cons(h,l)) Ensure exists d2, p->size == Zlength(l) % 4294967296 && (p->data == d2) * sll(d2,l) */\n{\n  struct list *data = p->data;\n  if (data != 0) {\n    int head = data->data;\n    struct list *tail = data->next;\n    freeIntList(data);\n    p->data = tail;\n    p->size--;\n    return head;\n  }\n  return 42;\n}\n",
+        "vc_files": {
+          "goal": "Require Import Coq.ZArith.ZArith.\nRequire Import Coq.Bool.Bool.\nRequire Import Coq.Strings.String.\nRequire Import Coq.Strings.Ascii.\nRequire Import Coq.Lists.List.\nRequire Import Coq.Classes.RelationClasses.\nRequire Import Coq.Classes.Morphisms.\nRequire Import Coq.micromega.Psatz.\nRequire Import Coq.Sorting.Permutation.\nFrom AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.\nRequire Import SetsClass.SetsClass. Import SetsNotation.\nFrom SimpleC.SL Require Import Mem SeparationLogic.\nRequire Import Logic.LogicGenerator.demo932.Interface.\nLocal Open Scope Z_scope.\nLocal Open Scope sets.\nLocal Open Scope string_scope.\nLocal Open Scope list.\nImport naive_C_Rules.\nRequire Import SimpleC.EE.QCP_demos_human.sll_lib.\nLocal Open Scope sac.\nLocal Open Scope Z_scope.\n\n(*----- Function top -----*)\n\nDefinition top_safety_wit_1 := \nforall (p_pre_size: Z) (PreH1 : (p_pre_size = 4)) ,\n  ((( &( \"p_spec_515\" ) )) # Ptr  |-> 4096)\n  **  ((4096) # UInt  |-> 4)\n  **  ((4100) # Ptr  |-> 8192)\n  **  (sll 8192 (cons (9) ((cons ((-1)) ((cons (0) ((cons (3) ((@nil Z))))))))) )\n|--\n  “ (0 <= INT_MAX) ” \n  &&  “ ((INT_MIN) <= 0) ”\n.\n\nDefinition top_return_wit_1 := \n(\nforall (p_pre_size_2: Z) (y: Z) (y_2: Z) (y_3: Z) (y_4: Z) (PreH1 : (y_4 = 0)) (PreH2 : (p_pre_size_2 = 4)) ,\n  ((8192) # Int  |-> 9)\n  **  (((y_3 + 4 )) # Ptr  |-> 0)\n  **  ((y_3) # Int  |-> 3)\n  **  (((y_2 + 4 )) # Ptr  |-> y_3)\n  **  ((y_2) # Int  |-> 0)\n  **  (((y + 4 )) # Ptr  |-> y_2)\n  **  ((y) # Int  |-> (-1))\n  **  ((8196) # Ptr  |-> y)\n  **  ((4096) # UInt  |-> 4)\n  **  ((4100) # Ptr  |-> 8192)\n|--\n  EX (p_pre_size: Z) ,\n  “ (9 = 9) ” \n  &&  “ (p_pre_size = 4) ”\n  &&  ((4096) # UInt  |-> 4)\n  **  ((4100) # Ptr  |-> 8192)\n  **  (sll 8192 (cons (9) ((cons ((-1)) ((cons (0) ((cons (3) ((@nil Z))))))))) )\n) \\/\n(\nforall (p_pre_size_2: Z) (y: Z) (y_2: Z) (y_3: Z) (y_4: Z) (PreH1 : (y_4 = 0)) (PreH2 : (p_pre_size_2 = 4)) ,\n  TT && emp \n|--\n  “ (y_3 <> 0) ” \n  &&  “ (y_2 <> 0) ” \n  &&  “ (y <> 0) ” \n  &&  “ (8192 <> 0) ”\n  &&  emp\n).\n\nDefinition top_return_wit_1_split_goal_1 := \nforall (p_pre_size_2: Z) (y_3: Z) (y_4: Z) (PreH1 : (y_4 = 0)) (PreH2 : (p_pre_size_2 = 4)) ,\n  (y_3 <> 0)\n.\n\nDefinition top_return_wit_1_split_goal_2 := \nforall (p_pre_size_2: Z) (y_2: Z) (y_4: Z) (PreH1 : (y_4 = 0)) (PreH2 : (p_pre_size_2 = 4)) ,\n  (y_2 <> 0)\n.\n\nDefinition top_return_wit_1_split_goal_3 := \nforall (p_pre_size_2: Z) (y: Z) (y_4: Z) (PreH1 : (y_4 = 0)) (PreH2 : (p_pre_size_2 = 4)) ,\n  (y <> 0)\n.\n\nDefinition top_return_wit_1_split_goal_4 := \nforall (p_pre_size_2: Z) (y_4: Z) (PreH1 : (y_4 = 0)) (PreH2 : (p_pre_size_2 = 4)) ,\n  (8192 <> 0)\n.\n\nDefinition top_partial_solve_wit_1 := \nforall (p_pre_size: Z) (PreH1 : (p_pre_size = 4)) ,\n  ((4096) # UInt  |-> 4)\n  **  ((4100) # Ptr  |-> 8192)\n  **  (sll 8192 (cons (9) ((cons ((-1)) ((cons (0) ((cons (3) ((@nil Z))))))))) )\n|--\n  EX (y: Z)  (y_2: Z)  (y_3: Z)  (y_4: Z) ,\n  “ (y_4 = 0) ” \n  &&  “ (p_pre_size = 4) ”\n  &&  ((8192) # Int  |-> 9)\n  **  (((y_3 + 4 )) # Ptr  |-> y_4)\n  **  ((y_3) # Int  |-> 3)\n  **  (((y_2 + 4 )) # Ptr  |-> y_3)\n  **  ((y_2) # Int  |-> 0)\n  **  (((y + 4 )) # Ptr  |-> y_2)\n  **  ((y) # Int  |-> (-1))\n  **  ((8196) # Ptr  |-> y)\n  **  ((4096) # UInt  |-> 4)\n  **  ((4100) # Ptr  |-> 8192)\n.\n\nDefinition top_precondition_wit_1 :=\n~ ((  EX (p_pre_size: Z) ,\n  “ (4096 = 4096) ” \n  &&  “ (8192 = 8192) ” \n  &&  “ (9 = 9) ” \n  &&  “ ((cons ((-1)) ((cons (0) ((cons (3) ((@nil Z))))))) = (cons ((-1)) ((cons (0) ((cons (3) ((@nil Z)))))))) ” \n  &&  “ ((((Zlength ((cons ((-1)) ((cons (0) ((cons (3) ((@nil Z))))))))) + 1 ) % ( 4294967296 ) ) > 0) ” \n  &&  “ (p_pre_size = (((Zlength ((cons ((-1)) ((cons (0) ((cons (3) ((@nil Z))))))))) + 1 ) % ( 4294967296 ) )) ”\n  &&  (((* tespec-target-field-address-v1: bits=32; offset=0; size=4; align=4 *) (4096 + 0)) # UInt  |-> p_pre_size)\n  **  (((* tespec-target-field-address-v1: bits=32; offset=4; size=4; align=4 *) (4096 + 4)) # Ptr  |-> 8192)\n  **  (sll 8192 (cons (9) ((cons ((-1)) ((cons (0) ((cons (3) ((@nil Z))))))))) )) |-- “ False ”).\n\nModule Type VC_Correct.\n\nAxiom proof_of_top_safety_wit_1 : top_safety_wit_1.\nAxiom proof_of_top_return_wit_1 : top_return_wit_1.\nAxiom proof_of_top_partial_solve_wit_1 : top_partial_solve_wit_1.\nAxiom proof_of_top_precondition_wit_1 : top_precondition_wit_1.\n\nEnd VC_Correct.\n",
+          "proof_auto": "Require Import Coq.ZArith.ZArith.\nRequire Import Coq.Bool.Bool.\nRequire Import Coq.Strings.String.\nRequire Import Coq.Strings.Ascii.\nRequire Import Coq.Lists.List.\nRequire Import Coq.Classes.RelationClasses.\nRequire Import Coq.Classes.Morphisms.\nRequire Import Coq.micromega.Psatz.\nRequire Import Coq.Sorting.Permutation.\nFrom AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.\nRequire Import SetsClass.SetsClass. Import SetsNotation.\nFrom SimpleC.SL Require Import Mem SeparationLogic.\nRequire Import input_goal.\nRequire Import Logic.LogicGenerator.demo932.Interface.\nLocal Open Scope Z_scope.\nLocal Open Scope sets.\nLocal Open Scope string_scope.\nLocal Open Scope list.\nImport naive_C_Rules.\nRequire Import SimpleC.EE.QCP_demos_human.sll_lib.\nLocal Open Scope sac.\nLocal Open Scope Z_scope.\n\nLemma proof_of_top_safety_wit_1 : top_safety_wit_1.\nProof. Admitted. \n\nLemma proof_of_top_partial_solve_wit_1 : top_partial_solve_wit_1.\nProof. Admitted. \n\n",
+          "proof_manual": "Require Import Coq.ZArith.ZArith.\nRequire Import Coq.Bool.Bool.\nRequire Import Coq.Strings.String.\nRequire Import Coq.Strings.Ascii.\nRequire Import Coq.Lists.List.\nRequire Import Coq.Classes.RelationClasses.\nRequire Import Coq.Classes.Morphisms.\nRequire Import Coq.micromega.Psatz.\nRequire Import Coq.Sorting.Permutation.\nFrom AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.\nRequire Import SetsClass.SetsClass. Import SetsNotation.\nFrom SimpleC.SL Require Import Mem SeparationLogic.\nRequire Import input_goal.\nRequire Import input_proof_auto.\nRequire Import Logic.LogicGenerator.demo932.Interface.\nLocal Open Scope Z_scope.\nLocal Open Scope sets.\nLocal Open Scope string_scope.\nLocal Open Scope list.\nImport naive_C_Rules.\nRequire Import SimpleC.EE.QCP_demos_human.sll_lib.\nLocal Open Scope sac.\nLocal Open Scope Z_scope.\n\nLemma proof_of_top_return_wit_1_split_goal_1 : top_return_wit_1_split_goal_1.\nProof. Abort.\n\nLemma proof_of_top_return_wit_1_split_goal_2 : top_return_wit_1_split_goal_2.\nProof. Abort.\n\nLemma proof_of_top_return_wit_1_split_goal_3 : top_return_wit_1_split_goal_3.\nProof. Abort.\n\nLemma proof_of_top_return_wit_1_split_goal_4 : top_return_wit_1_split_goal_4.\nProof. Abort.\n\nLemma proof_of_top_return_wit_1 : top_return_wit_1.\nProof. Admitted. \n\nLemma proof_of_top_precondition_wit_1 : top_precondition_wit_1.\nProof. Admitted. \n\n",
+          "goal_check": "Require Import input_goal input_proof_auto input_proof_manual.\n\nModule VC_Correctness : VC_Correct.\n  Include input_proof_auto.\n  Include input_proof_manual.\nEnd VC_Correctness.\n"
+        }
+      }
+    }
+  ],
+  "itp_vcs": [
+    {
+      "case_id": "input_0",
+      "function": "top",
+      "manifest": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_0/vc/manifest.json",
+      "goals": [
+        "proof_of_top_precondition_wit_1"
+      ]
+    },
+    {
+      "case_id": "input_1",
+      "function": "top",
+      "manifest": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_1/vc/manifest.json",
+      "goals": [
+        "proof_of_top_return_wit_1_split_goal_1",
+        "proof_of_top_return_wit_1_split_goal_2",
+        "proof_of_top_return_wit_1",
+        "proof_of_top_precondition_wit_1"
+      ]
+    },
+    {
+      "case_id": "input_2",
+      "function": "top",
+      "manifest": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_2/vc/manifest.json",
+      "goals": [
+        "proof_of_top_return_wit_1_split_goal_1",
+        "proof_of_top_return_wit_1_split_goal_2",
+        "proof_of_top_return_wit_1_split_goal_3",
+        "proof_of_top_return_wit_1",
+        "proof_of_top_precondition_wit_1"
+      ]
+    },
+    {
+      "case_id": "input_3",
+      "function": "top",
+      "manifest": "/tmp/fulminate-qcp-ym442dve/run/artifacts/input_3/vc/manifest.json",
+      "goals": [
+        "proof_of_top_return_wit_1_split_goal_1",
+        "proof_of_top_return_wit_1_split_goal_2",
+        "proof_of_top_return_wit_1_split_goal_3",
+        "proof_of_top_return_wit_1_split_goal_4",
+        "proof_of_top_return_wit_1",
+        "proof_of_top_precondition_wit_1"
+      ]
+    }
+  ],
+  "summary": {
+    "total": 4,
+    "PASS": 0,
+    "FAIL": 0,
+    "UNKNOWN": 4,
+    "ERROR": 0,
+    "INVALID": 0,
+    "specification_only": 0,
+    "duration_seconds": 0.13974,
+    "executor_cpu_seconds": 0.06,
+    "peak_rss_kb": 6044
+  },
+  "report": "/tmp/fulminate-qcp-ym442dve/run/report.json",
+  "job_content": {
+    "source": "/tmp/teSpec-tespec-sync/benchmark/selection/qcp-migration/cases/stack.c",
+    "function": "top",
+    "binds": [
+      {
+        "id": "input_0",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "h": 9,
+          "l": [],
+          "d": 8192
+        }
+      },
+      {
+        "id": "input_1",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "h": 9,
+          "l": [
+            1
+          ],
+          "d": 8192
+        }
+      },
+      {
+        "id": "input_2",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "h": 9,
+          "l": [
+            2,
+            1
+          ],
+          "d": 8192
+        }
+      },
+      {
+        "id": "input_3",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "h": 9,
+          "l": [
+            -1,
+            0,
+            3
+          ],
+          "d": 8192
+        }
+      }
+    ],
+    "qcp": {
+      "binary": "/tmp/teSpec-tespec-sync/bin/tespec-symexec",
+      "qcip_root": "/tmp/teSpec-tespec-sync/runtime/qcip",
+      "include_dirs": [
+        "QCP_examples/QCP_demos_human"
+      ],
+      "execution_mode": "entry-exit",
+      "timeout": 30
+    }
+  }
+}
