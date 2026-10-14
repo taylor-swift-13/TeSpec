@@ -1,0 +1,6 @@
+Require Import slf15_basic_succ_using_incr_attempt_.qcp_goal slf15_basic_succ_using_incr_attempt_.qcp_proof_auto slf15_basic_succ_using_incr_attempt_.qcp_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include slf15_basic_succ_using_incr_attempt_.qcp_proof_auto.
+  Include slf15_basic_succ_using_incr_attempt_.qcp_proof_manual.
+End VC_Correctness.

@@ -1,0 +1,40 @@
+{
+  "status": "TOOL_ERROR",
+  "returncode": 1,
+  "command": [
+    "/home/yangfp/tespec-baselines/qcp-benchmark-vc-printer/build/release/symexec",
+    "--input-file=/home/yangfp/teSpec-benchmark-tespec/benchmark/selection/qcp-migration/supplemental/double_free/double_free.qcp.c",
+    "--Json-output",
+    "--no-strategy-gen",
+    "--gen-and-backup",
+    "--coq-output-dir=/home/yangfp/teSpec-benchmark-tespec/benchmark/selection/qcp-migration/supplemental/double_free/native/vc",
+    "--no-logic-path",
+    "--disable-solver-info",
+    "--no-exec-info",
+    "-I/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human"
+  ],
+  "source_sha256": "45f9f4ea9a2e0cbc50db674422f769c2a045fee240ba283d3642c2987e2de8b6",
+  "log_sha256": "9dfa63d87934c392bd9bdf6cacd5ea895b981380ef6d8ec18b514478673a7b52",
+  "error": {
+    "Main Error Message": "fatal error: Cannot derive the precondition of function cn_free_sized for spec (default)",
+    "fileName": "/home/yangfp/teSpec-benchmark-tespec/benchmark/selection/qcp-migration/supplemental/double_free/double_free.qcp.c",
+    "line": 18,
+    "column": 21,
+    "additional_info": [
+      "Function call failed because the caller assertion does not entail the callee Require assertion after substituting actual arguments.\n",
+      "Function call argument bindings:\n  argument 1: p <- retval_406\n  argument 2: n <- (Size_of unsigned int)\n",
+      "Callee precondition after substituting actual arguments:\nEX x_418_free \nPROP[\n  (Size_of unsigned int) == 4 ]\nLOCAL[]\nSEP[\n  store(retval_406, x_418_free, unsigned int) ]\n\n",
+      "Caller current assertion:\nEX p_403_addr retval_406 x_409_addr retval_413 \nPROP[\n  retval_413 == 5;\n  retval_406 != 0 ]\nLOCAL[\n  Temp x x_409_addr;\n  Temp p p_403_addr ]\nSEP[\n  store(x_409_addr, retval_413, unsigned int);\n  store(p_403_addr, retval_406, unsigned int*) ]\n\n"
+    ]
+  },
+  "error_kind": "call_precondition_not_established",
+  "functions": {
+    "deref": {
+      "status": "AUTOMATICALLY_DISCHARGED",
+      "auto_solved": 1,
+      "manual": 0
+    }
+  },
+  "certificate": "NOT_CHECKED",
+  "unit_manual_obligations": 0
+}

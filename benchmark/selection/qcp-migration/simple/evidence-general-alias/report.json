@@ -1,0 +1,42 @@
+[
+  {
+    "status": "TOOL_ERROR",
+    "returncode": 1,
+    "command": [
+      "/home/yangfp/tespec-baselines/qcp-upstream/build/release/symexec",
+      "--input-file=/home/yangfp/teSpec/benchmark/selection/qcp-migration/simple/slf_incr2.qcp.c",
+      "--Json-output",
+      "--no-strategy-gen",
+      "--gen-and-backup",
+      "--coq-output-dir=/home/yangfp/teSpec/benchmark/selection/qcp-migration/simple/evidence-general-alias/slf_incr2/vc",
+      "--no-logic-path",
+      "--disable-solver-info",
+      "--no-exec-info",
+      "-I/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human"
+    ],
+    "source_sha256": "9407d73128a48882767582567c26fff7eda0be8111943ab63769bd25293bf56f",
+    "log_sha256": "5cb6581dbdb9ac76a285dcd7efa2611193395aa3a3b1152beaadf7db7120b15d",
+    "error": {
+      "Main Error Message": "fatal error: Cannot derive the precondition of function incr2 for spec (default)",
+      "fileName": "/home/yangfp/teSpec/benchmark/selection/qcp-migration/simple/slf_incr2.qcp.c",
+      "line": 18,
+      "column": 11,
+      "additional_info": [
+        "Function call failed because the caller assertion does not entail the callee Require assertion after substituting actual arguments.\n",
+        "Function call argument bindings:\n  argument 1: p <- p_393_pre\n  argument 2: q <- p_393_pre\n",
+        "Callee precondition after substituting actual arguments:\nPROP[\n  0 <= ((v_396_free + 1) %% 4294967296);\n  ((v_396_free + 1) %% 4294967296) <= UINT_MAX;\n  0 <= ((v_396_free + 1) %% 4294967296);\n  ((v_396_free + 1) %% 4294967296) <= UINT_MAX;\n  p_393_pre != p_393_pre ]\nLOCAL[]\nSEP[\n  store(p_393_pre, ((v_396_free + 1) %% 4294967296), unsigned int) ]\n\n",
+        "Caller current assertion:\nPROP[\n  p_393_pre != q_390_pre;\n  0 <= v_396_free;\n  v_396_free <= UINT_MAX;\n  0 <= w_395_free;\n  w_395_free <= UINT_MAX;\n  p_393_pre != q_390_pre ]\nLOCAL[\n  Temp q q_391_addr;\n  Temp p p_394_addr ]\nSEP[\n  store(p_393_pre, ((v_396_free + 1) %% 4294967296), unsigned int);\n  store(q_390_pre, ((w_395_free + 1) %% 4294967296), unsigned int);\n  store(p_394_addr, p_393_pre, unsigned int*);\n  store(q_391_addr, q_390_pre, unsigned int*) ]\n\n"
+      ]
+    },
+    "error_kind": "call_precondition_not_established",
+    "functions": {
+      "incr2": {
+        "status": "RESIDUAL",
+        "auto_solved": 5,
+        "manual": 2
+      }
+    },
+    "certificate": "NOT_CHECKED",
+    "unit_manual_obligations": 2
+  }
+]

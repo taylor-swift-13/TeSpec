@@ -29,11 +29,11 @@ def reference(path: Path) -> dict:
     path = path.resolve()
     if not path.is_relative_to(ROOT) or not path.is_file():
         raise ValueError(f"Missing or external input: {path}")
-    return {"path": str(path.relative_to(ROOT)), "sha256": sha(path)}
+    return {"path": path.relative_to(ROOT).as_posix(), "sha256": sha(path)}
 
 
 def source_inventory(lock: dict) -> list[str]:
-    actual = {str(p.relative_to(SNAPSHOT)) for p in SNAPSHOT.rglob("*") if p.is_file()}
+    actual = {p.relative_to(SNAPSHOT).as_posix() for p in SNAPSHOT.rglob("*") if p.is_file()}
     if actual != set(lock["files"]):
         raise ValueError(
             "Fulminate snapshot differs from the complete locked inventory"
@@ -195,6 +195,164 @@ def cn_records(lock: dict) -> list[dict]:
                     "teSpec execution gaps and proof obligations are recorded per input in the migration report.",
                 ],
             )
+    simple = migration_dir / "simple"
+    simple_manifest = read(simple / "manifest.json")
+    simple_results = read(simple / "verification-index.json")["results"]
+    by_source = {row["original"]: row for row in simple_manifest["cases"]}
+    by_hash = {row["source_sha256"]: row for row in simple_results}
+    for record in records:
+        migration = by_source.get(record["source"]["path"])
+        if migration is None:
+            continue
+        if migration["original_sha256"] != record["source"]["sha256"]:
+            raise ValueError("Simple migration source mismatch")
+        source = ROOT / migration["qcp"]
+        if sha(source) != migration["qcp_sha256"]:
+            raise ValueError("Simple migration translation mismatch")
+        result = by_hash[migration["qcp_sha256"]]
+        record.update(
+            qcp_translation="target-function-migrated;original-main-excluded",
+            replay_status="native-qcp-run;tespec-and-CN-pairing-pending",
+            migration_targets={fn: result["functions"].get(fn, {}).get("status", "MISSING_TARGET") if result["status"] == "COMPLETED" else result["status"] for fn in migration.get("functions", [migration["function"]])},
+            unit_manual_obligations=result["unit_manual_obligations"],
+            prepared_qcp_input_count=migration.get("input_preparation", {}).get("count", 0),
+            input_preparation=migration.get("input_preparation", {}),
+            ownership_profile=migration.get("ownership_profile", "typed cells"),
+            evidence=[reference(simple / "manifest.json"), reference(source),
+                      reference(simple / "verification-index.json")],
+            blockers=["Original trusted main and matched CN/teSpec input replay pending.",
+                      "Native automatic results have not been independently kernel-checked."]
+            + ([migration["ownership_profile"]] if "correspondence pending" in migration.get("ownership_profile", "") else [])
+            + (["Resolve remaining automatic obligations including helper functions."] if result["unit_manual_obligations"] else []),
+        )
+    simple = migration_dir / "simple"
+    simple_manifest = read(simple / "manifest.json")
+    simple_results = read(simple / "verification-index.json")["results"]
+    by_source = {row["original"]: row for row in simple_manifest["cases"]}
+    by_hash = {row["source_sha256"]: row for row in simple_results}
+    for record in records:
+        migration = by_source.get(record["source"]["path"])
+        if migration is None:
+            continue
+        if migration["original_sha256"] != record["source"]["sha256"]:
+            raise ValueError("Simple migration source mismatch")
+        source = ROOT / migration["qcp"]
+        if sha(source) != migration["qcp_sha256"]:
+            raise ValueError("Simple migration translation mismatch")
+        result = by_hash[migration["qcp_sha256"]]
+        record.update(
+            qcp_translation="target-function-migrated;original-main-excluded",
+            replay_status="native-qcp-run;tespec-and-CN-pairing-pending",
+            migration_targets={fn: result["functions"].get(fn, {}).get("status", "MISSING_TARGET") if result["status"] == "COMPLETED" else result["status"] for fn in migration.get("functions", [migration["function"]])},
+            unit_manual_obligations=result["unit_manual_obligations"],
+            prepared_qcp_input_count=migration.get("input_preparation", {}).get("count", 0),
+            input_preparation=migration.get("input_preparation", {}),
+            ownership_profile=migration.get("ownership_profile", "typed cells"),
+            evidence=[reference(simple / "manifest.json"), reference(source),
+                      reference(simple / "verification-index.json")],
+            blockers=["Original trusted main and matched CN/teSpec input replay pending.",
+                      "Native automatic results have not been independently kernel-checked."]
+            + ([migration["ownership_profile"]] if "correspondence pending" in migration.get("ownership_profile", "") else [])
+            + (["Resolve remaining automatic obligations including helper functions."] if result["unit_manual_obligations"] else []),
+        )
+    simple = migration_dir / "simple"
+    simple_manifest = read(simple / "manifest.json")
+    simple_results = read(simple / "verification-index.json")["results"]
+    by_source = {row["original"]: row for row in simple_manifest["cases"]}
+    by_hash = {row["source_sha256"]: row for row in simple_results}
+    for record in records:
+        migration = by_source.get(record["source"]["path"])
+        if migration is None:
+            continue
+        if migration["original_sha256"] != record["source"]["sha256"]:
+            raise ValueError("Simple migration source mismatch")
+        source = ROOT / migration["qcp"]
+        if sha(source) != migration["qcp_sha256"]:
+            raise ValueError("Simple migration translation mismatch")
+        result = by_hash[migration["qcp_sha256"]]
+        record.update(
+            qcp_translation="target-function-migrated;original-main-excluded",
+            replay_status="native-qcp-run;tespec-and-CN-pairing-pending",
+            migration_targets={fn: result["functions"].get(fn, {}).get("status", "MISSING_TARGET") if result["status"] == "COMPLETED" else result["status"] for fn in migration.get("functions", [migration["function"]])},
+            unit_manual_obligations=result["unit_manual_obligations"],
+            prepared_qcp_input_count=migration.get("input_preparation", {}).get("count", 0),
+            input_preparation=migration.get("input_preparation", {}),
+            ownership_profile=migration.get("ownership_profile", "typed cells"),
+            evidence=[reference(simple / "manifest.json"), reference(source),
+                      reference(simple / "verification-index.json")],
+            blockers=["Original trusted main and matched CN/teSpec input replay pending.",
+                      "Native automatic results have not been independently kernel-checked."]
+            + ([migration["ownership_profile"]] if "correspondence pending" in migration.get("ownership_profile", "") else [])
+            + (["Resolve remaining automatic obligations including helper functions."] if result["unit_manual_obligations"] else []),
+        )
+    kernel_report = simple / "proofs/report.json"
+    if kernel_report.exists():
+        checked = {row["id"]: row for row in read(kernel_report)["results"]}
+        for record in records:
+            migration = by_source.get(record["source"]["path"])
+            receipt = checked.get(migration["id"]) if migration else None
+            if receipt is None:
+                continue
+            if receipt["kernel_check_exit"] != 0 or receipt["qcp_source_sha256"] != migration["qcp_sha256"]:
+                raise ValueError("Kernel receipt does not match current migration")
+            record["kernel_verification"] = {
+                "status": "complete-VC-module-checked",
+                "vc_count": len(receipt["proved_original_vcs"]),
+                "runtime_assumptions": "recorded separately; not axiom-free",
+            }
+            record["evidence"].append(reference(kernel_report))
+            record["blockers"] = [item for item in record["blockers"] if not item.startswith("Native automatic") and not item.startswith("Resolve remaining")]
+    finding_path = simple / "advanced/queue-guarded/finding.json"
+    if finding_path.exists():
+        finding = read(finding_path)
+        for record in records:
+            if record["source"]["path"] == finding["original"]:
+                record["source_contract_finding"] = finding
+                record["migration_targets"].update({"push_induction": "RESIDUAL;original-contract-counterexample", "IntQueue_push_induction": "RESIDUAL"})
+                record["evidence"].append(reference(finding_path))
+                record["blockers"].append("Original push_induction contract has a concrete counterexample; caller depends on it.")
+                corrected_receipt = simple / "advanced/queue-corrected/verification-receipt.json"
+                if corrected_receipt.exists():
+                    certificate = read(corrected_receipt)
+                    corrected_source = simple / "advanced/queue-corrected/queue_corrected.qcp.c"
+                    if certificate["manual_kernel_exit"] != 0 or sha(corrected_source) != certificate["source_sha256"]:
+                        raise ValueError("Corrected queue certificate mismatch")
+                    record["original_migration_targets"] = dict(record["migration_targets"])
+                    record["migration_targets"].update({"push_induction": "MANUAL_PROVED", "IntQueue_push_induction": "AUTOMATICALLY_DISCHARGED"})
+                    record["qcp_translation"] = "corrected-QCP-spec;original-CN-contract-refuted"
+                    record["qcp_verification"] = {"status": "automatic-plus-manual-verified", "variant": "corrected-QCP-spec", "auto_vcs": certificate["auto_vcs"], "manual_vcs": certificate["manual_vcs"], "spec_correspondence": "intentional standard-segment replacement; not original CN equivalence"}
+                    record["evidence"] += [reference(corrected_source), reference(corrected_receipt), reference(simple / "advanced/queue-corrected/queue-spec-finding.md")]
+                    record["blockers"] = [x for x in record["blockers"] if not x.startswith("Original push_induction") and not x.startswith("Resolve remaining")]
+                    record["blockers"].append("Original CN contract remains refuted; verified QCP variant intentionally corrects its specification.")
+
+    supplemental_registry = HERE / "qcp-migration/supplemental/registry.json"
+    if supplemental_registry.exists():
+        supplemental = {row["original"]: row for row in read(supplemental_registry)["records"]}
+        for record in records:
+            migration = supplemental.get(record["source"]["path"])
+            if migration is None:
+                continue
+            qcp_source = ROOT / migration["qcp"]
+            if sha(qcp_source) != migration["qcp_sha256"] or record["source"]["sha256"] != migration["original_sha256"]:
+                raise ValueError("Supplemental source/hash mismatch")
+            record.update(
+                qcp_translation="supplemental-active-QCP-variant;normalizations-and-contract-changes-explicit",
+                replay_status="native-qcp-run;CN-paired-execution-pending",
+                migration_targets=migration["migration_targets"],
+                unit_manual_obligations=migration["native_unit_manual_obligations"],
+                qcp_verification={"status": migration["qcp_status"], "scope": migration["verified_scope"]},
+                evidence=[reference(supplemental_registry), reference(qcp_source)] + [reference(ROOT / path) for path in migration["evidence"]],
+                blockers=["Fixed original CN/teSpec matched-input replay is not complete."],
+            )
+            if "manual_verification" in migration:
+                record["manual_verification"] = migration["manual_verification"]
+            if "manual_refutation" in migration:
+                record["manual_refutation"] = migration["manual_refutation"]
+            for key in ["normalization", "spec_correspondence", "remaining_component_scope", "concrete_witness", "verified_component"]:
+                if key in migration:
+                    record[key] = migration[key]
+            if migration["qcp_status"] != "VERIFIED_AUTOMATIC_PLUS_MANUAL":
+                record["blockers"].append("Expected negative outcome is retained; this input is not marked verified.")
     return records
 
 
@@ -362,6 +520,10 @@ def build() -> dict:
                     ).items()
                 )
             ),
+            "cn_supplemental_qcp_outcomes": dict(sorted(Counter(
+                record.get("qcp_verification", {}).get("status", "not-recorded")
+                for record in records if record["track"] == "mandatory-cn-supplemental-input"
+            ).items())),
             "cn_original_revision_paired_replay_complete": False,
         },
         "programs": records,
@@ -386,6 +548,10 @@ def render_csv(catalog: dict) -> str:
             "questions",
             "translation",
             "replay",
+            "target_auto_status",
+            "kernel_status",
+            "kernel_vc_count",
+            "prepared_qcp_inputs",
             "selection_reason",
         ]
     )
@@ -399,6 +565,10 @@ def render_csv(catalog: dict) -> str:
                 ";".join(row["questions"]),
                 row["qcp_translation"],
                 row["replay_status"],
+                json.dumps(row.get("migration_targets", {}), ensure_ascii=False, sort_keys=True),
+                row.get("kernel_verification", {}).get("status", "not-recorded"),
+                row.get("kernel_verification", {}).get("vc_count", 0),
+                row.get("prepared_qcp_input_count", 0),
                 row["selection_reason"],
             ]
         )

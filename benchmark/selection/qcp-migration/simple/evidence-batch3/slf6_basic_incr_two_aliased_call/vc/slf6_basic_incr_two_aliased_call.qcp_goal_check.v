@@ -1,0 +1,6 @@
+Require Import slf6_basic_incr_two_aliased_call.qcp_goal slf6_basic_incr_two_aliased_call.qcp_proof_auto slf6_basic_incr_two_aliased_call.qcp_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include slf6_basic_incr_two_aliased_call.qcp_proof_auto.
+  Include slf6_basic_incr_two_aliased_call.qcp_proof_manual.
+End VC_Correctness.

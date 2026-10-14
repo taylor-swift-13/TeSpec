@@ -1,0 +1,1062 @@
+{
+  "scope": "22 pinned supplemental CN C inputs; positive and negative outcomes retained",
+  "cases": [
+    {
+      "id": "read_missing_post",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/read.broken.c",
+      "original_sha256": "9d4d5f497a66f0eb497387b587316dc63fa6556d6b9375670fffc25b5d909517",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/read_missing_post/read_missing_post.qcp.c",
+      "qcp_sha256": "5f0745ae2e1e60380a4b8f82d8ec954abc0d491c57944935d69cb49c438ccc0a",
+      "functions": [
+        "read"
+      ],
+      "expected": "negative-resource-post",
+      "migration_notes": "Missing ownership postcondition retained.",
+      "native_status": "COMPLETED",
+      "native_functions": {
+        "read": {
+          "status": "RESIDUAL",
+          "auto_solved": 0,
+          "manual": 1
+        }
+      },
+      "native_unit_manual_obligations": 1,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "uninit_signed",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/slf0_basic_incr.signed.broken.c",
+      "original_sha256": "f82cd3934ed2f75d6549328e97e4dcc1f9bf7428c324d775164c92ecba10433a",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/uninit_signed/uninit_signed.qcp.c",
+      "qcp_sha256": "8c930c120c9ede42e31edb577ca5e6b620cc2e90eb58a6564dd6ea96ba593e30",
+      "functions": [
+        "incr"
+      ],
+      "expected": "negative-uninitialized-read",
+      "migration_notes": "Original Block translated to undefined cell; do not fabricate an initial value.",
+      "native_status": "TOOL_ERROR",
+      "native_functions": {},
+      "native_unit_manual_obligations": 0,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "uninit_incr",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/slf0_incr.broken.c",
+      "original_sha256": "10d7e0af9f4cd273fa2dd89387bd13a7394ab2e9289298a09750aeedab8052cf",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/uninit_incr/uninit_incr.qcp.c",
+      "qcp_sha256": "9de1cc48228b3e6339966e7504654363079c7e75a41eb2f3a76d3e49695f9111",
+      "functions": [
+        "incr"
+      ],
+      "expected": "negative-uninitialized-read",
+      "migration_notes": "Original ill-typed use of Block as a value has no faithful value expression; expected failure before that post relation matters.",
+      "native_status": "TOOL_ERROR",
+      "native_functions": {},
+      "native_unit_manual_obligations": 0,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "transpose_historical",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/transpose.broken.c",
+      "original_sha256": "6e42db833f73236847e93c0e9c98743e460f171efb334952fdec93e523b3bc06",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/transpose_historical/transpose_historical.qcp.c",
+      "qcp_sha256": "e63917a76eff6b79befddb1fc986421730d68b796421ec1844ea0b4940901f1c",
+      "functions": [
+        "transpose"
+      ],
+      "expected": "positive",
+      "migration_notes": "Original fieldwise ownership translation; broken name does not imply C body failure.",
+      "native_status": "COMPLETED",
+      "native_functions": {
+        "transpose": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 1,
+          "manual": 0
+        }
+      },
+      "native_unit_manual_obligations": 0,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "runtime_swap_array",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/runtime-extras/swap_array.c",
+      "original_sha256": "ab281b839c149a8e93ba314b862df2bfe71ca6a2a126756af784763531ab818c",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/runtime_swap_array/runtime_swap_array.qcp.c",
+      "qcp_sha256": "aa74963c9ec54dd25e1abb8d7d35b3dfeb7243f104d30bf43ee6cf20f8c1d220",
+      "functions": [
+        "swap_array"
+      ],
+      "expected": "positive",
+      "migration_notes": "Same function body/spec as checked core swap; original trusted main excluded.",
+      "native_status": "COMPLETED",
+      "native_functions": {
+        "swap_array": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 5,
+          "manual": 0
+        }
+      },
+      "native_unit_manual_obligations": 0,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "array_load_weak",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/array_load.broken.c",
+      "original_sha256": "e85439414c2ce0adee242cc8d7b05abe7a29ab37a95cba6856bb96d7205132f1",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/array_load_weak/array_load_weak.qcp.c",
+      "qcp_sha256": "243125c058514116446ba7d927bb6a4a1df694bcea26b04bdd5d84a6239349cc",
+      "functions": [
+        "read"
+      ],
+      "expected": "positive-helper;client-spec-insufficient",
+      "migration_notes": "Weak ownership-only helper post retained; original main assertions need separate verification.",
+      "native_status": "COMPLETED",
+      "native_functions": {
+        "read": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 2,
+          "manual": 0
+        }
+      },
+      "native_unit_manual_obligations": 0,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "aliased_call_bad",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/slf5_basic_aliased_call.broken.c",
+      "original_sha256": "fc9fcbb245381493b8e3d34c2a8be1be21298de6a6a994c1589c1df5444d61ab",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/aliased_call_bad/aliased_call_bad.qcp.c",
+      "qcp_sha256": "45ae21373cffd7a2d466f8f96fcf81d54e1d29a28b33b3c538d5c40e437d952e",
+      "functions": [
+        "incr",
+        "incr_two",
+        "aliased_call"
+      ],
+      "expected": "negative-call-ownership",
+      "migration_notes": "Original separating incr_two contract cannot accept two copies of the same owned cell.",
+      "native_status": "TOOL_ERROR",
+      "native_functions": {
+        "incr": {
+          "status": "RESIDUAL",
+          "auto_solved": 1,
+          "manual": 1
+        },
+        "incr_two": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 3,
+          "manual": 0
+        }
+      },
+      "native_unit_manual_obligations": 1,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "same_func_malloc_free",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/runtime-extras/same_func_malloc_free.c",
+      "original_sha256": "bed05e6f6af56a07585fccf709ed2be568c52f52d4b7aa55c6b5015b8aa442d0",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/same_func_malloc_free/same_func_malloc_free.qcp.c",
+      "qcp_sha256": "2ccf5e5701a79da083e07cd67e6ce774f78ddba40ff1a60b9f8b01ecae8e4ef9",
+      "functions": [
+        "deref",
+        "main"
+      ],
+      "expected": "positive",
+      "migration_notes": "Original client bodies, including main, verified instead of trusting them. Typed sized allocation/free interface is explicit; implicit C main return zero made explicit. CN proof assertions will be replayed separately; no body edits.",
+      "native_status": "COMPLETED",
+      "native_functions": {
+        "deref": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 1,
+          "manual": 0
+        },
+        "main": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 6,
+          "manual": 0
+        }
+      },
+      "native_unit_manual_obligations": 0,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "double_free",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/runtime-extras/double_free.broken.c",
+      "original_sha256": "e24ff62d76debaed42c447058deaae866b97f1ef604957e0db6db592275e4feb",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/double_free/double_free.qcp.c",
+      "qcp_sha256": "45f9f4ea9a2e0cbc50db674422f769c2a045fee240ba283d3642c2987e2de8b6",
+      "functions": [
+        "deref",
+        "main"
+      ],
+      "expected": "negative-double-free",
+      "migration_notes": "Original client bodies, including main, verified instead of trusting them. Typed sized allocation/free interface is explicit; implicit C main return zero made explicit. CN proof assertions will be replayed separately; no body edits.",
+      "native_status": "TOOL_ERROR",
+      "native_functions": {
+        "deref": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 1,
+          "manual": 0
+        }
+      },
+      "native_unit_manual_obligations": 0,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "down_malloc_up_free",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/runtime-extras/down_malloc_up_free.c",
+      "original_sha256": "caeb8bd7c67fc823ee88a2de5eec008fd2232334f304303b0744e7cf37dac4cf",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/down_malloc_up_free/down_malloc_up_free.qcp.c",
+      "qcp_sha256": "4e9def0ab64fd350e5cff05f4e700d2ec3164ae8fa10c0dfd6638cf50b26d741",
+      "functions": [
+        "read_and_free",
+        "main"
+      ],
+      "expected": "positive",
+      "migration_notes": "Original client bodies, including main, verified instead of trusting them. Typed sized allocation/free interface is explicit; implicit C main return zero made explicit. CN proof assertions will be replayed separately; no body edits.",
+      "native_status": "COMPLETED",
+      "native_functions": {
+        "read_and_free": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 2,
+          "manual": 0
+        },
+        "main": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 5,
+          "manual": 0
+        }
+      },
+      "native_unit_manual_obligations": 0,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "leaky_get",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/runtime-extras/leaky.broken.c",
+      "original_sha256": "2bd668ab577cfe6911a0e83999408fa932a34165b93f7c37e2b01c74779b8dd3",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/leaky_get/leaky_get.qcp.c",
+      "qcp_sha256": "4a049171d762c76875ee1ba50c65313aad5e3605cecc1a8e5d093086a3a55616",
+      "functions": [
+        "leaky_get",
+        "main"
+      ],
+      "expected": "negative-leak",
+      "migration_notes": "Original client bodies, including main, verified instead of trusting them. Typed sized allocation/free interface is explicit; implicit C main return zero made explicit. CN proof assertions will be replayed separately; no body edits.",
+      "native_status": "COMPLETED",
+      "native_functions": {
+        "leaky_get": {
+          "status": "RESIDUAL",
+          "auto_solved": 0,
+          "manual": 1
+        },
+        "main": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 5,
+          "manual": 0
+        }
+      },
+      "native_unit_manual_obligations": 1,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "leaky_main",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/runtime-extras/leaky_main.c",
+      "original_sha256": "6a33d00f2abff97b7120e1fc121f8f122d341277f1f81d8ee7d4d2b32145f7ee",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/leaky_main/leaky_main.qcp.c",
+      "qcp_sha256": "7f7cb696cd814fe6aad88ffdf16101f25cd9866eb2b91ab17d2a8126dafd0089",
+      "functions": [
+        "mkref",
+        "main"
+      ],
+      "expected": "negative-leak",
+      "migration_notes": "Original client bodies, including main, verified instead of trusting them. Typed sized allocation/free interface is explicit; implicit C main return zero made explicit. CN proof assertions will be replayed separately; no body edits.",
+      "native_status": "COMPLETED",
+      "native_functions": {
+        "mkref": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 2,
+          "manual": 0
+        },
+        "main": {
+          "status": "RESIDUAL",
+          "auto_solved": 3,
+          "manual": 1
+        }
+      },
+      "native_unit_manual_obligations": 1,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "up_malloc_down_free",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/runtime-extras/up_malloc_down_free.c",
+      "original_sha256": "7a3ca6eb1c28b3b0b46cbb3aff2a9858f4b376d52e09ae79fcc9f940b29299da",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/up_malloc_down_free/up_malloc_down_free.qcp.c",
+      "qcp_sha256": "beff3e7be9601196f4454b09a19a82b4c0edcc38bbc8b502ad9dad2287879ba4",
+      "functions": [
+        "mkref",
+        "main"
+      ],
+      "expected": "positive",
+      "migration_notes": "Original client bodies, including main, verified instead of trusting them. Typed sized allocation/free interface is explicit; implicit C main return zero made explicit. CN proof assertions will be replayed separately; no body edits.",
+      "native_status": "COMPLETED",
+      "native_functions": {
+        "mkref": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 2,
+          "manual": 0
+        },
+        "main": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 5,
+          "manual": 0
+        }
+      },
+      "native_unit_manual_obligations": 0,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "return_owned_local",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/runtime-extras/return_owned_local.broken.c",
+      "original_sha256": "149bfec93d08d9061aa6d1c393c791506662471c1e4f00d904a6c2fa8266c9f3",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/return_owned_local/return_owned_local.qcp.c",
+      "qcp_sha256": "9f26a4f96b4ba72eb014fa799f2a31439a59bc63ba03e8a55fae24a3f82eeef6",
+      "functions": [
+        "get",
+        "bad",
+        "main"
+      ],
+      "expected": "negative-stack-escape",
+      "migration_notes": "Original client bodies, including main, verified instead of trusting them. Typed sized allocation/free interface is explicit; implicit C main return zero made explicit. CN proof assertions will be replayed separately; no body edits.",
+      "native_status": "COMPLETED",
+      "native_functions": {
+        "get": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 1,
+          "manual": 0
+        },
+        "bad": {
+          "status": "RESIDUAL",
+          "auto_solved": 0,
+          "manual": 1
+        },
+        "main": {
+          "status": "RESIDUAL",
+          "auto_solved": 6,
+          "manual": 1
+        }
+      },
+      "native_unit_manual_obligations": 2,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "bad_free",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/runtime-extras/bad_free.broken.c",
+      "original_sha256": "f5726fcf79cd7ffffc03177f7576ad9445e1ecac5faa4f7c63bbb335c0f7b581",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/bad_free/bad_free.qcp.c",
+      "qcp_sha256": "cb114566e2b0eb2048914bfa1c5ad264a9aa81f32cfa085048554b65b7cb5a6e",
+      "functions": [
+        "malloc_int",
+        "bad_free",
+        "main"
+      ],
+      "expected": "negative-free-without-ownership",
+      "migration_notes": "Original missing deallocation precondition retained; no invented ownership premise.",
+      "native_status": "TOOL_ERROR",
+      "native_functions": {
+        "malloc_int": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 2,
+          "manual": 0
+        }
+      },
+      "native_unit_manual_obligations": 0,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "succ_attempt_leak",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/slf14_basic_succ_using_incr_attempt.broken.c",
+      "original_sha256": "c3c383566a410d35ede34f01ee894f458e30435ced32393733a094e0107d39a4",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/succ_attempt_leak/succ_attempt_leak.qcp.c",
+      "qcp_sha256": "b19235c1c172af223d8561a217afcc2c1422f8a2a9f650c3b183ce58ec5e5732",
+      "functions": [
+        "mallocUnsignedInt",
+        "incr",
+        "refUnsignedInt",
+        "succ_using_incr_attempt"
+      ],
+      "expected": "negative-leak",
+      "migration_notes": "Original leaked cell is not discarded or converted into an unconstrained postcondition; trusted main excluded.",
+      "native_status": "COMPLETED",
+      "native_functions": {
+        "mallocUnsignedInt": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 2,
+          "manual": 0
+        },
+        "incr": {
+          "status": "RESIDUAL",
+          "auto_solved": 1,
+          "manual": 1
+        },
+        "refUnsignedInt": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 2,
+          "manual": 0
+        },
+        "succ_using_incr_attempt": {
+          "status": "RESIDUAL",
+          "auto_solved": 2,
+          "manual": 1
+        }
+      },
+      "native_unit_manual_obligations": 2,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "dll_singleton",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/Dbl_Linked_List/singleton.c",
+      "original_sha256": "31d11a4545cd075da4308cb8d32282105f18bbb307b00cbe569d22d105714772",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/dll_singleton/dll_singleton.qcp.c",
+      "qcp_sha256": "8f229e47d6649f2a2eb844048f3a1ee244a7a494b9c7d7294296b6716fac0eb0",
+      "functions": [
+        "singleton"
+      ],
+      "expected": "positive",
+      "migration_notes": "Recursive field resources preserve both directions and left/current/right data sequences. Missing specs on orig.broken copies supplied explicitly; C bodies unchanged.",
+      "native_status": "COMPLETED",
+      "native_functions": {
+        "singleton": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 4,
+          "manual": 0
+        }
+      },
+      "native_unit_manual_obligations": 0,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "dll_add",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/Dbl_Linked_List/add.c",
+      "original_sha256": "4a8b77bfadf395786f3b97234465f101121618196b751a49428c909751682088",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/dll_add/dll_add.qcp.c",
+      "qcp_sha256": "ca69c364e8e3c06211efe51bdbaec81158a82713ce57e8715f1a024d9a708523",
+      "functions": [
+        "add"
+      ],
+      "expected": "positive",
+      "migration_notes": "Recursive field resources preserve both directions and left/current/right data sequences. Missing specs on orig.broken copies supplied explicitly; C bodies unchanged.",
+      "native_status": "COMPLETED",
+      "native_functions": {
+        "add": {
+          "status": "RESIDUAL",
+          "auto_solved": 16,
+          "manual": 1
+        }
+      },
+      "native_unit_manual_obligations": 1,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "dll_add_orig",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/Dbl_Linked_List/add_orig.broken.c",
+      "original_sha256": "a1f8dd12ce9503fd109b1dcf37e18624483053b34a7158f0cad33631c7c04521",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/dll_add_orig/dll_add_orig.qcp.c",
+      "qcp_sha256": "ca69c364e8e3c06211efe51bdbaec81158a82713ce57e8715f1a024d9a708523",
+      "functions": [
+        "add"
+      ],
+      "expected": "positive",
+      "migration_notes": "Recursive field resources preserve both directions and left/current/right data sequences. Missing specs on orig.broken copies supplied explicitly; C bodies unchanged.",
+      "native_status": "COMPLETED",
+      "native_functions": {
+        "add": {
+          "status": "RESIDUAL",
+          "auto_solved": 16,
+          "manual": 1
+        }
+      },
+      "native_unit_manual_obligations": 1,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "dll_remove",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/Dbl_Linked_List/remove.c",
+      "original_sha256": "494e1af65473162501661b4b670a9a77ce51c7b3b4e93571d59b78836c2191b2",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/dll_remove/dll_remove.qcp.c",
+      "qcp_sha256": "39de642df59971ac1570901f2f95824b45ab608b194ff4f163e11e7cbf64348f",
+      "functions": [
+        "remove"
+      ],
+      "expected": "positive",
+      "migration_notes": "Recursive field resources preserve both directions and left/current/right data sequences. Missing specs on orig.broken copies supplied explicitly; C bodies unchanged.",
+      "native_status": "COMPLETED",
+      "native_functions": {
+        "remove": {
+          "status": "RESIDUAL",
+          "auto_solved": 16,
+          "manual": 3
+        }
+      },
+      "native_unit_manual_obligations": 3,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "dll_remove_orig",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/Dbl_Linked_List/remove_orig.broken.c",
+      "original_sha256": "3b962fb514c4aca122ab3c41c02d72c3268c92fc79bb535fcee207d862591d8f",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/dll_remove_orig/dll_remove_orig.qcp.c",
+      "qcp_sha256": "39de642df59971ac1570901f2f95824b45ab608b194ff4f163e11e7cbf64348f",
+      "functions": [
+        "remove"
+      ],
+      "expected": "positive",
+      "migration_notes": "Recursive field resources preserve both directions and left/current/right data sequences. Missing specs on orig.broken copies supplied explicitly; C bodies unchanged.",
+      "native_status": "COMPLETED",
+      "native_functions": {
+        "remove": {
+          "status": "RESIDUAL",
+          "auto_solved": 16,
+          "manual": 3
+        }
+      },
+      "native_unit_manual_obligations": 3,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "runway_funcs2",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/runway/funcs2.c",
+      "original_sha256": "75db218e01f35e32d2b4a810255aacfed7dae8cfc2ded75f0f037433bdb3c532",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/runway_funcs2/runway_funcs2.qcp.c",
+      "qcp_sha256": "0cb8f24f0043303f340cfe28532465b0d6c7379696bedda62241fdc27746c26c",
+      "functions": [
+        "increment_Plane_Counter",
+        "reset_Plane_Counter",
+        "increment_Runway_Time",
+        "reset_Runway_Time",
+        "arrive",
+        "depart",
+        "switch_modes",
+        "tick"
+      ],
+      "expected": "positive",
+      "migration_notes": "Original struct-by-value client bodies and valid_state logical definition preserved via explicit expansion; two header helper functions included and checked rather than trusted.",
+      "native_status": "TOOL_ERROR",
+      "native_functions": {},
+      "native_unit_manual_obligations": 0,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "runway_funcs2_linear",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/runway/funcs2.c",
+      "original_sha256": "75db218e01f35e32d2b4a810255aacfed7dae8cfc2ded75f0f037433bdb3c532",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/runway_funcs2_linear/runway_funcs2_linear.qcp.c",
+      "qcp_sha256": "2d535d29c019cf5f69db1adca772feab22596ea5226625c31f83a20d577689c5",
+      "functions": [
+        "increment_Plane_Counter",
+        "reset_Plane_Counter",
+        "increment_Runway_Time",
+        "reset_Runway_Time",
+        "arrive",
+        "depart",
+        "switch_modes",
+        "tick"
+      ],
+      "expected": "positive",
+      "migration_notes": "Original struct-by-value client bodies and valid_state logical definition preserved via explicit expansion; two header helper functions included and checked rather than trusted.",
+      "native_status": "TOOL_ERROR",
+      "native_functions": {
+        "increment_Plane_Counter": {
+          "status": "RESIDUAL",
+          "auto_solved": 4,
+          "manual": 1
+        },
+        "reset_Plane_Counter": {
+          "status": "RESIDUAL",
+          "auto_solved": 3,
+          "manual": 1
+        },
+        "increment_Runway_Time": {
+          "status": "RESIDUAL",
+          "auto_solved": 4,
+          "manual": 1
+        },
+        "reset_Runway_Time": {
+          "status": "RESIDUAL",
+          "auto_solved": 3,
+          "manual": 1
+        }
+      },
+      "native_unit_manual_obligations": 4,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "runway_inline",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/runway/funcs2.c",
+      "original_sha256": "75db218e01f35e32d2b4a810255aacfed7dae8cfc2ded75f0f037433bdb3c532",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/runway_inline/runway_inline.qcp.c",
+      "qcp_sha256": "d511787d57ee285fba921b713a93f0c9d8d89520f9c5b2cd9a0e63886daf3670",
+      "functions": [
+        "increment_Plane_Counter",
+        "reset_Plane_Counter",
+        "increment_Runway_Time",
+        "reset_Runway_Time",
+        "arrive",
+        "depart",
+        "switch_modes",
+        "tick"
+      ],
+      "expected": "positive",
+      "migration_notes": "Struct-by-value helper calls expanded into equivalent field updates because original QCP binding failed. valid_state encoded as equivalent integer linear constraints to avoid exponential pure branch splitting. Original and failed intermediate variants archived.",
+      "native_status": "COMPLETED",
+      "native_functions": {
+        "increment_Plane_Counter": {
+          "status": "RESIDUAL",
+          "auto_solved": 4,
+          "manual": 1
+        },
+        "reset_Plane_Counter": {
+          "status": "RESIDUAL",
+          "auto_solved": 3,
+          "manual": 1
+        },
+        "increment_Runway_Time": {
+          "status": "RESIDUAL",
+          "auto_solved": 4,
+          "manual": 1
+        },
+        "reset_Runway_Time": {
+          "status": "RESIDUAL",
+          "auto_solved": 3,
+          "manual": 1
+        },
+        "arrive": {
+          "status": "RESIDUAL",
+          "auto_solved": 8,
+          "manual": 2
+        },
+        "depart": {
+          "status": "RESIDUAL",
+          "auto_solved": 8,
+          "manual": 2
+        },
+        "switch_modes": {
+          "status": "RESIDUAL",
+          "auto_solved": 12,
+          "manual": 2
+        },
+        "tick": {
+          "status": "RESIDUAL",
+          "auto_solved": 147,
+          "manual": 16
+        }
+      },
+      "native_unit_manual_obligations": 26,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "runway_snapshot",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/runway/funcs2.c",
+      "original_sha256": "75db218e01f35e32d2b4a810255aacfed7dae8cfc2ded75f0f037433bdb3c532",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/runway_snapshot/runway_snapshot.qcp.c",
+      "qcp_sha256": "15ab9261f3b027c78fe627119011f6de5570c9ff04c51052dfbbd71e6bf3bee8",
+      "functions": [
+        "increment_Plane_Counter",
+        "reset_Plane_Counter",
+        "increment_Runway_Time",
+        "reset_Runway_Time",
+        "arrive",
+        "depart",
+        "switch_modes",
+        "tick"
+      ],
+      "expected": "positive",
+      "migration_notes": "Equivalent linear valid_state; struct-by-value calls inlined; six logical entry-value snapshots prevent outgoing specs from requiring expired by-value parameter storage. Original failed variants retained.",
+      "native_status": "COMPLETED",
+      "native_functions": {
+        "increment_Plane_Counter": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 5,
+          "manual": 0
+        },
+        "reset_Plane_Counter": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 4,
+          "manual": 0
+        },
+        "increment_Runway_Time": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 5,
+          "manual": 0
+        },
+        "reset_Runway_Time": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 4,
+          "manual": 0
+        },
+        "arrive": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 10,
+          "manual": 0
+        },
+        "depart": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 10,
+          "manual": 0
+        },
+        "switch_modes": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 14,
+          "manual": 0
+        },
+        "tick": {
+          "status": "RESIDUAL",
+          "auto_solved": 162,
+          "manual": 1
+        }
+      },
+      "native_unit_manual_obligations": 1,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "same_func_asserted",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/runtime-extras/same_func_malloc_free.c",
+      "original_sha256": "bed05e6f6af56a07585fccf709ed2be568c52f52d4b7aa55c6b5015b8aa442d0",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/same_func_asserted/same_func_asserted.qcp.c",
+      "qcp_sha256": "596e4eabc2173c5813b1aa788294763d21e89fac9c04829e68e8ab939fc0bc4e",
+      "functions": [
+        "deref",
+        "main"
+      ],
+      "expected": "positive",
+      "migration_notes": "Original trusted main checked as an explicit QCP client, including its CN proof assertions.",
+      "native_status": "COMPLETED",
+      "native_functions": {
+        "deref": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 1,
+          "manual": 0
+        },
+        "main": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 7,
+          "manual": 0
+        }
+      },
+      "native_unit_manual_obligations": 0,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "down_free_asserted",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/runtime-extras/down_malloc_up_free.c",
+      "original_sha256": "caeb8bd7c67fc823ee88a2de5eec008fd2232334f304303b0744e7cf37dac4cf",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/down_free_asserted/down_free_asserted.qcp.c",
+      "qcp_sha256": "5fd68de541b9252b50d9a5ef83da626e7e49aacf0923709f0483f020ab32a4c9",
+      "functions": [
+        "read_and_free",
+        "main"
+      ],
+      "expected": "positive",
+      "migration_notes": "Original trusted main checked as an explicit QCP client, including its CN proof assertions.",
+      "native_status": "TOOL_ERROR",
+      "native_functions": {},
+      "native_unit_manual_obligations": 0,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "up_free_asserted",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/runtime-extras/up_malloc_down_free.c",
+      "original_sha256": "7a3ca6eb1c28b3b0b46cbb3aff2a9858f4b376d52e09ae79fcc9f940b29299da",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/up_free_asserted/up_free_asserted.qcp.c",
+      "qcp_sha256": "8b4aebce8eb90b435ae775b2186a0651bbc2a1b00be4486e4496c5f24830f42f",
+      "functions": [
+        "mkref",
+        "main"
+      ],
+      "expected": "positive",
+      "migration_notes": "Original trusted main checked as an explicit QCP client, including its CN proof assertions.",
+      "native_status": "COMPLETED",
+      "native_functions": {
+        "mkref": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 2,
+          "manual": 0
+        },
+        "main": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 6,
+          "manual": 0
+        }
+      },
+      "native_unit_manual_obligations": 0,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "array_load_weak_client",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/array_load.broken.c",
+      "original_sha256": "e85439414c2ce0adee242cc8d7b05abe7a29ab37a95cba6856bb96d7205132f1",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/array_load_weak_client/array_load_weak_client.qcp.c",
+      "qcp_sha256": "f78ba1fe72ebdd4fb87741a8d4b6d7a0255bdfa90cea492bc5789f9562165ce6",
+      "functions": [
+        "read",
+        "main"
+      ],
+      "expected": "negative-client-spec-insufficient",
+      "migration_notes": "Original weak helper spec and all six original main assertions retained; C body is not claimed incorrect.",
+      "native_status": "TOOL_ERROR",
+      "native_functions": {
+        "read": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 2,
+          "manual": 0
+        }
+      },
+      "native_unit_manual_obligations": 0,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "array_load_strong_client",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/array_load.broken.c",
+      "original_sha256": "e85439414c2ce0adee242cc8d7b05abe7a29ab37a95cba6856bb96d7205132f1",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/array_load_strong_client/array_load_strong_client.qcp.c",
+      "qcp_sha256": "601105f7c1b14876ab6b5fda767efcfbbc6d738cda3c95d04a13c87d0f0aabec",
+      "functions": [
+        "read",
+        "main"
+      ],
+      "expected": "positive-corrected-spec",
+      "migration_notes": "Separate stronger QCP helper contract preserves contents and identifies return value; all original main assertions verified. Does not overwrite the weak historical contract.",
+      "native_status": "TOOL_ERROR",
+      "native_functions": {
+        "read": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 2,
+          "manual": 0
+        }
+      },
+      "native_unit_manual_obligations": 0,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "down_free_asserted_frame",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/runtime-extras/down_malloc_up_free.c",
+      "original_sha256": "caeb8bd7c67fc823ee88a2de5eec008fd2232334f304303b0744e7cf37dac4cf",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/down_free_asserted_frame/down_free_asserted_frame.qcp.c",
+      "qcp_sha256": "429a7dd21eee618cee03f05b33824bbab2ae3d5b0a3257dd9ecedb80c8e2e97f",
+      "functions": [
+        "read_and_free",
+        "main"
+      ],
+      "expected": "positive",
+      "migration_notes": "CN assertion translated with explicit live stack-variable resources; previous pure cut discarded pointer-variable storage and is archived as a tool failure.",
+      "native_status": "COMPLETED",
+      "native_functions": {
+        "read_and_free": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 2,
+          "manual": 0
+        },
+        "main": {
+          "status": "RESIDUAL",
+          "auto_solved": 4,
+          "manual": 2
+        }
+      },
+      "native_unit_manual_obligations": 2,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "array_client_region",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/array_load.broken.c",
+      "original_sha256": "e85439414c2ce0adee242cc8d7b05abe7a29ab37a95cba6856bb96d7205132f1",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/array_client_region/array_client_region.qcp.c",
+      "qcp_sha256": "3f5666557099c82f3a7f7ec49dea941cafe683e1303a842282d546976a730157",
+      "functions": [
+        "read",
+        "verify_main"
+      ],
+      "expected": "positive-corrected-client-region",
+      "migration_notes": "Original main body verified after extracting its local initialized array as an explicit fixed-region precondition; stronger helper return/content post and complete assertion frames. Physical element assertions follow the retained full constant array resource; source main itself remains a separate tool-gap case.",
+      "native_status": "TOOL_ERROR",
+      "native_functions": {
+        "read": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 2,
+          "manual": 0
+        }
+      },
+      "native_unit_manual_obligations": 0,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "down_free_asserted_live",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/runtime-extras/down_malloc_up_free.c",
+      "original_sha256": "caeb8bd7c67fc823ee88a2de5eec008fd2232334f304303b0744e7cf37dac4cf",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/down_free_asserted_live/down_free_asserted_live.qcp.c",
+      "qcp_sha256": "439fc5f952671082f42717d4737ded8623bd2a1b52d73555ec2011bea1d623af",
+      "functions": [
+        "read_and_free",
+        "main"
+      ],
+      "expected": "positive",
+      "migration_notes": "Live pointer variable retained in assertion by value snapshot; no duplicate explicit stack-cell resources.",
+      "native_status": "COMPLETED",
+      "native_functions": {
+        "read_and_free": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 2,
+          "manual": 0
+        },
+        "main": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 6,
+          "manual": 0
+        }
+      },
+      "native_unit_manual_obligations": 0,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "array_client_live",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/array_load.broken.c",
+      "original_sha256": "e85439414c2ce0adee242cc8d7b05abe7a29ab37a95cba6856bb96d7205132f1",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/array_client_live/array_client_live.qcp.c",
+      "qcp_sha256": "b564655252fc586758837e4b271c8463c63296f98dbcc1c86d7daf5efd7f6206",
+      "functions": [
+        "read",
+        "verify_main"
+      ],
+      "expected": "positive-corrected-client-region",
+      "migration_notes": "Explicit initialized region plus strengthened helper; live scalar/pointer snapshots preserve locals without duplicating ownership. Failed exact-main and assertion encodings remain archived.",
+      "native_status": "COMPLETED",
+      "native_functions": {
+        "read": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 2,
+          "manual": 0
+        },
+        "verify_main": {
+          "status": "RESIDUAL",
+          "auto_solved": 12,
+          "manual": 7
+        }
+      },
+      "native_unit_manual_obligations": 7,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "array_client_bound",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/array_load.broken.c",
+      "original_sha256": "e85439414c2ce0adee242cc8d7b05abe7a29ab37a95cba6856bb96d7205132f1",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/array_client_bound/array_client_bound.qcp.c",
+      "qcp_sha256": "b81e3635ab64c5e76ceb6978e7e6832d2521dc20dfe16c9b43c92522546fcf62",
+      "functions": [
+        "read",
+        "verify_main"
+      ],
+      "expected": "positive-corrected-client-region",
+      "migration_notes": "Entry pointer snapshot and concrete pointer-index aliases retained across QCP assertion cuts, with original constant-array contents and all six source assertions. Initialized region harness is separate from failed exact local-array main.",
+      "native_status": "COMPLETED",
+      "native_functions": {
+        "read": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 2,
+          "manual": 0
+        },
+        "verify_main": {
+          "status": "RESIDUAL",
+          "auto_solved": 13,
+          "manual": 6
+        }
+      },
+      "native_unit_manual_obligations": 6,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "array_main_cast",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/array_load.broken.c",
+      "original_sha256": "e85439414c2ce0adee242cc8d7b05abe7a29ab37a95cba6856bb96d7205132f1",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/array_main_cast/array_main_cast.qcp.c",
+      "qcp_sha256": "4db2e7679674e4fa189b915d267d053e1883dbb21980ed1301564bedaf7f5cce",
+      "functions": [
+        "read",
+        "main"
+      ],
+      "expected": "positive-corrected-spec",
+      "migration_notes": "Original local array, statements and assertions retained; only array-decay call argument replaced by equivalent (int*)&a to avoid unsimplified offset-zero precondition mismatch. Strong helper return/content spec; pointer aliases and complete live-local assertion footprints explicit.",
+      "native_status": "TOOL_ERROR",
+      "native_functions": {
+        "read": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 2,
+          "manual": 0
+        }
+      },
+      "native_unit_manual_obligations": 0,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    },
+    {
+      "id": "array_main_verified",
+      "original": "benchmark/selection/sources/fulminate-cn/src/examples/array_load.broken.c",
+      "original_sha256": "e85439414c2ce0adee242cc8d7b05abe7a29ab37a95cba6856bb96d7205132f1",
+      "qcp": "benchmark/selection/qcp-migration/supplemental/array_main_verified/array_main_verified.qcp.c",
+      "qcp_sha256": "ede5a0b94d9e12e5f6e1dfac6b185cbb41f503d5630d2fc5f16f004e6102e600",
+      "functions": [
+        "read",
+        "main"
+      ],
+      "expected": "positive-corrected-spec",
+      "migration_notes": "Exact local-array client retained with equivalent pointer casts at calls and typed pointer-index assertions; stronger helper spec and full live-local footprint. Original weak specification remains a separate historical variant.",
+      "native_status": "COMPLETED",
+      "native_functions": {
+        "read": {
+          "status": "AUTOMATICALLY_DISCHARGED",
+          "auto_solved": 2,
+          "manual": 0
+        },
+        "main": {
+          "status": "RESIDUAL",
+          "auto_solved": 22,
+          "manual": 3
+        }
+      },
+      "native_unit_manual_obligations": 3,
+      "native_binary_sha256": "6b42172d113ce0f0170b535439904ed64d9911875637e0c5f9356371566db995"
+    }
+  ],
+  "active_ids": [
+    "dll_add",
+    "dll_add_orig",
+    "dll_remove",
+    "dll_remove_orig",
+    "dll_singleton",
+    "array_main_verified",
+    "read_missing_post",
+    "bad_free",
+    "double_free",
+    "down_free_asserted_live",
+    "leaky_get",
+    "leaky_main",
+    "return_owned_local",
+    "same_func_asserted",
+    "runtime_swap_array",
+    "up_free_asserted",
+    "runway_snapshot",
+    "uninit_signed",
+    "uninit_incr",
+    "succ_attempt_leak",
+    "aliased_call_bad",
+    "transpose_historical"
+  ],
+  "summary": {
+    "original_inputs": 22,
+    "active_qcp_variants": 22,
+    "all_translation_variants": 37,
+    "verified_positive_variants": 12,
+    "expected_rejections": 5,
+    "formally_refuted_negative_variants": 5,
+    "normal_component_manuals_proved": 1,
+    "active_manual_vcs_kernel_checked": 12,
+    "all_archived_manual_vcs_kernel_checked": 18,
+    "negative_concrete_witnesses": 9,
+    "cn_paired_execution_complete": false
+  }
+}

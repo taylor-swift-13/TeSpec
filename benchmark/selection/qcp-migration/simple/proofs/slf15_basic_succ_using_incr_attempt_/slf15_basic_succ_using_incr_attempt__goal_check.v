@@ -1,0 +1,4 @@
+Require Import slf15_basic_succ_using_incr_attempt__goal slf15_basic_succ_using_incr_attempt__proof_manual.
+Module VC_Correctness : VC_Correct.
+Include slf15_basic_succ_using_incr_attempt__proof_manual.
+End VC_Correctness.

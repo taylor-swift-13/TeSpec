@@ -1,0 +1,129 @@
+{
+  "fileName": "/home/yangfp/teSpec-benchmark-tespec/benchmark/selection/qcp-migration/supplemental/aliased_call_bad/aliased_call_bad.qcp.c",
+  "functionName": "aliased_call",
+  "loaded_strategies": [
+    "common",
+    "string_literal"
+  ],
+  "result": "failed",
+  "verificationStatus": "failed",
+  "has_manual_obligations": true,
+  "manual_obligation_count": 1,
+  "manual_obligations": [
+    {
+      "kind": "return_checker_wit",
+      "functionName": "incr",
+      "fileName": "/home/yangfp/teSpec-benchmark-tespec/benchmark/selection/qcp-migration/supplemental/aliased_call_bad/aliased_call_bad.qcp.c",
+      "line": 2,
+      "column": 0,
+      "summary": "Cannot automatically prove that a return path satisfies the postcondition.",
+      "goal": "0 <= v &&\nv <= 4294967295 &&\n*p@pre == unsigned_last_nbits(v + 1, 32)\n\n|--\n*p@pre == (v + 1) %% 4294967296\n"
+    }
+  ],
+  "errormessage": {
+    "Main Error Message": "fatal error: Cannot derive the precondition of function incr_two for spec (default)",
+    "fileName": "/home/yangfp/teSpec-benchmark-tespec/benchmark/selection/qcp-migration/supplemental/aliased_call_bad/aliased_call_bad.qcp.c",
+    "line": 18,
+    "column": 14,
+    "additional_info": [
+      "Function call failed because the caller assertion does not entail the callee Require assertion after substituting actual arguments.\n",
+      "Function call argument bindings:\n  argument 1: p <- p_400_pre\n  argument 2: q <- p_400_pre\n",
+      "Callee precondition after substituting actual arguments:\nPROP[]\nLOCAL[]\nSEP[\n  store(p_400_pre, v_402_free, unsigned int) ]\n\n",
+      "Caller current assertion:\nPROP[\n  0 <= v_402_free;\n  v_402_free <= UINT_MAX ]\nLOCAL[\n  Temp p p_401_addr ]\nSEP[\n  store(p_401_addr, p_400_pre, unsigned int*);\n  store(p_400_pre, v_402_free, unsigned int) ]\n\n"
+    ]
+  },
+  "warningmessage": null,
+  "current_assertions": null,
+  "FunctionDerivation": null,
+  "WitnessList": [
+    {
+      "functionName": "incr",
+      "Witness": {
+        "safety_checker_wit": {
+          "total": 1,
+          "auto_solved": 1,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "entailment_checker_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "return_checker_wit": {
+          "total": 1,
+          "auto_solved": 0,
+          "manual": 1,
+          "manual_witness": [
+            {
+              "line": 2,
+              "column": 0,
+              "fileName": "/home/yangfp/teSpec-benchmark-tespec/benchmark/selection/qcp-migration/supplemental/aliased_call_bad/aliased_call_bad.qcp.c",
+              "goal": "0 <= v &&\nv <= 4294967295 &&\n*p@pre == unsigned_last_nbits(v + 1, 32)\n\n|--\n*p@pre == (v + 1) %% 4294967296\n"
+            }
+          ]
+        },
+        "partial_solve_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "which_implies_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "total_witness_count": {
+          "auto_solved": 1,
+          "manual": 1
+        }
+      }
+    },
+    {
+      "functionName": "incr_two",
+      "Witness": {
+        "safety_checker_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "entailment_checker_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "return_checker_wit": {
+          "total": 1,
+          "auto_solved": 1,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "partial_solve_wit": {
+          "total": 2,
+          "auto_solved": 2,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "which_implies_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "total_witness_count": {
+          "auto_solved": 3,
+          "manual": 0
+        }
+      }
+    },
+    {
+      "functionName": "aliased_call",
+      "Witness": null
+    }
+  ]
+}

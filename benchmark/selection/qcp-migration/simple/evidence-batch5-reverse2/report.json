@@ -1,0 +1,40 @@
+[
+  {
+    "status": "TOOL_ERROR",
+    "returncode": 1,
+    "command": [
+      "/home/yangfp/tespec-baselines/qcp-upstream/build/release/symexec",
+      "--input-file=/home/yangfp/teSpec/benchmark/selection/qcp-migration/simple/init_array_rev.qcp.c",
+      "--Json-output",
+      "--no-strategy-gen",
+      "--gen-and-backup",
+      "--coq-output-dir=/home/yangfp/teSpec/benchmark/selection/qcp-migration/simple/evidence-batch5-reverse2/init_array_rev/vc",
+      "--no-logic-path",
+      "--disable-solver-info",
+      "--no-exec-info",
+      "-I/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human"
+    ],
+    "source_sha256": "06874f9200c535d706e2815f4ea96fee077053b9c86c557cfe214c4addde32f8",
+    "log_sha256": "f6034ecd7925da4da019fd40f4bc48b51dbc9ad9bf7f049c97002ff555fd28fa",
+    "error": {
+      "Main Error Message": "fatal error: Partial Solve Invariant Error",
+      "fileName": "/home/yangfp/teSpec/benchmark/selection/qcp-migration/simple/init_array_rev.qcp.c",
+      "line": 9,
+      "column": 102,
+      "additional_info": [
+        "Partial Solve Failed for Partial Invariant\n",
+        "The left is \nEX j_382_addr \nPROP[\n  0 <= n_370_pre;\n  n_370_pre <= UINT_MAX;\n  0 < n_370_pre ]\nLOCAL[\n  Temp j j_382_addr;\n  Temp p p_374_addr;\n  Temp n n_371_addr ]\nSEP[\n  store(j_382_addr, 0, unsigned int);\n  store(p_374_addr, p_373_pre, signed I8*);\n  store(n_371_addr, n_370_pre, unsigned int);\n  CharArray.undef_full (p_373_pre, n_370_pre) ]\n\n",
+        "The right is \nEX j_383_value \nPROP[\n  0 <= j_383_value;\n  j_383_value <= n_370_pre ]\nLOCAL[\n  Temp j j_382_addr ]\nSEP[\n  store(j_382_addr, j_383_value, unsigned int);\n  CharArray.undef_full (p_373_pre, (n_370_pre - j_383_value));\n  CharArray.full (pointer_offset(p_373_pre, (n_370_pre - j_383_value), (Size_of signed I8), signed I8), j_383_value, repeat_Z(Z_1, 0, j_383_value)) ]\n\n",
+        "Here are the checked results:\n",
+        "Sep cannot be fully solved\n",
+        "The Sep is:\n",
+        "SEP[\n  CharArray.undef_full (p_373_pre, (n_370_pre - 0)) ]\n\n",
+        "=============================================================================================\n"
+      ]
+    },
+    "error_kind": null,
+    "functions": {},
+    "certificate": "NOT_CHECKED",
+    "unit_manual_obligations": 0
+  }
+]

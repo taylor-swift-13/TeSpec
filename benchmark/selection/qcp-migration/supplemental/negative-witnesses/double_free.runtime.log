@@ -1,0 +1,24 @@
+=================================================================
+==254168==ERROR: AddressSanitizer: attempting double-free on 0x502000000010 in thread T0:
+    #0 0x707728cb4537 in __interceptor_free ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:127
+    #1 0x5cf0897602e4 in cn_free_sized (/home/yangfp/teSpec-benchmark-tespec/benchmark/selection/qcp-migration/supplemental/negative-witnesses/double_free+0x12e4)
+    #2 0x5cf089760412 in main (/home/yangfp/teSpec-benchmark-tespec/benchmark/selection/qcp-migration/supplemental/negative-witnesses/double_free+0x1412)
+    #3 0x707728029d8f in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58
+    #4 0x707728029e3f in __libc_start_main_impl ../csu/libc-start.c:392
+    #5 0x5cf0897601c4 in _start (/home/yangfp/teSpec-benchmark-tespec/benchmark/selection/qcp-migration/supplemental/negative-witnesses/double_free+0x11c4)
+
+0x502000000010 is located 0 bytes inside of 4-byte region [0x502000000010,0x502000000014)
+freed by thread T0 here:
+    #0 0x707728cb4537 in __interceptor_free ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:127
+    #1 0x5cf0897602e4 in cn_free_sized (/home/yangfp/teSpec-benchmark-tespec/benchmark/selection/qcp-migration/supplemental/negative-witnesses/double_free+0x12e4)
+    #2 0x5cf089760401 in main (/home/yangfp/teSpec-benchmark-tespec/benchmark/selection/qcp-migration/supplemental/negative-witnesses/double_free+0x1401)
+    #3 0x707728029d8f in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58
+
+previously allocated by thread T0 here:
+    #0 0x707728cb4887 in __interceptor_malloc ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:145
+    #1 0x5cf0897602a4 in cn_malloc (/home/yangfp/teSpec-benchmark-tespec/benchmark/selection/qcp-migration/supplemental/negative-witnesses/double_free+0x12a4)
+    #2 0x5cf089760374 in main (/home/yangfp/teSpec-benchmark-tespec/benchmark/selection/qcp-migration/supplemental/negative-witnesses/double_free+0x1374)
+    #3 0x707728029d8f in __libc_start_call_main ../sysdeps/nptl/libc_start_call_main.h:58
+
+SUMMARY: AddressSanitizer: double-free ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:127 in __interceptor_free
+==254168==ABORTING

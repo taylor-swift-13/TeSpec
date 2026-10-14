@@ -30,6 +30,11 @@
       "structures": 1,
       "trees": 4
     },
+    "cn_supplemental_qcp_outcomes": {
+      "EXPECTED_REJECTION": 5,
+      "REFUTED_ORIGINAL_MANUAL_VC": 5,
+      "VERIFIED_AUTOMATIC_PLUS_MANUAL": 12
+    },
     "cn_original_revision_paired_replay_complete": false
   },
   "programs": [
@@ -49,13 +54,48 @@
       },
       "upstream_path": "src/examples/3.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/3.qcp.c",
+          "sha256": "a27b2604e6641f49341c1f7cd7cb7a1617b6188f019b4486efe1426b75d4ce4c"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
+        }
+      ],
+      "migration_targets": {
+        "zero": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 0,
+      "prepared_qcp_input_count": 1,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/3/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/3/job.json",
+        "count": 1,
+        "status": "prepared_not_replayed",
+        "binding_scope": "target function; original mains excluded"
+      },
+      "ownership_profile": "typed cells",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 2,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/Dbl_Linked_List/add.c",
@@ -73,14 +113,42 @@
       },
       "upstream_path": "src/examples/Dbl_Linked_List/add.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "supplemental-active-QCP-variant;normalizations-and-contract-changes-explicit",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;CN-paired-execution-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces.",
-        "Whole-program replay needs CN allocation/free runtime integration and lifecycle semantics; allocation-free target functions can be evaluated separately."
+        "Fixed original CN/teSpec matched-input replay is not complete."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/registry.json",
+          "sha256": "c8ce47060dadc17ba60c3ba8ca35df4261ad8e4a2618dafff089ec6f1e8e2967"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/dll_add/dll_add.qcp.c",
+          "sha256": "ca69c364e8e3c06211efe51bdbaec81158a82713ce57e8715f1a024d9a708523"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/dll_add/native-report.json",
+          "sha256": "34312bc16c8d904e94fc5f226f2a2b24d5ee626a3bdeefec1317f81be9542999"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/manual-proof-receipts.json",
+          "sha256": "53f3d9aa76c38d2e4b8596040fcde33fa0a1c79908334965ab95c48fb43bbd23"
+        }
+      ],
+      "migration_targets": {
+        "add": "MANUAL_PROVED"
+      },
+      "unit_manual_obligations": 1,
+      "qcp_verification": {
+        "status": "VERIFIED_AUTOMATIC_PLUS_MANUAL",
+        "scope": "All selected targets in this active QCP variant; external contracts assumed."
+      },
+      "manual_verification": {
+        "status": "manual-kernel-checked",
+        "vc_count": 1
+      }
     },
     {
       "id": "fulminate-cn/Dbl_Linked_List/add_orig.broken.c",
@@ -98,15 +166,43 @@
       },
       "upstream_path": "src/examples/Dbl_Linked_List/add_orig.broken.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "supplemental-active-QCP-variant;normalizations-and-contract-changes-explicit",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;CN-paired-execution-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces.",
-        "Whole-program replay needs CN allocation/free runtime integration and lifecycle semantics; allocation-free target functions can be evaluated separately.",
-        "Establish the violated obligation and original driver witness before assigning a negative label."
+        "Fixed original CN/teSpec matched-input replay is not complete."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/registry.json",
+          "sha256": "c8ce47060dadc17ba60c3ba8ca35df4261ad8e4a2618dafff089ec6f1e8e2967"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/dll_add_orig/dll_add_orig.qcp.c",
+          "sha256": "ca69c364e8e3c06211efe51bdbaec81158a82713ce57e8715f1a024d9a708523"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/dll_add_orig/native-report.json",
+          "sha256": "cd47e3aae1c1279e748c22bd556ea063ae9508e05e85716dcc28222d9d0cf0c6"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/manual-proof-receipts.json",
+          "sha256": "53f3d9aa76c38d2e4b8596040fcde33fa0a1c79908334965ab95c48fb43bbd23"
+        }
+      ],
+      "migration_targets": {
+        "add": "MANUAL_PROVED"
+      },
+      "unit_manual_obligations": 1,
+      "qcp_verification": {
+        "status": "VERIFIED_AUTOMATIC_PLUS_MANUAL",
+        "scope": "All selected targets in this active QCP variant; external contracts assumed."
+      },
+      "manual_verification": {
+        "status": "manual-kernel-checked",
+        "vc_count": 1
+      },
+      "spec_correspondence": "Original file has no function contract; QCP contract supplied explicitly from corresponding annotated twin; C bodies identical."
     },
     {
       "id": "fulminate-cn/Dbl_Linked_List/remove.c",
@@ -124,14 +220,42 @@
       },
       "upstream_path": "src/examples/Dbl_Linked_List/remove.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "supplemental-active-QCP-variant;normalizations-and-contract-changes-explicit",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;CN-paired-execution-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces.",
-        "Whole-program replay needs CN allocation/free runtime integration and lifecycle semantics; allocation-free target functions can be evaluated separately."
+        "Fixed original CN/teSpec matched-input replay is not complete."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/registry.json",
+          "sha256": "c8ce47060dadc17ba60c3ba8ca35df4261ad8e4a2618dafff089ec6f1e8e2967"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/dll_remove/dll_remove.qcp.c",
+          "sha256": "39de642df59971ac1570901f2f95824b45ab608b194ff4f163e11e7cbf64348f"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/dll_remove/native-report.json",
+          "sha256": "d4e0ce071745d27578298d53877803fe0bfe9c37a9e717a780f3c64207a28115"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/manual-proof-receipts.json",
+          "sha256": "53f3d9aa76c38d2e4b8596040fcde33fa0a1c79908334965ab95c48fb43bbd23"
+        }
+      ],
+      "migration_targets": {
+        "remove": "MANUAL_PROVED"
+      },
+      "unit_manual_obligations": 3,
+      "qcp_verification": {
+        "status": "VERIFIED_AUTOMATIC_PLUS_MANUAL",
+        "scope": "All selected targets in this active QCP variant; external contracts assumed."
+      },
+      "manual_verification": {
+        "status": "manual-kernel-checked",
+        "vc_count": 3
+      }
     },
     {
       "id": "fulminate-cn/Dbl_Linked_List/remove_orig.broken.c",
@@ -149,15 +273,43 @@
       },
       "upstream_path": "src/examples/Dbl_Linked_List/remove_orig.broken.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "supplemental-active-QCP-variant;normalizations-and-contract-changes-explicit",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;CN-paired-execution-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces.",
-        "Whole-program replay needs CN allocation/free runtime integration and lifecycle semantics; allocation-free target functions can be evaluated separately.",
-        "Establish the violated obligation and original driver witness before assigning a negative label."
+        "Fixed original CN/teSpec matched-input replay is not complete."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/registry.json",
+          "sha256": "c8ce47060dadc17ba60c3ba8ca35df4261ad8e4a2618dafff089ec6f1e8e2967"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/dll_remove_orig/dll_remove_orig.qcp.c",
+          "sha256": "39de642df59971ac1570901f2f95824b45ab608b194ff4f163e11e7cbf64348f"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/dll_remove_orig/native-report.json",
+          "sha256": "3bb30354cf53ff7f6af5b52ede1f1f4315d5d09599435817b6faf93e459df997"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/manual-proof-receipts.json",
+          "sha256": "53f3d9aa76c38d2e4b8596040fcde33fa0a1c79908334965ab95c48fb43bbd23"
+        }
+      ],
+      "migration_targets": {
+        "remove": "MANUAL_PROVED"
+      },
+      "unit_manual_obligations": 3,
+      "qcp_verification": {
+        "status": "VERIFIED_AUTOMATIC_PLUS_MANUAL",
+        "scope": "All selected targets in this active QCP variant; external contracts assumed."
+      },
+      "manual_verification": {
+        "status": "manual-kernel-checked",
+        "vc_count": 3
+      },
+      "spec_correspondence": "Original file has no function contract; QCP contract supplied explicitly from corresponding annotated twin; C bodies identical."
     },
     {
       "id": "fulminate-cn/Dbl_Linked_List/singleton.c",
@@ -175,14 +327,34 @@
       },
       "upstream_path": "src/examples/Dbl_Linked_List/singleton.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "supplemental-active-QCP-variant;normalizations-and-contract-changes-explicit",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;CN-paired-execution-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces.",
-        "Whole-program replay needs CN allocation/free runtime integration and lifecycle semantics; allocation-free target functions can be evaluated separately."
+        "Fixed original CN/teSpec matched-input replay is not complete."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/registry.json",
+          "sha256": "c8ce47060dadc17ba60c3ba8ca35df4261ad8e4a2618dafff089ec6f1e8e2967"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/dll_singleton/dll_singleton.qcp.c",
+          "sha256": "8f229e47d6649f2a2eb844048f3a1ee244a7a494b9c7d7294296b6716fac0eb0"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/dll_singleton/native-report.json",
+          "sha256": "6d95348713b54fa3f1239200d44a9f3f7010ecfaa3556e5367517099cebf0c76"
+        }
+      ],
+      "migration_targets": {
+        "singleton": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 0,
+      "qcp_verification": {
+        "status": "VERIFIED_AUTOMATIC_PLUS_MANUAL",
+        "scope": "All selected targets in this active QCP variant; external contracts assumed."
+      }
     },
     {
       "id": "fulminate-cn/abs.c",
@@ -200,13 +372,40 @@
       },
       "upstream_path": "src/examples/abs.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending.",
+        "Native automatic results have not been independently kernel-checked."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/abs.qcp.c",
+          "sha256": "c6e1d6f95af325bd17c0cf844eba83c1d1fcafb6005c0d0a9671fd8469834ca3"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        }
+      ],
+      "migration_targets": {
+        "abs": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 0,
+      "prepared_qcp_input_count": 6,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/abs/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/abs/job.json",
+        "count": 6,
+        "status": "prepared_not_replayed",
+        "binding_scope": "function precondition; not original main or CN paired harness"
+      },
+      "ownership_profile": "typed cells"
     },
     {
       "id": "fulminate-cn/abs_mem.c",
@@ -224,13 +423,40 @@
       },
       "upstream_path": "src/examples/abs_mem.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending.",
+        "Native automatic results have not been independently kernel-checked."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/abs_mem.qcp.c",
+          "sha256": "e65b2638921bc5c296d11421f3753a8bae07be3f71f70418dcc177f6364cef9e"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        }
+      ],
+      "migration_targets": {
+        "abs_mem": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 0,
+      "prepared_qcp_input_count": 6,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/abs_mem/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/abs_mem/job.json",
+        "count": 6,
+        "status": "prepared_not_replayed",
+        "binding_scope": "function precondition; not original main or CN paired harness"
+      },
+      "ownership_profile": "typed cells"
     },
     {
       "id": "fulminate-cn/abs_mem_struct.c",
@@ -248,13 +474,42 @@
       },
       "upstream_path": "src/examples/abs_mem_struct.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending.",
+        "Native automatic results have not been independently kernel-checked.",
+        "typed fields; whole CN structure ownership correspondence pending"
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/abs_mem_struct.qcp.c",
+          "sha256": "74fd4027b01ad1c4ed9004b26abe663b639e95b966064736837467f4add41bfe"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        }
+      ],
+      "migration_targets": {
+        "abs_mem": "AUTOMATICALLY_DISCHARGED",
+        "abs_y": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 0,
+      "prepared_qcp_input_count": 4,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/abs_mem_struct/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/abs_mem_struct/job.json",
+        "count": 4,
+        "status": "prepared_not_replayed",
+        "binding_scope": "function precondition; not original main or CN paired harness"
+      },
+      "ownership_profile": "typed fields; whole CN structure ownership correspondence pending"
     },
     {
       "id": "fulminate-cn/add_0.c",
@@ -272,13 +527,40 @@
       },
       "upstream_path": "src/examples/add_0.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending.",
+        "Native automatic results have not been independently kernel-checked."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/add_0.qcp.c",
+          "sha256": "6d10836cad8b10cca071c3039d331dab5facf1b215b3a8c3c5ec07336d522552"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        }
+      ],
+      "migration_targets": {
+        "add": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 0,
+      "prepared_qcp_input_count": 6,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/add_0/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/add_0/job.json",
+        "count": 6,
+        "status": "prepared_not_replayed",
+        "binding_scope": "function precondition; not original main or CN paired harness"
+      },
+      "ownership_profile": "typed cells"
     },
     {
       "id": "fulminate-cn/add_1.c",
@@ -296,13 +578,40 @@
       },
       "upstream_path": "src/examples/add_1.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending.",
+        "Native automatic results have not been independently kernel-checked."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/add_1.qcp.c",
+          "sha256": "3b1053f610fb86c8ce7bc829450166cfebd84810b9ea5610dfef59de64410f01"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        }
+      ],
+      "migration_targets": {
+        "add": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 0,
+      "prepared_qcp_input_count": 6,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/add_1/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/add_1/job.json",
+        "count": 6,
+        "status": "prepared_not_replayed",
+        "binding_scope": "function precondition; not original main or CN paired harness"
+      },
+      "ownership_profile": "typed cells"
     },
     {
       "id": "fulminate-cn/add_2.c",
@@ -320,13 +629,40 @@
       },
       "upstream_path": "src/examples/add_2.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending.",
+        "Native automatic results have not been independently kernel-checked."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/add_2.qcp.c",
+          "sha256": "3b1053f610fb86c8ce7bc829450166cfebd84810b9ea5610dfef59de64410f01"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        }
+      ],
+      "migration_targets": {
+        "add": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 0,
+      "prepared_qcp_input_count": 6,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/add_2/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/add_2/job.json",
+        "count": 6,
+        "status": "prepared_not_replayed",
+        "binding_scope": "function precondition; not original main or CN paired harness"
+      },
+      "ownership_profile": "typed cells"
     },
     {
       "id": "fulminate-cn/add_read.c",
@@ -344,13 +680,48 @@
       },
       "upstream_path": "src/examples/add_read.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/add_read.qcp.c",
+          "sha256": "c018f56b16c92d5c0f4b90a8ae2e5ad68e6f41f191fb80df43446916b4a42f0c"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
+        }
+      ],
+      "migration_targets": {
+        "add": "RESIDUAL"
+      },
+      "unit_manual_obligations": 1,
+      "prepared_qcp_input_count": 6,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/add_read/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/add_read/job.json",
+        "count": 6,
+        "status": "prepared_not_replayed",
+        "binding_scope": "function precondition; not original main or CN paired harness"
+      },
+      "ownership_profile": "typed cells",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 1,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/add_two_array.c",
@@ -368,13 +739,43 @@
       },
       "upstream_path": "src/examples/add_two_array.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending.",
+        "typed unsigned array; CN map/list correspondence pending"
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/add_two_array.qcp.c",
+          "sha256": "5736a18fda591af6509ccb5d5b636d01b3dcb1e16fcc251d24eb04365a436f20"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
+        }
+      ],
+      "migration_targets": {
+        "array_read_two": "RESIDUAL"
+      },
+      "unit_manual_obligations": 1,
+      "prepared_qcp_input_count": 0,
+      "input_preparation": {},
+      "ownership_profile": "typed unsigned array; CN map/list correspondence pending",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 3,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/array_load.broken.c",
@@ -392,14 +793,48 @@
       },
       "upstream_path": "src/examples/array_load.broken.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "supplemental-active-QCP-variant;normalizations-and-contract-changes-explicit",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;CN-paired-execution-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces.",
-        "Establish the violated obligation and original driver witness before assigning a negative label."
+        "Fixed original CN/teSpec matched-input replay is not complete."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/registry.json",
+          "sha256": "c8ce47060dadc17ba60c3ba8ca35df4261ad8e4a2618dafff089ec6f1e8e2967"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/array_main_verified/array_main_verified.qcp.c",
+          "sha256": "ede5a0b94d9e12e5f6e1dfac6b185cbb41f503d5630d2fc5f16f004e6102e600"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/array_main_verified/native-report.json",
+          "sha256": "da0843d0b6ddf07d455834937142613cb3a4312b279550f12c312fbfa86b5800"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/manual-proof-receipts.json",
+          "sha256": "53f3d9aa76c38d2e4b8596040fcde33fa0a1c79908334965ab95c48fb43bbd23"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/array-client-normalization/report.json",
+          "sha256": "0f9b10f4d547dbd4ef79dea915989364fa2cc883194fea7465cab5452250cd33"
+        }
+      ],
+      "migration_targets": {
+        "read": "AUTOMATICALLY_DISCHARGED",
+        "main": "MANUAL_PROVED"
+      },
+      "unit_manual_obligations": 3,
+      "qcp_verification": {
+        "status": "VERIFIED_AUTOMATIC_PLUS_MANUAL",
+        "scope": "All selected targets in this active QCP variant; external contracts assumed."
+      },
+      "manual_verification": {
+        "status": "manual-kernel-checked",
+        "vc_count": 3
+      },
+      "normalization": "Only equivalent array-base casts in calls; original local array and client control flow retained. Weak helper contract strengthened to preserve contents and identify returned element."
     },
     {
       "id": "fulminate-cn/array_load.c",
@@ -417,13 +852,49 @@
       },
       "upstream_path": "src/examples/array_load.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending.",
+        "typed finite int array; CN index-map/list correspondence pending"
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/array_load.qcp.c",
+          "sha256": "310a3d1747f12d6401814174fc148238e1c74b875e75fadb2d412d9264934495"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
+        }
+      ],
+      "migration_targets": {
+        "read": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 0,
+      "prepared_qcp_input_count": 7,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/array_load/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/array_load/job.json",
+        "count": 7,
+        "status": "prepared_not_replayed",
+        "binding_scope": "target function; original mains excluded"
+      },
+      "ownership_profile": "typed finite int array; CN index-map/list correspondence pending",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 2,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/array_load2.c",
@@ -441,13 +912,49 @@
       },
       "upstream_path": "src/examples/array_load2.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending.",
+        "typed finite int array; CN index-map/list correspondence pending"
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/array_load2.qcp.c",
+          "sha256": "d417c38324f31dcc0cc8cd782f5ee6e019bdd494f20d1951d85eed4322b38b1d"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
+        }
+      ],
+      "migration_targets": {
+        "read": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 0,
+      "prepared_qcp_input_count": 7,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/array_load2/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/array_load2/job.json",
+        "count": 7,
+        "status": "prepared_not_replayed",
+        "binding_scope": "target function; original mains excluded"
+      },
+      "ownership_profile": "typed finite int array; CN index-map/list correspondence pending",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 2,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/bcp_framerule.c",
@@ -465,13 +972,43 @@
       },
       "upstream_path": "src/examples/bcp_framerule.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/bcp_framerule.qcp.c",
+          "sha256": "a65e4acfd79b054f256bb7ac89c56bd8a9dbba6d187f514a84bcc2b92eed1abd"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
+        }
+      ],
+      "migration_targets": {
+        "incr_first": "RESIDUAL",
+        "incr_first_frame": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 1,
+      "prepared_qcp_input_count": 0,
+      "input_preparation": {},
+      "ownership_profile": "typed cells",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 5,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/const_example.c",
@@ -489,13 +1026,48 @@
       },
       "upstream_path": "src/examples/const_example.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/const_example.qcp.c",
+          "sha256": "c09722062f76f64026da6de2a9e0f61f31c300103495e81329d113fe652f6cd7"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
+        }
+      ],
+      "migration_targets": {
+        "foo": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 0,
+      "prepared_qcp_input_count": 5,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/const_example/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/const_example/job.json",
+        "count": 5,
+        "status": "prepared_not_replayed",
+        "binding_scope": "target function; original mains excluded"
+      },
+      "ownership_profile": "typed cells",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 2,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/const_example_lessgood.c",
@@ -513,13 +1085,42 @@
       },
       "upstream_path": "src/examples/const_example_lessgood.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/const_example_lessgood.qcp.c",
+          "sha256": "2f8562baae6d71cbd3ef5ae14cd3950615bb5ebdca6d2c6ad6db16aee28cdf84"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
+        }
+      ],
+      "migration_targets": {
+        "main": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 0,
+      "prepared_qcp_input_count": 0,
+      "input_preparation": {},
+      "ownership_profile": "emp",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 3,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/init_array.c",
@@ -537,13 +1138,40 @@
       },
       "upstream_path": "src/examples/init_array.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending.",
+        "Native automatic results have not been independently kernel-checked.",
+        "typed char array; CN byte-array map/list correspondence pending"
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/init_array.qcp.c",
+          "sha256": "09ff1e3f190f0fff7ac490c02f171978a04cfb1a26cf5a25deb71f4d7d99036f"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        }
+      ],
+      "migration_targets": {
+        "init_array": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 0,
+      "prepared_qcp_input_count": 5,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/init_array/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/init_array/job.json",
+        "count": 5,
+        "status": "prepared_not_replayed"
+      },
+      "ownership_profile": "typed char array; CN byte-array map/list correspondence pending"
     },
     {
       "id": "fulminate-cn/init_array2.c",
@@ -561,13 +1189,48 @@
       },
       "upstream_path": "src/examples/init_array2.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending.",
+        "typed char array; CN byte-array map/list correspondence pending"
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/init_array2.qcp.c",
+          "sha256": "2ec41f4ccb0e80bbe3cbdb5fffc641eae2568faf5c81dc958d09ecb9e95d2959"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
+        }
+      ],
+      "migration_targets": {
+        "init_array2": "RESIDUAL"
+      },
+      "unit_manual_obligations": 3,
+      "prepared_qcp_input_count": 5,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/init_array2/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/init_array2/job.json",
+        "count": 5,
+        "status": "prepared_not_replayed"
+      },
+      "ownership_profile": "typed char array; CN byte-array map/list correspondence pending",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 6,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/init_array_rev.c",
@@ -585,13 +1248,48 @@
       },
       "upstream_path": "src/examples/init_array_rev.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending.",
+        "typed char array; CN byte-array map/list correspondence pending"
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/init_array_rev.qcp.c",
+          "sha256": "b7a4a77f7787fb355002d1237dedbbcf33ec6337121590239bf6ea8f63f7feb4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
+        }
+      ],
+      "migration_targets": {
+        "init_array2": "RESIDUAL"
+      },
+      "unit_manual_obligations": 3,
+      "prepared_qcp_input_count": 4,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/init_array_rev/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/init_array_rev/job.json",
+        "count": 4,
+        "status": "prepared_not_replayed"
+      },
+      "ownership_profile": "typed char array; CN byte-array map/list correspondence pending",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 7,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/init_point.c",
@@ -609,13 +1307,42 @@
       },
       "upstream_path": "src/examples/init_point.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending.",
+        "Native automatic results have not been independently kernel-checked.",
+        "typed fields; whole CN structure ownership correspondence pending"
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/init_point.qcp.c",
+          "sha256": "476459c98ec1bb03018903c1f22e3b768f12e1795386d01f9803b74dcd028da2"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        }
+      ],
+      "migration_targets": {
+        "zero": "AUTOMATICALLY_DISCHARGED",
+        "init_point": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 0,
+      "prepared_qcp_input_count": 1,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/init_point/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/init_point/job.json",
+        "count": 1,
+        "status": "prepared_not_replayed",
+        "binding_scope": "function precondition; not original main or CN paired harness"
+      },
+      "ownership_profile": "typed fields; whole CN structure ownership correspondence pending"
     },
     {
       "id": "fulminate-cn/list_all.c",
@@ -633,39 +1360,64 @@
       },
       "upstream_path": "src/examples/list_all.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "function-subset-migrated",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "native-qcp-and-tespec-run; CN-pairing-pending",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Finish remaining functions and original CN/QCP pairing; this is function-subset coverage.",
-        "Native automatic obligations are not kernel-certified; inspect helper and target residuals separately.",
-        "teSpec execution gaps and proof obligations are recorded per input in the migration report."
+        "Original trusted main and matched CN/teSpec input replay pending.",
+        "typed list/stack; whole original CN object ownership correspondence pending"
       ],
       "evidence": [
         {
-          "path": "benchmark/selection/qcp-migration/manifest.json",
-          "sha256": "cf50b54cfd4509fbfbcaf9df5e7ca9458e41829cf0535e16f054ec114ac45c3c"
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
         },
         {
-          "path": "benchmark/selection/qcp-migration/evidence/20261014/report.json",
-          "sha256": "680c00b3aaa7f7cb9036098fecb8f182ff3b2a7a948f94b9a2e05f09a3cb163a"
+          "path": "benchmark/selection/qcp-migration/simple/advanced/list_all.qcp.c",
+          "sha256": "11aff98e8bef27844c5133a8e882f2307a0b4e52c6ef30dd3124b7b520d8ed44"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
         }
       ],
       "qcp_bind_count": 28,
       "migration_targets": {
+        "IntList_nil": "AUTOMATICALLY_DISCHARGED",
         "IntList_cons": "AUTOMATICALLY_DISCHARGED",
         "IntList_copy": "RESIDUAL",
         "IntList_free_list": "RESIDUAL",
         "IntList_length": "RESIDUAL",
+        "IntList_rev_aux": "RESIDUAL",
         "IntList_rev": "RESIDUAL",
         "IntList_append": "RESIDUAL",
-        "IntList_append2": "RESIDUAL"
+        "IntList_append2": "RESIDUAL",
+        "IntList_rev_loop": "RESIDUAL",
+        "IntList_split": "RESIDUAL",
+        "IntList_merge": "RESIDUAL",
+        "IntList_mergesort": "RESIDUAL",
+        "refUnsignedInt": "AUTOMATICALLY_DISCHARGED",
+        "IntList_length_acc_aux": "RESIDUAL",
+        "IntList_length_acc": "RESIDUAL"
       },
       "migration_notes": [
         "Function subset; sorting, iterative reverse and the original main remain separate obligations.",
         "Bijective layout rename: int_list/head/tail to QCP list/data/next.",
         "CN IntList is QCP sll; CN sequence constructors are Coq list constructors."
-      ]
+      ],
+      "unit_manual_obligations": 27,
+      "prepared_qcp_input_count": 0,
+      "input_preparation": {},
+      "ownership_profile": "typed list/stack; whole original CN object ownership correspondence pending",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 105,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/mergesort.c",
@@ -683,14 +1435,47 @@
       },
       "upstream_path": "src/examples/mergesort.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces.",
-        "Whole-program replay needs CN allocation/free runtime integration and lifecycle semantics; allocation-free target functions can be evaluated separately."
+        "Original trusted main and matched CN/teSpec input replay pending.",
+        "typed linked list and by-value list-pair resource; CN object/list correspondence pending"
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/merge-sort/mergesort.qcp.c",
+          "sha256": "480d4273c94f321477a8db14aeec507b9b2f3a167e20bbbd0a49698f11bd4bd1"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
+        }
+      ],
+      "migration_targets": {
+        "IntList_nil": "AUTOMATICALLY_DISCHARGED",
+        "IntList_cons": "AUTOMATICALLY_DISCHARGED",
+        "IntList_split": "RESIDUAL",
+        "IntList_merge": "RESIDUAL",
+        "IntList_mergesort": "RESIDUAL"
+      },
+      "unit_manual_obligations": 10,
+      "prepared_qcp_input_count": 0,
+      "input_preparation": {},
+      "ownership_profile": "typed linked list and by-value list-pair resource; CN object/list correspondence pending",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 40,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/queue_all.c",
@@ -708,13 +1493,14 @@
       },
       "upstream_path": "src/examples/queue_all.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "function-subset-migrated",
+      "qcp_translation": "corrected-QCP-spec;original-CN-contract-refuted",
       "paired_input_count": 0,
       "replay_status": "native-qcp-and-tespec-run; CN-pairing-pending",
       "blockers": [
         "Finish remaining functions and original CN/QCP pairing; this is function-subset coverage.",
         "Native automatic obligations are not kernel-certified; inspect helper and target residuals separately.",
-        "teSpec execution gaps and proof obligations are recorded per input in the migration report."
+        "teSpec execution gaps and proof obligations are recorded per input in the migration report.",
+        "Original CN contract remains refuted; verified QCP variant intentionally corrects its specification."
       ],
       "evidence": [
         {
@@ -724,19 +1510,67 @@
         {
           "path": "benchmark/selection/qcp-migration/evidence/20261014/report.json",
           "sha256": "680c00b3aaa7f7cb9036098fecb8f182ff3b2a7a948f94b9a2e05f09a3cb163a"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/advanced/queue-guarded/finding.json",
+          "sha256": "70318e9e8ff07cabcdc7f389557fd7a4a1f08d32f559cfe51a9b043a4b38fee8"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/advanced/queue-corrected/queue_corrected.qcp.c",
+          "sha256": "774d9e08f9926ca23e7313b065651c86f7296bb10b9ff268b3dea3d920947df6"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/advanced/queue-corrected/verification-receipt.json",
+          "sha256": "bcf63a8266b87429fee6c0b10ee14d63513bbd35cc457f8877ba030f5438eb41"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/advanced/queue-corrected/queue-spec-finding.md",
+          "sha256": "0e435a26f227ca2c470cbab38cf40e0809dbe5f028b1c49f767cea34fc61d60f"
         }
       ],
       "qcp_bind_count": 9,
       "migration_targets": {
         "IntQueue_empty": "AUTOMATICALLY_DISCHARGED",
         "IntQueue_pop": "AUTOMATICALLY_DISCHARGED",
-        "IntQueue_push": "AUTOMATICALLY_DISCHARGED"
+        "IntQueue_push": "AUTOMATICALLY_DISCHARGED",
+        "push_induction": "MANUAL_PROVED",
+        "IntQueue_push_induction": "AUTOMATICALLY_DISCHARGED"
       },
       "migration_notes": [
         "IntQueuePtr and IntQueueFB become an explicit empty/nonempty disjunction using sllseg.",
         "The original trusted push_lemma remains a declared trusted lemma; its proof is not claimed.",
         "The alternate push_induction and original main remain separate obligations."
-      ]
+      ],
+      "source_contract_finding": {
+        "original": "benchmark/selection/sources/fulminate-cn/src/examples/queue_all.c",
+        "function": "push_induction",
+        "status": "original-contract-refuted-by-concrete-witness;QCP-residual",
+        "caller": "IntQueue_push_induction",
+        "qcp_run": "COMPLETED with 3 helper and 2 caller residual obligations",
+        "witness": "Distinct f,z,p: f.next=z, z.next=p, p.next=z. Before guarded Aux(f,p)=[1,2], after Aux(f,z)=[1], expected [1,2,3].",
+        "evidence": [
+          "advanced/queue-counterexample/report.json",
+          "advanced/queue-counterexample/push_induction_counterexample.c",
+          "advanced/queue-guarded/caller-report.json",
+          "advanced/queue-guarded/QueueGraphCounterexample.v",
+          "proofs/kernel-stack-guarded.log"
+        ],
+        "scope_limit": "Native C witness on 32/64-bit and Coq guarded logical graph witness; not a full QCP byte-heap SAT certificate. No contract strengthening or false assertion lemma was used to mark success."
+      },
+      "original_migration_targets": {
+        "IntQueue_empty": "AUTOMATICALLY_DISCHARGED",
+        "IntQueue_pop": "AUTOMATICALLY_DISCHARGED",
+        "IntQueue_push": "AUTOMATICALLY_DISCHARGED",
+        "push_induction": "RESIDUAL;original-contract-counterexample",
+        "IntQueue_push_induction": "RESIDUAL"
+      },
+      "qcp_verification": {
+        "status": "automatic-plus-manual-verified",
+        "variant": "corrected-QCP-spec",
+        "auto_vcs": 22,
+        "manual_vcs": 2,
+        "spec_correspondence": "intentional standard-segment replacement; not original CN equivalence"
+      }
     },
     {
       "id": "fulminate-cn/read.broken.c",
@@ -754,14 +1588,58 @@
       },
       "upstream_path": "src/examples/read.broken.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "supplemental-active-QCP-variant;normalizations-and-contract-changes-explicit",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;CN-paired-execution-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces.",
-        "Establish the violated obligation and original driver witness before assigning a negative label."
+        "Fixed original CN/teSpec matched-input replay is not complete.",
+        "Expected negative outcome is retained; this input is not marked verified."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/registry.json",
+          "sha256": "c8ce47060dadc17ba60c3ba8ca35df4261ad8e4a2618dafff089ec6f1e8e2967"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/read_missing_post/read_missing_post.qcp.c",
+          "sha256": "5f0745ae2e1e60380a4b8f82d8ec954abc0d491c57944935d69cb49c438ccc0a"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/read_missing_post/native-report.json",
+          "sha256": "6504ad5dd77fadb20a81e9eeed649fd0161b362b6c3c70e56611e7ae77c37cb0"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/negative-proof-receipts.json",
+          "sha256": "292de16ef45f80d446f56b7bb6fd2fb4258fc97a6986088bddaeb7010fcaea29"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/negative-witnesses/report.json",
+          "sha256": "0aa0d7b42ea3d973a4c0ab69d6546b643f09305270134df8d284fa6a4b8e0544"
+        }
+      ],
+      "migration_targets": {
+        "read": "VC_REFUTED"
+      },
+      "unit_manual_obligations": 1,
+      "qcp_verification": {
+        "status": "REFUTED_ORIGINAL_MANUAL_VC",
+        "scope": "Negation of original generated manual VC, with a finite concrete QCP byte-heap witness. Return-owned-local theorem refutes its main return VC, not the separate bad-function lifetime VC."
+      },
+      "manual_refutation": {
+        "id": "read_missing_post",
+        "status": "REFUTED_ORIGINAL_MANUAL_VC",
+        "kernel_exit": 0,
+        "theorems": [
+          "read_missing_post_VC_refuted"
+        ],
+        "generated_goal_sha256": "49ea09caaedcf8019652d89f6c2036f89c2727b944a1030cd9ed6dedd47516ac",
+        "source_sha256": "5f0745ae2e1e60380a4b8f82d8ec954abc0d491c57944935d69cb49c438ccc0a",
+        "scope": "Negation of original generated manual VC, with a finite concrete QCP byte-heap witness. Return-owned-local theorem refutes its main return VC, not the separate bad-function lifetime VC.",
+        "proof_file": "negative-proofs/read_missing_post_refutation.v",
+        "proof_sha256": "8091420125eac909d6e2c338ebf178ebbb373c60cceb83a56a9a9e796aefd97b",
+        "assumptions_closed_under_global_context": true
+      },
+      "concrete_witness": "Original read body preserves allocated cell; resource-only empty post is not implemented by disposal. Concrete observation supporting the residual VC, not a Coq refutation of ownership semantics."
     },
     {
       "id": "fulminate-cn/read.c",
@@ -779,13 +1657,40 @@
       },
       "upstream_path": "src/examples/read.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending.",
+        "Native automatic results have not been independently kernel-checked."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/read.qcp.c",
+          "sha256": "da492a72f5083bc517fc68b842264434d7dcbd6361a522310571989b8acf0d31"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        }
+      ],
+      "migration_targets": {
+        "read": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 0,
+      "prepared_qcp_input_count": 6,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/read/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/read/job.json",
+        "count": 6,
+        "status": "prepared_not_replayed",
+        "binding_scope": "function precondition; not original main or CN paired harness"
+      },
+      "ownership_profile": "typed cells"
     },
     {
       "id": "fulminate-cn/read2.c",
@@ -803,13 +1708,40 @@
       },
       "upstream_path": "src/examples/read2.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending.",
+        "Native automatic results have not been independently kernel-checked."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/read2.qcp.c",
+          "sha256": "12b7b9308ca320855b72c4dabf2fc69ead4d9f32589284023e4be3846fe96d61"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        }
+      ],
+      "migration_targets": {
+        "read": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 0,
+      "prepared_qcp_input_count": 6,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/read2/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/read2/job.json",
+        "count": 6,
+        "status": "prepared_not_replayed",
+        "binding_scope": "function precondition; not original main or CN paired harness"
+      },
+      "ownership_profile": "typed cells"
     },
     {
       "id": "fulminate-cn/runtime-extras/bad_free.broken.c",
@@ -827,15 +1759,42 @@
       },
       "upstream_path": "src/examples/runtime-extras/bad_free.broken.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "supplemental-active-QCP-variant;normalizations-and-contract-changes-explicit",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;CN-paired-execution-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces.",
-        "Whole-program replay needs CN allocation/free runtime integration and lifecycle semantics; allocation-free target functions can be evaluated separately.",
-        "Establish the violated obligation and original driver witness before assigning a negative label."
+        "Fixed original CN/teSpec matched-input replay is not complete.",
+        "Expected negative outcome is retained; this input is not marked verified."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/registry.json",
+          "sha256": "c8ce47060dadc17ba60c3ba8ca35df4261ad8e4a2618dafff089ec6f1e8e2967"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/bad_free/bad_free.qcp.c",
+          "sha256": "cb114566e2b0eb2048914bfa1c5ad264a9aa81f32cfa085048554b65b7cb5a6e"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/bad_free/native-report.json",
+          "sha256": "3d54c1b490129a66a8ca9be179379b90dfd7b995cd30af15aaa99d41ca072b9b"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/negative-witnesses/report.json",
+          "sha256": "0aa0d7b42ea3d973a4c0ab69d6546b643f09305270134df8d284fa6a4b8e0544"
+        }
+      ],
+      "migration_targets": {
+        "malloc_int": "AUTOMATICALLY_DISCHARGED",
+        "bad_free": "EXPECTED_REJECTION",
+        "main": "NOT_EXECUTED_AFTER_REJECTION"
+      },
+      "unit_manual_obligations": 0,
+      "qcp_verification": {
+        "status": "EXPECTED_REJECTION",
+        "scope": "QCP rejected the expected unsafe access or impossible call precondition; rejection is retained, not a success certificate."
+      },
+      "concrete_witness": "Original subject body with concrete sized allocator/free implementation. Double-free uses original main; bad_free receives invalid pointer permitted by its empty Require. Sanitizer witness, not a Coq VC refutation."
     },
     {
       "id": "fulminate-cn/runtime-extras/double_free.broken.c",
@@ -853,33 +1812,47 @@
       },
       "upstream_path": "src/examples/runtime-extras/double_free.broken.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "function-subset-migrated",
+      "qcp_translation": "supplemental-active-QCP-variant;normalizations-and-contract-changes-explicit",
       "paired_input_count": 0,
-      "replay_status": "native-qcp-and-tespec-run; CN-pairing-pending",
+      "replay_status": "native-qcp-run;CN-paired-execution-pending",
       "blockers": [
-        "Finish remaining functions and original CN/QCP pairing; this is function-subset coverage.",
-        "Native automatic obligations are not kernel-certified; inspect helper and target residuals separately.",
-        "teSpec execution gaps and proof obligations are recorded per input in the migration report."
+        "Fixed original CN/teSpec matched-input replay is not complete.",
+        "Expected negative outcome is retained; this input is not marked verified."
       ],
       "evidence": [
         {
-          "path": "benchmark/selection/qcp-migration/manifest.json",
-          "sha256": "cf50b54cfd4509fbfbcaf9df5e7ca9458e41829cf0535e16f054ec114ac45c3c"
+          "path": "benchmark/selection/qcp-migration/supplemental/registry.json",
+          "sha256": "c8ce47060dadc17ba60c3ba8ca35df4261ad8e4a2618dafff089ec6f1e8e2967"
         },
         {
-          "path": "benchmark/selection/qcp-migration/evidence/20261014/report.json",
-          "sha256": "680c00b3aaa7f7cb9036098fecb8f182ff3b2a7a948f94b9a2e05f09a3cb163a"
+          "path": "benchmark/selection/qcp-migration/supplemental/double_free/double_free.qcp.c",
+          "sha256": "45f9f4ea9a2e0cbc50db674422f769c2a045fee240ba283d3642c2987e2de8b6"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/double_free/native-report.json",
+          "sha256": "1fcb0181b8d4fa666923c93748e9d6318a054d79cc71b2e2edd61f66effa2dc6"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/negative-witnesses/report.json",
+          "sha256": "0aa0d7b42ea3d973a4c0ab69d6546b643f09305270134df8d284fa6a4b8e0544"
         }
       ],
       "qcp_bind_count": 1,
       "migration_targets": {
-        "main": "TOOL_ERROR"
+        "deref": "AUTOMATICALLY_DISCHARGED",
+        "main": "EXPECTED_REJECTION"
       },
       "migration_notes": [
         "Original trusted driver is checked here, with only unsigned-int-sized allocation admitted.",
         "Paired positive/negative lifetime control: the negative driver performs a second free.",
         "The C99 implicit return 0 at the end of main is made explicit for native QCP."
-      ]
+      ],
+      "unit_manual_obligations": 0,
+      "qcp_verification": {
+        "status": "EXPECTED_REJECTION",
+        "scope": "QCP rejected the expected unsafe access or impossible call precondition; rejection is retained, not a success certificate."
+      },
+      "concrete_witness": "Original subject body with concrete sized allocator/free implementation. Double-free uses original main; bad_free receives invalid pointer permitted by its empty Require. Sanitizer witness, not a Coq VC refutation."
     },
     {
       "id": "fulminate-cn/runtime-extras/down_malloc_up_free.c",
@@ -897,14 +1870,35 @@
       },
       "upstream_path": "src/examples/runtime-extras/down_malloc_up_free.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "supplemental-active-QCP-variant;normalizations-and-contract-changes-explicit",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;CN-paired-execution-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces.",
-        "Whole-program replay needs CN allocation/free runtime integration and lifecycle semantics; allocation-free target functions can be evaluated separately."
+        "Fixed original CN/teSpec matched-input replay is not complete."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/registry.json",
+          "sha256": "c8ce47060dadc17ba60c3ba8ca35df4261ad8e4a2618dafff089ec6f1e8e2967"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/down_free_asserted_live/down_free_asserted_live.qcp.c",
+          "sha256": "439fc5f952671082f42717d4737ded8623bd2a1b52d73555ec2011bea1d623af"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/down_free_asserted_live/native-report.json",
+          "sha256": "2e9b1a565955acc0ffcd5a7b461f37145d8b396065dea5bc526b06daeb5b239e"
+        }
+      ],
+      "migration_targets": {
+        "read_and_free": "AUTOMATICALLY_DISCHARGED",
+        "main": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 0,
+      "qcp_verification": {
+        "status": "VERIFIED_AUTOMATIC_PLUS_MANUAL",
+        "scope": "All selected targets in this active QCP variant; external contracts assumed."
+      }
     },
     {
       "id": "fulminate-cn/runtime-extras/leaky.broken.c",
@@ -922,15 +1916,59 @@
       },
       "upstream_path": "src/examples/runtime-extras/leaky.broken.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "supplemental-active-QCP-variant;normalizations-and-contract-changes-explicit",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;CN-paired-execution-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces.",
-        "Whole-program replay needs CN allocation/free runtime integration and lifecycle semantics; allocation-free target functions can be evaluated separately.",
-        "Establish the violated obligation and original driver witness before assigning a negative label."
+        "Fixed original CN/teSpec matched-input replay is not complete.",
+        "Expected negative outcome is retained; this input is not marked verified."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/registry.json",
+          "sha256": "c8ce47060dadc17ba60c3ba8ca35df4261ad8e4a2618dafff089ec6f1e8e2967"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/leaky_get/leaky_get.qcp.c",
+          "sha256": "4a049171d762c76875ee1ba50c65313aad5e3605cecc1a8e5d093086a3a55616"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/leaky_get/native-report.json",
+          "sha256": "d47c5b55e44bf5d380a8c8e14297d0fbbe007ed7c365a82f32876fd39f223b22"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/negative-proof-receipts.json",
+          "sha256": "292de16ef45f80d446f56b7bb6fd2fb4258fc97a6986088bddaeb7010fcaea29"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/negative-witnesses/report.json",
+          "sha256": "0aa0d7b42ea3d973a4c0ab69d6546b643f09305270134df8d284fa6a4b8e0544"
+        }
+      ],
+      "migration_targets": {
+        "leaky_get": "VC_REFUTED",
+        "main": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 1,
+      "qcp_verification": {
+        "status": "REFUTED_ORIGINAL_MANUAL_VC",
+        "scope": "Negation of original generated manual VC, with a finite concrete QCP byte-heap witness. Return-owned-local theorem refutes its main return VC, not the separate bad-function lifetime VC."
+      },
+      "manual_refutation": {
+        "id": "leaky_get",
+        "status": "REFUTED_ORIGINAL_MANUAL_VC",
+        "kernel_exit": 0,
+        "theorems": [
+          "leaky_get_VC_refuted"
+        ],
+        "generated_goal_sha256": "31d4c739ff7451db76f5ce82fab3da219738e800f32b6c2bd4448c93e28bc3a8",
+        "source_sha256": "4a049171d762c76875ee1ba50c65313aad5e3605cecc1a8e5d093086a3a55616",
+        "scope": "Negation of original generated manual VC, with a finite concrete QCP byte-heap witness. Return-owned-local theorem refutes its main return VC, not the separate bad-function lifetime VC.",
+        "proof_file": "negative-proofs/leaky_get_refutation.v",
+        "proof_sha256": "d9a1b42d30bf09d4d314148cc2bef857fc48b8e6329d0729875f231a904e8b23",
+        "assumptions_closed_under_global_context": true
+      },
+      "concrete_witness": "Original C function bodies; allocation-accounting witness confirms one live allocation at subject return; cleanup is harness-only after observation. Not a Coq refutation of the complete generated VC."
     },
     {
       "id": "fulminate-cn/runtime-extras/leaky_main.c",
@@ -948,14 +1986,59 @@
       },
       "upstream_path": "src/examples/runtime-extras/leaky_main.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "supplemental-active-QCP-variant;normalizations-and-contract-changes-explicit",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;CN-paired-execution-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces.",
-        "Whole-program replay needs CN allocation/free runtime integration and lifecycle semantics; allocation-free target functions can be evaluated separately."
+        "Fixed original CN/teSpec matched-input replay is not complete.",
+        "Expected negative outcome is retained; this input is not marked verified."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/registry.json",
+          "sha256": "c8ce47060dadc17ba60c3ba8ca35df4261ad8e4a2618dafff089ec6f1e8e2967"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/leaky_main/leaky_main.qcp.c",
+          "sha256": "7f7cb696cd814fe6aad88ffdf16101f25cd9866eb2b91ab17d2a8126dafd0089"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/leaky_main/native-report.json",
+          "sha256": "3123f2ecf91e280253799574bf10bea2b3c4539cf873ba7a516fdb6688768e66"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/negative-proof-receipts.json",
+          "sha256": "292de16ef45f80d446f56b7bb6fd2fb4258fc97a6986088bddaeb7010fcaea29"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/negative-witnesses/report.json",
+          "sha256": "0aa0d7b42ea3d973a4c0ab69d6546b643f09305270134df8d284fa6a4b8e0544"
+        }
+      ],
+      "migration_targets": {
+        "mkref": "AUTOMATICALLY_DISCHARGED",
+        "main": "VC_REFUTED"
+      },
+      "unit_manual_obligations": 1,
+      "qcp_verification": {
+        "status": "REFUTED_ORIGINAL_MANUAL_VC",
+        "scope": "Negation of original generated manual VC, with a finite concrete QCP byte-heap witness. Return-owned-local theorem refutes its main return VC, not the separate bad-function lifetime VC."
+      },
+      "manual_refutation": {
+        "id": "leaky_main",
+        "status": "REFUTED_ORIGINAL_MANUAL_VC",
+        "kernel_exit": 0,
+        "theorems": [
+          "leaky_main_VC_refuted"
+        ],
+        "generated_goal_sha256": "c752cb0ca19980339484a2998c76aa1f556484e044f97455f2f3bc13fc2884ce",
+        "source_sha256": "7f7cb696cd814fe6aad88ffdf16101f25cd9866eb2b91ab17d2a8126dafd0089",
+        "scope": "Negation of original generated manual VC, with a finite concrete QCP byte-heap witness. Return-owned-local theorem refutes its main return VC, not the separate bad-function lifetime VC.",
+        "proof_file": "negative-proofs/leaky_main_refutation.v",
+        "proof_sha256": "cbf3b00e31db0fac4a83539a4f5984528bd35809689de04fd18b862c7b3f6f8b",
+        "assumptions_closed_under_global_context": true
+      },
+      "concrete_witness": "Original C function bodies; allocation-accounting witness confirms one live allocation at subject return; cleanup is harness-only after observation. Not a Coq refutation of the complete generated VC."
     },
     {
       "id": "fulminate-cn/runtime-extras/return_owned_local.broken.c",
@@ -973,15 +2056,61 @@
       },
       "upstream_path": "src/examples/runtime-extras/return_owned_local.broken.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "supplemental-active-QCP-variant;normalizations-and-contract-changes-explicit",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;CN-paired-execution-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces.",
-        "Whole-program replay needs CN allocation/free runtime integration and lifecycle semantics; allocation-free target functions can be evaluated separately.",
-        "Establish the violated obligation and original driver witness before assigning a negative label."
+        "Fixed original CN/teSpec matched-input replay is not complete.",
+        "Expected negative outcome is retained; this input is not marked verified."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/registry.json",
+          "sha256": "c8ce47060dadc17ba60c3ba8ca35df4261ad8e4a2618dafff089ec6f1e8e2967"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/return_owned_local/return_owned_local.qcp.c",
+          "sha256": "9f26a4f96b4ba72eb014fa799f2a31439a59bc63ba03e8a55fae24a3f82eeef6"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/return_owned_local/native-report.json",
+          "sha256": "45cd1a0eb147916ab93c41d2b40891c69de3b8451c2afe424d2d99c35549f989"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/negative-proof-receipts.json",
+          "sha256": "292de16ef45f80d446f56b7bb6fd2fb4258fc97a6986088bddaeb7010fcaea29"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/negative-witnesses/report.json",
+          "sha256": "0aa0d7b42ea3d973a4c0ab69d6546b643f09305270134df8d284fa6a4b8e0544"
+        }
+      ],
+      "migration_targets": {
+        "get": "AUTOMATICALLY_DISCHARGED",
+        "bad": "RESIDUAL",
+        "main": "VC_REFUTED"
+      },
+      "unit_manual_obligations": 2,
+      "qcp_verification": {
+        "status": "REFUTED_ORIGINAL_MANUAL_VC",
+        "scope": "Negation of original generated manual VC, with a finite concrete QCP byte-heap witness. Return-owned-local theorem refutes its main return VC, not the separate bad-function lifetime VC."
+      },
+      "manual_refutation": {
+        "id": "return_owned_local",
+        "status": "REFUTED_ORIGINAL_MANUAL_VC",
+        "kernel_exit": 0,
+        "theorems": [
+          "return_owned_local_main_VC_refuted"
+        ],
+        "generated_goal_sha256": "a8f998ec2a71c8d2e94be6d708722249d4c2dbdc44aeae8c8eab0890a05c061e",
+        "source_sha256": "9f26a4f96b4ba72eb014fa799f2a31439a59bc63ba03e8a55fae24a3f82eeef6",
+        "scope": "Negation of original generated manual VC, with a finite concrete QCP byte-heap witness. Return-owned-local theorem refutes its main return VC, not the separate bad-function lifetime VC.",
+        "proof_file": "negative-proofs/return_owned_local_refutation.v",
+        "proof_sha256": "aa7eb588240acdeb371b347541bcca8e5c6133e96b06fda9ea6c829281ab0d4f",
+        "assumptions_closed_under_global_context": true
+      },
+      "remaining_component_scope": "bad function lifetime VC has sanitizer support but no separate Coq negation; one refuted main VC suffices to reject the full target unit.",
+      "concrete_witness": "Original bad body; harness dereferences the pointer according to its advertised returned-ownership contract. Compiler stack-address warning and sanitizer failure; not a complete QCP byte-heap refutation."
     },
     {
       "id": "fulminate-cn/runtime-extras/same_func_malloc_free.c",
@@ -999,33 +2128,41 @@
       },
       "upstream_path": "src/examples/runtime-extras/same_func_malloc_free.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "function-subset-migrated",
+      "qcp_translation": "supplemental-active-QCP-variant;normalizations-and-contract-changes-explicit",
       "paired_input_count": 0,
-      "replay_status": "native-qcp-and-tespec-run; CN-pairing-pending",
+      "replay_status": "native-qcp-run;CN-paired-execution-pending",
       "blockers": [
-        "Finish remaining functions and original CN/QCP pairing; this is function-subset coverage.",
-        "Native automatic obligations are not kernel-certified; inspect helper and target residuals separately.",
-        "teSpec execution gaps and proof obligations are recorded per input in the migration report."
+        "Fixed original CN/teSpec matched-input replay is not complete."
       ],
       "evidence": [
         {
-          "path": "benchmark/selection/qcp-migration/manifest.json",
-          "sha256": "cf50b54cfd4509fbfbcaf9df5e7ca9458e41829cf0535e16f054ec114ac45c3c"
+          "path": "benchmark/selection/qcp-migration/supplemental/registry.json",
+          "sha256": "c8ce47060dadc17ba60c3ba8ca35df4261ad8e4a2618dafff089ec6f1e8e2967"
         },
         {
-          "path": "benchmark/selection/qcp-migration/evidence/20261014/report.json",
-          "sha256": "680c00b3aaa7f7cb9036098fecb8f182ff3b2a7a948f94b9a2e05f09a3cb163a"
+          "path": "benchmark/selection/qcp-migration/supplemental/same_func_asserted/same_func_asserted.qcp.c",
+          "sha256": "596e4eabc2173c5813b1aa788294763d21e89fac9c04829e68e8ab939fc0bc4e"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/same_func_asserted/native-report.json",
+          "sha256": "1cac2d110b5287f4266121c42e0b65624752d1ad214a91850682bea63a494721"
         }
       ],
       "qcp_bind_count": 1,
       "migration_targets": {
+        "deref": "AUTOMATICALLY_DISCHARGED",
         "main": "AUTOMATICALLY_DISCHARGED"
       },
       "migration_notes": [
         "Original trusted driver is checked here, with only unsigned-int-sized allocation admitted.",
         "Paired positive/negative lifetime control: the negative driver performs a second free.",
         "The C99 implicit return 0 at the end of main is made explicit for native QCP."
-      ]
+      ],
+      "unit_manual_obligations": 0,
+      "qcp_verification": {
+        "status": "VERIFIED_AUTOMATIC_PLUS_MANUAL",
+        "scope": "All selected targets in this active QCP variant; external contracts assumed."
+      }
     },
     {
       "id": "fulminate-cn/runtime-extras/swap_array.c",
@@ -1043,14 +2180,34 @@
       },
       "upstream_path": "src/examples/runtime-extras/swap_array.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "supplemental-active-QCP-variant;normalizations-and-contract-changes-explicit",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;CN-paired-execution-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces.",
-        "Whole-program replay needs CN allocation/free runtime integration and lifecycle semantics; allocation-free target functions can be evaluated separately."
+        "Fixed original CN/teSpec matched-input replay is not complete."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/registry.json",
+          "sha256": "c8ce47060dadc17ba60c3ba8ca35df4261ad8e4a2618dafff089ec6f1e8e2967"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/runtime_swap_array/runtime_swap_array.qcp.c",
+          "sha256": "aa74963c9ec54dd25e1abb8d7d35b3dfeb7243f104d30bf43ee6cf20f8c1d220"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/runtime_swap_array/native-report.json",
+          "sha256": "0ac50a95e4d5f962284ea96eb866362ecd332ce5fbe9d67e47cf18b89c47e7ea"
+        }
+      ],
+      "migration_targets": {
+        "swap_array": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 0,
+      "qcp_verification": {
+        "status": "VERIFIED_AUTOMATIC_PLUS_MANUAL",
+        "scope": "All selected targets in this active QCP variant; external contracts assumed."
+      }
     },
     {
       "id": "fulminate-cn/runtime-extras/up_malloc_down_free.c",
@@ -1068,14 +2225,35 @@
       },
       "upstream_path": "src/examples/runtime-extras/up_malloc_down_free.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "supplemental-active-QCP-variant;normalizations-and-contract-changes-explicit",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;CN-paired-execution-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces.",
-        "Whole-program replay needs CN allocation/free runtime integration and lifecycle semantics; allocation-free target functions can be evaluated separately."
+        "Fixed original CN/teSpec matched-input replay is not complete."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/registry.json",
+          "sha256": "c8ce47060dadc17ba60c3ba8ca35df4261ad8e4a2618dafff089ec6f1e8e2967"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/up_free_asserted/up_free_asserted.qcp.c",
+          "sha256": "8b4aebce8eb90b435ae775b2186a0651bbc2a1b00be4486e4496c5f24830f42f"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/up_free_asserted/native-report.json",
+          "sha256": "8c52d7d7d05b72a9bf12dd399a05a39dc7fd6ecf7d20a1c607914e245de4708d"
+        }
+      ],
+      "migration_targets": {
+        "mkref": "AUTOMATICALLY_DISCHARGED",
+        "main": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 0,
+      "qcp_verification": {
+        "status": "VERIFIED_AUTOMATIC_PLUS_MANUAL",
+        "scope": "All selected targets in this active QCP variant; external contracts assumed."
+      }
     },
     {
       "id": "fulminate-cn/runway/funcs2.c",
@@ -1093,13 +2271,58 @@
       },
       "upstream_path": "src/examples/runway/funcs2.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "supplemental-active-QCP-variant;normalizations-and-contract-changes-explicit",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;CN-paired-execution-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Fixed original CN/teSpec matched-input replay is not complete."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/registry.json",
+          "sha256": "c8ce47060dadc17ba60c3ba8ca35df4261ad8e4a2618dafff089ec6f1e8e2967"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/runway_snapshot/runway_snapshot.qcp.c",
+          "sha256": "15ab9261f3b027c78fe627119011f6de5570c9ff04c51052dfbbd71e6bf3bee8"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/runway_snapshot/native-report.json",
+          "sha256": "427986a9669f04bef49bf14db8b6c6de17a94dbe974df47d3030a68a4fae677a"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/manual-proof-receipts.json",
+          "sha256": "53f3d9aa76c38d2e4b8596040fcde33fa0a1c79908334965ab95c48fb43bbd23"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/runway-normalization/RunwayValidEquivalence.v",
+          "sha256": "5276549910a9ab6d6fe8eeede531b72c0aeac035e17caf588f96a5cfd40bcb01"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/runway-normalization/differential-report.json",
+          "sha256": "afd43553cf0af0b052001bbe8ae71ebdaa15f0f0ede31cfa7e00d683dd7c285e"
+        }
+      ],
+      "migration_targets": {
+        "increment_Plane_Counter": "AUTOMATICALLY_DISCHARGED",
+        "reset_Plane_Counter": "AUTOMATICALLY_DISCHARGED",
+        "increment_Runway_Time": "AUTOMATICALLY_DISCHARGED",
+        "reset_Runway_Time": "AUTOMATICALLY_DISCHARGED",
+        "arrive": "AUTOMATICALLY_DISCHARGED",
+        "depart": "AUTOMATICALLY_DISCHARGED",
+        "switch_modes": "AUTOMATICALLY_DISCHARGED",
+        "tick": "MANUAL_PROVED"
+      },
+      "unit_manual_obligations": 1,
+      "qcp_verification": {
+        "status": "VERIFIED_AUTOMATIC_PLUS_MANUAL",
+        "scope": "All selected targets in this active QCP variant; external contracts assumed."
+      },
+      "manual_verification": {
+        "status": "manual-kernel-checked",
+        "vc_count": 1
+      },
+      "normalization": "Struct-by-value helper calls inlined; entry values snapshotted; valid_state linear encoding has Coq equivalence theorem; C differential tests cover 1045 valid boundary states. No whole-C refinement certificate claimed."
     },
     {
       "id": "fulminate-cn/slf0_basic_incr.c",
@@ -1117,13 +2340,48 @@
       },
       "upstream_path": "src/examples/slf0_basic_incr.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/slf0_basic_incr.qcp.c",
+          "sha256": "6266af4c5648b32dedb7ff4ea1d9a5967f54628fac6bbc3d6b52933a0fb3322f"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
+        }
+      ],
+      "migration_targets": {
+        "incr": "RESIDUAL"
+      },
+      "unit_manual_obligations": 1,
+      "prepared_qcp_input_count": 6,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/slf0_basic_incr/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/slf0_basic_incr/job.json",
+        "count": 6,
+        "status": "prepared_not_replayed",
+        "binding_scope": "function precondition; not original main or CN paired harness"
+      },
+      "ownership_profile": "typed cells",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 2,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/slf0_basic_incr.signed.broken.c",
@@ -1141,14 +2399,40 @@
       },
       "upstream_path": "src/examples/slf0_basic_incr.signed.broken.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "supplemental-active-QCP-variant;normalizations-and-contract-changes-explicit",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;CN-paired-execution-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces.",
-        "Establish the violated obligation and original driver witness before assigning a negative label."
+        "Fixed original CN/teSpec matched-input replay is not complete.",
+        "Expected negative outcome is retained; this input is not marked verified."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/registry.json",
+          "sha256": "c8ce47060dadc17ba60c3ba8ca35df4261ad8e4a2618dafff089ec6f1e8e2967"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/uninit_signed/uninit_signed.qcp.c",
+          "sha256": "8c930c120c9ede42e31edb577ca5e6b620cc2e90eb58a6564dd6ea96ba593e30"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/uninit_signed/native-report.json",
+          "sha256": "0b01d1bcfc36470c22d0fe048e07e33685a367b7cbf5f951c08863edf9b3eafa"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/negative-witnesses/report.json",
+          "sha256": "0aa0d7b42ea3d973a4c0ab69d6546b643f09305270134df8d284fa6a4b8e0544"
+        }
+      ],
+      "migration_targets": {
+        "incr": "EXPECTED_REJECTION"
+      },
+      "unit_manual_obligations": 0,
+      "qcp_verification": {
+        "status": "EXPECTED_REJECTION",
+        "scope": "QCP rejected the expected unsafe access or impossible call precondition; rejection is retained, not a success certificate."
+      },
+      "concrete_witness": "INT_MAX initialized cell is permitted by QCP undef_data_at, which forgets initialization/value information; original body exhibits signed overflow. Complements native refusal to read from an undefined-cell precondition. Not an MSan test of an uninitialized allocation."
     },
     {
       "id": "fulminate-cn/slf0_basic_incr.signed.c",
@@ -1166,13 +2450,40 @@
       },
       "upstream_path": "src/examples/slf0_basic_incr.signed.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending.",
+        "Native automatic results have not been independently kernel-checked."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/slf0_basic_incr.signed.qcp.c",
+          "sha256": "649cc687a17c1e978540f4d6ec7b822d1bee203e67d9e319ecdcdc6eb4bc2446"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        }
+      ],
+      "migration_targets": {
+        "incr": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 0,
+      "prepared_qcp_input_count": 5,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/slf0_basic_incr.signed/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/slf0_basic_incr.signed/job.json",
+        "count": 5,
+        "status": "prepared_not_replayed",
+        "binding_scope": "function precondition; not original main or CN paired harness"
+      },
+      "ownership_profile": "typed cells"
     },
     {
       "id": "fulminate-cn/slf0_incr.broken.c",
@@ -1190,14 +2501,40 @@
       },
       "upstream_path": "src/examples/slf0_incr.broken.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "supplemental-active-QCP-variant;normalizations-and-contract-changes-explicit",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;CN-paired-execution-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces.",
-        "Establish the violated obligation and original driver witness before assigning a negative label."
+        "Fixed original CN/teSpec matched-input replay is not complete.",
+        "Expected negative outcome is retained; this input is not marked verified."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/registry.json",
+          "sha256": "c8ce47060dadc17ba60c3ba8ca35df4261ad8e4a2618dafff089ec6f1e8e2967"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/uninit_incr/uninit_incr.qcp.c",
+          "sha256": "9de1cc48228b3e6339966e7504654363079c7e75a41eb2f3a76d3e49695f9111"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/uninit_incr/native-report.json",
+          "sha256": "ee3c5a56ce89d6c9d76e658e072a2bfb62d06cf9cb714b5eb434a0af2d4cffc0"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/negative-witnesses/report.json",
+          "sha256": "0aa0d7b42ea3d973a4c0ab69d6546b643f09305270134df8d284fa6a4b8e0544"
+        }
+      ],
+      "migration_targets": {
+        "incr": "EXPECTED_REJECTION"
+      },
+      "unit_manual_obligations": 0,
+      "qcp_verification": {
+        "status": "EXPECTED_REJECTION",
+        "scope": "QCP rejected the expected unsafe access or impossible call precondition; rejection is retained, not a success certificate."
+      },
+      "concrete_witness": "INT_MAX initialized cell is permitted by QCP undef_data_at, which forgets initialization/value information; original body exhibits signed overflow. Complements native refusal to read from an undefined-cell precondition. Not an MSan test of an uninitialized allocation."
     },
     {
       "id": "fulminate-cn/slf10_basic_ref.c",
@@ -1215,29 +2552,44 @@
       },
       "upstream_path": "src/examples/slf10_basic_ref.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "function-subset-migrated",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "native-qcp-and-tespec-run; CN-pairing-pending",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Finish remaining functions and original CN/QCP pairing; this is function-subset coverage.",
-        "Native automatic obligations are not kernel-certified; inspect helper and target residuals separately.",
-        "teSpec execution gaps and proof obligations are recorded per input in the migration report."
+        "Original trusted main and matched CN/teSpec input replay pending."
       ],
       "evidence": [
         {
-          "path": "benchmark/selection/qcp-migration/manifest.json",
-          "sha256": "cf50b54cfd4509fbfbcaf9df5e7ca9458e41829cf0535e16f054ec114ac45c3c"
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
         },
         {
-          "path": "benchmark/selection/qcp-migration/evidence/20261014/report.json",
-          "sha256": "680c00b3aaa7f7cb9036098fecb8f182ff3b2a7a948f94b9a2e05f09a3cb163a"
+          "path": "benchmark/selection/qcp-migration/simple/advanced/slf10_basic_ref.qcp.c",
+          "sha256": "2e8079edd34b6dab1be75f67d7e0bffb49c2a53367063834a2bd33b65a368a23"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
         }
       ],
       "qcp_bind_count": 6,
       "migration_targets": {
         "refUnsignedInt": "AUTOMATICALLY_DISCHARGED"
       },
-      "migration_notes": []
+      "migration_notes": [],
+      "unit_manual_obligations": 0,
+      "prepared_qcp_input_count": 0,
+      "input_preparation": {},
+      "ownership_profile": "typed cells; original trusted external interface contracts",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 2,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/slf11_basic_ref_greater.c",
@@ -1255,31 +2607,47 @@
       },
       "upstream_path": "src/examples/slf11_basic_ref_greater.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "function-subset-migrated",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "native-qcp-and-tespec-run; CN-pairing-pending",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Finish remaining functions and original CN/QCP pairing; this is function-subset coverage.",
-        "Native automatic obligations are not kernel-certified; inspect helper and target residuals separately.",
-        "teSpec execution gaps and proof obligations are recorded per input in the migration report."
+        "Original trusted main and matched CN/teSpec input replay pending."
       ],
       "evidence": [
         {
-          "path": "benchmark/selection/qcp-migration/manifest.json",
-          "sha256": "cf50b54cfd4509fbfbcaf9df5e7ca9458e41829cf0535e16f054ec114ac45c3c"
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
         },
         {
-          "path": "benchmark/selection/qcp-migration/evidence/20261014/report.json",
-          "sha256": "680c00b3aaa7f7cb9036098fecb8f182ff3b2a7a948f94b9a2e05f09a3cb163a"
+          "path": "benchmark/selection/qcp-migration/simple/advanced/slf11_basic_ref_greater.qcp.c",
+          "sha256": "d7065cd453df9d6d7f622cea5e9629b865353aecbdec0d6559d1f0fb4ff78603"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
         }
       ],
       "qcp_bind_count": 6,
       "migration_targets": {
+        "refUnsignedInt": "AUTOMATICALLY_DISCHARGED",
         "ref_greater": "RESIDUAL"
       },
       "migration_notes": [
         "CN u32 addition becomes modulo 2^32; the abstract version excludes wraparound."
-      ]
+      ],
+      "unit_manual_obligations": 1,
+      "prepared_qcp_input_count": 0,
+      "input_preparation": {},
+      "ownership_profile": "typed cells; original trusted external interface contracts",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 6,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/slf12_basic_ref_greater_abstract.c",
@@ -1297,31 +2665,47 @@
       },
       "upstream_path": "src/examples/slf12_basic_ref_greater_abstract.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "function-subset-migrated",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "native-qcp-and-tespec-run; CN-pairing-pending",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Finish remaining functions and original CN/QCP pairing; this is function-subset coverage.",
-        "Native automatic obligations are not kernel-certified; inspect helper and target residuals separately.",
-        "teSpec execution gaps and proof obligations are recorded per input in the migration report."
+        "Original trusted main and matched CN/teSpec input replay pending."
       ],
       "evidence": [
         {
-          "path": "benchmark/selection/qcp-migration/manifest.json",
-          "sha256": "cf50b54cfd4509fbfbcaf9df5e7ca9458e41829cf0535e16f054ec114ac45c3c"
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
         },
         {
-          "path": "benchmark/selection/qcp-migration/evidence/20261014/report.json",
-          "sha256": "680c00b3aaa7f7cb9036098fecb8f182ff3b2a7a948f94b9a2e05f09a3cb163a"
+          "path": "benchmark/selection/qcp-migration/simple/advanced/slf12_basic_ref_greater_abstract.qcp.c",
+          "sha256": "61e7d5c8170da789f8aad2d5c34d4c1f19f6ef96412c6816895d8f356e1ea876"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
         }
       ],
       "qcp_bind_count": 5,
       "migration_targets": {
+        "refUnsignedInt": "AUTOMATICALLY_DISCHARGED",
         "ref_greater": "AUTOMATICALLY_DISCHARGED"
       },
       "migration_notes": [
         "CN u32 addition becomes modulo 2^32; the abstract version excludes wraparound."
-      ]
+      ],
+      "unit_manual_obligations": 0,
+      "prepared_qcp_input_count": 0,
+      "input_preparation": {},
+      "ownership_profile": "typed cells; original trusted external interface contracts",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 6,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/slf13_basic_ref_with_frame.c",
@@ -1339,29 +2723,45 @@
       },
       "upstream_path": "src/examples/slf13_basic_ref_with_frame.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "function-subset-migrated",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "native-qcp-and-tespec-run; CN-pairing-pending",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Finish remaining functions and original CN/QCP pairing; this is function-subset coverage.",
-        "Native automatic obligations are not kernel-certified; inspect helper and target residuals separately.",
-        "teSpec execution gaps and proof obligations are recorded per input in the migration report."
+        "Original trusted main and matched CN/teSpec input replay pending."
       ],
       "evidence": [
         {
-          "path": "benchmark/selection/qcp-migration/manifest.json",
-          "sha256": "cf50b54cfd4509fbfbcaf9df5e7ca9458e41829cf0535e16f054ec114ac45c3c"
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
         },
         {
-          "path": "benchmark/selection/qcp-migration/evidence/20261014/report.json",
-          "sha256": "680c00b3aaa7f7cb9036098fecb8f182ff3b2a7a948f94b9a2e05f09a3cb163a"
+          "path": "benchmark/selection/qcp-migration/simple/advanced/slf13_basic_ref_with_frame.qcp.c",
+          "sha256": "48fb7ab186214f8f100c1901d2a57397b433b56427d9d5c2d7a396e92857a57c"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
         }
       ],
       "qcp_bind_count": 6,
       "migration_targets": {
+        "refUnsignedInt": "AUTOMATICALLY_DISCHARGED",
         "triple_ref_with_frame": "AUTOMATICALLY_DISCHARGED"
       },
-      "migration_notes": []
+      "migration_notes": [],
+      "unit_manual_obligations": 0,
+      "prepared_qcp_input_count": 0,
+      "input_preparation": {},
+      "ownership_profile": "typed cells; original trusted external interface contracts",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 5,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/slf14_basic_succ_using_incr_attempt.broken.c",
@@ -1379,14 +2779,62 @@
       },
       "upstream_path": "src/examples/slf14_basic_succ_using_incr_attempt.broken.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "supplemental-active-QCP-variant;normalizations-and-contract-changes-explicit",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;CN-paired-execution-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces.",
-        "Establish the violated obligation and original driver witness before assigning a negative label."
+        "Fixed original CN/teSpec matched-input replay is not complete.",
+        "Expected negative outcome is retained; this input is not marked verified."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/registry.json",
+          "sha256": "c8ce47060dadc17ba60c3ba8ca35df4261ad8e4a2618dafff089ec6f1e8e2967"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/succ_attempt_leak/succ_attempt_leak.qcp.c",
+          "sha256": "b19235c1c172af223d8561a217afcc2c1422f8a2a9f650c3b183ce58ec5e5732"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/succ_attempt_leak/native-report.json",
+          "sha256": "24c30dd933d101061d5f37f27f451aeb3654ca0aee7fccbdd00487bcdabd6b46"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/negative-proof-receipts.json",
+          "sha256": "292de16ef45f80d446f56b7bb6fd2fb4258fc97a6986088bddaeb7010fcaea29"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/negative-witnesses/report.json",
+          "sha256": "0aa0d7b42ea3d973a4c0ab69d6546b643f09305270134df8d284fa6a4b8e0544"
+        }
+      ],
+      "migration_targets": {
+        "mallocUnsignedInt": "AUTOMATICALLY_DISCHARGED",
+        "incr": "MANUAL_PROVED_COMPONENT",
+        "refUnsignedInt": "AUTOMATICALLY_DISCHARGED",
+        "succ_using_incr_attempt": "VC_REFUTED"
+      },
+      "unit_manual_obligations": 2,
+      "qcp_verification": {
+        "status": "REFUTED_ORIGINAL_MANUAL_VC",
+        "scope": "Negation of original generated manual VC, with a finite concrete QCP byte-heap witness. Return-owned-local theorem refutes its main return VC, not the separate bad-function lifetime VC."
+      },
+      "manual_refutation": {
+        "id": "succ_attempt_leak",
+        "status": "REFUTED_ORIGINAL_MANUAL_VC",
+        "kernel_exit": 0,
+        "theorems": [
+          "succ_attempt_leak_VC_refuted"
+        ],
+        "generated_goal_sha256": "15bd59b235b0994fe70608075075eec88cf0a8c47f840f129d9c612b0c959dea",
+        "source_sha256": "b19235c1c172af223d8561a217afcc2c1422f8a2a9f650c3b183ce58ec5e5732",
+        "scope": "Negation of original generated manual VC, with a finite concrete QCP byte-heap witness. Return-owned-local theorem refutes its main return VC, not the separate bad-function lifetime VC.",
+        "proof_file": "negative-proofs/succ_attempt_leak_refutation.v",
+        "proof_sha256": "a630abe9cccc73007ccb57afc6fa7b6b9cf39807663198da9d8e2f2a55866aa1",
+        "assumptions_closed_under_global_context": true
+      },
+      "concrete_witness": "Original C function bodies; allocation-accounting witness confirms one live allocation at subject return; cleanup is harness-only after observation. Not a Coq refutation of the complete generated VC.",
+      "verified_component": "incr manual theorem compiled by reuse of the previously kernel-checked core proof; leaking function still residual."
     },
     {
       "id": "fulminate-cn/slf15_basic_succ_using_incr_attempt_.c",
@@ -1404,13 +2852,42 @@
       },
       "upstream_path": "src/examples/slf15_basic_succ_using_incr_attempt_.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/slf15_basic_succ_using_incr_attempt_.qcp.c",
+          "sha256": "ca03651391d237613ddc665dd19372fd3eff2157a4cbdb22d4e9dffcae9d41d8"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
+        }
+      ],
+      "migration_targets": {
+        "main": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 0,
+      "prepared_qcp_input_count": 0,
+      "input_preparation": {},
+      "ownership_profile": "emp",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 2,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/slf16_basic_succ_using_incr.c",
@@ -1428,29 +2905,47 @@
       },
       "upstream_path": "src/examples/slf16_basic_succ_using_incr.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "function-subset-migrated",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "native-qcp-and-tespec-run; CN-pairing-pending",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Finish remaining functions and original CN/QCP pairing; this is function-subset coverage.",
-        "Native automatic obligations are not kernel-certified; inspect helper and target residuals separately.",
-        "teSpec execution gaps and proof obligations are recorded per input in the migration report."
+        "Original trusted main and matched CN/teSpec input replay pending."
       ],
       "evidence": [
         {
-          "path": "benchmark/selection/qcp-migration/manifest.json",
-          "sha256": "cf50b54cfd4509fbfbcaf9df5e7ca9458e41829cf0535e16f054ec114ac45c3c"
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
         },
         {
-          "path": "benchmark/selection/qcp-migration/evidence/20261014/report.json",
-          "sha256": "680c00b3aaa7f7cb9036098fecb8f182ff3b2a7a948f94b9a2e05f09a3cb163a"
+          "path": "benchmark/selection/qcp-migration/simple/advanced/slf16_basic_succ_using_incr.qcp.c",
+          "sha256": "1166e89889f03269c6753b667ecd052975163f0c045eb41e3dcf0c2c1659a962"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
         }
       ],
       "qcp_bind_count": 6,
       "migration_targets": {
+        "freeUnsignedInt": "AUTOMATICALLY_DISCHARGED",
+        "refUnsignedInt": "AUTOMATICALLY_DISCHARGED",
+        "incr": "RESIDUAL",
         "succ_using_incr": "AUTOMATICALLY_DISCHARGED"
       },
-      "migration_notes": []
+      "migration_notes": [],
+      "unit_manual_obligations": 1,
+      "prepared_qcp_input_count": 0,
+      "input_preparation": {},
+      "ownership_profile": "typed cells; original trusted external interface contracts",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 13,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/slf17_get_and_free.c",
@@ -1468,31 +2963,47 @@
       },
       "upstream_path": "src/examples/slf17_get_and_free.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "function-subset-migrated",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "native-qcp-and-tespec-run; CN-pairing-pending",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Finish remaining functions and original CN/QCP pairing; this is function-subset coverage.",
-        "Native automatic obligations are not kernel-certified; inspect helper and target residuals separately.",
-        "teSpec execution gaps and proof obligations are recorded per input in the migration report."
+        "Original trusted main and matched CN/teSpec input replay pending."
       ],
       "evidence": [
         {
-          "path": "benchmark/selection/qcp-migration/manifest.json",
-          "sha256": "cf50b54cfd4509fbfbcaf9df5e7ca9458e41829cf0535e16f054ec114ac45c3c"
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
         },
         {
-          "path": "benchmark/selection/qcp-migration/evidence/20261014/report.json",
-          "sha256": "680c00b3aaa7f7cb9036098fecb8f182ff3b2a7a948f94b9a2e05f09a3cb163a"
+          "path": "benchmark/selection/qcp-migration/simple/advanced/slf17_get_and_free.qcp.c",
+          "sha256": "e4e09abd8e27f86550ef8a3fdc97668cfd0cf459a560f312ac86ad36076c06c8"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
         }
       ],
       "qcp_bind_count": 6,
       "migration_targets": {
+        "freeUnsignedInt": "AUTOMATICALLY_DISCHARGED",
         "get_and_free": "AUTOMATICALLY_DISCHARGED"
       },
       "migration_notes": [
         "freeUnsignedInt is an external adapter contract, matching the CN free interface."
-      ]
+      ],
+      "unit_manual_obligations": 0,
+      "prepared_qcp_input_count": 0,
+      "input_preparation": {},
+      "ownership_profile": "typed cells; original trusted external interface contracts",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 5,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/slf18_two_dice.c",
@@ -1510,22 +3021,28 @@
       },
       "upstream_path": "src/examples/slf18_two_dice.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "function-subset-migrated",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "native-qcp-and-tespec-run; CN-pairing-pending",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Finish remaining functions and original CN/QCP pairing; this is function-subset coverage.",
-        "Native automatic obligations are not kernel-certified; inspect helper and target residuals separately.",
-        "teSpec execution gaps and proof obligations are recorded per input in the migration report."
+        "Original trusted main and matched CN/teSpec input replay pending."
       ],
       "evidence": [
         {
-          "path": "benchmark/selection/qcp-migration/manifest.json",
-          "sha256": "cf50b54cfd4509fbfbcaf9df5e7ca9458e41829cf0535e16f054ec114ac45c3c"
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
         },
         {
-          "path": "benchmark/selection/qcp-migration/evidence/20261014/report.json",
-          "sha256": "680c00b3aaa7f7cb9036098fecb8f182ff3b2a7a948f94b9a2e05f09a3cb163a"
+          "path": "benchmark/selection/qcp-migration/simple/advanced/slf18_two_dice.qcp.c",
+          "sha256": "7b82603b0cbb491bc23738c525de94f28c11a0b0c4d472818de82321931bb952"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
         }
       ],
       "qcp_bind_count": 5,
@@ -1535,7 +3052,16 @@
       },
       "migration_notes": [
         "rand is a nondeterministic external contract with the C nonnegative-int result range; no random trace replay is claimed."
-      ]
+      ],
+      "unit_manual_obligations": 1,
+      "prepared_qcp_input_count": 0,
+      "input_preparation": {},
+      "ownership_profile": "typed cells; original trusted external interface contracts",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 11,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/slf1_basic_example_let.c",
@@ -1553,13 +3079,48 @@
       },
       "upstream_path": "src/examples/slf1_basic_example_let.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/slf1_basic_example_let.qcp.c",
+          "sha256": "d2784f47c81e4d7e6f68ed8ec06f370a833364266801043035b926fe18dd7a4d"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
+        }
+      ],
+      "migration_targets": {
+        "example_let": "RESIDUAL"
+      },
+      "unit_manual_obligations": 1,
+      "prepared_qcp_input_count": 6,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/slf1_basic_example_let/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/slf1_basic_example_let/job.json",
+        "count": 6,
+        "status": "prepared_not_replayed",
+        "binding_scope": "target function; original mains excluded"
+      },
+      "ownership_profile": "typed cells",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 3,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/slf1_basic_example_let.signed.c",
@@ -1577,13 +3138,48 @@
       },
       "upstream_path": "src/examples/slf1_basic_example_let.signed.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/slf1_basic_example_let.signed.qcp.c",
+          "sha256": "183b2523cd3608a976ab61183c6a6cc59f283354f4ecb3fe98390faf18404a7a"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
+        }
+      ],
+      "migration_targets": {
+        "doubled": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 0,
+      "prepared_qcp_input_count": 5,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/slf1_basic_example_let.signed/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/slf1_basic_example_let.signed/job.json",
+        "count": 5,
+        "status": "prepared_not_replayed",
+        "binding_scope": "target function; original mains excluded"
+      },
+      "ownership_profile": "typed cells",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 6,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/slf2_basic_quadruple.c",
@@ -1601,13 +3197,48 @@
       },
       "upstream_path": "src/examples/slf2_basic_quadruple.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/slf2_basic_quadruple.qcp.c",
+          "sha256": "0cfc634305e2942d372b82c30f71c171b9a6811dec967f38fd826eac3454a126"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
+        }
+      ],
+      "migration_targets": {
+        "quadruple": "RESIDUAL"
+      },
+      "unit_manual_obligations": 1,
+      "prepared_qcp_input_count": 6,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/slf2_basic_quadruple/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/slf2_basic_quadruple/job.json",
+        "count": 6,
+        "status": "prepared_not_replayed",
+        "binding_scope": "function precondition; not original main or CN paired harness"
+      },
+      "ownership_profile": "typed cells",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 1,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/slf2_basic_quadruple.signed.c",
@@ -1625,13 +3256,48 @@
       },
       "upstream_path": "src/examples/slf2_basic_quadruple.signed.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/slf2_basic_quadruple.signed.qcp.c",
+          "sha256": "a9f9ce1f0fa20d0707cdc02cbe05b33512a6948abbca3f47f01f5e7721253934"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
+        }
+      ],
+      "migration_targets": {
+        "quadruple": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 0,
+      "prepared_qcp_input_count": 5,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/slf2_basic_quadruple.signed/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/slf2_basic_quadruple.signed/job.json",
+        "count": 5,
+        "status": "prepared_not_replayed",
+        "binding_scope": "target function; original mains excluded"
+      },
+      "ownership_profile": "typed cells",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 3,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/slf3_basic_inplace_double.c",
@@ -1649,13 +3315,40 @@
       },
       "upstream_path": "src/examples/slf3_basic_inplace_double.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending.",
+        "Native automatic results have not been independently kernel-checked."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/slf3_basic_inplace_double.qcp.c",
+          "sha256": "dcbe29b234000beadff888836c33f577938f234e0e34f61408e02a8479ce1708"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        }
+      ],
+      "migration_targets": {
+        "inplace_double": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 0,
+      "prepared_qcp_input_count": 5,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/slf3_basic_inplace_double/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/slf3_basic_inplace_double/job.json",
+        "count": 5,
+        "status": "prepared_not_replayed",
+        "binding_scope": "function precondition; not original main or CN paired harness"
+      },
+      "ownership_profile": "typed cells"
     },
     {
       "id": "fulminate-cn/slf4_basic_incr_two.c",
@@ -1673,13 +3366,49 @@
       },
       "upstream_path": "src/examples/slf4_basic_incr_two.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/slf4_basic_incr_two.qcp.c",
+          "sha256": "e07decbe6f29957f038b2dd0f985275f1bfe59a1cc77f0a469ae72dd1537ffa5"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
+        }
+      ],
+      "migration_targets": {
+        "incr": "RESIDUAL",
+        "incr_two": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 1,
+      "prepared_qcp_input_count": 6,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/slf4_basic_incr_two/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/slf4_basic_incr_two/job.json",
+        "count": 6,
+        "status": "prepared_not_replayed",
+        "binding_scope": "function precondition; not original main or CN paired harness"
+      },
+      "ownership_profile": "typed cells",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 7,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/slf5_basic_aliased_call.broken.c",
@@ -1697,14 +3426,37 @@
       },
       "upstream_path": "src/examples/slf5_basic_aliased_call.broken.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "supplemental-active-QCP-variant;normalizations-and-contract-changes-explicit",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;CN-paired-execution-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces.",
-        "Establish the violated obligation and original driver witness before assigning a negative label."
+        "Fixed original CN/teSpec matched-input replay is not complete.",
+        "Expected negative outcome is retained; this input is not marked verified."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/registry.json",
+          "sha256": "c8ce47060dadc17ba60c3ba8ca35df4261ad8e4a2618dafff089ec6f1e8e2967"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/aliased_call_bad/aliased_call_bad.qcp.c",
+          "sha256": "45ae21373cffd7a2d466f8f96fcf81d54e1d29a28b33b3c538d5c40e437d952e"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/aliased_call_bad/native-report.json",
+          "sha256": "1ccb4c5fd3a33d689bca9c565ae1e4929834f43de9ba3b75ddb5bfa02bd3ed73"
+        }
+      ],
+      "migration_targets": {
+        "incr": "RESIDUAL",
+        "incr_two": "AUTOMATICALLY_DISCHARGED",
+        "aliased_call": "EXPECTED_REJECTION"
+      },
+      "unit_manual_obligations": 1,
+      "qcp_verification": {
+        "status": "EXPECTED_REJECTION",
+        "scope": "QCP rejected the expected unsafe access or impossible call precondition; rejection is retained, not a success certificate."
+      }
     },
     {
       "id": "fulminate-cn/slf6_basic_incr_two_aliased_call.c",
@@ -1722,13 +3474,50 @@
       },
       "upstream_path": "src/examples/slf6_basic_incr_two_aliased_call.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/slf6_basic_incr_two_aliased_call.qcp.c",
+          "sha256": "d64cb5edec1f9b7e1de28eea8575148ff6c0f97d7a2804c5090f510431ea59dc"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
+        }
+      ],
+      "migration_targets": {
+        "incr": "RESIDUAL",
+        "incr_two": "RESIDUAL",
+        "aliased_call": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 2,
+      "prepared_qcp_input_count": 6,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/slf6_basic_incr_two_aliased_call/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/slf6_basic_incr_two_aliased_call/job.json",
+        "count": 6,
+        "status": "prepared_not_replayed",
+        "binding_scope": "target function; original mains excluded"
+      },
+      "ownership_profile": "typed cells",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 10,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/slf7_basic_incr_first.c",
@@ -1746,13 +3535,50 @@
       },
       "upstream_path": "src/examples/slf7_basic_incr_first.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/slf7_basic_incr_first.qcp.c",
+          "sha256": "2ff8722e4b58c01463c509ffe19be161b0e83eb539f29141e21c97ffff90a445"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
+        }
+      ],
+      "migration_targets": {
+        "incr": "RESIDUAL",
+        "incr_first": "AUTOMATICALLY_DISCHARGED",
+        "incr_first_": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 1,
+      "prepared_qcp_input_count": 6,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/slf7_basic_incr_first/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/slf7_basic_incr_first/job.json",
+        "count": 6,
+        "status": "prepared_not_replayed",
+        "binding_scope": "function precondition; not original main or CN paired harness"
+      },
+      "ownership_profile": "typed cells",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 8,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/slf8_basic_transfer.c",
@@ -1770,13 +3596,48 @@
       },
       "upstream_path": "src/examples/slf8_basic_transfer.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/slf8_basic_transfer.qcp.c",
+          "sha256": "047fe6e8752e8f409178e524d2c4495fa83a53c58c322707b1d13025bb9c8521"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
+        }
+      ],
+      "migration_targets": {
+        "transfer": "RESIDUAL"
+      },
+      "unit_manual_obligations": 1,
+      "prepared_qcp_input_count": 6,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/slf8_basic_transfer/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/slf8_basic_transfer/job.json",
+        "count": 6,
+        "status": "prepared_not_replayed",
+        "binding_scope": "function precondition; not original main or CN paired harness"
+      },
+      "ownership_profile": "typed cells",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 2,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/slf9_basic_transfer_aliased.c",
@@ -1794,13 +3655,48 @@
       },
       "upstream_path": "src/examples/slf9_basic_transfer_aliased.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/slf9_basic_transfer_aliased.qcp.c",
+          "sha256": "6b0f45228515c00b3e3686113ef4e45edcfc53d449a58b7a25751badc95c35bc"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
+        }
+      ],
+      "migration_targets": {
+        "transfer": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 0,
+      "prepared_qcp_input_count": 6,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/slf9_basic_transfer_aliased/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/slf9_basic_transfer_aliased/job.json",
+        "count": 6,
+        "status": "prepared_not_replayed",
+        "binding_scope": "target function; original mains excluded"
+      },
+      "ownership_profile": "typed cells",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 5,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/slf_incr2.c",
@@ -1818,13 +3714,43 @@
       },
       "upstream_path": "src/examples/slf_incr2.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/slf_incr2.qcp.c",
+          "sha256": "fcd8afaa5e2c0368f78a26e648d2add430bc87db59725b632394c8c0216a303e"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
+        }
+      ],
+      "migration_targets": {
+        "incr2": "RESIDUAL",
+        "call_both_better": "RESIDUAL"
+      },
+      "unit_manual_obligations": 3,
+      "prepared_qcp_input_count": 0,
+      "input_preparation": {},
+      "ownership_profile": "typed cells; exhaustive p=q/p!=q specification family",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 12,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/slf_incr2_alias.c",
@@ -1842,13 +3768,50 @@
       },
       "upstream_path": "src/examples/slf_incr2_alias.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/slf_incr2_alias.qcp.c",
+          "sha256": "77232c5d34b4ef92bf50986ae69a7db7e838a900b5e0600a4a93e006172e3299"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
+        }
+      ],
+      "migration_targets": {
+        "incr2b": "RESIDUAL",
+        "incr2a": "RESIDUAL",
+        "call_both": "RESIDUAL"
+      },
+      "unit_manual_obligations": 3,
+      "prepared_qcp_input_count": 6,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/slf_incr2_alias/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/slf_incr2_alias/job.json",
+        "count": 6,
+        "status": "prepared_not_replayed",
+        "binding_scope": "target function; original mains excluded"
+      },
+      "ownership_profile": "typed cells",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 12,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/slf_incr2_noalias.c",
@@ -1866,13 +3829,48 @@
       },
       "upstream_path": "src/examples/slf_incr2_noalias.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/slf_incr2_noalias.qcp.c",
+          "sha256": "1fc8ee0a9f9eec44dae65fc2f653643d9ef024a97c704e2783c05da36de11bad"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
+        }
+      ],
+      "migration_targets": {
+        "incr2a": "RESIDUAL"
+      },
+      "unit_manual_obligations": 1,
+      "prepared_qcp_input_count": 6,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/slf_incr2_noalias/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/slf_incr2_noalias/job.json",
+        "count": 6,
+        "status": "prepared_not_replayed",
+        "binding_scope": "target function; original mains excluded"
+      },
+      "ownership_profile": "typed cells",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 3,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/slf_quadruple_mem.c",
@@ -1890,13 +3888,48 @@
       },
       "upstream_path": "src/examples/slf_quadruple_mem.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/slf_quadruple_mem.qcp.c",
+          "sha256": "a576b2f94c86edf59bb7e279c39f97c2155bfac83ceae6a9cd16c3abc313ec78"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
+        }
+      ],
+      "migration_targets": {
+        "quadruple_mem": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 0,
+      "prepared_qcp_input_count": 5,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/slf_quadruple_mem/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/slf_quadruple_mem/job.json",
+        "count": 5,
+        "status": "prepared_not_replayed",
+        "binding_scope": "target function; original mains excluded"
+      },
+      "ownership_profile": "typed cells",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 3,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/slf_ref_greater.c",
@@ -1914,13 +3947,43 @@
       },
       "upstream_path": "src/examples/slf_ref_greater.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/slf_ref_greater.qcp.c",
+          "sha256": "3d4874bf60b67c2d1f6175012082eb0d7f0b7fff076694fc1f2d10f3f913396a"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
+        }
+      ],
+      "migration_targets": {
+        "refUnsignedInt": "AUTOMATICALLY_DISCHARGED",
+        "ref_greater_abstract": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 0,
+      "prepared_qcp_input_count": 0,
+      "input_preparation": {},
+      "ownership_profile": "typed cells",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 5,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/slf_sized_stack.c",
@@ -1938,36 +4001,55 @@
       },
       "upstream_path": "src/examples/slf_sized_stack.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "function-subset-migrated",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "native-qcp-and-tespec-run; CN-pairing-pending",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Finish remaining functions and original CN/QCP pairing; this is function-subset coverage.",
-        "Native automatic obligations are not kernel-certified; inspect helper and target residuals separately.",
-        "teSpec execution gaps and proof obligations are recorded per input in the migration report."
+        "Original trusted main and matched CN/teSpec input replay pending.",
+        "typed list/stack; whole original CN object ownership correspondence pending"
       ],
       "evidence": [
         {
-          "path": "benchmark/selection/qcp-migration/manifest.json",
-          "sha256": "cf50b54cfd4509fbfbcaf9df5e7ca9458e41829cf0535e16f054ec114ac45c3c"
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
         },
         {
-          "path": "benchmark/selection/qcp-migration/evidence/20261014/report.json",
-          "sha256": "680c00b3aaa7f7cb9036098fecb8f182ff3b2a7a948f94b9a2e05f09a3cb163a"
+          "path": "benchmark/selection/qcp-migration/simple/advanced/slf_sized_stack.qcp.c",
+          "sha256": "a69204aa541c5d8fb3cdd073f3fbb813c77329339c8d5c1ce80eaa7035f96414"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
         }
       ],
       "qcp_bind_count": 17,
       "migration_targets": {
+        "IntList_cons": "AUTOMATICALLY_DISCHARGED",
         "create": "AUTOMATICALLY_DISCHARGED",
         "sizeOf": "AUTOMATICALLY_DISCHARGED",
         "push": "RESIDUAL",
         "top": "RESIDUAL",
-        "pop": "RESIDUAL"
+        "pop": "RESIDUAL",
+        "IntList_nil": "AUTOMATICALLY_DISCHARGED",
+        "IntList_length": "RESIDUAL"
       },
       "migration_notes": [
         "SizedStack is unfolded into size, data and sll with size = length modulo 2^32.",
         "The original pop postcondition specifies the remaining stack, not the returned value; retained."
-      ]
+      ],
+      "unit_manual_obligations": 6,
+      "prepared_qcp_input_count": 0,
+      "input_preparation": {},
+      "ownership_profile": "typed list/stack; whole original CN object ownership correspondence pending",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 30,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/swap.c",
@@ -1985,13 +4067,40 @@
       },
       "upstream_path": "src/examples/swap.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending.",
+        "Native automatic results have not been independently kernel-checked."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/swap.qcp.c",
+          "sha256": "a9b3242282afbd787167ef8c446f5ecfc4aac1348765878d726b19084c68dfaa"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        }
+      ],
+      "migration_targets": {
+        "swap": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 0,
+      "prepared_qcp_input_count": 6,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/swap/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/swap/job.json",
+        "count": 6,
+        "status": "prepared_not_replayed",
+        "binding_scope": "function precondition; not original main or CN paired harness"
+      },
+      "ownership_profile": "typed cells"
     },
     {
       "id": "fulminate-cn/swap_array.c",
@@ -2009,13 +4118,49 @@
       },
       "upstream_path": "src/examples/swap_array.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending.",
+        "typed finite int array; CN index-map/list correspondence pending"
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/swap_array.qcp.c",
+          "sha256": "941a4773bf094e5039fce0f144890d7feaeb9f1923772b0562cd3710ae5acf20"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/proofs/report.json",
+          "sha256": "73240583dc7bd34da132298769fb6e7b0521ede33d2b63414936c26120009c47"
+        }
+      ],
+      "migration_targets": {
+        "swap_array": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 0,
+      "prepared_qcp_input_count": 6,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/swap_array/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/swap_array/job.json",
+        "count": 6,
+        "status": "prepared_not_replayed",
+        "binding_scope": "target function; original mains excluded"
+      },
+      "ownership_profile": "typed finite int array; CN index-map/list correspondence pending",
+      "kernel_verification": {
+        "status": "complete-VC-module-checked",
+        "vc_count": 5,
+        "runtime_assumptions": "recorded separately; not axiom-free"
+      }
     },
     {
       "id": "fulminate-cn/transpose.broken.c",
@@ -2033,14 +4178,34 @@
       },
       "upstream_path": "src/examples/transpose.broken.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "supplemental-active-QCP-variant;normalizations-and-contract-changes-explicit",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;CN-paired-execution-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces.",
-        "Establish the violated obligation and original driver witness before assigning a negative label."
+        "Fixed original CN/teSpec matched-input replay is not complete."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/registry.json",
+          "sha256": "c8ce47060dadc17ba60c3ba8ca35df4261ad8e4a2618dafff089ec6f1e8e2967"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/transpose_historical/transpose_historical.qcp.c",
+          "sha256": "e63917a76eff6b79befddb1fc986421730d68b796421ec1844ea0b4940901f1c"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/supplemental/transpose_historical/native-report.json",
+          "sha256": "ce17f9d171d2c334021f794967e3aec7ff517da69f4c66b6093e27c9d22d5367"
+        }
+      ],
+      "migration_targets": {
+        "transpose": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 0,
+      "qcp_verification": {
+        "status": "VERIFIED_AUTOMATIC_PLUS_MANUAL",
+        "scope": "All selected targets in this active QCP variant; external contracts assumed."
+      }
     },
     {
       "id": "fulminate-cn/transpose.c",
@@ -2058,13 +4223,41 @@
       },
       "upstream_path": "src/examples/transpose.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending.",
+        "Native automatic results have not been independently kernel-checked.",
+        "typed fields; whole CN structure ownership correspondence pending"
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/transpose.qcp.c",
+          "sha256": "3f2b378bf563b856a52ede94b632d044c0c3174b1b600cb16d72ecdb14e2eb50"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        }
+      ],
+      "migration_targets": {
+        "transpose": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 0,
+      "prepared_qcp_input_count": 4,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/transpose/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/transpose/job.json",
+        "count": 4,
+        "status": "prepared_not_replayed",
+        "binding_scope": "function precondition; not original main or CN paired harness"
+      },
+      "ownership_profile": "typed fields; whole CN structure ownership correspondence pending"
     },
     {
       "id": "fulminate-cn/transpose2.c",
@@ -2082,13 +4275,42 @@
       },
       "upstream_path": "src/examples/transpose2.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending.",
+        "Native automatic results have not been independently kernel-checked.",
+        "typed fields; whole CN structure ownership correspondence pending"
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/transpose2.qcp.c",
+          "sha256": "8ee7d949d0e57a936e026676706af9191ee75bb29a48b59abfd3fe77f93a3612"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        }
+      ],
+      "migration_targets": {
+        "swap": "AUTOMATICALLY_DISCHARGED",
+        "transpose2": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 0,
+      "prepared_qcp_input_count": 4,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/transpose2/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/transpose2/job.json",
+        "count": 4,
+        "status": "prepared_not_replayed",
+        "binding_scope": "function precondition; not original main or CN paired harness"
+      },
+      "ownership_profile": "typed fields; whole CN structure ownership correspondence pending"
     },
     {
       "id": "fulminate-cn/zero.c",
@@ -2106,13 +4328,40 @@
       },
       "upstream_path": "src/examples/zero.c",
       "upstream_revision": "c67da060a4741b7c49619578910ba81bd0d16fcc",
-      "qcp_translation": "pending-for-this-source-revision",
+      "qcp_translation": "target-function-migrated;original-main-excluded",
       "paired_input_count": 0,
-      "replay_status": "not-run-for-this-source-revision",
+      "replay_status": "native-qcp-run;tespec-and-CN-pairing-pending",
       "blockers": [
-        "Translate original CN contracts while preserving executable bodies and trusted interfaces."
+        "Original trusted main and matched CN/teSpec input replay pending.",
+        "Native automatic results have not been independently kernel-checked."
       ],
-      "evidence": []
+      "evidence": [
+        {
+          "path": "benchmark/selection/qcp-migration/simple/manifest.json",
+          "sha256": "d16444d533e8b1de4cb130fb43095e5e1897ccd1723859a8dcc8b3c2eef3c8e4"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/zero.qcp.c",
+          "sha256": "1dbbb1cdb881d04bc8ae8d256b512288d576c0cbddffd7f4c2a9f836b37497fb"
+        },
+        {
+          "path": "benchmark/selection/qcp-migration/simple/verification-index.json",
+          "sha256": "02ec304a7515c0618c387582e211dabfcc3c7ba4f17338dcc28a343b682b8882"
+        }
+      ],
+      "migration_targets": {
+        "zero": "AUTOMATICALLY_DISCHARGED"
+      },
+      "unit_manual_obligations": 0,
+      "prepared_qcp_input_count": 1,
+      "input_preparation": {
+        "binds": "benchmark/selection/qcp-migration/simple/inputs/zero/binds.json",
+        "job": "benchmark/selection/qcp-migration/simple/inputs/zero/job.json",
+        "count": 1,
+        "status": "prepared_not_replayed",
+        "binding_scope": "function precondition; not original main or CN paired harness"
+      },
+      "ownership_profile": "typed cells"
     },
     {
       "id": "qcp_list_length",

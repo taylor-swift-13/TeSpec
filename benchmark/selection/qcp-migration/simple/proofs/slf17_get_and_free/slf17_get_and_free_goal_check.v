@@ -1,0 +1,4 @@
+Require Import slf17_get_and_free_goal slf17_get_and_free_proof_manual.
+Module VC_Correctness : VC_Correct.
+Include slf17_get_and_free_proof_manual.
+End VC_Correctness.

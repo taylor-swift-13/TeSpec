@@ -1,0 +1,4 @@
+Require Import slf11_basic_ref_greater_goal slf11_basic_ref_greater_proof_manual.
+Module VC_Correctness : VC_Correct.
+Include slf11_basic_ref_greater_proof_manual.
+End VC_Correctness.

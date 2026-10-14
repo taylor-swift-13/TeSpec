@@ -1,0 +1,75 @@
+#include "dll_def.h"
+
+id : 301
+priority : core(1)
+left : DLLLeft(?p,?n,?l) at 0
+check : infer(p == 0);
+action : left_erase(0); left_add(l == nil{Z});
+
+id : 302
+priority : core(2)
+left : DLLLeft(?p,?n,?l) at 0
+check : infer(p != 0);
+action : left_erase(0); left_exist_add(a); left_exist_add(tl); left_exist_add(q); left_add(l == cons{Z}(a,tl));
+ left_add(store(field_addr(p,node,data),I32,a)); left_add(store(field_addr(p,node,prev),PTR(struct node),q)); left_add(store(field_addr(p,node,next),PTR(struct node),n)); left_add(DLLLeft(q,p,tl));
+
+id : 303
+priority : core(1)
+right : DLLLeft(?p,?n,?l) at 0
+check : infer(p == 0);
+action : right_erase(0); right_add(l == nil{Z});
+
+id : 304
+priority : core(3)
+right : DLLLeft(?p,?n,cons{Z}(?a,?tl)) at 0
+action : right_erase(0); right_exist_add(q); right_add(p != 0);
+ right_add(store(field_addr(p,node,data),I32,a)); right_add(store(field_addr(p,node,prev),PTR(struct node),q)); right_add(store(field_addr(p,node,next),PTR(struct node),n)); right_add(DLLLeft(q,p,tl));
+
+id : 305
+priority : core(0)
+left : DLLLeft(?p,?n,?l0) at 0
+right : DLLLeft(p,n,?l1) at 1
+action : left_erase(0); right_erase(1); right_add(l0 == l1);
+
+id : 311
+priority : core(1)
+left : DLLRight(?p,?n,?l) at 0
+check : infer(p == 0);
+action : left_erase(0); left_add(l == nil{Z});
+
+id : 312
+priority : core(2)
+left : DLLRight(?p,?n,?l) at 0
+check : infer(p != 0);
+action : left_erase(0); left_exist_add(a); left_exist_add(tl); left_exist_add(q); left_add(l == cons{Z}(a,tl));
+ left_add(store(field_addr(p,node,data),I32,a)); left_add(store(field_addr(p,node,next),PTR(struct node),q)); left_add(store(field_addr(p,node,prev),PTR(struct node),n)); left_add(DLLRight(q,p,tl));
+
+id : 313
+priority : core(1)
+right : DLLRight(?p,?n,?l) at 0
+check : infer(p == 0);
+action : right_erase(0); right_add(l == nil{Z});
+
+id : 314
+priority : core(3)
+right : DLLRight(?p,?n,cons{Z}(?a,?tl)) at 0
+action : right_erase(0); right_exist_add(q); right_add(p != 0);
+ right_add(store(field_addr(p,node,data),I32,a)); right_add(store(field_addr(p,node,next),PTR(struct node),q)); right_add(store(field_addr(p,node,prev),PTR(struct node),n)); right_add(DLLRight(q,p,tl));
+
+id : 315
+priority : core(0)
+left : DLLRight(?p,?n,?l0) at 0
+right : DLLRight(p,n,?l1) at 1
+action : left_erase(0); right_erase(1); right_add(l0 == l1);
+
+id : 321
+priority : core(2)
+right : Dll(?n,?ll,?h,?lr) at 0
+check : infer(n != 0);
+action : right_erase(0); right_exist_add(p); right_exist_add(q);
+ right_add(store(field_addr(n,node,data),I32,h)); right_add(store(field_addr(n,node,prev),PTR(struct node),p)); right_add(store(field_addr(n,node,next),PTR(struct node),q)); right_add(DLLLeft(p,n,ll)); right_add(DLLRight(q,n,lr));
+id : 322
+priority : core(1)
+right : Dll(?n,?ll,?h,?lr) at 0
+check : infer(n == 0);
+action : right_erase(0); right_add(ll == nil{Z}); right_add(lr == nil{Z}); right_add(h == 0);

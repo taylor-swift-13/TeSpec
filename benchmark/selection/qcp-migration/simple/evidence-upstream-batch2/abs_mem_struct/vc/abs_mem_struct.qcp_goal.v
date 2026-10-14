@@ -1,0 +1,117 @@
+Require Import Coq.ZArith.ZArith.
+Require Import Coq.Bool.Bool.
+Require Import Coq.Strings.String.
+Require Import Coq.Strings.Ascii.
+Require Import Coq.Lists.List.
+Require Import Coq.Classes.RelationClasses.
+Require Import Coq.Classes.Morphisms.
+Require Import Coq.micromega.Psatz.
+Require Import Coq.Sorting.Permutation.
+From AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.
+Require Import SetsClass.SetsClass. Import SetsNotation.
+From SimpleC.SL Require Import Mem SeparationLogic.
+Require Import Logic.LogicGenerator.demo932.Interface.
+Local Open Scope Z_scope.
+Local Open Scope sets.
+Local Open Scope string_scope.
+Local Open Scope list.
+Import naive_C_Rules.
+Local Open Scope sac.
+
+(*----- Function abs_mem -----*)
+
+Definition abs_mem_safety_wit_1 := 
+forall (p_pre: Z) (v: Z) (PreH1 : ((INT_MIN) < v)) ,
+  ((( &( "x" ) )) # Int  |-> v)
+  **  ((( &( "p" ) )) # Ptr  |-> p_pre)
+  **  ((p_pre) # Int  |-> v)
+|--
+  “ (0 <= INT_MAX) ” 
+  &&  “ ((INT_MIN) <= 0) ”
+.
+
+Definition abs_mem_safety_wit_2 := 
+forall (p_pre: Z) (v: Z) (PreH1 : (v < 0)) (PreH2 : ((INT_MIN) < v)) ,
+  ((( &( "x" ) )) # Int  |-> v)
+  **  ((( &( "p" ) )) # Ptr  |-> p_pre)
+  **  ((p_pre) # Int  |-> v)
+|--
+  “ (v <> (INT_MIN)) ”
+.
+
+Definition abs_mem_return_wit_1 := 
+forall (p_pre: Z) (v: Z) (PreH1 : (v < 0)) (PreH2 : ((INT_MIN) < v)) ,
+  ((p_pre) # Int  |-> v)
+|--
+  “ (v < 0) ” 
+  &&  “ ((-v) = (-v)) ”
+  &&  ((p_pre) # Int  |-> v)
+.
+
+Definition abs_mem_return_wit_2 := 
+forall (p_pre: Z) (v: Z) (PreH1 : (v >= 0)) (PreH2 : ((INT_MIN) < v)) ,
+  ((p_pre) # Int  |-> v)
+|--
+  “ (v >= 0) ” 
+  &&  “ (v = v) ”
+  &&  ((p_pre) # Int  |-> v)
+.
+
+(*----- Function abs_y -----*)
+
+Definition abs_y_return_wit_1 := 
+forall (p_pre: Z) (y: Z) (x: Z) (retval: Z) (PreH1 : (y < 0)) (PreH2 : (retval = (-y))) (PreH3 : ((INT_MIN) < y)) ,
+  ((&((p_pre)  # "tuple" ->ₛ "y")) # Int  |-> y)
+  **  ((&((p_pre)  # "tuple" ->ₛ "x")) # Int  |-> x)
+|--
+  “ (y < 0) ” 
+  &&  “ (retval = (-y)) ”
+  &&  ((&((p_pre)  # "tuple" ->ₛ "x")) # Int  |-> x)
+  **  ((&((p_pre)  # "tuple" ->ₛ "y")) # Int  |-> y)
+.
+
+Definition abs_y_return_wit_2 := 
+forall (p_pre: Z) (y: Z) (x: Z) (retval: Z) (PreH1 : (y >= 0)) (PreH2 : (retval = y)) (PreH3 : ((INT_MIN) < y)) ,
+  ((&((p_pre)  # "tuple" ->ₛ "y")) # Int  |-> y)
+  **  ((&((p_pre)  # "tuple" ->ₛ "x")) # Int  |-> x)
+|--
+  “ (y >= 0) ” 
+  &&  “ (retval = y) ”
+  &&  ((&((p_pre)  # "tuple" ->ₛ "x")) # Int  |-> x)
+  **  ((&((p_pre)  # "tuple" ->ₛ "y")) # Int  |-> y)
+.
+
+Definition abs_y_partial_solve_wit_1_pure := 
+forall (p_pre: Z) (y: Z) (x: Z) (PreH1 : ((INT_MIN) < y)) ,
+  ((( &( "p" ) )) # Ptr  |-> p_pre)
+  **  ((&((p_pre)  # "tuple" ->ₛ "x")) # Int  |-> x)
+  **  ((&((p_pre)  # "tuple" ->ₛ "y")) # Int  |-> y)
+|--
+  “ ((INT_MIN) < y) ”
+.
+
+Definition abs_y_partial_solve_wit_1_aux := 
+forall (p_pre: Z) (y: Z) (x: Z) (PreH1 : ((INT_MIN) < y)) ,
+  ((&((p_pre)  # "tuple" ->ₛ "x")) # Int  |-> x)
+  **  ((&((p_pre)  # "tuple" ->ₛ "y")) # Int  |-> y)
+|--
+  “ ((INT_MIN) < y) ” 
+  &&  “ ((INT_MIN) < y) ”
+  &&  ((&((p_pre)  # "tuple" ->ₛ "y")) # Int  |-> y)
+  **  ((&((p_pre)  # "tuple" ->ₛ "x")) # Int  |-> x)
+.
+
+Definition abs_y_partial_solve_wit_1 := abs_y_partial_solve_wit_1_pure -> abs_y_partial_solve_wit_1_aux.
+
+Module Type VC_Correct.
+
+Axiom proof_of_abs_mem_safety_wit_1 : abs_mem_safety_wit_1.
+Axiom proof_of_abs_mem_safety_wit_2 : abs_mem_safety_wit_2.
+Axiom proof_of_abs_mem_return_wit_1 : abs_mem_return_wit_1.
+Axiom proof_of_abs_mem_return_wit_2 : abs_mem_return_wit_2.
+Axiom proof_of_abs_y_return_wit_1 : abs_y_return_wit_1.
+Axiom proof_of_abs_y_return_wit_2 : abs_y_return_wit_2.
+Axiom proof_of_abs_y_partial_solve_wit_1_pure : abs_y_partial_solve_wit_1_pure.
+Axiom proof_of_abs_y_partial_solve_wit_1 : abs_y_partial_solve_wit_1.
+
+End VC_Correct.

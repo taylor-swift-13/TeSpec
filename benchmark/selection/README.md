@@ -1,5 +1,11 @@
 # Benchmark 选集：完整 CN 基线与分类扩展
 
+> 22 个 CN 补充输入均已建立 QCP 版本和验证记录：12 个正例/修正规约版本通过，5 个按预期拒绝，5 个原始 manual VC 的否定通过 Coq 内核检查。详情见 [补充输入报告](qcp-migration/supplemental/README.md)。错误例保留，不计为通过。
+
+> 队列 QCP 修正规约版本已验证：22 个自动 VC 消解、2 个 manual VC 通过内核检查。保留原 CN 合同反例，详见 [发现与修正说明](qcp-migration/simple/advanced/queue-corrected/queue-spec-finding.md)。全体 54 个核心程序现在都有按 auto 加 manual 口径通过的 QCP 目标版本；队列修正版不声称等价于原 CN 合同。
+
+> QCP 迁移最新进展：37 个完整 VC 模块、345 个 VC 已独立内核检查；数组初始化、完整链表排序/反转及 sized stack 的结果见 [当前验证说明](qcp-migration/simple/README.md)。队列原合同反例与待证项单列，CN/teSpec 配对实验尚未完成。
+
 先完整收录 CN/Fulminate 原始示例，再按程序类别和待检验的 teSpec 能力选取 QCP、CAV 程序。程序总数由覆盖范围决定，取消固定 80 项的上限。选集由 [policy.json](policy.json) 指定，[catalog.json](catalog.json) 和 [programs.csv](programs.csv) 给出逐项来源、类别、选入理由、运行状态和证据入口。
 
 ## 完整 CN 基线
@@ -71,3 +77,5 @@ python3 benchmark/selection/build_catalog.py --write
 ```
 
 新增结果应放在独立运行目录并保留版本、ABI、二进制哈希、输入 ID 和资源预算。新结果引用到清单后再生成表，不改写冻结报告。仓库只保存测试输入、规约和必要接口；sac、编译器和 SMT solver 源码继续留在仓库外。
+
+首批简单目标的状态已纳入总清单，见 [迁移目录](qcp-migration/README.md#简单函数批次)。来源覆盖、函数迁移及实际配对执行分别统计。

@@ -1,0 +1,4 @@
+Require Import slf16_basic_succ_using_incr_goal slf16_basic_succ_using_incr_proof_manual.
+Module VC_Correctness : VC_Correct.
+Include slf16_basic_succ_using_incr_proof_manual.
+End VC_Correctness.

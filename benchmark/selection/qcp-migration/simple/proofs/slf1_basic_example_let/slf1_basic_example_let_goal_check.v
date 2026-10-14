@@ -1,0 +1,4 @@
+Require Import slf1_basic_example_let_goal slf1_basic_example_let_proof_manual.
+Module VC_Correctness : VC_Correct.
+Include slf1_basic_example_let_proof_manual.
+End VC_Correctness.

@@ -1,0 +1,6 @@
+Require Import slf12_basic_ref_greater_abstract.qcp_goal slf12_basic_ref_greater_abstract.qcp_proof_auto slf12_basic_ref_greater_abstract.qcp_proof_manual.
+
+Module VC_Correctness : VC_Correct.
+  Include slf12_basic_ref_greater_abstract.qcp_proof_auto.
+  Include slf12_basic_ref_greater_abstract.qcp_proof_manual.
+End VC_Correctness.

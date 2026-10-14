@@ -1,0 +1,4 @@
+Require Import slf6_basic_incr_two_aliased_call_goal slf6_basic_incr_two_aliased_call_proof_manual.
+Module VC_Correctness : VC_Correct.
+Include slf6_basic_incr_two_aliased_call_proof_manual.
+End VC_Correctness.

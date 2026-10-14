@@ -1,0 +1,4 @@
+Require Import slf7_basic_incr_first_goal slf7_basic_incr_first_proof_manual.
+Module VC_Correctness : VC_Correct.
+Include slf7_basic_incr_first_proof_manual.
+End VC_Correctness.

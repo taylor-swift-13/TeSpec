@@ -1,0 +1,40 @@
+{
+  "status": "TOOL_ERROR",
+  "returncode": 1,
+  "command": [
+    "/home/yangfp/tespec-baselines/qcp-benchmark-vc-printer/build/release/symexec",
+    "--input-file=/home/yangfp/teSpec-benchmark-tespec/benchmark/selection/qcp-migration/supplemental/array_load_strong_client/array_load_strong_client.qcp.c",
+    "--Json-output",
+    "--no-strategy-gen",
+    "--gen-and-backup",
+    "--coq-output-dir=/home/yangfp/teSpec-benchmark-tespec/benchmark/selection/qcp-migration/supplemental/array_load_strong_client/native/vc",
+    "--no-logic-path",
+    "--disable-solver-info",
+    "--no-exec-info",
+    "-I/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human"
+  ],
+  "source_sha256": "601105f7c1b14876ab6b5fda767efcfbbc6d738cda3c95d04a13c87d0f0aabec",
+  "log_sha256": "fddc128f5d8ae78d56805e103d855e6f548d49a294c9b2273fb0e26fe539c042",
+  "error": {
+    "Main Error Message": "fatal error: Cannot derive the precondition of function read for spec (default)",
+    "fileName": "/home/yangfp/teSpec-benchmark-tespec/benchmark/selection/qcp-migration/supplemental/array_load_strong_client/array_load_strong_client.qcp.c",
+    "line": 16,
+    "column": 26,
+    "additional_info": [
+      "Function call failed because the caller assertion does not entail the callee Require assertion after substituting actual arguments.\n",
+      "Function call argument bindings:\n  argument 1: p <- pointer_offset(a_397_addr, 0, (Size_of signed int), signed int)\n  argument 2: n <- 3\n  argument 3: i <- 0\n",
+      "Callee precondition after substituting actual arguments:\nEX l_404_free \nPROP[\n  0 <= 0;\n  0 < 3 ]\nLOCAL[]\nSEP[\n  IntArray.full (pointer_offset(a_397_addr, 0, (Size_of signed int), signed int), 3, l_404_free) ]\n\n",
+      "Caller current assertion:\nEX zero_400_addr a_397_addr \nPROP[]\nLOCAL[\n  Temp zero zero_400_addr;\n  Temp a a_397_addr ]\nSEP[\n  has_permission(zero_400_addr, signed int);\n  IntArray.full (a_397_addr, 3, cons(Z_1, 0, cons(Z_1, 1, cons(Z_1, 2, nil(Z_1))))) ]\n\n"
+    ]
+  },
+  "error_kind": "call_precondition_not_established",
+  "functions": {
+    "read": {
+      "status": "AUTOMATICALLY_DISCHARGED",
+      "auto_solved": 2,
+      "manual": 0
+    }
+  },
+  "certificate": "NOT_CHECKED",
+  "unit_manual_obligations": 0
+}

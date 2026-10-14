@@ -1,0 +1,98 @@
+[
+  {
+    "status": "COMPLETED",
+    "returncode": 0,
+    "command": [
+      "/home/yangfp/tespec-baselines/qcp-upstream/build/release/symexec",
+      "--input-file=/home/yangfp/teSpec/benchmark/selection/qcp-migration/simple/init_array.qcp.c",
+      "--Json-output",
+      "--no-strategy-gen",
+      "--gen-and-backup",
+      "--coq-output-dir=/home/yangfp/teSpec/benchmark/selection/qcp-migration/simple/evidence-batch5/init_array/vc",
+      "--no-logic-path",
+      "--disable-solver-info",
+      "--no-exec-info",
+      "-I/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human"
+    ],
+    "source_sha256": "09ff1e3f190f0fff7ac490c02f171978a04cfb1a26cf5a25deb71f4d7d99036f",
+    "log_sha256": "788754adfd0c4bce31e51d1abae78936a306eb3b2a03ab69ac63c0d7d18b1660",
+    "error": null,
+    "error_kind": null,
+    "functions": {
+      "init_array": {
+        "status": "AUTOMATICALLY_DISCHARGED",
+        "auto_solved": 6,
+        "manual": 0
+      }
+    },
+    "certificate": "NOT_CHECKED",
+    "unit_manual_obligations": 0
+  },
+  {
+    "status": "COMPLETED",
+    "returncode": 0,
+    "command": [
+      "/home/yangfp/tespec-baselines/qcp-upstream/build/release/symexec",
+      "--input-file=/home/yangfp/teSpec/benchmark/selection/qcp-migration/simple/init_array2.qcp.c",
+      "--Json-output",
+      "--no-strategy-gen",
+      "--gen-and-backup",
+      "--coq-output-dir=/home/yangfp/teSpec/benchmark/selection/qcp-migration/simple/evidence-batch5/init_array2/vc",
+      "--no-logic-path",
+      "--disable-solver-info",
+      "--no-exec-info",
+      "-I/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human"
+    ],
+    "source_sha256": "2ec41f4ccb0e80bbe3cbdb5fffc641eae2568faf5c81dc958d09ecb9e95d2959",
+    "log_sha256": "5244d33875dacd471b507a1d6da033e385cb5335e96a3e6f9b576d9225e8a7ba",
+    "error": null,
+    "error_kind": null,
+    "functions": {
+      "init_array2": {
+        "status": "RESIDUAL",
+        "auto_solved": 3,
+        "manual": 3
+      }
+    },
+    "certificate": "NOT_CHECKED",
+    "unit_manual_obligations": 3
+  },
+  {
+    "status": "TOOL_ERROR",
+    "returncode": 1,
+    "command": [
+      "/home/yangfp/tespec-baselines/qcp-upstream/build/release/symexec",
+      "--input-file=/home/yangfp/teSpec/benchmark/selection/qcp-migration/simple/init_array_rev.qcp.c",
+      "--Json-output",
+      "--no-strategy-gen",
+      "--gen-and-backup",
+      "--coq-output-dir=/home/yangfp/teSpec/benchmark/selection/qcp-migration/simple/evidence-batch5/init_array_rev/vc",
+      "--no-logic-path",
+      "--disable-solver-info",
+      "--no-exec-info",
+      "-I/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human"
+    ],
+    "source_sha256": "0f139cc07b51092eda437574bfd712ec265d59fcfcaec12f98e45e304b7c2034",
+    "log_sha256": "9e7001f988baf01f881168e5a33945b1ea4469de330a482aef073db200bbe05b",
+    "error": {
+      "Main Error Message": "fatal error: Partial Solve Invariant Error",
+      "fileName": "/home/yangfp/teSpec/benchmark/selection/qcp-migration/simple/init_array_rev.qcp.c",
+      "line": 9,
+      "column": 89,
+      "additional_info": [
+        "Partial Solve Failed for Partial Invariant\n",
+        "The left is \nEX j_382_addr \nPROP[\n  0 <= n_370_pre;\n  n_370_pre <= UINT_MAX;\n  0 < n_370_pre ]\nLOCAL[\n  Temp j j_382_addr;\n  Temp p p_374_addr;\n  Temp n n_371_addr ]\nSEP[\n  store(j_382_addr, 0, unsigned int);\n  store(p_374_addr, p_373_pre, signed I8*);\n  store(n_371_addr, n_370_pre, unsigned int);\n  CharArray.undef_full (p_373_pre, n_370_pre) ]\n\n",
+        "The right is \nEX j_383_value \nPROP[\n  0 <= j_383_value;\n  j_383_value <= n_370_pre ]\nLOCAL[\n  Temp j j_382_addr ]\nSEP[\n  store(j_382_addr, j_383_value, unsigned int);\n  CharArray.undef_seg (p_373_pre, 0, (n_370_pre - j_383_value));\n  CharArray.seg (p_373_pre, (n_370_pre - j_383_value), n_370_pre, repeat_Z(Z_1, 0, j_383_value)) ]\n\n",
+        "Here are the checked results:\n",
+        "Sep cannot be fully solved\n",
+        "The Sep is:\n",
+        "SEP[\n  CharArray.undef_full (p_373_pre, (n_370_pre - 0));\n  CharArray.seg (p_373_pre, (n_370_pre - 0), n_370_pre, repeat_Z(Z_1, 0, 0)) ]\n\n",
+        "=============================================================================================\n"
+      ]
+    },
+    "error_kind": null,
+    "functions": {},
+    "certificate": "NOT_CHECKED",
+    "unit_manual_obligations": 0
+  }
+]

@@ -1,0 +1,30 @@
+#include "queue_guarded_def.h"
+id : 201
+priority : core(1)
+left : CNQueueAux(?f, ?b, ?l) at 0
+check : infer(f == b);
+action : left_erase(0); left_add(l == nil{Z});
+
+id : 202
+priority : core(3)
+left : CNQueueAux(?f, ?b, ?l) at 0
+right : store(field_addr(f, int_queueCell, next), PTR(struct int_queueCell), ?q) at 1
+check : infer(f != b);
+action : left_erase(0); left_exist_add(a); left_exist_add(tl); left_exist_add(y);
+ left_add(l == cons{Z}(a,tl)); left_add(f != 0); left_add(y != 0);
+ left_add(store(field_addr(f,int_queueCell,first),I32,a));
+ left_add(store(field_addr(f,int_queueCell,next),PTR(struct int_queueCell),y));
+ left_add(CNQueueAux(y,b,tl));
+
+id : 203
+priority : core(1)
+right : CNQueueAux(?f, ?b, nil{Z}) at 0
+action : right_erase(0); right_add(f == b);
+
+id : 204
+priority : core(3)
+right : CNQueueAux(?f, ?b, cons{Z}(?a,?tl)) at 0
+action : right_erase(0); right_exist_add(y); right_add(f != b); right_add(f != 0); right_add(y != 0);
+ right_add(store(field_addr(f,int_queueCell,first),I32,a));
+ right_add(store(field_addr(f,int_queueCell,next),PTR(struct int_queueCell),y));
+ right_add(CNQueueAux(y,b,tl));

@@ -1,0 +1,105 @@
+{
+  "fileName": "/home/yangfp/teSpec/benchmark/selection/qcp-migration/simple/slf_incr2.qcp.c",
+  "functionName": "call_both_better",
+  "loaded_strategies": [
+    "common",
+    "string_literal"
+  ],
+  "result": "failed",
+  "verificationStatus": "failed",
+  "has_manual_obligations": true,
+  "manual_obligation_count": 2,
+  "manual_obligations": [
+    {
+      "kind": "return_checker_wit",
+      "functionName": "incr2",
+      "fileName": "/home/yangfp/teSpec/benchmark/selection/qcp-migration/simple/slf_incr2.qcp.c",
+      "line": 3,
+      "column": 0,
+      "summary": "Cannot automatically prove that a return path satisfies the postcondition.",
+      "goal": "0 <= v &&\nv <= 4294967295 &&\n0 <= w &&\nw <= 4294967295 &&\np@pre != q@pre &&\n(*p@pre == unsigned_last_nbits(v + 1, 32)) *\n(*q@pre == unsigned_last_nbits(w + 1, 32))\n\n|--\np@pre != q@pre &&\n(*p@pre == (v + 1) %% 4294967296) *\n(*q@pre == (w + 1) %% 4294967296)\n"
+    },
+    {
+      "kind": "return_checker_wit",
+      "functionName": "incr2",
+      "fileName": "/home/yangfp/teSpec/benchmark/selection/qcp-migration/simple/slf_incr2.qcp.c",
+      "line": 3,
+      "column": 0,
+      "summary": "Cannot automatically prove that a return path satisfies the postcondition.",
+      "goal": "0 <= v &&\nv <= 4294967295 &&\n0 <= w &&\nw <= 4294967295 &&\np@pre == q@pre &&\nv == w &&\n*q@pre == unsigned_last_nbits(unsigned_last_nbits(v + 1, 32) + 1, 32)\n\n|--\np@pre == q@pre &&\n*p@pre == (v + 2) %% 4294967296\n"
+    }
+  ],
+  "errormessage": {
+    "Main Error Message": "fatal error: Cannot derive the precondition of function incr2 for spec (default)",
+    "fileName": "/home/yangfp/teSpec/benchmark/selection/qcp-migration/simple/slf_incr2.qcp.c",
+    "line": 18,
+    "column": 11,
+    "additional_info": [
+      "Function call failed because the caller assertion does not entail the callee Require assertion after substituting actual arguments.\n",
+      "Function call argument bindings:\n  argument 1: p <- p_393_pre\n  argument 2: q <- p_393_pre\n",
+      "Callee precondition after substituting actual arguments:\nPROP[\n  0 <= ((v_396_free + 1) %% 4294967296);\n  ((v_396_free + 1) %% 4294967296) <= UINT_MAX;\n  0 <= ((v_396_free + 1) %% 4294967296);\n  ((v_396_free + 1) %% 4294967296) <= UINT_MAX;\n  p_393_pre != p_393_pre ]\nLOCAL[]\nSEP[\n  store(p_393_pre, ((v_396_free + 1) %% 4294967296), unsigned int) ]\n\n",
+      "Caller current assertion:\nPROP[\n  p_393_pre != q_390_pre;\n  0 <= v_396_free;\n  v_396_free <= UINT_MAX;\n  0 <= w_395_free;\n  w_395_free <= UINT_MAX;\n  p_393_pre != q_390_pre ]\nLOCAL[\n  Temp q q_391_addr;\n  Temp p p_394_addr ]\nSEP[\n  store(p_393_pre, ((v_396_free + 1) %% 4294967296), unsigned int);\n  store(q_390_pre, ((w_395_free + 1) %% 4294967296), unsigned int);\n  store(p_394_addr, p_393_pre, unsigned int*);\n  store(q_391_addr, q_390_pre, unsigned int*) ]\n\n"
+    ]
+  },
+  "warningmessage": null,
+  "current_assertions": null,
+  "FunctionDerivation": null,
+  "WitnessList": [
+    {
+      "functionName": "incr2",
+      "Witness": {
+        "safety_checker_wit": {
+          "total": 4,
+          "auto_solved": 4,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "entailment_checker_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "return_checker_wit": {
+          "total": 2,
+          "auto_solved": 0,
+          "manual": 2,
+          "manual_witness": [
+            {
+              "line": 3,
+              "column": 0,
+              "fileName": "/home/yangfp/teSpec/benchmark/selection/qcp-migration/simple/slf_incr2.qcp.c",
+              "goal": "0 <= v &&\nv <= 4294967295 &&\n0 <= w &&\nw <= 4294967295 &&\np@pre != q@pre &&\n(*p@pre == unsigned_last_nbits(v + 1, 32)) *\n(*q@pre == unsigned_last_nbits(w + 1, 32))\n\n|--\np@pre != q@pre &&\n(*p@pre == (v + 1) %% 4294967296) *\n(*q@pre == (w + 1) %% 4294967296)\n"
+            },
+            {
+              "line": 3,
+              "column": 0,
+              "fileName": "/home/yangfp/teSpec/benchmark/selection/qcp-migration/simple/slf_incr2.qcp.c",
+              "goal": "0 <= v &&\nv <= 4294967295 &&\n0 <= w &&\nw <= 4294967295 &&\np@pre == q@pre &&\nv == w &&\n*q@pre == unsigned_last_nbits(unsigned_last_nbits(v + 1, 32) + 1, 32)\n\n|--\np@pre == q@pre &&\n*p@pre == (v + 2) %% 4294967296\n"
+            }
+          ]
+        },
+        "partial_solve_wit": {
+          "total": 1,
+          "auto_solved": 1,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "which_implies_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "total_witness_count": {
+          "auto_solved": 5,
+          "manual": 2
+        }
+      }
+    },
+    {
+      "functionName": "call_both_better",
+      "Witness": null
+    }
+  ]
+}

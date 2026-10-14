@@ -1,0 +1,30 @@
+{
+  "source": "benchmark/selection/sources/fulminate-cn/src/examples/queue_all.c",
+  "function": "push_induction",
+  "scope": "Concrete witness against original guarded IntQueueAux postcondition; original C function body unchanged",
+  "results": [
+    {
+      "abi": 32,
+      "witness": {
+        "precondition_holds": true,
+        "before_length": 2,
+        "post_length": 1,
+        "expected_post_length": 3,
+        "postcondition_holds": false
+      },
+      "source_sha256": "2666a08c0b33947d61fdff271fd76de8cc6c5cc430d1848bc891c3a070b64271"
+    },
+    {
+      "abi": 64,
+      "witness": {
+        "precondition_holds": true,
+        "before_length": 2,
+        "post_length": 1,
+        "expected_post_length": 3,
+        "postcondition_holds": false
+      },
+      "source_sha256": "2666a08c0b33947d61fdff271fd76de8cc6c5cc430d1848bc891c3a070b64271"
+    }
+  ],
+  "reason": "Original precondition permits p->next to alias an interior prefix node. CN IntQueueAux stops at this endpoint, so the post-sequence has one element, not snoc([1,2],3). The omitted assert_not_equal proof hint is false on the recursive call."
+}

@@ -1,0 +1,42 @@
+{
+  "fileName": "/home/yangfp/teSpec/benchmark/selection/qcp-migration/simple/init_array_rev.qcp.c",
+  "functionName": "init_array2",
+  "loaded_strategies": [
+    "char_array",
+    "common",
+    "string_literal",
+    "undef_char_array",
+    "mixed_char_array",
+    "char_array_shape"
+  ],
+  "result": "failed",
+  "verificationStatus": "failed",
+  "has_manual_obligations": false,
+  "manual_obligation_count": 0,
+  "manual_obligations": null,
+  "errormessage": {
+    "Main Error Message": "fatal error: Partial Solve Invariant Error",
+    "fileName": "/home/yangfp/teSpec/benchmark/selection/qcp-migration/simple/init_array_rev.qcp.c",
+    "line": 9,
+    "column": 102,
+    "additional_info": [
+      "Partial Solve Failed for Partial Invariant\n",
+      "The left is \nEX j_382_addr \nPROP[\n  0 <= n_370_pre;\n  n_370_pre <= UINT_MAX;\n  0 < n_370_pre ]\nLOCAL[\n  Temp j j_382_addr;\n  Temp p p_374_addr;\n  Temp n n_371_addr ]\nSEP[\n  store(j_382_addr, 0, unsigned int);\n  store(p_374_addr, p_373_pre, signed I8*);\n  store(n_371_addr, n_370_pre, unsigned int);\n  CharArray.undef_full (p_373_pre, n_370_pre) ]\n\n",
+      "The right is \nEX j_383_value \nPROP[\n  0 <= j_383_value;\n  j_383_value <= n_370_pre ]\nLOCAL[\n  Temp j j_382_addr ]\nSEP[\n  store(j_382_addr, j_383_value, unsigned int);\n  CharArray.undef_full (p_373_pre, (n_370_pre - j_383_value));\n  CharArray.full (pointer_offset(p_373_pre, (n_370_pre - j_383_value), (Size_of signed I8), signed I8), j_383_value, repeat_Z(Z_1, 0, j_383_value)) ]\n\n",
+      "Here are the checked results:\n",
+      "Sep cannot be fully solved\n",
+      "The Sep is:\n",
+      "SEP[\n  CharArray.undef_full (p_373_pre, (n_370_pre - 0)) ]\n\n",
+      "=============================================================================================\n"
+    ]
+  },
+  "warningmessage": null,
+  "current_assertions": null,
+  "FunctionDerivation": null,
+  "WitnessList": [
+    {
+      "functionName": "init_array2",
+      "Witness": null
+    }
+  ]
+}
