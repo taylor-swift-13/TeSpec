@@ -48,6 +48,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repo", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--binary", type=Path, help="explicit binary for compatibility replay")
+    parser.add_argument("--binary-revision", help="record the supplied binary source revision")
     parser.add_argument("--timeout", type=float, default=120)
     parser.add_argument(
         "--case",
@@ -58,7 +60,7 @@ def main():
     )
     args = parser.parse_args()
     repo, out = args.repo.resolve(), args.output.resolve()
-    binary = repo / "build/release/symexec"
+    binary = args.binary.resolve(strict=True) if args.binary else repo / "build/release/symexec"
     if out.exists() and any(out.iterdir()):
         parser.error("output must be empty")
 
@@ -77,6 +79,8 @@ def main():
         "smt_revision": git(repo / "smt_solver", "rev-parse", "HEAD"),
         "smt_status": git(repo / "smt_solver", "status", "--porcelain"),
         "binary_sha256": comparison.sha(binary),
+        "binary_override": bool(args.binary),
+        "binary_source_revision": args.binary_revision if args.binary else git(repo, "rev-parse", "HEAD"),
         "driver_sha256": comparison.sha(Path(__file__)),
     }
     if metadata["qcp_status"] or metadata["smt_status"]:

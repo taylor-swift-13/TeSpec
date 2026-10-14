@@ -990,10 +990,11 @@ end."""
                 ]
                 self.assertEqual(len(returns), 1)
                 before, after = returns[0].split("|--")
-                self.assertIn("__return == 9", before)
-                self.assertIn("*p@pre == 9", before)
+                self.assertIn("n == 0", before)
+                self.assertRegex(before, r"__return == n \+")
+                self.assertRegex(before, r"\*p@pre == n \+")
                 self.assertNotIn("is_square", before)
-                self.assertIn("is_square(9)", after)
+                self.assertIn("is_square(", after)
                 trace = execution["spec_test"]["instance_trace"]
                 self.assertTrue(trace)
                 self.assertNotIn("is_square", trace[-1]["P"])

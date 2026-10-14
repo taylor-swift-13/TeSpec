@@ -1,0 +1,78 @@
+查询副本化简与 QCP 执行兼容性验证（2026-10-14）
+
+结论
+执行状态保持符号形式；固定绑定和求解化简只应用于独立查询。
+本次固定集 34 个输入、两种模式 68 次执行，完成数从 56 增至 62。
+原来完成的执行没有回退。完整 unittest：356 项、15 项跳过、0 失败。
+SAC 原有 spec_tests、memory_precondition_checks、precondition_checks 三组通过。
+这些结果不是“所有 QCP 程序都可具体执行”的保证；仍有下述明确缺口。
+
+实现边界
+1. 绑定仅针对原 Pre 的自由变量，按逻辑变量 ID 注册；不为展开产生的
+   存在变量猜测地址，不用求解后的堆覆盖继续执行的状态。
+2. 分支、别名、下标范围、安全和最终 VC 在独立副本上代入、化简、求解。
+   只有已证明不可行的分支才能被剪掉；不完整绑定允许多个可行分支。
+3. 原策略匹配优先使用符号字段路径；空间查询先保留字段结构，必要时
+   在另一个新副本上尝试数值偏移匹配。未修改任何 .strategies 规则文件。
+4. 构造子匹配可沿源断言中已有等式寻找构造子，保留源表达式映射。
+   此扩展仅用于 spec-test，原 QCP 验证模式不启用它；无测试名分支。
+5. 安全检查接收调用方交出的副本或不再继续执行的状态，在此查询边界
+   保存紧凑 VC，避免为每个循环步骤长期保存整份历史。符号执行轨迹不变。
+6. 缓存只保存无变量整数比较，或仅由固定输入独立决定的比较结果；
+   完整公式校验哈希碰撞，绑定上下文变化时清空，不缓存分支相关堆事实。
+7. 求解化简包括闭合算术、有限列表运算、构造子事实及输入等式传播。
+   无法化简的外部 Coq 定义仍保留为残留证明，不能假定为真。
+
+本次发现并修复的回归
+- 自定义空链表：把空间查询字段直接变成数值偏移会妨碍原策略匹配。
+  保留结构的查询恢复空链表后置条件 PASS，前置条件仍需证明。
+- 30 x 30 嵌套循环：复制和打印全历史安全义务导致时间/内存开销。
+  在独立安全查询入口化简后，在原 30 秒测试预算内通过。
+  发布二进制用 Release；保存的旧基线是 Debug，不能拿二者计时宣称提速。
+
+结果解释
+固定集：旧版 PASS 36 / FAIL 2 / UNKNOWN 20 / ERROR 10；
+        新版 PASS 38 / FAIL 2 / UNKNOWN 26 / ERROR 2。
+其中 UNKNOWN 增加部分来自原先 ERROR 已能执行但证明未完成，不能解释为
+新增证明回退。66 次符合预设结果，2 次队列仅作诊断，不算通过。
+树的四个输入在两种模式均完成执行，轨迹保留符号字段地址。
+错误返回值变异在两种模式仍为 FAIL；未完全绑定的堆保留两个可行分支。
+
+原 QCP 模式对照：12 组程序及变异/细化，共 26 次，两版状态及目标函数
+自动/手工义务数量完全相同：7 自动完成、13 残留、6 共有错误。
+共有错误涉及 array_cells、list_length、tree_size，不能计作成功证明。
+使用 run-qcp-baseline-smoke.py 的 --binary/--binary-revision 显式选择版本；
+本仓库已无旧 smoke/cell.qcp.c，重放时应通过 --case 选择 paired 下的目录。
+
+扩展 QCP 内存集：11 个程序、44 个固定输入、原程序/规约变异/实现变异，
+共 132 次，5 秒时限，结果 20 PASS / 12 FAIL / 100 UNKNOWN，无缺失结果。
+这是补充诊断集，不是已经完成 CN 配对及独立前置条件证明的完整基准。
+原程序的四类数组全部 PASS；插入、插入排序、多态反转的所有原输入
+执行完成但整体仍 UNKNOWN。100 次 UNKNOWN 不能计为算法验证成功。
+
+剩余缺口与后续优先级
+A. 队列及 LiteOS 哨兵链表：which implies 在普通 QCP 中负责暴露字段；
+   现有 check-preserve 策略检查注解副本但不替换执行状态，且原策略缺少
+   对应直接展开，所以首次字段读取失败。LiteOS 的 DL_Node 已含地址，
+   这不是地址未实例化。应补可证明的表示展开复用机制；不得把未经证明
+   的注解结论直接当成测试执行状态。队列后续还有无函数体 free 调用。
+B. shape-only 双链表：Pre 只有根地址及形状谓词，没有可绑定的完整逻辑
+   列表或长度。只绑定 Pre 自由变量不能唯一确定链长；应明确实例范围，
+   不能偷偷给存在地址/尾节点赋值。当前按预算报告 UNKNOWN。
+C. 外部 Coq 谓词、递归逻辑函数与注解绑定：树、部分链表、all-boundaries
+   注解仍需要求解支持或 ITP。应从已声明定义或已证明规则导入可检查的
+   化简依据，而非针对 tree_size、store_dll 等名称硬编码返回值。
+
+证据与复现
+机器报告：benchmark/reports/query-simplification-2026-10-14.json
+固定清单：tests/fixtures/query_simplification/cases.json（含源文件哈希）
+固定重放：scripts/replay-query-simplification.py --binary <binary>
+          --output <fresh-directory> --check
+完整测试：SAC_SYMEXEC="$PWD/bin/tespec-symexec" QCIP_ROOT="$PWD/runtime/qcip"
+          python3 -m unittest discover -s tests
+扩展测试：python3 benchmark/paper-cn-qcp/qcp-memory-v2/run.py
+          --output <fresh-directory> --timeout 5
+本地原始日志：.spectest/query-simplification/ 下 *9a9d7d6* 目录与日志。
+SAC 本地保存至 9a9d7d602c3799ac53f868764aa190bd8324f414，不推送 SAC。
+teSpec 只交付二进制、元信息、测试和报告，不包含 SAC 实现源码。
+未运行 Coq 内核认证，certificate 仍为 NOT_CHECKED；不声称消除了 ITP。
