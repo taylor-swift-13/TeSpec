@@ -1,0 +1,43 @@
+堆展开后续修复（2026-10-14）
+
+本轮未把队列和 LiteOS 标记为执行通过。实际完成的改动：
+1. 通用 Coq 堆定义解析支持隐式 Type 参数及嵌套参数类型；
+   类型参数保留在生成的 QCP 匹配模式和 Coq 等价命题中。
+2. 多态定义折叠使用显式 @ 引用，避免无法推断类型；
+   原有非多态生成形式保持不变。
+3. 非法隐式值参数、不平衡括号、重复/空参数被拒绝。
+   尚未支持的多态构造子推断明确拒绝，不猜测逻辑模型。
+4. 未建立字段解释对应证明时，归一化执行器返回
+   UNKNOWN / normalization_layout_unproved / NOT_RUN。
+   校验摘要不匹配、文件被篡改等仍是 ERROR。没有放宽任何启用条件。
+
+实际证明：
+- 原 QCP store_queue 外层定义展开：Coq 编译和独立内核重放 PASS。
+- 原 QCP store_dll 外层多态定义展开：Coq 编译和独立内核重放 PASS。
+  这只证明各自原库解释中的定义等价；不证明整个程序执行或其所有 VC。
+- 接到当前程序时，两者都被原有布局关联检查拒绝：
+  抽象字段地址解释尚未与执行器的实际结构体布局建立对应证明。
+  不能因等价命题已经成立就跳过这第二层检查。
+- 原库、原策略、原测试绑定和 SAC 二进制未更改。
+  依赖编译只在 .spectest/which-implies-repair/prepared-runtime/ 私有副本进行。
+
+未完成的部分：
+需要一个通用且可检查的堆解释对应机制，之后才能启用两例的展开。
+不能按例子名特判，不能复制堆资源，不能丢弃固定输入关联。
+队列还需解决无函数体 free_list_cell 的执行模型；不能直接假设实现符合声明。
+shape-only 双链表仅绑定 Pre 根地址不会确定链长，这类情况继续 UNKNOWN。
+最终残留 VC 也没有因为证明了上述两个定义等价就被自动证明。
+
+工具与证据：
+spectest/rocq_predicates.py
+spectest/normalization_association.py
+spectest/normalized_execution.py
+tests/test_polymorphic_predicate_headers.py
+benchmark/reports/checked-heap-unfold-2026-10-14.json
+
+现有通用入口：
+scripts/prepare-predicate-normalization.py
+scripts/run-normalized-spec-test.py
+完整原始核验和私有依赖位于 .spectest/which-implies-repair/。
+
+完整回归：363 项，0 失败，15 跳过，213.361 秒。

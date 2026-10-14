@@ -15,7 +15,10 @@ from .core import (
     _write_vc_manifest,
     source_with_local_includes,
 )
-from .normalization_association import prepare_normalization_association
+from .normalization_association import (
+    NormalizationCompatibilityError,
+    prepare_normalization_association,
+)
 from .normalization_certificates import seal_predicate_normalization
 from .preflight import export_program_preflight, snapshot_frontend_inputs
 
@@ -341,9 +344,16 @@ def run_normalized_case(
             }
         )
         timeout = isinstance(error, subprocess.TimeoutExpired)
+        unproved_layout = isinstance(error, NormalizationCompatibilityError)
         report.update(
-            status="UNKNOWN" if timeout else "ERROR",
-            reason="execution_timeout" if timeout else "controller_validation_failed",
+            status="UNKNOWN" if timeout or unproved_layout else "ERROR",
+            reason=(
+                "normalization_layout_unproved"
+                if unproved_layout
+                else "execution_timeout"
+                if timeout
+                else "controller_validation_failed"
+            ),
             error=str(error),
             wall_seconds=time.monotonic() - started,
         )

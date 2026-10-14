@@ -9,6 +9,10 @@ from .core import JobError
 from .layout import generate_layout_source, target_layout_digest
 
 
+class NormalizationCompatibilityError(JobError):
+    """The proposed interpretation lacks a proof of compatibility."""
+
+
 def _pinned_json(path, expected):
     path = Path(path).resolve()
     if digest(path) != expected:
@@ -182,7 +186,9 @@ def prepare_normalization_association(
         or "LayoutAddress" not in modules
         or "GeneratedLayout.AddressNotations" not in details.get("notation_imports", [])
     ):
-        raise JobError("field normalization requires actual computational layout")
+        raise NormalizationCompatibilityError(
+            "field normalization requires actual computational layout"
+        )
     # These reserved modules implement the explicit computational layout API.
     # Matching them is a strict initial gate; abstract layouts remain separate.
     if "GeneratedLayout" in modules:

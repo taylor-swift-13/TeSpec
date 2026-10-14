@@ -111,6 +111,7 @@ class Clause:
     pattern_coq: str = ""
     pattern_symbols: tuple[str, ...] = ()
     coq_predicate: str = ""
+    type_parameters: tuple[str, ...] = ()
 
 
 def _atom(text, names):
@@ -540,40 +541,73 @@ def _typed_list_pattern(source, pattern, typ, parameters):
     return qcp, coq, binders, tuple(sorted(symbols))
 
 
+def _assertion_definition_header(source, name):
+    """Parse balanced typed binders; admit implicit Type parameters only."""
+    starts = list(
+        re.finditer(rf"\b(Fixpoint|Definition)\s+{re.escape(name)}(?![\w'])", source)
+    )
+    if len(starts) != 1:
+        raise JobError("expected one explicitly typed Assertion definition")
+    start = starts[0]
+    pos = start.end()
+    groups = []
+    while True:
+        while pos < len(source) and source[pos].isspace():
+            pos += 1
+        if pos >= len(source) or source[pos] not in "({":
+            break
+        opening = source[pos]
+        begin = pos + 1
+        stack = [")" if opening == "(" else "}"]
+        pos += 1
+        while pos < len(source) and stack:
+            char = source[pos]
+            if char in "({":
+                stack.append(")" if char == "(" else "}")
+            elif char in ")}":
+                if char != stack.pop():
+                    raise JobError("unbalanced predicate parameter")
+            pos += 1
+        if stack:
+            raise JobError("unterminated predicate parameter")
+        names, separator, typ = source[begin : pos - 1].partition(":")
+        if not separator or not typ.strip() or not names.split():
+            raise JobError("predicate parameters need explicit types")
+        typ = " ".join(typ.split())
+        if opening == "{" and typ != "Type":
+            raise JobError("only implicit Type parameters are supported")
+        groups.append((names.split(), typ, opening == "{"))
+    ending = re.match(r"\s*:\s*Assertion\s*:=\s*", source[pos:])
+    if ending is None:
+        raise JobError("expected one explicitly typed Assertion definition")
+    return start[1], start.start(), pos + ending.end(), groups
+
+
 def parse_predicate(source: str, name: str, *, target_layout=None):
     if name == "_" or not re.fullmatch(_ID, name):
         raise JobError("invalid predicate identifier")
     masked = _coq_dependency_code(source)
-    header = re.compile(
-        rf"\b(Fixpoint|Definition)\s+{re.escape(name)}(?![\w'])\s*((?:\([^)]*\)\s*)*)\s*:\s*Assertion\s*:=\s*"
-    )
-    matches = list(header.finditer(masked))
-    if len(matches) != 1:
-        raise JobError("expected one explicitly typed Assertion definition")
-    match = matches[0]
-    namespace = _definition_namespace(masked, match.start())
+    kind, position, body_start, groups = _assertion_definition_header(masked, name)
+    namespace = _definition_namespace(masked, position)
     qcp_name = "::".join((*namespace, name))
     coq_name = ".".join((*namespace, name))
-    params, types = [], {}
-    for group in re.findall(r"\(([^)]*)\)", match[2]):
-        names, sep, typ = group.partition(":")
-        if not sep or not typ.strip():
-            raise JobError("predicate parameters need explicit types")
-        for identifier in names.split():
+    params, type_params, types = [], [], {}
+    for names, typ, implicit in groups:
+        for identifier in names:
             if (
                 identifier == "_"
                 or not re.fullmatch(_ID, identifier)
                 or identifier in types
             ):
                 raise JobError("invalid or duplicate predicate parameter")
-            params.append(identifier)
-            types[identifier] = " ".join(typ.split())
-    inspected = re.match(rf"match\s+({_ID})\s+with\b", masked[match.end() :])
+            (type_params if implicit else params).append(identifier)
+            types[identifier] = typ
+    inspected = re.match(rf"match\s+({_ID})\s+with\b", masked[body_start:])
     scrutinee = inspected[1] if inspected else ""
     if inspected:
         if scrutinee not in params:
             raise JobError("match must inspect a predicate parameter")
-        start = match.end() + inspected.end()
+        start = body_start + inspected.end()
         end = re.search(r"\bend\s*\.", masked[start:])
         if end is None:
             raise JobError("unterminated predicate match")
@@ -585,12 +619,12 @@ def parse_predicate(source: str, name: str, *, target_layout=None):
             raise JobError("unsupported constructor clauses")
         branches = zip(pieces[1::2], pieces[2::2])
     else:
-        if match[1] != "Definition":
+        if kind != "Definition":
             raise JobError("Fixpoint must match a parameter constructor")
-        end = re.search(r"\.(?![\w'])", masked[match.end() :])
+        end = re.search(r"\.(?![\w'])", masked[body_start:])
         if end is None:
             raise JobError("unterminated predicate definition")
-        branches = [("", source[match.end() : match.end() + end.start()])]
+        branches = [("", source[body_start : body_start + end.start()])]
     clauses = []
     for pattern, branch in branches:
         pattern = pattern.strip()
@@ -617,9 +651,13 @@ def parse_predicate(source: str, name: str, *, target_layout=None):
             coq_pattern = pattern
             if constructor in {"nil", "cons"} and types[scrutinee] == "list Z":
                 constructor += "{Z}"
-        if "_" in args or len(set(args)) != len(args) or set(args) & set(params):
+        if (
+            "_" in args
+            or len(set(args)) != len(args)
+            or set(args) & (set(params) | set(type_params))
+        ):
             raise JobError("constructor binders must be fresh and distinct")
-        names = set(params) | set(args)
+        names = set(params) | set(type_params) | set(args)
         branch_types = dict(types)
         for identifier, typ in types.items():
             try:
@@ -771,16 +809,30 @@ def parse_predicate(source: str, name: str, *, target_layout=None):
         if pattern_expression:
             qpattern = pattern_qcp
         qargs = [qpattern if p == scrutinee else "?" + p for p in params]
-        lhs = qcp_name + "(" + ", ".join(qargs) + ")"
+        lhs = (
+            qcp_name
+            + (
+                "{" + ", ".join("?" + p for p in type_params) + "}"
+                if type_params
+                else ""
+            )
+            + "("
+            + ", ".join(qargs)
+            + ")"
+        )
         coq_args = ["(" + coq_pattern + ")" if p == scrutinee else p for p in params]
-        coq_lhs = coq_name + " " + " ".join(coq_args)
+        coq_lhs = " ".join(
+            [coq_name, *(f"({p} := {p})" for p in type_params), *coq_args]
+        )
         clauses.append(
             (
                 lhs,
                 coq_lhs,
                 Clause(
                     pattern,
-                    tuple(p for p in params if p != scrutinee) + tuple(args),
+                    tuple(type_params)
+                    + tuple(p for p in params if p != scrutinee)
+                    + tuple(args),
                     tuple(existentials),
                     tuple(atoms),
                     qcp_name,
@@ -795,6 +847,7 @@ def parse_predicate(source: str, name: str, *, target_layout=None):
                     pattern_coq,
                     pattern_symbols,
                     coq_name,
+                    tuple(type_params),
                 ),
             )
         )
@@ -804,6 +857,8 @@ def parse_predicate(source: str, name: str, *, target_layout=None):
 def emit_rules(clauses, *, first_id=10000, infer_models=False, scope="core"):
     if not re.fullmatch(_ID, scope):
         raise JobError("invalid normalization strategy scope")
+    if infer_models and any(clause.type_parameters for _, _, clause in clauses):
+        raise JobError("polymorphic constructor inference is not supported")
     rules = []
     for index, (lhs, _, clause) in enumerate(clauses):
         for side_index, side in enumerate(["left", "right"]):
@@ -1068,7 +1123,11 @@ def emit_equations(
         lines += [
             f"Lemma {name}_branch_{index} : {quantified}",
             f"  {lhs} = ({rhs}).",
-            "Proof. intros; unfold " + reference + " at 1; fold " + reference + ".",
+            "Proof. intros; unfold "
+            + reference
+            + " at 1; fold "
+            + ("(@" + reference + ")" if clause.type_parameters else reference)
+            + ".",
             "  apply functional_extensionality; intro h; apply propositional_extensionality.",
             "  cbv beta iota zeta delta [andp exp coq_prop].",
             "  pure_exists_reorder.",
