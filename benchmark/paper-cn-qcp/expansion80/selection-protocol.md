@@ -1,5 +1,11 @@
 # Selection and evaluation of the final 80 subjects
 
+Historical protocol for this frozen batch. The current
+[selection policy](../../selection/README.md) supersedes the fixed total and
+candidate-replacement rules below: all pinned CN/Fulminate examples are mandatory;
+QCP/CAV additions are selected by category and experiment question. Existing
+inputs, outcomes and proofs retain their original identities.
+
 The final collection must contain 80 executable subjects with reviewed CN/QCP
 contracts and shared logical inputs. Count distinct program subjects, not
 seeds, mutant versions, functions extracted without context, or client traces.

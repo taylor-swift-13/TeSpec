@@ -1,5 +1,9 @@
 # 论文用 CN–QCP 配对 benchmark
 
+当前选例规则见 [完整 CN 基线与分类扩展](../selection/README.md)：54 个 CN 主程序和
+22 个补充 C 输入全部收录，另按类别及待检验能力选择 QCP/CAV 目标。本文的 80 项及
+后续内存扩展保留为已有实验批次；新选集没有固定 80 项上限，历史结果也不因重选而删除。
+
 本目录用于比较**同一 C 程序、同一组输入、语义对应的函数 contract**。原来的
 `benchmark/experiments/` 是代码／规约生成实验，`benchmark/executor_e2e/` 是开发回归，
 `benchmark/comparison/` 是探索性比较及证明归档；本目录是独立、固定的论文数据集。

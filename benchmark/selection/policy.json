@@ -1,0 +1,568 @@
+{
+  "schema": "tespec-benchmark-selection-policy/v1",
+  "policy": "Full pinned Fulminate CN corpus, followed by category- and mechanism-selected QCP/CAV additions. No fixed total and no selection by favorable verdict.",
+  "questions": {
+    "baseline": "在相同输入和规约下，复现 Fulminate 原例的行为、所有权及错误检测。",
+    "symbolic_heap": "固定逻辑内容、保留符号地址时，能否完成检查，并与具体堆实例结果对应？",
+    "abstract_predicates": "递归、自定义或高阶堆谓词能否保持原含义进行执行和检查？",
+    "quantified_relations": "原始量词关系能否直接检查；等价改写是否有证明，是否改变基线可执行性？",
+    "checked_residuals": "同一自动阶段留下的义务，加入独立检查的 ITP 证明后解决多少 VALID/INVALID？",
+    "definition_evaluation": "归纳、递归或非线性逻辑定义的持续求值能否关闭原始检查义务？",
+    "observation_schedule": "入口出口和所有注解边界两种检查范围，对原始注解和调用义务有何不同？",
+    "allocation_lifecycle": "创建、释放、跨函数转移和生命周期错误是否获得实际执行及检测证据？",
+    "layout_boundary": "指针宽度、内存布局、内部指针和复合对象的对应关系是否成立？",
+    "nondeterminism": "外部随机调用和初始状态能否固定为双方相同的可重放轨迹？"
+  },
+  "supplements": [
+    {
+      "id": "qcp_list_length",
+      "group": "expansion80",
+      "category": "lists",
+      "questions": [
+        "symbolic_heap",
+        "abstract_predicates",
+        "checked_residuals"
+      ],
+      "selection_reason": "迭代遍历递归谓词，与 CN 原始链表组对照。"
+    },
+    {
+      "id": "qcp_list_reverse",
+      "group": "expansion80",
+      "category": "lists",
+      "questions": [
+        "symbolic_heap",
+        "abstract_predicates",
+        "observation_schedule",
+        "checked_residuals"
+      ],
+      "selection_reason": "指针反转、递归内容关系与不变式边界。"
+    },
+    {
+      "id": "qcp_list_append",
+      "group": "expansion80",
+      "category": "lists",
+      "questions": [
+        "symbolic_heap",
+        "abstract_predicates",
+        "checked_residuals"
+      ],
+      "selection_reason": "两个分离链表的所有权拼接。"
+    },
+    {
+      "id": "qcp_array_sum",
+      "group": "expansion80",
+      "category": "arrays",
+      "questions": [
+        "definition_evaluation",
+        "checked_residuals"
+      ],
+      "selection_reason": "递归求和定义对应数组遍历。"
+    },
+    {
+      "id": "qcp_array_sum_zero",
+      "group": "expansion80",
+      "category": "arrays",
+      "questions": [
+        "definition_evaluation",
+        "quantified_relations",
+        "checked_residuals"
+      ],
+      "selection_reason": "同时检查旧内容求和和全数组更新。"
+    },
+    {
+      "id": "qcp_simple_arith_gcd",
+      "group": "expansion80",
+      "category": "arithmetic",
+      "questions": [
+        "definition_evaluation",
+        "checked_residuals"
+      ],
+      "selection_reason": "递归实现、非线性整除与 gcd 逻辑定义。"
+    },
+    {
+      "id": "qcp_swap_int_pair",
+      "group": "expansion80",
+      "category": "structures",
+      "questions": [
+        "symbolic_heap",
+        "layout_boundary",
+        "checked_residuals"
+      ],
+      "selection_reason": "原始结构体谓词、字段布局与框架保持。"
+    },
+    {
+      "id": "qcp_sortArray",
+      "group": "expansion80",
+      "category": "search_sort",
+      "questions": [
+        "quantified_relations",
+        "checked_residuals"
+      ],
+      "selection_reason": "返回指针、输出长度和排序置换关系。"
+    },
+    {
+      "id": "qcp_majorityElement",
+      "group": "expansion80",
+      "category": "search_sort",
+      "questions": [
+        "quantified_relations",
+        "definition_evaluation",
+        "checked_residuals"
+      ],
+      "selection_reason": "严格多数关系及计数定义。"
+    },
+    {
+      "id": "qcp_chars_initialize",
+      "group": "expansion80",
+      "category": "arrays",
+      "questions": [
+        "layout_boundary",
+        "quantified_relations"
+      ],
+      "selection_reason": "字节数组与全部元素初始化性质。"
+    },
+    {
+      "id": "qcp_original_matrix_flat",
+      "group": "qcp-native-examples",
+      "category": "matrices",
+      "questions": [
+        "symbolic_heap",
+        "layout_boundary"
+      ],
+      "selection_reason": "连续二维矩阵与嵌套列表模型。"
+    },
+    {
+      "id": "qcp_original_matrix_pointers",
+      "group": "qcp-native-examples",
+      "category": "matrices",
+      "questions": [
+        "symbolic_heap",
+        "abstract_predicates",
+        "layout_boundary"
+      ],
+      "selection_reason": "指针表和各行独立所有权。"
+    },
+    {
+      "id": "qcp_original_string_table",
+      "group": "qcp-native-examples",
+      "category": "matrices",
+      "questions": [
+        "symbolic_heap",
+        "abstract_predicates"
+      ],
+      "selection_reason": "非连续字符串表与终止符。"
+    },
+    {
+      "id": "qcp_original_dll_queue",
+      "group": "qcp-native-examples",
+      "category": "queues",
+      "questions": [
+        "abstract_predicates",
+        "allocation_lifecycle",
+        "checked_residuals"
+      ],
+      "selection_reason": "双链表队列的节点关系及释放。"
+    },
+    {
+      "id": "qcp_original_functional_queue",
+      "group": "qcp-native-examples",
+      "category": "queues",
+      "questions": [
+        "abstract_predicates",
+        "allocation_lifecycle",
+        "definition_evaluation"
+      ],
+      "selection_reason": "两个单链表共同描述的逻辑队列。"
+    },
+    {
+      "id": "qcp_original_bst_insert",
+      "group": "qcp-native-examples",
+      "category": "trees",
+      "questions": [
+        "abstract_predicates",
+        "allocation_lifecycle",
+        "checked_residuals"
+      ],
+      "selection_reason": "二级根指针和树插入。"
+    },
+    {
+      "id": "qcp_original_expr_union",
+      "group": "qcp-native-examples",
+      "category": "trees",
+      "questions": [
+        "abstract_predicates",
+        "layout_boundary",
+        "definition_evaluation"
+      ],
+      "selection_reason": "union 表达式树与环境数组。"
+    },
+    {
+      "id": "qcp_shape_array_copy1",
+      "group": "qcp-memory-v2",
+      "category": "arrays",
+      "questions": [
+        "symbolic_heap",
+        "abstract_predicates"
+      ],
+      "selection_reason": "形状谓词下的复制及未初始化存储。"
+    },
+    {
+      "id": "qcp_shape_array_concat",
+      "group": "qcp-memory-v2",
+      "category": "arrays",
+      "questions": [
+        "symbolic_heap",
+        "abstract_predicates"
+      ],
+      "selection_reason": "多块数组拼接的区域关系。"
+    },
+    {
+      "id": "qcp_shape_array_swap",
+      "group": "qcp-memory-v2",
+      "category": "arrays",
+      "questions": [
+        "symbolic_heap",
+        "abstract_predicates"
+      ],
+      "selection_reason": "形状抽象下的交换。"
+    },
+    {
+      "id": "qcp_shape_array_vector_sum",
+      "group": "qcp-memory-v2",
+      "category": "arrays",
+      "questions": [
+        "symbolic_heap",
+        "abstract_predicates"
+      ],
+      "selection_reason": "多个输入区和输出区的分离关系。"
+    },
+    {
+      "id": "qcp_shape_dll_iter",
+      "group": "qcp-memory-v2",
+      "category": "lists",
+      "questions": [
+        "abstract_predicates",
+        "checked_residuals"
+      ],
+      "selection_reason": "双向链表的形状抽象遍历。"
+    },
+    {
+      "id": "qcp_shape_dll_reverse",
+      "group": "qcp-memory-v2",
+      "category": "lists",
+      "questions": [
+        "abstract_predicates",
+        "checked_residuals",
+        "observation_schedule"
+      ],
+      "selection_reason": "双向链接更新与边界义务。"
+    },
+    {
+      "id": "qcp_original_sll_queue",
+      "group": "qcp-memory-v2",
+      "category": "queues",
+      "questions": [
+        "abstract_predicates",
+        "allocation_lifecycle"
+      ],
+      "selection_reason": "单链表队列的出队与释放。"
+    },
+    {
+      "id": "qcp_original_list_insertion",
+      "group": "qcp-memory-v2",
+      "category": "lists",
+      "questions": [
+        "abstract_predicates",
+        "quantified_relations"
+      ],
+      "selection_reason": "插入位置、序列内容与排序性质。"
+    },
+    {
+      "id": "qcp_original_list_insertion_sort",
+      "group": "qcp-memory-v2",
+      "category": "lists",
+      "questions": [
+        "abstract_predicates",
+        "quantified_relations",
+        "observation_schedule"
+      ],
+      "selection_reason": "调用插入过程的整体排序与注解。"
+    },
+    {
+      "id": "qcp_original_polymorphic_reverse",
+      "group": "qcp-memory-v2",
+      "category": "lists",
+      "questions": [
+        "abstract_predicates",
+        "checked_residuals"
+      ],
+      "selection_reason": "多态节点及独立载荷谓词。"
+    },
+    {
+      "id": "qcp_original_liteos_list_empty",
+      "group": "qcp-memory-v2",
+      "category": "intrusive_lists",
+      "questions": [
+        "abstract_predicates",
+        "layout_boundary"
+      ],
+      "selection_reason": "原始 LiteOS 环形侵入式链表。"
+    },
+    {
+      "id": "cav_binary_search",
+      "group": "expansion80",
+      "category": "search_sort",
+      "questions": [
+        "quantified_relations",
+        "checked_residuals"
+      ],
+      "selection_reason": "排序前提与未找到时的全局不存在性。"
+    },
+    {
+      "id": "cav_array_reverse",
+      "group": "expansion80",
+      "category": "arrays",
+      "questions": [
+        "symbolic_heap",
+        "quantified_relations"
+      ],
+      "selection_reason": "原数组与最终数组的逐元素对应。"
+    },
+    {
+      "id": "cav_simple_power",
+      "group": "expansion80",
+      "category": "arithmetic",
+      "questions": [
+        "quantified_relations",
+        "definition_evaluation",
+        "checked_residuals"
+      ],
+      "selection_reason": "保留无界存在量词，并对照已有经证明的等价翻译。"
+    },
+    {
+      "id": "cav_is_multiple",
+      "group": "expansion80",
+      "category": "arithmetic",
+      "questions": [
+        "quantified_relations",
+        "checked_residuals"
+      ],
+      "selection_reason": "整除关系的量词形式、有限改写和完整 VC 证明。"
+    },
+    {
+      "id": "cav_array_sum",
+      "group": "expansion80",
+      "category": "arrays",
+      "questions": [
+        "definition_evaluation",
+        "checked_residuals"
+      ],
+      "selection_reason": "CAV 递归求和定义与 QCP 版本的来源对照。"
+    },
+    {
+      "id": "cav_array_count_nonzero",
+      "group": "expansion80",
+      "category": "arrays",
+      "questions": [
+        "definition_evaluation",
+        "quantified_relations"
+      ],
+      "selection_reason": "计数归纳定义及错误后条件反驳。"
+    },
+    {
+      "id": "cav_array_all_zero",
+      "group": "expansion80",
+      "category": "arrays",
+      "questions": [
+        "quantified_relations",
+        "checked_residuals"
+      ],
+      "selection_reason": "全称性质与存在反例。"
+    },
+    {
+      "id": "cav_array_contains",
+      "group": "expansion80",
+      "category": "search_sort",
+      "questions": [
+        "quantified_relations",
+        "checked_residuals"
+      ],
+      "selection_reason": "成员存在性与未找到的否定性质。"
+    },
+    {
+      "id": "cav_is_sorted_nondecreasing",
+      "group": "expansion80",
+      "category": "search_sort",
+      "questions": [
+        "quantified_relations",
+        "checked_residuals"
+      ],
+      "selection_reason": "相邻元素关系与全局排序。"
+    },
+    {
+      "id": "cav_merge_sorted_arrays",
+      "group": "expansion80",
+      "category": "search_sort",
+      "questions": [
+        "quantified_relations",
+        "abstract_predicates"
+      ],
+      "selection_reason": "双输入区、输出区、排序和内容保持。"
+    },
+    {
+      "id": "cav_insertion_sort",
+      "group": "expansion80",
+      "category": "search_sort",
+      "questions": [
+        "quantified_relations",
+        "observation_schedule",
+        "checked_residuals"
+      ],
+      "selection_reason": "嵌套循环和排序置换性质。"
+    },
+    {
+      "id": "cav_copy_array",
+      "group": "expansion80",
+      "category": "arrays",
+      "questions": [
+        "symbolic_heap",
+        "quantified_relations"
+      ],
+      "selection_reason": "分离数组的源内容保持和目标对应。"
+    },
+    {
+      "id": "cav_reverse_copy",
+      "group": "expansion80",
+      "category": "arrays",
+      "questions": [
+        "symbolic_heap",
+        "quantified_relations"
+      ],
+      "selection_reason": "多区域下索引反射关系。"
+    },
+    {
+      "id": "cav_string_length",
+      "group": "expansion80",
+      "category": "strings",
+      "questions": [
+        "symbolic_heap",
+        "layout_boundary"
+      ],
+      "selection_reason": "字符遍历和终止符的共同支持对照。"
+    },
+    {
+      "id": "cav_string_equal",
+      "group": "expansion80",
+      "category": "strings",
+      "questions": [
+        "quantified_relations",
+        "checked_residuals"
+      ],
+      "selection_reason": "双字符串的逐字节等价。"
+    },
+    {
+      "id": "cav_string_to_upper_ascii",
+      "group": "expansion80",
+      "category": "strings",
+      "questions": [
+        "quantified_relations",
+        "layout_boundary"
+      ],
+      "selection_reason": "字符分类与全串变换关系。"
+    },
+    {
+      "id": "cav_string_reverse_copy",
+      "group": "expansion80",
+      "category": "strings",
+      "questions": [
+        "symbolic_heap",
+        "quantified_relations"
+      ],
+      "selection_reason": "字符串反射复制与源内容保持。"
+    },
+    {
+      "id": "cav_sum_to_n",
+      "group": "expansion80",
+      "category": "arithmetic",
+      "questions": [
+        "definition_evaluation",
+        "checked_residuals"
+      ],
+      "selection_reason": "闭式非线性求和与执行展开的成本。"
+    },
+    {
+      "id": "qcp_house_robber",
+      "group": "runtime-source",
+      "category": "dynamic_programming",
+      "questions": [
+        "quantified_relations",
+        "definition_evaluation",
+        "checked_residuals"
+      ],
+      "selection_reason": "最优值规约需要全局选择关系；已有地址实例化对照。",
+      "source": "runtime/qcip/QCP_examples/LLM_bench/Algorithms/house_robber/house_robber.c",
+      "function": "rob",
+      "bindings": "benchmark/paper-cn-qcp/instantiation/house_robber.binds.json"
+    },
+    {
+      "id": "qcp_zero_one_knapsack",
+      "group": "runtime-source",
+      "category": "dynamic_programming",
+      "questions": [
+        "quantified_relations",
+        "symbolic_heap",
+        "checked_residuals"
+      ],
+      "selection_reason": "二维 DP 区域、未初始化存储和最优性后条件。",
+      "source": "runtime/qcip/QCP_examples/LLM_bench/Algorithms/zero_one_knapsack/zero_one_knapsack.c",
+      "function": "zeroOneKnapsack",
+      "bindings": "benchmark/paper-cn-qcp/instantiation/knapsack.binds.json"
+    },
+    {
+      "id": "qcp_bst_parent_insert",
+      "group": "runtime-source",
+      "category": "trees",
+      "questions": [
+        "abstract_predicates",
+        "allocation_lifecycle",
+        "layout_boundary"
+      ],
+      "selection_reason": "带父指针的树更新，补足双向关系与根指针传递。",
+      "source": "runtime/qcip/QCP_examples/QCP_demos_human/bst_fp_insert.c",
+      "function": "insert"
+    },
+    {
+      "id": "qcp_avl_insert",
+      "group": "runtime-source",
+      "category": "trees",
+      "questions": [
+        "abstract_predicates",
+        "allocation_lifecycle",
+        "definition_evaluation"
+      ],
+      "selection_reason": "AVL 旋转、高度和树形抽象；显式记录有限输入建模缺口。",
+      "source": "runtime/qcip/QCP_examples/QCP_demos_human/avl_insert.c",
+      "function": "insert"
+    }
+  ],
+  "industrial": {
+    "id": "fulminate_pkvm_buddy",
+    "category": "industrial_allocator",
+    "questions": [
+      "baseline",
+      "allocation_lifecycle",
+      "layout_boundary",
+      "checked_residuals"
+    ],
+    "selection_reason": "完整保留 Fulminate 工业案例与原始变异，跟踪当前配对阻碍。"
+  },
+  "preserved_controls": [
+    "control_weak_call",
+    "control_tree_size",
+    "control_unbounded_root",
+    "flat_matrix_fill",
+    "interior_store",
+    "pointer_box_store"
+  ],
+  "upstream_scope_note": "The mandatory CN core is the 54 top-level non-broken programs of the pre-publication cn-runtime-testing revision, with every additional C input included. The modern tutorial adapters and historical experiments remain separately linked; their verdicts do not certify the older original bodies. This manifest does not assert that VeriFast or Verifiable C examples from other upstream repositories have been imported."
+}

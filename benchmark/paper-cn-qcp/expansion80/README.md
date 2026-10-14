@@ -1,5 +1,10 @@
 # 80-program paired benchmark draft
 
+This directory preserves the historical 80-subject batch and its evidence.
+The current [source-complete selection](../../selection/README.md) includes all
+pinned Fulminate CN examples, then selects QCP/CAV additions by category and
+experiment question. The historical count is not a limit on the current suite.
+
 2026-10-14 update: see `../package-audit.json` and `../review-20261014/` for the
 current fixed-input audit and fresh replay. The paragraphs and appendices below
 retain the earlier experimental receipts. The original target is still 80;
