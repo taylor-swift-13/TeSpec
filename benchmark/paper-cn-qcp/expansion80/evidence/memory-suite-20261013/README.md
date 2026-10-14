@@ -1,0 +1,1 @@
+Diagnostic archive before final paired-input deduplication. Byte initial storage is not a QCP logical binder, so repeated address/length/value combinations were replaced with unique shared inputs. These reports are excluded from the final denominator. The final selected evidence is memory-replay-evidence.json with the memory-suite-20261013-final archive.

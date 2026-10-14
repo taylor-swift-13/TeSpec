@@ -1,0 +1,177 @@
+{
+  "spec_test": {
+    "schema": "sac-spec-test/v1",
+    "execution_semantics": "inline-preserve/v1",
+    "mode": "expand",
+    "scope": "execution",
+    "annotation_policy": "ignore",
+    "completed": true,
+    "overall": "UNKNOWN",
+    "precondition_result": "UNKNOWN",
+    "test_result": "UNKNOWN",
+    "result_semantics": "three-valued-conjunction/v1",
+    "vc_semantics": "path-vc/v1",
+    "vc_results": [
+      {
+        "kind": "safety",
+        "name": null,
+        "line": 9,
+        "status": "VALID",
+        "path": "EX w_421_addr \nPROP[]\nLOCAL[\n  Temp w w_421_addr;\n  Temp p p_410_addr ]\nSEP[\n  has_permission(w_421_addr, struct list*);\n  store(p_410_addr, 4096, struct list*);\n  sll32 (4096, cons(Z_1, (- 2147483648), nil(Z_1))) ]\n",
+        "goal": "PROP[\n  0 <= INT_MAX;\n  (- 2147483648) <= 0 ]\nLOCAL[]\nSEP[]\n"
+      },
+      {
+        "kind": "return",
+        "name": null,
+        "line": 18,
+        "status": "UNKNOWN",
+        "path": "PROP[\n  y_431_free == 0 ]\nLOCAL[]\nSEP[\n  store(4100, 0, struct list*);\n  store(4096, (- 2147483648), signed int) ]\n",
+        "goal": "PROP[]\nLOCAL[]\nSEP[\n  sll32 (4096, cons(Z_1, (- 2147483648), cons(Z_1, 0, nil(Z_1)))) ]\n"
+      }
+    ],
+    "phases": {
+      "precondition": "UNKNOWN",
+      "safety": "PASS",
+      "postcondition": "UNKNOWN",
+      "annotations": "NOT_RUN"
+    },
+    "abstraction_events": [],
+    "limit_reason": null,
+    "architecture_bits": 32,
+    "target_layout": {
+      "schema": "sac-target-layout/v1",
+      "architecture_bits": 32,
+      "byte_order": "big",
+      "pointer_size": 4,
+      "memory_rules": "naive_C_Rules",
+      "field_address_semantics": "base-plus-byte-offset/v1",
+      "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+      "aggregates": [
+        {
+          "id": 369,
+          "kind": "struct",
+          "name": "list",
+          "defined": true,
+          "size": 8,
+          "alignment": 4,
+          "fields": [
+            {
+              "id": 371,
+              "name": "data",
+              "offset": 0,
+              "size": 4,
+              "alignment": 4,
+              "type": {
+                "kind": "basic",
+                "name": "int"
+              },
+              "computational": true
+            },
+            {
+              "id": 370,
+              "name": "next",
+              "offset": 4,
+              "size": 4,
+              "alignment": 4,
+              "type": {
+                "kind": "pointer",
+                "target": {
+                  "kind": "struct",
+                  "id": 369
+                }
+              },
+              "computational": true
+            }
+          ]
+        }
+      ],
+      "aliases": []
+    },
+    "certificate": "NOT_CHECKED"
+  },
+  "preconditions": [
+    {
+      "goal": "reverse_precondition_wit_1",
+      "status": "UNKNOWN",
+      "proof": "manual"
+    }
+  ],
+  "fileName": "/home/yangfp/tespec-baselines/list-layout-profile32-20261013-v2/spec_mutation-run/artifacts/input_001/input.c",
+  "functionName": "reverse",
+  "loaded_strategies": [
+    "sll_layout32",
+    "common",
+    "string_literal"
+  ],
+  "result": "success",
+  "verificationStatus": "unproved",
+  "has_manual_obligations": true,
+  "manual_obligation_count": 2,
+  "manual_obligations": [
+    {
+      "kind": "return_checker_wit",
+      "functionName": "reverse",
+      "fileName": "/home/yangfp/tespec-baselines/list-layout-profile32-20261013-v2/spec_mutation-run/artifacts/input_001/input.c",
+      "line": 18,
+      "column": 10,
+      "summary": "Cannot automatically prove that a return path satisfies the postcondition.",
+      "goal": "y_431 == 0 &&\n__return == 4096 &&\n(*4100 == 0) *\n(*4096 == -2147483648)\n\n|--\n__return == 4096 &&\nsll32(4096, cons(-2147483648, cons(0, nil)))\n"
+    },
+    {
+      "kind": "precondition",
+      "goal": "reverse_precondition_wit_1"
+    }
+  ],
+  "errormessage": null,
+  "warningmessage": null,
+  "current_assertions": null,
+  "FunctionDerivation": null,
+  "WitnessList": [
+    {
+      "functionName": "reverse",
+      "Witness": {
+        "safety_checker_wit": {
+          "total": 1,
+          "auto_solved": 1,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "entailment_checker_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "return_checker_wit": {
+          "total": 1,
+          "auto_solved": 0,
+          "manual": 1,
+          "manual_witness": [
+            {
+              "line": 18,
+              "column": 10,
+              "fileName": "/home/yangfp/tespec-baselines/list-layout-profile32-20261013-v2/spec_mutation-run/artifacts/input_001/input.c",
+              "goal": "y_431 == 0 &&\n__return == 4096 &&\n(*4100 == 0) *\n(*4096 == -2147483648)\n\n|--\n__return == 4096 &&\nsll32(4096, cons(-2147483648, cons(0, nil)))\n"
+            }
+          ]
+        },
+        "partial_solve_wit": {
+          "total": 1,
+          "auto_solved": 1,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "which_implies_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "total_witness_count": {
+          "auto_solved": 2,
+          "manual": 1
+        }
+      }
+    }
+  ]
+}

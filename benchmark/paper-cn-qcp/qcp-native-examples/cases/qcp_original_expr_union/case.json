@@ -1,0 +1,66 @@
+{
+  "id": "qcp_original_expr_union",
+  "source": "runtime/qcip/QCP_examples/QCP_demos_human/eval.c",
+  "function": "eval",
+  "memory": "tagged union expression nodes and an environment array",
+  "heap_predicate": "store_expr(e,e0) * IntArray::full(var_value,100,l)",
+  "spec_edit": [
+    "__return == expr_eval(e0, l)",
+    "__return == expr_eval(e0, l) + 1"
+  ],
+  "impl_edit": [
+    "return e -> d.CONST.value;",
+    "return e -> d.CONST.value + 1;"
+  ],
+  "limitations": [
+    "Initial cases exercise CONST and VAR union arms; recursive operator constructors still need bindings."
+  ],
+  "schema": "tespec-original-qcp-case/v1",
+  "source_sha256": "e8433428b31d21d1cc9b7140cdb6f40a92992998cad268d0bf85b2756642df30",
+  "input_count": 4,
+  "original_contract_preserved": true,
+  "cn_status": "translation_pending",
+  "input_admission": "fixed logical values and entry args; runtime SAT/proof status recorded separately",
+  "expectations": [
+    {
+      "id": "input_000",
+      "reference": "PASS",
+      "spec_mutation": "FAIL",
+      "impl_mutation": "FAIL",
+      "basis": "manual evaluation of original contract and selected edit; no native/independent CN admission claimed"
+    },
+    {
+      "id": "input_001",
+      "reference": "PASS",
+      "spec_mutation": "FAIL",
+      "impl_mutation": "FAIL",
+      "basis": "manual evaluation of original contract and selected edit; no native/independent CN admission claimed"
+    },
+    {
+      "id": "input_002",
+      "reference": "PASS",
+      "spec_mutation": "FAIL",
+      "impl_mutation": "PASS",
+      "basis": "manual evaluation of original contract and selected edit; no native/independent CN admission claimed"
+    },
+    {
+      "id": "input_003",
+      "reference": "PASS",
+      "spec_mutation": "FAIL",
+      "impl_mutation": "PASS",
+      "basis": "manual evaluation of original contract and selected edit; no native/independent CN admission claimed"
+    }
+  ],
+  "include_dirs": [
+    "runtime/qcip/QCP_examples/QCP_demos_human",
+    "runtime/qcip/QCP_examples/QCP_demos_LLM",
+    "runtime/qcip/QCP_examples/stdlib"
+  ],
+  "generator_sha256": "e3aed58c404f0c68d1d8746ad51e59f408e3f1e684dd6fff7aa08dee18dd29c7",
+  "files": {
+    "reference.qcp.c": "e8433428b31d21d1cc9b7140cdb6f40a92992998cad268d0bf85b2756642df30",
+    "binds.json": "251af549443afc00991e295dcc9385f2a4dd4e498857a1583cf397702ecb5a49",
+    "spec_mutation.qcp.c": "7bb1b8a2030c791297507854a391ecfd6b84abda6aad8a70599259d28e996bf8",
+    "impl_mutation.qcp.c": "d347dc9e0c6acd3bc8621ae6ab9b04a627db1f8bddb7adb996bdfbeb21e2489a"
+  }
+}

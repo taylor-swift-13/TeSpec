@@ -127,7 +127,7 @@ class VCStatusTests(unittest.TestCase):
                     sys.executable, "-m", "spectest", "run", str(source),
                     "--function", json.loads((cases / name / "case.json").read_text())["function"],
                     "--binds", str(binds), "--output-dir", str(report_dir),
-                    "--execution-mode", "expand", "--compact", "--timeout", "30",
+                    "--execution-mode", "entry-exit", "--compact", "--timeout", "30",
                     "-I", str(root / "runtime/qcip/QCP_examples/QCP_demos_human"),
                 ]
                 run = subprocess.run(command, cwd=root, text=True, capture_output=True,
@@ -148,7 +148,7 @@ class VCStatusTests(unittest.TestCase):
                 [sys.executable, "-m", "spectest", "run", str(case / "subject.qcp.c"),
                  "--function", "sample", "--binds", str(case / "binds.json"),
                  "--output-dir", str(Path(directory) / "report"),
-                 "--execution-mode", "expand", "--compact", "--timeout", "30",
+                 "--execution-mode", "entry-exit", "--compact", "--timeout", "30",
                  "-I", str(root / "runtime/qcip/QCP_examples/QCP_demos_human"),
                  "-I", str(root / "runtime/qcip/QCP_examples")],
                 cwd=root, text=True, capture_output=True, timeout=120,

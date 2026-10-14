@@ -161,7 +161,7 @@ def main():
                     "cases": len(binds),
                 }
             )
-            for mode in ["expand", "no-expand"]:
+            for mode in ["entry-exit", "all-boundaries"]:
                 tasks.append(
                     (
                         program.name,
@@ -197,7 +197,7 @@ def main():
                 "cases": len(case["binds"]),
             }
         )
-        for mode in ["expand", "no-expand"]:
+        for mode in ["entry-exit", "all-boundaries"]:
             tasks.append(
                 (
                     case["name"],
@@ -206,7 +206,7 @@ def main():
                     mode,
                     source,
                     binds,
-                    case["expected"][mode],
+                    case["expected"].get(mode, case["expected"].get({"entry-exit": "expand", "all-boundaries": "no-expand"}[mode])),
                     case["options"],
                 )
             )

@@ -1,0 +1,198 @@
+{
+  "schema": "tespec-address-ablation/v1",
+  "scope": "diagnostic, not new members of expansion80 or isolated timing",
+  "binary_sha256": "4b6a46f38aafbac9f9de679133c69a22aac1f6eb7c634dcc1de7ddca211a32cc",
+  "driver_sha256": "c8428de112f3c01b838b2a9ee9ba58d399f12d1d967376d6d2fd457bbc94efc9",
+  "cases": [
+    {
+      "id": "knapsack",
+      "source": "runtime/qcip/QCP_examples/LLM_bench/Algorithms/zero_one_knapsack/zero_one_knapsack.c",
+      "source_sha256": "796fb0539dffc1fe240752720e2939992c6f700f95e6db932c3f622190f23a2c",
+      "binds_sha256": "cd97fcd579b323b84ad8dad1c3072eb49f874da405b1e37085295845aa82e6b9",
+      "returncode": 1,
+      "results": [
+        {
+          "id": "symbolic_roots",
+          "status": "UNKNOWN",
+          "test_result": "UNKNOWN",
+          "reason": "qcp_timeout",
+          "phases": {
+            "precondition": "UNKNOWN",
+            "safety": "UNKNOWN",
+            "postcondition": "UNKNOWN",
+            "annotations": "UNKNOWN"
+          },
+          "execution_completed": null,
+          "seconds": 3.00537,
+          "executor_error": null
+        },
+        {
+          "id": "numeric_roots",
+          "status": "UNKNOWN",
+          "test_result": "UNKNOWN",
+          "reason": "residual_vc_requires_proof",
+          "phases": {
+            "precondition": "SAT",
+            "safety": "PASS",
+            "postcondition": "UNKNOWN",
+            "annotations": "NOT_RUN",
+            "execution": "PASS"
+          },
+          "execution_completed": true,
+          "seconds": 0.395993,
+          "executor_error": null
+        }
+      ]
+    },
+    {
+      "id": "interior",
+      "source": "benchmark/paper-cn-qcp/memory-controls/suites/interior_store/reference.qcp.c",
+      "source_sha256": "82ac01528857b60d7caa0073cc224f59e4249fdf2b9c4be46a355af11247e113",
+      "binds_sha256": "da58fb3f80fdc22d8304ad70bc278dd595ee5b1ea18a56c459e3b4f516d1c9c0",
+      "returncode": 1,
+      "results": [
+        {
+          "id": "all_numeric",
+          "status": "ERROR",
+          "test_result": "UNKNOWN",
+          "reason": "qcp_execution_error",
+          "phases": {
+            "precondition": "SAT",
+            "safety": "UNKNOWN",
+            "postcondition": "UNKNOWN",
+            "annotations": "NOT_RUN",
+            "execution": "UNKNOWN"
+          },
+          "execution_completed": false,
+          "seconds": 0.008039,
+          "executor_error": {
+            "Main Error Message": "fatal error: Symbolic execution failed: cannot derive writable memory permission for the assignment target",
+            "fileName": null,
+            "line": 9,
+            "column": 2,
+            "additional_info": [
+              "assignment memory permission derivation failed because the current assertion does not entail the required memory assertion.\n",
+              "Required memory assertion:\nEX x_394_free \nPROP[]\nLOCAL[]\nSEP[\n  store(4104, x_394_free, signed int) ]\n\n",
+              "Current assertion:\nPROP[]\nLOCAL[\n  Temp a a_387_addr;\n  Temp cursor cursor_384_addr;\n  Temp n n_381_addr;\n  Temp k k_378_addr;\n  Temp value value_375_addr ]\nSEP[\n  store(a_387_addr, 4096, signed int*);\n  store(cursor_384_addr, 4104, signed int*);\n  store(n_381_addr, 5, signed int);\n  store(k_378_addr, 2, signed int);\n  store(value_375_addr, 0, signed int);\n  IntArray.full (4096, 5, cons(Z_1, (- 4), cons(Z_1, (- 3), cons(Z_1, (- 2), cons(Z_1, (- 1), cons(Z_1, 0, nil(Z_1))))))) ]\n\n",
+              "Write address: 4104\n",
+              "The assignment target needs writable memory, for example a matching `data_at`/store resource in the current assertion.\n"
+            ]
+          }
+        },
+        {
+          "id": "base_numeric",
+          "status": "ERROR",
+          "test_result": "UNKNOWN",
+          "reason": "qcp_execution_error",
+          "phases": {
+            "precondition": "SAT",
+            "safety": "UNKNOWN",
+            "postcondition": "UNKNOWN",
+            "annotations": "NOT_RUN",
+            "execution": "UNKNOWN"
+          },
+          "execution_completed": false,
+          "seconds": 0.007423,
+          "executor_error": {
+            "Main Error Message": "fatal error: Symbolic execution failed: cannot derive writable memory permission for the assignment target",
+            "fileName": null,
+            "line": 9,
+            "column": 2,
+            "additional_info": [
+              "assignment memory permission derivation failed because the current assertion does not entail the required memory assertion.\n",
+              "Required memory assertion:\nEX x_394_free \nPROP[]\nLOCAL[]\nSEP[\n  store(4104, x_394_free, signed int) ]\n\n",
+              "Current assertion:\nPROP[]\nLOCAL[\n  Temp a a_387_addr;\n  Temp cursor cursor_384_addr;\n  Temp n n_381_addr;\n  Temp k k_378_addr;\n  Temp value value_375_addr ]\nSEP[\n  store(a_387_addr, 4096, signed int*);\n  store(cursor_384_addr, 4104, signed int*);\n  store(n_381_addr, 5, signed int);\n  store(k_378_addr, 2, signed int);\n  store(value_375_addr, 0, signed int);\n  IntArray.full (4096, 5, cons(Z_1, (- 4), cons(Z_1, (- 3), cons(Z_1, (- 2), cons(Z_1, (- 1), cons(Z_1, 0, nil(Z_1))))))) ]\n\n",
+              "Write address: 4104\n",
+              "The assignment target needs writable memory, for example a matching `data_at`/store resource in the current assertion.\n"
+            ]
+          }
+        },
+        {
+          "id": "addresses_symbolic",
+          "status": "PASS",
+          "test_result": "PASS",
+          "reason": "qcp_full_auto_passed",
+          "phases": {
+            "precondition": "SAT",
+            "safety": "PASS",
+            "postcondition": "PASS",
+            "annotations": "NOT_RUN",
+            "execution": "PASS"
+          },
+          "execution_completed": true,
+          "seconds": 0.008313,
+          "executor_error": null
+        },
+        {
+          "id": "base_numeric_cursor_expression",
+          "status": "ERROR",
+          "test_result": "UNKNOWN",
+          "reason": "qcp_execution_error",
+          "phases": {
+            "precondition": "SAT",
+            "safety": "UNKNOWN",
+            "postcondition": "UNKNOWN",
+            "annotations": "NOT_RUN",
+            "execution": "UNKNOWN"
+          },
+          "execution_completed": false,
+          "seconds": 0.007863,
+          "executor_error": {
+            "Main Error Message": "fatal error: Symbolic execution failed: cannot derive writable memory permission for the assignment target",
+            "fileName": null,
+            "line": 9,
+            "column": 2,
+            "additional_info": [
+              "assignment memory permission derivation failed because the current assertion does not entail the required memory assertion.\n",
+              "Required memory assertion:\nEX x_394_free \nPROP[]\nLOCAL[]\nSEP[\n  store(4104, x_394_free, signed int) ]\n\n",
+              "Current assertion:\nPROP[]\nLOCAL[\n  Temp a a_387_addr;\n  Temp cursor cursor_384_addr;\n  Temp n n_381_addr;\n  Temp k k_378_addr;\n  Temp value value_375_addr ]\nSEP[\n  store(a_387_addr, 4096, signed int*);\n  store(cursor_384_addr, 4104, signed int*);\n  store(n_381_addr, 5, signed int);\n  store(k_378_addr, 2, signed int);\n  store(value_375_addr, 0, signed int);\n  IntArray.full (4096, 5, cons(Z_1, (- 4), cons(Z_1, (- 3), cons(Z_1, (- 2), cons(Z_1, (- 1), cons(Z_1, 0, nil(Z_1))))))) ]\n\n",
+              "Write address: 4104\n",
+              "The assignment target needs writable memory, for example a matching `data_at`/store resource in the current assertion.\n"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "house_robber",
+      "source": "runtime/qcip/QCP_examples/LLM_bench/Algorithms/house_robber/house_robber.c",
+      "source_sha256": "e22352945fb0a4892c64e72a8c6ebfd071f27d9f1f23f0293d519637a53986d1",
+      "binds_sha256": "c75a5cefb2b1dbb87397d809f87a2ee1472b66949e5d0fe423cf14755fd6feda",
+      "returncode": 1,
+      "results": [
+        {
+          "id": "symbolic_root",
+          "status": "UNKNOWN",
+          "test_result": "UNKNOWN",
+          "reason": "residual_vc_requires_proof",
+          "phases": {
+            "precondition": "SAT",
+            "safety": "PASS",
+            "postcondition": "UNKNOWN",
+            "annotations": "NOT_RUN",
+            "execution": "PASS"
+          },
+          "execution_completed": true,
+          "seconds": 0.030468,
+          "executor_error": null
+        },
+        {
+          "id": "numeric_root",
+          "status": "UNKNOWN",
+          "test_result": "UNKNOWN",
+          "reason": "residual_vc_requires_proof",
+          "phases": {
+            "precondition": "SAT",
+            "safety": "PASS",
+            "postcondition": "UNKNOWN",
+            "annotations": "NOT_RUN",
+            "execution": "PASS"
+          },
+          "execution_completed": true,
+          "seconds": 0.028886,
+          "executor_error": null
+        }
+      ]
+    }
+  ]
+}

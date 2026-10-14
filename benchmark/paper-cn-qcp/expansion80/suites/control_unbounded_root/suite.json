@@ -1,0 +1,3309 @@
+{
+  "schema": "tespec-paired-input-suite/v1",
+  "id": "control_unbounded_root",
+  "function": "root_cell",
+  "parameter_order": [
+    "p"
+  ],
+  "return_kind": "int",
+  "element_c_type": "int",
+  "seed": 20261013,
+  "input_count": 101,
+  "domain_complete": true,
+  "admission": "Original owned int32 memory and size bounds; sorted arrays for binary search; least-root value domain x=0..100 exhausted at a canonical owned address",
+  "review_scope": "Any correct matching search index allowed; full reverse/unchanged array checks; exact least-root return and final cell with equivalent CN finite monitor",
+  "reviewed_cn_sha256": "7b50a66d2e92abdcf1e599de264637ba3122f51b71abc9a882d68cba5a82ea8a",
+  "reviewed_qcp_sha256": "fd6eb23f85c4c4189cbded6367c082e77b966a9f6cbca5424b6ca16aa12c81de",
+  "generator_path": "prepare-search-root.py",
+  "generator_sha256": "e35bfba3a8f1ce99a93b90991a68c7dc2a857dfd8080158d8c262eb439469727",
+  "generator_dependencies": {
+    "prepare-scalar.py": "22dd226903d04a4bb69f7b4a9c112df916805fb97d414a7383cd0559f8e53717"
+  },
+  "tool_runs_checked": false,
+  "native_abi": "independent linear-membership/reversal/isqrt models and typed host storage; two ABI replay separate",
+  "variants": {
+    "reference": {
+      "kind": "reference"
+    },
+    "spec_mutation": {
+      "kind": "spec",
+      "cn_edit": [
+        "0 <= return; x <= return*return; return == 0 || (return-1)*(return-1) < x;",
+        "0 <= return+1; x <= (return+1)*(return+1); return+1 == 0 || return*return < x;"
+      ],
+      "qcp_edit": [
+        "least_root(x,r)",
+        "least_root(x,r+1)"
+      ]
+    },
+    "impl_mutation": {
+      "kind": "impl",
+      "shared_c_edit": [
+        "*p = r;",
+        "*p = r + 1;"
+      ]
+    }
+  },
+  "inputs": [
+    {
+      "id": "input_000",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 0
+      },
+      "qcp_bind": {
+        "id": "input_000",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 0
+        }
+      },
+      "expected_return": 0,
+      "expected_heap": {
+        "p": 0
+      },
+      "native_reference_return": 0,
+      "native_reference_heap": {
+        "p": 0
+      },
+      "native_mutant_return": 0,
+      "native_mutant_heap": {
+        "p": 1
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_001",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 1
+      },
+      "qcp_bind": {
+        "id": "input_001",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 1
+        }
+      },
+      "expected_return": 1,
+      "expected_heap": {
+        "p": 1
+      },
+      "native_reference_return": 1,
+      "native_reference_heap": {
+        "p": 1
+      },
+      "native_mutant_return": 1,
+      "native_mutant_heap": {
+        "p": 2
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_002",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 2
+      },
+      "qcp_bind": {
+        "id": "input_002",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 2
+        }
+      },
+      "expected_return": 2,
+      "expected_heap": {
+        "p": 2
+      },
+      "native_reference_return": 2,
+      "native_reference_heap": {
+        "p": 2
+      },
+      "native_mutant_return": 2,
+      "native_mutant_heap": {
+        "p": 3
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_003",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 3
+      },
+      "qcp_bind": {
+        "id": "input_003",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 3
+        }
+      },
+      "expected_return": 2,
+      "expected_heap": {
+        "p": 2
+      },
+      "native_reference_return": 2,
+      "native_reference_heap": {
+        "p": 2
+      },
+      "native_mutant_return": 2,
+      "native_mutant_heap": {
+        "p": 3
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_004",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 4
+      },
+      "qcp_bind": {
+        "id": "input_004",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 4
+        }
+      },
+      "expected_return": 2,
+      "expected_heap": {
+        "p": 2
+      },
+      "native_reference_return": 2,
+      "native_reference_heap": {
+        "p": 2
+      },
+      "native_mutant_return": 2,
+      "native_mutant_heap": {
+        "p": 3
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_005",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 5
+      },
+      "qcp_bind": {
+        "id": "input_005",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 5
+        }
+      },
+      "expected_return": 3,
+      "expected_heap": {
+        "p": 3
+      },
+      "native_reference_return": 3,
+      "native_reference_heap": {
+        "p": 3
+      },
+      "native_mutant_return": 3,
+      "native_mutant_heap": {
+        "p": 4
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_006",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 6
+      },
+      "qcp_bind": {
+        "id": "input_006",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 6
+        }
+      },
+      "expected_return": 3,
+      "expected_heap": {
+        "p": 3
+      },
+      "native_reference_return": 3,
+      "native_reference_heap": {
+        "p": 3
+      },
+      "native_mutant_return": 3,
+      "native_mutant_heap": {
+        "p": 4
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_007",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 7
+      },
+      "qcp_bind": {
+        "id": "input_007",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 7
+        }
+      },
+      "expected_return": 3,
+      "expected_heap": {
+        "p": 3
+      },
+      "native_reference_return": 3,
+      "native_reference_heap": {
+        "p": 3
+      },
+      "native_mutant_return": 3,
+      "native_mutant_heap": {
+        "p": 4
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_008",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 8
+      },
+      "qcp_bind": {
+        "id": "input_008",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 8
+        }
+      },
+      "expected_return": 3,
+      "expected_heap": {
+        "p": 3
+      },
+      "native_reference_return": 3,
+      "native_reference_heap": {
+        "p": 3
+      },
+      "native_mutant_return": 3,
+      "native_mutant_heap": {
+        "p": 4
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_009",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 9
+      },
+      "qcp_bind": {
+        "id": "input_009",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 9
+        }
+      },
+      "expected_return": 3,
+      "expected_heap": {
+        "p": 3
+      },
+      "native_reference_return": 3,
+      "native_reference_heap": {
+        "p": 3
+      },
+      "native_mutant_return": 3,
+      "native_mutant_heap": {
+        "p": 4
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_010",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 10
+      },
+      "qcp_bind": {
+        "id": "input_010",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 10
+        }
+      },
+      "expected_return": 4,
+      "expected_heap": {
+        "p": 4
+      },
+      "native_reference_return": 4,
+      "native_reference_heap": {
+        "p": 4
+      },
+      "native_mutant_return": 4,
+      "native_mutant_heap": {
+        "p": 5
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_011",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 11
+      },
+      "qcp_bind": {
+        "id": "input_011",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 11
+        }
+      },
+      "expected_return": 4,
+      "expected_heap": {
+        "p": 4
+      },
+      "native_reference_return": 4,
+      "native_reference_heap": {
+        "p": 4
+      },
+      "native_mutant_return": 4,
+      "native_mutant_heap": {
+        "p": 5
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_012",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 12
+      },
+      "qcp_bind": {
+        "id": "input_012",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 12
+        }
+      },
+      "expected_return": 4,
+      "expected_heap": {
+        "p": 4
+      },
+      "native_reference_return": 4,
+      "native_reference_heap": {
+        "p": 4
+      },
+      "native_mutant_return": 4,
+      "native_mutant_heap": {
+        "p": 5
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_013",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 13
+      },
+      "qcp_bind": {
+        "id": "input_013",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 13
+        }
+      },
+      "expected_return": 4,
+      "expected_heap": {
+        "p": 4
+      },
+      "native_reference_return": 4,
+      "native_reference_heap": {
+        "p": 4
+      },
+      "native_mutant_return": 4,
+      "native_mutant_heap": {
+        "p": 5
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_014",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 14
+      },
+      "qcp_bind": {
+        "id": "input_014",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 14
+        }
+      },
+      "expected_return": 4,
+      "expected_heap": {
+        "p": 4
+      },
+      "native_reference_return": 4,
+      "native_reference_heap": {
+        "p": 4
+      },
+      "native_mutant_return": 4,
+      "native_mutant_heap": {
+        "p": 5
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_015",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 15
+      },
+      "qcp_bind": {
+        "id": "input_015",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 15
+        }
+      },
+      "expected_return": 4,
+      "expected_heap": {
+        "p": 4
+      },
+      "native_reference_return": 4,
+      "native_reference_heap": {
+        "p": 4
+      },
+      "native_mutant_return": 4,
+      "native_mutant_heap": {
+        "p": 5
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_016",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 16
+      },
+      "qcp_bind": {
+        "id": "input_016",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 16
+        }
+      },
+      "expected_return": 4,
+      "expected_heap": {
+        "p": 4
+      },
+      "native_reference_return": 4,
+      "native_reference_heap": {
+        "p": 4
+      },
+      "native_mutant_return": 4,
+      "native_mutant_heap": {
+        "p": 5
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_017",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 17
+      },
+      "qcp_bind": {
+        "id": "input_017",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 17
+        }
+      },
+      "expected_return": 5,
+      "expected_heap": {
+        "p": 5
+      },
+      "native_reference_return": 5,
+      "native_reference_heap": {
+        "p": 5
+      },
+      "native_mutant_return": 5,
+      "native_mutant_heap": {
+        "p": 6
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_018",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 18
+      },
+      "qcp_bind": {
+        "id": "input_018",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 18
+        }
+      },
+      "expected_return": 5,
+      "expected_heap": {
+        "p": 5
+      },
+      "native_reference_return": 5,
+      "native_reference_heap": {
+        "p": 5
+      },
+      "native_mutant_return": 5,
+      "native_mutant_heap": {
+        "p": 6
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_019",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 19
+      },
+      "qcp_bind": {
+        "id": "input_019",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 19
+        }
+      },
+      "expected_return": 5,
+      "expected_heap": {
+        "p": 5
+      },
+      "native_reference_return": 5,
+      "native_reference_heap": {
+        "p": 5
+      },
+      "native_mutant_return": 5,
+      "native_mutant_heap": {
+        "p": 6
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_020",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 20
+      },
+      "qcp_bind": {
+        "id": "input_020",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 20
+        }
+      },
+      "expected_return": 5,
+      "expected_heap": {
+        "p": 5
+      },
+      "native_reference_return": 5,
+      "native_reference_heap": {
+        "p": 5
+      },
+      "native_mutant_return": 5,
+      "native_mutant_heap": {
+        "p": 6
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_021",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 21
+      },
+      "qcp_bind": {
+        "id": "input_021",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 21
+        }
+      },
+      "expected_return": 5,
+      "expected_heap": {
+        "p": 5
+      },
+      "native_reference_return": 5,
+      "native_reference_heap": {
+        "p": 5
+      },
+      "native_mutant_return": 5,
+      "native_mutant_heap": {
+        "p": 6
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_022",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 22
+      },
+      "qcp_bind": {
+        "id": "input_022",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 22
+        }
+      },
+      "expected_return": 5,
+      "expected_heap": {
+        "p": 5
+      },
+      "native_reference_return": 5,
+      "native_reference_heap": {
+        "p": 5
+      },
+      "native_mutant_return": 5,
+      "native_mutant_heap": {
+        "p": 6
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_023",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 23
+      },
+      "qcp_bind": {
+        "id": "input_023",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 23
+        }
+      },
+      "expected_return": 5,
+      "expected_heap": {
+        "p": 5
+      },
+      "native_reference_return": 5,
+      "native_reference_heap": {
+        "p": 5
+      },
+      "native_mutant_return": 5,
+      "native_mutant_heap": {
+        "p": 6
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_024",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 24
+      },
+      "qcp_bind": {
+        "id": "input_024",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 24
+        }
+      },
+      "expected_return": 5,
+      "expected_heap": {
+        "p": 5
+      },
+      "native_reference_return": 5,
+      "native_reference_heap": {
+        "p": 5
+      },
+      "native_mutant_return": 5,
+      "native_mutant_heap": {
+        "p": 6
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_025",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 25
+      },
+      "qcp_bind": {
+        "id": "input_025",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 25
+        }
+      },
+      "expected_return": 5,
+      "expected_heap": {
+        "p": 5
+      },
+      "native_reference_return": 5,
+      "native_reference_heap": {
+        "p": 5
+      },
+      "native_mutant_return": 5,
+      "native_mutant_heap": {
+        "p": 6
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_026",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 26
+      },
+      "qcp_bind": {
+        "id": "input_026",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 26
+        }
+      },
+      "expected_return": 6,
+      "expected_heap": {
+        "p": 6
+      },
+      "native_reference_return": 6,
+      "native_reference_heap": {
+        "p": 6
+      },
+      "native_mutant_return": 6,
+      "native_mutant_heap": {
+        "p": 7
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_027",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 27
+      },
+      "qcp_bind": {
+        "id": "input_027",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 27
+        }
+      },
+      "expected_return": 6,
+      "expected_heap": {
+        "p": 6
+      },
+      "native_reference_return": 6,
+      "native_reference_heap": {
+        "p": 6
+      },
+      "native_mutant_return": 6,
+      "native_mutant_heap": {
+        "p": 7
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_028",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 28
+      },
+      "qcp_bind": {
+        "id": "input_028",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 28
+        }
+      },
+      "expected_return": 6,
+      "expected_heap": {
+        "p": 6
+      },
+      "native_reference_return": 6,
+      "native_reference_heap": {
+        "p": 6
+      },
+      "native_mutant_return": 6,
+      "native_mutant_heap": {
+        "p": 7
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_029",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 29
+      },
+      "qcp_bind": {
+        "id": "input_029",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 29
+        }
+      },
+      "expected_return": 6,
+      "expected_heap": {
+        "p": 6
+      },
+      "native_reference_return": 6,
+      "native_reference_heap": {
+        "p": 6
+      },
+      "native_mutant_return": 6,
+      "native_mutant_heap": {
+        "p": 7
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_030",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 30
+      },
+      "qcp_bind": {
+        "id": "input_030",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 30
+        }
+      },
+      "expected_return": 6,
+      "expected_heap": {
+        "p": 6
+      },
+      "native_reference_return": 6,
+      "native_reference_heap": {
+        "p": 6
+      },
+      "native_mutant_return": 6,
+      "native_mutant_heap": {
+        "p": 7
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_031",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 31
+      },
+      "qcp_bind": {
+        "id": "input_031",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 31
+        }
+      },
+      "expected_return": 6,
+      "expected_heap": {
+        "p": 6
+      },
+      "native_reference_return": 6,
+      "native_reference_heap": {
+        "p": 6
+      },
+      "native_mutant_return": 6,
+      "native_mutant_heap": {
+        "p": 7
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_032",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 32
+      },
+      "qcp_bind": {
+        "id": "input_032",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 32
+        }
+      },
+      "expected_return": 6,
+      "expected_heap": {
+        "p": 6
+      },
+      "native_reference_return": 6,
+      "native_reference_heap": {
+        "p": 6
+      },
+      "native_mutant_return": 6,
+      "native_mutant_heap": {
+        "p": 7
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_033",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 33
+      },
+      "qcp_bind": {
+        "id": "input_033",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 33
+        }
+      },
+      "expected_return": 6,
+      "expected_heap": {
+        "p": 6
+      },
+      "native_reference_return": 6,
+      "native_reference_heap": {
+        "p": 6
+      },
+      "native_mutant_return": 6,
+      "native_mutant_heap": {
+        "p": 7
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_034",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 34
+      },
+      "qcp_bind": {
+        "id": "input_034",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 34
+        }
+      },
+      "expected_return": 6,
+      "expected_heap": {
+        "p": 6
+      },
+      "native_reference_return": 6,
+      "native_reference_heap": {
+        "p": 6
+      },
+      "native_mutant_return": 6,
+      "native_mutant_heap": {
+        "p": 7
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_035",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 35
+      },
+      "qcp_bind": {
+        "id": "input_035",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 35
+        }
+      },
+      "expected_return": 6,
+      "expected_heap": {
+        "p": 6
+      },
+      "native_reference_return": 6,
+      "native_reference_heap": {
+        "p": 6
+      },
+      "native_mutant_return": 6,
+      "native_mutant_heap": {
+        "p": 7
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_036",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 36
+      },
+      "qcp_bind": {
+        "id": "input_036",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 36
+        }
+      },
+      "expected_return": 6,
+      "expected_heap": {
+        "p": 6
+      },
+      "native_reference_return": 6,
+      "native_reference_heap": {
+        "p": 6
+      },
+      "native_mutant_return": 6,
+      "native_mutant_heap": {
+        "p": 7
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_037",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 37
+      },
+      "qcp_bind": {
+        "id": "input_037",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 37
+        }
+      },
+      "expected_return": 7,
+      "expected_heap": {
+        "p": 7
+      },
+      "native_reference_return": 7,
+      "native_reference_heap": {
+        "p": 7
+      },
+      "native_mutant_return": 7,
+      "native_mutant_heap": {
+        "p": 8
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_038",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 38
+      },
+      "qcp_bind": {
+        "id": "input_038",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 38
+        }
+      },
+      "expected_return": 7,
+      "expected_heap": {
+        "p": 7
+      },
+      "native_reference_return": 7,
+      "native_reference_heap": {
+        "p": 7
+      },
+      "native_mutant_return": 7,
+      "native_mutant_heap": {
+        "p": 8
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_039",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 39
+      },
+      "qcp_bind": {
+        "id": "input_039",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 39
+        }
+      },
+      "expected_return": 7,
+      "expected_heap": {
+        "p": 7
+      },
+      "native_reference_return": 7,
+      "native_reference_heap": {
+        "p": 7
+      },
+      "native_mutant_return": 7,
+      "native_mutant_heap": {
+        "p": 8
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_040",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 40
+      },
+      "qcp_bind": {
+        "id": "input_040",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 40
+        }
+      },
+      "expected_return": 7,
+      "expected_heap": {
+        "p": 7
+      },
+      "native_reference_return": 7,
+      "native_reference_heap": {
+        "p": 7
+      },
+      "native_mutant_return": 7,
+      "native_mutant_heap": {
+        "p": 8
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_041",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 41
+      },
+      "qcp_bind": {
+        "id": "input_041",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 41
+        }
+      },
+      "expected_return": 7,
+      "expected_heap": {
+        "p": 7
+      },
+      "native_reference_return": 7,
+      "native_reference_heap": {
+        "p": 7
+      },
+      "native_mutant_return": 7,
+      "native_mutant_heap": {
+        "p": 8
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_042",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 42
+      },
+      "qcp_bind": {
+        "id": "input_042",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 42
+        }
+      },
+      "expected_return": 7,
+      "expected_heap": {
+        "p": 7
+      },
+      "native_reference_return": 7,
+      "native_reference_heap": {
+        "p": 7
+      },
+      "native_mutant_return": 7,
+      "native_mutant_heap": {
+        "p": 8
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_043",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 43
+      },
+      "qcp_bind": {
+        "id": "input_043",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 43
+        }
+      },
+      "expected_return": 7,
+      "expected_heap": {
+        "p": 7
+      },
+      "native_reference_return": 7,
+      "native_reference_heap": {
+        "p": 7
+      },
+      "native_mutant_return": 7,
+      "native_mutant_heap": {
+        "p": 8
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_044",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 44
+      },
+      "qcp_bind": {
+        "id": "input_044",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 44
+        }
+      },
+      "expected_return": 7,
+      "expected_heap": {
+        "p": 7
+      },
+      "native_reference_return": 7,
+      "native_reference_heap": {
+        "p": 7
+      },
+      "native_mutant_return": 7,
+      "native_mutant_heap": {
+        "p": 8
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_045",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 45
+      },
+      "qcp_bind": {
+        "id": "input_045",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 45
+        }
+      },
+      "expected_return": 7,
+      "expected_heap": {
+        "p": 7
+      },
+      "native_reference_return": 7,
+      "native_reference_heap": {
+        "p": 7
+      },
+      "native_mutant_return": 7,
+      "native_mutant_heap": {
+        "p": 8
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_046",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 46
+      },
+      "qcp_bind": {
+        "id": "input_046",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 46
+        }
+      },
+      "expected_return": 7,
+      "expected_heap": {
+        "p": 7
+      },
+      "native_reference_return": 7,
+      "native_reference_heap": {
+        "p": 7
+      },
+      "native_mutant_return": 7,
+      "native_mutant_heap": {
+        "p": 8
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_047",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 47
+      },
+      "qcp_bind": {
+        "id": "input_047",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 47
+        }
+      },
+      "expected_return": 7,
+      "expected_heap": {
+        "p": 7
+      },
+      "native_reference_return": 7,
+      "native_reference_heap": {
+        "p": 7
+      },
+      "native_mutant_return": 7,
+      "native_mutant_heap": {
+        "p": 8
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_048",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 48
+      },
+      "qcp_bind": {
+        "id": "input_048",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 48
+        }
+      },
+      "expected_return": 7,
+      "expected_heap": {
+        "p": 7
+      },
+      "native_reference_return": 7,
+      "native_reference_heap": {
+        "p": 7
+      },
+      "native_mutant_return": 7,
+      "native_mutant_heap": {
+        "p": 8
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_049",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 49
+      },
+      "qcp_bind": {
+        "id": "input_049",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 49
+        }
+      },
+      "expected_return": 7,
+      "expected_heap": {
+        "p": 7
+      },
+      "native_reference_return": 7,
+      "native_reference_heap": {
+        "p": 7
+      },
+      "native_mutant_return": 7,
+      "native_mutant_heap": {
+        "p": 8
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_050",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 50
+      },
+      "qcp_bind": {
+        "id": "input_050",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 50
+        }
+      },
+      "expected_return": 8,
+      "expected_heap": {
+        "p": 8
+      },
+      "native_reference_return": 8,
+      "native_reference_heap": {
+        "p": 8
+      },
+      "native_mutant_return": 8,
+      "native_mutant_heap": {
+        "p": 9
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_051",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 51
+      },
+      "qcp_bind": {
+        "id": "input_051",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 51
+        }
+      },
+      "expected_return": 8,
+      "expected_heap": {
+        "p": 8
+      },
+      "native_reference_return": 8,
+      "native_reference_heap": {
+        "p": 8
+      },
+      "native_mutant_return": 8,
+      "native_mutant_heap": {
+        "p": 9
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_052",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 52
+      },
+      "qcp_bind": {
+        "id": "input_052",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 52
+        }
+      },
+      "expected_return": 8,
+      "expected_heap": {
+        "p": 8
+      },
+      "native_reference_return": 8,
+      "native_reference_heap": {
+        "p": 8
+      },
+      "native_mutant_return": 8,
+      "native_mutant_heap": {
+        "p": 9
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_053",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 53
+      },
+      "qcp_bind": {
+        "id": "input_053",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 53
+        }
+      },
+      "expected_return": 8,
+      "expected_heap": {
+        "p": 8
+      },
+      "native_reference_return": 8,
+      "native_reference_heap": {
+        "p": 8
+      },
+      "native_mutant_return": 8,
+      "native_mutant_heap": {
+        "p": 9
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_054",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 54
+      },
+      "qcp_bind": {
+        "id": "input_054",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 54
+        }
+      },
+      "expected_return": 8,
+      "expected_heap": {
+        "p": 8
+      },
+      "native_reference_return": 8,
+      "native_reference_heap": {
+        "p": 8
+      },
+      "native_mutant_return": 8,
+      "native_mutant_heap": {
+        "p": 9
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_055",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 55
+      },
+      "qcp_bind": {
+        "id": "input_055",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 55
+        }
+      },
+      "expected_return": 8,
+      "expected_heap": {
+        "p": 8
+      },
+      "native_reference_return": 8,
+      "native_reference_heap": {
+        "p": 8
+      },
+      "native_mutant_return": 8,
+      "native_mutant_heap": {
+        "p": 9
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_056",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 56
+      },
+      "qcp_bind": {
+        "id": "input_056",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 56
+        }
+      },
+      "expected_return": 8,
+      "expected_heap": {
+        "p": 8
+      },
+      "native_reference_return": 8,
+      "native_reference_heap": {
+        "p": 8
+      },
+      "native_mutant_return": 8,
+      "native_mutant_heap": {
+        "p": 9
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_057",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 57
+      },
+      "qcp_bind": {
+        "id": "input_057",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 57
+        }
+      },
+      "expected_return": 8,
+      "expected_heap": {
+        "p": 8
+      },
+      "native_reference_return": 8,
+      "native_reference_heap": {
+        "p": 8
+      },
+      "native_mutant_return": 8,
+      "native_mutant_heap": {
+        "p": 9
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_058",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 58
+      },
+      "qcp_bind": {
+        "id": "input_058",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 58
+        }
+      },
+      "expected_return": 8,
+      "expected_heap": {
+        "p": 8
+      },
+      "native_reference_return": 8,
+      "native_reference_heap": {
+        "p": 8
+      },
+      "native_mutant_return": 8,
+      "native_mutant_heap": {
+        "p": 9
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_059",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 59
+      },
+      "qcp_bind": {
+        "id": "input_059",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 59
+        }
+      },
+      "expected_return": 8,
+      "expected_heap": {
+        "p": 8
+      },
+      "native_reference_return": 8,
+      "native_reference_heap": {
+        "p": 8
+      },
+      "native_mutant_return": 8,
+      "native_mutant_heap": {
+        "p": 9
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_060",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 60
+      },
+      "qcp_bind": {
+        "id": "input_060",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 60
+        }
+      },
+      "expected_return": 8,
+      "expected_heap": {
+        "p": 8
+      },
+      "native_reference_return": 8,
+      "native_reference_heap": {
+        "p": 8
+      },
+      "native_mutant_return": 8,
+      "native_mutant_heap": {
+        "p": 9
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_061",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 61
+      },
+      "qcp_bind": {
+        "id": "input_061",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 61
+        }
+      },
+      "expected_return": 8,
+      "expected_heap": {
+        "p": 8
+      },
+      "native_reference_return": 8,
+      "native_reference_heap": {
+        "p": 8
+      },
+      "native_mutant_return": 8,
+      "native_mutant_heap": {
+        "p": 9
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_062",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 62
+      },
+      "qcp_bind": {
+        "id": "input_062",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 62
+        }
+      },
+      "expected_return": 8,
+      "expected_heap": {
+        "p": 8
+      },
+      "native_reference_return": 8,
+      "native_reference_heap": {
+        "p": 8
+      },
+      "native_mutant_return": 8,
+      "native_mutant_heap": {
+        "p": 9
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_063",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 63
+      },
+      "qcp_bind": {
+        "id": "input_063",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 63
+        }
+      },
+      "expected_return": 8,
+      "expected_heap": {
+        "p": 8
+      },
+      "native_reference_return": 8,
+      "native_reference_heap": {
+        "p": 8
+      },
+      "native_mutant_return": 8,
+      "native_mutant_heap": {
+        "p": 9
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_064",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 64
+      },
+      "qcp_bind": {
+        "id": "input_064",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 64
+        }
+      },
+      "expected_return": 8,
+      "expected_heap": {
+        "p": 8
+      },
+      "native_reference_return": 8,
+      "native_reference_heap": {
+        "p": 8
+      },
+      "native_mutant_return": 8,
+      "native_mutant_heap": {
+        "p": 9
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_065",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 65
+      },
+      "qcp_bind": {
+        "id": "input_065",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 65
+        }
+      },
+      "expected_return": 9,
+      "expected_heap": {
+        "p": 9
+      },
+      "native_reference_return": 9,
+      "native_reference_heap": {
+        "p": 9
+      },
+      "native_mutant_return": 9,
+      "native_mutant_heap": {
+        "p": 10
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_066",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 66
+      },
+      "qcp_bind": {
+        "id": "input_066",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 66
+        }
+      },
+      "expected_return": 9,
+      "expected_heap": {
+        "p": 9
+      },
+      "native_reference_return": 9,
+      "native_reference_heap": {
+        "p": 9
+      },
+      "native_mutant_return": 9,
+      "native_mutant_heap": {
+        "p": 10
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_067",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 67
+      },
+      "qcp_bind": {
+        "id": "input_067",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 67
+        }
+      },
+      "expected_return": 9,
+      "expected_heap": {
+        "p": 9
+      },
+      "native_reference_return": 9,
+      "native_reference_heap": {
+        "p": 9
+      },
+      "native_mutant_return": 9,
+      "native_mutant_heap": {
+        "p": 10
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_068",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 68
+      },
+      "qcp_bind": {
+        "id": "input_068",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 68
+        }
+      },
+      "expected_return": 9,
+      "expected_heap": {
+        "p": 9
+      },
+      "native_reference_return": 9,
+      "native_reference_heap": {
+        "p": 9
+      },
+      "native_mutant_return": 9,
+      "native_mutant_heap": {
+        "p": 10
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_069",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 69
+      },
+      "qcp_bind": {
+        "id": "input_069",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 69
+        }
+      },
+      "expected_return": 9,
+      "expected_heap": {
+        "p": 9
+      },
+      "native_reference_return": 9,
+      "native_reference_heap": {
+        "p": 9
+      },
+      "native_mutant_return": 9,
+      "native_mutant_heap": {
+        "p": 10
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_070",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 70
+      },
+      "qcp_bind": {
+        "id": "input_070",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 70
+        }
+      },
+      "expected_return": 9,
+      "expected_heap": {
+        "p": 9
+      },
+      "native_reference_return": 9,
+      "native_reference_heap": {
+        "p": 9
+      },
+      "native_mutant_return": 9,
+      "native_mutant_heap": {
+        "p": 10
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_071",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 71
+      },
+      "qcp_bind": {
+        "id": "input_071",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 71
+        }
+      },
+      "expected_return": 9,
+      "expected_heap": {
+        "p": 9
+      },
+      "native_reference_return": 9,
+      "native_reference_heap": {
+        "p": 9
+      },
+      "native_mutant_return": 9,
+      "native_mutant_heap": {
+        "p": 10
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_072",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 72
+      },
+      "qcp_bind": {
+        "id": "input_072",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 72
+        }
+      },
+      "expected_return": 9,
+      "expected_heap": {
+        "p": 9
+      },
+      "native_reference_return": 9,
+      "native_reference_heap": {
+        "p": 9
+      },
+      "native_mutant_return": 9,
+      "native_mutant_heap": {
+        "p": 10
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_073",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 73
+      },
+      "qcp_bind": {
+        "id": "input_073",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 73
+        }
+      },
+      "expected_return": 9,
+      "expected_heap": {
+        "p": 9
+      },
+      "native_reference_return": 9,
+      "native_reference_heap": {
+        "p": 9
+      },
+      "native_mutant_return": 9,
+      "native_mutant_heap": {
+        "p": 10
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_074",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 74
+      },
+      "qcp_bind": {
+        "id": "input_074",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 74
+        }
+      },
+      "expected_return": 9,
+      "expected_heap": {
+        "p": 9
+      },
+      "native_reference_return": 9,
+      "native_reference_heap": {
+        "p": 9
+      },
+      "native_mutant_return": 9,
+      "native_mutant_heap": {
+        "p": 10
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_075",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 75
+      },
+      "qcp_bind": {
+        "id": "input_075",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 75
+        }
+      },
+      "expected_return": 9,
+      "expected_heap": {
+        "p": 9
+      },
+      "native_reference_return": 9,
+      "native_reference_heap": {
+        "p": 9
+      },
+      "native_mutant_return": 9,
+      "native_mutant_heap": {
+        "p": 10
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_076",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 76
+      },
+      "qcp_bind": {
+        "id": "input_076",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 76
+        }
+      },
+      "expected_return": 9,
+      "expected_heap": {
+        "p": 9
+      },
+      "native_reference_return": 9,
+      "native_reference_heap": {
+        "p": 9
+      },
+      "native_mutant_return": 9,
+      "native_mutant_heap": {
+        "p": 10
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_077",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 77
+      },
+      "qcp_bind": {
+        "id": "input_077",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 77
+        }
+      },
+      "expected_return": 9,
+      "expected_heap": {
+        "p": 9
+      },
+      "native_reference_return": 9,
+      "native_reference_heap": {
+        "p": 9
+      },
+      "native_mutant_return": 9,
+      "native_mutant_heap": {
+        "p": 10
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_078",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 78
+      },
+      "qcp_bind": {
+        "id": "input_078",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 78
+        }
+      },
+      "expected_return": 9,
+      "expected_heap": {
+        "p": 9
+      },
+      "native_reference_return": 9,
+      "native_reference_heap": {
+        "p": 9
+      },
+      "native_mutant_return": 9,
+      "native_mutant_heap": {
+        "p": 10
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_079",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 79
+      },
+      "qcp_bind": {
+        "id": "input_079",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 79
+        }
+      },
+      "expected_return": 9,
+      "expected_heap": {
+        "p": 9
+      },
+      "native_reference_return": 9,
+      "native_reference_heap": {
+        "p": 9
+      },
+      "native_mutant_return": 9,
+      "native_mutant_heap": {
+        "p": 10
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_080",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 80
+      },
+      "qcp_bind": {
+        "id": "input_080",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 80
+        }
+      },
+      "expected_return": 9,
+      "expected_heap": {
+        "p": 9
+      },
+      "native_reference_return": 9,
+      "native_reference_heap": {
+        "p": 9
+      },
+      "native_mutant_return": 9,
+      "native_mutant_heap": {
+        "p": 10
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_081",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 81
+      },
+      "qcp_bind": {
+        "id": "input_081",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 81
+        }
+      },
+      "expected_return": 9,
+      "expected_heap": {
+        "p": 9
+      },
+      "native_reference_return": 9,
+      "native_reference_heap": {
+        "p": 9
+      },
+      "native_mutant_return": 9,
+      "native_mutant_heap": {
+        "p": 10
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_082",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 82
+      },
+      "qcp_bind": {
+        "id": "input_082",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 82
+        }
+      },
+      "expected_return": 10,
+      "expected_heap": {
+        "p": 10
+      },
+      "native_reference_return": 10,
+      "native_reference_heap": {
+        "p": 10
+      },
+      "native_mutant_return": 10,
+      "native_mutant_heap": {
+        "p": 11
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_083",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 83
+      },
+      "qcp_bind": {
+        "id": "input_083",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 83
+        }
+      },
+      "expected_return": 10,
+      "expected_heap": {
+        "p": 10
+      },
+      "native_reference_return": 10,
+      "native_reference_heap": {
+        "p": 10
+      },
+      "native_mutant_return": 10,
+      "native_mutant_heap": {
+        "p": 11
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_084",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 84
+      },
+      "qcp_bind": {
+        "id": "input_084",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 84
+        }
+      },
+      "expected_return": 10,
+      "expected_heap": {
+        "p": 10
+      },
+      "native_reference_return": 10,
+      "native_reference_heap": {
+        "p": 10
+      },
+      "native_mutant_return": 10,
+      "native_mutant_heap": {
+        "p": 11
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_085",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 85
+      },
+      "qcp_bind": {
+        "id": "input_085",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 85
+        }
+      },
+      "expected_return": 10,
+      "expected_heap": {
+        "p": 10
+      },
+      "native_reference_return": 10,
+      "native_reference_heap": {
+        "p": 10
+      },
+      "native_mutant_return": 10,
+      "native_mutant_heap": {
+        "p": 11
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_086",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 86
+      },
+      "qcp_bind": {
+        "id": "input_086",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 86
+        }
+      },
+      "expected_return": 10,
+      "expected_heap": {
+        "p": 10
+      },
+      "native_reference_return": 10,
+      "native_reference_heap": {
+        "p": 10
+      },
+      "native_mutant_return": 10,
+      "native_mutant_heap": {
+        "p": 11
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_087",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 87
+      },
+      "qcp_bind": {
+        "id": "input_087",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 87
+        }
+      },
+      "expected_return": 10,
+      "expected_heap": {
+        "p": 10
+      },
+      "native_reference_return": 10,
+      "native_reference_heap": {
+        "p": 10
+      },
+      "native_mutant_return": 10,
+      "native_mutant_heap": {
+        "p": 11
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_088",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 88
+      },
+      "qcp_bind": {
+        "id": "input_088",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 88
+        }
+      },
+      "expected_return": 10,
+      "expected_heap": {
+        "p": 10
+      },
+      "native_reference_return": 10,
+      "native_reference_heap": {
+        "p": 10
+      },
+      "native_mutant_return": 10,
+      "native_mutant_heap": {
+        "p": 11
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_089",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 89
+      },
+      "qcp_bind": {
+        "id": "input_089",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 89
+        }
+      },
+      "expected_return": 10,
+      "expected_heap": {
+        "p": 10
+      },
+      "native_reference_return": 10,
+      "native_reference_heap": {
+        "p": 10
+      },
+      "native_mutant_return": 10,
+      "native_mutant_heap": {
+        "p": 11
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_090",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 90
+      },
+      "qcp_bind": {
+        "id": "input_090",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 90
+        }
+      },
+      "expected_return": 10,
+      "expected_heap": {
+        "p": 10
+      },
+      "native_reference_return": 10,
+      "native_reference_heap": {
+        "p": 10
+      },
+      "native_mutant_return": 10,
+      "native_mutant_heap": {
+        "p": 11
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_091",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 91
+      },
+      "qcp_bind": {
+        "id": "input_091",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 91
+        }
+      },
+      "expected_return": 10,
+      "expected_heap": {
+        "p": 10
+      },
+      "native_reference_return": 10,
+      "native_reference_heap": {
+        "p": 10
+      },
+      "native_mutant_return": 10,
+      "native_mutant_heap": {
+        "p": 11
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_092",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 92
+      },
+      "qcp_bind": {
+        "id": "input_092",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 92
+        }
+      },
+      "expected_return": 10,
+      "expected_heap": {
+        "p": 10
+      },
+      "native_reference_return": 10,
+      "native_reference_heap": {
+        "p": 10
+      },
+      "native_mutant_return": 10,
+      "native_mutant_heap": {
+        "p": 11
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_093",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 93
+      },
+      "qcp_bind": {
+        "id": "input_093",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 93
+        }
+      },
+      "expected_return": 10,
+      "expected_heap": {
+        "p": 10
+      },
+      "native_reference_return": 10,
+      "native_reference_heap": {
+        "p": 10
+      },
+      "native_mutant_return": 10,
+      "native_mutant_heap": {
+        "p": 11
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_094",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 94
+      },
+      "qcp_bind": {
+        "id": "input_094",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 94
+        }
+      },
+      "expected_return": 10,
+      "expected_heap": {
+        "p": 10
+      },
+      "native_reference_return": 10,
+      "native_reference_heap": {
+        "p": 10
+      },
+      "native_mutant_return": 10,
+      "native_mutant_heap": {
+        "p": 11
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_095",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 95
+      },
+      "qcp_bind": {
+        "id": "input_095",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 95
+        }
+      },
+      "expected_return": 10,
+      "expected_heap": {
+        "p": 10
+      },
+      "native_reference_return": 10,
+      "native_reference_heap": {
+        "p": 10
+      },
+      "native_mutant_return": 10,
+      "native_mutant_heap": {
+        "p": 11
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_096",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 96
+      },
+      "qcp_bind": {
+        "id": "input_096",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 96
+        }
+      },
+      "expected_return": 10,
+      "expected_heap": {
+        "p": 10
+      },
+      "native_reference_return": 10,
+      "native_reference_heap": {
+        "p": 10
+      },
+      "native_mutant_return": 10,
+      "native_mutant_heap": {
+        "p": 11
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_097",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 97
+      },
+      "qcp_bind": {
+        "id": "input_097",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 97
+        }
+      },
+      "expected_return": 10,
+      "expected_heap": {
+        "p": 10
+      },
+      "native_reference_return": 10,
+      "native_reference_heap": {
+        "p": 10
+      },
+      "native_mutant_return": 10,
+      "native_mutant_heap": {
+        "p": 11
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_098",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 98
+      },
+      "qcp_bind": {
+        "id": "input_098",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 98
+        }
+      },
+      "expected_return": 10,
+      "expected_heap": {
+        "p": 10
+      },
+      "native_reference_return": 10,
+      "native_reference_heap": {
+        "p": 10
+      },
+      "native_mutant_return": 10,
+      "native_mutant_heap": {
+        "p": 11
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_099",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 99
+      },
+      "qcp_bind": {
+        "id": "input_099",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 99
+        }
+      },
+      "expected_return": 10,
+      "expected_heap": {
+        "p": 10
+      },
+      "native_reference_return": 10,
+      "native_reference_heap": {
+        "p": 10
+      },
+      "native_mutant_return": 10,
+      "native_mutant_heap": {
+        "p": 11
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_100",
+      "args": {
+        "p": 4096
+      },
+      "cells": {
+        "p": 100
+      },
+      "qcp_bind": {
+        "id": "input_100",
+        "args": {
+          "p": 4096
+        },
+        "values": {
+          "x": 100
+        }
+      },
+      "expected_return": 10,
+      "expected_heap": {
+        "p": 10
+      },
+      "native_reference_return": 10,
+      "native_reference_heap": {
+        "p": 10
+      },
+      "native_mutant_return": 10,
+      "native_mutant_heap": {
+        "p": 11
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    }
+  ],
+  "files": {
+    "reference.qcp.c": "fd6eb23f85c4c4189cbded6367c082e77b966a9f6cbca5424b6ca16aa12c81de",
+    "RootSpec.v": "43931e82d3bf96e86d6c59d06b6f40142dfd5e9a52e9a99d5729c09652eaa6d5",
+    "spec_mutation.cn.c": "c8c77795cbbcd6a8b8fb823acbf4eed82050aabbe0381c16a36fb6642ff504c8",
+    "impl_mutation.cn.c": "f4021a1e0b831cabdd6cfb9acadc13d444d4dbad454aecb1d281b15e7784107c",
+    "reference.cn.c": "7188120218bf56b922ce480b140957665ff2586e51a02beb4eb09aa5d796f94f",
+    "spec_mutation.qcp.c": "7a408b50dc0fda9f49199b89e44c455cab2ebfbe8c78d3158be67c1952585772",
+    "impl_mutation.qcp.c": "a30d3831e460a95741c5bfdf747b330a1a08507bfecd83faa9b236216db51b67"
+  },
+  "cell_logical_values": {
+    "p": "x"
+  },
+  "pointer_aliases": {},
+  "domain_ranges": {
+    "p": [
+      0,
+      100
+    ]
+  },
+  "domain_complete_scope": "owned-cell contents at a canonical valid address",
+  "cn_reference_transform": {
+    "kind": "proved-annotation-replacement",
+    "old": "0 <= return; each(integer k; 0 <= k) {(return <= k) == (x <= k*k)};",
+    "new": "0 <= return; x <= return*return; return == 0 || (return-1)*(return-1) < x;",
+    "proof_path": "paper/theory/LeastRootRewrite.v",
+    "proof_sha256": "08e0877574fed05da2dae2f1f0f6a2883f47b759654ec17ab1f56531cbee9470",
+    "theorem": "least_root_finite_characterization"
+  }
+}

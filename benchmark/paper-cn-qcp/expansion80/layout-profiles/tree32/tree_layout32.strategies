@@ -1,0 +1,29 @@
+id : 0
+priority : core(1)
+left : store_tree32(?p, ?tr0) at 0
+right : store_tree32(p, ?tr1) at 1
+action : left_erase(0);
+         right_erase(1);
+         right_add(tr0 == tr1);
+
+id : 6
+priority : core(3)
+left : store_tree32(?p, make_tree(?tl, ?k, ?v, ?trr)) at 0
+action : left_erase(0);
+         left_exist_add(l);
+         left_exist_add(r);
+         left_add(p != NULL);
+         left_add(-2147483648 <= k);
+         left_add(k <= 2147483647);
+         left_add(store(field_addr(p,tree,key),I32,k));
+         left_add(store(field_addr(p,tree,value),I32,v));
+         left_add(store(field_addr(p,tree,left),PTR(struct tree),l));
+         left_add(store(field_addr(p,tree,right),PTR(struct tree),r));
+         left_add(store_tree32(l,tl));
+         left_add(store_tree32(r,trr));
+
+id : 7
+priority : core(3)
+left : store_tree32(?p, empty()) at 0
+action : left_erase(0);
+         left_add(p == NULL);

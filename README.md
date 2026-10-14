@@ -25,10 +25,12 @@ strategies** 和具体 **binds**，直接得到逐测试用例的
 
 TeSpec 先检查实例化的 Require 是否可满足，再检查安全性和 Ensure。指针地址默认符号化；通过逻辑变量绑定内存内容，允许部分实例化。
 
-两种模式共用 sac 的表达式求值模块：
+两种模式都会实际执行循环和可用函数体，并检查入口 Require、程序安全性和最终 Ensure：
 
-- `--execution-mode expand`：展开函数体和循环，持续化简实际状态；证明注解默认忽略。`--annotation-policy check-preserve` 在状态副本上检查注解。
-- `--execution-mode no-expand`：同样实际执行循环和函数体，并在每次经过注解、调用及返回时复用 QCP 生成检查 VC；检查不修改执行状态。
+- `--execution-mode entry-exit`（默认）：入口/出口检查；中间证明注解默认忽略。`--annotation-policy check-preserve` 在状态副本上检查注解。
+- `--execution-mode all-boundaries`：所有边界检查；额外在每次经过 assert/inv、调用及返回边界时生成检查 VC；检查不修改执行状态。
+
+旧名称 `expand` / `no-expand` 仍分别作为 `entry-exit` / `all-boundaries` 的输入别名；teSpec 报告统一使用新名称。原始 SAC 输出保留二进制协议名称。
 
 只有声明且有规约的目标执行 Require 检查，安全性和 Ensure 为 `NOT_RUN`；执行中调用只有声明时报告 `UNKNOWN/missing_function_body`，没有契约时报错。前条件不满足为 `INVALID`，未关闭 VC 为 `UNKNOWN`。自动流程不启动证明 Agent。
 

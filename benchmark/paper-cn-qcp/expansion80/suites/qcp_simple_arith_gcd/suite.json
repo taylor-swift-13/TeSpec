@@ -1,0 +1,2757 @@
+{
+  "schema": "tespec-paired-input-suite/v1",
+  "id": "qcp_simple_arith_gcd",
+  "function": "gcd",
+  "seed": 20261013,
+  "input_count": 128,
+  "domain_complete": false,
+  "parameter_order": [
+    "x",
+    "y"
+  ],
+  "admission": "Signed int32 x/y excluding INT_MIN for GCD; or separate owned nums array and writable returnSize cell with 1<=numsSize<=50000",
+  "review_scope": "Mathematical nonnegative gcd with standard abs helper, or nondecreasing permuted returned array and exact output length; actual native pointer correspondence checked",
+  "reviewed_cn_sha256": "f43c8b294b6e12c61db3ad249ee4af981321a336d85eda6011918a94d9dd1120",
+  "reviewed_qcp_sha256": "314dcb94ff20109a862519ffa32b48075a1748cca112bee62d572230932ed0fa",
+  "generator_path": "prepare-interfaces.py",
+  "generator_sha256": "a93d660486a4b433e4f3d796195fbd4ff23578c2cb96f7eb687a44682db1cf2f",
+  "generator_dependencies": {
+    "prepare-arrays.py": "cd12e128e58c16352516e13bdad922b4d329434aa03020891c8e677bf28a543e",
+    "prepare-scalar.py": "22dd226903d04a4bb69f7b4a9c112df916805fb97d414a7383cd0559f8e53717"
+  },
+  "tool_runs_checked": false,
+  "native_abi": "typed host original/mutant oracle; two native ABI controls recorded separately",
+  "variants": {
+    "reference": {
+      "kind": "reference"
+    },
+    "spec_mutation": {
+      "kind": "spec",
+      "cn_edit": [
+        "return == Gcd(x,y)",
+        "return == Gcd(x,y) + 1"
+      ],
+      "qcp_edit": [
+        "__return == Zgcd(x,y)",
+        "__return == Zgcd(x,y) + 1"
+      ]
+    },
+    "impl_mutation": {
+      "kind": "impl",
+      "shared_c_edit": [
+        "return abs(x);",
+        "return 0;"
+      ]
+    }
+  },
+  "inputs": [
+    {
+      "id": "input_000",
+      "args": {
+        "x": -2147483647,
+        "y": -2147483647
+      },
+      "qcp_bind": {
+        "id": "input_000",
+        "args": {
+          "x": -2147483647,
+          "y": -2147483647
+        },
+        "values": {}
+      },
+      "expected_return": 2147483647,
+      "native_reference_return": 2147483647,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 1
+    },
+    {
+      "id": "input_001",
+      "args": {
+        "x": -2147483647,
+        "y": 0
+      },
+      "qcp_bind": {
+        "id": "input_001",
+        "args": {
+          "x": -2147483647,
+          "y": 0
+        },
+        "values": {}
+      },
+      "expected_return": 2147483647,
+      "native_reference_return": 2147483647,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 0
+    },
+    {
+      "id": "input_002",
+      "args": {
+        "x": -2147483647,
+        "y": 4
+      },
+      "qcp_bind": {
+        "id": "input_002",
+        "args": {
+          "x": -2147483647,
+          "y": 4
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 3
+    },
+    {
+      "id": "input_003",
+      "args": {
+        "x": -2147483647,
+        "y": 2004
+      },
+      "qcp_bind": {
+        "id": "input_003",
+        "args": {
+          "x": -2147483647,
+          "y": 2004
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 9
+    },
+    {
+      "id": "input_004",
+      "args": {
+        "x": -2147483646,
+        "y": -1
+      },
+      "qcp_bind": {
+        "id": "input_004",
+        "args": {
+          "x": -2147483646,
+          "y": -1
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 1
+    },
+    {
+      "id": "input_005",
+      "args": {
+        "x": -2147483646,
+        "y": 401
+      },
+      "qcp_bind": {
+        "id": "input_005",
+        "args": {
+          "x": -2147483646,
+          "y": 401
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 8
+    },
+    {
+      "id": "input_006",
+      "args": {
+        "x": -2110186328,
+        "y": -221699471
+      },
+      "qcp_bind": {
+        "id": "input_006",
+        "args": {
+          "x": -2110186328,
+          "y": -221699471
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 18
+    },
+    {
+      "id": "input_007",
+      "args": {
+        "x": -2038743610,
+        "y": -316644389
+      },
+      "qcp_bind": {
+        "id": "input_007",
+        "args": {
+          "x": -2038743610,
+          "y": -316644389
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 20
+    },
+    {
+      "id": "input_008",
+      "args": {
+        "x": -2037664568,
+        "y": -340361174
+      },
+      "qcp_bind": {
+        "id": "input_008",
+        "args": {
+          "x": -2037664568,
+          "y": -340361174
+        },
+        "values": {}
+      },
+      "expected_return": 2,
+      "native_reference_return": 2,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 12
+    },
+    {
+      "id": "input_009",
+      "args": {
+        "x": -1980710354,
+        "y": 861311842
+      },
+      "qcp_bind": {
+        "id": "input_009",
+        "args": {
+          "x": -1980710354,
+          "y": 861311842
+        },
+        "values": {}
+      },
+      "expected_return": 2,
+      "native_reference_return": 2,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 18
+    },
+    {
+      "id": "input_010",
+      "args": {
+        "x": -1979372691,
+        "y": -1213984677
+      },
+      "qcp_bind": {
+        "id": "input_010",
+        "args": {
+          "x": -1979372691,
+          "y": -1213984677
+        },
+        "values": {}
+      },
+      "expected_return": 3,
+      "native_reference_return": 3,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 23
+    },
+    {
+      "id": "input_011",
+      "args": {
+        "x": -1950330302,
+        "y": -955749167
+      },
+      "qcp_bind": {
+        "id": "input_011",
+        "args": {
+          "x": -1950330302,
+          "y": -955749167
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 24
+    },
+    {
+      "id": "input_012",
+      "args": {
+        "x": -1949621354,
+        "y": -223504605
+      },
+      "qcp_bind": {
+        "id": "input_012",
+        "args": {
+          "x": -1949621354,
+          "y": -223504605
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 25
+    },
+    {
+      "id": "input_013",
+      "args": {
+        "x": -1918129190,
+        "y": -1129535666
+      },
+      "qcp_bind": {
+        "id": "input_013",
+        "args": {
+          "x": -1918129190,
+          "y": -1129535666
+        },
+        "values": {}
+      },
+      "expected_return": 2,
+      "native_reference_return": 2,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 18
+    },
+    {
+      "id": "input_014",
+      "args": {
+        "x": -1845620829,
+        "y": -121626300
+      },
+      "qcp_bind": {
+        "id": "input_014",
+        "args": {
+          "x": -1845620829,
+          "y": -121626300
+        },
+        "values": {}
+      },
+      "expected_return": 3,
+      "native_reference_return": 3,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 21
+    },
+    {
+      "id": "input_015",
+      "args": {
+        "x": -1836311903,
+        "y": -1134903170
+      },
+      "qcp_bind": {
+        "id": "input_015",
+        "args": {
+          "x": -1836311903,
+          "y": -1134903170
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 44
+    },
+    {
+      "id": "input_016",
+      "args": {
+        "x": -1836311903,
+        "y": 1134903170
+      },
+      "qcp_bind": {
+        "id": "input_016",
+        "args": {
+          "x": -1836311903,
+          "y": 1134903170
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 44
+    },
+    {
+      "id": "input_017",
+      "args": {
+        "x": -1831128049,
+        "y": -2067095786
+      },
+      "qcp_bind": {
+        "id": "input_017",
+        "args": {
+          "x": -1831128049,
+          "y": -2067095786
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 16
+    },
+    {
+      "id": "input_018",
+      "args": {
+        "x": -1730959948,
+        "y": -365177302
+      },
+      "qcp_bind": {
+        "id": "input_018",
+        "args": {
+          "x": -1730959948,
+          "y": -365177302
+        },
+        "values": {}
+      },
+      "expected_return": 2,
+      "native_reference_return": 2,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 19
+    },
+    {
+      "id": "input_019",
+      "args": {
+        "x": -1707355838,
+        "y": 438915215
+      },
+      "qcp_bind": {
+        "id": "input_019",
+        "args": {
+          "x": -1707355838,
+          "y": 438915215
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 14
+    },
+    {
+      "id": "input_020",
+      "args": {
+        "x": -1698718697,
+        "y": -1074058733
+      },
+      "qcp_bind": {
+        "id": "input_020",
+        "args": {
+          "x": -1698718697,
+          "y": -1074058733
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 20
+    },
+    {
+      "id": "input_021",
+      "args": {
+        "x": -1549562208,
+        "y": 741862624
+      },
+      "qcp_bind": {
+        "id": "input_021",
+        "args": {
+          "x": -1549562208,
+          "y": 741862624
+        },
+        "values": {}
+      },
+      "expected_return": 32,
+      "native_reference_return": 32,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 19
+    },
+    {
+      "id": "input_022",
+      "args": {
+        "x": -1526126833,
+        "y": -1766727061
+      },
+      "qcp_bind": {
+        "id": "input_022",
+        "args": {
+          "x": -1526126833,
+          "y": -1766727061
+        },
+        "values": {}
+      },
+      "expected_return": 11,
+      "native_reference_return": 11,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 19
+    },
+    {
+      "id": "input_023",
+      "args": {
+        "x": -1489931729,
+        "y": -1946947052
+      },
+      "qcp_bind": {
+        "id": "input_023",
+        "args": {
+          "x": -1489931729,
+          "y": -1946947052
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 17
+    },
+    {
+      "id": "input_024",
+      "args": {
+        "x": -1316976608,
+        "y": -739058469
+      },
+      "qcp_bind": {
+        "id": "input_024",
+        "args": {
+          "x": -1316976608,
+          "y": -739058469
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 23
+    },
+    {
+      "id": "input_025",
+      "args": {
+        "x": -1301003035,
+        "y": -1153350430
+      },
+      "qcp_bind": {
+        "id": "input_025",
+        "args": {
+          "x": -1301003035,
+          "y": -1153350430
+        },
+        "values": {}
+      },
+      "expected_return": 5,
+      "native_reference_return": 5,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 19
+    },
+    {
+      "id": "input_026",
+      "args": {
+        "x": -1284518891,
+        "y": -206899814
+      },
+      "qcp_bind": {
+        "id": "input_026",
+        "args": {
+          "x": -1284518891,
+          "y": -206899814
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 20
+    },
+    {
+      "id": "input_027",
+      "args": {
+        "x": -1271326958,
+        "y": -539259347
+      },
+      "qcp_bind": {
+        "id": "input_027",
+        "args": {
+          "x": -1271326958,
+          "y": -539259347
+        },
+        "values": {}
+      },
+      "expected_return": 11,
+      "native_reference_return": 11,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 14
+    },
+    {
+      "id": "input_028",
+      "args": {
+        "x": -1212037343,
+        "y": -1198357267
+      },
+      "qcp_bind": {
+        "id": "input_028",
+        "args": {
+          "x": -1212037343,
+          "y": -1198357267
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 14
+    },
+    {
+      "id": "input_029",
+      "args": {
+        "x": -1197286770,
+        "y": 942451683
+      },
+      "qcp_bind": {
+        "id": "input_029",
+        "args": {
+          "x": -1197286770,
+          "y": 942451683
+        },
+        "values": {}
+      },
+      "expected_return": 3,
+      "native_reference_return": 3,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 20
+    },
+    {
+      "id": "input_030",
+      "args": {
+        "x": -1184215427,
+        "y": -1372959570
+      },
+      "qcp_bind": {
+        "id": "input_030",
+        "args": {
+          "x": -1184215427,
+          "y": -1372959570
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 16
+    },
+    {
+      "id": "input_031",
+      "args": {
+        "x": -1134903170,
+        "y": -701408733
+      },
+      "qcp_bind": {
+        "id": "input_031",
+        "args": {
+          "x": -1134903170,
+          "y": -701408733
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 43
+    },
+    {
+      "id": "input_032",
+      "args": {
+        "x": -1134903170,
+        "y": 701408733
+      },
+      "qcp_bind": {
+        "id": "input_032",
+        "args": {
+          "x": -1134903170,
+          "y": 701408733
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 43
+    },
+    {
+      "id": "input_033",
+      "args": {
+        "x": -882356486,
+        "y": -1481156918
+      },
+      "qcp_bind": {
+        "id": "input_033",
+        "args": {
+          "x": -882356486,
+          "y": -1481156918
+        },
+        "values": {}
+      },
+      "expected_return": 2,
+      "native_reference_return": 2,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 21
+    },
+    {
+      "id": "input_034",
+      "args": {
+        "x": -873709126,
+        "y": 963810147
+      },
+      "qcp_bind": {
+        "id": "input_034",
+        "args": {
+          "x": -873709126,
+          "y": 963810147
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 19
+    },
+    {
+      "id": "input_035",
+      "args": {
+        "x": -833421547,
+        "y": -2103008459
+      },
+      "qcp_bind": {
+        "id": "input_035",
+        "args": {
+          "x": -833421547,
+          "y": -2103008459
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 24
+    },
+    {
+      "id": "input_036",
+      "args": {
+        "x": -749478675,
+        "y": -442817131
+      },
+      "qcp_bind": {
+        "id": "input_036",
+        "args": {
+          "x": -749478675,
+          "y": -442817131
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 17
+    },
+    {
+      "id": "input_037",
+      "args": {
+        "x": -740083939,
+        "y": -937046351
+      },
+      "qcp_bind": {
+        "id": "input_037",
+        "args": {
+          "x": -740083939,
+          "y": -937046351
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 19
+    },
+    {
+      "id": "input_038",
+      "args": {
+        "x": -689467812,
+        "y": -128663419
+      },
+      "qcp_bind": {
+        "id": "input_038",
+        "args": {
+          "x": -689467812,
+          "y": -128663419
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 16
+    },
+    {
+      "id": "input_039",
+      "args": {
+        "x": -662961267,
+        "y": -151324928
+      },
+      "qcp_bind": {
+        "id": "input_039",
+        "args": {
+          "x": -662961267,
+          "y": -151324928
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 20
+    },
+    {
+      "id": "input_040",
+      "args": {
+        "x": -599425079,
+        "y": -415021519
+      },
+      "qcp_bind": {
+        "id": "input_040",
+        "args": {
+          "x": -599425079,
+          "y": -415021519
+        },
+        "values": {}
+      },
+      "expected_return": 11,
+      "native_reference_return": 11,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 11
+    },
+    {
+      "id": "input_041",
+      "args": {
+        "x": -465499377,
+        "y": -1639313220
+      },
+      "qcp_bind": {
+        "id": "input_041",
+        "args": {
+          "x": -465499377,
+          "y": -1639313220
+        },
+        "values": {}
+      },
+      "expected_return": 3,
+      "native_reference_return": 3,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 14
+    },
+    {
+      "id": "input_042",
+      "args": {
+        "x": -448650160,
+        "y": -1099156846
+      },
+      "qcp_bind": {
+        "id": "input_042",
+        "args": {
+          "x": -448650160,
+          "y": -1099156846
+        },
+        "values": {}
+      },
+      "expected_return": 2,
+      "native_reference_return": 2,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 18
+    },
+    {
+      "id": "input_043",
+      "args": {
+        "x": -355125031,
+        "y": 1099693634
+      },
+      "qcp_bind": {
+        "id": "input_043",
+        "args": {
+          "x": -355125031,
+          "y": 1099693634
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 21
+    },
+    {
+      "id": "input_044",
+      "args": {
+        "x": -349117697,
+        "y": -1136564613
+      },
+      "qcp_bind": {
+        "id": "input_044",
+        "args": {
+          "x": -349117697,
+          "y": -1136564613
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 20
+    },
+    {
+      "id": "input_045",
+      "args": {
+        "x": -295441906,
+        "y": -180236359
+      },
+      "qcp_bind": {
+        "id": "input_045",
+        "args": {
+          "x": -295441906,
+          "y": -180236359
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 22
+    },
+    {
+      "id": "input_046",
+      "args": {
+        "x": -208350281,
+        "y": -1540296869
+      },
+      "qcp_bind": {
+        "id": "input_046",
+        "args": {
+          "x": -208350281,
+          "y": -1540296869
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 19
+    },
+    {
+      "id": "input_047",
+      "args": {
+        "x": -168916291,
+        "y": -1855923309
+      },
+      "qcp_bind": {
+        "id": "input_047",
+        "args": {
+          "x": -168916291,
+          "y": -1855923309
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 21
+    },
+    {
+      "id": "input_048",
+      "args": {
+        "x": -168262939,
+        "y": -1522440576
+      },
+      "qcp_bind": {
+        "id": "input_048",
+        "args": {
+          "x": -168262939,
+          "y": -1522440576
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 14
+    },
+    {
+      "id": "input_049",
+      "args": {
+        "x": -107942483,
+        "y": -106392810
+      },
+      "qcp_bind": {
+        "id": "input_049",
+        "args": {
+          "x": -107942483,
+          "y": -106392810
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 16
+    },
+    {
+      "id": "input_050",
+      "args": {
+        "x": -89557788,
+        "y": -1842281489
+      },
+      "qcp_bind": {
+        "id": "input_050",
+        "args": {
+          "x": -89557788,
+          "y": -1842281489
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 17
+    },
+    {
+      "id": "input_051",
+      "args": {
+        "x": -69631888,
+        "y": -502702747
+      },
+      "qcp_bind": {
+        "id": "input_051",
+        "args": {
+          "x": -69631888,
+          "y": -502702747
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 21
+    },
+    {
+      "id": "input_052",
+      "args": {
+        "x": -45479319,
+        "y": 977826321
+      },
+      "qcp_bind": {
+        "id": "input_052",
+        "args": {
+          "x": -45479319,
+          "y": 977826321
+        },
+        "values": {}
+      },
+      "expected_return": 3,
+      "native_reference_return": 3,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 10
+    },
+    {
+      "id": "input_053",
+      "args": {
+        "x": -400,
+        "y": -2147483646
+      },
+      "qcp_bind": {
+        "id": "input_053",
+        "args": {
+          "x": -400,
+          "y": -2147483646
+        },
+        "values": {}
+      },
+      "expected_return": 2,
+      "native_reference_return": 2,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 7
+    },
+    {
+      "id": "input_054",
+      "args": {
+        "x": -400,
+        "y": 10
+      },
+      "qcp_bind": {
+        "id": "input_054",
+        "args": {
+          "x": -400,
+          "y": 10
+        },
+        "values": {}
+      },
+      "expected_return": 10,
+      "native_reference_return": 10,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 1
+    },
+    {
+      "id": "input_055",
+      "args": {
+        "x": -400,
+        "y": 2400
+      },
+      "qcp_bind": {
+        "id": "input_055",
+        "args": {
+          "x": -400,
+          "y": 2400
+        },
+        "values": {}
+      },
+      "expected_return": 400,
+      "native_reference_return": 400,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 2
+    },
+    {
+      "id": "input_056",
+      "args": {
+        "x": -100,
+        "y": -75
+      },
+      "qcp_bind": {
+        "id": "input_056",
+        "args": {
+          "x": -100,
+          "y": -75
+        },
+        "values": {}
+      },
+      "expected_return": 25,
+      "native_reference_return": 25,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 2
+    },
+    {
+      "id": "input_057",
+      "args": {
+        "x": -100,
+        "y": 0
+      },
+      "qcp_bind": {
+        "id": "input_057",
+        "args": {
+          "x": -100,
+          "y": 0
+        },
+        "values": {}
+      },
+      "expected_return": 100,
+      "native_reference_return": 100,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 0
+    },
+    {
+      "id": "input_058",
+      "args": {
+        "x": -100,
+        "y": 75
+      },
+      "qcp_bind": {
+        "id": "input_058",
+        "args": {
+          "x": -100,
+          "y": 75
+        },
+        "values": {}
+      },
+      "expected_return": 25,
+      "native_reference_return": 25,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 2
+    },
+    {
+      "id": "input_059",
+      "args": {
+        "x": -100,
+        "y": 1600
+      },
+      "qcp_bind": {
+        "id": "input_059",
+        "args": {
+          "x": -100,
+          "y": 1600
+        },
+        "values": {}
+      },
+      "expected_return": 100,
+      "native_reference_return": 100,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 2
+    },
+    {
+      "id": "input_060",
+      "args": {
+        "x": -10,
+        "y": -100
+      },
+      "qcp_bind": {
+        "id": "input_060",
+        "args": {
+          "x": -10,
+          "y": -100
+        },
+        "values": {}
+      },
+      "expected_return": 10,
+      "native_reference_return": 10,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 2
+    },
+    {
+      "id": "input_061",
+      "args": {
+        "x": -10,
+        "y": 100
+      },
+      "qcp_bind": {
+        "id": "input_061",
+        "args": {
+          "x": -10,
+          "y": 100
+        },
+        "values": {}
+      },
+      "expected_return": 10,
+      "native_reference_return": 10,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 2
+    },
+    {
+      "id": "input_062",
+      "args": {
+        "x": -10,
+        "y": 2147483646
+      },
+      "qcp_bind": {
+        "id": "input_062",
+        "args": {
+          "x": -10,
+          "y": 2147483646
+        },
+        "values": {}
+      },
+      "expected_return": 2,
+      "native_reference_return": 2,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 5
+    },
+    {
+      "id": "input_063",
+      "args": {
+        "x": -2,
+        "y": 2
+      },
+      "qcp_bind": {
+        "id": "input_063",
+        "args": {
+          "x": -2,
+          "y": 2
+        },
+        "values": {}
+      },
+      "expected_return": 2,
+      "native_reference_return": 2,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 1
+    },
+    {
+      "id": "input_064",
+      "args": {
+        "x": -2,
+        "y": 2000
+      },
+      "qcp_bind": {
+        "id": "input_064",
+        "args": {
+          "x": -2,
+          "y": 2000
+        },
+        "values": {}
+      },
+      "expected_return": 2,
+      "native_reference_return": 2,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 2
+    },
+    {
+      "id": "input_065",
+      "args": {
+        "x": -1,
+        "y": -10
+      },
+      "qcp_bind": {
+        "id": "input_065",
+        "args": {
+          "x": -1,
+          "y": -10
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 2
+    },
+    {
+      "id": "input_066",
+      "args": {
+        "x": -1,
+        "y": 1
+      },
+      "qcp_bind": {
+        "id": "input_066",
+        "args": {
+          "x": -1,
+          "y": 1
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 1
+    },
+    {
+      "id": "input_067",
+      "args": {
+        "x": -1,
+        "y": 400
+      },
+      "qcp_bind": {
+        "id": "input_067",
+        "args": {
+          "x": -1,
+          "y": 400
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 2
+    },
+    {
+      "id": "input_068",
+      "args": {
+        "x": 0,
+        "y": -2147483647
+      },
+      "qcp_bind": {
+        "id": "input_068",
+        "args": {
+          "x": 0,
+          "y": -2147483647
+        },
+        "values": {}
+      },
+      "expected_return": 2147483647,
+      "native_reference_return": 2147483647,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 1
+    },
+    {
+      "id": "input_069",
+      "args": {
+        "x": 0,
+        "y": 0
+      },
+      "qcp_bind": {
+        "id": "input_069",
+        "args": {
+          "x": 0,
+          "y": 0
+        },
+        "values": {}
+      },
+      "expected_return": 0,
+      "native_reference_return": 0,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": false,
+      "c_euclid_iterations": 0
+    },
+    {
+      "id": "input_070",
+      "args": {
+        "x": 0,
+        "y": 4
+      },
+      "qcp_bind": {
+        "id": "input_070",
+        "args": {
+          "x": 0,
+          "y": 4
+        },
+        "values": {}
+      },
+      "expected_return": 4,
+      "native_reference_return": 4,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 1
+    },
+    {
+      "id": "input_071",
+      "args": {
+        "x": 0,
+        "y": 2004
+      },
+      "qcp_bind": {
+        "id": "input_071",
+        "args": {
+          "x": 0,
+          "y": 2004
+        },
+        "values": {}
+      },
+      "expected_return": 2004,
+      "native_reference_return": 2004,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 1
+    },
+    {
+      "id": "input_072",
+      "args": {
+        "x": 0,
+        "y": 2147483647
+      },
+      "qcp_bind": {
+        "id": "input_072",
+        "args": {
+          "x": 0,
+          "y": 2147483647
+        },
+        "values": {}
+      },
+      "expected_return": 2147483647,
+      "native_reference_return": 2147483647,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 1
+    },
+    {
+      "id": "input_073",
+      "args": {
+        "x": 1,
+        "y": -1
+      },
+      "qcp_bind": {
+        "id": "input_073",
+        "args": {
+          "x": 1,
+          "y": -1
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 1
+    },
+    {
+      "id": "input_074",
+      "args": {
+        "x": 1,
+        "y": 800
+      },
+      "qcp_bind": {
+        "id": "input_074",
+        "args": {
+          "x": 1,
+          "y": 800
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 2
+    },
+    {
+      "id": "input_075",
+      "args": {
+        "x": 2,
+        "y": -2147483646
+      },
+      "qcp_bind": {
+        "id": "input_075",
+        "args": {
+          "x": 2,
+          "y": -2147483646
+        },
+        "values": {}
+      },
+      "expected_return": 2,
+      "native_reference_return": 2,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 2
+    },
+    {
+      "id": "input_076",
+      "args": {
+        "x": 2,
+        "y": 10
+      },
+      "qcp_bind": {
+        "id": "input_076",
+        "args": {
+          "x": 2,
+          "y": 10
+        },
+        "values": {}
+      },
+      "expected_return": 2,
+      "native_reference_return": 2,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 2
+    },
+    {
+      "id": "input_077",
+      "args": {
+        "x": 2,
+        "y": 2400
+      },
+      "qcp_bind": {
+        "id": "input_077",
+        "args": {
+          "x": 2,
+          "y": 2400
+        },
+        "values": {}
+      },
+      "expected_return": 2,
+      "native_reference_return": 2,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 2
+    },
+    {
+      "id": "input_078",
+      "args": {
+        "x": 4,
+        "y": 0
+      },
+      "qcp_bind": {
+        "id": "input_078",
+        "args": {
+          "x": 4,
+          "y": 0
+        },
+        "values": {}
+      },
+      "expected_return": 4,
+      "native_reference_return": 4,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 0
+    },
+    {
+      "id": "input_079",
+      "args": {
+        "x": 4,
+        "y": 1600
+      },
+      "qcp_bind": {
+        "id": "input_079",
+        "args": {
+          "x": 4,
+          "y": 1600
+        },
+        "values": {}
+      },
+      "expected_return": 4,
+      "native_reference_return": 4,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 2
+    },
+    {
+      "id": "input_080",
+      "args": {
+        "x": 9,
+        "y": -100
+      },
+      "qcp_bind": {
+        "id": "input_080",
+        "args": {
+          "x": 9,
+          "y": -100
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 3
+    },
+    {
+      "id": "input_081",
+      "args": {
+        "x": 9,
+        "y": 399
+      },
+      "qcp_bind": {
+        "id": "input_081",
+        "args": {
+          "x": 9,
+          "y": 399
+        },
+        "values": {}
+      },
+      "expected_return": 3,
+      "native_reference_return": 3,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 3
+    },
+    {
+      "id": "input_082",
+      "args": {
+        "x": 9,
+        "y": 2147483646
+      },
+      "qcp_bind": {
+        "id": "input_082",
+        "args": {
+          "x": 9,
+          "y": 2147483646
+        },
+        "values": {}
+      },
+      "expected_return": 9,
+      "native_reference_return": 9,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 2
+    },
+    {
+      "id": "input_083",
+      "args": {
+        "x": 10,
+        "y": 2
+      },
+      "qcp_bind": {
+        "id": "input_083",
+        "args": {
+          "x": 10,
+          "y": 2
+        },
+        "values": {}
+      },
+      "expected_return": 2,
+      "native_reference_return": 2,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 1
+    },
+    {
+      "id": "input_084",
+      "args": {
+        "x": 10,
+        "y": 2000
+      },
+      "qcp_bind": {
+        "id": "input_084",
+        "args": {
+          "x": 10,
+          "y": 2000
+        },
+        "values": {}
+      },
+      "expected_return": 10,
+      "native_reference_return": 10,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 2
+    },
+    {
+      "id": "input_085",
+      "args": {
+        "x": 100,
+        "y": -75
+      },
+      "qcp_bind": {
+        "id": "input_085",
+        "args": {
+          "x": 100,
+          "y": -75
+        },
+        "values": {}
+      },
+      "expected_return": 25,
+      "native_reference_return": 25,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 2
+    },
+    {
+      "id": "input_086",
+      "args": {
+        "x": 100,
+        "y": -10
+      },
+      "qcp_bind": {
+        "id": "input_086",
+        "args": {
+          "x": 100,
+          "y": -10
+        },
+        "values": {}
+      },
+      "expected_return": 10,
+      "native_reference_return": 10,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 1
+    },
+    {
+      "id": "input_087",
+      "args": {
+        "x": 100,
+        "y": 75
+      },
+      "qcp_bind": {
+        "id": "input_087",
+        "args": {
+          "x": 100,
+          "y": 75
+        },
+        "values": {}
+      },
+      "expected_return": 25,
+      "native_reference_return": 25,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 2
+    },
+    {
+      "id": "input_088",
+      "args": {
+        "x": 100,
+        "y": 400
+      },
+      "qcp_bind": {
+        "id": "input_088",
+        "args": {
+          "x": 100,
+          "y": 400
+        },
+        "values": {}
+      },
+      "expected_return": 100,
+      "native_reference_return": 100,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 2
+    },
+    {
+      "id": "input_089",
+      "args": {
+        "x": 399,
+        "y": -2147483647
+      },
+      "qcp_bind": {
+        "id": "input_089",
+        "args": {
+          "x": 399,
+          "y": -2147483647
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 8
+    },
+    {
+      "id": "input_090",
+      "args": {
+        "x": 399,
+        "y": 9
+      },
+      "qcp_bind": {
+        "id": "input_090",
+        "args": {
+          "x": 399,
+          "y": 9
+        },
+        "values": {}
+      },
+      "expected_return": 3,
+      "native_reference_return": 3,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 2
+    },
+    {
+      "id": "input_091",
+      "args": {
+        "x": 399,
+        "y": 2004
+      },
+      "qcp_bind": {
+        "id": "input_091",
+        "args": {
+          "x": 399,
+          "y": 2004
+        },
+        "values": {}
+      },
+      "expected_return": 3,
+      "native_reference_return": 3,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 4
+    },
+    {
+      "id": "input_092",
+      "args": {
+        "x": 400,
+        "y": -1
+      },
+      "qcp_bind": {
+        "id": "input_092",
+        "args": {
+          "x": 400,
+          "y": -1
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 1
+    },
+    {
+      "id": "input_093",
+      "args": {
+        "x": 400,
+        "y": 800
+      },
+      "qcp_bind": {
+        "id": "input_093",
+        "args": {
+          "x": 400,
+          "y": 800
+        },
+        "values": {}
+      },
+      "expected_return": 400,
+      "native_reference_return": 400,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 2
+    },
+    {
+      "id": "input_094",
+      "args": {
+        "x": 401,
+        "y": -2147483646
+      },
+      "qcp_bind": {
+        "id": "input_094",
+        "args": {
+          "x": 401,
+          "y": -2147483646
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 9
+    },
+    {
+      "id": "input_095",
+      "args": {
+        "x": 401,
+        "y": 10
+      },
+      "qcp_bind": {
+        "id": "input_095",
+        "args": {
+          "x": 401,
+          "y": 10
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 2
+    },
+    {
+      "id": "input_096",
+      "args": {
+        "x": 401,
+        "y": 2400
+      },
+      "qcp_bind": {
+        "id": "input_096",
+        "args": {
+          "x": 401,
+          "y": 2400
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 6
+    },
+    {
+      "id": "input_097",
+      "args": {
+        "x": 800,
+        "y": 1
+      },
+      "qcp_bind": {
+        "id": "input_097",
+        "args": {
+          "x": 800,
+          "y": 1
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 1
+    },
+    {
+      "id": "input_098",
+      "args": {
+        "x": 800,
+        "y": 1600
+      },
+      "qcp_bind": {
+        "id": "input_098",
+        "args": {
+          "x": 800,
+          "y": 1600
+        },
+        "values": {}
+      },
+      "expected_return": 800,
+      "native_reference_return": 800,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 2
+    },
+    {
+      "id": "input_099",
+      "args": {
+        "x": 1600,
+        "y": -100
+      },
+      "qcp_bind": {
+        "id": "input_099",
+        "args": {
+          "x": 1600,
+          "y": -100
+        },
+        "values": {}
+      },
+      "expected_return": 100,
+      "native_reference_return": 100,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 1
+    },
+    {
+      "id": "input_100",
+      "args": {
+        "x": 1600,
+        "y": 399
+      },
+      "qcp_bind": {
+        "id": "input_100",
+        "args": {
+          "x": 1600,
+          "y": 399
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 4
+    },
+    {
+      "id": "input_101",
+      "args": {
+        "x": 1600,
+        "y": 2147483646
+      },
+      "qcp_bind": {
+        "id": "input_101",
+        "args": {
+          "x": 1600,
+          "y": 2147483646
+        },
+        "values": {}
+      },
+      "expected_return": 2,
+      "native_reference_return": 2,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 11
+    },
+    {
+      "id": "input_102",
+      "args": {
+        "x": 1900,
+        "y": 2
+      },
+      "qcp_bind": {
+        "id": "input_102",
+        "args": {
+          "x": 1900,
+          "y": 2
+        },
+        "values": {}
+      },
+      "expected_return": 2,
+      "native_reference_return": 2,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 1
+    },
+    {
+      "id": "input_103",
+      "args": {
+        "x": 1900,
+        "y": 2000
+      },
+      "qcp_bind": {
+        "id": "input_103",
+        "args": {
+          "x": 1900,
+          "y": 2000
+        },
+        "values": {}
+      },
+      "expected_return": 100,
+      "native_reference_return": 100,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 3
+    },
+    {
+      "id": "input_104",
+      "args": {
+        "x": 2000,
+        "y": -2
+      },
+      "qcp_bind": {
+        "id": "input_104",
+        "args": {
+          "x": 2000,
+          "y": -2
+        },
+        "values": {}
+      },
+      "expected_return": 2,
+      "native_reference_return": 2,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 1
+    },
+    {
+      "id": "input_105",
+      "args": {
+        "x": 2000,
+        "y": 400
+      },
+      "qcp_bind": {
+        "id": "input_105",
+        "args": {
+          "x": 2000,
+          "y": 400
+        },
+        "values": {}
+      },
+      "expected_return": 400,
+      "native_reference_return": 400,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 1
+    },
+    {
+      "id": "input_106",
+      "args": {
+        "x": 2004,
+        "y": -2147483647
+      },
+      "qcp_bind": {
+        "id": "input_106",
+        "args": {
+          "x": 2004,
+          "y": -2147483647
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 10
+    },
+    {
+      "id": "input_107",
+      "args": {
+        "x": 2004,
+        "y": 9
+      },
+      "qcp_bind": {
+        "id": "input_107",
+        "args": {
+          "x": 2004,
+          "y": 9
+        },
+        "values": {}
+      },
+      "expected_return": 3,
+      "native_reference_return": 3,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 3
+    },
+    {
+      "id": "input_108",
+      "args": {
+        "x": 2004,
+        "y": 2004
+      },
+      "qcp_bind": {
+        "id": "input_108",
+        "args": {
+          "x": 2004,
+          "y": 2004
+        },
+        "values": {}
+      },
+      "expected_return": 2004,
+      "native_reference_return": 2004,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 1
+    },
+    {
+      "id": "input_109",
+      "args": {
+        "x": 2100,
+        "y": -1
+      },
+      "qcp_bind": {
+        "id": "input_109",
+        "args": {
+          "x": 2100,
+          "y": -1
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 1
+    },
+    {
+      "id": "input_110",
+      "args": {
+        "x": 2100,
+        "y": 800
+      },
+      "qcp_bind": {
+        "id": "input_110",
+        "args": {
+          "x": 2100,
+          "y": 800
+        },
+        "values": {}
+      },
+      "expected_return": 100,
+      "native_reference_return": 100,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 5
+    },
+    {
+      "id": "input_111",
+      "args": {
+        "x": 2400,
+        "y": -400
+      },
+      "qcp_bind": {
+        "id": "input_111",
+        "args": {
+          "x": 2400,
+          "y": -400
+        },
+        "values": {}
+      },
+      "expected_return": 400,
+      "native_reference_return": 400,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 1
+    },
+    {
+      "id": "input_112",
+      "args": {
+        "x": 2400,
+        "y": 10
+      },
+      "qcp_bind": {
+        "id": "input_112",
+        "args": {
+          "x": 2400,
+          "y": 10
+        },
+        "values": {}
+      },
+      "expected_return": 10,
+      "native_reference_return": 10,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 1
+    },
+    {
+      "id": "input_113",
+      "args": {
+        "x": 2400,
+        "y": 2400
+      },
+      "qcp_bind": {
+        "id": "input_113",
+        "args": {
+          "x": 2400,
+          "y": 2400
+        },
+        "values": {}
+      },
+      "expected_return": 2400,
+      "native_reference_return": 2400,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 1
+    },
+    {
+      "id": "input_114",
+      "args": {
+        "x": 155785653,
+        "y": 1007131359
+      },
+      "qcp_bind": {
+        "id": "input_114",
+        "args": {
+          "x": 155785653,
+          "y": 1007131359
+        },
+        "values": {}
+      },
+      "expected_return": 3,
+      "native_reference_return": 3,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 19
+    },
+    {
+      "id": "input_115",
+      "args": {
+        "x": 368336629,
+        "y": 1667271381
+      },
+      "qcp_bind": {
+        "id": "input_115",
+        "args": {
+          "x": 368336629,
+          "y": 1667271381
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 19
+    },
+    {
+      "id": "input_116",
+      "args": {
+        "x": 429543934,
+        "y": -1593755615
+      },
+      "qcp_bind": {
+        "id": "input_116",
+        "args": {
+          "x": 429543934,
+          "y": -1593755615
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 17
+    },
+    {
+      "id": "input_117",
+      "args": {
+        "x": 473873329,
+        "y": -184096501
+      },
+      "qcp_bind": {
+        "id": "input_117",
+        "args": {
+          "x": 473873329,
+          "y": -184096501
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 18
+    },
+    {
+      "id": "input_118",
+      "args": {
+        "x": 527778287,
+        "y": 508004983
+      },
+      "qcp_bind": {
+        "id": "input_118",
+        "args": {
+          "x": 527778287,
+          "y": 508004983
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 20
+    },
+    {
+      "id": "input_119",
+      "args": {
+        "x": 725305261,
+        "y": 1841413407
+      },
+      "qcp_bind": {
+        "id": "input_119",
+        "args": {
+          "x": 725305261,
+          "y": 1841413407
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 23
+    },
+    {
+      "id": "input_120",
+      "args": {
+        "x": 792890726,
+        "y": 17306666
+      },
+      "qcp_bind": {
+        "id": "input_120",
+        "args": {
+          "x": 792890726,
+          "y": 17306666
+        },
+        "values": {}
+      },
+      "expected_return": 2,
+      "native_reference_return": 2,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 18
+    },
+    {
+      "id": "input_121",
+      "args": {
+        "x": 820045723,
+        "y": 168570368
+      },
+      "qcp_bind": {
+        "id": "input_121",
+        "args": {
+          "x": 820045723,
+          "y": 168570368
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 18
+    },
+    {
+      "id": "input_122",
+      "args": {
+        "x": 1134903170,
+        "y": -701408733
+      },
+      "qcp_bind": {
+        "id": "input_122",
+        "args": {
+          "x": 1134903170,
+          "y": -701408733
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 43
+    },
+    {
+      "id": "input_123",
+      "args": {
+        "x": 1134903170,
+        "y": 701408733
+      },
+      "qcp_bind": {
+        "id": "input_123",
+        "args": {
+          "x": 1134903170,
+          "y": 701408733
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 43
+    },
+    {
+      "id": "input_124",
+      "args": {
+        "x": 1283912124,
+        "y": 1439628960
+      },
+      "qcp_bind": {
+        "id": "input_124",
+        "args": {
+          "x": 1283912124,
+          "y": 1439628960
+        },
+        "values": {}
+      },
+      "expected_return": 1452,
+      "native_reference_return": 1452,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 12
+    },
+    {
+      "id": "input_125",
+      "args": {
+        "x": 1836311903,
+        "y": -1134903170
+      },
+      "qcp_bind": {
+        "id": "input_125",
+        "args": {
+          "x": 1836311903,
+          "y": -1134903170
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 44
+    },
+    {
+      "id": "input_126",
+      "args": {
+        "x": 1836311903,
+        "y": 1134903170
+      },
+      "qcp_bind": {
+        "id": "input_126",
+        "args": {
+          "x": 1836311903,
+          "y": 1134903170
+        },
+        "values": {}
+      },
+      "expected_return": 1,
+      "native_reference_return": 1,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 44
+    },
+    {
+      "id": "input_127",
+      "args": {
+        "x": 2147483647,
+        "y": 2147483647
+      },
+      "qcp_bind": {
+        "id": "input_127",
+        "args": {
+          "x": 2147483647,
+          "y": 2147483647
+        },
+        "values": {}
+      },
+      "expected_return": 2147483647,
+      "native_reference_return": 2147483647,
+      "native_mutant_return": 0,
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true,
+      "c_euclid_iterations": 1
+    }
+  ],
+  "files": {
+    "gcd_spec.v": "a51c6dd2702e5d37870f1d335c7268d602f111aa6098246d4b3d08126f4a8299",
+    "impl_mutation.cn.c": "d8b6ef9fe0c1d442d8b4a785901372b805632becfa0fce4eface8b454b2924a9",
+    "impl_mutation.qcp.c": "95142521a31cbf7d7f5999d2e5a7b7c8b73f41d3b0805e79884f374c63c29f99",
+    "reference.cn.c": "f43c8b294b6e12c61db3ad249ee4af981321a336d85eda6011918a94d9dd1120",
+    "reference.qcp.c": "314dcb94ff20109a862519ffa32b48075a1748cca112bee62d572230932ed0fa",
+    "spec_mutation.cn.c": "4bed6cdc24cb1c57e678610008a63be7fb975928dad946b482286fdc13c33288",
+    "spec_mutation.qcp.c": "325d63883e78658046c9be7f3ff7f7a13e6e5b2fcbbc408537838678d76104f1"
+  },
+  "domain_ranges": {
+    "x": [
+      -2147483647,
+      2147483647
+    ],
+    "y": [
+      -2147483647,
+      2147483647
+    ]
+  },
+  "return_kind": "int"
+}

@@ -1,0 +1,13 @@
+void inplace_double (unsigned int *p)
+/* --BEGIN-- */
+/*@ requires take P = RW<unsigned int>(p);
+             P + P <= MAXu32();
+    ensures  take P_post = RW<unsigned int>(p);
+             P_post == P + P + 1;
+@*/
+/* --END-- */
+{
+  unsigned int n = *p;
+  unsigned int m = n + n;
+  *p = m;
+}

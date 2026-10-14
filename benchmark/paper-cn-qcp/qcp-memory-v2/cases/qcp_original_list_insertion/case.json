@@ -1,0 +1,73 @@
+{
+  "id": "qcp_original_list_insertion",
+  "source": "runtime/qcip/QCP_examples/QCP_demos_human/sll_insert_sort.c",
+  "function": "insertion",
+  "memory": "pointer-to-pointer cursor and separately owned node with uninitialized next field",
+  "heap_predicate": "node->data == a && sll(p,l) * undef_data_at(&(node->next),struct list*)",
+  "spec_edit": [
+    "insert(a, l)",
+    "insert(a + 1, l)"
+  ],
+  "impl_edit": [
+    "node -> next = * p2;",
+    "node -> next = 0;"
+  ],
+  "instance_scope": "fixed list and new-node data; next field stays uninitialized in Pre",
+  "schema": "tespec-original-qcp-case/v2",
+  "source_sha256": "93915116ffc5c0748c1ddfdc5b9b0905901860a27bb15781c60d66ac624742c4",
+  "input_count": 4,
+  "original_contract_preserved": true,
+  "cn_status": "translation_pending",
+  "binding_policy": "Pre free variables only",
+  "pre_free_variables": {
+    "args": [
+      "p",
+      "node"
+    ],
+    "values": [
+      "l",
+      "a"
+    ]
+  },
+  "expectations": [
+    {
+      "id": "input_000",
+      "reference": "PASS",
+      "spec_mutation": "FAIL",
+      "impl_mutation": "PASS",
+      "basis": "manual contract model; shape-only instances are not single concrete heaps"
+    },
+    {
+      "id": "input_001",
+      "reference": "PASS",
+      "spec_mutation": "FAIL",
+      "impl_mutation": "PASS",
+      "basis": "manual contract model; shape-only instances are not single concrete heaps"
+    },
+    {
+      "id": "input_002",
+      "reference": "PASS",
+      "spec_mutation": "FAIL",
+      "impl_mutation": "FAIL",
+      "basis": "manual contract model; shape-only instances are not single concrete heaps"
+    },
+    {
+      "id": "input_003",
+      "reference": "PASS",
+      "spec_mutation": "FAIL",
+      "impl_mutation": "FAIL",
+      "basis": "manual contract model; shape-only instances are not single concrete heaps"
+    }
+  ],
+  "include_dirs": [
+    "runtime/qcip/QCP_examples/QCP_demos_human",
+    "runtime/qcip/QCP_examples/stdlib"
+  ],
+  "generator_sha256": "840f8c19dcb495c036fed075e8a066ce64534befdbcfb62b6524265c1272ce23",
+  "files": {
+    "reference.qcp.c": "93915116ffc5c0748c1ddfdc5b9b0905901860a27bb15781c60d66ac624742c4",
+    "spec_mutation.qcp.c": "c4a51404d103393947b0a1294b858d75b869a1ac361f62c3d9be9c2fbe4d7470",
+    "impl_mutation.qcp.c": "5d5312f31e9c298f678feb349c9fa4fdbbfcc3e35dc9537453e62de7616bb172",
+    "binds.json": "877315300c1c6e3effd2fa2e8183ba5fa9f4ce0df8452f49a07fca0dd6aa274b"
+  }
+}

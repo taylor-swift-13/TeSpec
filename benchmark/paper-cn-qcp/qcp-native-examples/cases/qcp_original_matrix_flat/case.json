@@ -1,0 +1,63 @@
+{
+  "id": "qcp_original_matrix_flat",
+  "source": "runtime/qcip/QCP_examples/QCP_demos_LLM/2DIntArray.c",
+  "function": "max_fill_array2",
+  "memory": "contiguous 2D int matrix",
+  "heap_predicate": "IntArray2::full(grid, grid_rows, grid_cols, rows)",
+  "spec_edit": [
+    "IntArray2::full(grid, grid_rows, grid_cols, rows)",
+    "__return == -1 && IntArray2::full(grid, grid_rows, grid_cols, rows)"
+  ],
+  "impl_edit": [
+    "return out;",
+    "if (grid_rows > 0 && grid_cols > 0) grid[0] = 0; return out;"
+  ],
+  "schema": "tespec-original-qcp-case/v1",
+  "source_sha256": "f2dcf08b2241a4e35f9ca6ec45d38c2cf4a20a8d967737f61708d5c86b0ce73c",
+  "input_count": 4,
+  "original_contract_preserved": true,
+  "cn_status": "translation_pending",
+  "input_admission": "fixed logical values and entry args; runtime SAT/proof status recorded separately",
+  "expectations": [
+    {
+      "id": "input_000",
+      "reference": "PASS",
+      "spec_mutation": "FAIL",
+      "impl_mutation": "PASS",
+      "basis": "manual evaluation of original contract and selected edit; no native/independent CN admission claimed"
+    },
+    {
+      "id": "input_001",
+      "reference": "PASS",
+      "spec_mutation": "FAIL",
+      "impl_mutation": "FAIL",
+      "basis": "manual evaluation of original contract and selected edit; no native/independent CN admission claimed"
+    },
+    {
+      "id": "input_002",
+      "reference": "PASS",
+      "spec_mutation": "FAIL",
+      "impl_mutation": "PASS",
+      "basis": "manual evaluation of original contract and selected edit; no native/independent CN admission claimed"
+    },
+    {
+      "id": "input_003",
+      "reference": "PASS",
+      "spec_mutation": "FAIL",
+      "impl_mutation": "FAIL",
+      "basis": "manual evaluation of original contract and selected edit; no native/independent CN admission claimed"
+    }
+  ],
+  "include_dirs": [
+    "runtime/qcip/QCP_examples/QCP_demos_LLM",
+    "runtime/qcip/QCP_examples/QCP_demos_human",
+    "runtime/qcip/QCP_examples/stdlib"
+  ],
+  "generator_sha256": "e3aed58c404f0c68d1d8746ad51e59f408e3f1e684dd6fff7aa08dee18dd29c7",
+  "files": {
+    "reference.qcp.c": "f2dcf08b2241a4e35f9ca6ec45d38c2cf4a20a8d967737f61708d5c86b0ce73c",
+    "binds.json": "fc15822d49efb8d750242df3886bdcff0604c55e7d06d19d26821b2e349b29d7",
+    "spec_mutation.qcp.c": "d6cdd392b1a426ac2d3313bfd39854beda8f215a3a61a9bcb83cf1f8f9a11e89",
+    "impl_mutation.qcp.c": "e173924bb64e76ffbbe4240ea158178274e4816e31df0dee7a73f8f56f054969"
+  }
+}

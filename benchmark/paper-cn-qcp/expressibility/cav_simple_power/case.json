@@ -1,0 +1,134 @@
+{
+  "id": "cav_simple_power",
+  "origin_family": "cav-bench",
+  "category": "unbounded existential arithmetic relation",
+  "difficulty": "hard",
+  "function": "p076_is_simple_power",
+  "sources": [
+    {
+      "path": "sources/cav-bench/ground_truth/p076_is_simple_power/p076_is_simple_power.c",
+      "sha256": "f85c0716a57e08ed861c62116315fa908b7ba779f5e28c2208612b449eacef96"
+    },
+    {
+      "path": "sources/cav-bench/ground_truth/p076_is_simple_power/p076_is_simple_power.v",
+      "sha256": "379f3ce3f9d50f35e1da7846eb98485fb6eafe2ab13a84ba1c864ef5bcb2ffa1"
+    }
+  ],
+  "adaptations": [
+    "Original unbounded Coq existential retained. The proposed finite exponent-search CN reformulation was withdrawn under the identical-contract experiment policy."
+  ],
+  "variants": [
+    "reference",
+    "wrong_post"
+  ],
+  "inputs": [
+    {
+      "id": "input_0",
+      "qcp_bind": {
+        "id": "input_0",
+        "args": {
+          "x": 1,
+          "n": 4
+        },
+        "values": {}
+      },
+      "native_setup": "int r=p076_is_simple_power(1,4);",
+      "native_check": "r==1",
+      "expected": {
+        "return": 1
+      },
+      "logical_input": {
+        "args": {
+          "x": 1,
+          "n": 4
+        },
+        "values": {}
+      },
+      "wrong_post_violated": true
+    },
+    {
+      "id": "input_1",
+      "qcp_bind": {
+        "id": "input_1",
+        "args": {
+          "x": 8,
+          "n": 2
+        },
+        "values": {}
+      },
+      "native_setup": "int r=p076_is_simple_power(8,2);",
+      "native_check": "r==1",
+      "expected": {
+        "return": 1
+      },
+      "logical_input": {
+        "args": {
+          "x": 8,
+          "n": 2
+        },
+        "values": {}
+      },
+      "wrong_post_violated": true
+    },
+    {
+      "id": "input_2",
+      "qcp_bind": {
+        "id": "input_2",
+        "args": {
+          "x": 3,
+          "n": 2
+        },
+        "values": {}
+      },
+      "native_setup": "int r=p076_is_simple_power(3,2);",
+      "native_check": "r==0",
+      "expected": {
+        "return": 0
+      },
+      "logical_input": {
+        "args": {
+          "x": 3,
+          "n": 2
+        },
+        "values": {}
+      },
+      "wrong_post_violated": true
+    },
+    {
+      "id": "input_3",
+      "qcp_bind": {
+        "id": "input_3",
+        "args": {
+          "x": 3,
+          "n": 1
+        },
+        "values": {}
+      },
+      "native_setup": "int r=p076_is_simple_power(3,1);",
+      "native_check": "r==0",
+      "expected": {
+        "return": 0
+      },
+      "logical_input": {
+        "args": {
+          "x": 3,
+          "n": 1
+        },
+        "values": {}
+      },
+      "wrong_post_violated": true
+    }
+  ],
+  "qcp_include_dirs": [
+    "runtime/qcip/QCP_examples/QCP_demos_human"
+  ],
+  "spec_relation": "manual corresponding translation; no machine-checked CN/QCP equivalence claim",
+  "support_files": [
+    "p076_is_simple_power.v"
+  ],
+  "comparison_role": "outside-paired-denominator",
+  "cn_translation_status": "NO_DIRECT_EQUIVALENT_CONTRACT_PROVIDED",
+  "reason": "CN take-bindings do not provide a direct free unbounded existential over arithmetic witnesses. Requires an equivalent contract translation, not an extra executable search checker.",
+  "role": "case-study",
+  "itp_reference": "proofs"
+}

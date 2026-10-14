@@ -260,7 +260,7 @@ EX q: Z, “ (0 <= n /\ n <= 8) /\ q = n ” && p # Int |-> q."""
                     + " */ "
                     "{ /*@ Assert p!=0 && " + cell + " */ return 0; }"
                 )
-                for mode in ("expand", "no-expand"):
+                for mode in ("entry-exit", "all-boundaries"):
                     with self.subTest(
                         record=bool(declaration), explicit=explicit, mode=mode
                     ):
@@ -710,7 +710,7 @@ end."""
             ("p == q && p + 1 == q + 2", "FAIL"),
             ("p + 1 == p + 1", "PASS"),
         )
-        for mode in ("expand", "no-expand"):
+        for mode in ("entry-exit", "all-boundaries"):
             for requirement, expected in requirements:
                 with self.subTest(mode=mode, requirement=requirement):
                     result = self.run_source(
@@ -727,7 +727,7 @@ end."""
             "int sample(int *p) /*@ With l Require opaque(7) && IntArray::full(p,100,l) "
             "Ensure __return==0 && IntArray::full(p,100,l) */ { return p[99]; }"
         )
-        for mode in ("expand", "no-expand"):
+        for mode in ("entry-exit", "all-boundaries"):
             result = self.run_source(
                 source, mode, values={"l": [0] * 100}, timeout_seconds=5
             )
@@ -737,7 +737,7 @@ end."""
             self.assertEqual(result["phases"]["postcondition"], "PASS", result)
 
     def test_relative_byte_overlap_remains_invalid(self):
-        for mode in ("expand", "no-expand"):
+        for mode in ("entry-exit", "all-boundaries"):
             result = self.run_source(
                 "int sample(int *p) /*@ Require data_at(p,int,1) * "
                 "data_at((char*)p+2,int,2) Ensure emp */ { return 0; }",
@@ -897,10 +897,10 @@ end."""
                 "{ int i=0; /*@ Inv (" + annotation + ") && emp */ "
                 "while(i<2) { i++; } return i; }"
             )
-            for mode in ("expand", "no-expand"):
+            for mode in ("entry-exit", "all-boundaries"):
                 with self.subTest(annotation=annotation, mode=mode):
                     result = self.run_source(source, mode)
-                    wrong_checked = annotation == "i==0 || i==1" and mode == "no-expand"
+                    wrong_checked = annotation == "i==0 || i==1" and mode == "all-boundaries"
                     self.assertEqual(
                         result["status"], "FAIL" if wrong_checked else "PASS", result
                     )
@@ -919,7 +919,7 @@ end."""
             "Ensure __return==11 && data_at(p,int,3) * data_at(q,int,8) */ "
             "{ rebind(p,q); return *p+*q; }"
         )
-        for mode in ("expand", "no-expand"):
+        for mode in ("entry-exit", "all-boundaries"):
             with self.subTest(mode=mode):
                 result = self.run_source(source, mode)
                 self.assertEqual(result["status"], "PASS", result)
@@ -933,7 +933,7 @@ end."""
             "/*@ Require data_at(p,int,3) Ensure __return==3 && data_at(p,int,3) */ "
             "{ int **q=escape(p); return **q; }"
         )
-        for mode in ("expand", "no-expand"):
+        for mode in ("entry-exit", "all-boundaries"):
             with self.subTest(mode=mode):
                 result = self.run_source(source, mode)
                 self.assertEqual(result["status"], "ERROR", result)
@@ -948,7 +948,7 @@ end."""
             Path(__file__).resolve().parents[1]
             / "benchmark/comparison/proof-oriented/square-boundaries/subject.c"
         )
-        for mode in ("expand", "no-expand"):
+        for mode in ("entry-exit", "all-boundaries"):
             with self.subTest(mode=mode), tempfile.TemporaryDirectory() as directory:
                 root = Path(directory)
                 job = root / "job.json"
@@ -976,7 +976,7 @@ end."""
                     for event in result["abstraction_events"]
                 }
                 self.assertEqual(events["inline-call"], 3)
-                if mode == "no-expand":
+                if mode == "all-boundaries":
                     self.assertEqual(events["annotation-check"], 3)
                     self.assertEqual(events["contract-check"], 3)
                     self.assertEqual(events["loop-invariant"], 4)
@@ -1002,7 +1002,7 @@ end."""
                 self.assertTrue(runtime_points)
                 self.assertTrue(all("is_square" not in p["P"] for p in runtime_points))
                 copied_points = [p for p in trace if p["state_role"] == "boundary-copy"]
-                if mode == "no-expand":
+                if mode == "all-boundaries":
                     self.assertTrue(copied_points)
                     self.assertTrue(any("is_square" in p["P"] for p in copied_points))
                 else:
@@ -1016,7 +1016,7 @@ end."""
             (1, 100, "cons(6,cons(7,nil))"),
             (0, "4294967296*4294967296", "cons(5,cons(6,cons(7,nil)))"),
         ]
-        for mode in ("expand", "no-expand"):
+        for mode in ("entry-exit", "all-boundaries"):
             for lo, hi, expected in cases:
                 with self.subTest(mode=mode, lo=lo, hi=hi):
                     source = (
@@ -1039,7 +1039,7 @@ end."""
             "{ /*@ Assert sublist(1,2,cons(opaque_value,cons(opaque_value+1,nil))) "
             "== cons(opaque_value+1,nil) && emp */ return 0; }"
         )
-        result = self.run_source(source, "no-expand")
+        result = self.run_source(source, "all-boundaries")
         self.assertEqual(result["status"], "PASS", result)
 
     def test_sublist_with_unknown_spine_remains_an_obligation(self):
@@ -1048,7 +1048,7 @@ end."""
             "int sample(void) /*@ Require emp Ensure __return==0 && emp */ "
             "{ /*@ Assert sublist(0,1,opaque_tail)==nil && emp */ return 0; }"
         )
-        result = self.run_source(source, "no-expand")
+        result = self.run_source(source, "all-boundaries")
         self.assertEqual(result["status"], "UNKNOWN", result)
         self.assertEqual(result["phases"]["annotations"], "UNKNOWN", result)
         self.assertEqual(result["phases"]["postcondition"], "PASS", result)
@@ -1058,13 +1058,13 @@ end."""
             "int sample(void) /*@ Require emp Ensure __return==0 && emp */ "
             "{ /*@ Assert sublist(1,2,cons(5,cons(6,nil))) == cons(5,nil) && emp */ return 0; }"
         )
-        result = self.run_source(source, "no-expand")
+        result = self.run_source(source, "all-boundaries")
         self.assertEqual(result["status"], "FAIL", result)
         self.assertEqual(result["phases"]["annotations"], "UNKNOWN", result)
         self.assertEqual(result["phases"]["postcondition"], "PASS", result)
 
     def test_same_base_pointer_difference_terminates_array_iteration(self):
-        for mode in ("expand", "no-expand"):
+        for mode in ("entry-exit", "all-boundaries"):
             source = (
                 "int sample(int *p) /*@ With l Require IntArray::full(p,3,l) "
                 "Ensure __return==12 && IntArray::full(p,3,l) */ "
@@ -1077,7 +1077,7 @@ end."""
                 self.assertTrue(result["execution_completed"], result)
 
     def test_pointer_difference_cancels_offsets_with_both_signs(self):
-        for mode in ("expand", "no-expand"):
+        for mode in ("entry-exit", "all-boundaries"):
             for expression, expected in [
                 ("(p+2)-p", 2),
                 ("p-(p+2)", -2),
@@ -1102,13 +1102,13 @@ end."""
             "{ /*@ Assert (p+4)-(q+4)==0 && data_at(p,int,3) * data_at(q,int,4) */ "
             "return 0; }"
         )
-        result = self.run_source(source, "no-expand")
+        result = self.run_source(source, "all-boundaries")
         self.assertEqual(result["status"], "UNKNOWN", result)
         self.assertEqual(result["phases"]["annotations"], "UNKNOWN", result)
         self.assertEqual(result["phases"]["postcondition"], "PASS", result)
 
     def test_named_observation_cases_without_proof_routing_are_a_disjunction(self):
-        for mode in ("expand", "no-expand"):
+        for mode in ("entry-exit", "all-boundaries"):
             for reverse in (False, True):
                 for valid in (False, True):
                     with self.subTest(mode=mode, reverse=reverse, valid=valid):
@@ -1130,7 +1130,7 @@ end."""
                         self.assertEqual(
                             result["phases"]["postcondition"], "PASS", result
                         )
-                        if mode == "expand" or valid:
+                        if mode == "entry-exit" or valid:
                             self.assertEqual(result["status"], "PASS", result)
                         else:
                             self.assertEqual(result["status"], "FAIL", result)
@@ -1140,7 +1140,7 @@ end."""
                             self.assertTrue(result["residual_vcs"], result)
 
     def test_instance_trace_through_binary_controller(self):
-        for mode in ("expand", "no-expand"):
+        for mode in ("entry-exit", "all-boundaries"):
             result = self.run_source(
                 "int sample(void) /*@ Require emp Ensure __return==4 && emp */ "
                 "{ int x=2; x++; /*@ Assert x>=0 */ x++; return x; }",
@@ -1151,7 +1151,7 @@ end."""
             self.assertIn("--instance-trace", result["command"])
 
     def test_bodyless_call_is_incomplete_in_both_modes(self):
-        for mode in ("expand", "no-expand"):
+        for mode in ("entry-exit", "all-boundaries"):
             result = self.run_source(
                 "int external(int x) /*@ Require x == 2 && emp "
                 "Ensure __return == 3 && emp */;\n"
@@ -1207,14 +1207,14 @@ end."""
                 "Ensure __return == 4 && data_at(p, int, 4) */ "
                 "{ step(p); return *p; }"
             )
-            for mode in ("expand", "no-expand"):
+            for mode in ("entry-exit", "all-boundaries"):
                 with self.subTest(forgotten=forgotten, mode=mode):
                     result = self.run_source(source, mode)
                     expected = "PASS"
                     self.assertEqual(result["status"], expected, result)
 
     def test_alias_write_invalidates_old_value(self):
-        for mode in ("expand", "no-expand"):
+        for mode in ("entry-exit", "all-boundaries"):
             result = self.run_source(
                 "int sample(int *p, int *q) /*@ Require p == q && data_at(p, int, 3) "
                 "Ensure __return == 4 && data_at(p, int, 4) */ "
@@ -1237,7 +1237,7 @@ end."""
                 (correct + [99], "FAIL"),
                 ([98] + correct, "FAIL"),
             ):
-                for mode in ("expand", "no-expand"):
+                for mode in ("entry-exit", "all-boundaries"):
                     with self.subTest(xs=xs, ys=ys, result_list=result_list, mode=mode):
                         result = self.run_source(
                             source, mode, values={"xs": xs, "ys": ys, "zs": result_list}
@@ -1254,8 +1254,8 @@ end."""
             "int sample(void) /*@ Require emp Ensure __return == 4 && emp */ "
             "{ int x = 3; /*@ Assert x == 99 */ x = x + 1; return x; }"
         )
-        ignored = self.run_source(source, "expand", annotation_policy="ignore")
-        checked = self.run_source(source, "expand", annotation_policy="check-preserve")
+        ignored = self.run_source(source, "entry-exit", annotation_policy="ignore")
+        checked = self.run_source(source, "entry-exit", annotation_policy="check-preserve")
         self.assertEqual(ignored["status"], "PASS", ignored)
         self.assertEqual(checked["status"], "FAIL", checked)
         self.assertEqual(checked["phases"]["postcondition"], "PASS", checked)
@@ -1278,7 +1278,7 @@ end."""
                 + assertion
                 + " */ return *p; }"
             )
-            for mode in ("expand", "no-expand"):
+            for mode in ("entry-exit", "all-boundaries"):
                 with self.subTest(assertion=assertion, mode=mode):
                     result = self.run_source(
                         source, mode, annotation_policy="check-preserve"
@@ -1292,7 +1292,7 @@ end."""
             "int sample(int *p,int *q) /*@ Require data_at(p,int,7) * data_at(q,int,8) "
             "Ensure __return==7 && data_at(p@pre,int,7) * data_at(q@pre,int,8) */ "
             "{ int unused=2; /*@ Assert data_at(p,int,7) */ return *p; }",
-            "no-expand",
+            "all-boundaries",
         )
         self.assertEqual(result["status"], "UNKNOWN", result)
         self.assertEqual(result["phases"]["execution"], "PASS", result)
@@ -1303,7 +1303,7 @@ end."""
             "int sample(int *p) /*@ Require data_at(p,int,7) "
             "Ensure __return==7 && data_at(p@pre,int,7) */ "
             "{ int unused; /*@ Assert data_at(p,int,7) */ return *p; }",
-            "no-expand",
+            "all-boundaries",
         )
         self.assertEqual(result["status"], "PASS", result)
 
@@ -1326,7 +1326,7 @@ end."""
                 + assertion
                 + " */ *q=2; return i; }"
             )
-            for mode in ("expand", "no-expand"):
+            for mode in ("entry-exit", "all-boundaries"):
                 with self.subTest(assertion=assertion, statement=statement, mode=mode):
                     result = self.run_source(
                         source, mode, annotation_policy="check-preserve"
@@ -1343,7 +1343,7 @@ end."""
                 "if(x==0) q=&i; else q=&j; /*@ Assert data_at(q,int,1) */ "
                 "*q=2; return *q; }"
             )
-            for mode in ("expand", "no-expand"):
+            for mode in ("entry-exit", "all-boundaries"):
                 with self.subTest(second_value=second_value, mode=mode):
                     result = self.run_source(
                         source, mode, annotation_policy="check-preserve"
@@ -1362,7 +1362,7 @@ end."""
             "while(round<2) { step(alias); round++; } "
             "/*@ Assert data_at(alias,int,3) */ return *alias; }"
         )
-        for mode in ("expand", "no-expand"):
+        for mode in ("entry-exit", "all-boundaries"):
             with self.subTest(mode=mode):
                 result = self.run_source(
                     source, mode, annotation_policy="check-preserve"
@@ -1385,7 +1385,7 @@ end."""
                     "action : left_erase(0); right_erase(1);\n"
                 )
                 for expected_value in (8, 99):
-                    for mode in ("expand", "no-expand"):
+                    for mode in ("entry-exit", "all-boundaries"):
                         source = (
                             f"struct {tag} {{ int pad; int {field}; }};\n"
                             "/*@ Extern Coq (observed : Z -> Z -> Assertion) */\n"
@@ -1412,10 +1412,10 @@ end."""
                 "{ int i = 0; /*@ Inv " + invariant + " */ "
                 "while (i < 2) { i++; } return i; }"
             )
-            for mode in ("expand", "no-expand"):
+            for mode in ("entry-exit", "all-boundaries"):
                 with self.subTest(correct=correct, mode=mode):
                     result = self.run_source(source, mode)
-                    expected = "FAIL" if not correct and mode == "no-expand" else "PASS"
+                    expected = "FAIL" if not correct and mode == "all-boundaries" else "PASS"
                     self.assertEqual(result["status"], expected, result)
 
     def test_shape_array_goal_does_not_fix_existential_contents_to_zero(self):
@@ -1428,7 +1428,7 @@ end."""
                         'int sample(int *p) /*@ Require data_at(p,int,'
                         f'{value}) Ensure __return=={value} && '
                         f'IntArray::{form}(p,{bounds}) */ {{ return *p; }}',
-                        "no-expand",
+                        "all-boundaries",
                     )
                     self.assertEqual(result["precondition_result"], "SAT", result)
                     self.assertTrue(result["execution_completed"], result)
@@ -1439,7 +1439,7 @@ end."""
     def test_loop_limit_is_unknown(self):
         result = self.run_source(
             "int sample(void) /*@ Require emp Ensure emp */ { while(1) {} return 0; }",
-            "expand",
+            "entry-exit",
             loop_unroll_limit=2,
         )
         self.assertEqual(result["status"], "UNKNOWN", result)
@@ -1452,7 +1452,7 @@ end."""
             "int sample(int *p) /*@ implementation Require data_at(p, int, 9) "
             "Ensure __return == 9 && data_at(p, int, 9) */ { return *p; }"
         )
-        for mode in ("expand", "no-expand"):
+        for mode in ("entry-exit", "all-boundaries"):
             result = self.run_source(source, mode, spec="chosen")
             self.assertEqual(result["status"], "PASS", result)
 
@@ -1462,7 +1462,7 @@ end."""
             "Require n == 2 && data_at(p, int, v) "
             "Ensure __return == v && data_at(p, int, v) */ { return *p; }"
         )
-        for mode in ("expand", "no-expand"):
+        for mode in ("entry-exit", "all-boundaries"):
             result = self.run_source(source, mode, values={"n": 2})
             self.assertEqual(result["status"], "PASS", result)
 
@@ -1471,7 +1471,7 @@ end."""
             "int sample(int *p) /*@ Require IntArray::full_shape(p, 2) "
             "Ensure __return == 0 && IntArray::full_shape(p, 2) */ "
             "{ return p[0] + p[1]; }",
-            "expand",
+            "entry-exit",
         )
         self.assertEqual(result["phases"]["precondition"], "SAT", result)
         self.assertEqual(result["status"], "FAIL", result)
@@ -1485,7 +1485,7 @@ end."""
             "Ensure __return == 5 && data_at(p, int, 5) * data_at(q, int, 8) */ "
             "{ step(p); step(p); return *p; }"
         )
-        for mode in ("expand", "no-expand"):
+        for mode in ("entry-exit", "all-boundaries"):
             result = self.run_source(source, mode)
             self.assertEqual(result["status"], "PASS", result)
 
@@ -1496,21 +1496,21 @@ end."""
             "int j; /*@ Inv 0 <= i && i < 0 && 0 <= j && j <= 0 */ "
             "for(j=0;j<0;j++) {} if(i) i++; } return 0; }"
         )
-        result = self.run_source(source, "no-expand")
+        result = self.run_source(source, "all-boundaries")
         self.assertEqual(result["status"], "PASS", result)
 
     def test_invalid_require_stops_execution_in_both_modes(self):
         source = (
             "int sample(int *p) /*@ Require 0 == 1 && emp Ensure emp */ { return *p; }"
         )
-        for mode in ("expand", "no-expand"):
+        for mode in ("entry-exit", "all-boundaries"):
             result = self.run_source(source, mode)
             self.assertEqual(result["status"], "FAIL", result)
             self.assertEqual(result["phases"]["safety"], "NOT_RUN", result)
             self.assertEqual(result["phases"]["postcondition"], "NOT_RUN", result)
 
     def test_declaration_only_reports_checked_scope(self):
-        for mode in ("expand", "no-expand"):
+        for mode in ("entry-exit", "all-boundaries"):
             with self.subTest(mode=mode):
                 result = self.run_source(
                     "int sample(void) /*@ Require emp Ensure emp */;", mode
@@ -1530,7 +1530,7 @@ end."""
                 self.assertEqual(result["vc"]["status"], "auto_proved")
 
     def test_declaration_unknown_keeps_residual_vc(self):
-        for mode in ("expand", "no-expand"):
+        for mode in ("entry-exit", "all-boundaries"):
             result = self.run_source(
                 "/*@ Extern Coq (opaque : Z -> Assertion) */\n"
                 "int sample(void) /*@ Require opaque(0) Ensure emp */;",
@@ -1541,13 +1541,13 @@ end."""
             self.assertTrue(result["vc"]["residual_goals"])
 
     def test_declaration_without_spec_is_error(self):
-        for mode in ("expand", "no-expand"):
+        for mode in ("entry-exit", "all-boundaries"):
             self.assertEqual(
                 self.run_source("int sample(void);", mode)["status"], "ERROR"
             )
 
     def test_symbolic_overlapping_cells_are_unsatisfiable(self):
-        for mode in ("expand", "no-expand"):
+        for mode in ("entry-exit", "all-boundaries"):
             result = self.run_source(
                 "void sample(int *p, int *q) /*@ Require "
                 "(p == q + 0) && data_at(p, int, 1) * data_at(q, int, 2) "

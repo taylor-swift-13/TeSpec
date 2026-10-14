@@ -1,0 +1,71 @@
+{
+  "id": "qcp_shape_array_copy1",
+  "source": "runtime/qcip/QCP_examples/QCP_demos_human/array_auto.c",
+  "function": "array_copy1",
+  "memory": "multiple owned array regions with shape-only and uninitialized predicates",
+  "heap_predicate": "IntArray::full_shape(dest, n) * IntArray::full_shape(src, n)",
+  "spec_edit": [
+    "IntArray::full_shape(dest, n) * IntArray::full_shape(src, n)",
+    "n == 0 && IntArray::full_shape(dest, n) * IntArray::full_shape(src, n)"
+  ],
+  "impl_edit": [
+    "i < n; ++i",
+    "i <= n; ++i"
+  ],
+  "instance_scope": "fixed roots and lengths; array contents remain existential exactly as original Pre",
+  "schema": "tespec-original-qcp-case/v2",
+  "source_sha256": "aa6cf3bda4dd520f533874b6611ed7f656a46299f0374fa20c6f18e1f76569d8",
+  "input_count": 4,
+  "original_contract_preserved": true,
+  "cn_status": "translation_pending",
+  "binding_policy": "Pre free variables only",
+  "pre_free_variables": {
+    "args": [
+      "dest",
+      "src",
+      "n"
+    ],
+    "values": []
+  },
+  "expectations": [
+    {
+      "id": "input_000",
+      "reference": "PASS",
+      "spec_mutation": "PASS",
+      "impl_mutation": "FAIL",
+      "basis": "manual contract model; shape-only instances are not single concrete heaps"
+    },
+    {
+      "id": "input_001",
+      "reference": "PASS",
+      "spec_mutation": "FAIL",
+      "impl_mutation": "FAIL",
+      "basis": "manual contract model; shape-only instances are not single concrete heaps"
+    },
+    {
+      "id": "input_002",
+      "reference": "PASS",
+      "spec_mutation": "FAIL",
+      "impl_mutation": "FAIL",
+      "basis": "manual contract model; shape-only instances are not single concrete heaps"
+    },
+    {
+      "id": "input_003",
+      "reference": "PASS",
+      "spec_mutation": "FAIL",
+      "impl_mutation": "FAIL",
+      "basis": "manual contract model; shape-only instances are not single concrete heaps"
+    }
+  ],
+  "include_dirs": [
+    "runtime/qcip/QCP_examples/QCP_demos_human",
+    "runtime/qcip/QCP_examples/stdlib"
+  ],
+  "generator_sha256": "840f8c19dcb495c036fed075e8a066ce64534befdbcfb62b6524265c1272ce23",
+  "files": {
+    "reference.qcp.c": "aa6cf3bda4dd520f533874b6611ed7f656a46299f0374fa20c6f18e1f76569d8",
+    "spec_mutation.qcp.c": "8fee248e0835d5d3e18ba2b0da4f14b92925719983b097f7998ede06cf8bc32b",
+    "impl_mutation.qcp.c": "26cf0d89334a8a85676aed4745fd6649a885724e079420dd49759cb59ff2a616",
+    "binds.json": "918b056bd27b2fc8797d3efa6f847a34d90416dc9b4293ca4c837eea508db865"
+  }
+}

@@ -6,6 +6,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+from .modes import EXECUTION_MODES, normalize_execution_mode
+
 from .core import (
     attach_spec_to_source,
     bundled_qcip_root,
@@ -175,9 +177,12 @@ def _run_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--execution-mode",
-        choices=("expand", "no-expand"),
-        default="expand",
-        help="execute loops/calls in both modes; no-expand also checks intermediate boundaries",
+        type=normalize_execution_mode,
+        choices=EXECUTION_MODES,
+        default="entry-exit",
+        help="entry-exit: entry contract, safety and final postcondition; "
+        "all-boundaries: also check intermediate annotations and call contracts. "
+        "Both execute loops/calls. Legacy aliases: expand, no-expand",
     )
     parser.add_argument(
         "--annotation-policy", choices=("ignore", "check-preserve", "qcp")
@@ -204,7 +209,7 @@ def _run_parser() -> argparse.ArgumentParser:
         "--loop-unroll-limit",
         type=int,
         default=None,
-        help="concrete loop bound (default: 64 in expand mode)",
+        help="concrete loop bound (default: 64 in both modes)",
     )
     parser.add_argument(
         "--call-depth-limit",

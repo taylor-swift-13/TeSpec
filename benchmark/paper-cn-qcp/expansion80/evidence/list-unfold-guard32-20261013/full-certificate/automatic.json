@@ -1,0 +1,348 @@
+{
+  "schema": "qcp-spectest-report/v1",
+  "job": "/home/yangfp/tespec-baselines/list-guarded-length32-20261013/reference-run/artifacts/job.json",
+  "source": "/home/yangfp/tespec-baselines/list-guarded-length32-20261013/reference.qcp.c",
+  "spec_file": null,
+  "function": "length",
+  "qcp_binary": "/tmp/teSpec-tespec-sync/bin/tespec-symexec",
+  "provenance": {
+    "source_sha256": "215c33d7ebfc5e3f45a74a3d1cc54835961ed701ea184806bd7794d21c791f5f",
+    "job_sha256": "a0d95c9ab7c0bd02ed22c790dd2f2d22b6bdc9f465e45bca4da5d2e12f433e7c",
+    "binary_sha256": "4b6a46f38aafbac9f9de679133c69a22aac1f6eb7c634dcc1de7ddca211a32cc",
+    "runtime_source_sha256": "08b41c971d404d9fe6ae40dce420752af8eb023179017c55737dc5a7df89f56a",
+    "runtime_digest_scope": "SeparationLogic and QCP_examples: .v, .h, .strategies, _CoqProject",
+    "included_source_sha256": "2051d6679fb563a03994c7b79d1f473a9392d673d87618fe6214d6a8d31a3008",
+    "spec_sha256": null
+  },
+  "vc_policy": {
+    "mode": "expand",
+    "execution_semantics": "inline-preserve/v1",
+    "loops": "execute_iterations",
+    "defined_function_calls": "execute_bodies",
+    "intermediate_boundaries": false,
+    "declaration_calls": "unknown_missing_body",
+    "call_depth_limit": 128,
+    "loop_unroll_limit": 128
+  },
+  "results": [
+    {
+      "id": "input_002",
+      "arguments": {
+        "l": 4096
+      },
+      "bindings": {
+        "xs": [
+          -2147483648,
+          -2147483648
+        ]
+      },
+      "type_bindings": {},
+      "spec": null,
+      "generated_source": "/home/yangfp/tespec-baselines/list-guarded-length32-20261013/reference-run/artifacts/input_002/input.c",
+      "status": "UNKNOWN",
+      "overall": "UNKNOWN",
+      "precondition_result": "UNKNOWN",
+      "test_result": "UNKNOWN",
+      "result_semantics": "three-valued-conjunction/v1",
+      "executor_reported_status": "UNKNOWN",
+      "satisfied": null,
+      "reason": "precondition_requires_proof",
+      "phases": {
+        "precondition": "UNKNOWN",
+        "safety": "PASS",
+        "postcondition": "PASS",
+        "annotations": "NOT_RUN",
+        "execution": "PASS"
+      },
+      "scope": "execution",
+      "mode": "expand",
+      "execution_semantics": "inline-preserve/v1",
+      "execution_completed": true,
+      "annotation_policy": "ignore",
+      "preconditions": [
+        {
+          "goal": "length_precondition_wit_1",
+          "status": "UNKNOWN",
+          "proof": "manual"
+        }
+      ],
+      "abstraction_events": [
+        {
+          "kind": "inline-call",
+          "function": "length",
+          "count": 2
+        }
+      ],
+      "architecture_bits": 32,
+      "target_layout": {
+        "schema": "sac-target-layout/v1",
+        "architecture_bits": 32,
+        "byte_order": "big",
+        "pointer_size": 4,
+        "memory_rules": "naive_C_Rules",
+        "field_address_semantics": "base-plus-byte-offset/v1",
+        "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+        "aggregates": [
+          {
+            "id": 369,
+            "kind": "struct",
+            "name": "list",
+            "defined": true,
+            "size": 8,
+            "alignment": 4,
+            "fields": [
+              {
+                "id": 371,
+                "name": "data",
+                "offset": 0,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "basic",
+                  "name": "int"
+                },
+                "computational": true
+              },
+              {
+                "id": 370,
+                "name": "next",
+                "offset": 4,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "pointer",
+                  "target": {
+                    "kind": "struct",
+                    "id": 369
+                  }
+                },
+                "computational": true
+              }
+            ]
+          }
+        ],
+        "aliases": []
+      },
+      "executor_error": null,
+      "residual_vcs": [
+        "proof_of_length_precondition_wit_1"
+      ],
+      "vc_results": [
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 9,
+          "status": "VALID",
+          "path": "PROP[]\nLOCAL[\n  Temp l l_410_addr ]\nSEP[\n  store(l_410_addr, 4096, struct list*);\n  sll32 (4096, cons(Z_1, (- 2147483648), cons(Z_1, (- 2147483648), nil(Z_1)))) ]\n",
+          "goal": "PROP[\n  0 <= INT_MAX;\n  (- 2147483648) <= 0 ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 9,
+          "status": "VALID",
+          "path": "EX l_427_addr y_425_free y_426_free \nPROP[\n  y_425_free == 0;\n  y_426_free == 0;\n  y_425_free != 0 ]\nLOCAL[\n  Temp l l_427_addr ]\nSEP[\n  store(l_427_addr, y_425_free, struct list*);\n  store(4100, y_425_free, struct list*);\n  store((y_425_free + 4), 0, struct list*);\n  store(y_425_free, (- 2147483648), signed int);\n  store(4096, (- 2147483648), signed int);\n  store(l_410_addr, 4096, struct list*) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 9,
+          "status": "VALID",
+          "path": "EX l_427_addr y_425_free y_426_free \nPROP[\n  y_426_free == 0;\n  y_425_free != 0 ]\nLOCAL[\n  Temp l l_427_addr ]\nSEP[\n  store(l_427_addr, y_425_free, struct list*);\n  store(4100, y_425_free, struct list*);\n  store((y_425_free + 4), 0, struct list*);\n  store(y_425_free, (- 2147483648), signed int);\n  store(4096, (- 2147483648), signed int);\n  store(l_410_addr, 4096, struct list*) ]\n",
+          "goal": "PROP[\n  0 <= INT_MAX;\n  (- 2147483648) <= 0 ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 9,
+          "status": "VALID",
+          "path": "EX l_428_addr l_427_addr y_425_free y_426_free \nPROP[\n  y_425_free != 0;\n  y_426_free == 0;\n  y_425_free != 0 ]\nLOCAL[\n  Temp l l_428_addr ]\nSEP[\n  store(l_428_addr, 0, struct list*);\n  store(l_427_addr, y_425_free, struct list*);\n  store(4100, y_425_free, struct list*);\n  store((y_425_free + 4), 0, struct list*);\n  store(y_425_free, (- 2147483648), signed int);\n  store(4096, (- 2147483648), signed int);\n  store(l_410_addr, 4096, struct list*) ]\n",
+          "goal": "PROP[\n  0 <= INT_MAX;\n  (- 2147483648) <= 0 ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 13,
+          "status": "VALID",
+          "path": "EX l_428_addr l_427_addr y_425_free y_426_free \nPROP[\n  y_425_free != 0;\n  y_426_free == 0;\n  y_425_free != 0 ]\nLOCAL[\n  Temp l l_428_addr ]\nSEP[\n  store(l_428_addr, 0, struct list*);\n  store(l_427_addr, y_425_free, struct list*);\n  store(4100, y_425_free, struct list*);\n  store((y_425_free + 4), 0, struct list*);\n  store(y_425_free, (- 2147483648), signed int);\n  store(4096, (- 2147483648), signed int);\n  store(l_410_addr, 4096, struct list*) ]\n",
+          "goal": "PROP[\n  0 <= INT_MAX;\n  (- 2147483648) <= 0 ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 18,
+          "status": "VALID",
+          "path": "EX l_427_addr y_425_free y_426_free \nPROP[\n  y_425_free != 0;\n  y_426_free == 0;\n  y_425_free != 0 ]\nLOCAL[\n  Temp l l_427_addr ]\nSEP[\n  store(l_427_addr, y_425_free, struct list*);\n  store(4100, y_425_free, struct list*);\n  store((y_425_free + 4), 0, struct list*);\n  store(y_425_free, (- 2147483648), signed int);\n  store(4096, (- 2147483648), signed int);\n  store(l_410_addr, 4096, struct list*) ]\n",
+          "goal": "PROP[\n  1 <= INT_MAX;\n  (- 2147483648) <= 1 ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 18,
+          "status": "VALID",
+          "path": "PROP[]\nLOCAL[\n  Temp l l_410_addr ]\nSEP[\n  store(l_410_addr, 4096, struct list*);\n  sll32 (4096, cons(Z_1, (- 2147483648), cons(Z_1, (- 2147483648), nil(Z_1)))) ]\n",
+          "goal": "PROP[\n  1 <= INT_MAX;\n  (- 2147483648) <= 1 ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "return",
+          "name": null,
+          "line": 3,
+          "status": "VALID",
+          "path": "PROP[\n  y_425_free != 0;\n  y_426_free == 0;\n  y_425_free != 0 ]\nLOCAL[]\nSEP[\n  store(4100, y_425_free, struct list*);\n  store((y_425_free + 4), 0, struct list*);\n  store(y_425_free, (- 2147483648), signed int);\n  store(4096, (- 2147483648), signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[\n  sll32 (4096, cons(Z_1, (- 2147483648), cons(Z_1, (- 2147483648), nil(Z_1)))) ]\n"
+        }
+      ],
+      "evidence": {
+        "decision_backend": "qcp-smt",
+        "certificate": "NOT_CHECKED"
+      },
+      "returncode": 3,
+      "generated_source_sha256": "f8ab09bec476ea21cad71a0e64ce63d2007f0b37c1c8888c9c6db73b9d73297e",
+      "duration_seconds": 0.012666,
+      "peak_rss_kb": 5764,
+      "cpu_seconds": 0.01,
+      "command": [
+        "/tmp/teSpec-tespec-sync/bin/tespec-symexec",
+        "--arch=32",
+        "--input-file=/home/yangfp/tespec-baselines/list-guarded-length32-20261013/reference-run/artifacts/input_002/input.c",
+        "--full-auto",
+        "--Json-output",
+        "--emit-residual-vc",
+        "--no-strategy-gen",
+        "--gen-and-backup",
+        "--coq-output-dir",
+        "/home/yangfp/tespec-baselines/list-guarded-length32-20261013/reference-run/artifacts/input_002/vc",
+        "--no-logic-path",
+        "--disable-solver-info",
+        "--no-exec-info",
+        "--function",
+        "length",
+        "--concrete-bindings",
+        "--spec",
+        "__tespec_entry",
+        "-I/home/yangfp/tespec-baselines/list-guarded-length32-20261013",
+        "-I/tmp/teSpec-tespec-sync/runtime/qcip/QCP_examples/QCP_demos_human",
+        "--loop-unroll-limit",
+        "128",
+        "--call-depth-limit",
+        "128"
+      ],
+      "stdout": "/home/yangfp/tespec-baselines/list-guarded-length32-20261013/reference-run/artifacts/input_002/executor.json",
+      "stderr": "/home/yangfp/tespec-baselines/list-guarded-length32-20261013/reference-run/artifacts/input_002/stderr.log",
+      "vc": {
+        "schema": "qcp-spectest-vc-manifest/v1",
+        "case_id": "input_002",
+        "function": "length",
+        "source": "/home/yangfp/tespec-baselines/list-guarded-length32-20261013/reference-run/artifacts/input_002/input.c",
+        "qcip_root": "/tmp/teSpec-tespec-sync/runtime/qcip",
+        "status": "residual",
+        "residual_goals": [
+          "proof_of_length_precondition_wit_1"
+        ],
+        "counterexample_goals": [],
+        "files": {
+          "goal": "/home/yangfp/tespec-baselines/list-guarded-length32-20261013/reference-run/artifacts/input_002/vc/input_goal.v",
+          "proof_auto": "/home/yangfp/tespec-baselines/list-guarded-length32-20261013/reference-run/artifacts/input_002/vc/input_proof_auto.v",
+          "proof_manual": "/home/yangfp/tespec-baselines/list-guarded-length32-20261013/reference-run/artifacts/input_002/vc/input_proof_manual.v",
+          "goal_check": "/home/yangfp/tespec-baselines/list-guarded-length32-20261013/reference-run/artifacts/input_002/vc/input_goal_check.v"
+        },
+        "missing_files": [],
+        "immutable_sha256": {
+          "goal": "8dc47b260fa2f7dec8a6d431413c7c1495a43e270b745d95f2a0e23c86d9ed04",
+          "proof_auto": "ff1271b35ad15387062f82f4b5ae8daef8eb1320feb2f416271aedd96196990e",
+          "goal_check": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e"
+        },
+        "coq_dependencies": [],
+        "runtime_dependencies": [
+          {
+            "module": "SimpleC.EE.QCP_demos_human.sll_layout32",
+            "source": "/tmp/teSpec-tespec-sync/runtime/qcip/SeparationLogic/examples/QCP_demos_human/sll_layout32.v",
+            "sha256": "b2cc76c7de67fdfe1e54fe20617f8dcff47847a9d78fd8b620977eb6f0856086",
+            "compiled": "/tmp/teSpec-tespec-sync/runtime/qcip/SeparationLogic/examples/QCP_demos_human/sll_layout32.vo",
+            "compiled_sha256": "188207d29081052c516c7f894c9bdb9f8aa0640cf2f330e0b43baf88eea768db",
+            "origin": "pinned-runtime"
+          }
+        ],
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [
+            {
+              "id": 369,
+              "kind": "struct",
+              "name": "list",
+              "defined": true,
+              "size": 8,
+              "alignment": 4,
+              "fields": [
+                {
+                  "id": 371,
+                  "name": "data",
+                  "offset": 0,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "basic",
+                    "name": "int"
+                  },
+                  "computational": true
+                },
+                {
+                  "id": 370,
+                  "name": "next",
+                  "offset": 4,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "pointer",
+                    "target": {
+                      "kind": "struct",
+                      "id": 369
+                    }
+                  },
+                  "computational": true
+                }
+              ]
+            }
+          ],
+          "aliases": []
+        },
+        "manifest": "/home/yangfp/tespec-baselines/list-guarded-length32-20261013/reference-run/artifacts/input_002/vc/manifest.json"
+      },
+      "resources": {
+        "wall_seconds": 0.012666,
+        "cpu_seconds": 0.01,
+        "measurement": "GNU time; executor and children; maximum process RSS",
+        "peak_rss_kib": 5764
+      }
+    }
+  ],
+  "itp_vcs": [
+    {
+      "case_id": "input_002",
+      "function": "length",
+      "manifest": "/home/yangfp/tespec-baselines/list-guarded-length32-20261013/reference-run/artifacts/input_002/vc/manifest.json",
+      "goals": [
+        "proof_of_length_precondition_wit_1"
+      ]
+    }
+  ],
+  "summary": {
+    "total": 1,
+    "PASS": 0,
+    "FAIL": 0,
+    "UNKNOWN": 1,
+    "ERROR": 0,
+    "INVALID": 0,
+    "specification_only": 0,
+    "duration_seconds": 0.086872,
+    "executor_cpu_seconds": 0.01,
+    "peak_rss_kb": 5764
+  }
+}

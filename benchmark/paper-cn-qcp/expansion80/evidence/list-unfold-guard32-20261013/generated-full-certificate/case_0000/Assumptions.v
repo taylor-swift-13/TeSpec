@@ -1,0 +1,12 @@
+Require Import Coverage.
+Set Printing Width 1000000.
+Print Assumptions Coverage.Checked.proof_of_length_safety_wit_1.
+Print Assumptions Coverage.Checked.proof_of_length_safety_wit_2.
+Print Assumptions Coverage.Checked.proof_of_length_safety_wit_3.
+Print Assumptions Coverage.Checked.proof_of_length_safety_wit_4.
+Print Assumptions Coverage.Checked.proof_of_length_safety_wit_5.
+Print Assumptions Coverage.Checked.proof_of_length_safety_wit_6.
+Print Assumptions Coverage.Checked.proof_of_length_safety_wit_7.
+Print Assumptions Coverage.Checked.proof_of_length_return_wit_1.
+Print Assumptions Coverage.Checked.proof_of_length_partial_solve_wit_1.
+Print Assumptions Coverage.Checked.proof_of_length_precondition_wit_1.

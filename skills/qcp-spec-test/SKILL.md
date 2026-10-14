@@ -26,9 +26,9 @@ runtime; the packaged default is 32-bit.
    constraints, not prerequisites for heap ownership. Follow analysis metadata
    for required non-pointer arguments and logical variables.
 3. Select the checking policy:
-   - `expand`: execute actual loops and available callee bodies, checking
+   - `entry-exit`: execute actual loops and available callee bodies, checking
      safety and the final postcondition.
-   - `no-expand`: execute the same bodies and iterations, also checking visited
+   - `all-boundaries`: execute the same bodies and iterations, also checking visited
      assertions, invariants and nested call contracts. This compatibility name
      selects checking boundaries, not modular execution.
    Checks observe copies of the current state; no tested annotation replaces
@@ -38,7 +38,7 @@ runtime; the packaged default is 32-bit.
 
    ```bash
    python3 -m spectest run SOURCE --function FUNCTION --binds BINDS \
-     --execution-mode no-expand --output-dir OUTPUT
+     --execution-mode all-boundaries --output-dir OUTPUT
    ```
 
    A reached declaration-only call cannot replace body execution with its

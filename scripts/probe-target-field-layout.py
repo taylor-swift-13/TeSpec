@@ -133,13 +133,13 @@ def main():
             decl
             + f"\nint sample({typ} *p)\n/*@ Require {heap} Ensure {post} && {heap} */\n{{ return {expr}; }}\n"
         )
-        for mode in ("expand", "no-expand"):
+        for mode in ("entry-exit", "all-boundaries"):
             out = d / mode
             out.mkdir()
             cmd = [
                 str(binary),
                 "--input-file=" + str(source),
-                "--spec-test" if mode == "expand" else "--spec-test-no-expand",
+                "--spec-test" if mode == "entry-exit" else "--spec-test-no-expand",
                 "--function=sample",
                 f"--arch={args.bits}",
                 "--full-auto",

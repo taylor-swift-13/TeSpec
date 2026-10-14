@@ -108,7 +108,7 @@ class PreflightIntegrationTests(unittest.TestCase):
                 "{ while(1) { sample(p); } }"
             )
             job = root / "job.json"
-            for mode in ("expand", "no-expand"):
+            for mode in ("entry-exit", "all-boundaries"):
                 job.write_text(
                     json.dumps(
                         {

@@ -1,0 +1,77 @@
+{
+  "id": "qcp_original_liteos_list_empty",
+  "source": "runtime/qcip/QCP_examples/Applications_human/LiteOS/LOS_ListEmpty.c",
+  "function": "LOS_ListEmpty",
+  "memory": "intrusive circular doubly linked list with sentinel and DL_Node address records",
+  "heap_predicate": "store_dll(storeA,node,l)",
+  "spec_edit": [
+    "__return == 1",
+    "__return == 2"
+  ],
+  "impl_edit": [
+    "node->pstNext == node",
+    "node->pstNext != node"
+  ],
+  "instance_scope": "A=Z; DL_Node records fix ptr and data=0; empty_payload binds storeA for link-only LOS_DL_LIST nodes",
+  "fixture_prefix": "/*@ Import Coq Require Import BenchMemoryPayload */\n/*@ Extern Coq (int_payload : Z -> Z -> Assertion) (empty_payload : Z -> Z -> Assertion) */\n",
+  "schema": "tespec-original-qcp-case/v2",
+  "source_sha256": "5d303f43db12fa7d135663ab411882b930d2fde21019db54e8af88a3a3f689c7",
+  "input_count": 4,
+  "original_contract_preserved": true,
+  "cn_status": "translation_pending",
+  "binding_policy": "Pre free variables only",
+  "pre_free_variables": {
+    "args": [
+      "node"
+    ],
+    "values": [
+      "storeA",
+      "l"
+    ]
+  },
+  "expectations": [
+    {
+      "id": "input_000",
+      "reference": "PASS",
+      "spec_mutation": "FAIL",
+      "impl_mutation": "FAIL",
+      "basis": "manual contract model; shape-only instances are not single concrete heaps"
+    },
+    {
+      "id": "input_001",
+      "reference": "PASS",
+      "spec_mutation": "PASS",
+      "impl_mutation": "FAIL",
+      "basis": "manual contract model; shape-only instances are not single concrete heaps"
+    },
+    {
+      "id": "input_002",
+      "reference": "PASS",
+      "spec_mutation": "PASS",
+      "impl_mutation": "FAIL",
+      "basis": "manual contract model; shape-only instances are not single concrete heaps"
+    },
+    {
+      "id": "input_003",
+      "reference": "PASS",
+      "spec_mutation": "PASS",
+      "impl_mutation": "FAIL",
+      "basis": "manual contract model; shape-only instances are not single concrete heaps"
+    }
+  ],
+  "include_dirs": [
+    "runtime/qcip/QCP_examples/Applications_human/LiteOS",
+    "runtime/qcip/QCP_examples/stdlib"
+  ],
+  "generator_sha256": "840f8c19dcb495c036fed075e8a066ce64534befdbcfb62b6524265c1272ce23",
+  "files": {
+    "execution_reference.qcp.c": "ac156622615d3e6c691fdf55325275cf1c8d8784567daadd30dc29dc0cba7f6a",
+    "reference.qcp.c": "5d303f43db12fa7d135663ab411882b930d2fde21019db54e8af88a3a3f689c7",
+    "execution_impl_mutation.qcp.c": "75f71b41ef1c8d17310c6ae645b7f8607b4440a073610bdd26324ae470e553e7",
+    "spec_mutation.qcp.c": "bb9fd4f0c99bd065bc3bba33444ed5cc813be6ea1242fe7322f98b3f002c0481",
+    "execution_spec_mutation.qcp.c": "11b49d7f9cf91f601660ec7a9cbbe4c15d061d8418dc8d83cc50473220a509fb",
+    "impl_mutation.qcp.c": "44ff575a98a99f39f732237d28be9d3edac27a39fa5ffae11d3a3e43b17921db",
+    "binds.json": "d93fc70c0f8dbdbc5dcc7ca4bf92287561028dff58a9844dbc2485bd97803574",
+    "dependencies/coq/BenchMemoryPayload.v": "957a39e0136d066839f7763e041852a2bf208cc1b67f678d396105ea6f9109fe"
+  }
+}

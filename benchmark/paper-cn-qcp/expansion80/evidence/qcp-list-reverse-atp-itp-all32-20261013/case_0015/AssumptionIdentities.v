@@ -1,0 +1,3 @@
+Require Import Coverage.
+Locate FunctionalExtensionality.functional_extensionality_dep.
+Locate PropExtensionality.propositional_extensionality.

@@ -1,0 +1,82 @@
+[
+  {
+    "id": "input_000",
+    "pre_instance": {
+      "args": {
+        "xs": 8192
+      },
+      "values": {
+        "Xs": [
+          7
+        ]
+      }
+    },
+    "native_setup": "struct sllist *n0=malloc__sllist();n0->head=7; n0->tail=0;",
+    "native_call": "struct sllist *observed=merge_sort(n0);",
+    "native_checks": "struct sllist *cursor=observed;if(!cursor || cursor->head!=7)return 14; cursor=cursor->tail;if(cursor)return 14;",
+    "spec_mutation_violated": false,
+    "impl_mutation_violated": false
+  },
+  {
+    "id": "input_001",
+    "pre_instance": {
+      "args": {
+        "xs": 8192
+      },
+      "values": {
+        "Xs": [
+          1,
+          2
+        ]
+      }
+    },
+    "native_setup": "struct sllist *n0=malloc__sllist();struct sllist *n1=malloc__sllist();n0->head=1; n0->tail=n1;n1->head=2; n1->tail=0;",
+    "native_call": "struct sllist *observed=merge_sort(n0);",
+    "native_checks": "struct sllist *cursor=observed;if(!cursor || cursor->head!=1)return 14; cursor=cursor->tail;if(!cursor || cursor->head!=2)return 14; cursor=cursor->tail;if(cursor)return 14;",
+    "spec_mutation_violated": false,
+    "impl_mutation_violated": true
+  },
+  {
+    "id": "input_002",
+    "pre_instance": {
+      "args": {
+        "xs": 8192
+      },
+      "values": {
+        "Xs": [
+          3,
+          -1,
+          2,
+          0
+        ]
+      }
+    },
+    "native_setup": "struct sllist *n0=malloc__sllist();struct sllist *n1=malloc__sllist();struct sllist *n2=malloc__sllist();struct sllist *n3=malloc__sllist();n0->head=3; n0->tail=n1;n1->head=-1; n1->tail=n2;n2->head=2; n2->tail=n3;n3->head=0; n3->tail=0;",
+    "native_call": "struct sllist *observed=merge_sort(n0);",
+    "native_checks": "struct sllist *cursor=observed;if(!cursor || cursor->head!=-1)return 14; cursor=cursor->tail;if(!cursor || cursor->head!=0)return 14; cursor=cursor->tail;if(!cursor || cursor->head!=2)return 14; cursor=cursor->tail;if(!cursor || cursor->head!=3)return 14; cursor=cursor->tail;if(cursor)return 14;",
+    "spec_mutation_violated": true,
+    "impl_mutation_violated": true
+  },
+  {
+    "id": "input_003",
+    "pre_instance": {
+      "args": {
+        "xs": 8192
+      },
+      "values": {
+        "Xs": [
+          5,
+          4,
+          3,
+          2,
+          1
+        ]
+      }
+    },
+    "native_setup": "struct sllist *n0=malloc__sllist();struct sllist *n1=malloc__sllist();struct sllist *n2=malloc__sllist();struct sllist *n3=malloc__sllist();struct sllist *n4=malloc__sllist();n0->head=5; n0->tail=n1;n1->head=4; n1->tail=n2;n2->head=3; n2->tail=n3;n3->head=2; n3->tail=n4;n4->head=1; n4->tail=0;",
+    "native_call": "struct sllist *observed=merge_sort(n0);",
+    "native_checks": "struct sllist *cursor=observed;if(!cursor || cursor->head!=1)return 14; cursor=cursor->tail;if(!cursor || cursor->head!=2)return 14; cursor=cursor->tail;if(!cursor || cursor->head!=3)return 14; cursor=cursor->tail;if(!cursor || cursor->head!=4)return 14; cursor=cursor->tail;if(!cursor || cursor->head!=5)return 14; cursor=cursor->tail;if(cursor)return 14;",
+    "spec_mutation_violated": true,
+    "impl_mutation_violated": true
+  }
+]

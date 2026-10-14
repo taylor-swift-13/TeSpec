@@ -38,7 +38,7 @@ def main():
         cell.mkdir()
         command = [sys.executable, "-m", "spectest", "run",
                    str(inputs / (variant + ".c")), "--function", "sample",
-                   "--binds", str(inputs / "binds.json"), "--execution-mode", "expand",
+                   "--binds", str(inputs / "binds.json"), "--execution-mode", "entry-exit",
                    "--output-dir", str(cell / "automatic"),
                    "--qcip-root", runtime["qcip_root"],
                    "--qcp-binary", str(ROOT / "bin/tespec-symexec"),

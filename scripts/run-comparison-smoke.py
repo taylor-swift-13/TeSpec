@@ -80,7 +80,7 @@ def main():
     ap.add_argument("--output", type=Path, required=True)
     ap.add_argument("--switch", default="tespec-cn-5.2")
     ap.add_argument("--case", type=Path, help="paired case directory with case.json")
-    ap.add_argument("--mode", choices=("expand", "no-expand"), default="expand")
+    ap.add_argument("--mode", choices=("entry-exit", "all-boundaries", "expand", "no-expand"), default="entry-exit")
     args = ap.parse_args()
     out = args.output.resolve()
     if out.exists() and any(out.iterdir()):

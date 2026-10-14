@@ -6,6 +6,7 @@ import json
 from typing import Any
 
 from .errors import JobError
+from .modes import EXECUTION_MODES, MODE_ALIASES, normalize_execution_mode
 
 
 def aggregate_test_result(
@@ -91,7 +92,7 @@ def _executor_result(
         not isinstance(result.get("phases"), dict)
         or not required_phases.issubset(result["phases"])
         or result.get("scope") not in {"execution", "specification-only"}
-        or result.get("mode") not in {"expand", "no-expand"}
+        or result.get("mode") not in (*EXECUTION_MODES, *MODE_ALIASES)
         or "certificate" not in result
     ):
         return {
@@ -100,6 +101,7 @@ def _executor_result(
             "satisfied": None,
             "reason": "incomplete_executor_schema",
         }
+    result = dict(result, mode=normalize_execution_mode(result["mode"]))
     status = result.get("overall")
     if status not in {"PASS", "FAIL", "UNKNOWN", "ERROR", "INVALID"}:
         raise JobError("invalid structured executor verdict")
@@ -152,7 +154,7 @@ def _executor_result(
                 and (
                     phases["annotations"] == "PASS"
                     or (
-                        result["mode"] == "expand"
+                        result["mode"] == "entry-exit"
                         and result.get("annotation_policy") in (None, "ignore")
                         and phases["annotations"] == "NOT_RUN"
                     )

@@ -19,12 +19,12 @@ Require 的一个 SAT 模型不会自动变成程序输入。剩余符号在执�
 
 配置为 `C=⟨pc,P,K,θ₀,Ω,b,m⟩`。P 是 QCP Assertion（纯约束、程序变量到地址的映射、空间谓词及量词）；K 是调用栈，Ω 是检查义务，b 为执行预算，m 为检查策略。实现不维护另一份可变实例状态。
 
-| 兼容命令名 | 循环与有函数体的调用 | 中间检查 |
+| 检查模式 | 循环与有函数体的调用 | 中间检查 |
 |---|---|---|
-| `expand` | 实际迭代、实际内联 | 默认忽略；可显式启用 `check-preserve` |
-| `no-expand` | 相同的实际迭代与内联 | 启用 `assert/inv/Require/Ensure` 检查 |
+| `entry-exit` | 实际迭代、实际内联 | 默认忽略；可显式启用 `check-preserve` |
+| `all-boundaries` | 相同的实际迭代与内联 | 启用 `assert/inv/Require/Ensure` 检查 |
 
-名称保留兼容性；`no-expand` 在此版本表示保留检查边界，不表示用契约代替调用。两个模式均检查入口 Require、程序安全性及顶层 Ensure。安全性 VC 不受中间检查开关控制。
+旧名称 `expand` / `no-expand` 保留为输入别名。`all-boundaries` 表示检查所有经过的边界。两个模式均检查入口 Require、程序安全性及顶层 Ensure。安全性 VC 不受中间检查开关控制。
 
 只有 C 的转移规则与语义保持的化简能改变 P。注解检查满足：
 

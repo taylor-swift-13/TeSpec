@@ -1,0 +1,162 @@
+{
+  "status": "PASS",
+  "tracks": {
+    "upstream-memory": {
+      "subjects": 6,
+      "inputs": 200
+    },
+    "qcp-memory-v2": {
+      "subjects": 11,
+      "inputs": 44
+    },
+    "fulminate-memory": {
+      "subjects": 3,
+      "inputs": 12
+    }
+  },
+  "new_subjects": 20,
+  "new_fixed_inputs": 256,
+  "programs": [
+    {
+      "id": "cn_abs_mem",
+      "track": "upstream-memory",
+      "path": "upstream-memory/suites/cn_abs_mem",
+      "memory": "owned signed cell; conditional read",
+      "inputs": 7
+    },
+    {
+      "id": "cn_abs_struct_field",
+      "track": "upstream-memory",
+      "path": "upstream-memory/suites/cn_abs_struct_field",
+      "memory": "struct interior field passed to a callee",
+      "inputs": 49
+    },
+    {
+      "id": "cn_init_point",
+      "track": "upstream-memory",
+      "path": "upstream-memory/suites/cn_init_point",
+      "memory": "two struct fields initialized by nested calls",
+      "inputs": 36
+    },
+    {
+      "id": "cn_transpose_via_call",
+      "track": "upstream-memory",
+      "path": "upstream-memory/suites/cn_transpose_via_call",
+      "memory": "disjoint interior fields passed to swap",
+      "inputs": 36
+    },
+    {
+      "id": "cn_transfer_disjoint",
+      "track": "upstream-memory",
+      "path": "upstream-memory/suites/cn_transfer_disjoint",
+      "memory": "ownership transfer between separate cells",
+      "inputs": 36
+    },
+    {
+      "id": "cn_incr_first_frame",
+      "track": "upstream-memory",
+      "path": "upstream-memory/suites/cn_incr_first_frame",
+      "memory": "callee modifies one owned cell while framing another",
+      "inputs": 36
+    },
+    {
+      "id": "qcp_shape_array_copy1",
+      "track": "qcp-memory-v2",
+      "path": "qcp-memory-v2/cases/qcp_shape_array_copy1",
+      "memory": "multiple owned array regions with shape-only and uninitialized predicates",
+      "inputs": 4
+    },
+    {
+      "id": "qcp_shape_array_concat",
+      "track": "qcp-memory-v2",
+      "path": "qcp-memory-v2/cases/qcp_shape_array_concat",
+      "memory": "multiple owned array regions with shape-only and uninitialized predicates",
+      "inputs": 4
+    },
+    {
+      "id": "qcp_shape_array_swap",
+      "track": "qcp-memory-v2",
+      "path": "qcp-memory-v2/cases/qcp_shape_array_swap",
+      "memory": "multiple owned array regions with shape-only and uninitialized predicates",
+      "inputs": 4
+    },
+    {
+      "id": "qcp_shape_array_vector_sum",
+      "track": "qcp-memory-v2",
+      "path": "qcp-memory-v2/cases/qcp_shape_array_vector_sum",
+      "memory": "multiple owned array regions with shape-only and uninitialized predicates",
+      "inputs": 4
+    },
+    {
+      "id": "qcp_shape_dll_iter",
+      "track": "qcp-memory-v2",
+      "path": "qcp-memory-v2/cases/qcp_shape_dll_iter",
+      "memory": "doubly linked list with forward/back links, shape-only contract",
+      "inputs": 4
+    },
+    {
+      "id": "qcp_shape_dll_reverse",
+      "track": "qcp-memory-v2",
+      "path": "qcp-memory-v2/cases/qcp_shape_dll_reverse",
+      "memory": "doubly linked list with forward/back links, shape-only contract",
+      "inputs": 4
+    },
+    {
+      "id": "qcp_original_sll_queue",
+      "track": "qcp-memory-v2",
+      "path": "qcp-memory-v2/cases/qcp_original_sll_queue",
+      "memory": "sentinel singly linked queue with head/tail pointers",
+      "inputs": 4
+    },
+    {
+      "id": "qcp_original_list_insertion",
+      "track": "qcp-memory-v2",
+      "path": "qcp-memory-v2/cases/qcp_original_list_insertion",
+      "memory": "pointer-to-pointer cursor and separately owned node with uninitialized next field",
+      "inputs": 4
+    },
+    {
+      "id": "qcp_original_list_insertion_sort",
+      "track": "qcp-memory-v2",
+      "path": "qcp-memory-v2/cases/qcp_original_list_insertion_sort",
+      "memory": "nested list traversal, ownership rearrangement and calls",
+      "inputs": 4
+    },
+    {
+      "id": "qcp_original_polymorphic_reverse",
+      "track": "qcp-memory-v2",
+      "path": "qcp-memory-v2/cases/qcp_original_polymorphic_reverse",
+      "memory": "polymorphic linked nodes with separately owned integer payload cells",
+      "inputs": 4
+    },
+    {
+      "id": "qcp_original_liteos_list_empty",
+      "track": "qcp-memory-v2",
+      "path": "qcp-memory-v2/cases/qcp_original_liteos_list_empty",
+      "memory": "intrusive circular doubly linked list with sentinel and DL_Node address records",
+      "inputs": 4
+    },
+    {
+      "id": "fulminate_queue_pop",
+      "track": "fulminate-memory",
+      "path": "fulminate-memory/cases/fulminate_queue_pop",
+      "memory": "sentinel-free queue with front/back, free of head node",
+      "inputs": 4
+    },
+    {
+      "id": "fulminate_dll_remove",
+      "track": "fulminate-memory",
+      "path": "fulminate-memory/cases/fulminate_dll_remove",
+      "memory": "doubly linked list: remove head/middle/tail; allocate result record; free current node",
+      "inputs": 4
+    },
+    {
+      "id": "fulminate_list_mergesort",
+      "track": "fulminate-memory",
+      "path": "fulminate-memory/cases/fulminate_list_mergesort",
+      "memory": "recursive splitting and merging with a struct holding two list roots",
+      "inputs": 4
+    }
+  ],
+  "scope": "source and receipt integrity; mutation separation; manually audited Pre-only binding names for new selected contracts; no claim of arbitrary-predicate validity or certified translation equivalence"
+}

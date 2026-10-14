@@ -1,0 +1,59 @@
+{
+  "scope": "Original industrial benchmark construction and runnable instrumentation configuration, not a replay verdict",
+  "repository": "https://github.com/rems-project/CN-pKVM-buddy-allocator-case-study",
+  "revision": "66afeefe9556bc32b8b027d5b7f62bc3a7069703",
+  "original_driver": {
+    "pool_pages": 8,
+    "allocations": [
+      {
+        "order": 0
+      },
+      {
+        "order": 0
+      }
+    ],
+    "release_both": true,
+    "counting_unit": "one client trace"
+  },
+  "original_negative_examples": [
+    {
+      "file": "bug1.defs.h",
+      "kind": "spec_mutation",
+      "change": "Remove the order != 255 exclusion from allocator-page ownership guards."
+    },
+    {
+      "file": "bug2.page_alloc.c",
+      "kind": "impl_mutation",
+      "change": "Omit choosing the smaller buddy address when coalescing."
+    },
+    {
+      "file": "bug3.page_alloc.c",
+      "kind": "spec_mutation",
+      "change": "Replace the extracted-page-excluding pool postcondition with the full pool postcondition."
+    }
+  ],
+  "upstream_instrumentation": {
+    "command": "cn instrument ./driver.pp.c --output-decorated=driver.pp.exec.c --output-decorated-dir=build/ --with-ownership-checking",
+    "ownership_checking_requested": true,
+    "lemma_checks_explicitly_disabled": false,
+    "tool_revision_identified_by_script": false
+  },
+  "comparison_policy": {
+    "disable_lemma_diagnostic_in_primary_counts": false,
+    "large_input_suites_are_our_extension": true,
+    "mutant_inputs_require_independent_violation_labels": true,
+    "mutant_survivors_expected": "PASS",
+    "instrumentation_or_build_error_is_semantic_FAIL": false
+  },
+  "source_files": {
+    "driver.c": "081d258dead1ae0a41a323d58c5fc8aa33c6d6b2ab8a62a2aaacb9b6fbe6c071",
+    "defs.h": "dbb6eacd4940a88cc81913d0511a0c2bfdf2743bdbc13bbf5321d7bbd719c871",
+    "bug1.defs.h": "22c9b6d503a49ddd6e37231654fa531d14ed1ec9e0dadc1d2900f97ea974940b",
+    "page_alloc.c": "cfb26ebb0856c85e4966713240a447f3e2f1923d0490c839640f9b5fab94addc",
+    "bug2.page_alloc.c": "3c8570f180293c77da8ff58e83f7d3025b9ffb73e26c5e52e908523dfa934e05",
+    "bug3.page_alloc.c": "8b8128258b11ba70efc02a7aea7384edc6c2212b7e545576060e2a93fe2c13e7"
+  },
+  "files": {
+    "run.sh": "696174cf8b1342903cac26c0b76ea0a596015654bdc7fe4af05fe0f61657ba75"
+  }
+}

@@ -8,9 +8,9 @@
 
 ```sh
 python3 -m spectest run program.c --function target --binds binds.json \
-  --execution-mode expand --output-dir /tmp/test-expand
+  --execution-mode entry-exit --output-dir /tmp/test-expand
 python3 -m spectest run program.c --function target --binds binds.json \
-  --execution-mode no-expand --output-dir /tmp/test-contract
+  --execution-mode all-boundaries --output-dir /tmp/test-contract
 ```
 
 展开模式默认 `--annotation-policy ignore`，可选择 `check-preserve`；不展开模式固定为 `qcp`。冲突参数报错。只有声明的目标执行 `specification-only`，仅检查 Require，安全性和后条件为 `NOT_RUN`。无规约目标或无契约的外部调用报错。

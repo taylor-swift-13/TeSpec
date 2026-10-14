@@ -94,7 +94,7 @@ def main() -> int:
                         }
                     )
                     continue
-                for mode in ("expand", "no-expand"):
+                for mode in ("entry-exit", "all-boundaries"):
                     binds = []
                     for size in (0, 1, 2):
                         case = json.loads(json.dumps(spec["binds_template"][0]))

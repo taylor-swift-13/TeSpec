@@ -1,0 +1,8 @@
+Require Import Coverage.
+Set Printing Width 1000000.
+Print Assumptions Coverage.Checked.proof_of_is_multiple_safety_wit_1.
+Print Assumptions Coverage.Checked.proof_of_is_multiple_safety_wit_2.
+Print Assumptions Coverage.Checked.proof_of_is_multiple_safety_wit_3.
+Print Assumptions Coverage.Checked.proof_of_is_multiple_safety_wit_4.
+Print Assumptions Coverage.Checked.proof_of_is_multiple_return_wit_1.
+Print Assumptions Coverage.Checked.proof_of_is_multiple_precondition_wit_1.

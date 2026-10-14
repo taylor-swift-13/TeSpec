@@ -42,6 +42,34 @@ LOCAL_QCP = bundled_qcp_binary()
 
 
 class SpecializationTests(unittest.TestCase):
+    def test_comments_around_contract_preserve_entry_and_original_spec(self):
+        source = """void update(unsigned int *p)
+/* start of documentation */
+// ordinary declaration comment
+/*@ named With P Require data_at(p, unsigned int, P)
+    Ensure data_at(p, unsigned int, P + P) */
+/* end of documentation */
+// body follows
+{ *p = *p + *p; }
+"""
+        self.assertEqual(analyze_catalog(source)["functions"][0]["function"], "update")
+        generated, entry = specialize_entry_source(
+            source, "update", {"P": 3}, "named", argument_bindings={"p": 4096}
+        )
+        self.assertEqual(entry, "__tespec_entry")
+        self.assertIn("/*@ named With P", generated)
+        self.assertIn("/* end of documentation */", generated)
+        self.assertIn("(P == (3))", generated)
+        self.assertEqual(analyze_source(generated, "update", "named")["value_bindings"],
+            analyze_source(source, "update", "named")["value_bindings"])
+
+    def test_separate_spec_with_ordinary_comments_and_duplicate_detection(self):
+        source = "int value(void) /* prose */ // more prose\n{ return 1; }"
+        attached = attach_spec_to_source(source, "Require emp Ensure __return == 1", "value")
+        self.assertEqual(analyze_catalog(attached)["functions"][0]["function"], "value")
+        with self.assertRaisesRegex(JobError, "already has a full QCP spec"):
+            attach_spec_to_source(attached, "Require emp Ensure emp", "value")
+
     def test_entry_specialization_preserves_named_call_contract_and_avoids_collision(
         self,
     ):
@@ -300,8 +328,8 @@ int f(int n)
         self.assertTrue(config.binary.is_file())
         self.assertTrue((config.qcip_root / "SeparationLogic/_CoqProject").is_file())
 
-    def test_no_expand_mode_uses_ordinary_qcp_vcs(self) -> None:
-        config = _parse_qcp_config({"qcp": {"execution_mode": "no-expand"}}, ROOT, ROOT)
+    def test_all_boundaries_mode_uses_ordinary_qcp_vcs(self) -> None:
+        config = _parse_qcp_config({"qcp": {"execution_mode": "all-boundaries"}}, ROOT, ROOT)
         command = _qcp_command(
             config, ROOT / "generated.c", "sample", None, ROOT / "vc"
         )
@@ -309,9 +337,9 @@ int f(int n)
         self.assertNotIn("--concrete-bindings", command)
         self.assertNotIn("--loop-unroll-limit", command)
 
-    def test_no_expand_mode_passes_execution_budget(self) -> None:
+    def test_all_boundaries_mode_passes_execution_budget(self) -> None:
         config = _parse_qcp_config(
-            {"qcp": {"execution_mode": "no-expand", "loop_unroll_limit": 8}}, ROOT, ROOT
+            {"qcp": {"execution_mode": "all-boundaries", "loop_unroll_limit": 8}}, ROOT, ROOT
         )
         command = _qcp_command(
             config, ROOT / "generated.c", "sample", None, ROOT / "vc"
@@ -1028,7 +1056,7 @@ class EndToEndTests(unittest.TestCase):
                                 {"id": f"n{n}", "args": {"n": n}, "values": {"v": 5}}
                                 for n in (0, 1, 4)
                             ],
-                            "qcp": {"execution_mode": "no-expand"},
+                            "qcp": {"execution_mode": "all-boundaries"},
                         }
                     )
                 )
@@ -1053,7 +1081,7 @@ class EndToEndTests(unittest.TestCase):
             "recursive_heap_weak",
             "recursive_heap_bad_boundary",
         ):
-            for mode in ("expand", "no-expand"):
+            for mode in ("entry-exit", "all-boundaries"):
                 with (
                     self.subTest(family=family, mode=mode),
                     tempfile.TemporaryDirectory() as tmp,
@@ -1087,7 +1115,7 @@ class EndToEndTests(unittest.TestCase):
                         bad = family == "recursive_heap_bad_boundary"
                         expected = (
                             "UNKNOWN"
-                            if bad and (n == 0 or mode == "no-expand")
+                            if bad and (n == 0 or mode == "all-boundaries")
                             else "PASS"
                         )
                         self.assertEqual(result["status"], expected)
@@ -1096,7 +1124,7 @@ class EndToEndTests(unittest.TestCase):
                         self.assertNotEqual(
                             result["reason"], "contract_binding_unknown"
                         )
-                        if bad and n > 0 and mode == "no-expand":
+                        if bad and n > 0 and mode == "all-boundaries":
                             self.assertEqual(result["phases"]["postcondition"], "PASS")
                             self.assertEqual(result["phases"]["annotations"], "UNKNOWN")
                             self.assertTrue(result["residual_vcs"])

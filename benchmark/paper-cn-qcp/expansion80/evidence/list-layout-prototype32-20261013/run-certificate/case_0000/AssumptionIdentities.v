@@ -1,0 +1,4 @@
+Require Import Coverage.
+Locate CNotation.eval_addr_expr.
+Locate FunctionalExtensionality.functional_extensionality_dep.
+Locate PropExtensionality.propositional_extensionality.

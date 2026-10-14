@@ -75,6 +75,22 @@ satisfiability check. Numeric pointer bindings may be used when the test is
 specifically about address-dependent behavior. Ordinary dereferencing uses the
 symbolic pointer and its owned memory; it does not require a number.
 
+For frozen CN/QCP benchmark suites, keep the reviewed `args`, `values`, and
+optional `types` in the suite and replay them verbatim. Numeric entry addresses
+can also avoid expensive symbolic disjointness checks, as in the knapsack
+case. Allocate them using block extents and ABI alignment, preserving equality
+and interior offsets rather than making every parameter disjoint. An
+uninitialized output block needs a location and size, not invented contents.
+
+Concrete logical lists/trees fix their modeled contents and shape; they need
+not expose all existential node addresses. They do not automatically encode
+sharing, cycles or every custom predicate. The current executor also has a
+numeric interior-pointer lookup limitation: an address such as 4104 can lose
+the structure needed to locate element 2 in an array rooted at 4096. Record
+such outcomes as UNKNOWN and keep symbolic/numeric address ablations separate;
+never silently change a frozen input after a failure. See
+`benchmark/paper-cn-qcp/instantiation/` and `memory-controls/` for fixed cases.
+
 The available predicate definitions and declared strategies determine
 unfolding. For arrays, bind length and contents consistently. The tool checks
 binding conflicts rather than silently repairing user inputs. Follow analysis
@@ -83,7 +99,7 @@ remain separate from values.
 
 Never add callee bind files. Arguments are evaluated in the caller, fresh
 parameter/local cells are created for each invocation, and actual shared writes
-and return values flow back. Under `no-expand`, callee With variables are also
+and return values flow back. Under `all-boundaries`, callee With variables are also
 matched to the actual call state for contract checks. Those contracts observe
 execution rather than replacing it.
 

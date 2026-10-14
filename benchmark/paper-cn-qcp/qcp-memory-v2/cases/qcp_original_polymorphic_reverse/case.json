@@ -1,0 +1,77 @@
+{
+  "id": "qcp_original_polymorphic_reverse",
+  "source": "runtime/qcip/QCP_examples/QCP_demos_human/poly_sll.c",
+  "function": "reverse",
+  "memory": "polymorphic linked nodes with separately owned integer payload cells",
+  "heap_predicate": "sll(storeA,p,l)",
+  "spec_edit": [
+    "rev(l)",
+    "cons(0, rev(l))"
+  ],
+  "impl_edit": [
+    "v->next = w;",
+    "v->next = 0;"
+  ],
+  "instance_scope": "A=Z and storeA=int_payload; node and payload addresses remain original existential variables",
+  "fixture_prefix": "/*@ Import Coq Require Import BenchMemoryPayload */\n/*@ Extern Coq (int_payload : Z -> Z -> Assertion) (empty_payload : Z -> Z -> Assertion) */\n",
+  "schema": "tespec-original-qcp-case/v2",
+  "source_sha256": "43ae4f8d1de7fe1cac5f53a4da19ca8e7bbf77fbf688cb1064cad110e7226f07",
+  "input_count": 4,
+  "original_contract_preserved": true,
+  "cn_status": "translation_pending",
+  "binding_policy": "Pre free variables only",
+  "pre_free_variables": {
+    "args": [
+      "p"
+    ],
+    "values": [
+      "storeA",
+      "l"
+    ]
+  },
+  "expectations": [
+    {
+      "id": "input_000",
+      "reference": "PASS",
+      "spec_mutation": "FAIL",
+      "impl_mutation": "PASS",
+      "basis": "manual contract model; shape-only instances are not single concrete heaps"
+    },
+    {
+      "id": "input_001",
+      "reference": "PASS",
+      "spec_mutation": "FAIL",
+      "impl_mutation": "PASS",
+      "basis": "manual contract model; shape-only instances are not single concrete heaps"
+    },
+    {
+      "id": "input_002",
+      "reference": "PASS",
+      "spec_mutation": "FAIL",
+      "impl_mutation": "FAIL",
+      "basis": "manual contract model; shape-only instances are not single concrete heaps"
+    },
+    {
+      "id": "input_003",
+      "reference": "PASS",
+      "spec_mutation": "FAIL",
+      "impl_mutation": "FAIL",
+      "basis": "manual contract model; shape-only instances are not single concrete heaps"
+    }
+  ],
+  "include_dirs": [
+    "runtime/qcip/QCP_examples/QCP_demos_human",
+    "runtime/qcip/QCP_examples/stdlib"
+  ],
+  "generator_sha256": "840f8c19dcb495c036fed075e8a066ce64534befdbcfb62b6524265c1272ce23",
+  "files": {
+    "execution_reference.qcp.c": "1dfb9524b79d0a6100c23d87b045a98f0b046929a8cc0a2697bb01f49253e6e3",
+    "reference.qcp.c": "43ae4f8d1de7fe1cac5f53a4da19ca8e7bbf77fbf688cb1064cad110e7226f07",
+    "execution_impl_mutation.qcp.c": "9abb46bcfbbdb7aa42c32d7b053434f9625d395bda10a0cd5be6cfe6bb5027f1",
+    "spec_mutation.qcp.c": "bb45587c2dfda7249dcac2cb9e3b3e9ab7562c38793649e93479dbb0ce8d15cb",
+    "execution_spec_mutation.qcp.c": "ba8358032ec055b9b0ba2d7502e87d8cc32f96ff69ecd6ff3b64c78548814946",
+    "impl_mutation.qcp.c": "38b61ac4a37be1bb9bafa0d5a27128f5a29ed0a51a584d6a539c60e090a577e9",
+    "binds.json": "3d38c08cd67b67c1fd639173870ea034bcd5f7e70ccfa9efbd28808a7446a965",
+    "dependencies/coq/BenchMemoryPayload.v": "957a39e0136d066839f7763e041852a2bf208cc1b67f678d396105ea6f9109fe"
+  }
+}

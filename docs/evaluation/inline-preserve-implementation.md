@@ -1,6 +1,6 @@
 # 执行状态保持与分类测试验收
 
-当前语义为 `inline-preserve/v1`。两个模式都实际执行循环及可用函数体；`no-expand` 开启中间 assert/inv/Require/Ensure 检查，`expand` 默认忽略这些检查。检查目标取当前状态副本，执行状态保持原样。实现复用 QCP 的实参求值、内存操作、分离匹配和 VC 生成，通过新鲜调用帧支持递归、共享指针、结构体参数及返回。
+当前语义为 `inline-preserve/v1`。两个模式都实际执行循环及可用函数体；`all-boundaries` 开启中间 assert/inv/Require/Ensure 检查，`entry-exit` 默认忽略这些检查。检查目标取当前状态副本，执行状态保持原样。实现复用 QCP 的实参求值、内存操作、分离匹配和 VC 生成，通过新鲜调用帧支持递归、共享指针、结构体参数及返回。
 
 实现代码位于 sac 的 `tespec` 工作树 `/tmp/sac-tespec-merge-J7CxUo`，teSpec 的 `tespec` 工作树为 `/tmp/teSpec-tespec-agentflow`。候选执行器是 `bin/tespec-symexec`，构建身份在 `bin/tespec-symexec.build.json`；原 `bin/qcp-symexec` 保持不变。源示例目录只读。
 

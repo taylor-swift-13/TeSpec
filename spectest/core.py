@@ -15,10 +15,20 @@ from pathlib import Path
 from typing import Any
 
 from .errors import JobError
+from .modes import normalize_execution_mode
 from .verdict import _executor_result, _executor_target_layout
 
 
 _C_SOURCE_ENCODINGS = ("utf-8-sig", "gb18030")
+_C_COMMENT_PATTERN = r"/\*.*?\*/|//[^\n]*(?:\n|$)"
+_C_COMMENT_TRIVIA = r"(?:(?:" + _C_COMMENT_PATTERN + r")\s*)"
+
+
+def _qcp_comments(text: str):
+    """Yield annotation comments without interpreting ordinary comment contents."""
+    for match in re.finditer(_C_COMMENT_PATTERN, text, re.DOTALL):
+        if match.group().startswith("/*@"):
+            yield match, match.group()[3:-2]
 
 
 def read_source_text(path: Path) -> str:
@@ -96,7 +106,7 @@ def attach_spec_to_source(source: str, spec: str, function: str) -> str:
     pattern = re.compile(
         rf"(?P<head>\b{re.escape(function)}\s*"
         r"\((?P<parameters>[^;{}]*)\))\s*"
-        r"(?P<comments>(?:/\*@.*?\*/\s*)*)"
+        r"(?P<comments>" + _C_COMMENT_TRIVIA + r"*)"
         r"(?P<terminator>{)",
         re.DOTALL,
     )
@@ -112,12 +122,8 @@ def attach_spec_to_source(source: str, spec: str, function: str) -> str:
         )
     match = matches[0]
     if any(
-        re.search(r"\bRequire\b", item.group("body"))
-        for item in re.finditer(
-            r"/\*@(?P<body>.*?)\*/",
-            match.group("comments"),
-            re.DOTALL,
-        )
+        re.search(r"\bRequire\b", body)
+        for _, body in _qcp_comments(match.group("comments"))
     ):
         raise JobError(
             f"function {function!r} already has a full QCP spec; "
@@ -440,7 +446,7 @@ def _function_specs(source: str, function: str) -> list[SpecCandidate]:
     pattern = re.compile(
         rf"\b{re.escape(function)}\s*"
         r"\((?P<parameters>[^;{}]*)\)\s*"
-        r"(?P<comments>(?:/\*@.*?\*/\s*)+)"
+        r"(?P<comments>" + _C_COMMENT_TRIVIA + r"+)"
         r"(?P<terminator>[;{])",
         re.DOTALL,
     )
@@ -449,12 +455,7 @@ def _function_specs(source: str, function: str) -> list[SpecCandidate]:
         if _inside_block_comment(source, function_match.start()):
             continue
         comments_start = function_match.start("comments")
-        for comment in re.finditer(
-            r"/\*@(?P<body>.*?)\*/",
-            function_match.group("comments"),
-            re.DOTALL,
-        ):
-            body = comment.group("body")
+        for comment, body in _qcp_comments(function_match.group("comments")):
             if re.search(r"\bRequire\b", body) is None:
                 continue
             if re.search(r"\bEnsure\b", body) is None:
@@ -1278,7 +1279,7 @@ def specialize_entry_source(
     """
     specialized = specialize_source(source, function, bindings, spec_name, **kwargs)
     candidate = _find_function_spec(source, function, spec_name)
-    suffix = re.match(r"\s*(?:/\*@.*?\*/\s*)*([;{])", source[candidate.end :], re.S)
+    suffix = re.match(r"\s*" + _C_COMMENT_TRIVIA + r"*([;{])", source[candidate.end :], re.S)
     if specialized == source or suffix is None or suffix.group(1) == ";":
         return specialized, spec_name
     entry = _find_function_spec(specialized, function, spec_name)
@@ -1318,19 +1319,20 @@ def _parse_qcp_config(job: dict[str, Any], base: Path, source_dir: Path) -> QcpC
     timeout = raw.get("timeout_seconds", 30)
     if not isinstance(timeout, (int, float)) or timeout <= 0:
         raise JobError("qcp.timeout_seconds must be positive")
-    execution_mode = raw.get("execution_mode", "expand")
+    try:
+        execution_mode = normalize_execution_mode(raw.get("execution_mode", "entry-exit"))
+    except ValueError as error:
+        raise JobError(f"qcp.{error}") from error
     architecture_bits = raw.get("architecture_bits", 32)
     if type(architecture_bits) is not int or architecture_bits not in (32, 64):
         raise JobError("qcp.architecture_bits must be 32 or 64")
-    if execution_mode not in ("expand", "no-expand"):
-        raise JobError("qcp.execution_mode must be 'expand' or 'no-expand'")
     instance_trace = raw.get("instance_trace", False)
     if not isinstance(instance_trace, bool):
         raise JobError("qcp.instance_trace must be a boolean")
     annotation_policy = raw.get("annotation_policy")
     permitted = (
         (None, "qcp", "check-preserve")
-        if execution_mode == "no-expand"
+        if execution_mode == "all-boundaries"
         else (None, "ignore", "check-preserve")
     )
     if annotation_policy not in permitted:
@@ -1389,7 +1391,7 @@ def _qcp_command(
         "--function",
         function,
     ]
-    if config.execution_mode == "expand":
+    if config.execution_mode == "entry-exit":
         command.append("--concrete-bindings")
     else:
         command.append("--spec-test-no-expand")
@@ -2071,7 +2073,7 @@ def run_job(job_path: Path, output_override: Path | None = None) -> dict[str, An
             "defined_function_calls": "execute_bodies",
             "intermediate_boundaries": (
                 config.annotation_policy not in (None, "ignore")
-                or config.execution_mode == "no-expand"
+                or config.execution_mode == "all-boundaries"
             ),
             "declaration_calls": "unknown_missing_body",
             "call_depth_limit": config.call_depth_limit,

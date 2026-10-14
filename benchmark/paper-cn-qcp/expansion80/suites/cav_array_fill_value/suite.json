@@ -1,0 +1,8276 @@
+{
+  "schema": "tespec-paired-input-suite/v1",
+  "id": "cav_array_fill_value",
+  "function": "array_fill_value",
+  "parameter_order": [
+    "n",
+    "k",
+    "a"
+  ],
+  "pointer_lists": {
+    "a": "l"
+  },
+  "return_kind": "void",
+  "seed": 20261013,
+  "input_count": 128,
+  "domain_complete": false,
+  "admission": "Signed int32 inputs; n equals allocated array length, distinct array blocks, increment excludes INT_MAX and negate excludes INT_MIN; first/last/rotate require n>=1",
+  "review_scope": "CN maps and QCP lists cover exactly n owned cells, disjoint for two blocks; corresponding elementwise/return conditions manually reviewed",
+  "reviewed_cn_sha256": "5baaed04d1208018f4025fcbbe60483e5e387b5d00b8be3344aecb24daf848d3",
+  "reviewed_qcp_sha256": "bdf18cb7cbf8d35e8139dcc4638f371fee1d8362073473af6978a8af57e7802e",
+  "generator_path": "prepare-arrays.py",
+  "generator_sha256": "cd12e128e58c16352516e13bdad922b4d329434aa03020891c8e677bf28a543e",
+  "tool_runs_checked": false,
+  "native_abi": "host signed int32 with independent return and whole-array models; paired native32/native64 replay pending",
+  "variants": {
+    "reference": {
+      "kind": "reference"
+    },
+    "spec_mutation": {
+      "kind": "spec",
+      "cn_edit": [
+        "B[i] == k",
+        "B[i] == k + 1"
+      ],
+      "qcp_edit": [
+        "lr[i] == k",
+        "lr[i] == k + 1"
+      ]
+    },
+    "impl_mutation": {
+      "kind": "impl",
+      "shared_c_edit": [
+        "a[i] = k;",
+        "a[i] = 0;"
+      ]
+    }
+  },
+  "inputs": [
+    {
+      "id": "input_000",
+      "args": {
+        "n": 0,
+        "k": -2147483648,
+        "a": 4096
+      },
+      "arrays": {
+        "a": []
+      },
+      "qcp_bind": {
+        "id": "input_000",
+        "args": {
+          "n": 0,
+          "k": -2147483648,
+          "a": 4096
+        },
+        "values": {
+          "l": []
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": []
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": []
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": []
+      },
+      "spec_mutation_violated": false,
+      "impl_mutation_violated": false
+    },
+    {
+      "id": "input_001",
+      "args": {
+        "n": 1,
+        "k": 473873328,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2147483648
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_001",
+        "args": {
+          "n": 1,
+          "k": 473873328,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2147483648
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          473873328
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          473873328
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_002",
+      "args": {
+        "n": 2,
+        "k": -100,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2147483648,
+          -2147483648
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_002",
+        "args": {
+          "n": 2,
+          "k": -100,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2147483648,
+            -2147483648
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -100,
+          -100
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -100,
+          -100
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_003",
+      "args": {
+        "n": 3,
+        "k": -113257487,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2147483648,
+          -2147483648,
+          -2147483648
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_003",
+        "args": {
+          "n": 3,
+          "k": -113257487,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2147483648,
+            -2147483648,
+            -2147483648
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -113257487,
+          -113257487,
+          -113257487
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -113257487,
+          -113257487,
+          -113257487
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_004",
+      "args": {
+        "n": 4,
+        "k": -1,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2147483648,
+          -2147483648,
+          -2147483648,
+          -2147483648
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_004",
+        "args": {
+          "n": 4,
+          "k": -1,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2147483648,
+            -2147483648,
+            -2147483648,
+            -2147483648
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_005",
+      "args": {
+        "n": 8,
+        "k": 405137520,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2147483648,
+          -2147483648,
+          -2147483648,
+          -2147483648,
+          -2147483648,
+          -2147483648,
+          -2147483648,
+          -2147483648
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_005",
+        "args": {
+          "n": 8,
+          "k": 405137520,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2147483648,
+            -2147483648,
+            -2147483648,
+            -2147483648,
+            -2147483648,
+            -2147483648,
+            -2147483648,
+            -2147483648
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          405137520,
+          405137520,
+          405137520,
+          405137520,
+          405137520,
+          405137520,
+          405137520,
+          405137520
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          405137520,
+          405137520,
+          405137520,
+          405137520,
+          405137520,
+          405137520,
+          405137520,
+          405137520
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_006",
+      "args": {
+        "n": 16,
+        "k": 1,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2147483648,
+          -2147483648,
+          -2147483648,
+          -2147483648,
+          -2147483648,
+          -2147483648,
+          -2147483648,
+          -2147483648,
+          -2147483648,
+          -2147483648,
+          -2147483648,
+          -2147483648,
+          -2147483648,
+          -2147483648,
+          -2147483648,
+          -2147483648
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_006",
+        "args": {
+          "n": 16,
+          "k": 1,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2147483648,
+            -2147483648,
+            -2147483648,
+            -2147483648,
+            -2147483648,
+            -2147483648,
+            -2147483648,
+            -2147483648,
+            -2147483648,
+            -2147483648,
+            -2147483648,
+            -2147483648,
+            -2147483648,
+            -2147483648,
+            -2147483648,
+            -2147483648
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_007",
+      "args": {
+        "n": 0,
+        "k": 1641115217,
+        "a": 4096
+      },
+      "arrays": {
+        "a": []
+      },
+      "qcp_bind": {
+        "id": "input_007",
+        "args": {
+          "n": 0,
+          "k": 1641115217,
+          "a": 4096
+        },
+        "values": {
+          "l": []
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": []
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": []
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": []
+      },
+      "spec_mutation_violated": false,
+      "impl_mutation_violated": false
+    },
+    {
+      "id": "input_008",
+      "args": {
+        "n": 1,
+        "k": 100,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          0
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_008",
+        "args": {
+          "n": 1,
+          "k": 100,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            0
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          100
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          100
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_009",
+      "args": {
+        "n": 2,
+        "k": -1831128050,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          0,
+          0
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_009",
+        "args": {
+          "n": 2,
+          "k": -1831128050,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            0,
+            0
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -1831128050,
+          -1831128050
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -1831128050,
+          -1831128050
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_010",
+      "args": {
+        "n": 3,
+        "k": 2147483647,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          0,
+          0,
+          0
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_010",
+        "args": {
+          "n": 3,
+          "k": 2147483647,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          2147483647,
+          2147483647,
+          2147483647
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          2147483647,
+          2147483647,
+          2147483647
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_011",
+      "args": {
+        "n": 4,
+        "k": -1593755616,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_011",
+        "args": {
+          "n": 4,
+          "k": -1593755616,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -1593755616,
+          -1593755616,
+          -1593755616,
+          -1593755616
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -1593755616,
+          -1593755616,
+          -1593755616,
+          -1593755616
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_012",
+      "args": {
+        "n": 8,
+        "k": -2147483647,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_012",
+        "args": {
+          "n": 8,
+          "k": -2147483647,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_013",
+      "args": {
+        "n": 16,
+        "k": -206899815,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_013",
+        "args": {
+          "n": 16,
+          "k": -206899815,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -206899815,
+          -206899815,
+          -206899815,
+          -206899815,
+          -206899815,
+          -206899815,
+          -206899815,
+          -206899815,
+          -206899815,
+          -206899815,
+          -206899815,
+          -206899815,
+          -206899815,
+          -206899815,
+          -206899815,
+          -206899815
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -206899815,
+          -206899815,
+          -206899815,
+          -206899815,
+          -206899815,
+          -206899815,
+          -206899815,
+          -206899815,
+          -206899815,
+          -206899815,
+          -206899815,
+          -206899815,
+          -206899815,
+          -206899815,
+          -206899815,
+          -206899815
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_014",
+      "args": {
+        "n": 0,
+        "k": -2,
+        "a": 4096
+      },
+      "arrays": {
+        "a": []
+      },
+      "qcp_bind": {
+        "id": "input_014",
+        "args": {
+          "n": 0,
+          "k": -2,
+          "a": 4096
+        },
+        "values": {
+          "l": []
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": []
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": []
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": []
+      },
+      "spec_mutation_violated": false,
+      "impl_mutation_violated": false
+    },
+    {
+      "id": "input_015",
+      "args": {
+        "n": 1,
+        "k": 977826320,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -1
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_015",
+        "args": {
+          "n": 1,
+          "k": 977826320,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -1
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          977826320
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          977826320
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_016",
+      "args": {
+        "n": 2,
+        "k": 0,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          0,
+          1
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_016",
+        "args": {
+          "n": 2,
+          "k": 0,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            0,
+            1
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          0,
+          0
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          0,
+          0
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": false
+    },
+    {
+      "id": "input_017",
+      "args": {
+        "n": 3,
+        "k": -1946947053,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          1,
+          2,
+          100
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_017",
+        "args": {
+          "n": 3,
+          "k": -1946947053,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            1,
+            2,
+            100
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -1946947053,
+          -1946947053,
+          -1946947053
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -1946947053,
+          -1946947053,
+          -1946947053
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_018",
+      "args": {
+        "n": 4,
+        "k": 2,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          2,
+          100,
+          2147483646,
+          2147483647
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_018",
+        "args": {
+          "n": 4,
+          "k": 2,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            2,
+            100,
+            2147483646,
+            2147483647
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          2,
+          2,
+          2,
+          2
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          2,
+          2,
+          2,
+          2
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_019",
+      "args": {
+        "n": 8,
+        "k": -1184215428,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          100,
+          2147483646,
+          2147483647,
+          -2147483648,
+          -2147483647,
+          -100,
+          -2,
+          -1
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_019",
+        "args": {
+          "n": 8,
+          "k": -1184215428,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            100,
+            2147483646,
+            2147483647,
+            -2147483648,
+            -2147483647,
+            -100,
+            -2,
+            -1
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -1184215428,
+          -1184215428,
+          -1184215428,
+          -1184215428,
+          -1184215428,
+          -1184215428,
+          -1184215428,
+          -1184215428
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -1184215428,
+          -1184215428,
+          -1184215428,
+          -1184215428,
+          -1184215428,
+          -1184215428,
+          -1184215428,
+          -1184215428
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_020",
+      "args": {
+        "n": 16,
+        "k": 2147483646,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          2147483646,
+          2147483647,
+          -2147483648,
+          -2147483647,
+          -100,
+          -2,
+          -1,
+          0,
+          1,
+          2,
+          100,
+          2147483646,
+          2147483647,
+          -2147483648,
+          -2147483647,
+          -100
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_020",
+        "args": {
+          "n": 16,
+          "k": 2147483646,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            2147483646,
+            2147483647,
+            -2147483648,
+            -2147483647,
+            -100,
+            -2,
+            -1,
+            0,
+            1,
+            2,
+            100,
+            2147483646,
+            2147483647,
+            -2147483648,
+            -2147483647,
+            -100
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          2147483646,
+          2147483646,
+          2147483646,
+          2147483646,
+          2147483646,
+          2147483646,
+          2147483646,
+          2147483646,
+          2147483646,
+          2147483646,
+          2147483646,
+          2147483646,
+          2147483646,
+          2147483646,
+          2147483646,
+          2147483646
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          2147483646,
+          2147483646,
+          2147483646,
+          2147483646,
+          2147483646,
+          2147483646,
+          2147483646,
+          2147483646,
+          2147483646,
+          2147483646,
+          2147483646,
+          2147483646,
+          2147483646,
+          2147483646,
+          2147483646,
+          2147483646
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_021",
+      "args": {
+        "n": 0,
+        "k": -749478676,
+        "a": 4096
+      },
+      "arrays": {
+        "a": []
+      },
+      "qcp_bind": {
+        "id": "input_021",
+        "args": {
+          "n": 0,
+          "k": -749478676,
+          "a": 4096
+        },
+        "values": {
+          "l": []
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": []
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": []
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": []
+      },
+      "spec_mutation_violated": false,
+      "impl_mutation_violated": false
+    },
+    {
+      "id": "input_022",
+      "args": {
+        "n": 1,
+        "k": -2147483648,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -1
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_022",
+        "args": {
+          "n": 1,
+          "k": -2147483648,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -1
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -2147483648
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -2147483648
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_023",
+      "args": {
+        "n": 2,
+        "k": 261658437,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          2,
+          2
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_023",
+        "args": {
+          "n": 2,
+          "k": 261658437,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            2,
+            2
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          261658437,
+          261658437
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          261658437,
+          261658437
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_024",
+      "args": {
+        "n": 3,
+        "k": -100,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          0,
+          0,
+          2147483646
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_024",
+        "args": {
+          "n": 3,
+          "k": -100,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            0,
+            0,
+            2147483646
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -100,
+          -100,
+          -100
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -100,
+          -100,
+          -100
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_025",
+      "args": {
+        "n": 4,
+        "k": 806008623,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -100,
+          -2,
+          100,
+          2147483646
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_025",
+        "args": {
+          "n": 4,
+          "k": 806008623,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -100,
+            -2,
+            100,
+            2147483646
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          806008623,
+          806008623,
+          806008623,
+          806008623
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          806008623,
+          806008623,
+          806008623,
+          806008623
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_026",
+      "args": {
+        "n": 8,
+        "k": -1,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2147483648,
+          -2147483648,
+          -2147483647,
+          2,
+          2,
+          2147483646,
+          2147483647,
+          2147483647
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_026",
+        "args": {
+          "n": 8,
+          "k": -1,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2147483648,
+            -2147483648,
+            -2147483647,
+            2,
+            2,
+            2147483646,
+            2147483647,
+            2147483647
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_027",
+      "args": {
+        "n": 16,
+        "k": 223406556,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2147483648,
+          -2147483648,
+          -2147483648,
+          -100,
+          -100,
+          -2,
+          -2,
+          -1,
+          100,
+          2147483646,
+          2147483646,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_027",
+        "args": {
+          "n": 16,
+          "k": 223406556,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2147483648,
+            -2147483648,
+            -2147483648,
+            -100,
+            -100,
+            -2,
+            -2,
+            -1,
+            100,
+            2147483646,
+            2147483646,
+            2147483647,
+            2147483647,
+            2147483647,
+            2147483647,
+            2147483647
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          223406556,
+          223406556,
+          223406556,
+          223406556,
+          223406556,
+          223406556,
+          223406556,
+          223406556,
+          223406556,
+          223406556,
+          223406556,
+          223406556,
+          223406556,
+          223406556,
+          223406556,
+          223406556
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          223406556,
+          223406556,
+          223406556,
+          223406556,
+          223406556,
+          223406556,
+          223406556,
+          223406556,
+          223406556,
+          223406556,
+          223406556,
+          223406556,
+          223406556,
+          223406556,
+          223406556,
+          223406556
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_028",
+      "args": {
+        "n": 0,
+        "k": 1,
+        "a": 4096
+      },
+      "arrays": {
+        "a": []
+      },
+      "qcp_bind": {
+        "id": "input_028",
+        "args": {
+          "n": 0,
+          "k": 1,
+          "a": 4096
+        },
+        "values": {
+          "l": []
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": []
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": []
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": []
+      },
+      "spec_mutation_violated": false,
+      "impl_mutation_violated": false
+    },
+    {
+      "id": "input_029",
+      "args": {
+        "n": 1,
+        "k": 1266513166,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          617865469
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_029",
+        "args": {
+          "n": 1,
+          "k": 1266513166,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            617865469
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          1266513166
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          1266513166
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_030",
+      "args": {
+        "n": 2,
+        "k": 100,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          1114208779,
+          394273271
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_030",
+        "args": {
+          "n": 2,
+          "k": 100,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            1114208779,
+            394273271
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          100,
+          100
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          100,
+          100
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_031",
+      "args": {
+        "n": 3,
+        "k": -662961268,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          1180827568,
+          1726544480,
+          374059776
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_031",
+        "args": {
+          "n": 3,
+          "k": -662961268,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            1180827568,
+            1726544480,
+            374059776
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -662961268,
+          -662961268,
+          -662961268
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -662961268,
+          -662961268,
+          -662961268
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_032",
+      "args": {
+        "n": 4,
+        "k": 2147483647,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -69631889,
+          1392402695,
+          924985941,
+          2095640952
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_032",
+        "args": {
+          "n": 4,
+          "k": 2147483647,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -69631889,
+            1392402695,
+            924985941,
+            2095640952
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_033",
+      "args": {
+        "n": 8,
+        "k": 248560309,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -594437444,
+          423149033,
+          190991604,
+          939240215,
+          2142139567,
+          -997193837,
+          -1303128720,
+          -2060693665
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_033",
+        "args": {
+          "n": 8,
+          "k": 248560309,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -594437444,
+            423149033,
+            190991604,
+            939240215,
+            2142139567,
+            -997193837,
+            -1303128720,
+            -2060693665
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          248560309,
+          248560309,
+          248560309,
+          248560309,
+          248560309,
+          248560309,
+          248560309,
+          248560309
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          248560309,
+          248560309,
+          248560309,
+          248560309,
+          248560309,
+          248560309,
+          248560309,
+          248560309
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_034",
+      "args": {
+        "n": 16,
+        "k": -2147483647,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          1631517721,
+          -210343047,
+          -239065941,
+          -1136420893,
+          1362524750,
+          712947170,
+          -724675038,
+          453749520,
+          -1291849024,
+          -1816894818,
+          2086214534,
+          265588704,
+          1316886265,
+          180316251,
+          1101037346,
+          -1357943129
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_034",
+        "args": {
+          "n": 16,
+          "k": -2147483647,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            1631517721,
+            -210343047,
+            -239065941,
+            -1136420893,
+            1362524750,
+            712947170,
+            -724675038,
+            453749520,
+            -1291849024,
+            -1816894818,
+            2086214534,
+            265588704,
+            1316886265,
+            180316251,
+            1101037346,
+            -1357943129
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_035",
+      "args": {
+        "n": 0,
+        "k": -385745401,
+        "a": 4096
+      },
+      "arrays": {
+        "a": []
+      },
+      "qcp_bind": {
+        "id": "input_035",
+        "args": {
+          "n": 0,
+          "k": -385745401,
+          "a": 4096
+        },
+        "values": {
+          "l": []
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": []
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": []
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": []
+      },
+      "spec_mutation_violated": false,
+      "impl_mutation_violated": false
+    },
+    {
+      "id": "input_036",
+      "args": {
+        "n": 1,
+        "k": -2,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2147483647
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_036",
+        "args": {
+          "n": 1,
+          "k": -2,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2147483647
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -2
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -2
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_037",
+      "args": {
+        "n": 2,
+        "k": -1036584957,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2147483647,
+          -2147483647
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_037",
+        "args": {
+          "n": 2,
+          "k": -1036584957,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2147483647,
+            -2147483647
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -1036584957,
+          -1036584957
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -1036584957,
+          -1036584957
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_038",
+      "args": {
+        "n": 3,
+        "k": 0,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2147483647,
+          -2147483647,
+          -2147483647
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_038",
+        "args": {
+          "n": 3,
+          "k": 0,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2147483647,
+            -2147483647,
+            -2147483647
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          0,
+          0,
+          0
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          0,
+          0,
+          0
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": false
+    },
+    {
+      "id": "input_039",
+      "args": {
+        "n": 4,
+        "k": -578059497,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_039",
+        "args": {
+          "n": 4,
+          "k": -578059497,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2147483647,
+            -2147483647,
+            -2147483647,
+            -2147483647
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -578059497,
+          -578059497,
+          -578059497,
+          -578059497
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -578059497,
+          -578059497,
+          -578059497,
+          -578059497
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_040",
+      "args": {
+        "n": 8,
+        "k": 2,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_040",
+        "args": {
+          "n": 8,
+          "k": 2,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2147483647,
+            -2147483647,
+            -2147483647,
+            -2147483647,
+            -2147483647,
+            -2147483647,
+            -2147483647,
+            -2147483647
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_041",
+      "args": {
+        "n": 16,
+        "k": 701236369,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647,
+          -2147483647
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_041",
+        "args": {
+          "n": 16,
+          "k": 701236369,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2147483647,
+            -2147483647,
+            -2147483647,
+            -2147483647,
+            -2147483647,
+            -2147483647,
+            -2147483647,
+            -2147483647,
+            -2147483647,
+            -2147483647,
+            -2147483647,
+            -2147483647,
+            -2147483647,
+            -2147483647,
+            -2147483647,
+            -2147483647
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          701236369,
+          701236369,
+          701236369,
+          701236369,
+          701236369,
+          701236369,
+          701236369,
+          701236369,
+          701236369,
+          701236369,
+          701236369,
+          701236369,
+          701236369,
+          701236369,
+          701236369,
+          701236369
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          701236369,
+          701236369,
+          701236369,
+          701236369,
+          701236369,
+          701236369,
+          701236369,
+          701236369,
+          701236369,
+          701236369,
+          701236369,
+          701236369,
+          701236369,
+          701236369,
+          701236369,
+          701236369
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_042",
+      "args": {
+        "n": 0,
+        "k": 2147483646,
+        "a": 4096
+      },
+      "arrays": {
+        "a": []
+      },
+      "qcp_bind": {
+        "id": "input_042",
+        "args": {
+          "n": 0,
+          "k": 2147483646,
+          "a": 4096
+        },
+        "values": {
+          "l": []
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": []
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": []
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": []
+      },
+      "spec_mutation_violated": false,
+      "impl_mutation_violated": false
+    },
+    {
+      "id": "input_043",
+      "args": {
+        "n": 1,
+        "k": 1629498510,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          0
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_043",
+        "args": {
+          "n": 1,
+          "k": 1629498510,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            0
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          1629498510
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          1629498510
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_044",
+      "args": {
+        "n": 2,
+        "k": -2147483648,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          0,
+          0
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_044",
+        "args": {
+          "n": 2,
+          "k": -2147483648,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            0,
+            0
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -2147483648,
+          -2147483648
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -2147483648,
+          -2147483648
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_045",
+      "args": {
+        "n": 3,
+        "k": -983082501,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          0,
+          0,
+          0
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_045",
+        "args": {
+          "n": 3,
+          "k": -983082501,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -983082501,
+          -983082501,
+          -983082501
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -983082501,
+          -983082501,
+          -983082501
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_046",
+      "args": {
+        "n": 4,
+        "k": -100,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_046",
+        "args": {
+          "n": 4,
+          "k": -100,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -100,
+          -100,
+          -100,
+          -100
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -100,
+          -100,
+          -100,
+          -100
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_047",
+      "args": {
+        "n": 8,
+        "k": 992478129,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_047",
+        "args": {
+          "n": 8,
+          "k": 992478129,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          992478129,
+          992478129,
+          992478129,
+          992478129,
+          992478129,
+          992478129,
+          992478129,
+          992478129
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          992478129,
+          992478129,
+          992478129,
+          992478129,
+          992478129,
+          992478129,
+          992478129,
+          992478129
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_048",
+      "args": {
+        "n": 16,
+        "k": -1,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_048",
+        "args": {
+          "n": 16,
+          "k": -1,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1,
+          -1
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_049",
+      "args": {
+        "n": 0,
+        "k": -2085416551,
+        "a": 4096
+      },
+      "arrays": {
+        "a": []
+      },
+      "qcp_bind": {
+        "id": "input_049",
+        "args": {
+          "n": 0,
+          "k": -2085416551,
+          "a": 4096
+        },
+        "values": {
+          "l": []
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": []
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": []
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": []
+      },
+      "spec_mutation_violated": false,
+      "impl_mutation_violated": false
+    },
+    {
+      "id": "input_050",
+      "args": {
+        "n": 1,
+        "k": 1,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          1
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_050",
+        "args": {
+          "n": 1,
+          "k": 1,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            1
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          1
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          1
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_051",
+      "args": {
+        "n": 2,
+        "k": -569155800,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          2,
+          100
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_051",
+        "args": {
+          "n": 2,
+          "k": -569155800,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            2,
+            100
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -569155800,
+          -569155800
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -569155800,
+          -569155800
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_052",
+      "args": {
+        "n": 3,
+        "k": 100,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          100,
+          2147483646,
+          2147483647
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_052",
+        "args": {
+          "n": 3,
+          "k": 100,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            100,
+            2147483646,
+            2147483647
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          100,
+          100,
+          100
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          100,
+          100,
+          100
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_053",
+      "args": {
+        "n": 4,
+        "k": -226780370,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          2147483646,
+          2147483647,
+          -2147483648,
+          -2147483647
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_053",
+        "args": {
+          "n": 4,
+          "k": -226780370,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            2147483646,
+            2147483647,
+            -2147483648,
+            -2147483647
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -226780370,
+          -226780370,
+          -226780370,
+          -226780370
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -226780370,
+          -226780370,
+          -226780370,
+          -226780370
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_054",
+      "args": {
+        "n": 8,
+        "k": 2147483647,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          2147483647,
+          -2147483648,
+          -2147483647,
+          -100,
+          -2,
+          -1,
+          0,
+          1
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_054",
+        "args": {
+          "n": 8,
+          "k": 2147483647,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            2147483647,
+            -2147483648,
+            -2147483647,
+            -100,
+            -2,
+            -1,
+            0,
+            1
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_055",
+      "args": {
+        "n": 16,
+        "k": -1874312103,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2147483648,
+          -2147483647,
+          -100,
+          -2,
+          -1,
+          0,
+          1,
+          2,
+          100,
+          2147483646,
+          2147483647,
+          -2147483648,
+          -2147483647,
+          -100,
+          -2,
+          -1
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_055",
+        "args": {
+          "n": 16,
+          "k": -1874312103,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2147483648,
+            -2147483647,
+            -100,
+            -2,
+            -1,
+            0,
+            1,
+            2,
+            100,
+            2147483646,
+            2147483647,
+            -2147483648,
+            -2147483647,
+            -100,
+            -2,
+            -1
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -1874312103,
+          -1874312103,
+          -1874312103,
+          -1874312103,
+          -1874312103,
+          -1874312103,
+          -1874312103,
+          -1874312103,
+          -1874312103,
+          -1874312103,
+          -1874312103,
+          -1874312103,
+          -1874312103,
+          -1874312103,
+          -1874312103,
+          -1874312103
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -1874312103,
+          -1874312103,
+          -1874312103,
+          -1874312103,
+          -1874312103,
+          -1874312103,
+          -1874312103,
+          -1874312103,
+          -1874312103,
+          -1874312103,
+          -1874312103,
+          -1874312103,
+          -1874312103,
+          -1874312103,
+          -1874312103,
+          -1874312103
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_056",
+      "args": {
+        "n": 0,
+        "k": -2147483647,
+        "a": 4096
+      },
+      "arrays": {
+        "a": []
+      },
+      "qcp_bind": {
+        "id": "input_056",
+        "args": {
+          "n": 0,
+          "k": -2147483647,
+          "a": 4096
+        },
+        "values": {
+          "l": []
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": []
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": []
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": []
+      },
+      "spec_mutation_violated": false,
+      "impl_mutation_violated": false
+    },
+    {
+      "id": "input_057",
+      "args": {
+        "n": 1,
+        "k": 2146483821,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2147483648
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_057",
+        "args": {
+          "n": 1,
+          "k": 2146483821,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2147483648
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          2146483821
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          2146483821
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_058",
+      "args": {
+        "n": 2,
+        "k": -2,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          2147483647,
+          2147483647
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_058",
+        "args": {
+          "n": 2,
+          "k": -2,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            2147483647,
+            2147483647
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -2,
+          -2
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -2,
+          -2
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_059",
+      "args": {
+        "n": 3,
+        "k": 2024847753,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2147483648,
+          -2147483647,
+          1
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_059",
+        "args": {
+          "n": 3,
+          "k": 2024847753,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2147483648,
+            -2147483647,
+            1
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          2024847753,
+          2024847753,
+          2024847753
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          2024847753,
+          2024847753,
+          2024847753
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_060",
+      "args": {
+        "n": 4,
+        "k": 0,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2,
+          2,
+          2,
+          2147483647
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_060",
+        "args": {
+          "n": 4,
+          "k": 0,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2,
+            2,
+            2,
+            2147483647
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": false
+    },
+    {
+      "id": "input_061",
+      "args": {
+        "n": 8,
+        "k": -27507951,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2147483648,
+          -2147483647,
+          -2,
+          -2,
+          1,
+          2147483647,
+          2147483647,
+          2147483647
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_061",
+        "args": {
+          "n": 8,
+          "k": -27507951,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2147483648,
+            -2147483647,
+            -2,
+            -2,
+            1,
+            2147483647,
+            2147483647,
+            2147483647
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -27507951,
+          -27507951,
+          -27507951,
+          -27507951,
+          -27507951,
+          -27507951,
+          -27507951,
+          -27507951
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -27507951,
+          -27507951,
+          -27507951,
+          -27507951,
+          -27507951,
+          -27507951,
+          -27507951,
+          -27507951
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_062",
+      "args": {
+        "n": 16,
+        "k": 2,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2147483648,
+          -2147483647,
+          -100,
+          -100,
+          -2,
+          -1,
+          0,
+          2,
+          2,
+          2,
+          100,
+          2147483646,
+          2147483646,
+          2147483646,
+          2147483647,
+          2147483647
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_062",
+        "args": {
+          "n": 16,
+          "k": 2,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2147483648,
+            -2147483647,
+            -100,
+            -100,
+            -2,
+            -1,
+            0,
+            2,
+            2,
+            2,
+            100,
+            2147483646,
+            2147483646,
+            2147483646,
+            2147483647,
+            2147483647
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_063",
+      "args": {
+        "n": 0,
+        "k": -557894232,
+        "a": 4096
+      },
+      "arrays": {
+        "a": []
+      },
+      "qcp_bind": {
+        "id": "input_063",
+        "args": {
+          "n": 0,
+          "k": -557894232,
+          "a": 4096
+        },
+        "values": {
+          "l": []
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": []
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": []
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": []
+      },
+      "spec_mutation_violated": false,
+      "impl_mutation_violated": false
+    },
+    {
+      "id": "input_064",
+      "args": {
+        "n": 1,
+        "k": 2147483646,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          918298044
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_064",
+        "args": {
+          "n": 1,
+          "k": 2147483646,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            918298044
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          2147483646
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          2147483646
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_065",
+      "args": {
+        "n": 2,
+        "k": 698507150,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -208703394,
+          -431630919
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_065",
+        "args": {
+          "n": 2,
+          "k": 698507150,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -208703394,
+            -431630919
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          698507150,
+          698507150
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          698507150,
+          698507150
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_066",
+      "args": {
+        "n": 3,
+        "k": -2147483648,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          951246702,
+          1613914206,
+          -1074286399
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_066",
+        "args": {
+          "n": 3,
+          "k": -2147483648,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            951246702,
+            1613914206,
+            -1074286399
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -2147483648,
+          -2147483648,
+          -2147483648
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -2147483648,
+          -2147483648,
+          -2147483648
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_067",
+      "args": {
+        "n": 4,
+        "k": 2095158344,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          1687535836,
+          -756053316,
+          720630002,
+          -106400218
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_067",
+        "args": {
+          "n": 4,
+          "k": 2095158344,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            1687535836,
+            -756053316,
+            720630002,
+            -106400218
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          2095158344,
+          2095158344,
+          2095158344,
+          2095158344
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          2095158344,
+          2095158344,
+          2095158344,
+          2095158344
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_068",
+      "args": {
+        "n": 8,
+        "k": -100,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -1759107479,
+          934108658,
+          -579500865,
+          1628019954,
+          592919359,
+          -2050622355,
+          114559393,
+          52264846
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_068",
+        "args": {
+          "n": 8,
+          "k": -100,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -1759107479,
+            934108658,
+            -579500865,
+            1628019954,
+            592919359,
+            -2050622355,
+            114559393,
+            52264846
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_069",
+      "args": {
+        "n": 16,
+        "k": 1808180369,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          1654188971,
+          -1933844997,
+          -1158074238,
+          1159592373,
+          208891740,
+          1940001134,
+          -1846391616,
+          1395749025,
+          -509314459,
+          -179718819,
+          -1979051088,
+          -1179049931,
+          1882448808,
+          -548542552,
+          1208135172,
+          2067871768
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_069",
+        "args": {
+          "n": 16,
+          "k": 1808180369,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            1654188971,
+            -1933844997,
+            -1158074238,
+            1159592373,
+            208891740,
+            1940001134,
+            -1846391616,
+            1395749025,
+            -509314459,
+            -179718819,
+            -1979051088,
+            -1179049931,
+            1882448808,
+            -548542552,
+            1208135172,
+            2067871768
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          1808180369,
+          1808180369,
+          1808180369,
+          1808180369,
+          1808180369,
+          1808180369,
+          1808180369,
+          1808180369,
+          1808180369,
+          1808180369,
+          1808180369,
+          1808180369,
+          1808180369,
+          1808180369,
+          1808180369,
+          1808180369
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          1808180369,
+          1808180369,
+          1808180369,
+          1808180369,
+          1808180369,
+          1808180369,
+          1808180369,
+          1808180369,
+          1808180369,
+          1808180369,
+          1808180369,
+          1808180369,
+          1808180369,
+          1808180369,
+          1808180369,
+          1808180369
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_070",
+      "args": {
+        "n": 0,
+        "k": -1,
+        "a": 4096
+      },
+      "arrays": {
+        "a": []
+      },
+      "qcp_bind": {
+        "id": "input_070",
+        "args": {
+          "n": 0,
+          "k": -1,
+          "a": 4096
+        },
+        "values": {
+          "l": []
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": []
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": []
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": []
+      },
+      "spec_mutation_violated": false,
+      "impl_mutation_violated": false
+    },
+    {
+      "id": "input_071",
+      "args": {
+        "n": 1,
+        "k": 1562695090,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -100
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_071",
+        "args": {
+          "n": 1,
+          "k": 1562695090,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -100
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          1562695090
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          1562695090
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_072",
+      "args": {
+        "n": 2,
+        "k": 1,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -100,
+          -100
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_072",
+        "args": {
+          "n": 2,
+          "k": 1,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -100,
+            -100
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          1,
+          1
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          1,
+          1
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_073",
+      "args": {
+        "n": 3,
+        "k": 1736259565,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -100,
+          -100,
+          -100
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_073",
+        "args": {
+          "n": 3,
+          "k": 1736259565,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -100,
+            -100,
+            -100
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          1736259565,
+          1736259565,
+          1736259565
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          1736259565,
+          1736259565,
+          1736259565
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_074",
+      "args": {
+        "n": 4,
+        "k": 100,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -100,
+          -100,
+          -100,
+          -100
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_074",
+        "args": {
+          "n": 4,
+          "k": 100,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -100,
+            -100,
+            -100,
+            -100
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          100,
+          100,
+          100,
+          100
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          100,
+          100,
+          100,
+          100
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_075",
+      "args": {
+        "n": 8,
+        "k": -665934555,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_075",
+        "args": {
+          "n": 8,
+          "k": -665934555,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -100,
+            -100,
+            -100,
+            -100,
+            -100,
+            -100,
+            -100,
+            -100
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -665934555,
+          -665934555,
+          -665934555,
+          -665934555,
+          -665934555,
+          -665934555,
+          -665934555,
+          -665934555
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -665934555,
+          -665934555,
+          -665934555,
+          -665934555,
+          -665934555,
+          -665934555,
+          -665934555,
+          -665934555
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_076",
+      "args": {
+        "n": 16,
+        "k": 2147483647,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_076",
+        "args": {
+          "n": 16,
+          "k": 2147483647,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -100,
+            -100,
+            -100,
+            -100,
+            -100,
+            -100,
+            -100,
+            -100,
+            -100,
+            -100,
+            -100,
+            -100,
+            -100,
+            -100,
+            -100,
+            -100
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647,
+          2147483647
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_077",
+      "args": {
+        "n": 0,
+        "k": -950905118,
+        "a": 4096
+      },
+      "arrays": {
+        "a": []
+      },
+      "qcp_bind": {
+        "id": "input_077",
+        "args": {
+          "n": 0,
+          "k": -950905118,
+          "a": 4096
+        },
+        "values": {
+          "l": []
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": []
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": []
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": []
+      },
+      "spec_mutation_violated": false,
+      "impl_mutation_violated": false
+    },
+    {
+      "id": "input_078",
+      "args": {
+        "n": 1,
+        "k": -2147483647,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          0
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_078",
+        "args": {
+          "n": 1,
+          "k": -2147483647,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            0
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -2147483647
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -2147483647
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_079",
+      "args": {
+        "n": 2,
+        "k": 1036621963,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          0,
+          0
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_079",
+        "args": {
+          "n": 2,
+          "k": 1036621963,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            0,
+            0
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          1036621963,
+          1036621963
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          1036621963,
+          1036621963
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_080",
+      "args": {
+        "n": 3,
+        "k": -2,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          0,
+          0,
+          0
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_080",
+        "args": {
+          "n": 3,
+          "k": -2,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -2,
+          -2,
+          -2
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -2,
+          -2,
+          -2
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_081",
+      "args": {
+        "n": 4,
+        "k": -595887025,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_081",
+        "args": {
+          "n": 4,
+          "k": -595887025,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -595887025,
+          -595887025,
+          -595887025,
+          -595887025
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -595887025,
+          -595887025,
+          -595887025,
+          -595887025
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_082",
+      "args": {
+        "n": 8,
+        "k": 0,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_082",
+        "args": {
+          "n": 8,
+          "k": 0,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": false
+    },
+    {
+      "id": "input_083",
+      "args": {
+        "n": 16,
+        "k": 445292680,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_083",
+        "args": {
+          "n": 16,
+          "k": 445292680,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          445292680,
+          445292680,
+          445292680,
+          445292680,
+          445292680,
+          445292680,
+          445292680,
+          445292680,
+          445292680,
+          445292680,
+          445292680,
+          445292680,
+          445292680,
+          445292680,
+          445292680,
+          445292680
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          445292680,
+          445292680,
+          445292680,
+          445292680,
+          445292680,
+          445292680,
+          445292680,
+          445292680,
+          445292680,
+          445292680,
+          445292680,
+          445292680,
+          445292680,
+          445292680,
+          445292680,
+          445292680
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_084",
+      "args": {
+        "n": 0,
+        "k": 2,
+        "a": 4096
+      },
+      "arrays": {
+        "a": []
+      },
+      "qcp_bind": {
+        "id": "input_084",
+        "args": {
+          "n": 0,
+          "k": 2,
+          "a": 4096
+        },
+        "values": {
+          "l": []
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": []
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": []
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": []
+      },
+      "spec_mutation_violated": false,
+      "impl_mutation_violated": false
+    },
+    {
+      "id": "input_085",
+      "args": {
+        "n": 1,
+        "k": -610261274,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          100
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_085",
+        "args": {
+          "n": 1,
+          "k": -610261274,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            100
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -610261274
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -610261274
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_086",
+      "args": {
+        "n": 2,
+        "k": 2147483646,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          2147483646,
+          2147483647
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_086",
+        "args": {
+          "n": 2,
+          "k": 2147483646,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            2147483646,
+            2147483647
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          2147483646,
+          2147483646
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          2147483646,
+          2147483646
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_087",
+      "args": {
+        "n": 3,
+        "k": 1150703960,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          2147483647,
+          -2147483648,
+          -2147483647
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_087",
+        "args": {
+          "n": 3,
+          "k": 1150703960,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            2147483647,
+            -2147483648,
+            -2147483647
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          1150703960,
+          1150703960,
+          1150703960
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          1150703960,
+          1150703960,
+          1150703960
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_088",
+      "args": {
+        "n": 4,
+        "k": -2147483648,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2147483648,
+          -2147483647,
+          -100,
+          -2
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_088",
+        "args": {
+          "n": 4,
+          "k": -2147483648,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2147483648,
+            -2147483647,
+            -100,
+            -2
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -2147483648,
+          -2147483648,
+          -2147483648,
+          -2147483648
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -2147483648,
+          -2147483648,
+          -2147483648,
+          -2147483648
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_089",
+      "args": {
+        "n": 8,
+        "k": 149373163,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2147483647,
+          -100,
+          -2,
+          -1,
+          0,
+          1,
+          2,
+          100
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_089",
+        "args": {
+          "n": 8,
+          "k": 149373163,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2147483647,
+            -100,
+            -2,
+            -1,
+            0,
+            1,
+            2,
+            100
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          149373163,
+          149373163,
+          149373163,
+          149373163,
+          149373163,
+          149373163,
+          149373163,
+          149373163
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          149373163,
+          149373163,
+          149373163,
+          149373163,
+          149373163,
+          149373163,
+          149373163,
+          149373163
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_090",
+      "args": {
+        "n": 16,
+        "k": -100,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -100,
+          -2,
+          -1,
+          0,
+          1,
+          2,
+          100,
+          2147483646,
+          2147483647,
+          -2147483648,
+          -2147483647,
+          -100,
+          -2,
+          -1,
+          0,
+          1
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_090",
+        "args": {
+          "n": 16,
+          "k": -100,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -100,
+            -2,
+            -1,
+            0,
+            1,
+            2,
+            100,
+            2147483646,
+            2147483647,
+            -2147483648,
+            -2147483647,
+            -100,
+            -2,
+            -1,
+            0,
+            1
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100,
+          -100
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_091",
+      "args": {
+        "n": 0,
+        "k": 1367121287,
+        "a": 4096
+      },
+      "arrays": {
+        "a": []
+      },
+      "qcp_bind": {
+        "id": "input_091",
+        "args": {
+          "n": 0,
+          "k": 1367121287,
+          "a": 4096
+        },
+        "values": {
+          "l": []
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": []
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": []
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": []
+      },
+      "spec_mutation_violated": false,
+      "impl_mutation_violated": false
+    },
+    {
+      "id": "input_092",
+      "args": {
+        "n": 1,
+        "k": -1,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          100
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_092",
+        "args": {
+          "n": 1,
+          "k": -1,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            100
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -1
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -1
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_093",
+      "args": {
+        "n": 2,
+        "k": 1608653981,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          0,
+          2147483647
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_093",
+        "args": {
+          "n": 2,
+          "k": 1608653981,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            0,
+            2147483647
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          1608653981,
+          1608653981
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          1608653981,
+          1608653981
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_094",
+      "args": {
+        "n": 3,
+        "k": 1,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2147483647,
+          100,
+          2147483646
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_094",
+        "args": {
+          "n": 3,
+          "k": 1,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2147483647,
+            100,
+            2147483646
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          1,
+          1,
+          1
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          1,
+          1,
+          1
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_095",
+      "args": {
+        "n": 4,
+        "k": 633909625,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2147483647,
+          0,
+          0,
+          1
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_095",
+        "args": {
+          "n": 4,
+          "k": 633909625,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2147483647,
+            0,
+            0,
+            1
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          633909625,
+          633909625,
+          633909625,
+          633909625
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          633909625,
+          633909625,
+          633909625,
+          633909625
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_096",
+      "args": {
+        "n": 8,
+        "k": 100,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2147483647,
+          -100,
+          0,
+          1,
+          2,
+          2,
+          2147483647,
+          2147483647
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_096",
+        "args": {
+          "n": 8,
+          "k": 100,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2147483647,
+            -100,
+            0,
+            1,
+            2,
+            2,
+            2147483647,
+            2147483647
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_097",
+      "args": {
+        "n": 16,
+        "k": -1451172589,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2147483648,
+          -2147483647,
+          -100,
+          -100,
+          -1,
+          0,
+          0,
+          1,
+          2,
+          2,
+          2,
+          2,
+          100,
+          100,
+          2147483646,
+          2147483647
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_097",
+        "args": {
+          "n": 16,
+          "k": -1451172589,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2147483648,
+            -2147483647,
+            -100,
+            -100,
+            -1,
+            0,
+            0,
+            1,
+            2,
+            2,
+            2,
+            2,
+            100,
+            100,
+            2147483646,
+            2147483647
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -1451172589,
+          -1451172589,
+          -1451172589,
+          -1451172589,
+          -1451172589,
+          -1451172589,
+          -1451172589,
+          -1451172589,
+          -1451172589,
+          -1451172589,
+          -1451172589,
+          -1451172589,
+          -1451172589,
+          -1451172589,
+          -1451172589,
+          -1451172589
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -1451172589,
+          -1451172589,
+          -1451172589,
+          -1451172589,
+          -1451172589,
+          -1451172589,
+          -1451172589,
+          -1451172589,
+          -1451172589,
+          -1451172589,
+          -1451172589,
+          -1451172589,
+          -1451172589,
+          -1451172589,
+          -1451172589,
+          -1451172589
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_098",
+      "args": {
+        "n": 0,
+        "k": 2147483647,
+        "a": 4096
+      },
+      "arrays": {
+        "a": []
+      },
+      "qcp_bind": {
+        "id": "input_098",
+        "args": {
+          "n": 0,
+          "k": 2147483647,
+          "a": 4096
+        },
+        "values": {
+          "l": []
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": []
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": []
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": []
+      },
+      "spec_mutation_violated": false,
+      "impl_mutation_violated": false
+    },
+    {
+      "id": "input_099",
+      "args": {
+        "n": 1,
+        "k": -1258234898,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -101780263
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_099",
+        "args": {
+          "n": 1,
+          "k": -1258234898,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -101780263
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -1258234898
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -1258234898
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_100",
+      "args": {
+        "n": 2,
+        "k": -2147483647,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -152320547,
+          -291012452
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_100",
+        "args": {
+          "n": 2,
+          "k": -2147483647,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -152320547,
+            -291012452
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -2147483647,
+          -2147483647
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -2147483647,
+          -2147483647
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_101",
+      "args": {
+        "n": 3,
+        "k": -46694898,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -1848074038,
+          663289720,
+          815642197
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_101",
+        "args": {
+          "n": 3,
+          "k": -46694898,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -1848074038,
+            663289720,
+            815642197
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -46694898,
+          -46694898,
+          -46694898
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -46694898,
+          -46694898,
+          -46694898
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_102",
+      "args": {
+        "n": 4,
+        "k": -2,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          1298010804,
+          1192953353,
+          224166788,
+          -1599344655
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_102",
+        "args": {
+          "n": 4,
+          "k": -2,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            1298010804,
+            1192953353,
+            224166788,
+            -1599344655
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -2,
+          -2,
+          -2,
+          -2
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -2,
+          -2,
+          -2,
+          -2
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_103",
+      "args": {
+        "n": 8,
+        "k": -462996215,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          683818026,
+          -219468548,
+          67120118,
+          385534353,
+          645458742,
+          -1353089488,
+          -1752403606,
+          -114207157
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_103",
+        "args": {
+          "n": 8,
+          "k": -462996215,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            683818026,
+            -219468548,
+            67120118,
+            385534353,
+            645458742,
+            -1353089488,
+            -1752403606,
+            -114207157
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -462996215,
+          -462996215,
+          -462996215,
+          -462996215,
+          -462996215,
+          -462996215,
+          -462996215,
+          -462996215
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -462996215,
+          -462996215,
+          -462996215,
+          -462996215,
+          -462996215,
+          -462996215,
+          -462996215,
+          -462996215
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_104",
+      "args": {
+        "n": 16,
+        "k": 0,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          1142464526,
+          105842754,
+          -206473950,
+          1868606285,
+          -757973160,
+          -1296226354,
+          -1096721974,
+          -1913204401,
+          -710416124,
+          -2010564886,
+          1952723005,
+          -428826563,
+          1100648095,
+          1222722771,
+          -637351359,
+          605155675
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_104",
+        "args": {
+          "n": 16,
+          "k": 0,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            1142464526,
+            105842754,
+            -206473950,
+            1868606285,
+            -757973160,
+            -1296226354,
+            -1096721974,
+            -1913204401,
+            -710416124,
+            -2010564886,
+            1952723005,
+            -428826563,
+            1100648095,
+            1222722771,
+            -637351359,
+            605155675
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": false
+    },
+    {
+      "id": "input_105",
+      "args": {
+        "n": 0,
+        "k": 1853301338,
+        "a": 4096
+      },
+      "arrays": {
+        "a": []
+      },
+      "qcp_bind": {
+        "id": "input_105",
+        "args": {
+          "n": 0,
+          "k": 1853301338,
+          "a": 4096
+        },
+        "values": {
+          "l": []
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": []
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": []
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": []
+      },
+      "spec_mutation_violated": false,
+      "impl_mutation_violated": false
+    },
+    {
+      "id": "input_106",
+      "args": {
+        "n": 1,
+        "k": 2,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_106",
+        "args": {
+          "n": 1,
+          "k": 2,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          2
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          2
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_107",
+      "args": {
+        "n": 2,
+        "k": -1950506154,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2,
+          -2
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_107",
+        "args": {
+          "n": 2,
+          "k": -1950506154,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2,
+            -2
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -1950506154,
+          -1950506154
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -1950506154,
+          -1950506154
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_108",
+      "args": {
+        "n": 3,
+        "k": 2147483646,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2,
+          -2,
+          -2
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_108",
+        "args": {
+          "n": 3,
+          "k": 2147483646,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2,
+            -2,
+            -2
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          2147483646,
+          2147483646,
+          2147483646
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          2147483646,
+          2147483646,
+          2147483646
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_109",
+      "args": {
+        "n": 4,
+        "k": -125791046,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2,
+          -2,
+          -2,
+          -2
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_109",
+        "args": {
+          "n": 4,
+          "k": -125791046,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2,
+            -2,
+            -2,
+            -2
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -125791046,
+          -125791046,
+          -125791046,
+          -125791046
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -125791046,
+          -125791046,
+          -125791046,
+          -125791046
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_110",
+      "args": {
+        "n": 8,
+        "k": -2147483648,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2,
+          -2,
+          -2,
+          -2,
+          -2,
+          -2,
+          -2,
+          -2
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_110",
+        "args": {
+          "n": 8,
+          "k": -2147483648,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2,
+            -2,
+            -2,
+            -2,
+            -2,
+            -2,
+            -2,
+            -2
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -2147483648,
+          -2147483648,
+          -2147483648,
+          -2147483648,
+          -2147483648,
+          -2147483648,
+          -2147483648,
+          -2147483648
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -2147483648,
+          -2147483648,
+          -2147483648,
+          -2147483648,
+          -2147483648,
+          -2147483648,
+          -2147483648,
+          -2147483648
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_111",
+      "args": {
+        "n": 16,
+        "k": 999170239,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2,
+          -2,
+          -2,
+          -2,
+          -2,
+          -2,
+          -2,
+          -2,
+          -2,
+          -2,
+          -2,
+          -2,
+          -2,
+          -2,
+          -2,
+          -2
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_111",
+        "args": {
+          "n": 16,
+          "k": 999170239,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2,
+            -2,
+            -2,
+            -2,
+            -2,
+            -2,
+            -2,
+            -2,
+            -2,
+            -2,
+            -2,
+            -2,
+            -2,
+            -2,
+            -2,
+            -2
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          999170239,
+          999170239,
+          999170239,
+          999170239,
+          999170239,
+          999170239,
+          999170239,
+          999170239,
+          999170239,
+          999170239,
+          999170239,
+          999170239,
+          999170239,
+          999170239,
+          999170239,
+          999170239
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          999170239,
+          999170239,
+          999170239,
+          999170239,
+          999170239,
+          999170239,
+          999170239,
+          999170239,
+          999170239,
+          999170239,
+          999170239,
+          999170239,
+          999170239,
+          999170239,
+          999170239,
+          999170239
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_112",
+      "args": {
+        "n": 0,
+        "k": -100,
+        "a": 4096
+      },
+      "arrays": {
+        "a": []
+      },
+      "qcp_bind": {
+        "id": "input_112",
+        "args": {
+          "n": 0,
+          "k": -100,
+          "a": 4096
+        },
+        "values": {
+          "l": []
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": []
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": []
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": []
+      },
+      "spec_mutation_violated": false,
+      "impl_mutation_violated": false
+    },
+    {
+      "id": "input_113",
+      "args": {
+        "n": 1,
+        "k": 1806654154,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          0
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_113",
+        "args": {
+          "n": 1,
+          "k": 1806654154,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            0
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          1806654154
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          1806654154
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_114",
+      "args": {
+        "n": 2,
+        "k": -1,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          0,
+          0
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_114",
+        "args": {
+          "n": 2,
+          "k": -1,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            0,
+            0
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -1,
+          -1
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -1,
+          -1
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_115",
+      "args": {
+        "n": 3,
+        "k": -412840401,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          0,
+          0,
+          0
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_115",
+        "args": {
+          "n": 3,
+          "k": -412840401,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -412840401,
+          -412840401,
+          -412840401
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -412840401,
+          -412840401,
+          -412840401
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_116",
+      "args": {
+        "n": 4,
+        "k": 1,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_116",
+        "args": {
+          "n": 4,
+          "k": 1,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_117",
+      "args": {
+        "n": 8,
+        "k": -388879776,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_117",
+        "args": {
+          "n": 8,
+          "k": -388879776,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -388879776,
+          -388879776,
+          -388879776,
+          -388879776,
+          -388879776,
+          -388879776,
+          -388879776,
+          -388879776
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -388879776,
+          -388879776,
+          -388879776,
+          -388879776,
+          -388879776,
+          -388879776,
+          -388879776,
+          -388879776
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_118",
+      "args": {
+        "n": 16,
+        "k": 100,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_118",
+        "args": {
+          "n": 16,
+          "k": 100,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100,
+          100
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_119",
+      "args": {
+        "n": 0,
+        "k": -2082202806,
+        "a": 4096
+      },
+      "arrays": {
+        "a": []
+      },
+      "qcp_bind": {
+        "id": "input_119",
+        "args": {
+          "n": 0,
+          "k": -2082202806,
+          "a": 4096
+        },
+        "values": {
+          "l": []
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": []
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": []
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": []
+      },
+      "spec_mutation_violated": false,
+      "impl_mutation_violated": false
+    },
+    {
+      "id": "input_120",
+      "args": {
+        "n": 1,
+        "k": 2147483647,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          2147483647
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_120",
+        "args": {
+          "n": 1,
+          "k": 2147483647,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            2147483647
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          2147483647
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          2147483647
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_121",
+      "args": {
+        "n": 2,
+        "k": 1395261730,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2147483648,
+          -2147483647
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_121",
+        "args": {
+          "n": 2,
+          "k": 1395261730,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2147483648,
+            -2147483647
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          1395261730,
+          1395261730
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          1395261730,
+          1395261730
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_122",
+      "args": {
+        "n": 3,
+        "k": -2147483647,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2147483647,
+          -100,
+          -2
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_122",
+        "args": {
+          "n": 3,
+          "k": -2147483647,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2147483647,
+            -100,
+            -2
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -2147483647,
+          -2147483647,
+          -2147483647
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -2147483647,
+          -2147483647,
+          -2147483647
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_123",
+      "args": {
+        "n": 4,
+        "k": -1840234795,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -100,
+          -2,
+          -1,
+          0
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_123",
+        "args": {
+          "n": 4,
+          "k": -1840234795,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -100,
+            -2,
+            -1,
+            0
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -1840234795,
+          -1840234795,
+          -1840234795,
+          -1840234795
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -1840234795,
+          -1840234795,
+          -1840234795,
+          -1840234795
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_124",
+      "args": {
+        "n": 8,
+        "k": -2,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2,
+          -1,
+          0,
+          1,
+          2,
+          100,
+          2147483646,
+          2147483647
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_124",
+        "args": {
+          "n": 8,
+          "k": -2,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2,
+            -1,
+            0,
+            1,
+            2,
+            100,
+            2147483646,
+            2147483647
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -2,
+          -2,
+          -2,
+          -2,
+          -2,
+          -2,
+          -2,
+          -2
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -2,
+          -2,
+          -2,
+          -2,
+          -2,
+          -2,
+          -2,
+          -2
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_125",
+      "args": {
+        "n": 16,
+        "k": -660211955,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -1,
+          0,
+          1,
+          2,
+          100,
+          2147483646,
+          2147483647,
+          -2147483648,
+          -2147483647,
+          -100,
+          -2,
+          -1,
+          0,
+          1,
+          2,
+          100
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_125",
+        "args": {
+          "n": 16,
+          "k": -660211955,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -1,
+            0,
+            1,
+            2,
+            100,
+            2147483646,
+            2147483647,
+            -2147483648,
+            -2147483647,
+            -100,
+            -2,
+            -1,
+            0,
+            1,
+            2,
+            100
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          -660211955,
+          -660211955,
+          -660211955,
+          -660211955,
+          -660211955,
+          -660211955,
+          -660211955,
+          -660211955,
+          -660211955,
+          -660211955,
+          -660211955,
+          -660211955,
+          -660211955,
+          -660211955,
+          -660211955,
+          -660211955
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          -660211955,
+          -660211955,
+          -660211955,
+          -660211955,
+          -660211955,
+          -660211955,
+          -660211955,
+          -660211955,
+          -660211955,
+          -660211955,
+          -660211955,
+          -660211955,
+          -660211955,
+          -660211955,
+          -660211955,
+          -660211955
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    },
+    {
+      "id": "input_126",
+      "args": {
+        "n": 0,
+        "k": 0,
+        "a": 4096
+      },
+      "arrays": {
+        "a": []
+      },
+      "qcp_bind": {
+        "id": "input_126",
+        "args": {
+          "n": 0,
+          "k": 0,
+          "a": 4096
+        },
+        "values": {
+          "l": []
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": []
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": []
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": []
+      },
+      "spec_mutation_violated": false,
+      "impl_mutation_violated": false
+    },
+    {
+      "id": "input_127",
+      "args": {
+        "n": 1,
+        "k": 2076438553,
+        "a": 4096
+      },
+      "arrays": {
+        "a": [
+          -2147483647
+        ]
+      },
+      "qcp_bind": {
+        "id": "input_127",
+        "args": {
+          "n": 1,
+          "k": 2076438553,
+          "a": 4096
+        },
+        "values": {
+          "l": [
+            -2147483647
+          ]
+        }
+      },
+      "expected_return": null,
+      "expected_heap": {
+        "a": [
+          2076438553
+        ]
+      },
+      "native_reference_return": null,
+      "native_reference_heap": {
+        "a": [
+          2076438553
+        ]
+      },
+      "native_mutant_return": null,
+      "native_mutant_heap": {
+        "a": [
+          0
+        ]
+      },
+      "spec_mutation_violated": true,
+      "impl_mutation_violated": true
+    }
+  ],
+  "files": {
+    "reference.qcp.c": "bdf18cb7cbf8d35e8139dcc4638f371fee1d8362073473af6978a8af57e7802e",
+    "spec_mutation.cn.c": "fc1799754e4a23cb5ad331952d3d808247b7c3faa7baa60e76e61f3e1acde385",
+    "impl_mutation.cn.c": "5bdc8ba1de0e9f96a0480e3d374c531a4cb21037a785ad671e4a3ebc570c8fa9",
+    "reference.cn.c": "5baaed04d1208018f4025fcbbe60483e5e387b5d00b8be3344aecb24daf848d3",
+    "spec_mutation.qcp.c": "d1432620039054e9ccea9f70de4f14c5c206e91bf693e0211876f2d5e6161df7",
+    "impl_mutation.qcp.c": "97f29be8bd470d375f29cac94f7802d16a6b7bf503e9245c51513eca8a885146"
+  }
+}

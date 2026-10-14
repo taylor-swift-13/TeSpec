@@ -29,7 +29,7 @@ def main() -> int:
     output.mkdir(parents=True, exist_ok=True)
     results = []
     for index, entry in enumerate(dataset["jobs"]):
-        for mode in ("expand", "no-expand"):
+        for mode in ("entry-exit", "all-boundaries"):
             directory = output / "artifacts" / f"{index:03d}" / mode
             directory.mkdir(parents=True, exist_ok=True)
             source = (
@@ -58,7 +58,7 @@ def main() -> int:
             for specification, actual in zip(
                 entry["binds"], report["results"], strict=True
             ):
-                expected = specification["expected"][mode]
+                expected = specification["expected"].get(mode, specification["expected"].get({"entry-exit": "expand", "all-boundaries": "no-expand"}[mode]))
                 observed = {
                     **actual.get("phases", {}),
                     "overall": actual["overall"],

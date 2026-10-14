@@ -1,0 +1,88 @@
+{
+  "schema": "tespec-original-qcp-expansion/v1",
+  "origin": "byte-identical reference copies from bundled QCP_examples",
+  "paired_cn_count": 0,
+  "prepared_qcp_subjects": 7,
+  "fixed_bindings": 28,
+  "programs": [
+    {
+      "id": "qcp_original_matrix_flat",
+      "memory": "contiguous 2D int matrix",
+      "heap_predicate": "IntArray2::full(grid, grid_rows, grid_cols, rows)",
+      "path": "cases/qcp_original_matrix_flat",
+      "inputs": 4,
+      "cn_status": "translation_pending"
+    },
+    {
+      "id": "qcp_original_matrix_pointers",
+      "memory": "int** pointer table and separate row arrays",
+      "heap_predicate": "IntPtrArray2::full(grid, grid_rows, rows)",
+      "path": "cases/qcp_original_matrix_pointers",
+      "inputs": 4,
+      "cn_status": "translation_pending"
+    },
+    {
+      "id": "qcp_original_string_table",
+      "memory": "const char** table with separately owned null-terminated strings",
+      "heap_predicate": "CharPtrArray2::full(keys, dict_size, rows)",
+      "path": "cases/qcp_original_string_table",
+      "inputs": 4,
+      "cn_status": "translation_pending"
+    },
+    {
+      "id": "qcp_original_dll_queue",
+      "memory": "queue head/tail plus doubly linked nodes",
+      "heap_predicate": "store_queue(q, cons(x, l))",
+      "path": "cases/qcp_original_dll_queue",
+      "inputs": 4,
+      "cn_status": "translation_pending"
+    },
+    {
+      "id": "qcp_original_functional_queue",
+      "memory": "queue represented by two singly linked lists and reversal",
+      "heap_predicate": "store_queue(q, cons(x, l))",
+      "path": "cases/qcp_original_functional_queue",
+      "inputs": 4,
+      "cn_status": "translation_pending"
+    },
+    {
+      "id": "qcp_original_bst_insert",
+      "memory": "binary tree reached through struct tree** root cell",
+      "heap_predicate": "store_tree(*b,tr)",
+      "path": "cases/qcp_original_bst_insert",
+      "inputs": 4,
+      "cn_status": "translation_pending"
+    },
+    {
+      "id": "qcp_original_expr_union",
+      "memory": "tagged union expression nodes and an environment array",
+      "heap_predicate": "store_expr(e,e0) * IntArray::full(var_value,100,l)",
+      "path": "cases/qcp_original_expr_union",
+      "inputs": 4,
+      "cn_status": "translation_pending"
+    }
+  ],
+  "next_candidates": [
+    {
+      "source": "QCP_demos_human/bst_fp_insert.c",
+      "memory": "tree with father pointers",
+      "pending": "bst_fp_def.h does not declare empty constructor; typed tree fixture environment must be resolved without altering Require"
+    },
+    {
+      "source": "QCP_demos_human/poly_sll.c",
+      "memory": "polymorphic list with separately owned payloads",
+      "pending": "instantiate type A and higher-order storeA using declared predicates"
+    },
+    {
+      "source": "Applications_human/LiteOS/LOS_ListEmpty.c",
+      "memory": "circular intrusive doubly linked list with sentinel",
+      "pending": "instantiate list(DL_Node A), node addresses and payload predicate"
+    },
+    {
+      "source": "QCP_demos_human/avl_insert.c",
+      "memory": "AVL rotations with node heights",
+      "pending": "shape-only store_non_empty_tree does not bind a finite tree; do not pretend fixing root address fixes every node"
+    }
+  ],
+  "scope": "separate QCP native-example track; not yet included in admitted CN/QCP comparison denominator"
+}

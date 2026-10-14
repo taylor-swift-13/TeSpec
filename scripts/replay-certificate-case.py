@@ -11,6 +11,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+from spectest.modes import normalize_execution_mode  # noqa: E402
 from spectest.certificates import check_certificate, prepare_certificate  # noqa: E402
 from spectest.run_certificates import (  # noqa: E402
     check_run_certificates,
@@ -38,9 +39,10 @@ def main():
     output.mkdir(parents=True, exist_ok=True)
     inputs = args.case.resolve()
     case = json.loads((inputs / "certificate-case.json").read_text())
-    mode = case.get("execution_mode", "expand")
-    if mode not in {"expand", "no-expand"}:
-        parser.error("case execution_mode must be expand or no-expand")
+    try:
+        mode = normalize_execution_mode(case.get("execution_mode", "entry-exit"))
+    except ValueError as error:
+        parser.error(str(error))
     arch = case.get("architecture_bits", 32)
     if type(arch) is not int or arch not in (32, 64):
         parser.error("case architecture_bits must be 32 or 64")

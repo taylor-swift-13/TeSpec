@@ -1,0 +1,69 @@
+{
+  "id": "qcp_shape_dll_iter",
+  "source": "runtime/qcip/QCP_examples/QCP_demos_human/dll_auto.c",
+  "function": "iter",
+  "memory": "doubly linked list with forward/back links, shape-only contract",
+  "heap_predicate": "dlistrep_shape(l, 0)",
+  "spec_edit": [
+    "dlistrep_shape(__return, 0)",
+    "__return == 0 && dlistrep_shape(__return, 0)"
+  ],
+  "impl_edit": [
+    "p = p->next;",
+    "p = 0; p = p->next;"
+  ],
+  "instance_scope": "non-null root instances represent arbitrary finite lengths; no nonexistent logical list is invented",
+  "schema": "tespec-original-qcp-case/v2",
+  "source_sha256": "20d2ee0455ea01b3dccde0c11319bf14e16e5b42b253c0caa4e12432e578a491",
+  "input_count": 4,
+  "original_contract_preserved": true,
+  "cn_status": "translation_pending",
+  "binding_policy": "Pre free variables only",
+  "pre_free_variables": {
+    "args": [
+      "l"
+    ],
+    "values": []
+  },
+  "expectations": [
+    {
+      "id": "input_000",
+      "reference": "PASS",
+      "spec_mutation": "PASS",
+      "impl_mutation": "PASS",
+      "basis": "manual contract model; shape-only instances are not single concrete heaps"
+    },
+    {
+      "id": "input_001",
+      "reference": "PASS",
+      "spec_mutation": "FAIL",
+      "impl_mutation": "FAIL",
+      "basis": "manual contract model; shape-only instances are not single concrete heaps"
+    },
+    {
+      "id": "input_002",
+      "reference": "PASS",
+      "spec_mutation": "FAIL",
+      "impl_mutation": "FAIL",
+      "basis": "manual contract model; shape-only instances are not single concrete heaps"
+    },
+    {
+      "id": "input_003",
+      "reference": "PASS",
+      "spec_mutation": "FAIL",
+      "impl_mutation": "FAIL",
+      "basis": "manual contract model; shape-only instances are not single concrete heaps"
+    }
+  ],
+  "include_dirs": [
+    "runtime/qcip/QCP_examples/QCP_demos_human",
+    "runtime/qcip/QCP_examples/stdlib"
+  ],
+  "generator_sha256": "840f8c19dcb495c036fed075e8a066ce64534befdbcfb62b6524265c1272ce23",
+  "files": {
+    "reference.qcp.c": "20d2ee0455ea01b3dccde0c11319bf14e16e5b42b253c0caa4e12432e578a491",
+    "spec_mutation.qcp.c": "7c9ca89afa1540b3a6460646368c12308d6c5f192608fd32a6cb97cef7dd67ac",
+    "impl_mutation.qcp.c": "055e94831ae6a9c1d9406d31f8c3ab3c91d0e7e7a2f32c279061eed1f8e8936f",
+    "binds.json": "07231795d96333238fb600d2b928e38cb989dce6449d71acf92a8533e89c28e3"
+  }
+}
