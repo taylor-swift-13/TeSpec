@@ -16,7 +16,6 @@ strategies** 和具体 **binds**，直接得到逐测试用例的
 [`测试一道新题`](#测试一道新题) ·
 [`命令行接口`](#命令行接口) ·
 [`Binds`](#binds-输入) ·
-[`开发交接`](HANDOFF.md) ·
 [`完整参考`](docs/usage-reference.md)
 
 </div>
@@ -40,16 +39,7 @@ TeSpec 先检查实例化的 Require 是否可满足，再检查安全性和 Ens
 
 ## 使用流程
 
-<p align="center">
-  <img src="docs/assets/tespec-workflow.svg" alt="TeSpec concrete specification testing workflow" width="100%">
-</p>
-
-<p align="center">
-  <a href="docs/assets/tespec-workflow.svg">SVG</a> ·
-  <a href="docs/assets/tespec-workflow.pdf">PDF</a>
-</p>
-
-图中的每条路径都对应一个具体 bind。程序执行结束后，TeSpec 仍使用实际终态检查
+每次测试都对应一个具体 bind。程序执行结束后，TeSpec 仍使用实际终态检查
 目标函数的原始后置条件；“程序能够运行结束”本身不等于 `PASS`。
 
 ## 快速开始
@@ -190,15 +180,6 @@ python3 -m spectest run /path/to/SOURCE.c \
 
 ## 命令行接口
 
-<p align="center">
-  <img src="docs/assets/tespec-interfaces.svg" alt="TeSpec public command-line interfaces" width="100%">
-</p>
-
-<p align="center">
-  <a href="docs/assets/tespec-interfaces.svg">SVG</a> ·
-  <a href="docs/assets/tespec-interfaces.pdf">PDF</a>
-</p>
-
 | 接口 | 用途 |
 |---|---|
 | `analyze SOURCE --function F [--spec-file S]` | 分析内嵌或独立 spec，并可用 `--write-binds` 生成模板 |
@@ -319,4 +300,4 @@ Assert、Inv、Require、Ensure 只在副本上生成检查义务，不替换 P�
 [执行保持语义的回归记录](docs/evaluation/inline-preserve-implementation.md)。
 
 分类端到端测试见 [测试说明](benchmark/executor_e2e/README.md)：18 类、1,322 次运行，
-含原生 C/Python oracle、错误后条件和程序变异；[结果](docs/evaluation/executor-e2e-results.json)。
+含原生 C/Python oracle、错误后条件和程序变异；[结果](paper/executor-e2e-results.json)。

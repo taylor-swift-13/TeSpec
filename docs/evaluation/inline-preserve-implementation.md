@@ -20,7 +20,7 @@
 
 分类矩阵包含 779 次负例检查，误报 PASS 为 0。541 PASS、757 UNKNOWN、14 ERROR、10 INVALID 是执行器状态分布；故意错误的 Ensure 和安全性义务应保留 VC 并返回 UNKNOWN，因此“符合预期”不等于“执行器 PASS”。本次没有运行 ITP Agent 或重放证明证书。
 
-测试说明及命令见 [分类测试](../../benchmark/executor_e2e/README.md)，紧凑报告见 [executor-e2e-results.json](executor-e2e-results.json)。完整运行产物在 `/tmp/tespec-evaluation/typed-e2e-publish`，检测器版本在 `typed-e2e-sanitized`。时间、CPU、峰值 RSS 按输入保留；这些是回归运行观测值，未做隔离性能实验。
+测试说明及命令见 [分类测试](../../benchmark/executor_e2e/README.md)，紧凑报告见 [executor-e2e-results.json](../../paper/executor-e2e-results.json)。完整运行产物在 `/tmp/tespec-evaluation/typed-e2e-publish`，检测器版本在 `typed-e2e-sanitized`。时间、CPU、峰值 RSS 按输入保留；这些是回归运行观测值，未做隔离性能实验。
 
 ## 测试发现并修复的问题
 

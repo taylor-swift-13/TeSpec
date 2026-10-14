@@ -74,7 +74,7 @@ artifacts/<类别>/<程序>/
                 artifacts/<输入>/  # 特化源码、executor.json、日志、VC
 ```
 
-紧凑结果存于 [executor-e2e-results.json](../../docs/evaluation/executor-e2e-results.json)，完整本地运行保留于报告的 `artifact_root`。新增程序只需添加一个 `Program` 描述，给出源码、类型化输入、原生初始化/观察、Python oracle 与可区分的程序变异；执行器不按程序名称分派。
+紧凑结果存于 [executor-e2e-results.json](../../paper/executor-e2e-results.json)，完整本地运行保留于报告的 `artifact_root`。新增程序只需添加一个 `Program` 描述，给出源码、类型化输入、原生初始化/观察、Python oracle 与可区分的程序变异；执行器不按程序名称分派。
 
 ## 相关工作与覆盖边界
 

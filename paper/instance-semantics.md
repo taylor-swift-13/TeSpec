@@ -1,6 +1,6 @@
 # teSpec：保持执行状态的规约测试
 
-本文定义 `inline-preserve/v1` 的实例化、持续求值、循环执行、函数调用与检查边界。实现复用 sac/QCP 的符号执行器及 VC 生成器，teSpec 通过二进制接口调用。先前的 `P×I` 状态与中间放缩方案保存在 `superseded-instance-state/`，不属于本文算法。
+本文定义 `inline-preserve/v1` 的实例化、持续求值、循环执行、函数调用与检查边界。实现复用 sac/QCP 的符号执行器及 VC 生成器，teSpec 通过二进制接口调用。
 
 ## 1. 测试的语义对象
 
