@@ -1,0 +1,300 @@
+Fill Candidate.v for this ONE finite test execution, all residual VCs together, plus entry satisfiability. Preserve all theorem statements and Print Assumptions exactly. No admit, new axioms/parameters, unchecked casts, changed imported goals, or proof escapes. Edit Candidate.v only. No models, delegation, prior refutation solutions, shell or compiler calls. Controller separately compiles and independently kernel-checks. ConcreteCell.v is a previously checked generic heap construction utility; only its generic cell/state/join/byte facts are supplied, no prior input-specific refutation.
+Construct entry_cell and exit_cell by unfolding store_int/store_uint and store_4byte: choose the supplied four big-endian bytes, prove range/merge by computation, and assemble sepcon via st_join/join0/join1/join2 and byte_at. A typed integer store includes range AND underlying four-byte store. coq_prop is a pure assertion wrapper: use change/cbn to expose it. To refute the original return disjunction, destruct it and instantiate each forall with p=4096, old=0 and its arithmetic hypotheses, then apply to exit_cell. Its result includes emp, contradict ConcreteCell.cell_not_emp. For split spatial VC do the same. Prove entry_sat by explicit entry_cell witness. unsigned_last_nbits denotes modulo and % denotes Z.rem. Do not unfold INT_MAX/INT_MIN/UINT_MAX (notations).
+
+Generic utility:
+Require Import Coq.ZArith.ZArith.
+Require Import Coq.Bool.Bool.
+Require Import Coq.Strings.String.
+Require Import Coq.Strings.Ascii.
+Require Import Coq.Lists.List.
+Require Import Coq.Classes.RelationClasses.
+Require Import Coq.Classes.Morphisms.
+Require Import Coq.micromega.Psatz.
+Require Import Coq.Sorting.Permutation.
+From AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.
+Require Import SetsClass.SetsClass. Import SetsNotation.
+From SimpleC.SL Require Import Mem SeparationLogic.
+Require Import Logic.LogicGenerator.demo932.Interface.
+Local Open Scope Z_scope.
+Local Open Scope sets.
+Local Open Scope string_scope.
+Local Open Scope list.
+Import naive_C_Rules.
+Local Open Scope sac.
+
+
+Definition st (m:mem) : naive_C_Rules.model := {|ConAssertion.s_mem:=m;ConAssertion.s_STS:=Sets.full;ConAssertion.s_token:=Sets.empty|}.
+Definition tail2 (b2 b3:Z) : mem := fun x=>if Z.eqb x 4098 then value b2 else if Z.eqb x 4099 then value b3 else Noperm.
+Definition tail1 (b1 b2 b3:Z) : mem := fun x=>if Z.eqb x 4097 then value b1 else tail2 b2 b3 x.
+Definition cell (b0 b1 b2 b3:Z) : mem := fun x=>if Z.eqb x 4096 then value b0 else tail1 b1 b2 b3 x.
+Lemma st_join : forall a b c, mem_join a b c -> naive_C_Rules.join (st a) (st b) (st c).
+Proof. intros; unfold naive_C_Rules.join, ConAssertion.state_join, st; cbn; split; [assumption|]. unfold ConAssertion.TokenSet_join, ConAssertion.STS_state_join; sets_unfold; tauto. Qed.
+Ltac byte_join := unfold mem_join, single_byte_mem, cell, tail1, tail2, addr_eqb; intro x;
+ repeat match goal with |- context[Z.eqb ?y ?k] => let E:=fresh in destruct (Z.eqb y k) eqn:E; [apply Z.eqb_eq in E|apply Z.eqb_neq in E] end; try lia; eauto 12.
+Lemma join2 : forall a b, mem_join (single_byte_mem 4098 a) (single_byte_mem 4099 b) (tail2 a b).
+Proof. intros; byte_join. Qed.
+Lemma join1 : forall a b c, mem_join (single_byte_mem 4097 a) (tail2 b c) (tail1 a b c).
+Proof. intros; byte_join. Qed.
+Lemma join0 : forall a b c d, mem_join (single_byte_mem 4096 a) (tail1 b c d) (cell a b c d).
+Proof. intros; byte_join. Qed.
+Lemma byte_at : forall p v, naive_C_Rules.mstore p v (st (single_byte_mem p v)).
+Proof. intros; unfold naive_C_Rules.mstore,st; exists v; split; [apply Byte.eqm_refl|]; repeat split; try reflexivity; sets_unfold; tauto. Qed.
+Lemma cell_not_emp : forall a b c d, ~ emp (st (cell a b c d)).
+Proof. intros a b c d H; unfold naive_C_Rules.emp, naive_C_Rules.is_unit, ConAssertion.state_empty, st in H; cbn in H; destruct H as [H _]; unfold mem_empty in H; specialize (H 4096); cbn [cell] in H; discriminate. Qed.
+
+
+Runtime typed store definitions:
+Definition store_4byte (x : addr) (v : Z) : CRules.expr :=
+  CRules.exp (fun z1 => 
+  CRules.exp (fun z2 =>
+  CRules.exp (fun z3 =>
+  CRules.exp (fun z4 =>
+    CRules.andp 
+    (CRules.coq_prop (merge_int z1 z2 z3 z4 v))
+    (CRules.sepcon (store_byte x z1)
+      (CRules.sepcon (store_byte (x+1) z2)
+        (CRules.sepcon (store_byte (x+2) z3) (store_byte (x+3) z4))  
+    )
+  ))))).
+     
+Definition store_8byte (x : addr) (v : Z) : CRules.expr :=
+  CRules.exp (fun z1 => 
+  CRules.exp (fun z2 =>
+  CRules.exp (fun z3 =>
+  CRules.exp (fun z4 =>
+  CRules.exp (fun z5 => 
+  CRules.exp (fun z6 =>
+  CRules.exp (fun z7 =>
+  CRules.exp (fun z8 =>
+    CRules.andp 
+    (CRules.coq_prop (merge_int64 z1 z2 z3 z4 z5 z6 z7 z8 v))
+    (CRules.sepcon (store_byte x z1)
+      (CRules.sepcon (store_byte (x+1) z2)
+        (CRules.sepcon (store_byte (x+2) z3) 
+          (CRules.sepcon (store_byte (x+3) z4)
+            (CRules.sepcon (store_byte (x+4) z5)
+              (CRules.sepcon (store_byte (x+5) z6)
+                (CRules.sepcon (store_byte (x+6) z7) (store_byte (x+7) z8) 
+                )
+              )
+            )
+          )
+        )  
+      )
+    )
+  )))))))).
+
+Definition store_byte_noninit : addr -> CRules.expr := CRules.mstore_noninit.
+
+Definition store_2byte_noninit (x : addr) : CRules.expr := 
+  CRules.sepcon (store_byte_noninit x) (store_byte_noninit (x+1)).
+
+Definition store_4byte_noninit (x : addr) : CRules.expr :=
+  CRules.sepcon (store_byte_noninit x)
+    (CRules.sepcon (store_byte_noninit (x+1))
+      (CRules.sepcon (store_byte_noninit (x+2)) (store_byte_noninit (x+3)))).
+
+Definition store_8byte_noninit (x : addr) : CRules.expr :=
+  (CRules.sepcon (store_byte_noninit x)
+  (CRules.sepcon (store_byte_noninit (x+1))
+    (CRules.sepcon (store_byte_noninit (x+2)) 
+      (CRules.sepcon (store_byte_noninit (x+3))
+        (CRules.sepcon (store_byte_noninit (x+4))
+          (CRules.sepcon (store_byte_noninit (x+5))
+            (CRules.sepcon (store_byte_noninit (x+6)) (store_byte_noninit (x+7))))))))).
+  
+(* The following are notations *)  
+Declare Scope sac_scope.
+Delimit Scope sac_scope with sac.
+Local Open Scope sac_scope.
+
+Notation "'emp'" := (CRules.emp) : sac_scope.
+Notation "x |-- y" := (CRules.derivable1 x y) (at level 70, no associativity) : sac_scope.
+Notation "x --||-- y" := (CRules.logic_equiv x y) (at level 60, no associativity) : sac_scope.
+Notation "x -* y" := (CRules.wand x y) (at level 45, right associativity) : sac_scope.
+Notation "x --> y" := (CRules.impp x y) : sac_scope.
+Notation "x || y" := (CRules.orp x y) : sac_scope.
+Notation "x && y" := (CRules.andp x y) : sac_scope.
+Notation "x ** y" := (CRules.sepcon x y) (at level 31, left associativity) : sac_scope.
+Notation " “ P ” " := (CRules.coq_prop P) (at level 29, no associativity) :sac_scope.
+Notation " 'TT' " := (CRules.truep) (at level 34, no associativity) : sac_scope.
+Notation "'EX' x , p " :=
+  (CRules.exp (fun x => p))
+    (at level 45, x binder, right associativity) : sac_scope. 
+Notation "'EX' x : t , p " :=
+  (CRules.exp (fun x : t => p))
+    (at level 45, x binder, right associativity) : sac_scope.
+Notation "'EX' x .. y , p" :=
+  (CRules.exp (fun x => .. (CRules.exp (fun y => p)) ..))
+    (at level 45, x binder, right associativity) : sac_scope.
+Notation "'ALL' x , p " :=
+  (CRules.allp _ (fun x => p))
+    (at level 45, x binder, right associativity) : sac_scope. 
+Notation "'ALL' x : t , p " :=
+  (CRules.allp _ (fun x : t => p))
+    (at level 45, x binder, right associativity) : sac_scope.
+Notation "'ALL' x .. y , p" :=
+  (CRules.allp _ (fun x => .. (CRules.allp _ (fun y => p)) ..))
+    (at level 45, x binder, right associativity) : sac_scope.
+
+Definition store_char (x : addr) (v : Z) :=
+  “ isvalidptr_char x /\ v <= Byte.max_signed /\ v >= Byte.min_signed ” && store_byte x v.
+
+Definition undef_store_char (x : addr) :=
+  “ isvalidptr_char x ” && store_byte_noninit x.
+
+Definition store_uchar (x : addr) (v : Z) :=
+  “ isvalidptr_char x /\ v >= 0 /\ v <= Byte.max_unsigned ” && 
+  store_byte x v.
+
+Definition undef_store_uchar (x : addr) :=
+  “ isvalidptr_char x ” && store_byte_noninit x.
+
+Definition store_short (x : addr) (v : Z) :=
+  “ isvalidptr_short x /\ v <= 32767 /\ v >= -32768 ” && store_2byte x v.
+
+Definition undef_store_short (x : addr) :=
+  “ isvalidptr_short x ” && store_2byte_noninit x.
+
+Definition store_ushort (x : addr) (v : Z) :=
+  “ isvalidptr_short x /\ v >= 0 /\ v <= 65535 ” &&
+  store_2byte x v.
+
+Definition undef_store_ushort (x : addr) :=
+  “ isvalidptr_short x ” && store_2byte_noninit x.
+
+Definition store_int (x : addr) (v : Z) :=
+  “ isvalidptr_int x /\ v <= Int.max_signed /\ v >= Int.min_signed ” && store_4byte x v.
+
+Definition undef_store_int (x : addr) :=
+  (“ isvalidptr_int x ” && store_4byte_noninit x).
+
+Definition store_uint (x : addr) (v : Z) :=
+  “ isvalidptr_int x /\ v >= 0 /\ v <= Int.max_unsigned ” && 
+  store_4byte x v.
+
+Definition undef_store_uint (x : addr) :=
+  “ isvalidptr_int x ” && store_4byte_noninit x.
+
+
+Immutable ORIGINAL finite VC goal:
+Require Import Coq.ZArith.ZArith.
+Require Import Coq.Bool.Bool.
+Require Import Coq.Strings.String.
+Require Import Coq.Strings.Ascii.
+Require Import Coq.Lists.List.
+Require Import Coq.Classes.RelationClasses.
+Require Import Coq.Classes.Morphisms.
+Require Import Coq.micromega.Psatz.
+Require Import Coq.Sorting.Permutation.
+From AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.
+Require Import SetsClass.SetsClass. Import SetsNotation.
+From SimpleC.SL Require Import Mem SeparationLogic.
+Require Import Logic.LogicGenerator.demo932.Interface.
+Local Open Scope Z_scope.
+Local Open Scope sets.
+Local Open Scope string_scope.
+Local Open Scope list.
+Import naive_C_Rules.
+Local Open Scope sac.
+Local Open Scope Z_scope.
+
+(*----- Function incr -----*)
+
+Definition incr_safety_wit_1 := 
+  ((( &( "m_spec_383" ) )) # Int  |->_)
+  **  ((( &( "n_spec_380" ) )) # Int  |-> 0)
+  **  ((( &( "p_spec_371" ) )) # Ptr  |-> 4096)
+  **  ((4096) # Int  |-> 0)
+|--
+  TT && emp 
+.
+
+Definition incr_safety_wit_2 := 
+  ((( &( "m_spec_383" ) )) # Int  |->_)
+  **  ((( &( "n_spec_380" ) )) # Int  |-> 0)
+  **  ((( &( "p_spec_371" ) )) # Ptr  |-> 4096)
+  **  ((4096) # Int  |-> 0)
+|--
+  TT && emp 
+.
+
+Definition incr_return_wit_1 := 
+(
+forall (p_pre: Z) (old___tespec_entry: Z) (PreH1 : (p_pre = 4096)) (PreH2 : (old___tespec_entry = 0)) (PreH3 : (old___tespec_entry < INT_MAX)) ,
+  ((p_pre) # Int  |-> (old___tespec_entry + 1 ))
+|--
+  TT && emp 
+) \/
+(
+forall (p_pre: Z) (old___tespec_entry: Z) (PreH1 : ((old___tespec_entry + 1 ) <= INT_MAX)) (PreH2 : ((old___tespec_entry + 1 ) >= INT_MIN)) (PreH3 : (p_pre = 4096)) (PreH4 : (old___tespec_entry = 0)) (PreH5 : (old___tespec_entry < INT_MAX)) ,
+  ((p_pre) # Int  |-> (old___tespec_entry + 1 ))
+|--
+  TT && emp 
+).
+
+Definition incr_return_wit_1_split_goal_spatial := 
+forall (p_pre: Z) (old___tespec_entry: Z) (PreH1 : ((old___tespec_entry + 1 ) <= INT_MAX)) (PreH2 : ((old___tespec_entry + 1 ) >= INT_MIN)) (PreH3 : (p_pre = 4096)) (PreH4 : (old___tespec_entry = 0)) (PreH5 : (old___tespec_entry < INT_MAX)) ,
+  ((p_pre) # Int  |-> (old___tespec_entry + 1 ))
+|--
+  TT && emp 
+.
+
+Definition incr_precondition_wit_1 :=
+exists (p_pre: Z) ,
+exists (old___tespec_entry: Z) ,
+~ ((  “ (p_pre = 4096) ” 
+  &&  “ (old___tespec_entry = 0) ” 
+  &&  “ (old___tespec_entry < INT_MAX) ”
+  &&  ((p_pre) # Int  |-> old___tespec_entry)) |-- “ False ”).
+
+Module Type VC_Correct.
+
+Axiom proof_of_incr_safety_wit_1 : incr_safety_wit_1.
+Axiom proof_of_incr_safety_wit_2 : incr_safety_wit_2.
+Axiom proof_of_incr_return_wit_1 : incr_return_wit_1.
+Axiom proof_of_incr_precondition_wit_1 : incr_precondition_wit_1.
+
+End VC_Correct.
+
+Exact candidate:
+Require Import ConcreteCell ExecutionGoal.
+Require Import Coq.ZArith.ZArith.
+Require Import Coq.Bool.Bool.
+Require Import Coq.Strings.String.
+Require Import Coq.Strings.Ascii.
+Require Import Coq.Lists.List.
+Require Import Coq.Classes.RelationClasses.
+Require Import Coq.Classes.Morphisms.
+Require Import Coq.micromega.Psatz.
+Require Import Coq.Sorting.Permutation.
+From AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.
+Require Import SetsClass.SetsClass. Import SetsNotation.
+From SimpleC.SL Require Import Mem SeparationLogic.
+Require Import Logic.LogicGenerator.demo932.Interface.
+Local Open Scope Z_scope.
+Local Open Scope sets.
+Local Open Scope string_scope.
+Local Open Scope list.
+Import naive_C_Rules.
+Local Open Scope sac.
+
+
+
+Theorem entry_cell : (4096 # Int |-> (0)) (st (cell 0 0 0 0)).
+Proof. Admitted.
+Theorem exit_cell : (4096 # Int |-> (1)) (st (cell 0 0 0 1)).
+Proof. Admitted.
+Theorem refute_incr_return_wit_1_split_goal_spatial : ~ ExecutionGoal.incr_return_wit_1_split_goal_spatial.
+Proof. Admitted.
+Theorem refute_incr_return_wit_1 : ~ ExecutionGoal.incr_return_wit_1.
+Proof. Admitted.
+Theorem entry_sat : ExecutionGoal.incr_precondition_wit_1.
+Proof. Admitted.
+Print Assumptions entry_cell.
+Print Assumptions exit_cell.
+Print Assumptions refute_incr_return_wit_1_split_goal_spatial.
+Print Assumptions refute_incr_return_wit_1.
+Print Assumptions entry_sat.
+
+Entry-sat proof guidance from actual compiler behavior (no prior input-specific proof supplied): a blind repeat split can split arithmetic relations and leave open goals. Solve each pure equality/bound by change to that exact arithmetic proposition followed by reflexivity or lia before recursively splitting conjunctions. Include BOTH pointer and old-value equalities plus every bound. Do not leave an unfinished goal after repeat.
