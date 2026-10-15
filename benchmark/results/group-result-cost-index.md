@@ -3,7 +3,7 @@
 | 程序组 | 完整状态 |
 |---|---|
 | [Dbl_Linked_List__singleton](Dbl_Linked_List__singleton/result-cost.md) | 待补齐 |
-| [abs](abs/result-cost.md) | 待补齐 |
+| [abs](abs/result-cost.md) | 已齐全 |
 | [abs_mem](abs_mem/result-cost.md) | 待补齐 |
 | [abs_mem_struct](abs_mem_struct/result-cost.md) | 待补齐 |
 | [add](add/result-cost.md) | 待补齐 |

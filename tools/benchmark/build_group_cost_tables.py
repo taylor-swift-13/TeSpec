@@ -47,13 +47,17 @@ def main():
                     tokens=avg['mean_total_tokens'] if avg and sid=='agent_proof_filling' else stage.get('total_tokens')
                     add(label,seconds,avg.get('process_memory',{}).get(sid,{}).get('mean_per_execution_peak_mib',stage.get('peak_process_memory_mib')) if avg else stage.get('peak_process_memory_mib'),tokens,'每次需 ITP 的执行均值；内存为各次峰值均值' if avg and not avg.get('estimated',True) else '每次需 ITP 的执行均值；内存为批次峰值' if avg else '一次主程序验证' if tool=='qcp' else 'PENDING_PER_EXECUTION_MEAN',bool(avg and avg.get('estimated',True)))
                     if avg:costs[-1]['source']=meanpath.relative_to(ROOT).as_posix()
+                    if stage.get('required') is False:
+                        costs[-1].update(wall_seconds=0,peak_process_memory_mib=None,tokens=0,status='NOT_REQUIRED',unit='本批无需该阶段，总成本为 0；均值不适用')
                 itprows=costs[-3:]
                 measured=all(x['status']=='MEASURED' for x in itprows)
                 add('ITP 平均合计',sum(x['wall_seconds'] for x in itprows) if measured else None,
                     avg.get('process_memory',{}).get('itp',{}).get('mean_per_execution_peak_mib',max(x['peak_process_memory_mib'] for x in itprows)) if measured and avg else max(x['peak_process_memory_mib'] for x in itprows) if measured else None,
                     sum(x['tokens'] for x in itprows) if measured else None,
                     '每次需 ITP 的执行均值；内存为各次峰值均值' if avg and not avg.get('estimated',True) else '每次需 ITP 的执行均值；内存为批次峰值' if avg else '一次主程序验证' if tool=='qcp' else 'PENDING_PER_EXECUTION_MEAN',bool(avg and avg.get('estimated',True)))
-        mode_stats_path=folder/'20261015-spatial-smt/statistics.json'
+                if all(x['status']=='NOT_REQUIRED' for x in itprows):
+                    costs[-1].update(wall_seconds=0,peak_process_memory_mib=None,tokens=0,status='NOT_REQUIRED',unit='本批无需 ITP，总成本为 0；均值不适用')
+        mode_stats_path=ROOT/group['test_modes_statistics'] if group.get('test_modes_statistics') else folder/'20261015-spatial-smt/statistics.json'
         test_modes=None
         if mode_stats_path.is_file():
             test_modes=read(mode_stats_path)
@@ -81,8 +85,8 @@ def main():
         if test_modes:
             off=test_modes['modes']['off'];on=test_modes['modes']['on']
             text+='\n## teSpec 空间 SMT 模式\n\n| 项目 | 关闭 | 开启 |\n|---|---:|---:|\n'
-            text+=f"| 原生 PASS / FAIL / UNKNOWN / ERROR | 22 / 20 / 12 / 7 | 22 / 32 / 0 / 7 |\n| 最终预期匹配（关闭含复用 ITP） | {off['expected_matches']}/61 | {on['expected_matches']}/61 |\n| 每次执行平均时间（秒） | {off['mean_execution_wall_seconds']:.6f} | {on['mean_execution_wall_seconds']:.6f} |\n| 平均单次峰值 RSS（MiB） | {off['mean_execution_peak_rss_mib']:.4f} | {on['mean_execution_peak_rss_mib']:.4f} |\n| 需 ITP 判定的执行数 | {off['executions_requiring_itp_for_verdict']} | {on['executions_requiring_itp_for_verdict']} |\n"
-            text+='\n关闭模式的完整成本仍含已有逐次 ITP；开启模式本批不需要新增 ITP，token 为 0。12 条 SMT 反例与历史内核反证一致，SMT 本身未伪标为 Coq 证书。详细证据与工作区实现哈希见 [模式对照](20261015-spatial-smt/comparison.md)。\n'
+            text+=f"| 原生 PASS / FAIL / UNKNOWN / ERROR | {' / '.join(str(off['native_status_counts'].get(k,0)) for k in ['PASS','FAIL','UNKNOWN','ERROR'])} | {' / '.join(str(on['native_status_counts'].get(k,0)) for k in ['PASS','FAIL','UNKNOWN','ERROR'])} |\n| 最终预期匹配（含所需 ITP） | {off['expected_matches']}/{test_modes['case_pairs']} | {on['expected_matches']}/{test_modes['case_pairs']} |\n| 每次执行平均时间（秒） | {off['mean_execution_wall_seconds']:.6f} | {on['mean_execution_wall_seconds']:.6f} |\n| 平均单次峰值 RSS（MiB） | {off['mean_execution_peak_rss_mib']:.4f} | {on['mean_execution_peak_rss_mib']:.4f} |\n| 需 ITP 判定的执行数 | {off['executions_requiring_itp_for_verdict']} | {on['executions_requiring_itp_for_verdict']} |\n"
+            text+=f"\n模式逐次结果、成本和证书范围见 [模式对照]({mode_stats_path.parent.name}/comparison.md)。无需 ITP 时成本记 0，均值和峰值不适用。SMT 决策不作为 Coq 证书。\n"
         (folder/'result-cost.md').write_text(text)
         index.append({'program_group':name,'complete':complete,'report':(folder/'result-cost.md').relative_to(ROOT).as_posix(),'json':(folder/'result-cost.json').relative_to(ROOT).as_posix(),'csv':(folder/'result-cost.csv').relative_to(ROOT).as_posix()})
     save(OUT/'group-result-cost-index.json',{'groups':index,'groups_total':len(index),'complete_groups':sum(x['complete'] for x in index)})
