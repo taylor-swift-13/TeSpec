@@ -5,7 +5,7 @@ Start with the four named tool entries:
 ```text
 cn/results.json             Primary CN universal verification (reused)
 cn/statistics.json
-qcp/results.json            Primary QCP universal verification (reused)
+qcp/results.json            Complete primary QCP universal verification
 qcp/statistics.json
 fulminate/results.json      All 61 finite variant/input tests
 fulminate/statistics.json
@@ -16,7 +16,7 @@ comparison.csv
 index.json                  Provenance and raw evidence entry points
 ```
 
-CN and QCP verify only the designated primary function once. The selected representative is the hash-matched archived read2 repeat-1 verification; no rerun and no repeated timing charged. CN exits zero; QCP has one automatically discharged VC and no manual obligations. These are universal verification results, not 61 finite test outcomes.
+CN and QCP verify only the designated primary function once. CN verification and QCP native VC generation reuse hash-matched archived read2 repeat-1 evidence. QCP additionally includes metered gpt-6.1-sol proof generation, Coq compilation/audit and independent kernel checking under 20261015-qcp-verify-complete/. The native auto count of one VC is not used as a substitute for full proof-stage costs. These are universal verification results, not 61 finite test outcomes.
 
 Fulminate and complete teSpec cover 61 paired variant/input cases across 10 configurations, associated with all 13 language-version records. Fulminate matches expected outcomes on 60/61; teSpec with kernel-checked ITP matches 61/61. Only the approved no-readable-memory ERROR class counts as expected; other ERROR classes are not automatically credited.
 

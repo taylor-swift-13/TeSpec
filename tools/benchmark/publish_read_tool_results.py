@@ -25,7 +25,7 @@ def main():
         folder=frozen.parent/stage['folder']
         for name in ['stdout','stderr']:assert sha(folder/(name+'.log'))==stage[name+'_sha256']
         assert stage['exit_code']==0
-        verdict='VERIFIED' if tool=='cn' else 'VERIFIED_AUTOMATIC'
+        verdict='VERIFIED' if tool=='cn' else 'AUTOMATIC_STAGE_ONLY'
         facts={}
         if tool=='qcp':
             native=json.loads((folder/'stdout.log').read_text());counts=native['WitnessList'][0]['Witness']['total_witness_count']
@@ -38,9 +38,24 @@ def main():
         stats={'tool':tool,'measurement_unit':'One selected archived primary verification run (read2 repeat 1); other historical repetitions are not added or averaged.',
                'wall_seconds':stage['wall_seconds'],'peak_process_rss_kib':stage['resources']['max_process_rss_kib'],
                'peak_process_resident_mib':stage['resources']['max_process_rss_kib']/1024,'tokens':0,'model_calls':0,'verification_runs_counted':1}
+        if tool=='qcp' and (OUT/'20261015-qcp-verify-complete/receipt.json').is_file():
+            cert_path=OUT/'20261015-qcp-verify-complete/receipt.json'
+            cert=json.loads(cert_path.read_text())
+            assert cert['status']=='VERIFIED_KERNEL_CHECKED' and cert['kernel_check']['exit_code']==0
+            assert sha(ROOT/cert['original_goal'])==cert['original_goal_sha256']==sha(ROOT/cert['goal'])
+            assert sha(ROOT/cert['proof'])==cert['proof_sha256']
+            assert (ROOT/cert['compilation'][-1]['stdout']).read_text().strip()=='Closed under the global context'
+            assert all(stage['exit_code']==0 for stage in cert['compilation'])
+            verdict='VERIFIED_KERNEL_CHECKED'
+            results.update(verdict=verdict,mode='REUSED_NATIVE_VC_GENERATION_PLUS_METERED_COMPLETE_PROOF',complete_proof_receipt=cert_path.relative_to(ROOT).as_posix())
+            results['facts'].pop('itp_required',None)
+            results['facts'].update(proof_pipeline_completed=True,kernel_checked=True,assumptions='Closed under the global context',proof_generation_model=cert['metrics']['requested_model'])
+            stats=dict(cert['metrics'])
+            stats['full_verification_complete']=True
+            stats['automatic_stage_only']=run[key]
         save(OUT/tool/'results.json',results);save(OUT/tool/'statistics.json',stats)
         entries[tool]={'results':(OUT/tool/'results.json').relative_to(ROOT).as_posix(),'statistics':(OUT/tool/'statistics.json').relative_to(ROOT).as_posix(),'verdict':verdict,'scope':'primary_universal_verification'}
-        comparison.append({'tool':tool,'scope':'primary_universal_verification','result':verdict,'test_cases':None,'correct':None,'accuracy':None,'wall_seconds':stats['wall_seconds'],'peak_process_memory_mib':stats['peak_process_resident_mib'],'input_tokens':0,'output_tokens':0,'total_tokens':0,'model':None})
+        comparison.append({'tool':tool,'scope':'primary_universal_verification','result':verdict,'test_cases':None,'correct':None,'accuracy':None,'wall_seconds':stats['wall_seconds'],'peak_process_memory_mib':stats['peak_process_resident_mib'],'input_tokens':stats.get('token_usage',{}).get('input_tokens',0),'output_tokens':stats.get('token_usage',{}).get('output_tokens',0),'total_tokens':stats['tokens'],'model':stats.get('requested_model')})
     raw_path=OUT/'20261015-variants/results.json';raw=json.loads(raw_path.read_text());runs=raw['runs']
     complete=json.loads((OUT/'complete/results.json').read_text());bykey={(c['variant'],c['case']):c for c in complete['cases']}
     fulfilled=sum(bykey[r['variant'],r['case']]['fulminate_expected_result_matched'] for r in runs)
@@ -70,7 +85,12 @@ def main():
     buf=io.StringIO();w=csv.DictWriter(buf,fieldnames=list(comparison[0]));w.writeheader();w.writerows(comparison);(OUT/'comparison.csv').write_text(buf.getvalue())
     save(OUT/'comparison.json',{'tools':comparison,'scope_note':'CN/QCP verify the primary once; Fulminate/teSpec test variants on finite inputs. Verification and testing accuracies/denominators are not interchangeable.','entries':entries})
     p=OUT/'index.json';index=json.loads(p.read_text());index['tools']=entries;index['comparison']='benchmark/results/read/comparison.json';save(p,index)
-    p=ROOT/'benchmark/programs/read/manifest.json';group=json.loads(p.read_text());group['tool_results']=entries;save(p,group)
+    p=ROOT/'benchmark/programs/read/manifest.json';group=json.loads(p.read_text());group['tool_results']=entries
+    if entries['qcp']['verdict']=='VERIFIED_KERNEL_CHECKED':
+        group['primary_verification']['mode']='REUSED_NATIVE_VERIFICATION_PLUS_COMPLETED_QCP_PROOF'
+        group['primary_verification']['qcp_status']='VERIFIED_KERNEL_CHECKED'
+        group['primary_verification']['qcp_complete_proof_receipt']='benchmark/results/read/20261015-qcp-verify-complete/receipt.json'
+    save(p,group)
     assert fulfilled==60
     print('PASS: named CN/QCP primary verification and Fulminate/complete-teSpec test results published; archived source/log hashes match; no runs repeated.')
 

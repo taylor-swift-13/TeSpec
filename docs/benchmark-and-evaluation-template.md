@@ -106,15 +106,17 @@ benchmark/
 | 工具 | 评测对象 | 完成要求 |
 |---|---|---|
 | CN | 每组指定的主程序 | 复用匹配的正式验证记录；确实缺失时才补验证 |
-| QCP | 同一主程序的对应版本 | 检查自动结果与全部必要的 manual VC；有 manual 时须有检查过的证明 |
+| QCP | 同一主程序的对应版本，使用未绑定具体输入的全称 VC | 完整统计 VC 生成、证明生成、Coq 编译／审计和独立内核检查；不能只报原生自动阶段 |
 | Fulminate | 各变体的具体输入 | 运行真实的 CN 插桩测试，保留正常返回、断言失败、运行错误、构建失败等原始状态 |
 | teSpec | 各变体的具体输入 | 执行测试，加上必要的 ITP 阶段，再汇总正式结论 |
+
+在本评测中，QCP 是全称验证版本，teSpec 是具体输入测试版本；二者都包含各自必要的证明、编译、假设审计和内核检查，而不是将 QCP 等同于底层可执行文件。
 
 主程序的全称验证每组只计一次，不因变体或输入数量重复计费。其他变体不要求额外做全称验证；其测试生成的具体 VC 若需要 ITP，属于完整测试的一部分。
 
 复用验证、测试和证明必须核对实现、spec、输入、依赖、工具版本及证明上下文。仅同名或同组不能转移 PASS、反例或资源数字。已有共享辅助库可以复用，但须记录复用范围。
 
-`read` 主程序是 `constructed:case_6d90d7cd08323aa9`。CN/QCP 入口选择了源码哈希匹配的历史 `read2` 第 1 次记录，未重跑，也没有将旧的三次重复实验相加。作用范围是 `read` 目标函数，不包含原始 trusted `main`。
+`read` 主程序是 `constructed:case_6d90d7cd08323aa9`。CN 验证和 QCP 原生 VC 生成选择了源码哈希匹配的历史 `read2` 第 1 次记录，未重跑，也没有将旧的三次重复实验相加。QCP 另补齐了实际计量的 gpt-6.1-sol 证明生成及 Coq 编译／审计／内核检查，完整回执位于 `benchmark/results/read/20261015-qcp-verify-complete/`。作用范围是 `read` 目标函数，不包含原始 trusted `main`。
 
 ## 4. 完整测试流程
 
@@ -200,7 +202,7 @@ benchmark/
 | 工具 | 范围 | 结果 |
 |---|---|---|
 | CN | 主程序全称验证，复用一次 | VERIFIED |
-| QCP | 主程序全称验证，复用一次 | 1 个 VC 自动消解、0 个 manual |
+| QCP | 主程序全称验证，复用原生阶段并完成证明链路 | 原始全称 VC 的证明及 VC_Correct 模块通过编译、封闭假设审计和独立内核检查 |
 | Fulminate | 61 对变体与输入 | 60/61 符合预期 |
 | teSpec 完整测试 | 同一批 61 对，包含 ITP | 61/61 符合预期 |
 
@@ -215,16 +217,18 @@ Fulminate 的一条不匹配是：返回值取负的错误实现，在 `INT_MIN`
 | 工具 | 计量范围 | 已测阶段总耗时（秒） | 峰值进程内存（MiB） | 总 token |
 |---|---|---:|---:|---:|
 | CN | 主程序验证一次 | 0.0787 | 43.0273 | 0 |
-| QCP | 主程序验证一次 | 0.0064 | 4.4375 | 0 |
+| QCP | 主程序完整验证一次 | 177.7868 | 1996.0273 | 126,128 |
 | Fulminate | 61 对变体与输入 | 7.2791 | 43.2422 | 0 |
 | teSpec（包含 ITP） | 61 对变体与输入＋必要 ITP | 211.7437 | 1989.5039 | 133,915 |
 
-- CN、QCP、Fulminate 本批未调用模型，因此 token 为实际的 0；不是漏采集。
-- QCP 主程序本批为自动验证通过、无 manual，所以其统计没有 ITP 成本。其他程序组若 QCP 需要 manual，必须包含对应 ITP 的时间、内存、模型及 token。
+- CN、Fulminate 本批未调用模型，因此 token 为实际的 0；不是漏采集。
+- QCP 原生阶段的 1 个自动 VC、0 个 manual 不能替代完整证明产物。本批补齐了 gpt-6.1-sol 调用和 Coq 检查，模型 token 按实际回执计入。若其他实例已有完整可检查的自动证明，则可以复用；只有实际未调用模型时才能将相应 token 记为 0。
 - Fulminate 表中耗时包含插桩／编译／首次执行 7.0446 秒，以及单独运行 0.2346 秒。仅运行测试时的峰值为 1.3672 MiB；完整已测阶段峰值来自插桩流水线。
 - teSpec 包含执行测试和完整计量的 ITP。详细的输入、缓存输入、输出 token 及各阶段耗时见下表和模型回执。
 
 原始统计入口：[CN](../benchmark/results/read/cn/statistics.json)、[QCP](../benchmark/results/read/qcp/statistics.json)、[Fulminate](../benchmark/results/read/fulminate/statistics.json)、[teSpec](../benchmark/results/read/tespec/statistics.json)。
+
+QCP 完整验证的阶段耗时为：复用的原生自动阶段 0.006401 秒、模型证明生成 49.3910 秒、Coq 编译／假设审计 1.6964 秒、独立内核检查 126.6930 秒。模型 input 125,511（其中 cached input 118,656），output 617，共 126,128 token。原始未绑定输入的全称 VC、VC_Correct 证明模块及内核检查回执见 [完整 QCP 验证回执](../benchmark/results/read/20261015-qcp-verify-complete/receipt.json)。
 
 ### teSpec 与 ITP 阶段明细
 
@@ -265,6 +269,9 @@ python3 tools/benchmark/complete_read_pipeline.py
 | `meter_itp_model_windows.py` | 实际模型调用，采集 token、生成时间及客户端内存 |
 | `meter_read_itp_coq.py` | 对该轮候选编译、审计并独立内核检查，采集时间与 RSS |
 | `summarize_metered_read_itp.py` | 从真实回执生成 ITP 统计 |
+| `prepare_qcp_primary_model.py` | 准备主程序原始全称 VC 及其 VC_Correct 证明模板，不绑定具体测试输入 |
+| `measure_qcp_primary_complete.py` | 复用 QCP 原生阶段，对模型证明编译、审计并独立内核检查，计入完整验证成本 |
+| `validate_qcp_primary_complete.py` | 核对全称目标、模型用量、完整证明及资源回执 |
 | `publish_read_tool_results.py` | 发布 CN、QCP、Fulminate、teSpec 的独立入口 |
 
 这些驱动位于 `tools/benchmark/`；当前实现绑定 read 的目标、配置和运行目录。扩展到其他组时需替换对应映射与输入策略，不能原样调用后声称覆盖了新程序。重测必须使用新的 run／attempt 位置，不覆盖已发布测量。执行器、编译器和 SMT 实现仍在 teSpec 仓库之外，仅通过二进制接口调用。
