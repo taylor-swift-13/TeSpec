@@ -1,0 +1,169 @@
+{
+  "variant": "cn_original:transpose",
+  "paired_qcp_variant": "qcp_existing:3f2b378bf563b856a52e",
+  "case": "point_5",
+  "initial": {
+    "x": 2147483647,
+    "y": -2147483648
+  },
+  "expected": "PASS",
+  "plan_case": {
+    "id": "point_5",
+    "value": {
+      "x": 2147483647,
+      "y": -2147483648
+    },
+    "expected": "PASS",
+    "cn_body": "struct point point = {.x = 2147483647, .y = (-2147483647 - 1)}; transpose(&point);",
+    "binds": {
+      "args": {
+        "p": 4096
+      },
+      "values": {
+        "x": 2147483647,
+        "y": -2147483648
+      }
+    },
+    "precondition_valid": true,
+    "oracle": {
+      "x_final": -2147483648,
+      "y_final": 2147483647,
+      "basis": "Only loads and stores; no arithmetic overflow. The .broken source has its assert(false) commented out, so its active body and contract are correct for all these inputs."
+    }
+  },
+  "cn_source_sha256": "36a01839f6329be5888ec704327dc32b3f2ee9c3d7e915aeb8831841875e2228",
+  "qcp_source_sha256": "3f2b378bf563b856a52ede94b632d044c0c3174b1b600cb16d72ecdb14e2eb50",
+  "harness": "benchmark/programs/transpose/variants/cn_original_transpose/tests/20261016-evaluation/point_5/fulminate.cn.c",
+  "harness_sha256": "c14581729a15adadc2b6f825d43c5baff0cf80bc9253703638f64bdce4c02fe7",
+  "binds": "benchmark/programs/transpose/variants/cn_original_transpose/tests/20261016-evaluation/point_5/binds.json",
+  "binds_sha256": "bc07a8b1c8a2626fac173897abe4333813edbe4d38d84bfdbaf2ec046ba10c1e",
+  "precondition_valid": true,
+  "fulminate_pipeline": {
+    "command": [
+      "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+      "instrument",
+      "--run",
+      "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+      "--output-dir=/tmp/tespec-group-6sxcsa2g",
+      "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples",
+      "/home/yangfp/teSpec/benchmark/programs/transpose/variants/cn_original_transpose/tests/20261016-evaluation/point_5/fulminate.cn.c"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 0.11472746200161055,
+    "resources": {
+      "max_process_rss_kib": 43108,
+      "user_seconds": 0.04,
+      "system_seconds": 0.03
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/transpose/20261016-evaluation/cn_original_transpose/point_5/fulminate-pipeline/stdout.log",
+    "stderr": "benchmark/results/transpose/20261016-evaluation/cn_original_transpose/point_5/fulminate-pipeline/stderr.log"
+  },
+  "instrumented_sources": [
+    {
+      "path": "benchmark/results/transpose/20261016-evaluation/cn_original_transpose/point_5/fulminate.cn.exec.c",
+      "sha256": "c2dcef1f9143677064809607f9dee586bdbf86fbb10b0fa1927752d123bbef9e"
+    }
+  ],
+  "instrumented_binary_sha256": "18e753ce1ccfa0e59df0ce780ba914f6f17918baa7d45006f2bd148aec3ee5d7",
+  "fulminate_test": {
+    "command": [
+      "/tmp/tespec-group-6sxcsa2g/fulminate.cn.exec.out"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 0.004034507001051679,
+    "resources": {
+      "max_process_rss_kib": 1132,
+      "user_seconds": 0.0,
+      "system_seconds": 0.0
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/transpose/20261016-evaluation/cn_original_transpose/point_5/fulminate-test/stdout.log",
+    "stderr": "benchmark/results/transpose/20261016-evaluation/cn_original_transpose/point_5/fulminate-test/stderr.log",
+    "status": "PASS"
+  },
+  "tespec_off": {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "spectest",
+      "run",
+      "/home/yangfp/teSpec/benchmark/programs/transpose/variants/qcp_existing_3f2b378bf563b856a52e/qcp/transpose.qcp.c",
+      "--function",
+      "transpose",
+      "--binds",
+      "/home/yangfp/teSpec/benchmark/programs/transpose/variants/cn_original_transpose/tests/20261016-evaluation/point_5/binds.json",
+      "--execution-mode",
+      "all-boundaries",
+      "--output-dir",
+      "/home/yangfp/teSpec/benchmark/results/transpose/20261016-evaluation/cn_original_transpose/point_5/tespec-off/artifacts",
+      "--timeout",
+      "30",
+      "--compact",
+      "--no-spatial-smt",
+      "--spatial-smt-timeout-ms",
+      "2000",
+      "-I",
+      "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 0.16463993399520405,
+    "resources": {
+      "max_process_rss_kib": 20032,
+      "user_seconds": 0.07,
+      "system_seconds": 0.04
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/transpose/20261016-evaluation/cn_original_transpose/point_5/tespec-off/stdout.log",
+    "stderr": "benchmark/results/transpose/20261016-evaluation/cn_original_transpose/point_5/tespec-off/stderr.log",
+    "report": "benchmark/results/transpose/20261016-evaluation/cn_original_transpose/point_5/tespec-off/artifacts/report.json",
+    "statuses": [
+      "PASS"
+    ],
+    "status": "PASS"
+  },
+  "tespec_on": {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "spectest",
+      "run",
+      "/home/yangfp/teSpec/benchmark/programs/transpose/variants/qcp_existing_3f2b378bf563b856a52e/qcp/transpose.qcp.c",
+      "--function",
+      "transpose",
+      "--binds",
+      "/home/yangfp/teSpec/benchmark/programs/transpose/variants/cn_original_transpose/tests/20261016-evaluation/point_5/binds.json",
+      "--execution-mode",
+      "all-boundaries",
+      "--output-dir",
+      "/home/yangfp/teSpec/benchmark/results/transpose/20261016-evaluation/cn_original_transpose/point_5/tespec-on/artifacts",
+      "--timeout",
+      "30",
+      "--compact",
+      "--spatial-smt",
+      "--spatial-smt-timeout-ms",
+      "2000",
+      "-I",
+      "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 0.1650203320023138,
+    "resources": {
+      "max_process_rss_kib": 20072,
+      "user_seconds": 0.09,
+      "system_seconds": 0.02
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/transpose/20261016-evaluation/cn_original_transpose/point_5/tespec-on/stdout.log",
+    "stderr": "benchmark/results/transpose/20261016-evaluation/cn_original_transpose/point_5/tespec-on/stderr.log",
+    "report": "benchmark/results/transpose/20261016-evaluation/cn_original_transpose/point_5/tespec-on/artifacts/report.json",
+    "statuses": [
+      "PASS"
+    ],
+    "status": "PASS"
+  }
+}
