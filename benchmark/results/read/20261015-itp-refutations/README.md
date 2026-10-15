@@ -9,3 +9,5 @@ No generated `input_proof_auto` or `input_proof_manual` module containing Admitt
 Counting the approved memory-read ERROR class as expected outcomes, this fixed suite scores 49/61 with automatic testing alone and 61/61 with the Coq adjudications. This is not a claim of automatic 100% accuracy or general coverage.
 
 The first two unsuccessful proof compilation attempts are retained under attempts/. They failed during proof construction; the final kernel-checked receipt is authoritative. Coq replay peak RSS and conversation authoring tokens were not measured; they are not reported as zero.
+
+These ITP outcomes are a required resolution stage of complete testing. The official combined result is `benchmark/results/read/complete/results.json`; the preserved automatic-stage accuracy is diagnostic only.

@@ -128,7 +128,7 @@ def build():
     evidence = dict(data)
     evidence['artifacts'] = [dict(a, archived_path=a['path'], path=relocated(a['path'])) for a in data['artifacts']]
     save(RESULTS / 'evidence.json', evidence)
-    save(GROUPS / 'index.json', {'schema': 'tespec-program-groups/v1', 'groups': index, 'source_snapshot': 'arxiv/fulminate-cn', 'path_map': PREFIXES, 'policy': data['policy']})
+    save(GROUPS / 'index.json', {'schema': 'tespec-program-groups/v1', 'groups': index, 'source_snapshot': 'arxiv/fulminate-cn', 'path_map': PREFIXES, 'policy': json.loads((ROOT / 'benchmark/protocol.json').read_text()), 'active_protocol': 'benchmark/protocol.json'})
     save(ROOT / 'arxiv/benchmark-support/path-map.json', PREFIXES)
     validate()
 

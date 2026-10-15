@@ -1,0 +1,59 @@
+{
+  "schema": "tespec-benchmark-protocol/v1",
+  "scope": "All original CN variants and their QCP migrations, plus existing constructed variants and archived input/result evidence",
+  "minimum_variants_per_family": null,
+  "maximum_variants_per_family": null,
+  "required_positive_count": null,
+  "required_negative_count": null,
+  "reuse_existing_variants": true,
+  "reuse_existing_inputs_and_results": true,
+  "source_match_policy": "Exact source/goal/input hashes when available; weaker manifest/case associations labelled explicitly. Never move a PASS, counterexample or measurement to a changed contract/input silently.",
+  "unknown_policy": "Preserve UNKNOWN, errors, residual manual obligations, missing measurements and prepared-only inputs. No invented PASS or zero resource usage.",
+  "legacy_generators": "Obsolete seven-slot generators and quota design removed. Existing data, inputs, results, validators and replay tools retained; generators remain recoverable from Git history.",
+  "hierarchy": [
+    "program_family",
+    "variant_implementation_and_specification",
+    "test_case"
+  ],
+  "variant_identity": "A variant fixes both implementation and specification. Either or both may change; changed implementation or spec creates a new variant. CN and QCP are language representations of the corresponding variant with alignment scope recorded.",
+  "execution_policy": {
+    "formal_verification_unit": "designated_primary_variant_per_program_family_and_verifier",
+    "formal_verification_runs_per_variant_per_verifier": null,
+    "formal_verifiers": [
+      "CN",
+      "QCP"
+    ],
+    "formal_verification_input_scope": "Universal over inputs satisfying the variant precondition; not repeated for each finite test case.",
+    "testing_unit": "variant_and_test_case_and_tool",
+    "test_tools": [
+      "Fulminate",
+      "teSpec"
+    ],
+    "test_cases_per_variant": "Multiple applicable cases; reuse existing cases and record missing coverage explicitly.",
+    "test_applicability": "Evaluate against this variant precondition. Outside-precondition cases must be marked separately and cannot establish an implementation bug under the contract.",
+    "resource_accounting": "Record verification time, peak memory and actual tokens once per variant/tool. Record test time, peak memory and actual tokens per variant/input/tool; aggregate with case counts. Never multiply verification metrics by test count.",
+    "reuse_key": "Implementation, specification, dependencies, tool/version/configuration and proof context must match for verification reuse; test reuse additionally requires matching input.",
+    "qcp_completion": "One verification run may generate multiple VCs. All required VCs, including manual obligations, must be discharged and required proof/kernel checks completed before PASS. Residual VCs and UNKNOWN remain incomplete.",
+    "historical_repeats": "Preserve old repeated measurements as historical observations; no new mandatory repeated verification runs.",
+    "formal_verification_runs_per_primary_per_verifier": 1,
+    "non_primary_variants": "Testing only; no required CN/QCP formal verification. Retain existing formal results as optional historical evidence.",
+    "primary_verification_reuse": "Reuse matching archived CN/QCP proof and verification receipts first; run only missing verification. No requirement to reprove completed matching primary variants."
+  },
+  "test_pipeline": {
+    "stages": [
+      "execution_testing",
+      "itp_for_unresolved_vcs",
+      "final_aggregation"
+    ],
+    "official_result": "The complete staged result; automatic-only statistics are diagnostics, not final benchmark accuracy.",
+    "itp_trigger": "Unresolved test VCs after execution, unless a matching checked proof/refutation receipt is reusable. Already decided cases do not require redundant ITP.",
+    "itp_positive": "Prove every required unresolved obligation before a final PASS.",
+    "itp_negative": "A checked refutation of a required VC with a satisfiable admitted entry establishes FAIL.",
+    "itp_trust": "Compile exact goal/proof sources, audit assumptions and independently kernel-check. Retain proof and input/source hashes.",
+    "unknown": "Unresolved cases remain UNKNOWN and pipeline-incomplete; do not hide them.",
+    "error_scoring": "Keep raw ERROR. Count only the explicitly approved readable-memory error for emp-precondition dereference variants as expected test outcomes; unrelated errors are not successful detections.",
+    "formal_scope": "Test-specific VC checking is part of testing and does not impose universal formal verification on every variant. Main-program verification is still once per group and reused.",
+    "resource_accounting": "Include execution plus ITP generation/repair, compilation, assumption audit and kernel check. Count failed attempts and shared stage work once. Report unknown time/memory/token measurements as null, never zero.",
+    "model_policy": "Use requested gpt-6.1-sol for model-assisted proof authoring when invoked; preserve actual model and token receipts. Unmetered conversation authoring is reported as missing telemetry, not zero tokens."
+  }
+}

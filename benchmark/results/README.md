@@ -29,3 +29,9 @@ python3 tools/benchmark/audit_archive.py
 `read/20261015-itp-refutations/receipt.json` records independent kernel-checked refutations of all 12 actual UNKNOWN VCs and their spatial splits, plus 12 proved satisfiable entries. All 36 theorem assumption audits are closed. No executor or solver code was changed.
 
 `resolved-results.json` in that directory gives the separate adjudicated view (22 PASS, 32 FAIL, 7 expected ERROR). The original automatic results are unchanged. Authoritative evidence consists of the exact goal copies, refutation sources, compilation/audit logs and kernel receipt. Replay with `python3 tools/benchmark/refute_read_unknowns.py`; audit saved source hashes and receipts with `python3 tools/benchmark/validate_read_itp.py`.
+
+## 完整测试口径
+
+完整测试包括执行测试和必要的 ITP 阶段，正式结果以两阶段合并后的结论为准。自动阶段的 UNKNOWN 应在 ITP 中证明或反证；已有决定性结果无需重复 ITP。主程序的全称验证仍单独复用，不要求所有变体额外做全称验证。规则见仓库根目录下 `benchmark/protocol.json`。
+
+read 的正式入口为 `benchmark/results/read/complete/results.json`、`statistics.json` 和 `cases.csv`，包含 61 对变体与输入的执行结果、ITP 结论及最终结论。原始自动数据完整保留，但不作为完整测试的最终正确率。时间统计包含两阶段实际测得的工作、失败证明尝试和内核检查；共享工作仅计一次。ITP 峰值内存和对话内证明编写 token 未测，保留 null，不能用执行阶段开销代替完整开销。
