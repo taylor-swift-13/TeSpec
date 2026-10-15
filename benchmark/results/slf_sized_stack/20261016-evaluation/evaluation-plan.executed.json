@@ -1,0 +1,1839 @@
+{
+  "schema": "tespec-group-evaluation-plan/v1",
+  "program_group": "slf_sized_stack",
+  "function": "sizeOf",
+  "primary_cn_variant": "cn_original:slf_sized_stack",
+  "primary_qcp_variant": "qcp_existing:a69204aa541c5d8fb3cd",
+  "run_id": "20261016-evaluation",
+  "pairings": [
+    {
+      "cn_variant": "cn_original:slf_sized_stack",
+      "qcp_variant": "qcp_existing:a69204aa541c5d8fb3cd",
+      "function": "IntList_cons",
+      "cases": [
+        {
+          "id": "IntList_cons_translation0_0",
+          "value": {
+            "list": [],
+            "inserted": 7
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; head=IntList_cons((7),head); while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "h": 7,
+              "t": 0
+            },
+            "values": {
+              "h0": 7,
+              "l": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "IntList_cons",
+            "list_before": [],
+            "size_before": 0,
+            "head_if_required": null,
+            "nonempty_requirement_satisfied": null,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        },
+        {
+          "id": "IntList_cons_translation0_1",
+          "value": {
+            "list": [
+              1
+            ],
+            "inserted": -2147483648
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(1); node0->tail=head; head=node0; head=IntList_cons((-2147483648),head); while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "h": -2147483648,
+              "t": 8192
+            },
+            "values": {
+              "h0": -2147483648,
+              "l": [
+                1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "IntList_cons",
+            "list_before": [
+              1
+            ],
+            "size_before": 1,
+            "head_if_required": null,
+            "nonempty_requirement_satisfied": null,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        },
+        {
+          "id": "IntList_cons_translation0_2",
+          "value": {
+            "list": [
+              2,
+              1
+            ],
+            "inserted": 2147483647
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(1); node0->tail=head; head=node0; struct int_list *node1=cn_malloc(sizeof(struct int_list)); node1->head=(2); node1->tail=head; head=node1; head=IntList_cons((2147483647),head); while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "h": 2147483647,
+              "t": 8192
+            },
+            "values": {
+              "h0": 2147483647,
+              "l": [
+                2,
+                1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "IntList_cons",
+            "list_before": [
+              2,
+              1
+            ],
+            "size_before": 2,
+            "head_if_required": null,
+            "nonempty_requirement_satisfied": null,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        },
+        {
+          "id": "IntList_cons_translation0_3",
+          "value": {
+            "list": [
+              -1,
+              0,
+              3
+            ],
+            "inserted": -1
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(3); node0->tail=head; head=node0; struct int_list *node1=cn_malloc(sizeof(struct int_list)); node1->head=(0); node1->tail=head; head=node1; struct int_list *node2=cn_malloc(sizeof(struct int_list)); node2->head=(-1); node2->tail=head; head=node2; head=IntList_cons((-1),head); while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "h": -1,
+              "t": 8192
+            },
+            "values": {
+              "h0": -1,
+              "l": [
+                -1,
+                0,
+                3
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "IntList_cons",
+            "list_before": [
+              -1,
+              0,
+              3
+            ],
+            "size_before": 3,
+            "head_if_required": null,
+            "nonempty_requirement_satisfied": null,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:slf_sized_stack",
+      "qcp_variant": "qcp_existing:a69204aa541c5d8fb3cd",
+      "function": "create",
+      "cases": [
+        {
+          "id": "create_translation0_0",
+          "value": {
+            "list": [],
+            "inserted": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct sized_stack *s=create(); cn_free_sized(s,sizeof(struct sized_stack));",
+          "binds": {
+            "args": {},
+            "values": {}
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "create",
+            "list_before": [],
+            "size_before": 0,
+            "head_if_required": null,
+            "nonempty_requirement_satisfied": null,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": 1,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:slf_sized_stack",
+      "qcp_variant": "qcp_existing:a69204aa541c5d8fb3cd",
+      "function": "sizeOf",
+      "cases": [
+        {
+          "id": "sizeOf_translation0_0",
+          "value": {
+            "list": [],
+            "inserted": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct sized_stack s; s.size=0u; s.data=head; unsigned int result=sizeOf(&s); (void)result; head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "d": 0,
+              "l": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "sizeOf",
+            "list_before": [],
+            "size_before": 0,
+            "head_if_required": null,
+            "nonempty_requirement_satisfied": null,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        },
+        {
+          "id": "sizeOf_translation0_1",
+          "value": {
+            "list": [
+              1
+            ],
+            "inserted": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(1); node0->tail=head; head=node0; struct sized_stack s; s.size=1u; s.data=head; unsigned int result=sizeOf(&s); (void)result; head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "d": 8192,
+              "l": [
+                1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "sizeOf",
+            "list_before": [
+              1
+            ],
+            "size_before": 1,
+            "head_if_required": null,
+            "nonempty_requirement_satisfied": null,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        },
+        {
+          "id": "sizeOf_translation0_2",
+          "value": {
+            "list": [
+              2,
+              1
+            ],
+            "inserted": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(1); node0->tail=head; head=node0; struct int_list *node1=cn_malloc(sizeof(struct int_list)); node1->head=(2); node1->tail=head; head=node1; struct sized_stack s; s.size=2u; s.data=head; unsigned int result=sizeOf(&s); (void)result; head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "d": 8192,
+              "l": [
+                2,
+                1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "sizeOf",
+            "list_before": [
+              2,
+              1
+            ],
+            "size_before": 2,
+            "head_if_required": null,
+            "nonempty_requirement_satisfied": null,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        },
+        {
+          "id": "sizeOf_translation0_3",
+          "value": {
+            "list": [
+              -1,
+              0,
+              3
+            ],
+            "inserted": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(3); node0->tail=head; head=node0; struct int_list *node1=cn_malloc(sizeof(struct int_list)); node1->head=(0); node1->tail=head; head=node1; struct int_list *node2=cn_malloc(sizeof(struct int_list)); node2->head=(-1); node2->tail=head; head=node2; struct sized_stack s; s.size=3u; s.data=head; unsigned int result=sizeOf(&s); (void)result; head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "d": 8192,
+              "l": [
+                -1,
+                0,
+                3
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "sizeOf",
+            "list_before": [
+              -1,
+              0,
+              3
+            ],
+            "size_before": 3,
+            "head_if_required": null,
+            "nonempty_requirement_satisfied": null,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:slf_sized_stack",
+      "qcp_variant": "qcp_existing:a69204aa541c5d8fb3cd",
+      "function": "push",
+      "cases": [
+        {
+          "id": "push_translation0_0",
+          "value": {
+            "list": [],
+            "inserted": 7
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct sized_stack s; s.size=0u; s.data=head; push(&s,(7)); head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "p": 4096,
+              "x": 7
+            },
+            "values": {
+              "d": 0,
+              "l": [],
+              "x0": 7
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "push",
+            "list_before": [],
+            "size_before": 0,
+            "head_if_required": null,
+            "nonempty_requirement_satisfied": null,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        },
+        {
+          "id": "push_translation0_1",
+          "value": {
+            "list": [
+              1
+            ],
+            "inserted": -2147483648
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(1); node0->tail=head; head=node0; struct sized_stack s; s.size=1u; s.data=head; push(&s,(-2147483648)); head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "p": 4096,
+              "x": -2147483648
+            },
+            "values": {
+              "d": 8192,
+              "l": [
+                1
+              ],
+              "x0": -2147483648
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "push",
+            "list_before": [
+              1
+            ],
+            "size_before": 1,
+            "head_if_required": null,
+            "nonempty_requirement_satisfied": null,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        },
+        {
+          "id": "push_translation0_2",
+          "value": {
+            "list": [
+              2,
+              1
+            ],
+            "inserted": 2147483647
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(1); node0->tail=head; head=node0; struct int_list *node1=cn_malloc(sizeof(struct int_list)); node1->head=(2); node1->tail=head; head=node1; struct sized_stack s; s.size=2u; s.data=head; push(&s,(2147483647)); head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "p": 4096,
+              "x": 2147483647
+            },
+            "values": {
+              "d": 8192,
+              "l": [
+                2,
+                1
+              ],
+              "x0": 2147483647
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "push",
+            "list_before": [
+              2,
+              1
+            ],
+            "size_before": 2,
+            "head_if_required": null,
+            "nonempty_requirement_satisfied": null,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        },
+        {
+          "id": "push_translation0_3",
+          "value": {
+            "list": [
+              -1,
+              0,
+              3
+            ],
+            "inserted": -1
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(3); node0->tail=head; head=node0; struct int_list *node1=cn_malloc(sizeof(struct int_list)); node1->head=(0); node1->tail=head; head=node1; struct int_list *node2=cn_malloc(sizeof(struct int_list)); node2->head=(-1); node2->tail=head; head=node2; struct sized_stack s; s.size=3u; s.data=head; push(&s,(-1)); head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "p": 4096,
+              "x": -1
+            },
+            "values": {
+              "d": 8192,
+              "l": [
+                -1,
+                0,
+                3
+              ],
+              "x0": -1
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "push",
+            "list_before": [
+              -1,
+              0,
+              3
+            ],
+            "size_before": 3,
+            "head_if_required": null,
+            "nonempty_requirement_satisfied": null,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:slf_sized_stack",
+      "qcp_variant": "qcp_existing:a69204aa541c5d8fb3cd",
+      "function": "top",
+      "cases": [
+        {
+          "id": "top_translation0_0",
+          "value": {
+            "list": [
+              0
+            ],
+            "inserted": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(0); node0->tail=head; head=node0; struct sized_stack s; s.size=1u; s.data=head; int result=top(&s); (void)result; head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "d": 8192,
+              "h": 0,
+              "l": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "top",
+            "list_before": [
+              0
+            ],
+            "size_before": 1,
+            "head_if_required": 0,
+            "nonempty_requirement_satisfied": true,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        },
+        {
+          "id": "top_translation0_1",
+          "value": {
+            "list": [
+              -2147483648
+            ],
+            "inserted": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(-2147483648); node0->tail=head; head=node0; struct sized_stack s; s.size=1u; s.data=head; int result=top(&s); (void)result; head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "d": 8192,
+              "h": -2147483648,
+              "l": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "top",
+            "list_before": [
+              -2147483648
+            ],
+            "size_before": 1,
+            "head_if_required": -2147483648,
+            "nonempty_requirement_satisfied": true,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        },
+        {
+          "id": "top_translation0_2",
+          "value": {
+            "list": [
+              2,
+              1
+            ],
+            "inserted": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(1); node0->tail=head; head=node0; struct int_list *node1=cn_malloc(sizeof(struct int_list)); node1->head=(2); node1->tail=head; head=node1; struct sized_stack s; s.size=2u; s.data=head; int result=top(&s); (void)result; head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "d": 8192,
+              "h": 2,
+              "l": [
+                1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "top",
+            "list_before": [
+              2,
+              1
+            ],
+            "size_before": 2,
+            "head_if_required": 2,
+            "nonempty_requirement_satisfied": true,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        },
+        {
+          "id": "top_translation0_3",
+          "value": {
+            "list": [
+              -1,
+              0,
+              3
+            ],
+            "inserted": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(3); node0->tail=head; head=node0; struct int_list *node1=cn_malloc(sizeof(struct int_list)); node1->head=(0); node1->tail=head; head=node1; struct int_list *node2=cn_malloc(sizeof(struct int_list)); node2->head=(-1); node2->tail=head; head=node2; struct sized_stack s; s.size=3u; s.data=head; int result=top(&s); (void)result; head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "d": 8192,
+              "h": -1,
+              "l": [
+                0,
+                3
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "top",
+            "list_before": [
+              -1,
+              0,
+              3
+            ],
+            "size_before": 3,
+            "head_if_required": -1,
+            "nonempty_requirement_satisfied": true,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:slf_sized_stack",
+      "qcp_variant": "qcp_existing:a69204aa541c5d8fb3cd",
+      "function": "pop",
+      "cases": [
+        {
+          "id": "pop_translation0_0",
+          "value": {
+            "list": [
+              0
+            ],
+            "inserted": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(0); node0->tail=head; head=node0; struct sized_stack s; s.size=1u; s.data=head; int result=pop(&s); (void)result; head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "d": 8192,
+              "h": 0,
+              "l": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "pop",
+            "list_before": [
+              0
+            ],
+            "size_before": 1,
+            "head_if_required": 0,
+            "nonempty_requirement_satisfied": true,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        },
+        {
+          "id": "pop_translation0_1",
+          "value": {
+            "list": [
+              -2147483648
+            ],
+            "inserted": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(-2147483648); node0->tail=head; head=node0; struct sized_stack s; s.size=1u; s.data=head; int result=pop(&s); (void)result; head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "d": 8192,
+              "h": -2147483648,
+              "l": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "pop",
+            "list_before": [
+              -2147483648
+            ],
+            "size_before": 1,
+            "head_if_required": -2147483648,
+            "nonempty_requirement_satisfied": true,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        },
+        {
+          "id": "pop_translation0_2",
+          "value": {
+            "list": [
+              2,
+              1
+            ],
+            "inserted": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(1); node0->tail=head; head=node0; struct int_list *node1=cn_malloc(sizeof(struct int_list)); node1->head=(2); node1->tail=head; head=node1; struct sized_stack s; s.size=2u; s.data=head; int result=pop(&s); (void)result; head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "d": 8192,
+              "h": 2,
+              "l": [
+                1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "pop",
+            "list_before": [
+              2,
+              1
+            ],
+            "size_before": 2,
+            "head_if_required": 2,
+            "nonempty_requirement_satisfied": true,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        },
+        {
+          "id": "pop_translation0_3",
+          "value": {
+            "list": [
+              -1,
+              0,
+              3
+            ],
+            "inserted": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(3); node0->tail=head; head=node0; struct int_list *node1=cn_malloc(sizeof(struct int_list)); node1->head=(0); node1->tail=head; head=node1; struct int_list *node2=cn_malloc(sizeof(struct int_list)); node2->head=(-1); node2->tail=head; head=node2; struct sized_stack s; s.size=3u; s.data=head; int result=pop(&s); (void)result; head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "d": 8192,
+              "h": -1,
+              "l": [
+                0,
+                3
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "pop",
+            "list_before": [
+              -1,
+              0,
+              3
+            ],
+            "size_before": 3,
+            "head_if_required": -1,
+            "nonempty_requirement_satisfied": true,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:slf_sized_stack",
+      "qcp_variant": "qcp_existing:a69204aa541c5d8fb3cd",
+      "function": "IntList_nil",
+      "cases": [
+        {
+          "id": "IntList_nil_translation0_0",
+          "value": {
+            "list": [],
+            "inserted": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=IntList_nil(); while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {},
+            "values": {}
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "IntList_nil",
+            "list_before": [],
+            "size_before": 0,
+            "head_if_required": null,
+            "nonempty_requirement_satisfied": null,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": 1,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:slf_sized_stack",
+      "qcp_variant": "qcp_existing:a69204aa541c5d8fb3cd",
+      "function": "IntList_length",
+      "cases": [
+        {
+          "id": "IntList_length_translation0_0",
+          "value": {
+            "list": [],
+            "inserted": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; unsigned int result=IntList_length(head); (void)result; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "xs": 0
+            },
+            "values": {
+              "l": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "IntList_length",
+            "list_before": [],
+            "size_before": 0,
+            "head_if_required": null,
+            "nonempty_requirement_satisfied": null,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        },
+        {
+          "id": "IntList_length_translation0_1",
+          "value": {
+            "list": [
+              1
+            ],
+            "inserted": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(1); node0->tail=head; head=node0; unsigned int result=IntList_length(head); (void)result; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "IntList_length",
+            "list_before": [
+              1
+            ],
+            "size_before": 1,
+            "head_if_required": null,
+            "nonempty_requirement_satisfied": null,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        },
+        {
+          "id": "IntList_length_translation0_2",
+          "value": {
+            "list": [
+              2,
+              1
+            ],
+            "inserted": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(1); node0->tail=head; head=node0; struct int_list *node1=cn_malloc(sizeof(struct int_list)); node1->head=(2); node1->tail=head; head=node1; unsigned int result=IntList_length(head); (void)result; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                2,
+                1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "IntList_length",
+            "list_before": [
+              2,
+              1
+            ],
+            "size_before": 2,
+            "head_if_required": null,
+            "nonempty_requirement_satisfied": null,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        },
+        {
+          "id": "IntList_length_translation0_3",
+          "value": {
+            "list": [
+              -1,
+              0,
+              3
+            ],
+            "inserted": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(3); node0->tail=head; head=node0; struct int_list *node1=cn_malloc(sizeof(struct int_list)); node1->head=(0); node1->tail=head; head=node1; struct int_list *node2=cn_malloc(sizeof(struct int_list)); node2->head=(-1); node2->tail=head; head=node2; unsigned int result=IntList_length(head); (void)result; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                -1,
+                0,
+                3
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "IntList_length",
+            "list_before": [
+              -1,
+              0,
+              3
+            ],
+            "size_before": 3,
+            "head_if_required": null,
+            "nonempty_requirement_satisfied": null,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:slf_sized_stack",
+      "qcp_variant": "qcp_existing:8840a459f7b52799efb6",
+      "function": "IntList_cons",
+      "cases": [
+        {
+          "id": "IntList_cons_translation1_0",
+          "value": {
+            "list": [],
+            "inserted": 7
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; head=IntList_cons((7),head); while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "h": 7,
+              "t": 0
+            },
+            "values": {
+              "h0": 7,
+              "l": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "IntList_cons",
+            "list_before": [],
+            "size_before": 0,
+            "head_if_required": null,
+            "nonempty_requirement_satisfied": null,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        },
+        {
+          "id": "IntList_cons_translation1_1",
+          "value": {
+            "list": [
+              1
+            ],
+            "inserted": -2147483648
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(1); node0->tail=head; head=node0; head=IntList_cons((-2147483648),head); while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "h": -2147483648,
+              "t": 8192
+            },
+            "values": {
+              "h0": -2147483648,
+              "l": [
+                1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "IntList_cons",
+            "list_before": [
+              1
+            ],
+            "size_before": 1,
+            "head_if_required": null,
+            "nonempty_requirement_satisfied": null,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        },
+        {
+          "id": "IntList_cons_translation1_2",
+          "value": {
+            "list": [
+              2,
+              1
+            ],
+            "inserted": 2147483647
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(1); node0->tail=head; head=node0; struct int_list *node1=cn_malloc(sizeof(struct int_list)); node1->head=(2); node1->tail=head; head=node1; head=IntList_cons((2147483647),head); while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "h": 2147483647,
+              "t": 8192
+            },
+            "values": {
+              "h0": 2147483647,
+              "l": [
+                2,
+                1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "IntList_cons",
+            "list_before": [
+              2,
+              1
+            ],
+            "size_before": 2,
+            "head_if_required": null,
+            "nonempty_requirement_satisfied": null,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        },
+        {
+          "id": "IntList_cons_translation1_3",
+          "value": {
+            "list": [
+              -1,
+              0,
+              3
+            ],
+            "inserted": -1
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(3); node0->tail=head; head=node0; struct int_list *node1=cn_malloc(sizeof(struct int_list)); node1->head=(0); node1->tail=head; head=node1; struct int_list *node2=cn_malloc(sizeof(struct int_list)); node2->head=(-1); node2->tail=head; head=node2; head=IntList_cons((-1),head); while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "h": -1,
+              "t": 8192
+            },
+            "values": {
+              "h0": -1,
+              "l": [
+                -1,
+                0,
+                3
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "IntList_cons",
+            "list_before": [
+              -1,
+              0,
+              3
+            ],
+            "size_before": 3,
+            "head_if_required": null,
+            "nonempty_requirement_satisfied": null,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:slf_sized_stack",
+      "qcp_variant": "qcp_existing:8840a459f7b52799efb6",
+      "function": "create",
+      "cases": [
+        {
+          "id": "create_translation1_0",
+          "value": {
+            "list": [],
+            "inserted": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct sized_stack *s=create(); cn_free_sized(s,sizeof(struct sized_stack));",
+          "binds": {
+            "args": {},
+            "values": {}
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "create",
+            "list_before": [],
+            "size_before": 0,
+            "head_if_required": null,
+            "nonempty_requirement_satisfied": null,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": 1,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:slf_sized_stack",
+      "qcp_variant": "qcp_existing:8840a459f7b52799efb6",
+      "function": "sizeOf",
+      "cases": [
+        {
+          "id": "sizeOf_translation1_0",
+          "value": {
+            "list": [],
+            "inserted": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct sized_stack s; s.size=0u; s.data=head; unsigned int result=sizeOf(&s); (void)result; head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "d": 0,
+              "l": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "sizeOf",
+            "list_before": [],
+            "size_before": 0,
+            "head_if_required": null,
+            "nonempty_requirement_satisfied": null,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        },
+        {
+          "id": "sizeOf_translation1_1",
+          "value": {
+            "list": [
+              1
+            ],
+            "inserted": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(1); node0->tail=head; head=node0; struct sized_stack s; s.size=1u; s.data=head; unsigned int result=sizeOf(&s); (void)result; head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "d": 8192,
+              "l": [
+                1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "sizeOf",
+            "list_before": [
+              1
+            ],
+            "size_before": 1,
+            "head_if_required": null,
+            "nonempty_requirement_satisfied": null,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        },
+        {
+          "id": "sizeOf_translation1_2",
+          "value": {
+            "list": [
+              2,
+              1
+            ],
+            "inserted": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(1); node0->tail=head; head=node0; struct int_list *node1=cn_malloc(sizeof(struct int_list)); node1->head=(2); node1->tail=head; head=node1; struct sized_stack s; s.size=2u; s.data=head; unsigned int result=sizeOf(&s); (void)result; head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "d": 8192,
+              "l": [
+                2,
+                1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "sizeOf",
+            "list_before": [
+              2,
+              1
+            ],
+            "size_before": 2,
+            "head_if_required": null,
+            "nonempty_requirement_satisfied": null,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        },
+        {
+          "id": "sizeOf_translation1_3",
+          "value": {
+            "list": [
+              -1,
+              0,
+              3
+            ],
+            "inserted": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(3); node0->tail=head; head=node0; struct int_list *node1=cn_malloc(sizeof(struct int_list)); node1->head=(0); node1->tail=head; head=node1; struct int_list *node2=cn_malloc(sizeof(struct int_list)); node2->head=(-1); node2->tail=head; head=node2; struct sized_stack s; s.size=3u; s.data=head; unsigned int result=sizeOf(&s); (void)result; head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "d": 8192,
+              "l": [
+                -1,
+                0,
+                3
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "sizeOf",
+            "list_before": [
+              -1,
+              0,
+              3
+            ],
+            "size_before": 3,
+            "head_if_required": null,
+            "nonempty_requirement_satisfied": null,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:slf_sized_stack",
+      "qcp_variant": "qcp_existing:8840a459f7b52799efb6",
+      "function": "push",
+      "cases": [
+        {
+          "id": "push_translation1_0",
+          "value": {
+            "list": [],
+            "inserted": 7
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct sized_stack s; s.size=0u; s.data=head; push(&s,(7)); head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "p": 4096,
+              "x": 7
+            },
+            "values": {
+              "d": 0,
+              "l": [],
+              "x0": 7
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "push",
+            "list_before": [],
+            "size_before": 0,
+            "head_if_required": null,
+            "nonempty_requirement_satisfied": null,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        },
+        {
+          "id": "push_translation1_1",
+          "value": {
+            "list": [
+              1
+            ],
+            "inserted": -2147483648
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(1); node0->tail=head; head=node0; struct sized_stack s; s.size=1u; s.data=head; push(&s,(-2147483648)); head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "p": 4096,
+              "x": -2147483648
+            },
+            "values": {
+              "d": 8192,
+              "l": [
+                1
+              ],
+              "x0": -2147483648
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "push",
+            "list_before": [
+              1
+            ],
+            "size_before": 1,
+            "head_if_required": null,
+            "nonempty_requirement_satisfied": null,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        },
+        {
+          "id": "push_translation1_2",
+          "value": {
+            "list": [
+              2,
+              1
+            ],
+            "inserted": 2147483647
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(1); node0->tail=head; head=node0; struct int_list *node1=cn_malloc(sizeof(struct int_list)); node1->head=(2); node1->tail=head; head=node1; struct sized_stack s; s.size=2u; s.data=head; push(&s,(2147483647)); head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "p": 4096,
+              "x": 2147483647
+            },
+            "values": {
+              "d": 8192,
+              "l": [
+                2,
+                1
+              ],
+              "x0": 2147483647
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "push",
+            "list_before": [
+              2,
+              1
+            ],
+            "size_before": 2,
+            "head_if_required": null,
+            "nonempty_requirement_satisfied": null,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        },
+        {
+          "id": "push_translation1_3",
+          "value": {
+            "list": [
+              -1,
+              0,
+              3
+            ],
+            "inserted": -1
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(3); node0->tail=head; head=node0; struct int_list *node1=cn_malloc(sizeof(struct int_list)); node1->head=(0); node1->tail=head; head=node1; struct int_list *node2=cn_malloc(sizeof(struct int_list)); node2->head=(-1); node2->tail=head; head=node2; struct sized_stack s; s.size=3u; s.data=head; push(&s,(-1)); head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "p": 4096,
+              "x": -1
+            },
+            "values": {
+              "d": 8192,
+              "l": [
+                -1,
+                0,
+                3
+              ],
+              "x0": -1
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "push",
+            "list_before": [
+              -1,
+              0,
+              3
+            ],
+            "size_before": 3,
+            "head_if_required": null,
+            "nonempty_requirement_satisfied": null,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:slf_sized_stack",
+      "qcp_variant": "qcp_existing:8840a459f7b52799efb6",
+      "function": "top",
+      "cases": [
+        {
+          "id": "top_translation1_0",
+          "value": {
+            "list": [
+              0
+            ],
+            "inserted": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(0); node0->tail=head; head=node0; struct sized_stack s; s.size=1u; s.data=head; int result=top(&s); (void)result; head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "d": 8192,
+              "h": 0,
+              "l": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "top",
+            "list_before": [
+              0
+            ],
+            "size_before": 1,
+            "head_if_required": 0,
+            "nonempty_requirement_satisfied": true,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        },
+        {
+          "id": "top_translation1_1",
+          "value": {
+            "list": [
+              -2147483648
+            ],
+            "inserted": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(-2147483648); node0->tail=head; head=node0; struct sized_stack s; s.size=1u; s.data=head; int result=top(&s); (void)result; head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "d": 8192,
+              "h": -2147483648,
+              "l": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "top",
+            "list_before": [
+              -2147483648
+            ],
+            "size_before": 1,
+            "head_if_required": -2147483648,
+            "nonempty_requirement_satisfied": true,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        },
+        {
+          "id": "top_translation1_2",
+          "value": {
+            "list": [
+              2,
+              1
+            ],
+            "inserted": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(1); node0->tail=head; head=node0; struct int_list *node1=cn_malloc(sizeof(struct int_list)); node1->head=(2); node1->tail=head; head=node1; struct sized_stack s; s.size=2u; s.data=head; int result=top(&s); (void)result; head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "d": 8192,
+              "h": 2,
+              "l": [
+                1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "top",
+            "list_before": [
+              2,
+              1
+            ],
+            "size_before": 2,
+            "head_if_required": 2,
+            "nonempty_requirement_satisfied": true,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        },
+        {
+          "id": "top_translation1_3",
+          "value": {
+            "list": [
+              -1,
+              0,
+              3
+            ],
+            "inserted": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(3); node0->tail=head; head=node0; struct int_list *node1=cn_malloc(sizeof(struct int_list)); node1->head=(0); node1->tail=head; head=node1; struct int_list *node2=cn_malloc(sizeof(struct int_list)); node2->head=(-1); node2->tail=head; head=node2; struct sized_stack s; s.size=3u; s.data=head; int result=top(&s); (void)result; head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "d": 8192,
+              "h": -1,
+              "l": [
+                0,
+                3
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "top",
+            "list_before": [
+              -1,
+              0,
+              3
+            ],
+            "size_before": 3,
+            "head_if_required": -1,
+            "nonempty_requirement_satisfied": true,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:slf_sized_stack",
+      "qcp_variant": "qcp_existing:8840a459f7b52799efb6",
+      "function": "pop",
+      "cases": [
+        {
+          "id": "pop_translation1_0",
+          "value": {
+            "list": [
+              0
+            ],
+            "inserted": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(0); node0->tail=head; head=node0; struct sized_stack s; s.size=1u; s.data=head; int result=pop(&s); (void)result; head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "d": 8192,
+              "h": 0,
+              "l": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "pop",
+            "list_before": [
+              0
+            ],
+            "size_before": 1,
+            "head_if_required": 0,
+            "nonempty_requirement_satisfied": true,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        },
+        {
+          "id": "pop_translation1_1",
+          "value": {
+            "list": [
+              -2147483648
+            ],
+            "inserted": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(-2147483648); node0->tail=head; head=node0; struct sized_stack s; s.size=1u; s.data=head; int result=pop(&s); (void)result; head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "d": 8192,
+              "h": -2147483648,
+              "l": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "pop",
+            "list_before": [
+              -2147483648
+            ],
+            "size_before": 1,
+            "head_if_required": -2147483648,
+            "nonempty_requirement_satisfied": true,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        },
+        {
+          "id": "pop_translation1_2",
+          "value": {
+            "list": [
+              2,
+              1
+            ],
+            "inserted": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(1); node0->tail=head; head=node0; struct int_list *node1=cn_malloc(sizeof(struct int_list)); node1->head=(2); node1->tail=head; head=node1; struct sized_stack s; s.size=2u; s.data=head; int result=pop(&s); (void)result; head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "d": 8192,
+              "h": 2,
+              "l": [
+                1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "pop",
+            "list_before": [
+              2,
+              1
+            ],
+            "size_before": 2,
+            "head_if_required": 2,
+            "nonempty_requirement_satisfied": true,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        },
+        {
+          "id": "pop_translation1_3",
+          "value": {
+            "list": [
+              -1,
+              0,
+              3
+            ],
+            "inserted": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(3); node0->tail=head; head=node0; struct int_list *node1=cn_malloc(sizeof(struct int_list)); node1->head=(0); node1->tail=head; head=node1; struct int_list *node2=cn_malloc(sizeof(struct int_list)); node2->head=(-1); node2->tail=head; head=node2; struct sized_stack s; s.size=3u; s.data=head; int result=pop(&s); (void)result; head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "d": 8192,
+              "h": -1,
+              "l": [
+                0,
+                3
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "function": "pop",
+            "list_before": [
+              -1,
+              0,
+              3
+            ],
+            "size_before": 3,
+            "head_if_required": -1,
+            "nonempty_requirement_satisfied": true,
+            "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+            "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+            "entry_cardinality": null,
+            "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+          }
+        }
+      ]
+    }
+  ],
+  "expectation_basis": "All3 CN/QCP records, every translated core function (8 and6 respectively), four legal shapes for each parameterized function, one distinct entry for no-argument create/nil. CN original extra trusted assert helpers/free wrappers and original main have no matching QCP client; these source-scope exclusions are disclosed, not silently counted as tested. Only top/pop nonempty inputs. Real heap list nodes and stack-local stack structs, no invalid free; signed extremes in inserted/head payloads legal. CN head/tail layout corresponds to QCP data/next by field order, not identifier equality. Preserve weaker original pop postcondition; do not invent a proved return equality.",
+  "cn_trust_qualification": "CN eight core functions are untrusted and require verification; allocation/free wrappers, assertion helpers and original main are trusted. QCP translations cover core functions and retain external contracts; original full CN main client is absent from QCP and not replaced by fabricated paired client.",
+  "cn_acceptance_verdict": "ACCEPTED_CORE_WITH_DECLARED_TRUSTED_EXTERNALS"
+}

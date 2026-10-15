@@ -1,0 +1,172 @@
+{
+  "variant": "cn_original:slf_sized_stack",
+  "paired_qcp_variant": "qcp_existing:a69204aa541c5d8fb3cd",
+  "case": "sizeOf_translation0_1",
+  "initial": {
+    "list": [
+      1
+    ],
+    "inserted": null
+  },
+  "expected": "PASS",
+  "plan_case": {
+    "id": "sizeOf_translation0_1",
+    "value": {
+      "list": [
+        1
+      ],
+      "inserted": null
+    },
+    "expected": "PASS",
+    "cn_body": "struct int_list *head=0; struct int_list *node0=cn_malloc(sizeof(struct int_list)); node0->head=(1); node0->tail=head; head=node0; struct sized_stack s; s.size=1u; s.data=head; unsigned int result=sizeOf(&s); (void)result; head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+    "binds": {
+      "args": {
+        "p": 4096
+      },
+      "values": {
+        "d": 8192,
+        "l": [
+          1
+        ]
+      }
+    },
+    "precondition_valid": true,
+    "oracle": {
+      "function": "sizeOf",
+      "list_before": [
+        1
+      ],
+      "size_before": 1,
+      "head_if_required": null,
+      "nonempty_requirement_satisfied": null,
+      "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+      "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+      "entry_cardinality": null,
+      "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+    }
+  },
+  "cn_source_sha256": "d193f045985a01baff34a8c0c835eba066f7d20fe41c272042fb468797b6ac31",
+  "qcp_source_sha256": "a69204aa541c5d8fb3cdd073f3fbb813c77329339c8d5c1ce80eaa7035f96414",
+  "harness": "benchmark/programs/slf_sized_stack/variants/cn_original_slf_sized_stack/tests/20261016-evaluation/sizeOf_translation0_1/fulminate.cn.c",
+  "harness_sha256": "facb85d0a2d41458a686384616477520d9bd453821945f9b7d14c5b062773d23",
+  "binds": "benchmark/programs/slf_sized_stack/variants/cn_original_slf_sized_stack/tests/20261016-evaluation/sizeOf_translation0_1/binds.json",
+  "binds_sha256": "323a003fc235e88ce39227369ecf0ec17647460556d800c64d49940e33bbfd6e",
+  "precondition_valid": true,
+  "fulminate_pipeline": {
+    "command": [
+      "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+      "instrument",
+      "--run",
+      "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+      "--output-dir=/tmp/tespec-group-_lllypcg",
+      "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples",
+      "/home/yangfp/teSpec/benchmark/programs/slf_sized_stack/variants/cn_original_slf_sized_stack/tests/20261016-evaluation/sizeOf_translation0_1/fulminate.cn.c"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 0.06452932801039424,
+    "resources": {
+      "max_process_rss_kib": 44904,
+      "user_seconds": 0.0,
+      "system_seconds": 0.02
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/slf_sized_stack/20261016-evaluation/cn_original_slf_sized_stack/sizeOf_translation0_1/fulminate-pipeline/stdout.log",
+    "stderr": "benchmark/results/slf_sized_stack/20261016-evaluation/cn_original_slf_sized_stack/sizeOf_translation0_1/fulminate-pipeline/stderr.log"
+  },
+  "instrumented_sources": [],
+  "fulminate_test": {
+    "status": "NOT_BUILT",
+    "wall_seconds": null,
+    "resources": null,
+    "tokens": 0,
+    "model_calls": 0
+  },
+  "tespec_off": {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "spectest",
+      "run",
+      "/home/yangfp/teSpec/benchmark/programs/slf_sized_stack/variants/qcp_existing_a69204aa541c5d8fb3cd/qcp/slf_sized_stack.qcp.c",
+      "--function",
+      "sizeOf",
+      "--binds",
+      "/home/yangfp/teSpec/benchmark/programs/slf_sized_stack/variants/cn_original_slf_sized_stack/tests/20261016-evaluation/sizeOf_translation0_1/binds.json",
+      "--execution-mode",
+      "all-boundaries",
+      "--output-dir",
+      "/home/yangfp/teSpec/benchmark/results/slf_sized_stack/20261016-evaluation/cn_original_slf_sized_stack/sizeOf_translation0_1/tespec-off/artifacts",
+      "--timeout",
+      "30",
+      "--compact",
+      "--no-spatial-smt",
+      "--spatial-smt-timeout-ms",
+      "2000",
+      "-I",
+      "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+      "-I",
+      "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/advanced"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 0.16484162099368405,
+    "resources": {
+      "max_process_rss_kib": 19928,
+      "user_seconds": 0.08,
+      "system_seconds": 0.03
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/slf_sized_stack/20261016-evaluation/cn_original_slf_sized_stack/sizeOf_translation0_1/tespec-off/stdout.log",
+    "stderr": "benchmark/results/slf_sized_stack/20261016-evaluation/cn_original_slf_sized_stack/sizeOf_translation0_1/tespec-off/stderr.log",
+    "report": "benchmark/results/slf_sized_stack/20261016-evaluation/cn_original_slf_sized_stack/sizeOf_translation0_1/tespec-off/artifacts/report.json",
+    "statuses": [
+      "UNKNOWN"
+    ],
+    "status": "UNKNOWN"
+  },
+  "tespec_on": {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "spectest",
+      "run",
+      "/home/yangfp/teSpec/benchmark/programs/slf_sized_stack/variants/qcp_existing_a69204aa541c5d8fb3cd/qcp/slf_sized_stack.qcp.c",
+      "--function",
+      "sizeOf",
+      "--binds",
+      "/home/yangfp/teSpec/benchmark/programs/slf_sized_stack/variants/cn_original_slf_sized_stack/tests/20261016-evaluation/sizeOf_translation0_1/binds.json",
+      "--execution-mode",
+      "all-boundaries",
+      "--output-dir",
+      "/home/yangfp/teSpec/benchmark/results/slf_sized_stack/20261016-evaluation/cn_original_slf_sized_stack/sizeOf_translation0_1/tespec-on/artifacts",
+      "--timeout",
+      "30",
+      "--compact",
+      "--spatial-smt",
+      "--spatial-smt-timeout-ms",
+      "2000",
+      "-I",
+      "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+      "-I",
+      "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/advanced"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 0.16479839300154708,
+    "resources": {
+      "max_process_rss_kib": 19980,
+      "user_seconds": 0.08,
+      "system_seconds": 0.04
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/slf_sized_stack/20261016-evaluation/cn_original_slf_sized_stack/sizeOf_translation0_1/tespec-on/stdout.log",
+    "stderr": "benchmark/results/slf_sized_stack/20261016-evaluation/cn_original_slf_sized_stack/sizeOf_translation0_1/tespec-on/stderr.log",
+    "report": "benchmark/results/slf_sized_stack/20261016-evaluation/cn_original_slf_sized_stack/sizeOf_translation0_1/tespec-on/artifacts/report.json",
+    "statuses": [
+      "UNKNOWN"
+    ],
+    "status": "UNKNOWN"
+  },
+  "runtime_dependency_fixtures": []
+}

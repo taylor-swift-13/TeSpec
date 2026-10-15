@@ -1,0 +1,166 @@
+{
+  "variant": "cn_original:slf_sized_stack",
+  "paired_qcp_variant": "qcp_existing:a69204aa541c5d8fb3cd",
+  "case": "push_translation0_0",
+  "initial": {
+    "list": [],
+    "inserted": 7
+  },
+  "expected": "PASS",
+  "plan_case": {
+    "id": "push_translation0_0",
+    "value": {
+      "list": [],
+      "inserted": 7
+    },
+    "expected": "PASS",
+    "cn_body": "struct int_list *head=0; struct sized_stack s; s.size=0u; s.data=head; push(&s,(7)); head=s.data; while(head!=0) { struct int_list *next=head->tail; cn_free_sized(head,sizeof(struct int_list)); head=next; }",
+    "binds": {
+      "args": {
+        "p": 4096,
+        "x": 7
+      },
+      "values": {
+        "d": 0,
+        "l": [],
+        "x0": 7
+      }
+    },
+    "precondition_valid": true,
+    "oracle": {
+      "function": "push",
+      "list_before": [],
+      "size_before": 0,
+      "head_if_required": null,
+      "nonempty_requirement_satisfied": null,
+      "heap_layout": "CN int_list head/tail maps to QCP list data/next in order; stack object at4096, nonempty data root8192, remaining recursive topology existential under sll.",
+      "harness_cleanup": "Free remaining nodes after subject postcondition monitor; pop itself frees removed node. Create returns stack struct then harness frees it. No free of stack storage.",
+      "entry_cardinality": null,
+      "semantic_scope": "pop contract specifies new list/size, not returned head value; implementation return is informational only."
+    }
+  },
+  "cn_source_sha256": "d193f045985a01baff34a8c0c835eba066f7d20fe41c272042fb468797b6ac31",
+  "qcp_source_sha256": "a69204aa541c5d8fb3cdd073f3fbb813c77329339c8d5c1ce80eaa7035f96414",
+  "harness": "benchmark/programs/slf_sized_stack/variants/cn_original_slf_sized_stack/tests/20261016-evaluation/push_translation0_0/fulminate.cn.c",
+  "harness_sha256": "67c74ac351cb967b5a6f637d2436b6af8aebc1928cd352a25e6b380fb784ca53",
+  "binds": "benchmark/programs/slf_sized_stack/variants/cn_original_slf_sized_stack/tests/20261016-evaluation/push_translation0_0/binds.json",
+  "binds_sha256": "3ec6f2e19b71d771c4cc32c47ca0f2597b84cb1a2a198bcfbd8f1e0e5020e06b",
+  "precondition_valid": true,
+  "fulminate_pipeline": {
+    "command": [
+      "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+      "instrument",
+      "--run",
+      "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+      "--output-dir=/tmp/tespec-group-8s358ubi",
+      "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples",
+      "/home/yangfp/teSpec/benchmark/programs/slf_sized_stack/variants/cn_original_slf_sized_stack/tests/20261016-evaluation/push_translation0_0/fulminate.cn.c"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 0.06461995000427123,
+    "resources": {
+      "max_process_rss_kib": 44348,
+      "user_seconds": 0.0,
+      "system_seconds": 0.02
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/slf_sized_stack/20261016-evaluation/cn_original_slf_sized_stack/push_translation0_0/fulminate-pipeline/stdout.log",
+    "stderr": "benchmark/results/slf_sized_stack/20261016-evaluation/cn_original_slf_sized_stack/push_translation0_0/fulminate-pipeline/stderr.log"
+  },
+  "instrumented_sources": [],
+  "fulminate_test": {
+    "status": "NOT_BUILT",
+    "wall_seconds": null,
+    "resources": null,
+    "tokens": 0,
+    "model_calls": 0
+  },
+  "tespec_off": {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "spectest",
+      "run",
+      "/home/yangfp/teSpec/benchmark/programs/slf_sized_stack/variants/qcp_existing_a69204aa541c5d8fb3cd/qcp/slf_sized_stack.qcp.c",
+      "--function",
+      "push",
+      "--binds",
+      "/home/yangfp/teSpec/benchmark/programs/slf_sized_stack/variants/cn_original_slf_sized_stack/tests/20261016-evaluation/push_translation0_0/binds.json",
+      "--execution-mode",
+      "all-boundaries",
+      "--output-dir",
+      "/home/yangfp/teSpec/benchmark/results/slf_sized_stack/20261016-evaluation/cn_original_slf_sized_stack/push_translation0_0/tespec-off/artifacts",
+      "--timeout",
+      "30",
+      "--compact",
+      "--no-spatial-smt",
+      "--spatial-smt-timeout-ms",
+      "2000",
+      "-I",
+      "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+      "-I",
+      "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/advanced"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 0.16473734700412024,
+    "resources": {
+      "max_process_rss_kib": 19776,
+      "user_seconds": 0.11,
+      "system_seconds": 0.01
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/slf_sized_stack/20261016-evaluation/cn_original_slf_sized_stack/push_translation0_0/tespec-off/stdout.log",
+    "stderr": "benchmark/results/slf_sized_stack/20261016-evaluation/cn_original_slf_sized_stack/push_translation0_0/tespec-off/stderr.log",
+    "report": "benchmark/results/slf_sized_stack/20261016-evaluation/cn_original_slf_sized_stack/push_translation0_0/tespec-off/artifacts/report.json",
+    "statuses": [
+      "UNKNOWN"
+    ],
+    "status": "UNKNOWN"
+  },
+  "tespec_on": {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "spectest",
+      "run",
+      "/home/yangfp/teSpec/benchmark/programs/slf_sized_stack/variants/qcp_existing_a69204aa541c5d8fb3cd/qcp/slf_sized_stack.qcp.c",
+      "--function",
+      "push",
+      "--binds",
+      "/home/yangfp/teSpec/benchmark/programs/slf_sized_stack/variants/cn_original_slf_sized_stack/tests/20261016-evaluation/push_translation0_0/binds.json",
+      "--execution-mode",
+      "all-boundaries",
+      "--output-dir",
+      "/home/yangfp/teSpec/benchmark/results/slf_sized_stack/20261016-evaluation/cn_original_slf_sized_stack/push_translation0_0/tespec-on/artifacts",
+      "--timeout",
+      "30",
+      "--compact",
+      "--spatial-smt",
+      "--spatial-smt-timeout-ms",
+      "2000",
+      "-I",
+      "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+      "-I",
+      "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/advanced"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 0.1647919399983948,
+    "resources": {
+      "max_process_rss_kib": 19876,
+      "user_seconds": 0.09,
+      "system_seconds": 0.03
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/slf_sized_stack/20261016-evaluation/cn_original_slf_sized_stack/push_translation0_0/tespec-on/stdout.log",
+    "stderr": "benchmark/results/slf_sized_stack/20261016-evaluation/cn_original_slf_sized_stack/push_translation0_0/tespec-on/stderr.log",
+    "report": "benchmark/results/slf_sized_stack/20261016-evaluation/cn_original_slf_sized_stack/push_translation0_0/tespec-on/artifacts/report.json",
+    "statuses": [
+      "UNKNOWN"
+    ],
+    "status": "UNKNOWN"
+  },
+  "runtime_dependency_fixtures": []
+}

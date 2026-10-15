@@ -34,8 +34,8 @@ def main():
             if tool=='cn':
                 add('主程序验证',stat.get('wall_seconds'),stat.get('peak_process_resident_mib'),stat.get('tokens'),'一次主程序验证')
             elif tool=='fulminate':
-                add('插桩、编译与首次执行',stat.get('instrument_compile_initial_execution_wall_seconds_total'),stat.get('pipeline_peak_process_rss_kib',0)/1024 if available else None,stat.get('tokens'))
-                add('单独运行测试',stat.get('test_execution_wall_seconds_total'),stat.get('test_peak_process_rss_kib',0)/1024 if available else None,stat.get('tokens'))
+                add('插桩、编译与首次执行',stat.get('instrument_compile_initial_execution_wall_seconds_total'),stat['pipeline_peak_process_rss_kib']/1024 if stat.get('pipeline_peak_process_rss_kib') is not None else None,stat.get('tokens'))
+                add('单独运行测试',stat.get('test_execution_wall_seconds_total'),stat['test_peak_process_rss_kib']/1024 if stat.get('test_peak_process_rss_kib') is not None else None,stat.get('tokens'))
             else:
                 stages=stat.get('stages',[]);native=stages[0] if stages else {}
                 add('VC 生成与自动处理' if tool=='qcp' else '测试执行、VC 生成与自动处理',native.get('wall_seconds'),native.get('peak_process_memory_mib'),native.get('total_tokens'))
