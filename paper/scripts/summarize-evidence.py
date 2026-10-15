@@ -40,6 +40,49 @@ def table(name, caption, label, columns, header, rows, note=""):
     (PAPER / "tables" / name).write_text(text)
 
 
+def check_case_study_receipts():
+    base = PAPER / "evidence/comparative-case-studies-20261013"
+    archive = read(base / "archive-index.json")
+    for entry in archive["files"]:
+        target = ROOT / entry["path"]
+        assert target.resolve().is_relative_to(base.resolve())
+        assert sha(target) == entry["sha256"], target
+    paths = [base / "evidence/least-root-20261013/receipt.json",
+             base / "case-studies/divisibility/evidence/receipt.json",
+             base / "case-studies/divisibility/theory/receipt.json",
+             base / "case-studies/shared-oracle-controls/receipt.json"]
+    receipts = []
+    omitted_caches = []
+    for path in paths:
+        record = read(path)
+        for name, expected in record["files"].items():
+            target = (path.parent / name).resolve()
+            assert target.is_relative_to(path.parent.resolve()), name
+            if target.is_file():
+                assert sha(target) == expected, (path, name)
+            else:
+                assert target.name in (".lia.cache", ".nia.cache"), (path, name)
+                omitted_caches.append({"path": str(target.relative_to(ROOT)), "original_sha256": expected})
+        receipts.append(record)
+    root, division, rewrite, controls = receipts
+    assert root["itp_result"] == "PASS" and root["audited_original_goals"] == 26
+    assert root["kernel_exit_code"] == 0
+    assert len(division["cases"]) == 2
+    assert all(row["status"] == "PASS" and row["original_vcs"] == 6
+               for row in division["cases"])
+    assert rewrite["coqchk_exit_code"] == 0 and rewrite["assumptions"] == []
+    assert controls["coins"]["coqchk_exit_code"] == 0
+    assert controls["verina_relation"]["lean_exit_code"] == 0
+    assert controls["verina_relation"]["sorryAx_present"] is False
+    return {"scope": "2026-10-13 checked receipts; C certificates and pure oracle controls separately",
+            "sources": [source(path) for path in paths],
+            "omitted_regenerable_caches": omitted_caches,
+            "archived_files_hash_checked": len(archive["files"]),
+            "c_positive_groups": 3, "c_original_vcs": [26, 6, 6],
+            "pure_oracle_positive_pairs": 11, "pure_oracle_rejected_pairs": 4,
+            "verina_full_pipeline_run": False, "coins_full_pipeline_run": False}
+
+
 def main():
     archive = PAPER / "evidence/paired"
     pair_file = archive / "results.json"
@@ -153,6 +196,7 @@ def main():
         "quantified_pair": quant["cases"],
         "projection_new_complete_passes": proj["new_overall_passes"],
         "proof_groups": proof_summaries,
+        "comparative_case_studies": check_case_study_receipts(),
         "corpus": {k: corpus[k] for k in ["source_count", "specs_selected", "summary", "runs", "binding_policy"]},
     }
     (PAPER / "evidence-summary.json").write_text(json.dumps(summary, indent=2) + "\n")

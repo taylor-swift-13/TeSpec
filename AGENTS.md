@@ -1,6 +1,6 @@
 # teSpec 工作约束
 
-- 实现工作使用唯一的 `main` 分支（当前工作树 `/home/yangfp/teSpec-benchmark-tespec`）；交付推送到 `origin/main`。旧工作树可保留为 detached 快照。sac 仓库不 push。
+- 实现工作使用唯一的 `main` 分支（当前工作树 `/home/yangfp/teSpec-benchmark-tespec`）；交付推送到 `origin/main`。只保留这一个 Git 工作树；旧工作树材料保存在仓库外的已验证备份中。sac 仓库不 push。
 - teSpec 通过二进制接口调用 sac 符号执行器。不得提交 sac 执行器、编译器或 SMT solver 的源码、源码副本、源码归档或源码子模块。
 - sac 的源码修改和构建在 teSpec 仓库之外进行；本仓库可保存构建脚本、执行器二进制、版本及哈希信息。
 - C 测试输入、程序变异、规约示例和必要的运行时接口头文件可以保留；它们不属于 sac 执行器实现。
