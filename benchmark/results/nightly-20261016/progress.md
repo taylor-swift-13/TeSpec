@@ -2,9 +2,9 @@
 
 完整组 20/45；待补齐 25。截止北京时间 2026-10-16 08:00。
 
-当前组：const_example_lessgood；阶段：CHECKED_QCP_NATIVE_RESULTS_SCOPED_NEXT_GROUP_REVIEW。
+当前组：runway__funcs2；阶段：NATIVE_GAPS_AND_ORIGINAL_CONTEXT_FAILURE_RECORDED。
 
-teSpec 最终不匹配 454 条，已解决自动阶段缺口 41 条。详情见 ../tespec-unexpected/README.md；未评测组不算零异常。
+teSpec 最终不匹配 694 条，已解决自动阶段缺口 41 条。详情见 ../tespec-unexpected/README.md；未评测组不算零异常。
 
 | 程序组 | 状态 | 结果成本表 |
 |---|---|---|

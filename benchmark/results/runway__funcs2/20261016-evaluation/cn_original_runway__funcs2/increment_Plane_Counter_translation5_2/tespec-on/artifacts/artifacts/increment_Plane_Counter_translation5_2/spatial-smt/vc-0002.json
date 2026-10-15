@@ -1,0 +1,111 @@
+{
+  "status": "UNKNOWN",
+  "supported": false,
+  "reason": "local_environment_requires_typed_adapter",
+  "certificate": "NOT_CHECKED",
+  "vc_index": 2,
+  "input": {
+    "layout": {
+      "schema": "sac-target-layout/v1",
+      "architecture_bits": 32,
+      "byte_order": "big",
+      "pointer_size": 4,
+      "memory_rules": "naive_C_Rules",
+      "field_address_semantics": "base-plus-byte-offset/v1",
+      "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+      "aggregates": [
+        {
+          "id": 369,
+          "kind": "struct",
+          "name": "State",
+          "defined": true,
+          "size": 24,
+          "alignment": 4,
+          "fields": [
+            {
+              "id": 375,
+              "name": "ModeA",
+              "offset": 0,
+              "size": 4,
+              "alignment": 4,
+              "type": {
+                "kind": "basic",
+                "name": "int"
+              },
+              "computational": true
+            },
+            {
+              "id": 374,
+              "name": "ModeD",
+              "offset": 4,
+              "size": 4,
+              "alignment": 4,
+              "type": {
+                "kind": "basic",
+                "name": "int"
+              },
+              "computational": true
+            },
+            {
+              "id": 373,
+              "name": "W_A",
+              "offset": 8,
+              "size": 4,
+              "alignment": 4,
+              "type": {
+                "kind": "basic",
+                "name": "int"
+              },
+              "computational": true
+            },
+            {
+              "id": 372,
+              "name": "W_D",
+              "offset": 12,
+              "size": 4,
+              "alignment": 4,
+              "type": {
+                "kind": "basic",
+                "name": "int"
+              },
+              "computational": true
+            },
+            {
+              "id": 371,
+              "name": "Runway_Time",
+              "offset": 16,
+              "size": 4,
+              "alignment": 4,
+              "type": {
+                "kind": "basic",
+                "name": "int"
+              },
+              "computational": true
+            },
+            {
+              "id": 370,
+              "name": "Plane_Counter",
+              "offset": 20,
+              "size": 4,
+              "alignment": 4,
+              "type": {
+                "kind": "basic",
+                "name": "int"
+              },
+              "computational": true
+            }
+          ]
+        }
+      ],
+      "aliases": []
+    },
+    "vc": {
+      "kind": "return",
+      "name": null,
+      "line": 11,
+      "status": "UNKNOWN",
+      "path": "PROP[\n  s_addr_ModeA_420 == 0;\n  s_addr_ModeD_421 == 1;\n  s_addr_W_A_422 == 1;\n  s_addr_W_D_423 == 0;\n  s_addr_Runway_Time_424 == 3;\n  s_addr_Plane_Counter_425 == 1 ]\nLOCAL[]\nSEP[\n  store((record_return_769_free + 20), 2, signed int);\n  store((record_return_769_free + 16), 3, signed int);\n  store((record_return_769_free + 12), 0, signed int);\n  store((record_return_769_free + 8), 1, signed int);\n  store((record_return_769_free + 4), 1, signed int);\n  store(record_return_769_free, 0, signed int) ]\n",
+      "goal": "EX s_addr_Runway_Time_438 s_addr_W_D_437 s_addr_W_A_436 s_addr_ModeD_435 s_addr_ModeA_434 s_addr_Plane_Counter_433 retval_Plane_Counter_432 retval_Runway_Time_431 retval_W_D_430 retval_W_A_429 retval_ModeD_428 retval_ModeA_427 \nPROP[\n  0 <= retval_ModeA_427;\n  retval_ModeA_427 <= 1;\n  0 <= retval_ModeD_428;\n  retval_ModeD_428 <= 1;\n  (retval_ModeA_427 + retval_ModeD_428) <= 1;\n  retval_W_A_429 >= 0;\n  retval_W_D_430 >= 0;\n  0 <= retval_Runway_Time_431;\n  retval_Runway_Time_431 <= 5;\n  0 <= retval_Plane_Counter_432;\n  retval_Plane_Counter_432 <= 3;\n  retval_Plane_Counter_432 <= (3 * (retval_ModeA_427 + retval_ModeD_428));\n  retval_Runway_Time_431 <= (5 * (retval_ModeA_427 + retval_ModeD_428));\n  retval_Plane_Counter_432 <= (3 * ((1 - retval_ModeA_427) + retval_W_D_430));\n  retval_Plane_Counter_432 <= (3 * ((1 - retval_ModeD_428) + retval_W_A_429));\n  retval_Plane_Counter_432 == (s_addr_Plane_Counter_433 + 1);\n  retval_ModeA_427 == s_addr_ModeA_434;\n  retval_ModeD_428 == s_addr_ModeD_435;\n  retval_W_A_429 == s_addr_W_A_436;\n  retval_W_D_430 == s_addr_W_D_437;\n  retval_Runway_Time_431 == s_addr_Runway_Time_438 ]\nLOCAL[\n  Temp s s_419_addr ]\nSEP[\n  store(record_return_769_free, retval_ModeA_427, signed int);\n  store((record_return_769_free + 4), retval_ModeD_428, signed int);\n  store((record_return_769_free + 8), retval_W_A_429, signed int);\n  store((record_return_769_free + 12), retval_W_D_430, signed int);\n  store((record_return_769_free + 16), retval_Runway_Time_431, signed int);\n  store((record_return_769_free + 20), retval_Plane_Counter_432, signed int);\n  store((s_419_addr + 20), s_addr_Plane_Counter_433, signed int);\n  store(s_419_addr, s_addr_ModeA_434, signed int);\n  store((s_419_addr + 4), s_addr_ModeD_435, signed int);\n  store((s_419_addr + 8), s_addr_W_A_436, signed int);\n  store((s_419_addr + 12), s_addr_W_D_437, signed int);\n  store((s_419_addr + 16), s_addr_Runway_Time_438, signed int) ]\n"
+    }
+  }
+}

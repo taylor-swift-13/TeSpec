@@ -1,0 +1,111 @@
+{
+  "status": "UNKNOWN",
+  "supported": false,
+  "reason": "local_environment_requires_typed_adapter",
+  "certificate": "NOT_CHECKED",
+  "vc_index": 4,
+  "input": {
+    "layout": {
+      "schema": "sac-target-layout/v1",
+      "architecture_bits": 32,
+      "byte_order": "big",
+      "pointer_size": 4,
+      "memory_rules": "naive_C_Rules",
+      "field_address_semantics": "base-plus-byte-offset/v1",
+      "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+      "aggregates": [
+        {
+          "id": 369,
+          "kind": "struct",
+          "name": "State",
+          "defined": true,
+          "size": 24,
+          "alignment": 4,
+          "fields": [
+            {
+              "id": 375,
+              "name": "ModeA",
+              "offset": 0,
+              "size": 4,
+              "alignment": 4,
+              "type": {
+                "kind": "basic",
+                "name": "int"
+              },
+              "computational": true
+            },
+            {
+              "id": 374,
+              "name": "ModeD",
+              "offset": 4,
+              "size": 4,
+              "alignment": 4,
+              "type": {
+                "kind": "basic",
+                "name": "int"
+              },
+              "computational": true
+            },
+            {
+              "id": 373,
+              "name": "W_A",
+              "offset": 8,
+              "size": 4,
+              "alignment": 4,
+              "type": {
+                "kind": "basic",
+                "name": "int"
+              },
+              "computational": true
+            },
+            {
+              "id": 372,
+              "name": "W_D",
+              "offset": 12,
+              "size": 4,
+              "alignment": 4,
+              "type": {
+                "kind": "basic",
+                "name": "int"
+              },
+              "computational": true
+            },
+            {
+              "id": 371,
+              "name": "Runway_Time",
+              "offset": 16,
+              "size": 4,
+              "alignment": 4,
+              "type": {
+                "kind": "basic",
+                "name": "int"
+              },
+              "computational": true
+            },
+            {
+              "id": 370,
+              "name": "Plane_Counter",
+              "offset": 20,
+              "size": 4,
+              "alignment": 4,
+              "type": {
+                "kind": "basic",
+                "name": "int"
+              },
+              "computational": true
+            }
+          ]
+        }
+      ],
+      "aliases": []
+    },
+    "vc": {
+      "kind": "return",
+      "name": null,
+      "line": 42,
+      "status": "UNKNOWN",
+      "path": "PROP[\n  s_addr_ModeA_519 == 1;\n  s_addr_ModeD_520 == 0;\n  s_addr_W_A_521 == 1;\n  s_addr_W_D_522 == 0;\n  s_addr_Runway_Time_523 == 0;\n  s_addr_Plane_Counter_524 == 0 ]\nLOCAL[]\nSEP[\n  store((record_return_769_free + 20), 0, signed int);\n  store((record_return_769_free + 16), 0, signed int);\n  store((record_return_769_free + 12), 0, signed int);\n  store((record_return_769_free + 8), 0, signed int);\n  store((record_return_769_free + 4), 0, signed int);\n  store(record_return_769_free, 1, signed int) ]\n",
+      "goal": "EX s_addr_Plane_Counter_536 s_addr_Runway_Time_535 s_addr_W_D_534 s_addr_ModeD_533 s_addr_ModeA_532 retval_Plane_Counter_531 retval_Runway_Time_530 retval_W_D_529 retval_W_A_528 retval_ModeD_527 retval_ModeA_526 \nPROP[\n  0 <= retval_ModeA_526;\n  retval_ModeA_526 <= 1;\n  0 <= retval_ModeD_527;\n  retval_ModeD_527 <= 1;\n  (retval_ModeA_526 + retval_ModeD_527) <= 1;\n  retval_W_A_528 >= 0;\n  retval_W_D_529 >= 0;\n  0 <= retval_Runway_Time_530;\n  retval_Runway_Time_530 <= 5;\n  0 <= retval_Plane_Counter_531;\n  retval_Plane_Counter_531 <= 3;\n  retval_Plane_Counter_531 <= (3 * (retval_ModeA_526 + retval_ModeD_527));\n  retval_Runway_Time_530 <= (5 * (retval_ModeA_526 + retval_ModeD_527));\n  retval_Plane_Counter_531 <= (3 * ((1 - retval_ModeA_526) + retval_W_D_529));\n  retval_Plane_Counter_531 <= (3 * ((1 - retval_ModeD_527) + retval_W_A_528));\n  retval_ModeA_526 == s_addr_ModeA_532;\n  retval_ModeD_527 == s_addr_ModeD_533;\n  retval_W_D_529 == s_addr_W_D_534;\n  retval_Runway_Time_530 == s_addr_Runway_Time_535;\n  retval_Plane_Counter_531 == s_addr_Plane_Counter_536;\n  s_addr_W_D_534 <= 0 ]\nLOCAL[\n  Temp s s_518_addr ]\nSEP[\n  store(record_return_769_free, retval_ModeA_526, signed int);\n  store((record_return_769_free + 4), retval_ModeD_527, signed int);\n  store((record_return_769_free + 8), retval_W_A_528, signed int);\n  store((record_return_769_free + 12), retval_W_D_529, signed int);\n  store((record_return_769_free + 16), retval_Runway_Time_530, signed int);\n  store((record_return_769_free + 20), retval_Plane_Counter_531, signed int);\n  store(s_518_addr, s_addr_ModeA_532, signed int);\n  store((s_518_addr + 4), s_addr_ModeD_533, signed int);\n  store((s_518_addr + 12), s_addr_W_D_534, signed int);\n  store((s_518_addr + 16), s_addr_Runway_Time_535, signed int);\n  store((s_518_addr + 20), s_addr_Plane_Counter_536, signed int) ]\n\nEX s_addr_Plane_Counter_547 s_addr_Runway_Time_546 s_addr_W_D_545 s_addr_ModeD_544 s_addr_ModeA_543 retval_Plane_Counter_542 retval_Runway_Time_541 retval_W_D_540 retval_W_A_539 retval_ModeD_538 retval_ModeA_537 \nPROP[\n  0 <= retval_ModeA_537;\n  retval_ModeA_537 <= 1;\n  0 <= retval_ModeD_538;\n  retval_ModeD_538 <= 1;\n  (retval_ModeA_537 + retval_ModeD_538) <= 1;\n  retval_W_A_539 >= 0;\n  retval_W_D_540 >= 0;\n  0 <= retval_Runway_Time_541;\n  retval_Runway_Time_541 <= 5;\n  0 <= retval_Plane_Counter_542;\n  retval_Plane_Counter_542 <= 3;\n  retval_Plane_Counter_542 <= (3 * (retval_ModeA_537 + retval_ModeD_538));\n  retval_Runway_Time_541 <= (5 * (retval_ModeA_537 + retval_ModeD_538));\n  retval_Plane_Counter_542 <= (3 * ((1 - retval_ModeA_537) + retval_W_D_540));\n  retval_Plane_Counter_542 <= (3 * ((1 - retval_ModeD_538) + retval_W_A_539));\n  retval_ModeA_537 == s_addr_ModeA_543;\n  retval_ModeD_538 == s_addr_ModeD_544;\n  retval_W_D_540 == s_addr_W_D_545;\n  retval_Runway_Time_541 == s_addr_Runway_Time_546;\n  retval_Plane_Counter_542 == s_addr_Plane_Counter_547;\n  retval_Plane_Counter_542 == (s_addr_Plane_Counter_547 + 1) ]\nLOCAL[\n  Temp s s_518_addr ]\nSEP[\n  store(record_return_769_free, retval_ModeA_537, signed int);\n  store((record_return_769_free + 4), retval_ModeD_538, signed int);\n  store((record_return_769_free + 8), retval_W_A_539, signed int);\n  store((record_return_769_free + 12), retval_W_D_540, signed int);\n  store((record_return_769_free + 16), retval_Runway_Time_541, signed int);\n  store((record_return_769_free + 20), retval_Plane_Counter_542, signed int);\n  store(s_518_addr, s_addr_ModeA_543, signed int);\n  store((s_518_addr + 4), s_addr_ModeD_544, signed int);\n  store((s_518_addr + 12), s_addr_W_D_545, signed int);\n  store((s_518_addr + 16), s_addr_Runway_Time_546, signed int);\n  store((s_518_addr + 20), s_addr_Plane_Counter_547, signed int) ]\n\nEX s_addr_Runway_Time_557 s_addr_W_D_556 s_addr_ModeD_555 s_addr_ModeA_554 retval_Plane_Counter_553 retval_Runway_Time_552 retval_W_D_551 retval_W_A_550 retval_ModeD_549 retval_ModeA_548 \nPROP[\n  0 <= retval_ModeA_548;\n  retval_ModeA_548 <= 1;\n  0 <= retval_ModeD_549;\n  retval_ModeD_549 <= 1;\n  (retval_ModeA_548 + retval_ModeD_549) <= 1;\n  retval_W_A_550 >= 0;\n  retval_W_D_551 >= 0;\n  0 <= retval_Runway_Time_552;\n  retval_Runway_Time_552 <= 5;\n  0 <= retval_Plane_Counter_553;\n  retval_Plane_Counter_553 <= 3;\n  retval_Plane_Counter_553 <= (3 * (retval_ModeA_548 + retval_ModeD_549));\n  retval_Runway_Time_552 <= (5 * (retval_ModeA_548 + retval_ModeD_549));\n  retval_Plane_Counter_553 <= (3 * ((1 - retval_ModeA_548) + retval_W_D_551));\n  retval_Plane_Counter_553 <= (3 * ((1 - retval_ModeD_549) + retval_W_A_550));\n  retval_ModeA_548 == s_addr_ModeA_554;\n  retval_ModeD_549 == s_addr_ModeD_555;\n  retval_W_D_551 == s_addr_W_D_556;\n  retval_Runway_Time_552 == s_addr_Runway_Time_557;\n  s_addr_W_D_556 != 0;\n  s_addr_W_D_556 <= 0 ]\nLOCAL[\n  Temp s s_518_addr ]\nSEP[\n  store(record_return_769_free, retval_ModeA_548, signed int);\n  store((record_return_769_free + 4), retval_ModeD_549, signed int);\n  store((record_return_769_free + 8), retval_W_A_550, signed int);\n  store((record_return_769_free + 12), retval_W_D_551, signed int);\n  store((record_return_769_free + 16), retval_Runway_Time_552, signed int);\n  store((record_return_769_free + 20), retval_Plane_Counter_553, signed int);\n  store(s_518_addr, s_addr_ModeA_554, signed int);\n  store((s_518_addr + 4), s_addr_ModeD_555, signed int);\n  store((s_518_addr + 12), s_addr_W_D_556, signed int);\n  store((s_518_addr + 16), s_addr_Runway_Time_557, signed int) ]\n\nEX s_addr_Plane_Counter_568 s_addr_Runway_Time_567 s_addr_W_D_566 s_addr_ModeD_565 s_addr_ModeA_564 retval_Plane_Counter_563 retval_Runway_Time_562 retval_W_D_561 retval_W_A_560 retval_ModeD_559 retval_ModeA_558 \nPROP[\n  0 <= retval_ModeA_558;\n  retval_ModeA_558 <= 1;\n  0 <= retval_ModeD_559;\n  retval_ModeD_559 <= 1;\n  (retval_ModeA_558 + retval_ModeD_559) <= 1;\n  retval_W_A_560 >= 0;\n  retval_W_D_561 >= 0;\n  0 <= retval_Runway_Time_562;\n  retval_Runway_Time_562 <= 5;\n  0 <= retval_Plane_Counter_563;\n  retval_Plane_Counter_563 <= 3;\n  retval_Plane_Counter_563 <= (3 * (retval_ModeA_558 + retval_ModeD_559));\n  retval_Runway_Time_562 <= (5 * (retval_ModeA_558 + retval_ModeD_559));\n  retval_Plane_Counter_563 <= (3 * ((1 - retval_ModeA_558) + retval_W_D_561));\n  retval_Plane_Counter_563 <= (3 * ((1 - retval_ModeD_559) + retval_W_A_560));\n  retval_ModeA_558 == s_addr_ModeA_564;\n  retval_ModeD_559 == s_addr_ModeD_565;\n  retval_W_D_561 == s_addr_W_D_566;\n  retval_Runway_Time_562 == s_addr_Runway_Time_567;\n  s_addr_W_D_566 != 0;\n  retval_Plane_Counter_563 == (s_addr_Plane_Counter_568 + 1) ]\nLOCAL[\n  Temp s s_518_addr ]\nSEP[\n  store(record_return_769_free, retval_ModeA_558, signed int);\n  store((record_return_769_free + 4), retval_ModeD_559, signed int);\n  store((record_return_769_free + 8), retval_W_A_560, signed int);\n  store((record_return_769_free + 12), retval_W_D_561, signed int);\n  store((record_return_769_free + 16), retval_Runway_Time_562, signed int);\n  store((record_return_769_free + 20), retval_Plane_Counter_563, signed int);\n  store(s_518_addr, s_addr_ModeA_564, signed int);\n  store((s_518_addr + 4), s_addr_ModeD_565, signed int);\n  store((s_518_addr + 12), s_addr_W_D_566, signed int);\n  store((s_518_addr + 16), s_addr_Runway_Time_567, signed int);\n  store((s_518_addr + 20), s_addr_Plane_Counter_568, signed int) ]\n"
+    }
+  }
+}

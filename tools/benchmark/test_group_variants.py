@@ -53,8 +53,27 @@ def main():
                     if len(binaries)==1:
                         row['instrumented_binary_sha256']=sha(binaries[0]);m=measure([binaries[0]],folder/'fulminate-test');m['status']='PASS' if m['exit_code']==0 else 'FAIL';row['fulminate_test']=m
                     else:row['fulminate_test']={'status':'NOT_BUILT','wall_seconds':None,'resources':None,'tokens':0,'model_calls':0}
+            qcp_input=qcp
+            if case.get('qcp_input_fixture'):
+                fixture=case['qcp_input_fixture'];qcp_input=ROOT/fixture['path']
+                assert sha(qcp_input)==fixture['sha256'] and fixture['original_source_sha256']==sha(qcp)
+                # A recorded specialization may add only concrete field equality
+                # constraints at the selected original function's Require.
+                function=pair.get('function',plan['function']);original=qcp.read_text();specialized=qcp_input.read_text()
+                prefix=fixture['inserted_require_prefix'];offset=fixture['original_require_offset']
+                assert original[offset:offset+len('Require ')]=='Require '
+                assert specialized==original[:offset]+prefix+original[offset+len('Require '):]
+                assert re.search(r'\b'+re.escape(function)+r'\s*\(',original[:offset])
+                assert fixture['scope']=='CONCRETE_AGGREGATE_FIELD_ENTRY_BINDING'
+                fields=fixture['field_bindings'];parameter=fixture['parameter'];typename=fixture['struct_type']
+                assert re.fullmatch(r'[A-Za-z_]\w*',parameter) and re.fullmatch(r'[A-Za-z_]\w*',typename)
+                assert all(re.fullmatch(r'[A-Za-z_]\w*',name) and type(value) is int for name,value in fields.items())
+                assert prefix=='Require '+' && '.join(parameter+'.'+name+' == '+str(value) for name,value in fields.items())+' && '
+                signature=re.search(r'\b'+re.escape(function)+r'\s*\(\s*struct\s+'+re.escape(typename)+r'\s+'+re.escape(parameter)+r'\s*\)\s*/\*@',original)
+                assert signature and signature.end()<=offset and '*/' not in original[signature.end():offset]
+                row['qcp_input_fixture']=fixture
             for mode in ['off','on']:
-                dest=folder/('tespec-'+mode);command=[sys.executable,'-m','spectest','run',qcp,'--function',pair.get('function',plan['function']),'--binds',binds,'--execution-mode','all-boundaries','--output-dir',dest/'artifacts','--timeout','30','--compact','--spatial-smt' if mode=='on' else '--no-spatial-smt','--spatial-smt-timeout-ms','2000','-I',str(ROOT/'runtime/qcip/QCP_examples/QCP_demos_human'),*[flag for inc in qv['files']['qcp'].get('include_dirs',[]) for flag in ['-I',str(ROOT/inc)]]]
+                dest=folder/('tespec-'+mode);command=[sys.executable,'-m','spectest','run',qcp_input,'--function',pair.get('function',plan['function']),'--binds',binds,'--execution-mode','all-boundaries','--output-dir',dest/'artifacts','--timeout','30','--compact','--spatial-smt' if mode=='on' else '--no-spatial-smt','--spatial-smt-timeout-ms','2000','-I',str(ROOT/'runtime/qcip/QCP_examples/QCP_demos_human'),*[flag for inc in qv['files']['qcp'].get('include_dirs',[]) for flag in ['-I',str(ROOT/inc)]]]
                 if re.search(r'include\s+strategies\s+"/home/yangfp/teSpec/benchmark/selection/',qcp.read_text()):
                     wrapper=ROOT/'tools/benchmark/with_legacy_strategy_locator.py';row['qcp_execution_wrapper']={'path':str(wrapper.relative_to(ROOT)),'sha256':sha(wrapper),'policy':'Temporary byte-identical strategy locator compatibility, source unchanged.'};command=[sys.executable,wrapper,'--source',qcp,'--',*command]
                 m=measure(command,dest,timeout=90)
