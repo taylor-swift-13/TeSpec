@@ -1,8 +1,9 @@
 # Proof-backed specification instance testing: study protocol
 
-Status: active study; baseline installation, original allocator inventory/control probes and exploratory proof replay complete; matched coverage, controlled performance and agent experiments pending. This protocol
-was recorded before executing the comparative benchmark. Existing executor regressions
-are development evidence and are reported separately from comparative measurements.
+Status: ICSE comparison design revised on 2026-10-16. The current task is
+paper development; new comparative runs are not claimed here. Existing probes
+and proof replays remain historical evidence. The design below selects the
+comparisons needed to test the method's contribution.
 
 ## Research question and semantic object
 
@@ -21,14 +22,98 @@ The study distinguishes three claims:
 3. **Practical checking power:** which matched instances receive justified
    success or violation results within the same resource budget?
 
-Strict inclusion requires an explicit source/target fragment, a semantics-preserving
-embedding, and a separating example with a checked proof. Success on selected
-examples establishes empirical coverage, not a language-inclusion theorem.
-The primary empirical comparison is restricted to Fulminate and the baseline
-engines in the associated Code-Specify-Test-Debug-Prove study: Bennet and Darcy.
-CN universal verification is contextual evidence from the same toolchain. QCP
-is the executor foundation and a source of external subjects, rather than an
-additional main comparison tool. VERINA, COINS and SpecRL remain related work.
+## Baseline selection for ICSE (2026-10-16)
+
+The comparison should answer three questions: what is gained over runtime
+checking, what is gained over simply specializing an existing verifier, and
+what is gained over proving the specification directly on supplied examples.
+An independent symbolic-execution baseline adds evidence beyond the QCP family.
+
+| Comparison | Priority and role | Scientific question | Initial scope |
+|---|---|---|---|
+| Fulminate | Required external testing baseline; already established | Which original contracts can be checked, and at what cost, compared with runtime specification checks? | Matched C bodies, CN/QCP contracts and fixed inputs in the shared fragment; report original formulas and justified executable rewrites separately |
+| QCP-theta | Required same-foundation mechanism control; first addition | Is TeSpec more than adding input equalities to QCP's precondition? | Identical root binding, program and contracts, with native QCP call/loop handling and a matched proof budget |
+| COINS | Required proof-oracle comparison on shared pure relations | How much can direct example-based proof checking already establish, and what does execution-derived checking add? | Pure input/output relations, including quantified properties; use the original framework and the same model/proof budget |
+| Gillian-C symbolic testing | Strongly recommended independent execution baseline | How does TeSpec compare with another symbolic heap analysis, rather than only its own verification foundation? | A feature-selected common subset covering arrays, pointer aliases, lists and calls; expand after the adapter is working |
+| CN and QCP full verification | Retained reference layer | What assurance and cost does universal verification provide for the correct primary program? | One primary program per group; reuse matching validated evidence |
+
+### QCP-theta: the essential specialization control
+
+For root precondition R and a TeSpec binding theta, create the native QCP input
+with root precondition R and theta. Preserve the original implementation,
+callee contracts, loop invariants, logical definitions and QCP verification
+algorithm. Root equalities apply to entry values: recursive invocations retain
+fresh logical parameters. Do not add TeSpec's body-execution policy or copied-state
+observation machinery to this baseline.
+
+Run both systems with the same proof model (gpt-6.1-sol), libraries, retry policy
+and total proof budget. Measure complete outcomes, residual obligations, proof
+construction, checking, tokens and peak RSS. Choose mechanism examples before
+measuring: straight-line code, loops, weak but valid callee summaries, recursion,
+and internal assertions. Straight-line agreement provides a useful control;
+weak-summary and loop cases test whether the execution discipline changes the
+obligations. This is separate from universal QCP verification of each primary.
+
+### COINS: compare the shared oracle task
+
+Use the same mathematical relation, concrete input/output pairs and proof budget
+in COINS and in TeSpec's oracle comparison. Begin with powers, divisibility,
+least-root and list relations where matching definitions can be reviewed.
+Record oracle proof cost separately from TeSpec's C execution and safety checks.
+This directly tests the proof-oracle contribution while the complete TeSpec run
+measures the additional execution-derived obligations.
+
+A later adapter that supplies pre/post heap snapshots is a separate
+COINS-style direct-instance-proof control, not native COINS. It is not required
+for the first comparison. Retain the baseline's original outcomes; compare
+checked acceptance and checked rejection as separate measurements.
+
+### Gillian-C: independent symbolic execution
+
+Use the documented whole-program symbolic-testing interface, with the same C
+body and a harness encoding the shared input constraints and assertions.
+Gillian-C provides symbolic values and ASSUME/ASSERT; its artifact documents
+wpst and bulk-wpst. Pin the implementation before measuring. Select a small
+subset by program features, then record the assertions each translation covers.
+Explicit separation-logic ownership checks require a reviewed adapter; an
+ordinary value ASSERT alone does not implement them.
+
+### Required component ablations
+
+| TeSpec configuration | spatial-SMT | ITP completion |
+|---|---|---|
+| Native | Off | Off |
+| SMT | On | Off |
+| ITP | Off | On |
+| Full | On | On |
+
+Keep inputs, observation schedule and proof budget fixed. Report decided tests,
+UNKNOWN-to-decision transitions, wrong decisions, residual VC counts, ITP calls
+avoided, and complete per-test costs. One ITP unit contains all pending VCs of
+one test execution. Include retries and proof checking; retain the existing
+mean-per-execution reporting convention and individual peak-RSS measurements.
+QCP-theta isolates execution/obligation construction; this matrix isolates the
+two completion mechanisms.
+
+### Comparisons not added to the main table
+
+Bennet and Darcy generate inputs and use Fulminate as the runtime oracle. For
+fixed-input checking, they do not create two additional independent oracle
+baselines. If the paper later studies automatic input discovery under a time
+budget, add Darcy + Fulminate as a complete pipeline. QuickChick, Infer/Pulse,
+CBMC and proof-search systems belong in related work for the present scope.
+A CBMC experiment becomes useful if general bounded C bug-finding becomes a
+central empirical claim; it is not needed merely to increase baseline count.
+
+### Primary sources for this decision
+
+- [QCP: verification architecture](https://arxiv.org/abs/2505.12878)
+- [COINS: paper and software link](https://proceedings.mlr.press/v306/yang26am.html)
+- [COINS: released implementation](https://github.com/taylor-swift-13/Coins)
+- [Gillian-C: symbolic testing interface](https://gillianplatform.github.io/instantiations/c/symbolic-testing.html)
+- [Gillian-C: reproducible whole-program testing commands](https://gillianplatform.github.io/instantiations/c/pldi20-artifact.html)
+- [Fulminate: original paper](https://www.cs.ox.ac.uk/people/christopher.pulte/2024-cn-testing-paper.pdf)
+- [Code-Specify-Test-Debug-Prove: Fulminate extensions and Darcy](https://www.cl.cam.ac.uk/~pes20/pldi2026-paper155-supplementary.pdf)
 
 ## Questions and measurements
 
@@ -38,7 +123,7 @@ additional main comparison tool. VERINA, COINS and SpecRL remain related work.
 | RQ2: Are results reliable and useful for debugging? | Independently labelled valid/invalid inputs, specification and program mutations | False acceptance/rejection, confirmed violations, inconclusive results, mutant detection |
 | RQ3: What contributes to success? | Normalization, SMT-only, SMT+ITP, boundary policy ablations | Paired verdict changes, residual VC count/size, proof success |
 | RQ4: What does checking cost? | Repeated isolated runs and repeated proof-agent attempts | Generation/check/execution time, CPU, peak RSS, tokens, proof attempts |
-| RQ5: How does testing relate to full verification? | CN verification as context and TeSpec execution/proof evidence on matched instances | Checked domain, preserved boundaries, proof effort, unresolved obligations |
+| RQ5: How does testing relate to full verification? | CN/QCP primary verification as context; QCP-theta and TeSpec on matched instances | Checked domain, preserved boundaries, proof effort, unresolved obligations |
 
 ## Baselines and version policy
 
@@ -49,9 +134,13 @@ additional main comparison tool. VERINA, COINS and SpecRL remain related work.
   (2026-10-07), including its pinned Cerberus dependency. Run `cn verify`,
   `cn instrument`, and applicable `cn test` engines separately. This prevents
   attributing an old implementation limitation to the current baseline.
-- **QCP foundation:** record the upstream revision, SMT submodule, executable
-  hash, strategy library, Coq version and options as dependency provenance.
-  Earlier QCP comparison probes remain supplementary development evidence.
+- **QCP foundation and QCP-theta control:** record the upstream revision, SMT
+  submodule, executable hash, strategy library, Coq version and options. Pin
+  native QCP separately from the TeSpec executor. Earlier comparison probes
+  remain historical evidence until reproduced under the matched-input protocol.
+- **COINS and Gillian-C:** pin repository revision, dependencies, adapter sources
+  and commands before new measurements. Baseline selection is complete; this
+  document does not claim either new comparison has been executed.
 - **TeSpec:** record controller revision plus dirty diff, executable SHA-256,
   binary build manifest, runtime hashes, mode and all budgets.
 
@@ -59,30 +148,14 @@ Install CN outside teSpec in a dedicated opam switch. Published teSpec contains
 binary interfaces and logical runtime dependencies, never sac implementation
 sources. Capture all build logs and export the complete opam dependency lock.
 
-## Focused comparison update (2026-10-11)
+## Historical comparison scope (2026-10-11)
 
-The POPL 2025 Fulminate evaluation uses instrumented/uninstrumented execution
-for overhead measurements. The subsequent user-provided PLDI 2026 paper
-compares Darcy with Bennet. The comparison therefore keeps the three runtime
-configurations separate: Fulminate with supplied native fixtures, Bennet plus
-its Fulminate oracle, and Darcy plus its Fulminate oracle. Native execution
-is the overhead control, not a logical-specification baseline.
-
-Additional subjects are selected for proof-oriented formulas and symbolic
-heap inputs before measuring tool outcomes. The candidate inventory is
-`benchmark/comparison/extension-candidates-20261011/inventory.json`. Each
-candidate must complete TeSpec execution, establish initial satisfiability,
-and pass whole-run certificate checking before being presented as a TeSpec
-success. An original formula rejected by instrumentation is compared with
-a justified executable rewrite when available; rewrite success is reported.
-Recursive heaps alone are not a separating feature: both CN and Bennet
-already support lists and balanced trees.
-
-QuickCheck and QuickChick are discussed in related work. Their generator and
-checker interfaces do not directly implement the C symbolic-heap task evaluated
-here. They are not added as experimental baselines; a missing adapter is not
-counted as a tool failure. The main direct comparison remains Fulminate,
-Bennet and Darcy.
+The earlier design focused on Fulminate with native fixtures, Bennet + Fulminate,
+and Darcy + Fulminate, with QCP only as implementation provenance and COINS only
+as related work. The 2026-10-16 selection above supersedes that restriction.
+Original runs keep their recorded scope and outcomes. Native execution remains
+an overhead control, and input discovery remains separate from checking a given
+input. No historical result is relabelled as a new baseline run.
 
 ## Subject selection
 
