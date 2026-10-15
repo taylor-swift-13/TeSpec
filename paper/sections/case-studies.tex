@@ -1,129 +1,134 @@
 \section{Comparative Case Studies}
 \label{sec:case-studies}
-We examine seven cases spanning mathematical relations, internal assertions,
-recursive writes, and industrial allocation. Two cases have fresh checked
-replays dated 13 October 2026; the remaining cases use identified archived
-results or specify shared-task experiments still to be run. The supplementary
-case-study inventory records this distinction and pins comparison sources.
+We select cases that expose distinct requirements of a specification test
+oracle: arithmetic safety, quantified functional relations, and spatial
+ownership. Each case identifies its source, input, observed tool outcome,
+and control. These are recorded case studies rather than aggregate results
+for the full benchmark. The evidence inventory pins the original sources,
+logs, and proof receipts.
 
-\subsection{Original assertions and executable reformulations}
-\paragraph{Least integer square root.}
-For $n=13$, the loop returns and writes 4 after four iterations. The original
-postcondition quantifies over every nonnegative integer $k$ and characterizes
-minimality through $r\le k\leftrightarrow n\le k^2$. In the fresh replay,
-CN instrumentation rejects this original assertion with an upper-bound
-inference diagnostic; Fulminate accepts its proved finite reformulation.
-\tespec{} initially returns \unknown{}, then checks all 26 original obligations
-and returns \pass{}. This replay uses an existing candidate against fresh goals;
-it measures certificate checking rather than fresh agent proof search.
-The finite control establishes that runtime checking can evaluate the same
-relation after a justified reformulation.
+\subsection{An integer-boundary violation missed at runtime}
+\label{sec:read-min}
+The primary \texttt{read} program returns the value in an owned cell and
+preserves that cell. Listing~\ref{lst:read-mutant} changes only the return
+expression. The CN and QCP versions express the same ownership and value
+requirements.
+\begin{lstlisting}[caption={Negation mutant of read. The contract still requires the original value.},label={lst:read-mutant}]
+int read(int *p)
+/*@ With old
+    Require data_at(p, int, old)
+    Ensure __return == old &&
+           data_at(p, int, old) */
+{ return -*p; }
+\end{lstlisting}
+For a 32-bit signed integer, the input $\mathit{old}=-2^{31}$ makes the
+mathematical negation $2^{31}$ unrepresentable. C classifies an expression
+result outside its type's representable range as undefined behavior
+(Section 6.5, paragraph 5 of the C11 draft~\cite{iso2011c}). The entry
+cell is valid; it is the executed negation that violates safety.
 
-\paragraph{Divisibility with two proof branches.}
-The C implementation returns 1 when \texttt{a \% b == 0}, with $b>0$.
-Its original contract distinguishes an existential witness from universal
-nonexistence:
+The recorded Fulminate pipeline uses \texttt{cn instrument --run} with GCC.
+Both the pipeline and a subsequent invocation of the generated executable
+exit with code 0; the latter produces no diagnostic. \tespec{} reports a
+satisfiable entry and an invalid safety obligation, yielding \fail{}.
+For this input the range check specializes to the false proposition
 \[
- (r=1\land\exists q\in\mathbb Z.\ a=qb)
- \lor (r=0\land\forall q\in\mathbb Z.\ a\ne qb).
+                    -2^{31}\le 2^{31}\le 2^{31}-1.
 \]
-For $(a,b)=(6,3)$ and $(7,3)$, ATP leaves both instances \unknown{}.
-ITP completion checks the complete six-obligation group for each input,
-yielding two \pass{} results. The first proof supplies $q=2$; the second proves
-$7\ne3q$ for every integer $q$. A classifier returning zero on a nonmultiple
-is a positive execution test, despite the negative mathematical fact it proves.
-The first certificate uses full kernel replay; the second uses checked reuse
-of previously verified dependencies. Both audit the address-evaluation runtime
-parameter.
+The decisive evidence is the arithmetic-safety check, rather than a guessed
+native return value. The archived log does not record that value.
 
-The finite CN version checks divisibility by remainder. Adding an equivalent
-unbounded universal consequence causes the tested instrumenter to reject it
-with a lower-bound inference diagnostic, while the finite version passes both
-calls. A separate axiom-free Rocq lemma proves the quantified/finite equivalence
-and the redundancy of the added consequence; independent kernel checking
-succeeds. This comparison keeps the semantic property fixed while varying its
-assertion formulation. The 128-input divisibility suite still requires further
-ITP completion; these two certificates do not establish full-suite success.
+\begin{table}[t]
+\centering\small
+\caption{Negation mutant: controls and the boundary discrepancy. Runtime rejection denotes Fulminate exit code 2.}
+\label{tab:read-min}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Initial value & Fulminate & \tespec{}\\
+\midrule
+\texttt{INT\_MIN} & Accept (exit 0) & \fail{} (safety)\\
+$0$ & Accept (exit 0) & \pass{}\\
+$-1,1,7,\texttt{INT\_MAX}$ & Runtime rejection & \fail{}\\
+\bottomrule
+\end{tabular}
+\end{table}
+The controls in Table~\ref{tab:read-min} distinguish the missed safety
+violation from ordinary incorrect return values. The correct read
+implementation also passes at \texttt{INT\_MIN}. This is a missed violation
+in the recorded runtime configuration. Compiler and sanitizer configuration
+form part of that observation; a sanitizer-augmented baseline is a separate
+configuration in the evaluation protocol. The \tespec{} result here is
+automatic solver evidence, not an independently replayed Rocq certificate.
 
-\subsection{Shared tasks with VERINA and COINS}
-\paragraph{COINS HumanEval/76: powers.}
-COINS specifies whether $x=n^k$ for some natural exponent $k$~\cite{yang2026coins}.
-Our existing C subject uses the same relation with a nonzero integer result
-as the Boolean adapter. Defined signed C execution requires a narrower positive
-input domain and a multiplication bound. The proposed matched tests cover
-exponent zero, $n=1$, exact powers, and adjacent nonpowers. COINS already checks
-this kind of instantiated proposition on trusted input/output pairs.
-The additional experiment for \tespec{} is to derive the result from the C loop
-and check its safety and internal obligations. A standalone Rocq control checks the six original example pairs and proves
-rejection of two wrong outputs using the matching relation; independent kernel
-checking succeeds without axioms. This is a pure-oracle control, not a COINS
-agent run. A complete paired C runtime/proof result remains pending.
+\subsection{A quantified minimum without a finite monitor}
+For the \texttt{root\_cell} example, $n=13$ produces the value 4, while
+Equation~\eqref{eq:least-root} still quantifies over all nonnegative integers.
+The recorded CN instrumenter rejects the original postcondition because it
+cannot infer an upper bound for the quantified variable. The same limitation
+appears in the archived Bennet and Darcy configurations. Thus this case
+exposes an assertion-support boundary, rather than an incorrect runtime
+answer.
 
-\paragraph{VERINA basic/48: perfect-square classification.}
-VERINA's original task specifies
-$\mathit{result}\leftrightarrow\exists i:\mathbb N.\ i^2=n$ and includes a
-Lean implementation with soundness and completeness proofs~\cite{ye2026verina}.
-It therefore provides a control with an established mathematical proof route.
-A matched C adaptation must preserve the relation and prove that its search
-avoids signed multiplication overflow. Inputs should include zero, adjacent
-squares, nonsquares, and the chosen machine-width boundary. A local Lean control checks five correct outputs and proves rejection of two
-wrong outputs with the original existential relation. It uses Lean 4.34.0,
-rather than VERINA's pinned 4.18.0, and audits the standard core axioms used by
-its arithmetic proofs. This measures the shared proposition only. The shared-task
-source audit is complete; the reviewed C port and matched tool runs remain
-pending. We report no VERINA success-rate comparison from this audit.
+The \tespec{} postcondition-only replay initially returns \unknown{}.
+Proof completion checks its complete group of 26 original obligations and
+produces \pass{}. The proof reasons directly about the quantified relation.
+As a control, the artifact proves its equivalence to the finite formula in
+Equation~\eqref{eq:finite-root}; that formula passes Fulminate on the same
+fixture. The comparison isolates the additional work required to obtain an
+executable monitor from a valid mathematical specification.
 
-VERINA has three-valued scores and inverse property checks. Its decision,
-property-testing, and proof routes must be distinguished when aggregating
-results. COINS has instance proof checking, while its published negative
-protocol can reject a pair without a checked rejection proof. These existing
-capabilities support a comparison of evidence units: pure example acceptance,
-checked rejection, and complete C-execution coverage. They do not establish
-that either proof assistant lacks the ability to express heaps or traces.
+The intermediate assertion provides a second observation site. Replacing
+$\mathsf{LeastRoot}(n,r)$ by $\mathsf{LeastRoot}(n,r-1)$ preserves the program
+execution but changes the assertion to $\mathsf{LeastRoot}(13,3)$. The archived
+27-obligation group proves the other obligations and refutes this assertion
+VC. Its receipt does not admit a complete execution-counterexample
+certificate, so this is reported as a checked VC refutation. It demonstrates
+that internal specification changes can be observed even when inputs and
+outputs are unchanged.
 
-\subsection{Internal state and production code}
-\paragraph{An intermediate mutation with identical endpoints.}
-Replacing $\mathsf{LeastRoot}(n,r)$ by $\mathsf{LeastRoot}(n,r-1)$ before the
-write preserves the four iterations and the final value 4. The archived
-27-obligation positive group is checked; the mutated assertion VC is refuted
-and the other 26 obligations are proved. The archive records no admitted
-execution-counterexample certificate, so this result remains a scoped VC
-refutation rather than an overall \fail{}. An input/output-only task misses
-the changed assertion unless the internal state is supplied as another example.
-Fulminate supports internal checks; its unresolved annotation placement in this
-probe is excluded from a valid paired comparison.
+\subsection{Existence and nonexistence in one contract}
+The divisibility program returns whether \texttt{a \% b == 0}, under $b>0$.
+Its mathematical specification distinguishes two proof tasks:
+\[
+(r=1\land\exists q\in\mathbb Z.\ a=qb)
+\ \lor\ (r=0\land\forall q\in\mathbb Z.\ a\ne qb).
+\]
+The inputs $(6,3)$ and $(7,3)$ exercise both branches. The first proof supplies
+$q=2$; the second excludes every integer witness. Both are positive
+conformance tests. Automatic processing leaves both unresolved, and proof
+completion checks each complete six-obligation execution group. The receipts
+record their logical dependencies and the kernel-checking route.
 
-\paragraph{Recursive writes under a weak summary.}
-A recursive helper increments a cell from 3 to 6. Weakening its postcondition
-to an existential lower bound preserves the writes but loses the information
-needed by modular verification of the caller's exact result. The archived
-\tespec{} and Fulminate runs preserve the exact instance result by executing
-the helper body. The weakened summary is a valid configuration, not an
-incorrect-specification negative. A VERINA or COINS comparison must supply
-an explicit initial/final heap relation to cover the same ownership and writes.
+The finite remainder-based CN contract passes both inputs. Adding its
+logically redundant, unbounded universal consequence causes the tested
+instrumenter to reject the assertion with a lower-bound inference diagnostic.
+A separately kernel-checked Rocq lemma establishes the equivalence and the
+redundancy of that consequence. Together with least-root, this case shows
+that a formulation change can determine whether a runtime oracle is available,
+even when the intended property is unchanged.
 
-\paragraph{Fulminate's pKVM buddy allocator.}
-The 80-subject pool includes the original industrial allocator from Fulminate's
-artifact~\cite{banerjee2025fulminate}. Its paper trace initializes eight pages,
-allocates two order-zero blocks, then releases both. We retain the original
-two specification mutations and the coalescing implementation mutation.
-Functional checks require alignment, disjoint live blocks, reference counts,
-and conservation across splitting and coalescing. This subject is a direct
-industrial control for Fulminate's published evaluation. Native replay accepts
-all 128 reference traces on both ABIs and detects the missing-min mutation's
-invalid initialization partition in every trace. Read-only function-exit hooks
-capture 1,311 extraction post-states per ABI; every trace witnesses the original
-incorrect unexcluded-pool postcondition. A kernel-checked Coq proof refutes its
-necessary previous-link clause for the cleared extracted root. The ownership-guard
-mutation includes subsumed pages whose headers overlap their parent block's
-owned zero region: 629 overlaps per ABI, covering every trace. A second checked
-Coq proof refutes the necessary byte-footprint separation condition. These observations
-and arithmetic proofs precede the full QCP translation and paired contract-tool
-verdicts, which remain pending. Different traces are inputs to one subject.
+\subsection{A spatial mismatch resolved by either proof route}
+Two read variants omit the owned cell from their return contract. The body
+still retains that cell. In the exact resource interpretation used here,
+a nonempty owned heap does not satisfy \texttt{emp}. An automatically added
+frame for user heap would hide precisely this specification defect.
 
-These cases identify two measured benefits of retaining original mathematical
-assertions, an archived execution-preservation mechanism, and explicit remaining
-experiments. Prime enumeration and shortest-palindrome tasks provide further
-shared candidates with quantified completeness and minimality properties.
-All comparative negative results require independently witnessed violations;
-a proof timeout or an instrumentation error supplies no strong negative result.
+Across six integer inputs per variant, the recorded automatic run with
+spatial SMT disabled leaves 12 cases \unknown{}. Independent proof-completion
+jobs refute the original spatial obligations and check entry feasibility.
+Enabling spatial SMT resolves those same 12 cases as \fail{}, with
+countermodels checked against the finite-heap interpretation and agreement
+with the existing kernel-checked refutations. The remaining 49 raw
+classifications are unchanged, including all 22 passing cases. These solver
+results retain their automatic-evidence label; agreement with a checked
+refutation does not make the solver output itself a kernel certificate.
+
+Fulminate also detects the missing-ownership variants. This control therefore
+isolates the effect of \tespec{}'s proof backend: a residual spatial obligation
+can represent a real defect, and a stronger solver can decide it without
+changing execution or rejecting correct controls. The full read group contains
+61 variant/input pairs across ten paired configurations. Fulminate matches
+60 expected outcomes; \tespec{} with per-execution ITP or with spatial SMT
+matches all 61 under the group's declared policy. Seven of these outcomes
+are expected memory-access errors for specifications that supply no read
+permission, and are kept separate from ordinary assertion failures.

@@ -1,44 +1,29 @@
 \section{Discussion}
 \label{sec:discussion}
-\paragraph{Where the capability pays off.}
-A developer with proof-oriented contracts and supporting lemmas can specialize
-logical data and reuse the verifier to execute and check the instance symbolically.
-Symbolic addresses and owned resources supply the test heap; the workflow requires
-no native allocation harness. The least-root instance
-illustrates the tradeoff: proof completion retains the quantified formula;
-runtime checking uses a finite reformulation. On the common executable fragment,
-Fulminate provides complete negative feedback for the paired mutants, whereas
-\tespec{}'s automatic results remain unresolved. Proof construction and replay
-are therefore central costs of the additional oracle capability.
+\paragraph{Choosing a test oracle.}
+Runtime checking provides immediate feedback when a contract has an executable
+interpretation. Proof-based testing extends that workflow to original
+mathematical assertions and reuses the specification's lemmas. Its cost
+therefore depends on both the execution and the proof route. The spatial read
+cases show how improving automatic discharge can remove proof work while
+preserving the execution and its obligations. Quantified contracts illustrate
+where proof completion remains useful.
 
-\paragraph{Contract debugging and contract quality.}
-The supplied Require and binding define $D_\theta$. Comparing candidate
-specifications requires a behavior population fixed independently of those
-candidates: an over-strong Require could otherwise remove problematic inputs.
-Such a study should freeze initial heaps and positive/negative labels, record
-entry rejection, and check negative examples with the intended polarity.
-The current evaluation measures instance-checking capability and mechanisms.
+\paragraph{Validity of the comparison.}
+The selected cases explain mechanisms and do not estimate their prevalence
+across projects. Contract pairs must agree on integer widths, ownership,
+aliasing, and logical definitions. The recorded read discrepancy concerns
+32-bit signed negation; no pointer-layout conversion is involved. General
+C comparisons additionally need matched target layouts and compiler settings.
+Candidate preconditions also affect which inputs are admitted, so expected
+behavior and input selection must be fixed independently of those candidates.
 
-\paragraph{Validity and transfer.}
-The programs and proof groups were selected during development. Common-fragment
-pairs control logical input data and C bodies; the least-root formula isolates
-one assertion-translation barrier. These results establish the reported
-capabilities on those subjects. Their frequency and proof effort across projects
-need held-out predicate families and programs. Imported predicates can still
-block reads or leave entry existence unresolved, as the original-library runs
-show. Complete C-to-VC refinement remains an implementation obligation beyond
-the mechanized reference interfaces.
-
-Native differential runs use defined C executions. Architecture-sensitive
-comparisons require matched widths, layouts, ownership, and aliasing: the
-packaged executor models a 32-bit target while the native host is x86-64.
-The original allocator reproduction is retained in the supplementary record
-with its own budgets and target conditions. It supplies baseline artifact
-coverage independently of the paired results.
-
-The archived timings are single runs, some concurrent with other proof work.
-They separate replay from construction cost and support the reported absolute
-measurements. Comparative speed and proof-agent success require repeated
-isolated runs, fixed libraries, and fixed budgets, as specified in the study
-protocol. Unsuccessful proofs, unsupported inputs, and unresolved intermediate
-baseline translations remain in the evidence inventory.
+\paragraph{Scope of the guarantees.}
+The Rocq development establishes reference observation semantics and the
+stated execution-tree interfaces. The implementation additionally relies on
+C-to-VC correspondence, complete successor and boundary generation, and the
+selected memory interpretation. Automatic results trust the solver encoding;
+proof certificates check their exported propositions and admitted assumptions.
+These dependencies are recorded with the evidence rather than inferred from
+a single success label. Finite instance acceptance covers its selected domain;
+full verification covers the original precondition.

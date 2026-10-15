@@ -56,29 +56,21 @@ Replacing the assertion by $\mathsf{LeastRoot}(n,r-1)$ changes the observation
 while leaving the C body and final contract intact. At that boundary the
 program still has $n=13,r=4$, so the candidate asks for
 $\mathsf{LeastRoot}(13,3)$. Instantiating its universal quantifier with $k=3$
-exposes the contradiction $13\le9$. The paired artifact proves the negation
-of the complete generated assertion VC and checks the other 26 obligations.
-This archived negative proof records the falsity of the quantified goal.
-Its execution verdict remains unresolved until reachability evidence is
-admitted, as detailed in Section~\ref{sec:verdicts}. Both variants
-follow the same program computation.
+exposes the contradiction $13\le9$. The failed observation does not replace the reached state or alter the
+following write. Both variants therefore follow the same program computation.
 
 \paragraph{Original assertions and executable reformulations.}
-The pinned Fulminate, Bennet, and Darcy configurations reject the original
-quantified \emph{postcondition} because they cannot infer an upper bound for
-$k$. An executable reformulation is
+The original relation ranges over all nonnegative integers even after
+$n$ and $r$ are fixed. An executable reformulation is
 \begin{equation}
 \label{eq:finite-root}
 0\le r\land n\le r^2\land
    \bigl(r=0\lor(r-1)^2<n\bigr).
 \end{equation}
-The artifact proves the equivalence of Equations~\eqref{eq:least-root} and
-\eqref{eq:finite-root} over mathematical integers; the C contract bounds inputs
-to control machine arithmetic. The reformulated postcondition passes
-Fulminate on the same fixture. This comparison identifies the concrete benefit:
-\tespec{} can check the original verification assertion, while the executable
-route requires constructing and justifying its monitor form. The intermediate
-assertion translation has a separate unresolved baseline diagnostic and is
-excluded from this expressiveness comparison.
+The two formulas are equivalent over mathematical integers; the C contract
+bounds inputs to control machine arithmetic. Constructing and justifying the
+finite form is one route to a runtime oracle. \tespec{} instead retains the
+original relation as a proposition and reuses its proof library. The checked
+comparison appears in Section~\ref{sec:case-studies}.
 
 \input{figures/overview}

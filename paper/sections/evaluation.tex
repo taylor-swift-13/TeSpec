@@ -1,128 +1,55 @@
-\section{Evaluation}
+\section{Evaluation Design}
 \label{sec:evaluation}
-We evaluate three questions: Can the original verification assertion serve as
-an instance oracle? Does copied-state checking retain the information required
-by later observations? What evidence and cost are associated with a complete
-result? The study combines matched contract configurations, independently
-checked proof groups, and development regressions. All numerical results below
-come from archived runs whose sources, goal interfaces, and hashes are checked
-by the paper build.
+The broader evaluation will test whether the case-study mechanisms transfer
+across programs and predicate families. The protocol fixes program groups,
+variants, input cases, expected outcomes, and resource accounting before
+aggregating results. Case studies in Section~\ref{sec:case-studies} are the
+current evidence; the following comparisons are the study design.
 
-\subsection{Design and comparison units}
-The paired archive contains 102 tool invocations covering 11 contract
-configurations from 10 C body families. Each configuration has a valid and
-mutated postcondition. CN performs universal verification, Fulminate checks a
-concrete fixture, and \tespec{} checks matched logical data with symbolic
-addresses. Repeated boundary policies are collapsed when their outcomes agree.
-We use CN to examine the effect of modular summaries and Fulminate to compare
-instance verdicts. Bennet and Darcy additionally test the translation of the
-least-root property. The original formula and its proved finite rewrite are
-reported separately.
+\paragraph{Program groups and comparison units.}
+Each group has a primary program and several implementation or specification
+variants, with multiple inputs per variant. Existing source variants are
+retained. Expected behavior is reviewed independently of a tool verdict,
+including whether a case exercises defined execution, a functional mismatch,
+a spatial mismatch, or an unsafe operation. Only the primary program requires
+full verification. Every selected variant/input pair is a test unit.
+Mutants from one program are correlated observations, so aggregate analysis
+will report both group-level coverage and per-input outcomes.
 
-A complete instance is the primary outcome. We also report phase results,
-residual obligations, proof polarity, and replay cost. Archived UNKNOWN results
-retain that status. Historical INVALID labels denote empty entry domains;
-ERROR labels denote execution or infrastructure diagnostics. The newer VC
-interface in Section~\ref{sec:evidence} does not change archived measurements.
+\paragraph{Comparators and research questions.}
+Fulminate is the direct runtime-checking baseline on matched CN contracts and
+inputs. The evaluation will distinguish its recorded configuration from a
+sanitizer-augmented configuration for arithmetic and memory-safety cases.
+Original quantified contracts and proved executable reformulations are
+reported separately. COINS is compared on the shared pure input/output relation under the same
+model and proof budget. This isolates what execution-derived state and
+internal observations add. Gillian-C supplies
+an independent symbolic-testing comparison on a reviewed common feature
+subset. Unsupported inputs remain visible in coverage figures.
 
-\subsection{Checking original mathematical assertions}
-\input{tables/proof-summary}
-The least-root return fixture fixes $n=13$ and leaves the cell address symbolic.
-It executes four loop iterations and generates 26 obligations. Adding the
-quantified intermediate observation in Listing~\ref{lst:root} yields a separate
-27-obligation instance. Both complete proof groups pass independent checking,
-including entry existence and the original safety and functional goals.
-The observation instance receives an overall PASS after proof completion.
+CN and \qcp{} verify each primary program's original contract once, without
+adding test-input equalities. This comparison asks how early instance
+feedback and its cost relate to full verification; their denominators are
+kept separate. Within \tespec{}, the four combinations of spatial SMT on/off
+and ITP on/off measure automatic decision coverage and the contribution of
+proof completion. The protocol asks: which violations are detected, which
+original assertions can be checked, which obligations require proofs, and
+what each completed decision costs?
 
-The pinned Fulminate, Bennet, and Darcy configurations reject the original
-quantified postcondition with an upper-bound inference diagnostic. The
-proved finite formulation in Equation~\eqref{eq:finite-root} passes Fulminate
-on the same fixture. This experiment demonstrates the ability to retain the
-original assertion and locates the alternative's extra task: constructing an
-executable reformulation and justifying its equivalence. The generator attempts
-for the rewritten formula and the unresolved CN intermediate-annotation
-translation remain in the archive; the successful comparative result concerns
-the postcondition.
+\paragraph{Outcomes and cost accounting.}
+Reports retain pass, confirmed violation, unresolved, expected semantic
+execution error, unsupported input, and infrastructure error. A proof timeout
+never counts as detection. For proof-producing routes, the report additionally
+records goal coverage, kernel replay, and admitted assumptions.
 
-\paragraph{An assertion mutation with unchanged computation.}
-The negative instance replaces $\mathsf{LeastRoot}(n,r)$ with
-$\mathsf{LeastRoot}(n,r-1)$ before the write. Both variants execute four iterations,
-visit five invariant states, write 4, and return 4. The negative proof checks
-the negation of the complete assertion VC, including its generated alternatives,
-and proves the other 26 obligations. Its recorded result is a checked VC
-refutation. The archive has no admitted execution-counterexample certificate
-for that proof, so the evidence stops at that scope. This pair tests the
-assertion independently of the final output.
-
-Table~\ref{tab:proofs} also includes cell, square-relation, relational-loop,
-and list-traversal instances. The seven groups contain six positive groups and
-one refuted-VC group. They check original interfaces of 3--44 obligations;
-certificate compilation, assumption audit, and kernel replay take
-124.45--140.12 seconds per group. These timings exclude proof construction.
-Proofs were obtained during development using supplied lemmas and exploratory
-proof work; agent success rates are a separate measurement.
-
-\subsection{Common-fragment results and execution preservation}
-\input{tables/paired-summary}
-On the paired common-fragment configurations, automatic \tespec{} checking
-accepts 10 of 11 valid contracts and leaves all 11 mutations UNKNOWN.
-Fulminate accepts all 11 valid fixtures and reports a runtime violation for
-every mutant. The list configuration requires residual proof work in \tespec{};
-a separate 19-obligation traversal certificate is reported in
-Table~\ref{tab:proofs}. The paired automatic row retains its original outcome.
-Thus direct runtime checking provides more complete automatic negative feedback
-on this fragment. The proof-backed route supplies the mathematical-assertion
-capability measured above at the cost of residual proof work.
-
-\paragraph{Weak recursive summaries.}
-The recursive-cell fixture starts at value 3 with counter 3 and returns the
-exact final value 6. Replacing the helper's exact postcondition with an
-existential value bounded below by the input leaves actual writes unchanged.
-Both \tespec{} and Fulminate retain a passing result. CN's modular verifier
-and an unmodified QCP baseline retain the top-level exact-result obligation
-because the helper summary is too weak. This probe identifies the effect of
-executing the helper body while observing its contract. The exact and weak
-rows are two configurations of one body.
-
-\paragraph{Local observations and normalization.}
-\input{tables/mechanism-summary}
-Resolving local pointer witnesses before choosing the exact local frame changes
-12 valid-mode runs from UNKNOWN to PASS; the 12 incorrect-mode runs remain
-UNKNOWN. The 48 before/after observations cover 12 cases in two modes.
-For two configurations of one imported list instance, checked pure consequences
-reduce residual root obligations from two to one. Entry existence remains
-unresolved, yielding zero additional complete passes. Cold controller costs
-are 129.41 and 130.28 seconds. These probes distinguish successful local
-simplification from complete instance acceptance.
-
-\subsection{Engineering coverage and formal evidence}
-\input{tables/regression-summary}
-The development suite contains 52 functional programs, each with four inputs,
-three variants, and two boundary policies, plus 37 diagnostic scenarios in both
-policies: $52\cdot4\cdot3\cdot2+37\cdot2=1{,}322$ checks.
-Functional expectations use independent Python oracles cross-checked against
-defined native C executions. All recorded expectations are met, with the
-outcomes in Table~\ref{tab:regression}. The 779 expected negative checks include
-unsupported scenarios; their acceptance criterion permits UNKNOWN. Consequently,
-the suite measures avoidance of false acceptance and diagnostic conformance,
-while confirmed violations are counted separately. Each body mutation changes
-at least one observed outcome relative to its reference.
-
-A broader historical scan covers 267 C files and 1,147 specifications with
-5,160 synthetic-input runs: 1,086 PASS, 1,022 INVALID, 2,416 UNKNOWN, and
-636 ERROR. Another 287 cases require typed bindings. A later default-strategy
-scan has a different denominator: 81 sources, 327 specifications, and 1,404 runs.
-It reports 448 PASS (212 execution and 236 specification-only), 726 UNKNOWN,
-128 INVALID, and 102 ERROR. These inventories expose integration barriers such
-as missing bodies and opaque resources. Their synthetic inputs have no
-independent correctness labels. On eight original sort, queue, and reverse
-instances, the default workflow produces six UNKNOWN and two ERROR results.
-These outcomes locate the remaining execution and proof barriers in imported
-libraries.
-
-The current formal replay checks 11 modules and audits 88 principal statements,
-including observation erasure, lifting, and coverage. The reference results
-support the semantic interfaces in Section~\ref{sec:semantics}. Complete
-instance certificates separately check the generated obligations listed in
-Table~\ref{tab:proofs}. Extended implementation probes and their unsuccessful
-attempts are retained in the supplementary development record.
+Each group receives a result-and-cost table. CN records verification time and
+peak RSS; Fulminate records instrumentation/compilation and test execution
+separately. \qcp{} and \tespec{} separate VC generation/execution, agent proof
+filling, proof compilation with assumption audit, and independent kernel
+checking. One execution's complete residual VC set is one ITP job, including
+retries. Agent comparisons use \texttt{gpt-6.1-sol} with fixed budgets and
+record input, output, and total tokens. Peak RSS is measured per stage with
+its process-scope definition; memory peaks are not summed. Repeated isolated
+runs will report average per-execution cost, retaining raw records and failed
+attempts. Reused proofs are identified so replay cost is not mistaken for
+fresh proof-generation cost.

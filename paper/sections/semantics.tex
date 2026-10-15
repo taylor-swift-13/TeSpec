@@ -1,70 +1,71 @@
 \section{Instance Semantics and Guarantees}
 \label{sec:semantics}
-The semantic object is an execution domain together with selected observations.
-We first define its meaning, then state the contracts that connect symbolic
-execution and proof checking to an instance verdict.
+An instance selects an input domain and checks its admitted executions.
+We formalize this meaning through interfaces for execution, observation,
+and obligation generation.
 
-\subsection{Instances and observations}
-A concrete configuration $\sigma$ contains the control location, C environment,
-heap, and call stack. A logical environment $\eta$ assigns values to typed
-logical variables. We write $z=(\sigma,\eta)$; $\eta$ retains the root's entry
-values throughout execution. The interpretation $\Gamma$ supplies the logical
-definitions, memory predicates, and target layout. Assertions are predicates
-on $z$, with separating conjunction interpreted by disjoint owned resources
-as in separation logic~\cite{reynolds2002separation}.
+\subsection{Instances and selected observations}
+A concrete configuration $\sigma$ contains the C environment, heap, control
+location, and call stack. A logical environment $\eta$ assigns values to
+typed logical variables. We write $z=(\sigma,\eta)$; root entry bindings in
+$\eta$ remain fixed during execution. The interpretation $\Gamma$ supplies
+logical definitions, memory predicates, and the target layout.
 
 \begin{definition}[Specification instance]
-An instance is $I=\langle c,R,E,\theta,\mathcal B,\Gamma,b\rangle$, where $c$ is
-the C body, $R$ and $E$ are its entry and return assertions, $\theta$ is a typed
-partial binding, $\mathcal B$ selects observation boundaries, and $b$ bounds
-execution and proof-search resources. Its input domain is
+An instance is $I=\langle c,R,E,\theta,\mathcal B,\Gamma,b\rangle$, where
+$c$ is the body, $R$ and $E$ its entry and return assertions, $\theta$ a typed
+partial binding, $\mathcal B$ the selected observation boundaries, and $b$
+the execution and proof-search budgets. Its input domain is
 \begin{equation}
-\dom=\{(\sigma,\eta)\mid\eta\models\theta\land
-                         (\sigma,\eta)\models_\Gamma R\}.
+\dom=\{(\sigma,\eta)\mid
+       \eta\models\theta\land(\sigma,\eta)\models_\Gamma R\}.
 \end{equation}
 \end{definition}
-A binding constrains selected values without choosing all unbound values.
-For example, $x=13$ leaves the owned cell's address symbolic. Entry existence
-asks whether $\dom\ne\varnothing$. Subsequent execution checking quantifies
-over the entire domain. An existence witness therefore does not replace the
-domain by one concrete heap. Stronger bindings induce smaller domains, a
-property proved in \texttt{InstanceChecking.v}.
+Checking an instance quantifies over all of $\dom$. Fixing a stored value
+can leave its address and other inputs symbolic. An entry witness establishes
+$\dom\ne\varnothing$; it does not replace the domain by that witness.
+Stronger bindings restrict the domain, but need not preserve nonemptiness.
 
-An observation resolves the selected assertion against the current C
-configuration and its immutable logical entry bindings. Let
-$\mathcal B_\Gamma(z)$ denote the finite list of resolved observations at $z$.
-For a finite execution trace $\tau=z_0\cdots z_m$, define
+Heap assertions describe exact owned resources, with separating conjunction
+interpreted by disjoint composition~\cite{reynolds2002separation}.
+At auxiliary boundaries, the resolved check includes the exact local-storage
+frame of Section~\ref{sec:boundaries}. Let $\mathcal B_\Gamma(z)$ be the
+finite list of resolved checks selected at $z$, including these frames.
+For a finite trace $\tau=z_0\cdots z_m$, define
 \[
 \mathsf{Observe}_{\mathcal B}(\tau)
- = \mathop{\bigoplus}_{i=0}^{m}[(z_i,A)\mid A\in\mathcal B_\Gamma(z_i)],
+ =\mathop{\bigoplus}_{i=0}^{m}
+   [(z_i,A)\mid A\in\mathcal B_\Gamma(z_i)].
 \]
-where $\bigoplus$ concatenates lists, retaining order and multiplicity. A checked
-trace satisfies every recorded $(z_i,A)$, has safe program transitions, and
-satisfies $E$ at its terminal state. Calls introduce fresh logical bindings for
-the callee, keeping the caller's bindings available for return observations.
+Concatenation retains order and repeated visits. Resolving a call boundary
+uses that invocation's logical bindings while preserving the caller's entry
+values. A checked execution is safe, satisfies every selected observation,
+and satisfies $E$ on return.
 
-\subsection{Symbolic execution and boundary rules}
-The symbolic configuration is $\langle\ell,P,K,U,\Omega,b\rangle$: a C control
-location, assertion describing possible states, call/continuation context,
-pending observation list, accumulated obligations, and remaining budget.
-Annotations are scheduled alongside C locations; consuming an observation
-advances $U$ while retaining the C control location. A concrete step relation
-$\to_c$ supplies the program semantics. A symbolic step producing successors
-$P_1,\ldots,P_k$ must establish progress, safety, and coverage:
+\subsection{Execution and observation interfaces}
+A symbolic configuration $\langle\ell,P,K,U,\Omega,b\rangle$ contains the
+control location, represented state assertion, call context, pending
+observations, accumulated obligations, and remaining budget.
+Write $\llbracket P\rrbracket_\Gamma$ for its represented states and
+$\to_c$ for the concrete program transition relation.
+
+At a nonterminal program step with successors $P_1,\ldots,P_k$, the executor
+must establish progress, safety, and coverage:
 \begin{equation}
 \label{eq:coverage}
 \begin{split}
- &\forall z\in\llbracket P\rrbracket.\;
-    \mathsf{Safe}(z)\land\exists z'.\ z\to_c z',\\
- &\forall z,z'.\;z\in\llbracket P\rrbracket\land z\to_c z'
-    \Rightarrow z'\in\bigcup_j\llbracket P_j\rrbracket.
+&\forall z\in\llbracket P\rrbracket_\Gamma.\;
+  \mathsf{Safe}(z)\land\exists z'.\,z\to_c z',\\
+&\forall z,z'.\;
+  z\in\llbracket P\rrbracket_\Gamma\land z\to_c z'
+  \Rightarrow z'\in\bigcup_j\llbracket P_j\rrbracket_\Gamma.
 \end{split}
 \end{equation}
-Here and below interpretations use $\Gamma$. Coverage permits an overapproximation for acceptance. The negative-result
-interface additionally requires that its admitted path states are realizable. An unresolved branch condition retains all successors whose
-infeasibility has not been established.
+An unresolved guard retains each successor whose infeasibility has not been
+established. Coverage may overapproximate executions for acceptance;
+negative evidence additionally requires realizability.
 
-At an observation, the administrative rule is
+An observation is an administrative transition:
 \begin{equation}
 \label{eq:observe}
 \frac{Q=\mathsf{Resolve}_{\Gamma,K}(A)*F_{P,A}}
@@ -72,123 +73,97 @@ At an observation, the administrative rule is
   \xrightarrow{\mathrm{observe}}
   \langle P,U,\Omega\cup\{P\vdash Q\}\rangle}.
 \end{equation}
-The omitted context $(\ell,K,b)$ and represented program state $P$ remain unchanged. The exact local-storage frame $F_{P,A}$ accounts for live
-scalar stack cells outside the observation's footprint
-(Section~\ref{sec:boundaries}). Crucially, $P\vdash Q$ is recorded as an
-obligation, rather than required to enable the continuation.
+The omitted program context remains unchanged. The continuation retains $P$,
+rather than replacing it with $Q$ or requiring the new obligation to hold
+before execution proceeds.
 
-The other administrative rules have explicit interfaces. Call entry copies
-evaluated arguments to fresh parameter slots, saves the caller context, and
-enters the actual body. Return retains the actual return value and shared
-writes, retires callee-local storage, restores the caller context, and records
-the selected callee postcondition on a checking copy. Loops repeatedly apply
-the condition and body transitions, recording observations at visited invariant
-locations. An exhausted execution budget creates an unfinished leaf.
+A finite execution tree contains program-step, observation, normalization,
+terminal, and unfinished nodes. Terminal nodes establish safety, the return
+assertion, and absence of further program transitions. Normalization preserves
+the joint state/value relation of Section~\ref{sec:normalization}.
+Reaching an execution bound produces an unfinished leaf.
+A tree is \emph{boundary-complete} when every selected boundary along each
+represented execution is paired with an observation node whose antecedent
+contains the reached state and whose consequent is the correctly resolved
+check. This connects the selected schedule to the obligation inventory.
 
-\subsection{Observation noninterference}
+\subsection{Reference trace preservation}
 \label{sec:noninterference}
-The reference observation semantics records obligations independently of their
-truth. Its state already includes the program control location, so a boundary
-schedule can distinguish entries, returns, and individual loop visits.
-\texttt{ObservationTrace.v} defines ordinary finite executions and monitored
-executions with the same state trace and an additional observation list.
-
+The reference monitored semantics records observations without consulting
+their truth.
 \begin{theorem}[Erasure and lifting]
 \label{thm:erasure}
-For any resolved finite boundary schedule $\mathcal B$ and finite trace $\tau$
-from $z$ to $z'$, there exists a monitored execution with state trace $\tau$
-if and only if $\tau$ is a program execution from $z$ to $z'$. Its observation
-list is exactly $\mathsf{Observe}_{\mathcal B}(\tau)$.
+For any resolved finite boundary schedule $\mathcal B$ and state trace
+$\tau$ from $z$ to $z'$, a monitored execution with state trace $\tau$
+exists if and only if $\tau$ is a program execution from $z$ to $z'$.
+Its observation list is exactly $\mathsf{Observe}_{\mathcal B}(\tau)$.
 \end{theorem}
 \begin{proof}
-Induct on the finite execution derivation. A zero-step trace records the
-observations of its sole state. A step preserves the concrete transition,
-prepends that state's observations, and applies the induction hypothesis to
-the remaining trace. Conversely, erasing the observation list from a monitored
-derivation preserves every program transition. No constructor requires a
-recorded assertion to hold. List induction establishes the observation inventory.
+Induct on the finite execution derivation. Each monitored step retains the
+program transition and appends the selected observations. Erasure removes
+that list; lifting reconstructs it. No rule requires an observation to hold.
 \end{proof}
-Thus changing an assertion's truth cannot prune or create a program trace in
-the reference model. If all recorded obligations are discharged, each selected
-assertion holds at each corresponding visited state. Both directions and the observation-coverage property are mechanized.
+Changing an observed assertion therefore does not filter program executions
+in this reference semantics. Erasure, lifting, and the observation inventory
+are mechanized in \texttt{ObservationTrace.v}.
 
 \subsection{Acceptance and negative evidence}
 \label{sec:verdicts}
-A finite symbolic execution tree has program-step, normalization, observation,
-terminal, and unfinished nodes. Terminal nodes require safety, the return
-assertion, and the absence of further program transitions. Program-step nodes
-satisfy Equation~\eqref{eq:coverage}; observation nodes follow
-Equation~\eqref{eq:observe}. Normalization preserves the represented joint
-observations (Section~\ref{sec:normalization}). An unfinished node has no
-acceptance certificate.
-
-\begin{samepage}
 \begin{theorem}[Nonvacuous instance acceptance]
 \label{thm:acceptance}
-If the root represents $\dom$, the domain is nonempty, and every obligation
-of a finite covering execution tree is valid, then every initial state in
-$\dom$ has safe, terminating executions satisfying $E$. Under the boundary
-coverage interface, every selected observation on those executions also holds.
+Suppose a finite, boundary-complete execution tree has root domain
+$\dom\ne\varnothing$, satisfies the execution and normalization interfaces,
+and has no unfinished leaf. If all generated obligations are valid, every
+execution from $\dom$ terminates safely, satisfies $E$, and satisfies every
+selected observation.
 \end{theorem}
-\end{samepage}
 \begin{proof}
-Induction on the tree establishes safe termination. A step covers every
-concrete successor and applies the induction hypothesis to each covering
-subtree. Normalization transfers membership through its semantic equivalence;
-observation preserves the continuation state. Terminal obligations establish
-the postcondition. Entry existence supplies nonvacuity independently. For
-observations, Theorem~\ref{thm:erasure}'s inventory and checked boundary
-entailments establish satisfaction at each selected visit.
+Induction on the tree establishes safe termination. Program-step coverage
+places every concrete successor in a child subtree; normalization and
+observation nodes preserve the represented continuation. Terminal obligations
+establish the return assertion. Boundary completeness and valid observation
+obligations establish each selected check. Entry nonemptiness supplies
+nonvacuity independently.
 \end{proof}
-The execution and nonvacuity result is mechanized in
-\texttt{InstanceChecking.v}; observation coverage is proved separately in
-\texttt{ObservationTrace.v}. The implementation obligations corresponding to these interfaces are collected
-in Section~\ref{sec:evidence}.
+\texttt{InstanceChecking.v} mechanizes the finite-tree safety and termination
+argument; \texttt{ObservationTrace.v} establishes satisfaction of a discharged
+observation inventory. Their connection to C execution and the generated
+boundary inventory is an implementation obligation.
 
-A confirmed violation has an existential meaning:
+A confirmed execution violation has existential meaning:
 \begin{equation}
 \label{eq:violation}
-\exists z_0\in\dom, z.\;z_0\to_c^*z\land\mathsf{Bad}_{E,\mathcal B}(z).
+\exists z_0\in\dom,z.\;
+z_0\to_c^*z\land\mathsf{Bad}_{E,\mathcal B}(z),
 \end{equation}
-Here badness is an unsafe state, a violated selected observation, or a terminal
-state violating $E$. The test executor preserves the entry constraints, branch
-conditions and actual state updates. For a path VC $P\vdash A$, SMT/ATP may
-discharge routine positive obligations or supply a candidate satisfying
-$P\land\neg A$. The agent may attempt either a proof of the original VC or a
-proof of its negation; both are checked against the frozen obligation. A
-checked positive proof establishes \valid{}. A checked negative proof with an
-admitted reachable path witness establishes \invalid{}. If neither direction
-is established, the VC remains \unknown{}. Infeasible paths cannot cause a
-failed test merely because an implication proof was unfinished.
+where badness is an unsafe state, a violated selected check, or a return
+state violating $E$. For a path obligation $P\vdash A$, a positive proof
+establishes validity for every represented state. A negative proof refutes
+that obligation. To obtain Equation~\eqref{eq:violation}, its violating state
+must also be realizable from $\dom$: an overapproximation may contain
+unreachable countermodels. A failed proof attempt establishes neither polarity.
 
 \begin{table}[t]
 \centering\small
-\caption{Entry results, VC states, and whole-test verdicts.}
+\caption{Evidence and instance results. Empty entries and execution violations retain distinct reasons.}
 \label{tab:verdicts}
-\begin{tabular}{@{}p{.27\columnwidth}p{.68\columnwidth}@{}}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{.30\columnwidth}>{\raggedright\arraybackslash}p{.65\columnwidth}@{}}
 \toprule
-Layer & Result and meaning\\
+Layer & Meaning\\
 \midrule
-Entry & SAT: the instance domain is nonempty. UNSAT: it is empty. UNKNOWN: satisfiability is unresolved.\\
-VC & \valid{}: established. \invalid{}: an admitted path check establishes a violation. \unknown{}: unresolved.\\
-Test: \pass & Entry SAT, complete execution, and all selected obligations VALID.\\
-Test: \fail & Entry UNSAT, or a selected path VC INVALID; other obligations may remain unresolved.\\
+Entry & SAT: $\dom\ne\varnothing$. UNSAT: $\dom=\varnothing$. UNKNOWN: nonemptiness unresolved.\\
+VC & \raggedright \valid{}: established. \invalid{}: admitted negative evidence. \unknown{}: unresolved.\arraybackslash\\
+Test: \pass & Entry SAT, complete execution and boundary coverage, and all required obligations VALID.\\
+Test: \fail & An empty entry, or a confirmed execution violation; the report retains which reason applies.\\
 Test: \unknown & Neither complete acceptance nor a confirmed failed check.\\
 \bottomrule
 \end{tabular}
 \end{table}
-Table~\ref{tab:verdicts} separates logical results from execution bookkeeping.
-The report exposes \texttt{precondition\_result}, per-obligation
-\texttt{vc\_results}, and \texttt{test\_result}. An UNSAT entry contributes
-a false result to the conjunction and stops execution. Infrastructure errors
-are reported separately. Legacy run-status fields remain available for
-compatibility. Unsupported logical encodings retain their original obligations
-for proof completion. Execution correspondence is part of the executor's
-trusted interface: an overapproximated proof-search state alone cannot license
-an INVALID path result.
-
-The generated initial VC uses a negative-entailment
-encoding; its equivalence to existence is proved under an explicit classical
-logic premise in \texttt{PreconditionOracle.v}. Execution-only and
-Require-only checks retain different scopes even when both are reported as
-\pass{} by the command-line interface.
+Table~\ref{tab:verdicts} summarizes aggregation. An empty entry invalidates
+the test instance; it is not a counterexample to the postcondition.
+Entry, obligation, and whole-test results are recorded separately.
+The emitted initial VC uses a negative-entailment encoding.
+\texttt{PreconditionOracle.v} proves its equivalence to nonemptiness under
+an explicit classical-logic premise. A concrete entry witness suffices
+constructively. A Require-only check establishes entry feasibility;
+an execution check additionally requires the corresponding execution evidence.

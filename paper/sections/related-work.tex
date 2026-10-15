@@ -1,51 +1,56 @@
 \section{Related Work}
-\label{sec:related}
-\paragraph{Executable separation-logic specifications.}
-Separation logic describes disjoint ownership of mutable
-structures~\cite{reynolds2002separation}. CN verifies systems C using
-separation-logic refinement types~\cite{pulte2023cn}; Fulminate translates
-ownership and functional assertions into runtime checks~\cite{banerjee2025fulminate}.
-Bennet generates compatible heap inputs~\cite{aamer2025bennet}.
-Code-Specify-Test-Debug-Prove integrates partial contracts, loop-invariant and
-lemma testing, and ghost arguments~\cite{aamer2026workflow}.
-The CN workflow already unifies specification syntax across testing and
-verification and supports intermediate checks. Its testing path executes an
-instrumented binary on concrete heaps; \tespec{} reuses symbolic execution
-to explore a partially instantiated logical heap domain.
-\tespec{} extends the shared-specification workflow to a proof-capable test
-oracle for assertions that remain mathematical
-propositions after specialization: residual formulas over the symbolic heap
-are checked in their original proof logic. The least-root comparison makes
-this distinction concrete through an original formula and a proved executable
-rewrite. SLICK supplies runtime separation-logic checking~\cite{nguyen2008slick},
-and CSF uses separation-logic preconditions for concolic heap
-testing~\cite{pham2019csf}; these approaches further establish heap-aware
-execution as shared ground.
+\label{sec:related-work}
+\paragraph{Runtime testing of separation-logic specifications.}
+CN uses separation-logic refinement types to verify ownership and functional
+properties of systems C code~\cite{pulte2023cn}. Fulminate gives CN specifications
+a computational interpretation, compiling them into C checks that track
+ownership transfer during execution~\cite{banerjee2025fulminate}. Bennet derives
+randomized generators for heaps satisfying CN preconditions~\cite{aamer2025bennet};
+Darcy combines randomized choices with SMT constraints in a broader
+code--specify--test--debug--prove workflow~\cite{aamer2026workflow}.
+\tespec{} pursues the same early-feedback objective through a proof-based
+oracle: it symbolically executes a selected input domain and retains
+assertions as logical obligations. Fulminate is the direct runtime comparator.
+Bennet and Darcy address input generation and use Fulminate to check the
+resulting executions, rather than providing independent fixed-input oracles.
 
-\paragraph{Testing declarative properties.}
-QuickCheck tests executable properties~\cite{claessen2000quickcheck}; QuickChick
-connects property-based testing to foundational proofs and derives generators
-and semi-decision procedures for supported inductive
-relations~\cite{paraskevopoulou2015quickchick,paraskevopoulou2022computing}.
-COINS specializes Rocq specifications on trusted examples and checks concrete
-proof obligations~\cite{yang2026coins}. \tespec{} connects this style of oracle
-to program-derived symbolic heaps and selected internal boundaries, with
-explicit execution coverage and observation preservation. VERINA evaluates
-specifications through positive and negative tests~\cite{ye2026verina}; SpecRL
-uses rejected negative behaviors, including materialized side effects, as a
-completeness signal~\cite{huang2026specrl}. FormalBench and MutDafny assess
-specification strength using mutation~\cite{lecong2025formalbench,amaral2026mutdafny}.
-Candidate-quality evaluation additionally requires the independently fixed
-behavior population discussed in Section~\ref{sec:discussion}.
+\paragraph{Testing declarative specifications.}
+QuickChick integrates property-based testing with Rocq and provides foundations
+for relating executable testing components to logical
+specifications~\cite{paraskevopoulou2015quickchick,paraskevopoulou2022computing}.
+COINS instantiates relational specifications on supplied input/output examples
+and uses Rocq proofs to establish that those examples are
+admitted~\cite{yang2026coins}. This is particularly close to \tespec{}'s treatment
+of assertions without convenient executable checkers. COINS evaluates a relation
+on supplied behaviors, while \tespec{} executes a C implementation and generates
+obligations for safety, internal observations, and postconditions. A direct
+instance proof oracle on the shared pure fragment therefore isolates the
+benefit of execution-derived observations. QuickChick is complementary when
+an executable checker is available.
 
-\paragraph{Symbolic verification and proof infrastructure.}
-QCP already combines symbolic execution, separation-logic reasoning, and
-interactive Rocq proofs~\cite{wu2026qcp}; CN also has a Rocq lemma
-translation~\cite{yin2025cnrocq}. \tespec{} reuses this proof infrastructure.
-Its instance discipline executes bodies and loops and checks candidate summaries
-on private copies, preserving the actual state for later observations. Joint
-heap/value normalization and exact local frames maintain that discipline through
-state representation changes. The proof controller then checks the complete
-original instance interface and its admitted assumptions. This combination
-connects partial input domains, stateful observations, and scoped evidence for
-each complete result.
+\paragraph{Symbolic testing and complete verification.}
+Gillian provides a memory-model-parametric symbolic execution framework, with
+C instances supporting symbolic testing and separation-logic
+verification~\cite{santos2020gillian,maksimovic2021gillian}. It is an independent
+symbolic-execution comparator for separating the contribution of \tespec{}'s
+observation and proof workflow from symbolic execution itself.
+\qcp{}~\cite{wu2026qcp} and CN provide the full-verification comparison.
+That comparison checks each primary program's original, uninstantiated
+contract. It measures the cost of establishing the original contract alongside
+the cost of checking selected instances, without reinterpreting modular
+verification under a fixed input as a test execution.
+
+\paragraph{Semantic foundations and obligation solving.}
+Exact separation logic distinguishes coverage of program behavior from
+establishing that a reported behavior is reachable~\cite{maksimovic2023exact}.
+Verification-preserving inlining studies conditions under which expanding
+calls and loops preserves verification in automatic separation-logic
+tools~\cite{dardinier2023inlining}. These results motivate explicit treatment
+of coverage and realizability. Foundations for translational separation-logic
+verifiers formalize interfaces between source reasoning, intermediate semantics,
+and verification backends~\cite{dardinier2025foundations}. \tespec{}'s reference
+interfaces similarly separate generation from discharge, while specializing
+the checked domain and retaining observed states. Finally, separation-logic
+SMT procedures already decide substantial logical
+fragments~\cite{reynolds2016sl}. Spatial SMT applies this direction to supported
+finite-heap obligations; proof-assistant completion handles additional reasoning.

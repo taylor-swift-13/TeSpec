@@ -37,6 +37,21 @@ baseline adds evidence beyond the QCP family.
 | QCP full verification | Required verification comparison | How do instance testing and full verification differ in proof effort, cost and established scope? | Original precondition and contract; one correct primary program per group; reuse matching validated evidence |
 | CN full verification | Retained independent verification reference | How does an external verifier perform on the paired primary contracts? | One correct primary program per group; retain existing paired CN evidence |
 
+### Fulminate: separate runtime configurations and failure classes
+
+Use the recorded Fulminate setup and a separately labelled configuration with
+undefined-behavior sanitization for safety-sensitive cases. Capture the actual
+compiler invocation, optimization level, integer widths, sanitizer flags and
+runtime diagnostics. Do not infer sanitizer coverage from the outer CN command.
+The current read INT_MIN case establishes a missed signed-negation violation in
+the recorded configuration; the sanitizer comparison has not yet been run.
+
+Report a normal exit on an independently established violation separately from
+unsupported instrumentation. Least-root and divisibility quantifier-bound
+errors are support limitations, not false acceptances. Their proved finite-form
+controls measure the effect of changing the assertion formulation. Retain
+successful baseline cases and do not select the aggregate population by failure.
+
 ### QCP: compare directly with full verification
 
 Run native QCP on each correct primary program and its original contract,
@@ -234,7 +249,8 @@ development runs as performance data. Report peak RSS with measurement scope;
 sum neither unrelated peaks nor per-thread resource counters.
 
 Run deterministic timing experiments at least 10 times after one labelled
-warm-up; report median, IQR and raw observations. Randomized testing and agent
+warm-up; use mean per-execution costs in the main result tables. Retain raw
+observations and dispersion summaries for audit. Randomized testing and agent
 proofs use recorded independent seeds/attempt identifiers and common fixed
 budgets. Report success curves and confidence intervals; retain censored
 timeouts. Agent records include model/version, configuration, prompt, tool
@@ -273,7 +289,7 @@ controller theorem does not prove the QCP executor implementation.
 | TeSpec proof workflow | Actual residual proofs, external replay, assumption audit, usage reports | Complete four-VC cell, three-VC imported-relation and 44-VC intermediate-boundary groups replayed; paired negative return VC refuted with other obligations proved. Reachable-counterexample certificates, controlled proof trials and usage instrumentation pending |
 | Formal theory | Stated definitions/theorems, mechanized core and implementation correspondence | Generic core checked by coqc/coqchk; C correspondence pending |
 | Experiment dataset | Full inventory, raw results, exclusions, analysis scripts | Pending |
-| ICSE paper draft | Consistent manuscript, tables generated from data, compiled PDF | Existing draft needs revision |
+| ICSE paper draft | Method-led manuscript, formal interfaces, four recorded case studies, compiled and visually inspected PDF | Revised on 2026-10-16; broader comparative experiments remain pending |
 | Reproduction package | Fresh-environment replay of published commands | TeSpec binary-only regression verified |
 
 The study completes only when all gates have evidence. Empirical findings determine

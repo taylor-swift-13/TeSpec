@@ -1,72 +1,62 @@
-# TeSpec paper
+# TeSpec ICSE manuscript
 
-The current manuscript is **TeSpec: Testing Stateful C Specifications through Symbolic Verification**, built as an IEEE conference paper in `main.pdf`.
+**TeSpec: Proof-Based Testing of Separation-Logic Specifications for C** is the
+current manuscript in `main.tex` and `main.pdf`. The current revision is eight
+pages including references. It develops the method before its formal guarantees
+and uses one main workflow figure, shared with `figures/overview-standalone.pdf`.
 
-The paper's central contribution is specification testing as instance-specialized symbolic verification. It reuses the verifier's symbolic execution to obtain test states and its proof logic to check functional properties, without requiring a native test execution or an executable monitor for residual assertions. Tests and verification share assertions, logical definitions, and proof libraries; a test instance can use deduction when the assertion has no executable monitor. Copied-state observations, exact local frames, and joint heap/value normalization connect this capability to actual C executions.
+## Argument and structure
 
-The consolidated manuscript is 11 pages including references. The two figures are shared TikZ vector sources with standalone PDF exports. The original long approach, normalization, and evaluation records are preserved under `supplement/` for provenance; they are not included in the main manuscript and their historical terminology is retained.
+1. Original logical assertions can require proof after inputs are fixed.
+2. Actual C execution supplies the states; copied observations preserve them.
+3. Exact local frames and joint heap/value normalization preserve what is checked.
+4. Instance semantics distinguishes covered acceptance from reachable violations.
+5. Four evidence-backed case studies explain arithmetic safety, quantified
+   contracts, and spatial proof completion.
+6. The evaluation design distinguishes planned comparisons from recorded cases.
 
-`review-response.txt` records the reviewer-style findings, targeted revisions, and remaining empirical questions. `revision-validation.json` records the build and artifact checks for this revision.
+The first case study is the read negation mutant at INT_MIN: the recorded
+Fulminate configuration exits normally, whereas TeSpec rejects its arithmetic
+safety obligation. Least-root and divisibility demonstrate instrumentation
+support limitations and successful proof completion; they are not false-PASS
+cases. Missing read ownership is a common negative control for both tools.
 
-## Build and validation
-
-From the repository root:
+## Build and checks
 
 ```sh
 bash paper/build.sh
-python3 paper/scripts/check-theory.py --output /tmp/tespec-theory-new-replay
 ```
 
-The theory output directory must be empty. The build needs Python 3, pdfLaTeX, BibTeX, and TikZ/standalone. `IEEEtran.cls` (1.8b) and `IEEEtran.bst` (1.12), with their original license headers, are included from the existing local IEEE template. Their upstream distribution is <https://www.michaelshell.org/tex/ieeetran/>.
+The build verifies the pinned case-study evidence, checks the existing archived
+comparison/proof evidence, builds the vector workflow, and compiles the manuscript
+with pdfLaTeX and BibTeX. It writes only under `paper/`. Source benchmark paths are
+read-only dependencies of the paper evidence audit.
 
-`build.sh` validates the archived data and regenerates four result tables before building the manuscript. It also exports `figures/overview-standalone.pdf`, a standalone vector version of the main figure. Figure content is shared with the manuscript through `figures/overview-content.tex`.
+`revision-validation.json` records the latest PDF build and visual inspection.
+`tmp/pdfs/` holds ignored preview images. The present revision does not rerun
+benchmarks, invoke proof agents, or recheck the Coq theory. Existing theorem
+receipts remain under `evidence/theory-review-20261012/` (11 modules, 88 principal
+statements). The reference guarantees and implementation obligations are
+separated in the formal section.
 
-`figures/result-flow-standalone.pdf` shows the annotated program, generated entry and path obligations, ATP followed by Agent+ITP, and three-valued conjunction. The figure separates a checked negative VC from an admitted execution violation and shows the reachability gate before aggregation. Regression acceptance criteria are explained with the results.
+## Evidence and study protocol
 
-## Main files
+- `evidence/case-study-audit.json`: hashes of 99 existing evidence files, six
+  read-negation controls, and twelve independent read proof-completion groups.
+- `scripts/audit-case-studies.py`: validates that inventory and the reported
+  case counts. `--record` is reserved for explicitly reviewed evidence updates.
+- `evidence/case-study-notes.md`: exact claim scope and evidence locations.
+- `evidence/comparative-case-studies-20261013/`: quantified examples, proof
+  receipts, and historical shared-task/allocator investigations.
+- `evidence-summary.json` and `scripts/summarize-evidence.py`: the older paired
+  archive, proof groups, and original/finite-form controls. These historical
+  tables are not presented as a completed benchmark evaluation in the main text.
+- `research-protocol.md`: required baselines, per-execution ITP units, model and
+  resource accounting. QCP verifies each primary's original contract once;
+  it is not treated as a fixed-input testing configuration.
 
-- `sections/introduction.tex`: problem, research question, and three contributions.
-- `sections/motivation.tex`: least-root program, original quantified property, intermediate mutation, and equivalent monitor.
-- `sections/semantics.tex`: instance domain, observation schedule, transition coverage, erasure/lifting, acceptance, and verdict semantics.
-- `sections/approach.tex`: checking algorithm, call execution, exact local frames, joint normalization, and certificate protocol.
-- `sections/evaluation.tex`: capability, feedback, mechanisms, and checking cost.
-- `sections/case-studies.tex`: seven comparisons with Fulminate, VERINA and COINS, distinguishing checked C groups, pure-oracle controls, archived probes and pending matched runs.
-- `sections/discussion.tex`: use cases, candidate-independent evaluation, and validity.
-- `sections/related-work.tex`: closest approaches and the contribution relative to them.
-
-## Evidence
-
-`evidence-summary.json` is generated by `scripts/summarize-evidence.py`. It validates 221 files in the portable paired archive, compares stored TeSpec phase verdicts, checks original proof-group interfaces and hashes, and checks the original/rewritten least-root baseline logs. The historical evidence is portable within `paper/`, including copied audit summaries in `evidence/audits/`. New case-study receipts are checked in `paper/evidence/comparative-case-studies-20261013/`: the 26-VC least-root group, two six-VC divisibility groups, the equivalence proof, and shared VERINA/COINS oracle controls. Their file hashes are validated during every paper build. It reanalyses historical observations; it does not relabel them as new experiments.
-
-- `evidence/paired/`: 102 archived tool invocations, 11 contract configurations, 10 program-body families.
-- `evidence/proof-cases/`: seven checked certificate groups, including original goals, candidate proofs, manifests, and compressed logs. `index.json` records the original locations and copied-file hashes.
-- `evidence/least-root-baselines/`: original and rewritten formulas for the three CN testing configurations. The rewritten generator attempts are retained along with the successful Fulminate control.
-- `evidence/theory-20261012/`: historical replay of 11 modules and 86 audited principal statements, including six new observation-trace results.
-- `executor-e2e-results.json`: the historical 1,322-check development report.
-- `instance-semantics-evaluation.json`: recorded corpus and implementation evidence.
-- `../benchmark/comparison/proof-audit/`: quantified-intermediate, local-alias, pure-fact, and other implementation audits.
-
-A count checked against certificate manifests: the relational-loop certificate covers **44** original obligations, not the ten claimed in the older prose. The list certificate covers 19. Counts are now read directly from certificate manifests and checked against assumption-audit inventories.
-
-## Formalization
-
-The added `theory/ObservationTrace.v` proves erasure, execution lifting, exact observation inventory, observation membership, satisfaction of selected observations after discharge, and equality of the projected execution sets. Its operational relation and resolved boundary schedule are explicit parameters. These results establish reference observation semantics; the existing C implementation's refinement obligations remain explicit in the paper.
-
-The current review replay checks 11 modules and 88 principal statements, including two newer shared-base difference lemmas. Its report and compressed logs are in `evidence/theory-review-20261012/`; the older 86-statement replay remains archived. The `Print Assumptions` checks and independent `coqchk` replay are run by `paper/scripts/check-theory.py`. The instance acceptance theorem remains conditional on successor coverage, correct obligation generation, and the selected interpretation.
-
-## Revision and submission work
-
-The superseded instance-state design is preserved under `../arxiv/paper-superseded-instance-state/`; earlier full worktree material is backed up outside the active repository. `instance-semantics.tex` is a separate earlier design document and is not included in `main.pdf`.
-
-The revision completes the manuscript structure, formal observation model, overview figure, and evidence reconciliation. The following research work remains before claiming a mature comparative evaluation:
-
-1. Evaluate original properties and equivalent executable forms across held-out projects and predicate families.
-2. Produce and check reachable execution counterexample certificates, or retain the current scoped VC-refutation claim.
-3. Measure proof authoring/automation under fixed libraries and budgets, and repeat end-to-end timing in isolation.
-4. Package a complete reproducible artifact snapshot, repair the missing runtime/controller test fixtures identified in the audit, and prepare an anonymized distribution. The manuscript rewrite does not change those implementation files.
-
-These are empirical and artifact tasks; they are not represented as completed by the rewritten text. The existing `research-protocol.md` records the broader planned study.
-
-## Consolidated worktree provenance
-
-The case-study chapter and its historical evidence were recovered from the former `/home/yangfp/teSpec` working directory. Required receipts, sources and compressed logs are now self-contained under `evidence/comparative-case-studies-20261013/`, with original hashes preserved in `archive-index.json`. Three regenerable tactic caches named in the historical receipts were already absent; the inventory records their declared hashes and omission without modifying those receipts. Proof sources, kernel logs and scientific result files are retained and hash-checked. These are historical measurements, separate from the current 45-group benchmark; its read OFF/ON spatial-SMT results are documented in `../docs/benchmark-and-evaluation-template.md`. Active controller/runtime code is taken from the former benchmark worktree.
+The main manuscript uses `sections/{introduction,motivation,approach,semantics,
+case-studies,evaluation,discussion,related-work}.tex`. The normalization algorithm
+is included by `approach.tex`. Older standalone semantics, result-flow graphics,
+and development material are retained for provenance and are not included in
+the current manuscript. The IEEE template files retain their original licenses.

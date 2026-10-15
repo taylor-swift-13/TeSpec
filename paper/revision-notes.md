@@ -1,0 +1,49 @@
+# ICSE manuscript revision — 2026-10-16
+
+This revision changes only paper files. It does not change the executor, solver,
+benchmark programs, expected outcomes, or raw experimental results.
+
+## Main changes
+
+- Retitled the paper around proof-based testing of separation-logic specifications.
+- Rebuilt the introduction around non-executable logical assertions and preservation
+  of the execution state being tested.
+- Moved the checking method before the formal guarantees and replaced the main
+  graphic with one execution/proof workflow.
+- Clarified the instance domain, copied observation rule, fixed root bindings in
+  normalization, boundary coverage, relative acceptance, and reachable violations.
+- Replaced the mixed seven-case narrative with four completed evidence-backed
+  case studies, led by the read INT_MIN discrepancy.
+- Moved prospective COINS/Gillian comparisons and cost accounting into the evaluation
+  design, leaving full QCP verification of the original primary contract as its
+  own comparison. Repeated historical cost figures were removed from the abstract.
+
+## Case-selection result
+
+The evidence supports one observed false acceptance: the read negation mutant at
+INT_MIN in the recorded Fulminate configuration. Least-root and divisibility expose
+quantifier-instrumentation limitations; their finite equivalent controls pass.
+Read's missing-ownership variants are detected by both tools and explain how
+spatial SMT removes twelve unresolved TeSpec verdicts. No unsupported-instrumentation
+result or incomplete baseline run is labelled an incorrect runtime answer.
+
+The old pKVM, COINS and VERINA investigations remain archived under paper evidence.
+Their incomplete matched tool results are no longer used as completed main-text
+case studies. They remain useful candidates for the broader study.
+
+## Writing model
+
+The argument follows a concrete example, the missing information, an explicit
+workflow, and a formal property before discussing broader comparisons. This
+organization is informed by the primary-paper reading already completed for
+[Towards Optimal Concolic Testing](https://zbchen.github.io/files/icse2018-2.pdf),
+[SymTuner](https://prl.korea.ac.kr/papers/SymTuner.pdf), and
+[Sibyl](https://leeson.prof/assets/pdf/Sibyl.pdf). Their empirical results are not
+used as evidence for TeSpec.
+
+## Validation boundary
+
+`revision-validation.json` records the final PDF and evidence checks. Historical
+Coq sources are hash-matched against their existing replay receipt; no new theory
+replay or benchmark run is claimed. The earlier review in `review-response.txt`
+is dated 2026-10-12 and describes that historical revision.

@@ -35,59 +35,56 @@
  linewidth=\columnwidth,
  xleftmargin=0pt,framexleftmargin=0pt,showstringspaces=false,
  captionpos=b,abovecaptionskip=10pt,belowcaptionskip=6pt,aboveskip=9pt,belowskip=9pt}
-\title{TeSpec: Testing Stateful C Specifications\\through Symbolic Verification}
+\title{TeSpec: Proof-Based Testing of\\Separation-Logic Specifications for C}
 \author{\IEEEauthorblockN{Anonymous Authors}}
 \begin{document}
 \maketitle
 \begin{abstract}
-Specification testing for C commonly compiles logical assertions into executable
-checks and evaluates them during concrete program runs. Proof-oriented functional
-specifications can contain quantified properties and abstract relations that
-still require deduction after the input data are fixed. We present \tespec{},
-which formulates specification testing as instance-specialized symbolic
-verification. It reuses a verifier's symbolic execution, logical heap model,
-and proof infrastructure to check the original assertions without a native test
-execution or a separate executable monitor for residual properties. Partial
-bindings define the input domain. Symbolic execution follows program bodies
-and loops; annotations generate obligations on state copies. Joint heap/value
-normalization and exact local frames preserve the information needed by later
-checks. We mechanize observation noninterference and nonvacuous acceptance under
-explicit coverage interfaces. A least-root instance checks all 27 obligations,
-including a quantified intermediate assertion. The original quantified
-postcondition is rejected by the tested CN runtime-testing configurations,
-while a proved finite rewrite passes Fulminate. Complete proof-group checks take
-124.45--140.12 seconds, excluding construction. The method unifies instance
-testing and verification around the same symbolic execution and proof logic,
-making mathematical functional specifications directly usable as test criteria.
+Logical specifications for C describe both functional behavior and ownership
+of memory. Testing them presents two challenges: quantified properties can
+remain non-executable after inputs are fixed, and modular verification can
+abstract away the execution states needed to test an annotation. We present
+\tespec{}, a method for proof-based testing of separation-logic specifications.
+Typed input bindings select an instance domain. Symbolic execution follows
+function bodies and loop iterations, while annotations generate obligations
+on copies of the reached states. Automatic reasoning and proof-assistant
+completion check those obligations in the original specification logic.
+Joint heap/value normalization and exact local-storage frames preserve the
+information observed by subsequent checks. We formalize the instance semantics
+and mechanize reference trace preservation and nonvacuous acceptance under
+execution-coverage interfaces. Comparative case studies expose a signed-integer
+boundary violation missed by the recorded Fulminate configuration, demonstrate
+proof completion for quantified contracts rejected by runtime instrumentation,
+and examine automatic versus interactive discharge of spatial obligations.
+The method makes proof-oriented contracts usable as test oracles while
+retaining the program states and memory resources that those contracts describe.
 \end{abstract}
 \begin{IEEEkeywords}
 Specification testing, symbolic execution, separation logic, proof checking
 \end{IEEEkeywords}
 \input{sections/introduction}
 \input{sections/motivation}
-\input{sections/semantics}
 \input{sections/approach}
-\input{sections/evaluation}
+\input{sections/semantics}
 \input{sections/case-studies}
+\input{sections/evaluation}
 \input{sections/discussion}
 \input{sections/related-work}
 \section{Conclusion}
-\tespec{} formulates stateful specification testing as instance-specialized
-symbolic verification, reusing the verifier's execution and proof infrastructure. A functional assertion can serve as a test criterion even when its
-instance requires proof.
-Partial bindings determine the input domain, program transitions determine the
-states, and copied-state observations determine the proof obligations. Joint
-normalization and exact local frames preserve the values and resources needed
-by later checks. The least-root cases demonstrate direct checking of a quantified
-return property and an intermediate assertion, while the paired common-fragment
-results expose the cost in residual proof work. The resulting method connects
-proof-oriented instance evaluation to the internal specification boundaries of C.
+\tespec{} connects execution-based feedback with proof-oriented C contracts.
+Input bindings select the tested domain, actual program transitions determine
+the observed states, and proofs establish their specified properties. Copied
+observations, joint normalization, and exact local frames preserve this
+connection through the verification infrastructure. The case studies show
+why a useful oracle must account for arithmetic safety, original quantified
+relations, and spatial ownership. The resulting workflow supports testing
+with the same specifications and logical libraries used for full verification.
 \section*{Data Availability}
-The accompanying artifact contains the controller, executor build identities,
-logical runtime, regression reports, certificate sources, and Rocq semantic
-modules. The paper's evidence inventory records the source of each reported
-result and distinguishes archived measurements from the current theory replay.
-A build script regenerates this manuscript and its vector overview figure.
+The accompanying artifact includes the implementation identities, original
+case-study sources and logs, proof certificates, and the Rocq reference
+semantics. The paper's case-study inventory pins evidence by file hash and
+separates recorded observations from the broader evaluation protocol.
+The build script regenerates the manuscript and its vector workflow figure.
 \bibliographystyle{IEEEtran}
 \bibliography{references}
 \end{document}

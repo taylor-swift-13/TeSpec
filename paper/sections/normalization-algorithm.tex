@@ -1,53 +1,59 @@
 \subsection{Joint heap and value normalization}
 \label{sec:normalization-algorithm}
 \label{sec:normalization}
-The continuation can refer to logical values outside the current heap formula.
-Eliminating $r$ from $\exists r.\ r=2\land\mathit{cell}(p,1)$ while leaving a
-return term that refers to $r$ loses its value constraint. The normalization
-interface therefore preserves the assertion $P$ together with every live term
-$\bar t$, including results and saved call values. Define
+Symbolic execution retains values outside its current heap formula:
+return terms, saved call arguments, entry values, and pending checks.
+Normalization must preserve their relationship to the heap.
+Projecting away $r$ from $r=2\land\mathit{cell}(p,1)$ can preserve the
+existentially closed heap assertion while losing the value of a return term
+that still refers to $r$. We therefore normalize an assertion $P$ together
+with its live terms $\bar t$. Split the logical environment into immutable
+root bindings $\rho$ and auxiliary witnesses $\xi$. Their joint denotation is
 \[
-\obs(P,\bar t)(s,\bar v)=\exists\eta.\ P(s,\eta)\land
-                  \bar v=\operatorname{eval}(\bar t)_{s,\eta}.
+\obs_\rho(P,\bar t)(s,\bar v)
+ =\exists\xi.\;P(s,\rho,\xi)\land
+   \bar v=\operatorname{eval}(\bar t)_{s,\rho,\xi}.
 \]
-Each admitted rewrite preserves this relation. Its composition consequently
-preserves the observations used by entry and boundary checks.
+An admitted reduction from $(P,\bar t)$ to $(P',\bar t')$ preserves this
+relation pointwise for each $\rho$. Live terms include every value used by
+the continuation or a selected check; these uses must depend only on the
+preserved state, root bindings, and live values.
 
-\begin{lstlisting}[language={},caption={Normalization of the state and its live values.},label={lst:normalize}]
+\begin{lstlisting}[language={},caption={Normalize the heap and its live values together.},label={lst:normalize}]
 Normalize(Gamma, P, liveTerms, budget):
-  while budget > 0 and an admitted reduction exists:
-    resolve its definition and interpretation
-    establish its guard; freshen typed local witnesses
-    replace the occurrence by the complete equivalent body
+  while budget > 0 and a reduction is admitted:
+    resolve the rule in Gamma
+    establish its guard from P
+    freshen typed witnesses
+    replace the complete equivalent expression
     update dependent liveTerms consistently
     simplify exposed computations
     budget := budget - 1
   return (P, liveTerms)
 \end{lstlisting}
 
-\paragraph{Admitting reductions.}
-Closed computations and known constructors expose reducible expressions.
-Definition unfolding retains every pure conjunct, spatial resource, and typed
-witness. For a guarded clause, activation requires
-$g(\bar a)\Rightarrow(H(\bar a)\equiv\exists\bar w.\,B(\bar a,\bar w))$
-in the selected interpretation. The executor establishes $g$ from the current
-state. Unresolved guards retain the predicate application. Budgeted rewriting
-terminates while preserving the meaning of residual terms.
+A guarded rule requires an equation in the selected interpretation,
+\[
+\Gamma\models g(\bar a)\Rightarrow
+ \bigl(H(\bar a)\leftrightarrow\exists\bar w.\,B(\bar a,\bar w)\bigr),
+\]
+and validity of $g(\bar a)$ in the reached state. An unresolved guard retains
+the original application. Unfolding preserves every pure constraint, resource,
+alternative, and typed witness. A checked pure consequence may instead be
+exposed by $H\leftrightarrow H\land G$, retaining the spatial predicate.
 
-For optional external rules, the controller checks the equation and its
-association with the program's qualified definitions, constructors, spatial
-notation, and layout. This prevents a same-named imported definition from
-changing the meaning of an accepted equation. Imported predicates otherwise
-use QCP's existing strategies. A checked pure consequence can be exposed by
-$H\equiv H\land G$, retaining the original spatial predicate and its witnesses.
-This path supports local proof progress without requiring a full layout
-translation.
+Fresh witnesses cannot capture live variables. Even a syntactically unused
+witness of nominal type $T$ carries an existence condition:
+\[
+(\exists w:T.\,P)\leftrightarrow
+(\mathit{inhabited}(T)\land P),\qquad w\notin\mathsf{FV}(P).
+\]
+Integer and list types have canonical witnesses; arbitrary nominal types
+retain the inhabitance obligation. Shared-base offsets and closed list
+operations can simplify while addresses remain symbolic. C bounds and
+arithmetic safety remain required checks.
 
-\paragraph{Preserving witnesses and symbolic addresses.}
-Existing live variables remain protected during expansion. An unused witness
-of nominal type $T$ requires inhabitance:
-$(\exists w:T.\,P)\equiv(\mathit{inhabited}(T)\land P)$ when $w$ is absent
-from $P$. Integer and list types supply canonical witnesses; an arbitrary
-nominal type retains its existence obligation. Shared-base offset reductions
-and closed list slices simplify operations with symbolic pointers. Their
-ordinary C bounds and arithmetic safety obligations remain in the VC interface.
+\texttt{DefinitionNormalization.v} proves that composing licensed reductions
+preserves this joint denotation, nonemptiness, validity, and countermodel
+queries. Rule licensing is an explicit premise. Budget exhaustion returns
+the residual expression with its meaning preserved.
