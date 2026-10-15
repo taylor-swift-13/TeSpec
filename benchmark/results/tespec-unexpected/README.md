@@ -1,6 +1,6 @@
 # teSpec 不符合预期的专项台账
 
-已扫描 36 组、1149 对变体与输入。最终不匹配 **444** 条；自动阶段缺口经独立 ITP 解决 **41** 条；另有配置错误修正 **70** 条。未评测组不计为零异常。原始分类不改写，人工分析追加到 triage.json，重建不覆盖人工结论。
+已扫描 38 组、1217 对变体与输入。最终不匹配 **454** 条；自动阶段缺口经独立 ITP 解决 **41** 条；另有配置错误修正 **70** 条。未评测组不计为零异常。原始分类不改写，人工分析追加到 triage.json，重建不覆盖人工结论。
 
 | 组 | 变体 | 输入 | 模式 | 预期 | 自动 | 最终 | 分类 | 证据 |
 |---|---|---|---|---|---|---|---|---|
@@ -20,6 +20,16 @@
 | add_two_array | cn_original:add_two_array | array_6 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/e0ebb5de161fe217b4fa.json) |
 | add_two_array | cn_original:add_two_array | array_7 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/d54cdd902a4bdeff45f6.json) |
 | add_two_array | cn_original:add_two_array | array_7 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/672bd983514ce780dd7a.json) |
+| array_load | cn_original:array_load.broken | original_client_translation5_only_entry | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1b86a3b525ad3ee2a595.json) |
+| array_load | cn_original:array_load.broken | original_client_translation5_only_entry | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/425cfe32a386b4304f28.json) |
+| array_load | cn_original:array_load.broken | original_client_translation6_only_entry | off | PASS | FAIL | FAIL | UNEXPECTED_REJECTION | [详情](cases/4fb216eff6770801ed2f.json) |
+| array_load | cn_original:array_load.broken | original_client_translation6_only_entry | on | PASS | FAIL | FAIL | UNEXPECTED_REJECTION | [详情](cases/076aba494419708818a0.json) |
+| array_load | cn_original:array_load.broken | original_client_translation7_only_entry | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ca76b7529dae92e0fd3a.json) |
+| array_load | cn_original:array_load.broken | original_client_translation7_only_entry | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/dc3283ac2f545e36b479.json) |
+| array_load | cn_original:array_load.broken | original_client_translation9_only_entry | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7abb34da76912cd1e411.json) |
+| array_load | cn_original:array_load.broken | original_client_translation9_only_entry | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7e017d5ba570572fbfb2.json) |
+| array_load | cn_original:array_load.broken | original_client_translation12_only_entry | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b91e5a1d28a77d2bf801.json) |
+| array_load | cn_original:array_load.broken | original_client_translation12_only_entry | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a45c83e03457bb7da9d7.json) |
 | const_example | cn_original:const_example | x_0 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/447fd4e5cd4527f16364.json) |
 | const_example | cn_original:const_example | x_0 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/290951de2d0afd39cb61.json) |
 | const_example | cn_original:const_example | x_1 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/1645b43bd123bbdd53a6.json) |

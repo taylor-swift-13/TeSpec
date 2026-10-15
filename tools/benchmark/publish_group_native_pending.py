@@ -32,6 +32,10 @@ def publish(group):
  save(run/'statistics.json',{'program_group':group,'case_pairs':len(rows),'modes':modes,'complete':False,'certificate':'Native QCP/finite spatial SMT NOT_CHECKED; no execution ITP certificate inferred.','concurrency_context':str((run/'concurrency-context.json').relative_to(ROOT))})
  save(b/'fulminate/statistics.json',{'instrument_compile_initial_execution_wall_seconds_total':sum(x['fulminate_pipeline']['wall_seconds'] for x in rows),'test_execution_wall_seconds_total':(sum(x['fulminate_test']['wall_seconds'] for x in rows if x['fulminate_test']['wall_seconds'] is not None) if any(x['fulminate_test']['wall_seconds'] is not None for x in rows) else None),'pipeline_peak_process_rss_kib':max(x['fulminate_pipeline']['resources']['max_process_rss_kib'] for x in rows),'test_peak_process_rss_kib':max((x['fulminate_test']['resources']['max_process_rss_kib'] for x in rows if x['fulminate_test']['resources']),default=None),'tokens':0,'model_calls':0})
  save(b/'tespec/statistics.json',{'tokens':None,'model_calls':None,'itp_required_executions':modes['off']['executions_requiring_itp_for_verdict'],'stages':[stage('test_execution_and_vc_generation',modes['off']['execution_wall_seconds_total'],modes['off']['maximum_execution_peak_rss_mib'])]+[stage(n,None,None,None) for n in ['agent_proof_filling','coq_compilation_and_assumption_audit','independent_kernel_check']]})
+ if modes['off']['executions_requiring_itp_for_verdict']==0:
+  sp=b/'tespec/statistics.json';st=json.loads(sp.read_text());st.update(tokens=0,model_calls=0)
+  for item in st['stages'][1:]:item.update(required=False,wall_seconds=0,total_tokens=0,peak_process_memory_mib=None,status='NOT_REQUIRED')
+  save(sp,st)
  goals=[]
  if native.get('goal'):
   import re

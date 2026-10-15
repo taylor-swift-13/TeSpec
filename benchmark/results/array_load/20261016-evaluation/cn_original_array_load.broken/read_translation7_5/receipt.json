@@ -1,0 +1,195 @@
+{
+  "variant": "cn_original:array_load.broken",
+  "paired_qcp_variant": "qcp_existing:601105f7c1b14876ab6b",
+  "case": "read_translation7_5",
+  "initial": {
+    "array": [
+      -7,
+      0,
+      7,
+      12
+    ],
+    "index": 1
+  },
+  "expected": "PASS",
+  "plan_case": {
+    "id": "read_translation7_5",
+    "value": {
+      "array": [
+        -7,
+        0,
+        7,
+        12
+      ],
+      "index": 1
+    },
+    "expected": "PASS",
+    "cn_body": "int a[4]={(-7),(0),(7),(12)}; int result=read(a,4,1); (void)result;",
+    "binds": {
+      "args": {
+        "p": 4096,
+        "n": 4,
+        "i": 1
+      },
+      "values": {
+        "l": [
+          -7,
+          0,
+          7,
+          12
+        ]
+      }
+    },
+    "precondition_valid": true,
+    "oracle": {
+      "array_preserved_by_body": [
+        -7,
+        0,
+        7,
+        12
+      ],
+      "body_return_value_informational": 0,
+      "specification_scope": "Weak ownership-only post does not promise return/content equality; stronger existing variants explicitly do. Do not classify missing CN extract proof annotation as incorrect C implementation or dynamic counterexample."
+    }
+  },
+  "cn_source_sha256": "e85439414c2ce0adee242cc8d7b05abe7a29ab37a95cba6856bb96d7205132f1",
+  "qcp_source_sha256": "601105f7c1b14876ab6b5fda767efcfbbc6d738cda3c95d04a13c87d0f0aabec",
+  "harness": "benchmark/programs/array_load/variants/cn_original_array_load.broken/tests/20261016-evaluation/read_translation7_5/fulminate.cn.c",
+  "harness_sha256": "44a730bef09700d9a6b1129cf90c55fa5cdb8f11ca25f47d78a85bde148abfc5",
+  "binds": "benchmark/programs/array_load/variants/cn_original_array_load.broken/tests/20261016-evaluation/read_translation7_5/binds.json",
+  "binds_sha256": "1071dabc31d8e472e98b7ea1e5ad2579944eabce2f8bb45407a7865b6fb94a40",
+  "precondition_valid": true,
+  "fulminate_pipeline": {
+    "command": [
+      "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+      "instrument",
+      "--run",
+      "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+      "--output-dir=/tmp/tespec-group-n0upmvpo",
+      "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples",
+      "/home/yangfp/teSpec/benchmark/programs/array_load/variants/cn_original_array_load.broken/tests/20261016-evaluation/read_translation7_5/fulminate.cn.c"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 0.11463575199013576,
+    "resources": {
+      "max_process_rss_kib": 43964,
+      "user_seconds": 0.05,
+      "system_seconds": 0.02
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/array_load/20261016-evaluation/cn_original_array_load.broken/read_translation7_5/fulminate-pipeline/stdout.log",
+    "stderr": "benchmark/results/array_load/20261016-evaluation/cn_original_array_load.broken/read_translation7_5/fulminate-pipeline/stderr.log"
+  },
+  "instrumented_sources": [
+    {
+      "path": "benchmark/results/array_load/20261016-evaluation/cn_original_array_load.broken/read_translation7_5/fulminate.cn.exec.c",
+      "sha256": "a023c1c8b51da11551d76b8aa95c13d1475cac548a47622a6fe2afe0a5495205"
+    }
+  ],
+  "instrumented_binary_sha256": "3764f94e0b9fd7c3c76e0bb509856d071f53a682e45b37433f700dfb139467a5",
+  "fulminate_test": {
+    "command": [
+      "/tmp/tespec-group-n0upmvpo/fulminate.cn.exec.out"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 0.0040558979962952435,
+    "resources": {
+      "max_process_rss_kib": 1132,
+      "user_seconds": 0.0,
+      "system_seconds": 0.0
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/array_load/20261016-evaluation/cn_original_array_load.broken/read_translation7_5/fulminate-test/stdout.log",
+    "stderr": "benchmark/results/array_load/20261016-evaluation/cn_original_array_load.broken/read_translation7_5/fulminate-test/stderr.log",
+    "status": "PASS"
+  },
+  "tespec_off": {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "spectest",
+      "run",
+      "/home/yangfp/teSpec/benchmark/programs/array_load/variants/qcp_existing_601105f7c1b14876ab6b/qcp/array_load_strong_client.qcp.c",
+      "--function",
+      "read",
+      "--binds",
+      "/home/yangfp/teSpec/benchmark/programs/array_load/variants/cn_original_array_load.broken/tests/20261016-evaluation/read_translation7_5/binds.json",
+      "--execution-mode",
+      "all-boundaries",
+      "--output-dir",
+      "/home/yangfp/teSpec/benchmark/results/array_load/20261016-evaluation/cn_original_array_load.broken/read_translation7_5/tespec-off/artifacts",
+      "--timeout",
+      "30",
+      "--compact",
+      "--no-spatial-smt",
+      "--spatial-smt-timeout-ms",
+      "2000",
+      "-I",
+      "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+      "-I",
+      "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/supplemental/array_load_strong_client"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 0.1648972010007128,
+    "resources": {
+      "max_process_rss_kib": 19860,
+      "user_seconds": 0.09,
+      "system_seconds": 0.02
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/array_load/20261016-evaluation/cn_original_array_load.broken/read_translation7_5/tespec-off/stdout.log",
+    "stderr": "benchmark/results/array_load/20261016-evaluation/cn_original_array_load.broken/read_translation7_5/tespec-off/stderr.log",
+    "report": "benchmark/results/array_load/20261016-evaluation/cn_original_array_load.broken/read_translation7_5/tespec-off/artifacts/report.json",
+    "statuses": [
+      "PASS"
+    ],
+    "status": "PASS"
+  },
+  "tespec_on": {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "spectest",
+      "run",
+      "/home/yangfp/teSpec/benchmark/programs/array_load/variants/qcp_existing_601105f7c1b14876ab6b/qcp/array_load_strong_client.qcp.c",
+      "--function",
+      "read",
+      "--binds",
+      "/home/yangfp/teSpec/benchmark/programs/array_load/variants/cn_original_array_load.broken/tests/20261016-evaluation/read_translation7_5/binds.json",
+      "--execution-mode",
+      "all-boundaries",
+      "--output-dir",
+      "/home/yangfp/teSpec/benchmark/results/array_load/20261016-evaluation/cn_original_array_load.broken/read_translation7_5/tespec-on/artifacts",
+      "--timeout",
+      "30",
+      "--compact",
+      "--spatial-smt",
+      "--spatial-smt-timeout-ms",
+      "2000",
+      "-I",
+      "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+      "-I",
+      "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/supplemental/array_load_strong_client"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 0.16493144498963375,
+    "resources": {
+      "max_process_rss_kib": 20096,
+      "user_seconds": 0.07,
+      "system_seconds": 0.04
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/array_load/20261016-evaluation/cn_original_array_load.broken/read_translation7_5/tespec-on/stdout.log",
+    "stderr": "benchmark/results/array_load/20261016-evaluation/cn_original_array_load.broken/read_translation7_5/tespec-on/stderr.log",
+    "report": "benchmark/results/array_load/20261016-evaluation/cn_original_array_load.broken/read_translation7_5/tespec-on/artifacts/report.json",
+    "statuses": [
+      "PASS"
+    ],
+    "status": "PASS"
+  },
+  "runtime_dependency_fixtures": []
+}

@@ -1,0 +1,117 @@
+{
+  "id": "4fb216eff6770801ed2f",
+  "evaluation_report": "benchmark/results/array_load/20261016-evaluation/results.json",
+  "resolution": null,
+  "group": "array_load",
+  "variant": "cn_original:array_load.broken",
+  "paired_qcp_variant": "qcp_existing:4db2e7679674e4fa189b",
+  "case": "original_client_translation6_only_entry",
+  "input": {
+    "array": [
+      0,
+      1,
+      2
+    ]
+  },
+  "mode": "off",
+  "expected": "PASS",
+  "automatic_status": "FAIL",
+  "final_status": "FAIL",
+  "final_matches_expected": false,
+  "classification": "UNEXPECTED_REJECTION",
+  "triage_status": "NEEDS_TRIAGE",
+  "reason": "invalid_path_vc",
+  "executor_error": null,
+  "source": "/home/yangfp/teSpec/benchmark/programs/array_load/variants/qcp_existing_4db2e7679674e4fa189b/qcp/array_main_cast.qcp.c",
+  "source_sha256": "4db2e7679674e4fa189b915d267d053e1883dbb21980ed1301564bedaf7f5cce",
+  "binds": "benchmark/programs/array_load/variants/cn_original_array_load.broken/tests/20261016-evaluation/original_client_translation6_only_entry/binds.json",
+  "binds_sha256": "556013e2f098f325490b1c8b8869c269ef802664cde5a72f90092f9f6c6d42a4",
+  "report": "benchmark/results/array_load/20261016-evaluation/cn_original_array_load.broken/original_client_translation6_only_entry/tespec-off/artifacts/report.json",
+  "report_sha256": "5f88f7edc9f62e6a593fe44285b5d51d87ee1a2b6a25bb8b6a7bbcc1b8e10ab2",
+  "stdout": "benchmark/results/array_load/20261016-evaluation/cn_original_array_load.broken/original_client_translation6_only_entry/tespec-off/stdout.log",
+  "stderr": "benchmark/results/array_load/20261016-evaluation/cn_original_array_load.broken/original_client_translation6_only_entry/tespec-off/stderr.log",
+  "original_command": [
+    "/usr/bin/python3",
+    "-m",
+    "spectest",
+    "run",
+    "/home/yangfp/teSpec/benchmark/programs/array_load/variants/qcp_existing_4db2e7679674e4fa189b/qcp/array_main_cast.qcp.c",
+    "--function",
+    "main",
+    "--binds",
+    "/home/yangfp/teSpec/benchmark/programs/array_load/variants/cn_original_array_load.broken/tests/20261016-evaluation/original_client_translation6_only_entry/binds.json",
+    "--execution-mode",
+    "all-boundaries",
+    "--output-dir",
+    "/home/yangfp/teSpec/benchmark/results/array_load/20261016-evaluation/cn_original_array_load.broken/original_client_translation6_only_entry/tespec-off/artifacts",
+    "--timeout",
+    "30",
+    "--compact",
+    "--no-spatial-smt",
+    "--spatial-smt-timeout-ms",
+    "2000",
+    "-I",
+    "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+    "-I",
+    "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/supplemental/array_main_cast"
+  ],
+  "reproduction_command": [
+    "/usr/bin/python3",
+    "-m",
+    "spectest",
+    "run",
+    "/home/yangfp/teSpec/benchmark/programs/array_load/variants/qcp_existing_4db2e7679674e4fa189b/qcp/array_main_cast.qcp.c",
+    "--function",
+    "main",
+    "--binds",
+    "/home/yangfp/teSpec/benchmark/programs/array_load/variants/cn_original_array_load.broken/tests/20261016-evaluation/original_client_translation6_only_entry/binds.json",
+    "--execution-mode",
+    "all-boundaries",
+    "--output-dir",
+    "/tmp/tespec-reproduce-4fb216eff6770801ed2f",
+    "--timeout",
+    "30",
+    "--compact",
+    "--no-spatial-smt",
+    "--spatial-smt-timeout-ms",
+    "2000",
+    "-I",
+    "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+    "-I",
+    "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/supplemental/array_main_cast"
+  ],
+  "vc_artifacts": [
+    {
+      "path": "benchmark/results/array_load/20261016-evaluation/cn_original_array_load.broken/original_client_translation6_only_entry/tespec-off/artifacts/artifacts/original_client_translation6_only_entry/vc/input_goal.v",
+      "sha256": "7308baa8ac63721f1764f31e93eaeb2f83af298c962cff66e74d17302129db92"
+    }
+  ],
+  "vc_artifacts_status": "PRESENT",
+  "residual_vcs": [
+    "proof_of_main_entail_wit_1_split_goal_1",
+    "proof_of_main_entail_wit_1",
+    "proof_of_main_entail_wit_4_split_goal_1",
+    "proof_of_main_entail_wit_4"
+  ],
+  "itp": {
+    "status": "NOT_PERFORMED"
+  },
+  "mode_comparison_statistics": "benchmark/results/array_load/20261016-evaluation/statistics.json",
+  "policy": "Expected result is independently reviewed; preserve original automatic classification. UNKNOWN and unexpected ERROR are not successful detection. Final ITP verdict recorded separately.",
+  "review": {
+    "status": "OPEN_SOURCE_TRANSLATION_AND_FROZEN_ORACLE_REVIEW",
+    "cause": "Existing QCP array_main_cast translation replaces original element-dereference value assertions by pointer alias assertions using &a+4 and &a+8. Actual generated return-boundary entailments at source lines24/28 have pure goal False. This is an alignment/annotation semantics issue requiring independent source review, not evidence that original CN C body is incorrect and not automatically a teSpec false positive.",
+    "mode_comparison": "{'off': {'PASS': 62, 'UNKNOWN': 4, 'FAIL': 1}, 'on': {'PASS': 62, 'UNKNOWN': 4, 'FAIL': 1}}",
+    "itp_conclusion": "NO_NEW_ITP; native INVALID is not a Coq certificate. Original frozen PASS kept in denominator. Do not silently relabel FAIL as expected to improve score.",
+    "coverage_gap": "benchmark/results/array_load/coverage-gap.json",
+    "expectation_unchanged": true,
+    "precondition_result": "SAT",
+    "execution_completed": true,
+    "original_residual_vcs": [
+      "proof_of_main_entail_wit_1_split_goal_1",
+      "proof_of_main_entail_wit_1",
+      "proof_of_main_entail_wit_4_split_goal_1",
+      "proof_of_main_entail_wit_4"
+    ]
+  }
+}
