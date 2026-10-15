@@ -1,37 +1,29 @@
-# CN/QCP paired semantic mutation benchmark
+# CN/QCP 程序、实现和规约变体基准
 
-> 当前计数和组织方式以 [程序组 / 多实现 / 规约变体索引](grouping/README.md) 为准：76 个 CN 原始来源归入 45 个程序组，保留 61 个原始实现轮廓。已有性能数据为 18 条来源记录、11 个不同正确配置、8 个程序组。下文的 76×7 是历史来源文件级计划，保留备查，不作为独立程序数。
+当前采用**已有数据优先、变体数量可变**的组织方式：程序组 → 多个实现 → 多种规约 → 输入与结果。CN 原有变体、已有 QCP 翻译、构造变体、测试和证明记录全部保留；不再要求每个程序固定几个正例、负例或实现。
 
-用户指定范围：全部 76 个固定来源 C 文件。每项 7 个变体，每个变体分别提供 CN 和 QCP 源码；最终目标为 532 个变体、1064 个语言文件。原 CN 正负例标签仅作来源信息，不决定新实验分类。
+## 入口
 
-## 变体定义
+- [程序与原始变体分组](grouping/README.md)：76 个 CN 来源归入 45 个程序组，保留 61 个原始实现轮廓。
+- [已有变体、输入和结果索引](grouping/existing-variants-and-results.json)：具体版本及对应测试/验证记录。
+- [可读 CSV 总表](grouping/existing-variant-results.csv)：每个版本的来源、输入集合数及记录数。
+- [逐程序目录](grouping/subjects/)：实现、规约以及证据索引的关联 ID。
+- [性能数据](performance/20261015-positive18/README.md)：18 条来源记录、11 个不同正确配置、8 个程序组；保留原测量数值，另提供去重视图。
+- [当前策略](grouping/policy.json)：无固定数量或正负比例，来源和结果范围必须明确。
 
-| ID | 实现 | 规约 | 预期 |
-|---|---|---|---|
-| correct | 正确基线 | 正确基线 | 两个验证器均验证通过 |
-| spec_1..3 | 固定正确实现 | 三个有具体反例的错误规约 | 不能验证通过 |
-| impl_1..3 | 三个有具体反例的错误实现 | 固定正确规约 | 不能验证通过 |
+## 结果使用规则
 
-每个错误变体必须附变异说明和满足入口条件的具体见证。不能通过解析错误、错误类型、未定义名字、不可满足前置条件或 trusted 跳过目标函数来制造负例。正确基线可修复原 broken 文件，但必须记录修复，不声称与其错误规约等价。
+已有结果属于实际运行的源码、规约、输入、工具版本和检查范围。源码相同的记录可按来源哈希关联；仅凭同名程序、同实现或同一程序组，不能把 PASS、反例或资源数字挪到另一规约。报告保留精确匹配、清单/用例关联和仅历史记录三类依据，索引不产生新的验证判定。
 
-## 实验判定
+输入分为实际执行的冻结输入、已有 C 反例/对照驱动、准备但未执行的输入，以及原文件中未确认执行的 main。UNKNOWN、工具错误、残留 manual VC、预期拒绝和正式反证分别保留。未测的时间、内存和 token 不填 0。
 
-CN 成功必须来自 `cn verify`，不是编译或运行时测试成功。QCP 正例采用自动部分消解加全部剩余 manual VC 的内核检查。QCP 留下 manual VC 只表示未完成证明，不能记为正式反证或已识别错误；即使另有 C 反例也分别记录。解析失败、崩溃、超时单独分类，不计为正确拒绝。运行时 C 见证不能代替全称证明，也不能独立证明资源 emp 的否定。
+## 重建与审计
 
-CN/QCP 必须有相同的可执行函数体；规约语言的表示差异须保持语义对应。规约变体的实现与基线逐字一致，实现变体的规约与基线逐字一致。首批按清单列明的目标函数验证，不包括原 trusted main，不宣称整个来源文件中所有函数均已覆盖。扩大到多函数程序时须记录全部目标和辅助函数的可信边界。
+```sh
+python3 benchmark/selection/paired-mutations/grouping/build.py
+python3 benchmark/selection/paired-mutations/grouping/reuse.py
+python3 benchmark/selection/paired-mutations/grouping/validate.py
+python3 benchmark/selection/paired-mutations/grouping/validate-reuse.py
+```
 
-## 当前批次
-
-已生成 18 个来源文件的全部七变体，共 126 对、252 个语言文件；剩余 58 项明确保留为 pending，没有用占位文件凑齐。18 个 CN 正例均通过，108 个 CN 负例均产生语义验证失败。QCP 正例的状态见 manifest.json 与 manual-proof-receipts.json；四个 unsigned 算术基线另有针对本批原始 VC 的证明。QCP 负例有直接语义拒绝和残留 manual 两类，后者仍待正式反证。126 份 C 观测及源码一致性检查见 witness-receipts.json。
-
-`3`/`zero`、三个 `add` 和若干 read/incr 来源相近或重复。保留用户指定的 76 个来源计数，但另输出 duplicate-groups.json；划分训练集/测试集时整个程序及其全部变体、重复来源必须放入同一组，避免数据泄漏。
-
-## 文件与重放
-
-`manifest.json` 含全部 76 个来源的 532 个槽位、哈希、状态及缺项；`cases/<来源>/<变体>/{cn.c,qcp.c}` 是实际生成的成对输入；`results.csv` 是已执行结果。`generate.py`/`scalar_memory.py` 生成已审阅的变异；生成后须重跑验证和更新状态，不能把生成成功当验证成功。`replay.py` 接收 CN switch 和 QCP binary，保存运行回执；`observe.py` 编译运行具体 C 见证。
-
-原 CN 来源仍在 ../sources/fulminate-cn；既有 QCP 翻译与证明仍在 ../qcp-migration。旧数据只作可追溯基线，不以其标签替代本实验结果。
-
-## 正例性能实测（2026-10-15）
-
-18 个当前正例的 CN/QCP 验证与 Fulminate/teSpec 同输入测试已实测。逐程序时间、峰值 RSS、实际模型 token 及测量边界见 [性能结果](performance/20261015-positive18/README.md) 和 [CSV](performance/20261015-positive18/program-metrics.csv)。模型明确配置为 gpt-6.1-sol；四项 QCP 补证包括失败、修复、编译审计和逐项独立内核检查成本。teSpec 本批全部自动 PASS，没有调用模型，token 为 0。
+`generate.py`、`manifest.json`、`cases/` 和原重放脚本保留历史构造批次的可复现性。旧七槽位/PENDING 字段不是当前接纳或缺项判据，也不代表对应程序没有原始变体或旧结果。[旧七槽位设计](legacy-seven-slot-design.md) 仅作历史记录，不要求继续按 76×7 补文件。

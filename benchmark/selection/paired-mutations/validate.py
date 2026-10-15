@@ -12,7 +12,7 @@ def main():
  runs={(x['source'],x['variant']):x for x in json.loads((HERE/'run-results.json').read_text())}
  generated=0;pending=0
  for row in m['records']:
-  vs=row['variants'];assert [x['id'] for x in vs]==['correct','spec_1','spec_2','spec_3','impl_1','impl_2','impl_3']
+  vs=row['variants'];assert len({x['id'] for x in vs})==len(vs)
   if not vs[0]['files']:
    assert all(not x['files'] for x in vs);pending+=1;continue
   generated+=1;texts={};fingerprints=set()
@@ -34,6 +34,6 @@ def main():
     assert digest(HERE/proof['proof'])==proof['manual_sha256']
     current=HERE/runs[(row['id'],'correct')]['qcp']['evidence_path']/'vc/qcp_goal.v'
     assert digest(current)==proof['goal_sha256']
- assert generated*7==m['summary']['generated_variants'];assert pending==m['summary']['pending_source_groups']
- print(f'PASS: {generated} seven-pair groups, {pending} explicitly pending groups; body/spec/hash checks passed.')
+ assert sum(bool(v.get('files')) for row in m['records'] for v in row['variants'])==m['summary']['generated_variants'];assert pending==m['summary']['pending_source_groups']
+ print(f'PASS: {generated} source groups (historical generated variants), {pending} explicitly pending groups; body/spec/hash checks passed.')
 if __name__=='__main__':main()

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build reviewed, semantic CN/QCP mutation pairs; never fill missing rows with clones."""
+"""Historical seven-slot reproduction only; active policy reuses a variable number of existing variants."""
 from pathlib import Path
 import hashlib,json
 HERE=Path(__file__).resolve().parent
