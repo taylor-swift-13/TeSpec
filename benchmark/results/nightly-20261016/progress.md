@@ -1,10 +1,10 @@
 # 夜间评测进度
 
-完整组 11/45；待补齐 34。截止北京时间 2026-10-16 08:00。
+完整组 12/45；待补齐 33。截止北京时间 2026-10-16 08:00。
 
-当前组：incr；阶段：ITP_PER_EXECUTION_SERIAL_BATCH_RUNNING。
+当前组：transfer；阶段：READY_FOR_NEXT_GROUP。
 
-teSpec 最终不匹配 3 条，已解决自动阶段缺口 22 条。详情见 ../tespec-unexpected/README.md；未评测组不算零异常。
+teSpec 最终不匹配 0 条，已解决自动阶段缺口 25 条。详情见 ../tespec-unexpected/README.md；未评测组不算零异常。
 
 | 程序组 | 状态 | 结果成本表 |
 |---|---|---|
@@ -21,7 +21,7 @@ teSpec 最终不匹配 3 条，已解决自动阶段缺口 22 条。详情见 ..
 | dll_add | 待补齐 | [表](../dll_add/result-cost.md) |
 | dll_remove | 待补齐 | [表](../dll_remove/result-cost.md) |
 | example_let | 完整 | [表](../example_let/result-cost.md) |
-| incr | 待补齐 | [表](../incr/result-cost.md) |
+| incr | 完整 | [表](../incr/result-cost.md) |
 | incr_first | 完整 | [表](../incr_first/result-cost.md) |
 | incr_two | 待补齐 | [表](../incr_two/result-cost.md) |
 | init_array | 待补齐 | [表](../init_array/result-cost.md) |

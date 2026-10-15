@@ -15,7 +15,7 @@
 | [dll_add](dll_add/result-cost.md) | 待补齐 |
 | [dll_remove](dll_remove/result-cost.md) | 待补齐 |
 | [example_let](example_let/result-cost.md) | 已齐全 |
-| [incr](incr/result-cost.md) | 待补齐 |
+| [incr](incr/result-cost.md) | 已齐全 |
 | [incr_first](incr_first/result-cost.md) | 已齐全 |
 | [incr_two](incr_two/result-cost.md) | 待补齐 |
 | [init_array](init_array/result-cost.md) | 待补齐 |
