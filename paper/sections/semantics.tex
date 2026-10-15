@@ -152,14 +152,16 @@ unreachable countermodels. A failed proof attempt establishes neither polarity.
 Layer & Meaning\\
 \midrule
 Entry & SAT: $\dom\ne\varnothing$. UNSAT: $\dom=\varnothing$. UNKNOWN: nonemptiness unresolved.\\
-VC & \raggedright \valid{}: established. \invalid{}: admitted negative evidence. \unknown{}: unresolved.\arraybackslash\\
+VC & \raggedright \valid{}: established. \invalid{}: original VC refuted. \unknown{}: unresolved.\arraybackslash\\
 Test: \pass & Entry SAT, complete execution and boundary coverage, and all required obligations VALID.\\
 Test: \fail & An empty entry, or a confirmed execution violation; the report retains which reason applies.\\
 Test: \unknown & Neither complete acceptance nor a confirmed failed check.\\
 \bottomrule
 \end{tabular}
 \end{table}
-Table~\ref{tab:verdicts} summarizes aggregation. An empty entry invalidates
+Table~\ref{tab:verdicts} summarizes the instance-level results.
+Figure~\ref{fig:overview} shows the intervening path aggregation: VC
+\invalid{} becomes path \fail{} only after reachability is established. An empty entry invalidates
 the test instance; it is not a counterexample to the postcondition.
 Entry, obligation, and whole-test results are recorded separately.
 The emitted initial VC uses a negative-entailment encoding.

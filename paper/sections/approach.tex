@@ -72,32 +72,64 @@ gap, which prevents complete acceptance.
 
 \subsection{Discharge immutable obligations}
 \label{sec:evidence}
-Automatic entailment and SMT reasoning first attempt the generated goals.
-The optional \texttt{--spatial-smt} path encodes supported memory predicates
-for the solver; unsupported formulas retain their original obligations.
-For an entailment $P\vdash A$, a valid countermodel search asks whether
-$P\land\neg A$ is satisfiable. An unsatisfiable answer discharges the entailment
-only for a sound encoding. A satisfiable answer supplies a candidate violation,
-whose memory interpretation and path reachability must also be established.
+Figure~\ref{fig:overview} distinguishes three levels: the solver's answer,
+the validity of an original VC, and the verdict for the execution path.
+Let $\phi_{\pi,j}$ be the $j$th obligation on path $\pi$:
+\[
+\phi_{\pi,j}\equiv\forall z.\;P_{\pi,j}(z)\Rightarrow A_{\pi,j}(z).
+\]
+Automatic entailment first attempts the original obligation. For SMT,
+the checker searches for a counterexample by querying
+$C_{\pi,j}\equiv\exists z.\,P_{\pi,j}(z)\land\neg A_{\pi,j}(z)$.
+The optional \texttt{--spatial-smt} mode supplies encodings for supported
+memory predicates. For a countermodel-preserving encoding, \textsf{UNSAT}
+establishes VC \valid{}. A \textsf{SAT} answer establishes VC \invalid{}
+once its model is checked in the original memory interpretation.
+An unconfirmed model, \textsf{UNKNOWN}, or unavailable encoding leaves VC
+\unknown{}. Thus satisfiability and validity have opposite polarities here.
 
-Residual goals remain Rocq propositions. An optional proof agent or a developer
-fills proofs against frozen goal modules. The manifest fixes source hashes,
-logical dependencies, target interpretation, goal identities, and proof
-polarity. Complete proof replay checks every original obligation, including
-entry existence and automatically discharged goals, audits transitive
-assumptions, and performs an independent kernel check. All pending obligations
-from one test execution form one proof-completion job.
+Only unresolved VCs require ITP completion. The agent or developer receives
+the frozen original $\phi_{\pi,j}$ and can construct a proof of
+$\phi_{\pi,j}$ or of $\neg\phi_{\pi,j}$. A kernel-checked proof under the
+admitted assumptions establishes \valid{} or \invalid{}, respectively.
+If neither direction is established, the VC remains \unknown{}; a failed
+proof attempt supplies no negative evidence. All pending VCs from one test
+execution form one proof-completion job, with a separate result for each VC.
+Already decided automatic results are carried forward.
 
-\subsection{Aggregate execution and proof evidence}
-A test passes when its entry domain is nonempty, execution and selected
-observations are complete, and every required obligation is valid. A reachable
-safety or assertion violation yields failure. A proof timeout, an unsupported
-encoding, or unfinished execution yields an unresolved component. The
-aggregation retains separate reasons for an empty entry domain, a program
-violation, and an infrastructure error.
+The manifest fixes source hashes, logical dependencies, target interpretation,
+goal identities, and proof polarity. The optional complete-certificate route
+replays every original obligation, including entry existence and automatically
+discharged goals, audits transitive assumptions, and runs an independent
+kernel check. Automatic evidence and replayed certificates retain distinct
+labels.
 
-The implementation labels automatic solver evidence separately from checked
-Rocq certificates. A negative proof of a VC establishes a failed test only
-with a reachable violating state. These interfaces connect the workflow to
-the formal guarantees below; the C frontend, target layout, and VC generator
-must implement the stated transition and coverage conditions.
+\subsection{Aggregate VC results into path and instance verdicts}
+A refuted VC does not alone prove that a program reached its countermodel.
+The path verdict therefore combines VC status with feasibility, execution
+coverage, and reachability. Let $v_{\pi,j}$ be the final VC status, $F_\pi$
+mean that the path is feasible from the entry domain, $K_\pi$ mean that its
+execution and selected checks are complete, and $W_\pi$ mean that an INVALID
+VC has an admitted reachable violating state. The path verdict is
+\[
+V(\pi)=
+\begin{cases}
+\fail, & W_\pi,\\
+\pass, & F_\pi\land K_\pi\land\forall j.\ v_{\pi,j}=\valid,\\
+\unknown, & \text{otherwise}.
+\end{cases}
+\]
+The rules are applied in this order: one confirmed violation suffices for
+\fail{} even if other obligations remain unresolved. A \pass{} requires all
+required obligations to be valid. In particular, vacuous VC validity from an
+infeasible antecedent does not establish a passing execution. Paths proved
+infeasible are excluded; unresolved feasibility prevents acceptance.
+
+At instance level, any failed path yields \fail{}. A nonempty entry domain,
+complete coverage of its executions, and passing retained paths yield
+\pass{}. Remaining cases yield \unknown{}. Entry existence has its own query
+and polarity: SAT means nonempty, UNSAT means an invalid empty instance, and
+UNKNOWN requires further evidence before acceptance. The CLI retains a
+separate empty-entry reason when it reports that invalid instance as FAIL.
+Infrastructure and semantic execution errors keep their own diagnostics.
+These interfaces connect the workflow to the formal guarantees below.

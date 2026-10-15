@@ -47,3 +47,17 @@ used as evidence for TeSpec.
 Coq sources are hash-matched against their existing replay receipt; no new theory
 replay or benchmark run is claimed. The earlier review in `review-response.txt`
 is dated 2026-10-12 and describes that historical revision.
+
+## Follow-up: solver, VC, proof, and path result flow
+
+The main workflow now distinguishes the negated SMT query from the original
+entailment. UNSAT establishes VALID under a sound encoding; SAT establishes
+INVALID only after original-model validation. Unresolved VCs enter ITP, where
+a checked proof of either polarity establishes VALID or INVALID and an
+uncompleted attempt remains UNKNOWN. Automatic decisions bypass proof search.
+
+Path aggregation separately checks reachable negative evidence. A reachable
+violation dominates unresolved VCs; PASS requires feasible, complete execution
+and every required VC to be VALID. The diagram also shows whole-instance
+aggregation and the distinct polarity of entry existence. The revised paper
+is nine pages including references. No implementation or experiment was changed.

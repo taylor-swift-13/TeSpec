@@ -1,9 +1,11 @@
 # TeSpec ICSE manuscript
 
 **TeSpec: Proof-Based Testing of Separation-Logic Specifications for C** is the
-current manuscript in `main.tex` and `main.pdf`. The current revision is eight
+current manuscript in `main.tex` and `main.pdf`. The current revision is nine
 pages including references. It develops the method before its formal guarantees
-and uses one main workflow figure, shared with `figures/overview-standalone.pdf`.
+and uses one main workflow figure, shared with `figures/overview-standalone.pdf`. The diagram explicitly connects
+SMT SAT/UNSAT/UNKNOWN, original-VC VALID/INVALID/UNKNOWN, ITP completion,
+and path/whole-instance PASS/FAIL/UNKNOWN.
 
 ## Argument and structure
 
