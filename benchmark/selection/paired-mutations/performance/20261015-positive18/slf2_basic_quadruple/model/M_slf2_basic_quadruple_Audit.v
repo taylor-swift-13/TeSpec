@@ -1,0 +1,2 @@
+Require Import M_slf2_basic_quadruple_Manual.
+Print Assumptions proof_of_quadruple_return_wit_1.

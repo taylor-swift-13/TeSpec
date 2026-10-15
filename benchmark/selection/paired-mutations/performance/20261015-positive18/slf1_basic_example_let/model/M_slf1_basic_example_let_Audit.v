@@ -1,0 +1,2 @@
+Require Import M_slf1_basic_example_let_Manual.
+Print Assumptions proof_of_example_let_return_wit_1.

@@ -1,0 +1,2 @@
+Require Import M_slf0_basic_incr_Manual.
+Print Assumptions proof_of_incr_return_wit_1.

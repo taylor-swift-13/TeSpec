@@ -1,0 +1,92 @@
+You are the sole proof constructor for this independent QCP benchmark subject. Fill Candidate.v in the current directory. CaseGoal.v is immutable original native QCP VC data. Prove all lemmas in Candidate.v exactly as stated, using Coq 8.20 and the standard QCP SeparationLogic runtime imports. Preserve the statements and imports. No Admitted, admit, axioms, parameters, proof escapes, or altered definitions. Do not inspect other benchmark proofs or previous solutions. Do not launch other agents or tools that call a model. Do not change CaseGoal.v or other files. Do not claim acceptance; an external controller compiles and checks your result. This timed proof-generation stage is separate from external compilation: edit Candidate.v only and return a short completion message. No command execution or local compilation is needed in this stage. Resource/token costs come from real CLI telemetry, not your self-report.
+
+Original goal data:
+Require Import Coq.ZArith.ZArith.
+Require Import Coq.Bool.Bool.
+Require Import Coq.Strings.String.
+Require Import Coq.Strings.Ascii.
+Require Import Coq.Lists.List.
+Require Import Coq.Classes.RelationClasses.
+Require Import Coq.Classes.Morphisms.
+Require Import Coq.micromega.Psatz.
+Require Import Coq.Sorting.Permutation.
+From AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.
+Require Import SetsClass.SetsClass. Import SetsNotation.
+From SimpleC.SL Require Import Mem SeparationLogic.
+Require Import Logic.LogicGenerator.demo932.Interface.
+Local Open Scope Z_scope.
+Local Open Scope sets.
+Local Open Scope string_scope.
+Local Open Scope list.
+Import naive_C_Rules.
+Local Open Scope sac.
+
+(*----- Function incr -----*)
+
+Definition incr_safety_wit_1 := 
+forall (p_pre: Z) (old: Z) (PreH1 : (0 <= old)) (PreH2 : (old <= UINT_MAX)) ,
+  ((( &( "m" ) )) # UInt  |->_)
+  **  ((( &( "n" ) )) # UInt  |-> old)
+  **  ((( &( "p" ) )) # Ptr  |-> p_pre)
+  **  ((p_pre) # UInt  |-> old)
+|--
+  “ (1 <= INT_MAX) ” 
+  &&  “ ((INT_MIN) <= 1) ”
+.
+
+Definition incr_return_wit_1 := 
+(
+forall (p_pre: Z) (old: Z) (PreH1 : (0 <= old)) (PreH2 : (old <= UINT_MAX)) ,
+  ((p_pre) # UInt  |-> (unsigned_last_nbits ((old + 1 )) (32)))
+|--
+  ((p_pre) # UInt  |-> ((old + 1 ) % ( 4294967296 ) ))
+) \/
+(
+forall (old: Z) (PreH1 : (0 <= old)) (PreH2 : (old <= UINT_MAX)) ,
+  TT && emp 
+|--
+  “ ((unsigned_last_nbits ((old + 1 )) (32)) = ((old + 1 ) % ( 4294967296 ) )) ”
+  &&  emp
+).
+
+Definition incr_return_wit_1_split_goal_1 := 
+forall (old: Z) (PreH1 : (0 <= old)) (PreH2 : (old <= UINT_MAX)) ,
+  ((unsigned_last_nbits ((old + 1 )) (32)) = ((old + 1 ) % ( 4294967296 ) ))
+.
+
+Module Type VC_Correct.
+
+Axiom proof_of_incr_safety_wit_1 : incr_safety_wit_1.
+Axiom proof_of_incr_return_wit_1 : incr_return_wit_1.
+
+End VC_Correct.
+
+
+Candidate template:
+Require Import Coq.ZArith.ZArith.
+Require Import Coq.Bool.Bool.
+Require Import Coq.Strings.String.
+Require Import Coq.Strings.Ascii.
+Require Import Coq.Lists.List.
+Require Import Coq.Classes.RelationClasses.
+Require Import Coq.Classes.Morphisms.
+Require Import Coq.micromega.Psatz.
+Require Import Coq.Sorting.Permutation.
+From AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.
+Require Import SetsClass.SetsClass. Import SetsNotation.
+From SimpleC.SL Require Import Mem SeparationLogic.
+Require Import CaseGoal.
+Require Import Logic.LogicGenerator.demo932.Interface.
+Local Open Scope Z_scope.
+Local Open Scope sets.
+Local Open Scope string_scope.
+Local Open Scope list.
+Import naive_C_Rules.
+Local Open Scope sac.
+
+Lemma proof_of_incr_return_wit_1_split_goal_1 : incr_return_wit_1_split_goal_1.
+Proof. Abort.
+
+Lemma proof_of_incr_return_wit_1 : incr_return_wit_1.
+Proof. Admitted. 
+

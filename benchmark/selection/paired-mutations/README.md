@@ -29,3 +29,7 @@ CN/QCP 必须有相同的可执行函数体；规约语言的表示差异须保�
 `manifest.json` 含全部 76 个来源的 532 个槽位、哈希、状态及缺项；`cases/<来源>/<变体>/{cn.c,qcp.c}` 是实际生成的成对输入；`results.csv` 是已执行结果。`generate.py`/`scalar_memory.py` 生成已审阅的变异；生成后须重跑验证和更新状态，不能把生成成功当验证成功。`replay.py` 接收 CN switch 和 QCP binary，保存运行回执；`observe.py` 编译运行具体 C 见证。
 
 原 CN 来源仍在 ../sources/fulminate-cn；既有 QCP 翻译与证明仍在 ../qcp-migration。旧数据只作可追溯基线，不以其标签替代本实验结果。
+
+## 正例性能实测（2026-10-15）
+
+18 个当前正例的 CN/QCP 验证与 Fulminate/teSpec 同输入测试已实测。逐程序时间、峰值 RSS、实际模型 token 及测量边界见 [性能结果](performance/20261015-positive18/README.md) 和 [CSV](performance/20261015-positive18/program-metrics.csv)。模型明确配置为 gpt-6.1-sol；四项 QCP 补证包括失败、修复、编译审计和逐项独立内核检查成本。teSpec 本批全部自动 PASS，没有调用模型，token 为 0。

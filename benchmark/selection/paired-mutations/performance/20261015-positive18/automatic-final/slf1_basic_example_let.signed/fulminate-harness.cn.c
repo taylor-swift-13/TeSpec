@@ -1,0 +1,11 @@
+int doubled(int n)
+/*@ requires -1073741824i32 <= n; n <= 1073741823i32; ensures return == 2i32 * n; @*/
+{ int a = n+1; int b = n-1; return a+b; }
+
+int main(void) /*@ ensures return == 0i32; @*/ {
+doubled(-1073741824);
+doubled(-1);
+doubled(0);
+doubled(1);
+doubled(1073741823);
+return 0; }

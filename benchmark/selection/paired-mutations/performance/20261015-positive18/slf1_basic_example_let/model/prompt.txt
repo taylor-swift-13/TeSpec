@@ -1,0 +1,185 @@
+You are the sole proof constructor for this independent QCP benchmark subject. Fill Candidate.v in the current directory. CaseGoal.v is immutable original native QCP VC data. Prove all lemmas in Candidate.v exactly as stated, using Coq 8.20 and the standard QCP SeparationLogic runtime imports. Preserve the statements and imports. No Admitted, admit, axioms, parameters, proof escapes, or altered definitions. Do not inspect other benchmark proofs or previous solutions. Do not launch other agents or tools that call a model. Do not change CaseGoal.v or other files. Do not claim acceptance; an external controller compiles and checks your result. This timed proof-generation stage is separate from external compilation: edit Candidate.v only and return a short completion message. No command execution or local compilation is needed in this stage. Resource/token costs come from real CLI telemetry, not your self-report.
+
+Original goal data:
+Require Import Coq.ZArith.ZArith.
+Require Import Coq.Bool.Bool.
+Require Import Coq.Strings.String.
+Require Import Coq.Strings.Ascii.
+Require Import Coq.Lists.List.
+Require Import Coq.Classes.RelationClasses.
+Require Import Coq.Classes.Morphisms.
+Require Import Coq.micromega.Psatz.
+Require Import Coq.Sorting.Permutation.
+From AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.
+Require Import SetsClass.SetsClass. Import SetsNotation.
+From SimpleC.SL Require Import Mem SeparationLogic.
+Require Import Logic.LogicGenerator.demo932.Interface.
+Local Open Scope Z_scope.
+Local Open Scope sets.
+Local Open Scope string_scope.
+Local Open Scope list.
+Import naive_C_Rules.
+Local Open Scope sac.
+
+(*----- Function example_let -----*)
+
+Definition example_let_safety_wit_1 := 
+forall (n_pre: Z) (PreH1 : (0 <= n_pre)) (PreH2 : (n_pre <= UINT_MAX)) ,
+  ((( &( "a" ) )) # UInt  |->_)
+  **  ((( &( "n" ) )) # UInt  |-> n_pre)
+|--
+  “ (1 <= INT_MAX) ” 
+  &&  “ ((INT_MIN) <= 1) ”
+.
+
+Definition example_let_safety_wit_2 := 
+forall (n_pre: Z) (PreH1 : (0 <= n_pre)) (PreH2 : (n_pre <= UINT_MAX)) ,
+  ((( &( "b" ) )) # UInt  |->_)
+  **  ((( &( "a" ) )) # UInt  |-> (unsigned_last_nbits ((n_pre + 1 )) (32)))
+  **  ((( &( "n" ) )) # UInt  |-> n_pre)
+|--
+  “ (1 <= INT_MAX) ” 
+  &&  “ ((INT_MIN) <= 1) ”
+.
+
+Definition example_let_return_wit_1 := 
+(
+forall (n_pre: Z) (PreH1 : (0 <= n_pre)) (PreH2 : (n_pre <= UINT_MAX)) ,
+  TT && emp 
+|--
+  “ ((unsigned_last_nbits (((unsigned_last_nbits ((n_pre + 1 )) (32)) + (unsigned_last_nbits ((n_pre - 1 )) (32)) )) (32)) = ((2 * n_pre ) % ( 4294967296 ) )) ”
+  &&  emp
+) \/
+(
+forall (n_pre: Z) (PreH1 : (0 <= n_pre)) (PreH2 : (n_pre <= UINT_MAX)) ,
+  TT && emp 
+|--
+  “ ((unsigned_last_nbits (((unsigned_last_nbits ((n_pre + 1 )) (32)) + (unsigned_last_nbits ((n_pre - 1 )) (32)) )) (32)) = ((2 * n_pre ) % ( 4294967296 ) )) ”
+  &&  emp
+).
+
+Definition example_let_return_wit_1_split_goal_1 := 
+forall (n_pre: Z) (PreH1 : (0 <= n_pre)) (PreH2 : (n_pre <= UINT_MAX)) ,
+  ((unsigned_last_nbits (((unsigned_last_nbits ((n_pre + 1 )) (32)) + (unsigned_last_nbits ((n_pre - 1 )) (32)) )) (32)) = ((2 * n_pre ) % ( 4294967296 ) ))
+.
+
+Module Type VC_Correct.
+
+Axiom proof_of_example_let_safety_wit_1 : example_let_safety_wit_1.
+Axiom proof_of_example_let_safety_wit_2 : example_let_safety_wit_2.
+Axiom proof_of_example_let_return_wit_1 : example_let_return_wit_1.
+
+End VC_Correct.
+
+
+Candidate template:
+Require Import Coq.ZArith.ZArith.
+Require Import Coq.Bool.Bool.
+Require Import Coq.Strings.String.
+Require Import Coq.Strings.Ascii.
+Require Import Coq.Lists.List.
+Require Import Coq.Classes.RelationClasses.
+Require Import Coq.Classes.Morphisms.
+Require Import Coq.micromega.Psatz.
+Require Import Coq.Sorting.Permutation.
+From AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.
+Require Import SetsClass.SetsClass. Import SetsNotation.
+From SimpleC.SL Require Import Mem SeparationLogic.
+Require Import CaseGoal.
+Require Import Logic.LogicGenerator.demo932.Interface.
+Local Open Scope Z_scope.
+Local Open Scope sets.
+Local Open Scope string_scope.
+Local Open Scope list.
+Import naive_C_Rules.
+Local Open Scope sac.
+
+Lemma proof_of_example_let_return_wit_1_split_goal_1 : example_let_return_wit_1_split_goal_1.
+Proof. Abort.
+
+Lemma proof_of_example_let_return_wit_1 : example_let_return_wit_1.
+Proof. Admitted. 
+
+
+
+The external compiler rejected the first attempt. Repair Candidate.v using this exact feedback. This remains the same proof task and all immutable-statement restrictions apply. Do not simply repeat the prior proof.
+File "/home/yangfp/teSpec-benchmark-tespec/benchmark/selection/paired-mutations/performance/20261015-positive18/slf1_basic_example_let/model/M_slf1_basic_example_let_Manual.v", line 27, characters 2-133:
+Error: Not convertible.
+
+
+
+Actual runtime IntLib definitions (note the distinction between Z.rem and Z.modulo notation):
+Require Import Coq.ZArith.ZArith.
+From compcert.lib Require Import Coqlib Integers.
+Local Open Scope Z.
+
+Notation "'INT_MIN'" := (-2147483648).
+Notation "'INT_MAX'" := (2147483647).
+Notation "'UINT_MAX'" := (4294967295).
+Notation "'Zabs'" := (Z.abs).
+Notation "'Zgcd'" := (Z.gcd).
+Notation "x % y" := (Z.rem x y) (at level 40).
+
+Definition unsigned_last_nbits (x : Z) (n : Z) : Z := 
+   x mod (2 ^ n).
+ 
+Definition signed_last_nbits (x : Z) (n : Z) : Z := 
+   let v := x mod (2 ^ n) in 
+   if (zlt v (2 ^ (n - 1))) then v else v - 2 ^ n.
+
+Lemma Zland_land : forall x y c, Z.land (Z.land x y) c = Z.land (Z.land x c) (Z.land y c).
+Proof.
+  intros.
+  rewrite (Z.land_assoc (Z.land x c)) at 1.
+  rewrite (Z.land_comm x c).
+  rewrite <- (Z.land_assoc c x y).
+  rewrite (Z.land_comm c (Z.land x y)).
+  rewrite <- (Z.land_assoc (Z.land x y) _ c).
+  rewrite Z.land_diag.
+  reflexivity.
+
+Your current candidate:
+Require Import Coq.ZArith.ZArith.
+Require Import Coq.Bool.Bool.
+Require Import Coq.Strings.String.
+Require Import Coq.Strings.Ascii.
+Require Import Coq.Lists.List.
+Require Import Coq.Classes.RelationClasses.
+Require Import Coq.Classes.Morphisms.
+Require Import Coq.micromega.Psatz.
+Require Import Coq.Sorting.Permutation.
+From AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.
+Require Import SetsClass.SetsClass. Import SetsNotation.
+From SimpleC.SL Require Import Mem SeparationLogic.
+Require Import CaseGoal.
+Require Import Logic.LogicGenerator.demo932.Interface.
+Local Open Scope Z_scope.
+Local Open Scope sets.
+Local Open Scope string_scope.
+Local Open Scope list.
+Import naive_C_Rules.
+Local Open Scope sac.
+
+Lemma proof_of_example_let_return_wit_1_split_goal_1 : example_let_return_wit_1_split_goal_1.
+Proof.
+  unfold example_let_return_wit_1_split_goal_1.
+  intros n_pre PreH1 PreH2.
+  unfold unsigned_last_nbits.
+  change (((n_pre + 1) mod 4294967296 +
+           (n_pre - 1) mod 4294967296) mod 4294967296 =
+          (2 * n_pre) mod 4294967296).
+  rewrite <- Z.add_mod by lia.
+  f_equal.
+  ring.
+Qed.
+
+Lemma proof_of_example_let_return_wit_1 : example_let_return_wit_1.
+Proof.
+  unfold example_let_return_wit_1.
+  left.
+  intros n_pre PreH1 PreH2.
+  pose proof (proof_of_example_let_return_wit_1_split_goal_1
+                n_pre PreH1 PreH2) as Hresult.
+  entailer!.
+Qed.
+
