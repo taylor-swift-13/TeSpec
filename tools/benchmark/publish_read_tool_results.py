@@ -136,19 +136,32 @@ def main():
           'model':m['requested_model'],
           'memory_note':'Maximum measured process peak across independent runs; never divide peak memory.' if independent else 'Batch process peak is not divided.',
           'source':(ITP/'receipt.json').relative_to(ROOT).as_posix()}
+    if independent:
+        executions=json.loads((ITP/'receipt.json').read_text())['executions']
+        stage_peaks={'agent_proof_filling':[],'coq_compilation_and_assumption_audit':[],'independent_kernel_check':[],'itp':[]}
+        for execution in executions:
+            attempts=execution['attempts']
+            stage_peaks['agent_proof_filling'].append(max(x['resources']['max_process_peak_working_set_bytes'] for x in execution['models']))
+            stage_peaks['coq_compilation_and_assumption_audit'].append(max(x['resources']['max_process_rss_kib']*1024 for a in attempts for x in a['compilation']))
+            stage_peaks['independent_kernel_check'].append(max(a['kernel_check']['resources']['max_process_rss_kib']*1024 for a in attempts if 'kernel_check' in a))
+            stage_peaks['itp'].append(execution['metrics']['local_peak_process_resident_bytes'])
+        mean['process_memory']={k:{'mean_per_execution_peak_mib':sum(v)/len(v)/1048576,'maximum_peak_mib':max(v)/1048576,'per_execution_peak_bytes':v} for k,v in stage_peaks.items()}
+        mean['memory_note']='Mean of 12 separately measured per-execution process peaks (including repairs), NOT the overall maximum divided by 12. Linux stages use GNU time peak RSS; Windows model client uses PeakWorkingSet. Remote model/GPU memory excluded.'
     save(OUT/'tespec/itp-average.json',mean)
+
+    def memory(stage):
+        return f"{mean['process_memory'][stage]['mean_per_execution_peak_mib']:.4f}" if independent else '未独立计量'
     (OUT/'tespec/itp-average.md').write_text(
-        '# read ITP 平均开销\n\n' +
-        ('12 次测试执行各自独立调用 agent、编译并做内核检查；同次执行的全部待处理 VC 合计为一次 ITP。以下展示逐次实测的算术平均值，含重试开销。\n\n' if independent else '共享批次按 12 次执行均摊估算。\n\n') +
-        '| 项目 | 每次测试执行的平均值 |\n|---|---:|\n'
-        f"| agent 填写证明 | {mean['mean_agent_proof_filling_seconds']:.4f} 秒 |\n"
-        f"| Coq 编译与审计 | {mean['mean_coq_compile_audit_seconds']:.4f} 秒 |\n"
-        f"| 独立内核检查 | {mean['mean_independent_kernel_check_seconds']:.4f} 秒 |\n"
-        f"| ITP 合计 | {mean['mean_itp_seconds']:.4f} 秒 |\n"
-        f"| 输入 token | {mean['mean_input_tokens']:.2f} |\n"
-        f"| 输出 token | {mean['mean_output_tokens']:.2f} |\n"
-        f"| 总 token | {mean['mean_total_tokens']:.2f} |\n\n"
-        '模型 gpt-6.1-sol。内存不按次数相除；每次执行的原始资源和完整回执保留供审计，旧共享批次仅作为历史。\n')
+        '# read ITP 平均开销\n\n'
+        '12 次需 ITP 的测试执行分别计量，同次执行的全部待处理 VC 合计一次，包含修复尝试。时间、token 和各次进程峰值内存分别取算术平均；不是将一次批次峰值除以 12。\n\n'
+        '| 阶段 | 平均耗时（秒） | 平均单次进程峰值（MiB） | 平均 token |\n|---|---:|---:|---:|\n'
+        f"| agent 填写证明 | {mean['mean_agent_proof_filling_seconds']:.4f} | {memory('agent_proof_filling')} | {mean['mean_total_tokens']:.2f} |\n"
+        f"| Coq 编译与审计 | {mean['mean_coq_compile_audit_seconds']:.4f} | {memory('coq_compilation_and_assumption_audit')} | 0 |\n"
+        f"| 独立内核检查 | {mean['mean_independent_kernel_check_seconds']:.4f} | {memory('independent_kernel_check')} | 0 |\n"
+        f"| ITP 合计 | {mean['mean_itp_seconds']:.4f} | {memory('itp')} | {mean['mean_total_tokens']:.2f} |\n\n"
+        f"平均输入 token {mean['mean_input_tokens']:.2f}，平均输出 token {mean['mean_output_tokens']:.2f}。模型 gpt-6.1-sol。\n\n"
+        'Coq 阶段为 GNU time 的单进程峰值 RSS；Windows agent 客户端为 PeakWorkingSet，不含远端模型／GPU。合计内存先取每次执行各阶段的最大值，再对 12 次执行取平均。原始逐次峰值与最大峰值保留在 JSON 供审计。旧共享批次仅作为历史。\n')
+
     m=complete['metrics'];comparison.append({'tool':'tespec','scope':'variant_finite_testing_plus_itp','result':'61/61','test_cases':61,'correct':61,'accuracy':1.0,'wall_seconds':m['measured_complete_stage_wall_seconds_total'],'peak_process_memory_mib':m['complete_peak_process_resident_mib'],'input_tokens':m['itp_token_usage']['input_tokens'],'output_tokens':m['itp_token_usage']['output_tokens'],'total_tokens':m['complete_tokens'],'model':m['requested_model']})
     stage_rows=[]
     for row in comparison:
