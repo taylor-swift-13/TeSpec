@@ -1,0 +1,171 @@
+{
+  "variant": "cn_original:runtime-extras__leaky.broken",
+  "paired_qcp_variant": "qcp_existing:4a049171d762c76875ee",
+  "case": "leaky_get_translation0_5",
+  "initial": 4294967295,
+  "expected": "FAIL",
+  "plan_case": {
+    "id": "leaky_get_translation0_5",
+    "value": 4294967295,
+    "expected": "FAIL",
+    "cn_body": "unsigned int cell=4294967295u; unsigned int result=leaky_get(&cell); (void)result;",
+    "binds": {
+      "args": {
+        "p": 4096
+      },
+      "values": {
+        "v": 4294967295
+      }
+    },
+    "precondition_valid": true,
+    "oracle": {
+      "reason": "Original function contract, including resource ownership, evaluated independently of source trusted annotation.",
+      "returned_value": 4294967295,
+      "function": "leaky_get",
+      "heap_ownership": "emp promised but input cell leaked",
+      "ownership_required_at_exit": false,
+      "unsigned": true,
+      "body_result_if_defined": 4294967295
+    }
+  },
+  "cn_source_sha256": "2bd668ab577cfe6911a0e83999408fa932a34165b93f7c37e2b01c74779b8dd3",
+  "qcp_source_sha256": "4a049171d762c76875ee1ba50c65313aad5e3605cecc1a8e5d093086a3a55616",
+  "harness": "benchmark/programs/runtime-extras__leaky/variants/cn_original_runtime-extras__leaky.broken/tests/20261016-evaluation/leaky_get_translation0_5/fulminate.cn.c",
+  "harness_sha256": "5e4cb954ed36863cb9df168fe868701dc34afdf2d477fb09cf609c949fac435c",
+  "binds": "benchmark/programs/runtime-extras__leaky/variants/cn_original_runtime-extras__leaky.broken/tests/20261016-evaluation/leaky_get_translation0_5/binds.json",
+  "binds_sha256": "650bb0e312a24b0d0ee4c5435052fbdfb36599a25f71008e2dce31f2aac6e885",
+  "precondition_valid": true,
+  "fulminate_pipeline": {
+    "command": [
+      "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+      "instrument",
+      "--run",
+      "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+      "--output-dir=/tmp/tespec-group-yp4xyob9",
+      "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples/runtime-extras",
+      "/home/yangfp/teSpec/benchmark/programs/runtime-extras__leaky/variants/cn_original_runtime-extras__leaky.broken/tests/20261016-evaluation/leaky_get_translation0_5/fulminate.cn.c"
+    ],
+    "exit_code": 2,
+    "wall_seconds": 0.11501579100149684,
+    "resources": {
+      "max_process_rss_kib": 44456,
+      "user_seconds": 0.05,
+      "system_seconds": 0.03
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/runtime-extras__leaky/20261016-evaluation/cn_original_runtime-extras__leaky.broken/leaky_get_translation0_5/fulminate-pipeline/stdout.log",
+    "stderr": "benchmark/results/runtime-extras__leaky/20261016-evaluation/cn_original_runtime-extras__leaky.broken/leaky_get_translation0_5/fulminate-pipeline/stderr.log"
+  },
+  "instrumented_sources": [
+    {
+      "path": "benchmark/results/runtime-extras__leaky/20261016-evaluation/cn_original_runtime-extras__leaky.broken/leaky_get_translation0_5/fulminate.cn.exec.c",
+      "sha256": "bc6470c1fcf025d3284d718c00e27ab529c77823fd12afca64c1b256257d77e7"
+    }
+  ],
+  "instrumented_binary_sha256": "6a1b979dc06518bb9d81f507c3c37519bf2a6a80d15ae4d411c12d71e9d89d1f",
+  "fulminate_test": {
+    "command": [
+      "/tmp/tespec-group-yp4xyob9/fulminate.cn.exec.out"
+    ],
+    "exit_code": 2,
+    "wall_seconds": 0.0038311219977913424,
+    "resources": {
+      "max_process_rss_kib": 1400,
+      "user_seconds": 0.0,
+      "system_seconds": 0.0
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/runtime-extras__leaky/20261016-evaluation/cn_original_runtime-extras__leaky.broken/leaky_get_translation0_5/fulminate-test/stdout.log",
+    "stderr": "benchmark/results/runtime-extras__leaky/20261016-evaluation/cn_original_runtime-extras__leaky.broken/leaky_get_translation0_5/fulminate-test/stderr.log",
+    "status": "FAIL"
+  },
+  "tespec_off": {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "spectest",
+      "run",
+      "/home/yangfp/teSpec/benchmark/programs/runtime-extras__leaky/variants/qcp_existing_4a049171d762c76875ee/qcp/leaky_get.qcp.c",
+      "--function",
+      "leaky_get",
+      "--binds",
+      "/home/yangfp/teSpec/benchmark/programs/runtime-extras__leaky/variants/cn_original_runtime-extras__leaky.broken/tests/20261016-evaluation/leaky_get_translation0_5/binds.json",
+      "--execution-mode",
+      "all-boundaries",
+      "--output-dir",
+      "/home/yangfp/teSpec/benchmark/results/runtime-extras__leaky/20261016-evaluation/cn_original_runtime-extras__leaky.broken/leaky_get_translation0_5/tespec-off/artifacts",
+      "--timeout",
+      "30",
+      "--compact",
+      "--no-spatial-smt",
+      "--spatial-smt-timeout-ms",
+      "2000",
+      "-I",
+      "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+      "-I",
+      "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/supplemental/leaky_get"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 0.16480180800135713,
+    "resources": {
+      "max_process_rss_kib": 19824,
+      "user_seconds": 0.07,
+      "system_seconds": 0.05
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/runtime-extras__leaky/20261016-evaluation/cn_original_runtime-extras__leaky.broken/leaky_get_translation0_5/tespec-off/stdout.log",
+    "stderr": "benchmark/results/runtime-extras__leaky/20261016-evaluation/cn_original_runtime-extras__leaky.broken/leaky_get_translation0_5/tespec-off/stderr.log",
+    "report": "benchmark/results/runtime-extras__leaky/20261016-evaluation/cn_original_runtime-extras__leaky.broken/leaky_get_translation0_5/tespec-off/artifacts/report.json",
+    "statuses": [
+      "UNKNOWN"
+    ],
+    "status": "UNKNOWN"
+  },
+  "tespec_on": {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "spectest",
+      "run",
+      "/home/yangfp/teSpec/benchmark/programs/runtime-extras__leaky/variants/qcp_existing_4a049171d762c76875ee/qcp/leaky_get.qcp.c",
+      "--function",
+      "leaky_get",
+      "--binds",
+      "/home/yangfp/teSpec/benchmark/programs/runtime-extras__leaky/variants/cn_original_runtime-extras__leaky.broken/tests/20261016-evaluation/leaky_get_translation0_5/binds.json",
+      "--execution-mode",
+      "all-boundaries",
+      "--output-dir",
+      "/home/yangfp/teSpec/benchmark/results/runtime-extras__leaky/20261016-evaluation/cn_original_runtime-extras__leaky.broken/leaky_get_translation0_5/tespec-on/artifacts",
+      "--timeout",
+      "30",
+      "--compact",
+      "--spatial-smt",
+      "--spatial-smt-timeout-ms",
+      "2000",
+      "-I",
+      "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+      "-I",
+      "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/supplemental/leaky_get"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 0.21522977299173363,
+    "resources": {
+      "max_process_rss_kib": 56288,
+      "user_seconds": 0.11,
+      "system_seconds": 0.05
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/runtime-extras__leaky/20261016-evaluation/cn_original_runtime-extras__leaky.broken/leaky_get_translation0_5/tespec-on/stdout.log",
+    "stderr": "benchmark/results/runtime-extras__leaky/20261016-evaluation/cn_original_runtime-extras__leaky.broken/leaky_get_translation0_5/tespec-on/stderr.log",
+    "report": "benchmark/results/runtime-extras__leaky/20261016-evaluation/cn_original_runtime-extras__leaky.broken/leaky_get_translation0_5/tespec-on/artifacts/report.json",
+    "statuses": [
+      "FAIL"
+    ],
+    "status": "FAIL"
+  },
+  "runtime_dependency_fixtures": []
+}

@@ -1,0 +1,69 @@
+{
+  "program_group": "runtime-extras__leaky_main",
+  "case": "original_main_translation0_only_entry",
+  "expected": "FAIL",
+  "actual_fulminate": "PASS",
+  "status": "OPEN_MAIN_EXIT_RESOURCE_MONITOR_GAP",
+  "qualification": "This classifies a mismatch to the frozen explicit no-leak benchmark oracle. Original CN main and mkref were trusted; no assertion of CN static unsoundness is made. QCP original main explicitly requires emp at exit. Source-level missing cleanup and generated monitor omission support the cause; no invented allocation-counter run or Coq certificate.",
+  "cn_harness": "benchmark/programs/runtime-extras__leaky_main/variants/cn_original_runtime-extras__leaky_main/tests/20261016-evaluation/original_main_translation0_only_entry/fulminate.cn.c",
+  "cn_harness_sha256": "1516df79fbfa91780183e159533702b7c432c7d021369f1b2ae30a80b4dada1d",
+  "instrumented_source": {
+    "path": "benchmark/results/runtime-extras__leaky_main/20261016-evaluation/cn_original_runtime-extras__leaky_main/original_main_translation0_only_entry/fulminate.cn.exec.c",
+    "sha256": "7fd90f8e533c17edccc52a6c8c798c26edea0ceac94448b57b073a35e68d68ea"
+  },
+  "pipeline_measurement": {
+    "command": [
+      "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+      "instrument",
+      "--run",
+      "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+      "--output-dir=/tmp/tespec-group-2ty747sf",
+      "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples/runtime-extras",
+      "/home/yangfp/teSpec/benchmark/programs/runtime-extras__leaky_main/variants/cn_original_runtime-extras__leaky_main/tests/20261016-evaluation/original_main_translation0_only_entry/fulminate.cn.c"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 0.16495937800209504,
+    "resources": {
+      "max_process_rss_kib": 44632,
+      "user_seconds": 0.07,
+      "system_seconds": 0.03
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/runtime-extras__leaky_main/20261016-evaluation/cn_original_runtime-extras__leaky_main/original_main_translation0_only_entry/fulminate-pipeline/stdout.log",
+    "stderr": "benchmark/results/runtime-extras__leaky_main/20261016-evaluation/cn_original_runtime-extras__leaky_main/original_main_translation0_only_entry/fulminate-pipeline/stderr.log"
+  },
+  "test_measurement": {
+    "command": [
+      "/tmp/tespec-group-2ty747sf/fulminate.cn.exec.out"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 0.00411967899708543,
+    "resources": {
+      "max_process_rss_kib": 1124,
+      "user_seconds": 0.0,
+      "system_seconds": 0.0
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/runtime-extras__leaky_main/20261016-evaluation/cn_original_runtime-extras__leaky_main/original_main_translation0_only_entry/fulminate-test/stdout.log",
+    "stderr": "benchmark/results/runtime-extras__leaky_main/20261016-evaluation/cn_original_runtime-extras__leaky_main/original_main_translation0_only_entry/fulminate-test/stderr.log",
+    "status": "PASS"
+  },
+  "observation": "mkref epilogue invokes ghost_stack_depth_decr and cn_postcondition_leak_check; main epilogue only free_ghost_frame_stack and return, and omits cn_postcondition_leak_check. Original mkref(5) allocation is not freed by main.",
+  "source_snapshot_excerpts": {
+    "main_epilogue": "/* EXECUTABLE CN POSTCONDITION */\n__cn_epilogue:\n\n   free_ghost_frame_stack();\n \nreturn __cn_ret;\n\n}\n\n",
+    "helper_has_exit_leak_check": true
+  },
+  "tespec_mode_comparison": "OFF/ON UNKNOWN at missing cn_malloc body; cannot claim teSpec detected the main leak.",
+  "reproduction_command": [
+    "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+    "instrument",
+    "--run",
+    "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+    "--output-dir=/tmp/tespec-group-2ty747sf",
+    "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples/runtime-extras",
+    "/home/yangfp/teSpec/benchmark/programs/runtime-extras__leaky_main/variants/cn_original_runtime-extras__leaky_main/tests/20261016-evaluation/original_main_translation0_only_entry/fulminate.cn.c"
+  ],
+  "raw_status_and_oracle_unchanged": true
+}

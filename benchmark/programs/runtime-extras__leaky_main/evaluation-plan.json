@@ -1,0 +1,186 @@
+{
+  "schema": "tespec-group-evaluation-plan/v1",
+  "program_group": "runtime-extras__leaky_main",
+  "function": "mkref",
+  "primary_cn_variant": "cn_original:runtime-extras__leaky_main",
+  "primary_qcp_variant": "qcp_existing:7f7cb696cd814fe6aad8",
+  "run_id": "20261016-evaluation",
+  "pairings": [
+    {
+      "cn_variant": "cn_original:runtime-extras__leaky_main",
+      "qcp_variant": "qcp_existing:7f7cb696cd814fe6aad8",
+      "function": "mkref",
+      "cases": [
+        {
+          "id": "mkref_translation0_0",
+          "value": 0,
+          "expected": "PASS",
+          "cn_body": "unsigned int *p=mkref(0u); cn_free_sized(p,sizeof(unsigned int));",
+          "binds": {
+            "args": {
+              "x": 0
+            },
+            "values": {
+              "v": 0
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "reason": "Original function contract, including resource ownership, evaluated independently of source trusted annotation.",
+            "returned_value": 0,
+            "function": "mkref",
+            "heap_ownership": "returned initialized allocation, harness frees after target monitor",
+            "ownership_required_at_exit": true,
+            "unsigned": true,
+            "body_result_if_defined": 0
+          }
+        },
+        {
+          "id": "mkref_translation0_1",
+          "value": 1,
+          "expected": "PASS",
+          "cn_body": "unsigned int *p=mkref(1u); cn_free_sized(p,sizeof(unsigned int));",
+          "binds": {
+            "args": {
+              "x": 1
+            },
+            "values": {
+              "v": 1
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "reason": "Original function contract, including resource ownership, evaluated independently of source trusted annotation.",
+            "returned_value": 1,
+            "function": "mkref",
+            "heap_ownership": "returned initialized allocation, harness frees after target monitor",
+            "ownership_required_at_exit": true,
+            "unsigned": true,
+            "body_result_if_defined": 1
+          }
+        },
+        {
+          "id": "mkref_translation0_2",
+          "value": 5,
+          "expected": "PASS",
+          "cn_body": "unsigned int *p=mkref(5u); cn_free_sized(p,sizeof(unsigned int));",
+          "binds": {
+            "args": {
+              "x": 5
+            },
+            "values": {
+              "v": 5
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "reason": "Original function contract, including resource ownership, evaluated independently of source trusted annotation.",
+            "returned_value": 5,
+            "function": "mkref",
+            "heap_ownership": "returned initialized allocation, harness frees after target monitor",
+            "ownership_required_at_exit": true,
+            "unsigned": true,
+            "body_result_if_defined": 5
+          }
+        },
+        {
+          "id": "mkref_translation0_3",
+          "value": 2147483647,
+          "expected": "PASS",
+          "cn_body": "unsigned int *p=mkref(2147483647u); cn_free_sized(p,sizeof(unsigned int));",
+          "binds": {
+            "args": {
+              "x": 2147483647
+            },
+            "values": {
+              "v": 2147483647
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "reason": "Original function contract, including resource ownership, evaluated independently of source trusted annotation.",
+            "returned_value": 2147483647,
+            "function": "mkref",
+            "heap_ownership": "returned initialized allocation, harness frees after target monitor",
+            "ownership_required_at_exit": true,
+            "unsigned": true,
+            "body_result_if_defined": 2147483647
+          }
+        },
+        {
+          "id": "mkref_translation0_4",
+          "value": 4294967294,
+          "expected": "PASS",
+          "cn_body": "unsigned int *p=mkref(4294967294u); cn_free_sized(p,sizeof(unsigned int));",
+          "binds": {
+            "args": {
+              "x": 4294967294
+            },
+            "values": {
+              "v": 4294967294
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "reason": "Original function contract, including resource ownership, evaluated independently of source trusted annotation.",
+            "returned_value": 4294967294,
+            "function": "mkref",
+            "heap_ownership": "returned initialized allocation, harness frees after target monitor",
+            "ownership_required_at_exit": true,
+            "unsigned": true,
+            "body_result_if_defined": 4294967294
+          }
+        },
+        {
+          "id": "mkref_translation0_5",
+          "value": 4294967295,
+          "expected": "PASS",
+          "cn_body": "unsigned int *p=mkref(4294967295u); cn_free_sized(p,sizeof(unsigned int));",
+          "binds": {
+            "args": {
+              "x": 4294967295
+            },
+            "values": {
+              "v": 4294967295
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "reason": "Original function contract, including resource ownership, evaluated independently of source trusted annotation.",
+            "returned_value": 4294967295,
+            "function": "mkref",
+            "heap_ownership": "returned initialized allocation, harness frees after target monitor",
+            "ownership_required_at_exit": true,
+            "unsigned": true,
+            "body_result_if_defined": 4294967295
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:runtime-extras__leaky_main",
+      "qcp_variant": "qcp_existing:7f7cb696cd814fe6aad8",
+      "function": "main",
+      "cases": [
+        {
+          "id": "original_main_translation0_only_entry",
+          "value": null,
+          "expected": "FAIL",
+          "cn_body": "\n    unsigned int *p = mkref(5);\n    /*@ assert (*p == 5u32); @*/\n    // TODO - consider decrementing stack-depth for main too?\n    // or it doesn't matter? main can be called multiple times.\n",
+          "binds": {
+            "args": {},
+            "values": {}
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "entry_cardinality": 1,
+            "original_CN_assertions_retained": true,
+            "reason": "Original no-argument client allocation, calls, assertions and cleanup retained; implicit C99 return zero explicit. No extra distinct main inputs invented. QCP variants retain their own declared assertion differences. Original leaky clients omit cleanup, violating emp."
+          }
+        }
+      ]
+    }
+  ],
+  "expectation_basis": "All existing CN/QCP language records; six distinct legal unsigned values for every parameterized variant plus its original no-argument client (one distinct entry). CN trusted annotations are not correctness evidence. Preserve each QCP variant own contracts/assertions and original CN assertions in the driver; do not assume identical annotation strength. Test allocator/free operations use real heap, never free a stack cell. Original sources and immutable expected classifications are unchanged.",
+  "cn_trust_qualification": "All original subject functions and main are trusted in CN; whole-module acceptance would be vacuous for these target contracts. Do not call it universal proof of the targets."
+}

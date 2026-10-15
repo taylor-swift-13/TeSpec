@@ -1,0 +1,171 @@
+{
+  "variant": "cn_original:runtime-extras__down_malloc_up_free",
+  "paired_qcp_variant": "qcp_existing:4e9def0ab64fd350e5cf",
+  "case": "read_and_free_translation3_2",
+  "initial": 5,
+  "expected": "PASS",
+  "plan_case": {
+    "id": "read_and_free_translation3_2",
+    "value": 5,
+    "expected": "PASS",
+    "cn_body": "unsigned int *p=cn_malloc(sizeof(unsigned int)); *p=5u; unsigned int result=read_and_free(p); (void)result;",
+    "binds": {
+      "args": {
+        "p": 4096
+      },
+      "values": {
+        "v": 5
+      }
+    },
+    "precondition_valid": true,
+    "oracle": {
+      "reason": "Original function contract, including resource ownership, evaluated independently of source trusted annotation.",
+      "returned_value": 5,
+      "function": "read_and_free",
+      "heap_ownership": "consumed by actual free",
+      "ownership_required_at_exit": true,
+      "unsigned": true,
+      "body_result_if_defined": 5
+    }
+  },
+  "cn_source_sha256": "caeb8bd7c67fc823ee88a2de5eec008fd2232334f304303b0744e7cf37dac4cf",
+  "qcp_source_sha256": "4e9def0ab64fd350e5cff05f4e700d2ec3164ae8fa10c0dfd6638cf50b26d741",
+  "harness": "benchmark/programs/runtime-extras__down_malloc_up_free/variants/cn_original_runtime-extras__down_malloc_up_free/tests/20261016-evaluation/read_and_free_translation3_2/fulminate.cn.c",
+  "harness_sha256": "7f501639ccdb6e7931beae3b4635b75fbc8bd329e165d3beab5dac66ef74ef12",
+  "binds": "benchmark/programs/runtime-extras__down_malloc_up_free/variants/cn_original_runtime-extras__down_malloc_up_free/tests/20261016-evaluation/read_and_free_translation3_2/binds.json",
+  "binds_sha256": "5618023fb57c276b3f8c7847a6025a59d28350761c6c64b75ed91950a047660d",
+  "precondition_valid": true,
+  "fulminate_pipeline": {
+    "command": [
+      "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+      "instrument",
+      "--run",
+      "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+      "--output-dir=/tmp/tespec-group-t46ixcsx",
+      "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples/runtime-extras",
+      "/home/yangfp/teSpec/benchmark/programs/runtime-extras__down_malloc_up_free/variants/cn_original_runtime-extras__down_malloc_up_free/tests/20261016-evaluation/read_and_free_translation3_2/fulminate.cn.c"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 0.11460627800261136,
+    "resources": {
+      "max_process_rss_kib": 44184,
+      "user_seconds": 0.04,
+      "system_seconds": 0.04
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/runtime-extras__down_malloc_up_free/20261016-evaluation/cn_original_runtime-extras__down_malloc_up_free/read_and_free_translation3_2/fulminate-pipeline/stdout.log",
+    "stderr": "benchmark/results/runtime-extras__down_malloc_up_free/20261016-evaluation/cn_original_runtime-extras__down_malloc_up_free/read_and_free_translation3_2/fulminate-pipeline/stderr.log"
+  },
+  "instrumented_sources": [
+    {
+      "path": "benchmark/results/runtime-extras__down_malloc_up_free/20261016-evaluation/cn_original_runtime-extras__down_malloc_up_free/read_and_free_translation3_2/fulminate.cn.exec.c",
+      "sha256": "7784dd310ca098e5c400ea57fd5967682a6275560566322f9684f947cb12f343"
+    }
+  ],
+  "instrumented_binary_sha256": "01ff8a27f30012c44dd46fbea3eb636f9f2b2a4f364e97a1b7aadbd1b490697c",
+  "fulminate_test": {
+    "command": [
+      "/tmp/tespec-group-t46ixcsx/fulminate.cn.exec.out"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 0.0039031479973345995,
+    "resources": {
+      "max_process_rss_kib": 1132,
+      "user_seconds": 0.0,
+      "system_seconds": 0.0
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/runtime-extras__down_malloc_up_free/20261016-evaluation/cn_original_runtime-extras__down_malloc_up_free/read_and_free_translation3_2/fulminate-test/stdout.log",
+    "stderr": "benchmark/results/runtime-extras__down_malloc_up_free/20261016-evaluation/cn_original_runtime-extras__down_malloc_up_free/read_and_free_translation3_2/fulminate-test/stderr.log",
+    "status": "PASS"
+  },
+  "tespec_off": {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "spectest",
+      "run",
+      "/home/yangfp/teSpec/benchmark/programs/runtime-extras__down_malloc_up_free/variants/qcp_existing_4e9def0ab64fd350e5cf/qcp/down_malloc_up_free.qcp.c",
+      "--function",
+      "read_and_free",
+      "--binds",
+      "/home/yangfp/teSpec/benchmark/programs/runtime-extras__down_malloc_up_free/variants/cn_original_runtime-extras__down_malloc_up_free/tests/20261016-evaluation/read_and_free_translation3_2/binds.json",
+      "--execution-mode",
+      "all-boundaries",
+      "--output-dir",
+      "/home/yangfp/teSpec/benchmark/results/runtime-extras__down_malloc_up_free/20261016-evaluation/cn_original_runtime-extras__down_malloc_up_free/read_and_free_translation3_2/tespec-off/artifacts",
+      "--timeout",
+      "30",
+      "--compact",
+      "--no-spatial-smt",
+      "--spatial-smt-timeout-ms",
+      "2000",
+      "-I",
+      "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+      "-I",
+      "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/supplemental/down_malloc_up_free"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 0.165414821007289,
+    "resources": {
+      "max_process_rss_kib": 19896,
+      "user_seconds": 0.07,
+      "system_seconds": 0.05
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/runtime-extras__down_malloc_up_free/20261016-evaluation/cn_original_runtime-extras__down_malloc_up_free/read_and_free_translation3_2/tespec-off/stdout.log",
+    "stderr": "benchmark/results/runtime-extras__down_malloc_up_free/20261016-evaluation/cn_original_runtime-extras__down_malloc_up_free/read_and_free_translation3_2/tespec-off/stderr.log",
+    "report": "benchmark/results/runtime-extras__down_malloc_up_free/20261016-evaluation/cn_original_runtime-extras__down_malloc_up_free/read_and_free_translation3_2/tespec-off/artifacts/report.json",
+    "statuses": [
+      "UNKNOWN"
+    ],
+    "status": "UNKNOWN"
+  },
+  "tespec_on": {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "spectest",
+      "run",
+      "/home/yangfp/teSpec/benchmark/programs/runtime-extras__down_malloc_up_free/variants/qcp_existing_4e9def0ab64fd350e5cf/qcp/down_malloc_up_free.qcp.c",
+      "--function",
+      "read_and_free",
+      "--binds",
+      "/home/yangfp/teSpec/benchmark/programs/runtime-extras__down_malloc_up_free/variants/cn_original_runtime-extras__down_malloc_up_free/tests/20261016-evaluation/read_and_free_translation3_2/binds.json",
+      "--execution-mode",
+      "all-boundaries",
+      "--output-dir",
+      "/home/yangfp/teSpec/benchmark/results/runtime-extras__down_malloc_up_free/20261016-evaluation/cn_original_runtime-extras__down_malloc_up_free/read_and_free_translation3_2/tespec-on/artifacts",
+      "--timeout",
+      "30",
+      "--compact",
+      "--spatial-smt",
+      "--spatial-smt-timeout-ms",
+      "2000",
+      "-I",
+      "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+      "-I",
+      "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/supplemental/down_malloc_up_free"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 0.16480670099554118,
+    "resources": {
+      "max_process_rss_kib": 19836,
+      "user_seconds": 0.08,
+      "system_seconds": 0.04
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/runtime-extras__down_malloc_up_free/20261016-evaluation/cn_original_runtime-extras__down_malloc_up_free/read_and_free_translation3_2/tespec-on/stdout.log",
+    "stderr": "benchmark/results/runtime-extras__down_malloc_up_free/20261016-evaluation/cn_original_runtime-extras__down_malloc_up_free/read_and_free_translation3_2/tespec-on/stderr.log",
+    "report": "benchmark/results/runtime-extras__down_malloc_up_free/20261016-evaluation/cn_original_runtime-extras__down_malloc_up_free/read_and_free_translation3_2/tespec-on/artifacts/report.json",
+    "statuses": [
+      "UNKNOWN"
+    ],
+    "status": "UNKNOWN"
+  },
+  "runtime_dependency_fixtures": []
+}
