@@ -363,3 +363,5 @@ cell_leak_itp.py 为一个拥有 4096 处 4 字节单元但出口要求 emp 的�
 ## Coq 证明搜索资源限制
 
 后续逐次 Coq 编译默认设置 90 秒、独立 coqchk 设置 300 秒、两者地址空间上限 4 GiB，使用 GNU timeout/prlimit，外层 GNU time 继续记录真实执行时间和最大单进程 RSS。超时/内存限制失败不能算证明通过，全部实际模型与失败编译成本保留；executed_wrapper_command 和 limits 随回执保存。地址空间限制与 RSS 是不同量，不把 4 GiB 上限当作已用 RSS。该限制不追溯改写已有测量。
+
+无写入实现若入口为 Block/undef 存储而出口要求已初始化零值，可按执行建立真正 Noninit 四字节堆作为反例。prepare_zero_noop_itp.py 只生成该堆定义与五个未填定理，所有新证明由逐次计量的模型完成；入口 undef、否定已初始化出口、两个原始残余 VC 反证、入口 SAT 一起编译审计和内核检查。不能用物理字节碰巧等于零来替代初始化证据，也不能把 Fulminate 的原生误报改成正确。
