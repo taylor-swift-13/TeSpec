@@ -1,6 +1,6 @@
 # teSpec 不符合预期的专项台账
 
-已扫描 21 组、873 对变体与输入。最终不匹配 **4** 条；自动阶段缺口经独立 ITP 解决 **29** 条；另有配置错误修正 **70** 条。未评测组不计为零异常。原始分类不改写，人工分析追加到 triage.json，重建不覆盖人工结论。
+已扫描 22 组、897 对变体与输入。最终不匹配 **52** 条；自动阶段缺口经独立 ITP 解决 **29** 条；另有配置错误修正 **70** 条。未评测组不计为零异常。原始分类不改写，人工分析追加到 triage.json，重建不覆盖人工结论。
 
 | 组 | 变体 | 输入 | 模式 | 预期 | 自动 | 最终 | 分类 | 证据 |
 |---|---|---|---|---|---|---|---|---|
@@ -51,6 +51,54 @@
 | incr_two | cn_original:slf5_basic_aliased_call.broken | input_0 | on | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d23ac96c7ffd0a4279e7.json) |
 | incr_two | cn_original:slf5_basic_aliased_call.broken | input_1 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2ff7b1da499c18ae8c37.json) |
 | incr_two | cn_original:slf5_basic_aliased_call.broken | input_1 | on | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/97b9adb7a92fea912cf4.json) |
+| ref | cn_original:slf10_basic_ref | bounded_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/114e275fb591dc1af5fb.json) |
+| ref | cn_original:slf10_basic_ref | bounded_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d3ec87d75c67439ed038.json) |
+| ref | cn_original:slf10_basic_ref | bounded_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ed4237a5f1a95ac13c01.json) |
+| ref | cn_original:slf10_basic_ref | bounded_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/eaf3be4f06c7dc310b67.json) |
+| ref | cn_original:slf10_basic_ref | bounded_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f19120c8c6e211d437cb.json) |
+| ref | cn_original:slf10_basic_ref | bounded_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/64616648e2e81f9caaf0.json) |
+| ref | cn_original:slf10_basic_ref | bounded_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/605965343e44ecf43cdb.json) |
+| ref | cn_original:slf10_basic_ref | bounded_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d88a98e15003f0a2ca8a.json) |
+| ref | cn_original:slf10_basic_ref | bounded_4 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a01396b7f7510c00fa7d.json) |
+| ref | cn_original:slf10_basic_ref | bounded_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4f261f2d5e1d416cddd3.json) |
+| ref | cn_original:slf10_basic_ref | bounded_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b1fc59c73b29c849bf98.json) |
+| ref | cn_original:slf10_basic_ref | bounded_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6aeed905064051055d11.json) |
+| ref | cn_original:slf10_basic_ref | implicit_range_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d6854a372130cb2a8647.json) |
+| ref | cn_original:slf10_basic_ref | implicit_range_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/47f735ac3f33d3008e38.json) |
+| ref | cn_original:slf10_basic_ref | implicit_range_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f0ff532767d72aa46374.json) |
+| ref | cn_original:slf10_basic_ref | implicit_range_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9a32c186797231988ff2.json) |
+| ref | cn_original:slf10_basic_ref | implicit_range_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e5e255ea89d6bf467d00.json) |
+| ref | cn_original:slf10_basic_ref | implicit_range_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3c81cf3005a6ac99ad54.json) |
+| ref | cn_original:slf10_basic_ref | implicit_range_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ec595704cb0e697cfc9b.json) |
+| ref | cn_original:slf10_basic_ref | implicit_range_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7edc132d857a6d0f5435.json) |
+| ref | cn_original:slf10_basic_ref | implicit_range_4 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/57532b28294fcd9462c8.json) |
+| ref | cn_original:slf10_basic_ref | implicit_range_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/cad6f711dddf1eec779c.json) |
+| ref | cn_original:slf10_basic_ref | implicit_range_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a070555f172ae787f5e5.json) |
+| ref | cn_original:slf10_basic_ref | implicit_range_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a921b1805047251e6bfa.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | bounded_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1e4622c6b68d43e126c0.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | bounded_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e1a106a340681d11e76a.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | bounded_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/84378528bb18fab7ddba.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | bounded_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1b34fe3de0e945a5f118.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | bounded_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/34d62847d6669e96cc84.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | bounded_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c5cd96e4db04441f580a.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | bounded_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4fdd48f9bef6f356cd70.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | bounded_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d1bafb3501c3b0da7952.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | bounded_4 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/084930906711c97bca66.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | bounded_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/01237a6adb923637b33a.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | bounded_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2c0f0b2dd163a1181d6f.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | bounded_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0565dfef662bbb4f7805.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/21162653931d45ed197a.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/28bf82b670dab8aa4922.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/54cdccb3f8335bbf420a.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/fa8ba0cf04ef6854ec2f.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/91ac8e23cf5f4dff53dd.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e3819a37e8927a601a45.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c80e7a84171e30f8c0a5.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/703575be219920a08bc6.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_4 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2c094c8cbc0a92ee7a0e.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8277398f34c3115a7837.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e1c00bfc2f5d870e0ae4.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d0df57c590dc80b70f2c.json) |
 | slf3_basic_inplace_double | constructed:case_cd64220fbef61c25 | value_0 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/8f0a71c1328250f32fac.json) |
 | slf3_basic_inplace_double | constructed:case_cd64220fbef61c25 | value_1 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/3c7d990f379c332bb9e9.json) |
 | swap_array | cn_original:swap_array | array_0 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/85cf7bb7aad6854a4633.json) |

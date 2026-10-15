@@ -145,3 +145,5 @@ zero 完整收尾：46 对输入，完整逐例预期与原始／最终分类已
 swap_array 完整收尾：20 对输入，完整逐例预期与原始／最终分类已归档；主程序 CN 与 QCP 5 个原始全称 VC 已编译、假设审计并独立内核检查。gpt-6.1-sol 实际 2 次调用，196,860 token；四工具分阶段时间与 RSS 已保存。完整进度 20/45，下一组 ref。
 
 swap_array 收尾审计：20 个逻辑输入每个模式均有首轮缺头文件 ERROR 和修正后 PASS，共计每模式 40 次实际 teSpec 尝试；统计已逐项核对为两轮之和及逐输入最大 RSS。Fulminate 复用 exact-source / exact-harness 原始测量一次，未重复运行/重复计费。首轮 40 条配置 ERROR 保留且分类 RESOLVED_CONFIGURATION_ERROR。QCP 5 原始 VC 已实现 VC_Correct，2 次实际模型共 196,860 token、失败编译与原始目标/库假设审计成本全部计入；总验证 237.054294732 秒、2033.03125 MiB 峰值。结论明确限定为 VERIFIED_KERNEL_CHECKED_WITH_RUNTIME_LIBRARY_ASSUMPTIONS：原目标自带 4 个 sizeof 参数，加原有 IntArray.full_split_to_missing_i 使用的标准函数外延性；没有新声明证明公理，不能写 globally closed。完整进度 20/45。ref 的 6 个现有语言变体、24 个合法标量/框架输入计划已独立准备，尚未执行。
+
+ref 已测全部 6 个变体记录、24 对合法输入；Fulminate 24/24（返回分配在目标规约监测后由客户释放），teSpec OFF/ON 各 0/24：均入口 SAT，遇仅有声明的 mallocUnsignedInt 后 missing_function_body、execution_completed=false、residual_vcs=[]。48 条运行模式结果已逐例专项记录和 triage，原始 UNKNOWN 不改写。没有完整执行或原始残余目标，不能用主程序全称证明代替测试 ITP，也没有编造模型/内核零成本。主程序 CN 与 QCP 2 原始 VC、所有实际修复、假设审计与独立内核检查均完成；整组仍不完整、测试 ITP PENDING。按难例策略继续 ref_greater，已准备 8 个现有记录、30 对合法输入但尚未执行。完整进度仍 20/45。
