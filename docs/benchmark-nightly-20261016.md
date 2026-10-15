@@ -170,3 +170,5 @@ init_array 正向 ITP 推进到8/24（前向 n=0/1/2/3，OFF/ON 各一份独立�
 init_array 反向数组 n=1、OFF 的正向逐执行证书已完成：两次实际模型尝试后，全部原始残余 VC 经编译、原始语句/库假设审计和完整独立 coqchk 通过。现有已核验逐执行证书9/24，原始 UNKNOWN 保留；其余失败或执行中任务不计成功。模式对照 comparison.md 现由实际索引和统计刷新，避免继续显示全部未证明的旧文字。整体完整20/45未变，原串行进程继续。
 
 succ_using_incr 已实跑全部7个CN/QCP记录、19对输入：两个正确翻译及泄漏版本各6个合法无符号数（含回绕），原始空main仅1个真实入口。Fulminate13 PASS、6 FAIL，19/19符合预期；OFF/ON各1 PASS、18 UNKNOWN，含6个应拒绝的泄漏输入，不能计作成功检出。36个模式异常均入口SAT，在缺失allocator函数体处停止、无原始残余目标，逐例记录ITP无法执行的原因。主CN因cn_free_sized无规约而拒绝；QCP实际生成13原始全称VC但证明/审计/独立内核阶段仍PENDING，不冒称验证通过。轻量原生测量与已存在init_array队列的共享负载已披露。完整20/45，实际扫描27组。
+
+runtime-extras__return_owned_local 已实跑全部2个语言记录、13对输入。Fulminate13/13符合预期；OFF6 PASS7 UNKNOWN，ON6 PASS6 FAIL1 UNKNOWN。6个bad悬空局部地址用例在ON实际各发起1个空间SMT查询（counterexample_query_sat、原始返回残余完整覆盖），全部正确拒绝；这是原生NOT_CHECKED结果，不冒称Coq内核证书。OFF每次均完成执行并留下2原始目标，6次ITP仍待完成；原始main两模式在cn_malloc缺函数体处停止，无目标可交ITP。原CN实际接受但bad/main均trusted，只验证get；不能误解为CN证明了错误程序。QCP实际生成10全称目标，按同源哈希保留历史main返回VC反证，未将其当作bad生命周期目标反证或补造历史成本。完整20/45，实测28组。

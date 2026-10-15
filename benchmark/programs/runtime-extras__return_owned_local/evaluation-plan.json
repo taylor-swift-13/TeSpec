@@ -1,0 +1,299 @@
+{
+  "schema": "tespec-group-evaluation-plan/v1",
+  "program_group": "runtime-extras__return_owned_local",
+  "function": "bad",
+  "primary_cn_variant": "cn_original:runtime-extras__return_owned_local.broken",
+  "primary_qcp_variant": "qcp_existing:9f26a4f96b4ba72eb014",
+  "run_id": "20261016-evaluation",
+  "pairings": [
+    {
+      "cn_variant": "cn_original:runtime-extras__return_owned_local.broken",
+      "qcp_variant": "qcp_existing:9f26a4f96b4ba72eb014",
+      "function": "get",
+      "cases": [
+        {
+          "id": "get_0",
+          "value": 0,
+          "expected": "PASS",
+          "cn_body": "unsigned int cell=0u; unsigned int result=get(&cell); (void)result;",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "v": 0
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "input_cell_preserved": 0,
+            "read_return_value": 0,
+            "bad_returns_address_of_local_parameter": false,
+            "reason": "get preserves owned cell and returns it. bad advertises ownership of returned pointer storage, but returns a pointer to its local parameter after the frame lifetime ends; that returned ownership is invalid regardless of unsigned payload. CN trusted does not make this false lifetime contract valid."
+          }
+        },
+        {
+          "id": "get_1",
+          "value": 1,
+          "expected": "PASS",
+          "cn_body": "unsigned int cell=1u; unsigned int result=get(&cell); (void)result;",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "v": 1
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "input_cell_preserved": 1,
+            "read_return_value": 1,
+            "bad_returns_address_of_local_parameter": false,
+            "reason": "get preserves owned cell and returns it. bad advertises ownership of returned pointer storage, but returns a pointer to its local parameter after the frame lifetime ends; that returned ownership is invalid regardless of unsigned payload. CN trusted does not make this false lifetime contract valid."
+          }
+        },
+        {
+          "id": "get_2",
+          "value": 5,
+          "expected": "PASS",
+          "cn_body": "unsigned int cell=5u; unsigned int result=get(&cell); (void)result;",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "v": 5
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "input_cell_preserved": 5,
+            "read_return_value": 5,
+            "bad_returns_address_of_local_parameter": false,
+            "reason": "get preserves owned cell and returns it. bad advertises ownership of returned pointer storage, but returns a pointer to its local parameter after the frame lifetime ends; that returned ownership is invalid regardless of unsigned payload. CN trusted does not make this false lifetime contract valid."
+          }
+        },
+        {
+          "id": "get_3",
+          "value": 2147483647,
+          "expected": "PASS",
+          "cn_body": "unsigned int cell=2147483647u; unsigned int result=get(&cell); (void)result;",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "v": 2147483647
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "input_cell_preserved": 2147483647,
+            "read_return_value": 2147483647,
+            "bad_returns_address_of_local_parameter": false,
+            "reason": "get preserves owned cell and returns it. bad advertises ownership of returned pointer storage, but returns a pointer to its local parameter after the frame lifetime ends; that returned ownership is invalid regardless of unsigned payload. CN trusted does not make this false lifetime contract valid."
+          }
+        },
+        {
+          "id": "get_4",
+          "value": 4294967294,
+          "expected": "PASS",
+          "cn_body": "unsigned int cell=4294967294u; unsigned int result=get(&cell); (void)result;",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "v": 4294967294
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "input_cell_preserved": 4294967294,
+            "read_return_value": 4294967294,
+            "bad_returns_address_of_local_parameter": false,
+            "reason": "get preserves owned cell and returns it. bad advertises ownership of returned pointer storage, but returns a pointer to its local parameter after the frame lifetime ends; that returned ownership is invalid regardless of unsigned payload. CN trusted does not make this false lifetime contract valid."
+          }
+        },
+        {
+          "id": "get_5",
+          "value": 4294967295,
+          "expected": "PASS",
+          "cn_body": "unsigned int cell=4294967295u; unsigned int result=get(&cell); (void)result;",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "v": 4294967295
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "input_cell_preserved": 4294967295,
+            "read_return_value": 4294967295,
+            "bad_returns_address_of_local_parameter": false,
+            "reason": "get preserves owned cell and returns it. bad advertises ownership of returned pointer storage, but returns a pointer to its local parameter after the frame lifetime ends; that returned ownership is invalid regardless of unsigned payload. CN trusted does not make this false lifetime contract valid."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:runtime-extras__return_owned_local.broken",
+      "qcp_variant": "qcp_existing:9f26a4f96b4ba72eb014",
+      "function": "bad",
+      "cases": [
+        {
+          "id": "bad_0",
+          "value": 0,
+          "expected": "FAIL",
+          "cn_body": "unsigned int cell=0u; unsigned int **result=bad(&cell); (void)result;",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "v": 0
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "input_cell_preserved": 0,
+            "read_return_value": null,
+            "bad_returns_address_of_local_parameter": true,
+            "reason": "get preserves owned cell and returns it. bad advertises ownership of returned pointer storage, but returns a pointer to its local parameter after the frame lifetime ends; that returned ownership is invalid regardless of unsigned payload. CN trusted does not make this false lifetime contract valid."
+          }
+        },
+        {
+          "id": "bad_1",
+          "value": 1,
+          "expected": "FAIL",
+          "cn_body": "unsigned int cell=1u; unsigned int **result=bad(&cell); (void)result;",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "v": 1
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "input_cell_preserved": 1,
+            "read_return_value": null,
+            "bad_returns_address_of_local_parameter": true,
+            "reason": "get preserves owned cell and returns it. bad advertises ownership of returned pointer storage, but returns a pointer to its local parameter after the frame lifetime ends; that returned ownership is invalid regardless of unsigned payload. CN trusted does not make this false lifetime contract valid."
+          }
+        },
+        {
+          "id": "bad_2",
+          "value": 5,
+          "expected": "FAIL",
+          "cn_body": "unsigned int cell=5u; unsigned int **result=bad(&cell); (void)result;",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "v": 5
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "input_cell_preserved": 5,
+            "read_return_value": null,
+            "bad_returns_address_of_local_parameter": true,
+            "reason": "get preserves owned cell and returns it. bad advertises ownership of returned pointer storage, but returns a pointer to its local parameter after the frame lifetime ends; that returned ownership is invalid regardless of unsigned payload. CN trusted does not make this false lifetime contract valid."
+          }
+        },
+        {
+          "id": "bad_3",
+          "value": 2147483647,
+          "expected": "FAIL",
+          "cn_body": "unsigned int cell=2147483647u; unsigned int **result=bad(&cell); (void)result;",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "v": 2147483647
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "input_cell_preserved": 2147483647,
+            "read_return_value": null,
+            "bad_returns_address_of_local_parameter": true,
+            "reason": "get preserves owned cell and returns it. bad advertises ownership of returned pointer storage, but returns a pointer to its local parameter after the frame lifetime ends; that returned ownership is invalid regardless of unsigned payload. CN trusted does not make this false lifetime contract valid."
+          }
+        },
+        {
+          "id": "bad_4",
+          "value": 4294967294,
+          "expected": "FAIL",
+          "cn_body": "unsigned int cell=4294967294u; unsigned int **result=bad(&cell); (void)result;",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "v": 4294967294
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "input_cell_preserved": 4294967294,
+            "read_return_value": null,
+            "bad_returns_address_of_local_parameter": true,
+            "reason": "get preserves owned cell and returns it. bad advertises ownership of returned pointer storage, but returns a pointer to its local parameter after the frame lifetime ends; that returned ownership is invalid regardless of unsigned payload. CN trusted does not make this false lifetime contract valid."
+          }
+        },
+        {
+          "id": "bad_5",
+          "value": 4294967295,
+          "expected": "FAIL",
+          "cn_body": "unsigned int cell=4294967295u; unsigned int **result=bad(&cell); (void)result;",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "v": 4294967295
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "input_cell_preserved": 4294967295,
+            "read_return_value": null,
+            "bad_returns_address_of_local_parameter": true,
+            "reason": "get preserves owned cell and returns it. bad advertises ownership of returned pointer storage, but returns a pointer to its local parameter after the frame lifetime ends; that returned ownership is invalid regardless of unsigned payload. CN trusted does not make this false lifetime contract valid."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:runtime-extras__return_owned_local.broken",
+      "qcp_variant": "qcp_existing:9f26a4f96b4ba72eb014",
+      "function": "main",
+      "cases": [
+        {
+          "id": "original_client_only_entry",
+          "value": null,
+          "expected": "FAIL",
+          "cn_body": "unsigned int *x = cn_malloc(sizeof(unsigned int)); *x = 5; unsigned int res = get(x); /*@ assert (res == 5u32); @*/ *x = 6; /*@ assert (*x == 6u32); @*/ unsigned int **p = bad(x); (void)p;",
+          "binds": {
+            "args": {},
+            "values": {}
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "entry_cardinality": 1,
+            "scope": "Original no-argument client setup, both CN assertions, allocation and bad call retained; implicit return zero explicit. Original client never releases allocation; emp exit is false, separately from bad stack lifetime. No invented additional input or dereference."
+          }
+        }
+      ]
+    }
+  ],
+  "expectation_basis": "All2 existing CN/QCP records. Each parameterized subject has6 distinct legal unsigned cell inputs. The original no-argument client has one distinct entry, preserving original assertions/body semantics. Native CN trusted bad/main declarations cannot certify their lifetime/leak contracts; any CN success must disclose scope. QCP original negative module must be rejected/refuted, never require a proof of its false universal VC_Correct. Positive helper tests do not replace negative bad/main coverage."
+}

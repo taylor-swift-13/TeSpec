@@ -1,6 +1,6 @@
 # teSpec 不符合预期的专项台账
 
-已扫描 27 组、990 对变体与输入。最终不匹配 **213** 条；自动阶段缺口经独立 ITP 解决 **40** 条；另有配置错误修正 **70** 条。未评测组不计为零异常。原始分类不改写，人工分析追加到 triage.json，重建不覆盖人工结论。
+已扫描 28 组、1003 对变体与输入。最终不匹配 **221** 条；自动阶段缺口经独立 ITP 解决 **40** 条；另有配置错误修正 **70** 条。未评测组不计为零异常。原始分类不改写，人工分析追加到 triage.json，重建不覆盖人工结论。
 
 | 组 | 变体 | 输入 | 模式 | 预期 | 自动 | 最终 | 分类 | 证据 |
 |---|---|---|---|---|---|---|---|---|
@@ -183,6 +183,14 @@
 | ref_greater | cn_original:slf_ref_greater | weak_ge_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ac7444e323c4abf698d0.json) |
 | ref_greater | cn_original:slf_ref_greater | weak_ge_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7576e150a8a682d7dc0e.json) |
 | ref_greater | cn_original:slf_ref_greater | weak_ge_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/bdebe8406f8b9bb0963b.json) |
+| runtime-extras__return_owned_local | cn_original:runtime-extras__return_owned_local.broken | bad_0 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c38d36536de2ad045bca.json) |
+| runtime-extras__return_owned_local | cn_original:runtime-extras__return_owned_local.broken | bad_1 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0ccb765a413390b856c4.json) |
+| runtime-extras__return_owned_local | cn_original:runtime-extras__return_owned_local.broken | bad_2 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1a5c48d3b74284917422.json) |
+| runtime-extras__return_owned_local | cn_original:runtime-extras__return_owned_local.broken | bad_3 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c3eb2c631f1cea58f7b7.json) |
+| runtime-extras__return_owned_local | cn_original:runtime-extras__return_owned_local.broken | bad_4 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/204481947b14ac56b5b5.json) |
+| runtime-extras__return_owned_local | cn_original:runtime-extras__return_owned_local.broken | bad_5 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/da884c2ebdfc0c1b0ee8.json) |
+| runtime-extras__return_owned_local | cn_original:runtime-extras__return_owned_local.broken | original_client_only_entry | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/bcfea82f0c60cbc003d6.json) |
+| runtime-extras__return_owned_local | cn_original:runtime-extras__return_owned_local.broken | original_client_only_entry | on | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/19210eebbb414a6f3dd1.json) |
 | slf17_get_and_free | cn_original:slf17_get_and_free | original_free_body_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/69d7e5f08e73cf521967.json) |
 | slf17_get_and_free | cn_original:slf17_get_and_free | original_free_body_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/92cfa442e4569b21dc97.json) |
 | slf17_get_and_free | cn_original:slf17_get_and_free | original_free_body_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6b135a4a3e53c84f9fff.json) |
