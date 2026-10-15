@@ -1,8 +1,8 @@
 # 夜间评测进度
 
-完整组 12/45；待补齐 33。截止北京时间 2026-10-16 08:00。
+完整组 13/45；待补齐 32。截止北京时间 2026-10-16 08:00。
 
-当前组：transfer；阶段：READY_FOR_NEXT_GROUP。
+当前组：transpose；阶段：READY_FOR_NEXT_GROUP。
 
 teSpec 最终不匹配 0 条，已解决自动阶段缺口 25 条。详情见 ../tespec-unexpected/README.md；未评测组不算零异常。
 
@@ -50,6 +50,6 @@ teSpec 最终不匹配 0 条，已解决自动阶段缺口 25 条。详情见 ..
 | succ_using_incr | 待补齐 | [表](../succ_using_incr/result-cost.md) |
 | swap | 待补齐 | [表](../swap/result-cost.md) |
 | swap_array | 待补齐 | [表](../swap_array/result-cost.md) |
-| transfer | 待补齐 | [表](../transfer/result-cost.md) |
+| transfer | 完整 | [表](../transfer/result-cost.md) |
 | transpose | 待补齐 | [表](../transpose/result-cost.md) |
 | zero | 待补齐 | [表](../zero/result-cost.md) |
