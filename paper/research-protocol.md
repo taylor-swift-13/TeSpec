@@ -24,35 +24,41 @@ The study distinguishes three claims:
 
 ## Baseline selection for ICSE (2026-10-16)
 
-The comparison should answer three questions: what is gained over runtime
-checking, what is gained over simply specializing an existing verifier, and
-what is gained over proving the specification directly on supplied examples.
-An independent symbolic-execution baseline adds evidence beyond the QCP family.
+The comparison should establish the benefits and costs of three routes:
+runtime specification checking, direct example-based proof checking, and full
+verification of the original contract. An independent symbolic-execution
+baseline adds evidence beyond the QCP family.
 
 | Comparison | Priority and role | Scientific question | Initial scope |
 |---|---|---|---|
 | Fulminate | Required external testing baseline; already established | Which original contracts can be checked, and at what cost, compared with runtime specification checks? | Matched C bodies, CN/QCP contracts and fixed inputs in the shared fragment; report original formulas and justified executable rewrites separately |
-| QCP-theta | Required same-foundation mechanism control; first addition | Is TeSpec more than adding input equalities to QCP's precondition? | Identical root binding, program and contracts, with native QCP call/loop handling and a matched proof budget |
 | COINS | Required proof-oracle comparison on shared pure relations | How much can direct example-based proof checking already establish, and what does execution-derived checking add? | Pure input/output relations, including quantified properties; use the original framework and the same model/proof budget |
 | Gillian-C symbolic testing | Strongly recommended independent execution baseline | How does TeSpec compare with another symbolic heap analysis, rather than only its own verification foundation? | A feature-selected common subset covering arrays, pointer aliases, lists and calls; expand after the adapter is working |
-| CN and QCP full verification | Retained reference layer | What assurance and cost does universal verification provide for the correct primary program? | One primary program per group; reuse matching validated evidence |
+| QCP full verification | Required verification comparison | How do instance testing and full verification differ in proof effort, cost and established scope? | Original precondition and contract; one correct primary program per group; reuse matching validated evidence |
+| CN full verification | Retained independent verification reference | How does an external verifier perform on the paired primary contracts? | One correct primary program per group; retain existing paired CN evidence |
 
-### QCP-theta: the essential specialization control
+### QCP: compare directly with full verification
 
-For root precondition R and a TeSpec binding theta, create the native QCP input
-with root precondition R and theta. Preserve the original implementation,
-callee contracts, loop invariants, logical definitions and QCP verification
-algorithm. Root equalities apply to entry values: recursive invocations retain
-fresh logical parameters. Do not add TeSpec's body-execution policy or copied-state
-observation machinery to this baseline.
+Run native QCP on each correct primary program and its original contract,
+without adding test-input equalities. QCP's modular verification uses loop
+invariants and callee summaries to establish the contract over its precondition
+domain. TeSpec executes selected instances while observing those annotations.
+These are the two workflows whose proof effort and cost we want to compare.
 
-Run both systems with the same proof model (gpt-6.1-sol), libraries, retry policy
-and total proof budget. Measure complete outcomes, residual obligations, proof
-construction, checking, tokens and peak RSS. Choose mechanism examples before
-measuring: straight-line code, loops, weak but valid callee summaries, recursion,
-and internal assertions. Straight-line agreement provides a useful control;
-weak-summary and loop cases test whether the execution discipline changes the
-obligations. This is separate from universal QCP verification of each primary.
+Adding input equalities to QCP would still perform modular verification.
+Invariants and callee summaries can generalize intermediate states and lose
+instance-specific correlations. Such a configuration is therefore omitted from
+the testing baselines; the direct full-verification comparison is more useful.
+
+Use the same proof model (gpt-6.1-sol), compatible proof libraries, retry policy
+and declared proof budget. Separate VC generation and automatic reasoning,
+agent proof construction, and proof checking; record time, tokens and peak RSS.
+Report full verification once per primary program, alongside TeSpec's per-test
+cost and the aggregate cost of that program's declared test suite. Associate
+each result with its established domain: the original contract for QCP and the
+selected input domains for TeSpec. Reuse existing verification evidence when
+source, contract and dependency identities match. Program and specification
+variants continue to receive tests; they do not require universal verification.
 
 ### COINS: compare the shared oracle task
 
@@ -92,8 +98,9 @@ UNKNOWN-to-decision transitions, wrong decisions, residual VC counts, ITP calls
 avoided, and complete per-test costs. One ITP unit contains all pending VCs of
 one test execution. Include retries and proof checking; retain the existing
 mean-per-execution reporting convention and individual peak-RSS measurements.
-QCP-theta isolates execution/obligation construction; this matrix isolates the
-two completion mechanisms.
+This matrix measures the contribution and cost of the two completion mechanisms.
+Execution preservation is evaluated with the existing call, loop and internal-
+observation cases.
 
 ### Comparisons not added to the main table
 
@@ -123,7 +130,7 @@ central empirical claim; it is not needed merely to increase baseline count.
 | RQ2: Are results reliable and useful for debugging? | Independently labelled valid/invalid inputs, specification and program mutations | False acceptance/rejection, confirmed violations, inconclusive results, mutant detection |
 | RQ3: What contributes to success? | Normalization, SMT-only, SMT+ITP, boundary policy ablations | Paired verdict changes, residual VC count/size, proof success |
 | RQ4: What does checking cost? | Repeated isolated runs and repeated proof-agent attempts | Generation/check/execution time, CPU, peak RSS, tokens, proof attempts |
-| RQ5: How does testing relate to full verification? | CN/QCP primary verification as context; QCP-theta and TeSpec on matched instances | Checked domain, preserved boundaries, proof effort, unresolved obligations |
+| RQ5: How does testing relate to full verification? | QCP full verification and CN reference verification of original primary contracts; TeSpec on the declared test suites | Checked domain, preserved boundaries, proof effort, unresolved obligations |
 
 ## Baselines and version policy
 
@@ -134,10 +141,10 @@ central empirical claim; it is not needed merely to increase baseline count.
   (2026-10-07), including its pinned Cerberus dependency. Run `cn verify`,
   `cn instrument`, and applicable `cn test` engines separately. This prevents
   attributing an old implementation limitation to the current baseline.
-- **QCP foundation and QCP-theta control:** record the upstream revision, SMT
-  submodule, executable hash, strategy library, Coq version and options. Pin
-  native QCP separately from the TeSpec executor. Earlier comparison probes
-  remain historical evidence until reproduced under the matched-input protocol.
+- **QCP full verification:** record the upstream revision, SMT submodule,
+  executable hash, strategy library, Coq version and options. Pin native QCP
+  separately from the TeSpec executor. Reuse matching primary-verification
+  evidence and measure any missing stages under the current cost protocol.
 - **COINS and Gillian-C:** pin repository revision, dependencies, adapter sources
   and commands before new measurements. Baseline selection is complete; this
   document does not claim either new comparison has been executed.
