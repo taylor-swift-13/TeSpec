@@ -208,6 +208,26 @@ teSpec 自动阶段为 22 PASS、20 FAIL、12 UNKNOWN、7 ERROR；ITP 后的正�
 
 Fulminate 的一条不匹配是：返回值取负的错误实现，在 `INT_MIN` 输入上存在有符号溢出，实测为 Fulminate PASS、teSpec FAIL。保留该差异，不修改原始结果以凑齐正确率。
 
+### 四工具时间、内存与 token 总表
+
+下表直接取自各工具的 `statistics.json`，与 `comparison.csv` 一致；峰值为各自已计量阶段中最大的本地进程驻留内存。
+
+| 工具 | 计量范围 | 已测阶段总耗时（秒） | 峰值进程内存（MiB） | 总 token |
+|---|---|---:|---:|---:|
+| CN | 主程序验证一次 | 0.0787 | 43.0273 | 0 |
+| QCP | 主程序验证一次 | 0.0064 | 4.4375 | 0 |
+| Fulminate | 61 对变体与输入 | 7.2791 | 43.2422 | 0 |
+| teSpec（包含 ITP） | 61 对变体与输入＋必要 ITP | 211.7437 | 1989.5039 | 133,915 |
+
+- CN、QCP、Fulminate 本批未调用模型，因此 token 为实际的 0；不是漏采集。
+- QCP 主程序本批为自动验证通过、无 manual，所以其统计没有 ITP 成本。其他程序组若 QCP 需要 manual，必须包含对应 ITP 的时间、内存、模型及 token。
+- Fulminate 表中耗时包含插桩／编译／首次执行 7.0446 秒，以及单独运行 0.2346 秒。仅运行测试时的峰值为 1.3672 MiB；完整已测阶段峰值来自插桩流水线。
+- teSpec 包含执行测试和完整计量的 ITP。详细的输入、缓存输入、输出 token 及各阶段耗时见下表和模型回执。
+
+原始统计入口：[CN](../benchmark/results/read/cn/statistics.json)、[QCP](../benchmark/results/read/qcp/statistics.json)、[Fulminate](../benchmark/results/read/fulminate/statistics.json)、[teSpec](../benchmark/results/read/tespec/statistics.json)。
+
+### teSpec 与 ITP 阶段明细
+
 完整 teSpec 计量如下；数值按展示精度四舍五入，原始精度见 [完整统计](../benchmark/results/read/complete/statistics.json) 与 [ITP 统计](../benchmark/results/read/20261015-itp-metered/statistics.json)。
 
 | 阶段 | 耗时（秒） | 最大本地进程内存（MiB） |
