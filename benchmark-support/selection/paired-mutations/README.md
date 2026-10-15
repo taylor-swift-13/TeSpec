@@ -26,7 +26,7 @@ python3 benchmark/selection/paired-mutations/grouping/validate.py
 python3 benchmark/selection/paired-mutations/grouping/validate-reuse.py
 ```
 
-`generate.py`、`manifest.json`、`cases/` 和原重放脚本保留历史构造批次的可复现性。旧七槽位/PENDING 字段不是当前接纳或缺项判据，也不代表对应程序没有原始变体或旧结果。[旧七槽位设计](legacy-seven-slot-design.md) 仅作历史记录，不要求继续按 76×7 补文件。
+已删除停用的七槽位生成器及旧配额设计文档。已有 `manifest.json`、变体、输入、结果和重放工具继续保留；原生成器可从 Git 历史恢复。旧七槽位/PENDING 字段只属于历史批次，不作为当前接纳或缺项判据。
 
 ## 程序、变体、测试用例与验证单位
 
