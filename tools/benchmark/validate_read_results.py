@@ -2,6 +2,7 @@
 """Audit actual read executions, their inputs, statuses and metric aggregation."""
 from pathlib import Path
 import collections, hashlib, json, math
+from evidence_paths import evidence_path
 
 ROOT = Path(__file__).resolve().parents[2]
 BASE = ROOT / 'benchmark/results/read/20261015-variants'
@@ -39,7 +40,7 @@ def main():
         for x in raw['results']:
             for name in ['generated_source', 'stdout', 'stderr']:
                 if x.get(name):
-                    assert Path(x[name]).is_file(), x[name]
+                    assert evidence_path(x[name]).is_file(), x[name]
     assert data['summary']['tespec'] == dict(collections.Counter(s for r in runs for s in r['tespec']['statuses']))
     for row in stats['configurations']:
         selected = [r for r in runs if r['variant'] == row['variant']]

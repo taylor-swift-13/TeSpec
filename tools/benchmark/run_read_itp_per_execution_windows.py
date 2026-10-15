@@ -3,7 +3,7 @@ import subprocess,sys,json,time
 import argparse
 parser=argparse.ArgumentParser();parser.add_argument('--task-root',type=Path,required=True);args=parser.parse_args()
 base=args.task_root.resolve()
-script='/home/yangfp/teSpec-benchmark-tespec/tools/benchmark/read_itp_per_execution.py'
+script='/home/yangfp/teSpec/tools/benchmark/read_itp_per_execution.py'
 state=base/'progress.json'
 base.mkdir(parents=True,exist_ok=True)
 subprocess.run(['wsl','-d','Ubuntu-22.04','-u','yangfp','--','python3',script,'prepare'],check=True)

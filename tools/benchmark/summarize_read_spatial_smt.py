@@ -3,6 +3,7 @@
 from pathlib import Path
 import collections,csv,hashlib,io,json
 from test_read_variants import ROOT,sha,save
+from evidence_paths import evidence_path
 OUT=ROOT/'benchmark/results/read/20261015-spatial-smt'
 def main():
     import z3
@@ -29,7 +30,7 @@ def main():
             assert row['on']['itp_vcs']==[] and info['certificate']=='NOT_CHECKED'
             raw=Path(states['on']['artifacts']['stdout']) if isinstance(states['on'].get('artifacts'),dict) and 'stdout' in states['on']['artifacts'] else None
             for item in info['results']:
-                decision=json.loads(Path(item['artifact']).read_text());query=Path(decision['query'])
+                decision=json.loads(evidence_path(item['artifact']).read_text());query=evidence_path(decision['query'])
                 assert decision['status']=='INVALID' and decision['solver_result']=='sat' and decision['antecedent_satisfiability']=='sat' and decision['vacuous'] is False
                 assert sha(query)==decision['query_sha256'];solver=z3.Solver();solver.set(timeout=2000);solver.from_string(query.read_text());assert solver.check()==z3.sat
                 heap=decision['countermodel']['heap'];assert len(heap)==4
