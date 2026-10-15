@@ -1,0 +1,3 @@
+int add(int x, int y)
+/*@ requires true; ensures true; @*/
+{ return x+y; }

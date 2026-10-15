@@ -1,5 +1,7 @@
 # Benchmark 选集：完整 CN 基线与分类扩展
 
+> 新实验采用 [CN/QCP 成对七变体设计](paired-mutations/README.md)：全部 76 个来源文件，每项 1 个正确版本、3 个错误规约版本、3 个错误实现版本。最终目标 532 个变体、1064 个语言文件。首批 18 项已生成，其他 58 项显式待办；不沿用原 CN 的正负例标签作为新实验结论。
+
 > 22 个 CN 补充输入均已建立 QCP 版本和验证记录：12 个正例/修正规约版本通过，5 个按预期拒绝，5 个原始 manual VC 的否定通过 Coq 内核检查。详情见 [补充输入报告](qcp-migration/supplemental/README.md)。错误例保留，不计为通过。
 
 > 队列 QCP 修正规约版本已验证：22 个自动 VC 消解、2 个 manual VC 通过内核检查。保留原 CN 合同反例，详见 [发现与修正说明](qcp-migration/simple/advanced/queue-corrected/queue-spec-finding.md)。全体 54 个核心程序现在都有按 auto 加 manual 口径通过的 QCP 目标版本；队列修正版不声称等价于原 CN 合同。

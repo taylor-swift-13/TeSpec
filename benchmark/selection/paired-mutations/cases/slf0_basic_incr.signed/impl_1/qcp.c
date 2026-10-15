@@ -1,0 +1,4 @@
+#include "verification_stdlib.h"
+void incr(int *p)
+/*@ With old Require old < 2147483647 && data_at(p,int,old) Ensure data_at(p,int,old+1) */
+{ *p = *p + 2; }
