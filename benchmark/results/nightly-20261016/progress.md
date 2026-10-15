@@ -2,9 +2,9 @@
 
 完整组 20/45；待补齐 25。截止北京时间 2026-10-16 08:00。
 
-当前组：slf18_two_dice；阶段：QCP_INDEPENDENT_KERNEL_CHECK_RUNNING。
+当前组：init_array；阶段：POSITIVE_EXECUTION_ITP_CONTROLLER_RUNNING。
 
-teSpec 最终不匹配 187 条，已解决自动阶段缺口 30 条。详情见 ../tespec-unexpected/README.md；未评测组不算零异常。
+teSpec 最终不匹配 186 条，已解决自动阶段缺口 31 条。详情见 ../tespec-unexpected/README.md；未评测组不算零异常。
 
 | 程序组 | 状态 | 结果成本表 |
 |---|---|---|
