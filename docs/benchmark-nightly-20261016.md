@@ -110,3 +110,5 @@ slf_quadruple_mem actual attempt-1 已完成：28.891 秒，55,340 token。3 个
 
 
 slf_quadruple_mem 完整收尾：7 对输入，Fulminate、teSpec OFF/ON 均逐例匹配独立预期；主程序 CN 与 QCP 3 个原始全称 VC 已编译、假设审计并独立内核检查。gpt-6.1-sol 实际 1 次调用，55,340 token；四工具分阶段时间与 RSS 已保存。完整进度 15/45，下一组 init_point。
+
+03:42 WSL 无需重启即恢复。init_point attempt-1 Candidate 编译退出 137，GNU time 为 326.24 秒、10,949,176 KiB RSS；控制器 wall 326.259906905 秒。未取得 guest OOM 日志，不把 SIGKILL/OOM 具体原因当作已证事实。原模型 117,282 token 和失败编译均保留，后续证明改为交换堆见证的逐点 join 构造。attempt-2 仅有未限定 ConAssertion 命名空间编译错误，实际模型/编译成本同样保留。新的 Coq 超时与地址空间限制已用真实子进程检查，编译失败/超时/RSS 均可正确留存，检查成本单列不混入程序成本。

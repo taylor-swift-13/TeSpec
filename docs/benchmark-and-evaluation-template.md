@@ -358,3 +358,8 @@ Coq 内核通过表示相对于实际审计出的环境假设检查通过，不�
 cell_leak_itp.py 为一个拥有 4096 处 4 字节单元但出口要求 emp 的具体执行，分别冻结原始残余空间/返回 VC 与入口 SAT 目标。一个执行独立计量模型填写、所有修复、Coq 编译审计和 coqchk；既有通用具体堆构造可以复用，输入特定反证不能跨执行代填。attach_cell_leak_itp.py 核对源码/绑定/原 VC/模型日志/实际 prompt/原证明哈希、5 个定理全局封闭和内核成功后才追加 FAIL，原始 UNKNOWN 不改写。完整汇总只对所有实际需要 ITP 的执行计算均值，并取逐次最大进程 RSS 的平均，不拿批次峰值除以次数；ITP 未全部完成时保留 PENDING。
 
 预期执行拒绝可以通过 expected_by_tool 明确 Fulminate FAIL 与 teSpec ERROR 的工具原始状态差别。预期 ERROR 必须事先写具体诊断条件，并实际核对 SAT 入口、执行阶段失败及错误文本；解析错误、缺文件和无报告 ERROR 不算成功检出。这个映射不能根据运行输出补改预期。
+
+
+## Coq 证明搜索资源限制
+
+后续逐次 Coq 编译默认设置 90 秒、独立 coqchk 设置 300 秒、两者地址空间上限 4 GiB，使用 GNU timeout/prlimit，外层 GNU time 继续记录真实执行时间和最大单进程 RSS。超时/内存限制失败不能算证明通过，全部实际模型与失败编译成本保留；executed_wrapper_command 和 limits 随回执保存。地址空间限制与 RSS 是不同量，不把 4 GiB 上限当作已用 RSS。该限制不追溯改写已有测量。

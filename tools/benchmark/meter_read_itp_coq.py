@@ -13,14 +13,21 @@ def sha(p): return hashlib.sha256(p.read_bytes()).hexdigest()
 def save(p,d):
     p.parent.mkdir(parents=True,exist_ok=True);p.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n')
 
-def measure(command,folder,cwd):
+def measure(command,folder,cwd,wall_limit_seconds=None,address_space_limit_bytes=None):
     folder.mkdir(parents=True,exist_ok=True);resource=folder/'resources.json'
-    wrapped=['/usr/bin/time','--quiet','-f','{"max_process_rss_kib":%M,"user_seconds":%U,"system_seconds":%S,"wall_seconds_gnu":%e}','-o',str(resource),*map(str,command)]
+    original=list(map(str,command)); executable=Path(original[0]).name
+    if executable in {'coqc','coqchk'}:
+        if wall_limit_seconds is None:wall_limit_seconds=90 if executable=='coqc' else 300
+        if address_space_limit_bytes is None:address_space_limit_bytes=4*1024**3
+    bounded=original
+    if address_space_limit_bytes is not None:bounded=['/usr/bin/prlimit','--as='+str(address_space_limit_bytes),'--',*bounded]
+    if wall_limit_seconds is not None:bounded=['/usr/bin/timeout','--signal=TERM','--kill-after=5',str(wall_limit_seconds),*bounded]
+    wrapped=['/usr/bin/time','--quiet','-f','{"max_process_rss_kib":%M,"user_seconds":%U,"system_seconds":%S,"wall_seconds_gnu":%e}','-o',str(resource),*bounded]
     start=time.monotonic()
     with (folder/'stdout.log').open('wb') as stdout,(folder/'stderr.log').open('wb') as stderr:
         p=subprocess.run(wrapped,cwd=cwd,stdout=stdout,stderr=stderr)
     resources=json.loads(resource.read_text()) if resource.exists() and resource.stat().st_size else None
-    return {'command':list(map(str,command)),'exit_code':p.returncode,'wall_seconds':time.monotonic()-start,'resources':resources,
+    return {'command':original,'executed_wrapper_command':wrapped,'limits':{'wall_seconds':wall_limit_seconds,'address_space_bytes':address_space_limit_bytes,'reason':'Bound Coq search before it exhausts the shared WSL VM. Failure and timeout costs remain measured.'},'exit_code':p.returncode,'wall_seconds':time.monotonic()-start,'resources':resources,
             'stdout':(folder/'stdout.log').relative_to(ROOT).as_posix(),'stdout_sha256':sha(folder/'stdout.log'),
             'stderr':(folder/'stderr.log').relative_to(ROOT).as_posix(),'stderr_sha256':sha(folder/'stderr.log')}
 

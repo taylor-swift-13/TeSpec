@@ -1,0 +1,80 @@
+{
+  "purpose": "Orchestration guard verification only; not benchmark/program costs.",
+  "timeout": {
+    "command": [
+      "/usr/bin/python3",
+      "-c",
+      "import time;time.sleep(2)"
+    ],
+    "executed_wrapper_command": [
+      "/usr/bin/time",
+      "--quiet",
+      "-f",
+      "{\"max_process_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"wall_seconds_gnu\":%e}",
+      "-o",
+      "/home/yangfp/teSpec/benchmark/results/nightly-20261016/measurement-guard-check/timeout/resources.json",
+      "/usr/bin/timeout",
+      "--signal=TERM",
+      "--kill-after=5",
+      "0.2",
+      "/usr/bin/python3",
+      "-c",
+      "import time;time.sleep(2)"
+    ],
+    "limits": {
+      "wall_seconds": 0.2,
+      "address_space_bytes": null,
+      "reason": "Bound Coq search before it exhausts the shared WSL VM. Failure and timeout costs remain measured."
+    },
+    "exit_code": 124,
+    "wall_seconds": 0.20523176999995485,
+    "resources": {
+      "max_process_rss_kib": 7932,
+      "user_seconds": 0.0,
+      "system_seconds": 0.0,
+      "wall_seconds_gnu": 0.2
+    },
+    "stdout": "benchmark/results/nightly-20261016/measurement-guard-check/timeout/stdout.log",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr": "benchmark/results/nightly-20261016/measurement-guard-check/timeout/stderr.log",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "memory_limit": {
+    "command": [
+      "/usr/bin/python3",
+      "-c",
+      "x=bytearray(256*1024*1024)"
+    ],
+    "executed_wrapper_command": [
+      "/usr/bin/time",
+      "--quiet",
+      "-f",
+      "{\"max_process_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"wall_seconds_gnu\":%e}",
+      "-o",
+      "/home/yangfp/teSpec/benchmark/results/nightly-20261016/measurement-guard-check/memory/resources.json",
+      "/usr/bin/prlimit",
+      "--as=67108864",
+      "--",
+      "/usr/bin/python3",
+      "-c",
+      "x=bytearray(256*1024*1024)"
+    ],
+    "limits": {
+      "wall_seconds": null,
+      "address_space_bytes": 67108864,
+      "reason": "Bound Coq search before it exhausts the shared WSL VM. Failure and timeout costs remain measured."
+    },
+    "exit_code": 1,
+    "wall_seconds": 0.12010503299825359,
+    "resources": {
+      "max_process_rss_kib": 25512,
+      "user_seconds": 0.06,
+      "system_seconds": 0.0,
+      "wall_seconds_gnu": 0.11
+    },
+    "stdout": "benchmark/results/nightly-20261016/measurement-guard-check/memory/stdout.log",
+    "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr": "benchmark/results/nightly-20261016/measurement-guard-check/memory/stderr.log",
+    "stderr_sha256": "38f453979bab240d789e4f6aca8c94daadeced572fc316aa457637897c9d23bd"
+  }
+}
