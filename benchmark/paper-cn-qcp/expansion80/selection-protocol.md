@@ -1,7 +1,7 @@
 # Selection and evaluation of the final 80 subjects
 
 Historical protocol for this frozen batch. The current
-[selection policy](../../selection/README.md) supersedes the fixed total and
+[selection policy](../../../benchmark-support/selection/README.md) supersedes the fixed total and
 candidate-replacement rules below: all pinned CN/Fulminate examples are mandatory;
 QCP/CAV additions are selected by category and experiment question. Existing
 inputs, outcomes and proofs retain their original identities.

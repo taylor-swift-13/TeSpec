@@ -1,0 +1,42 @@
+[
+  {
+    "id": "result_ab3b53bd3b4eb8513d1f",
+    "report": "file_7a1ac77157f06aa2",
+    "record_pointer": "",
+    "tool": "qcp_native",
+    "reported_status": "TOOL_ERROR",
+    "variant_ids": [
+      "qcp_existing:cb114566e2b0eb204891"
+    ],
+    "source_binding": "EXACT_SOURCE_HASH",
+    "recorded_source_sha256": "cb114566e2b0eb2048914bfa1c5ad264a9aa81f32cfa085048554b65b7cb5a6e",
+    "scope": null,
+    "metrics": {},
+    "recorded_goal_sha256": null,
+    "supporting_artifacts": [],
+    "recorded_theorems": null,
+    "recorded_toolchain": {},
+    "proof_artifacts_replay": null
+  },
+  {
+    "id": "result_c199c062bb586683fd14",
+    "report": "file_db3559b30d3cd37d",
+    "record_pointer": "/results/5",
+    "tool": "native_c_witness",
+    "reported_status": {
+      "compile_exit": 0,
+      "run_exit": 1
+    },
+    "variant_ids": [
+      "cn_original:runtime-extras__bad_free.broken",
+      "qcp_existing:cb114566e2b0eb204891"
+    ],
+    "source_binding": "HASHED_C_HARNESS_WITH_EXPLICIT_SOURCE_CASE_RELATION",
+    "recorded_source_sha256": "b9c89595f36f49762c7554b91bce6c09f90aed5378148eaf6e835188f95d3738",
+    "scope": "Original subject body with concrete sized allocator/free implementation. Double-free uses original main; bad_free receives invalid pointer permitted by its empty Require. Sanitizer witness, not a Coq VC refutation.",
+    "metrics": {},
+    "input_set_id": "input_62f40eca65e3ae0c5962",
+    "observed": "AddressSanitizer:DEADLYSIGNAL\n=================================================================\n==254178==ERROR: AddressSanitizer: SEGV on unknown address 0xfffffffffffffff1 (pc 0x7fa180428b46 bp 0x000000000001 sp 0x7ffd9412c8d0 T0)\n==254178==The signal is caused by a WRITE memory access.\n    #0 0x7fa180428b46 in bool __sanitizer::atomic_compare_exchange_strong<__sanitizer::atomic_uint8_t>(__sanitizer::atomic_uint8_t volatile*, __sanitizer::atomic_uint8_t::Type*, __sanitizer::atomic_uint8_t::Type, __sanitizer::memory_order) ../../../../src/libsanitizer/sanitizer_common/sanitizer_atomic_clang.h:80\n    #1 0x7fa180428b46 in __asan::Allocator::AtomicallySetQuarantineFlagIfAllocated(__asan::AsanChunk*, void*, __sanitizer::BufferedStackTrace*) ../../../../src/libsanitizer/asan/asan_allocator.cpp:621\n    #2 0x7fa180428b46 in __asan::Allocator::Deallocate(void*, unsigned long, unsigned long, __sanitizer::BufferedStackTrace*, __asan::AllocType) ../../../../src/libsanitizer/asan/asan_allocator.cpp:697\n    #3 0x7fa180428b46 in __asan::asan_free(void*, __sanitizer::BufferedStackTrace*, __asan::AllocType) ../../../../src/libsanitizer/asan/asan_allocator.cpp:971\n    #4 0x7fa1804b44f4 in __interceptor_free ../../../../src/libsanitizer/asan/asan_malloc_linux.cpp:128\n    #5 0x6187ec528244 in cn_free_sized (/home/yangfp/teSpec-benchmark-tespec/benchmark/selection/qcp-migration/supplemental/negative-witnesses/bad_free+0x1244)\n    #6 0x6187ec528268 in bad_free (/home/yangfp/teSpec-benchmark-tesp",
+    "harness_artifact": "file_f93e8aeac9c9ee1f"
+  }
+]

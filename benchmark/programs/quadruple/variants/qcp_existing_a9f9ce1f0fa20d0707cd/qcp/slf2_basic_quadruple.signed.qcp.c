@@ -1,0 +1,8 @@
+#include "verification_stdlib.h"
+
+int quadruple (int n)
+/*@ Require -2147483648 <= 4*n && 4*n <= 2147483647 && emp Ensure __return == 4*n && emp */
+{
+  int m = n + n;
+  return m + m;
+}

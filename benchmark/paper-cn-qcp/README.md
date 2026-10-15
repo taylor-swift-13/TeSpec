@@ -1,6 +1,6 @@
 # 论文用 CN–QCP 配对 benchmark
 
-当前选例规则见 [完整 CN 基线与分类扩展](../selection/README.md)：54 个 CN 主程序和
+当前选例规则见 [完整 CN 基线与分类扩展](../../benchmark-support/selection/README.md)：54 个 CN 主程序和
 22 个补充 C 输入全部收录，另按类别及待检验能力选择 QCP/CAV 目标。本文的 80 项及
 后续内存扩展保留为已有实验批次；新选集没有固定 80 项上限，历史结果也不因重选而删除。
 

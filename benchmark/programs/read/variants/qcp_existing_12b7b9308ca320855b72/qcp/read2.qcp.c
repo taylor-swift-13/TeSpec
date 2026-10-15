@@ -1,0 +1,7 @@
+#include "verification_stdlib.h"
+
+int read (int *p)
+/*@ With v Require data_at(p, int, v) Ensure __return == v && data_at(p, int, v) */
+{
+  return *p;
+}

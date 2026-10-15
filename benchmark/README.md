@@ -1,24 +1,38 @@
 # Benchmarks
 
-当前选集采用 **[完整 CN/Fulminate 基线＋分类 QCP/CAV 扩展](selection/README.md)**。
-固定上游 CN 版本的 54 个主程序及 22 个补充 C 输入全部收录，保留 pKVM 工业例；
-另按符号堆、逻辑定义、量词、注解边界和 ITP 补证选择 32 个 QCP 目标、18 个 CAV 目标。
-总量由覆盖范围决定，不再固定为 80。逐项来源、选入理由、待补能力和证据入口见
-[清单](selection/catalog.json)及[可读表格](selection/programs.csv)。
+CN/Fulminate benchmark 按程序组组织，入口为 [programs/index.json](programs/index.json)，共 45 组。原始 76 个 CN 文件保存在仓库的 [third_party/fulminate-cn](../third_party/fulminate-cn/README.md)，不在 benchmark 下存放来源快照。
 
-| 目录 | 用途 |
-|---|---|
-| `selection/` | 当前选例规则、完整 CN 源码快照、分类清单和能力缺口 |
-| `paper-cn-qcp/` | 已有配对输入、内存扩展、冻结结果及证明证据 |
-| `executor_e2e/` | 开发回归 |
-| `comparison/` | 专项诊断和历史比较 |
-| `experiments/` | 代码／规约生成实验 |
+```text
+benchmark/programs/
+  index.json
+  evidence.json
+  <程序组>/
+    manifest.json
+    variants/<变体 ID>/
+      manifest.json
+      cn/<程序文件>.c
+      qcp/<程序文件>.c
+      tests/
+        inputs.json
+        cases/<输入记录 ID>.json
+        results.json
+```
 
-完整收录与完整配对运行分别统计；源文件归档不产生新的测试结论。检查当前选集：
+CN/QCP 文件仅在已有对应版本时出现；不伪造缺失的翻译。变体允许实现、规约或两者改变，不规定正负比例。每组仅主程序需要形式验证，优先复用匹配的 CN/QCP 历史验证和 Coq 证明；其他变体只要求多用例测试。目前主程序的显式绑定仍待整理，`primary_variant: null` 不代表旧证明失效，也不表示已完成绑定。
+
+测试输入及原始结果按变体归入组内，包含原始状态、作用范围和证据索引。历史 main 的存在不代表已执行；输入集合可含多个用例，不能把集合数当用例数。已有测试未覆盖的变体仍保留缺口。
+
+历史迁移过程、冻结测量和证明文件保存在 [benchmark-support/selection](../benchmark-support/README.md)。`evidence.json` 给出文件当前位置及原始哈希；[path-map.json](../benchmark-support/path-map.json) 解析旧报告中的原路径。迁移不修改证据原文，不重新运行验证、不改变 PASS/UNKNOWN 或时间、内存、token 值。
+
+重建与审计：
 
 ```sh
-python3 benchmark/selection/build_catalog.py
+python3 tools/benchmark/build_program_groups.py
+python3 tools/benchmark/build_program_groups.py --check
+python3 tools/benchmark/audit_archive.py
 ```
+
+其他既有目录 `paper-cn-qcp/`、`executor_e2e/`、`comparison/` 和 `experiments/` 是独立历史实验或开发回归，不属于这 45 组来源快照。
 
 ## 双向生成实验
 
