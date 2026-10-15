@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Expose CN, QCP, Fulminate and complete teSpec results under named entries."""
 from pathlib import Path
-import collections, csv, hashlib, io, json
+import collections, csv, hashlib, io, json, subprocess, sys
 
 ROOT=Path(__file__).resolve().parents[2]
 OUT=ROOT/'benchmark/results/read'
@@ -167,6 +167,7 @@ def main():
         group['primary_verification']['qcp_complete_proof_receipt']='benchmark/results/read/20261015-qcp-verify-complete/receipt.json'
     save(p,group)
     assert fulfilled==60
+    subprocess.run([sys.executable,str(ROOT/'tools/benchmark/build_group_cost_tables.py')],check=True)
     print('PASS: named CN/QCP primary verification and Fulminate/complete-teSpec test results published; archived source/log hashes match; no runs repeated.')
 
 if __name__=='__main__':main()

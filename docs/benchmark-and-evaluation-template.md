@@ -295,3 +295,13 @@ python3 tools/benchmark/complete_read_pipeline.py
 - 时间、峰值内存、模型、token、重试、共享工作和复用范围可追溯，无估填或重复计数。
 - 原始结果不可改写；最终结论单独汇总。源文件、日志、证明与指标的引用和哈希审计通过。
 - 声明完成范围：程序组、变体配置、语言版本记录、测试对数、测试执行次数分别计数，不把有限覆盖写成穷尽验证。
+
+## 11. 每组必备的结果与成本表
+
+每个程序组必须提供 `benchmark/results/<group>/result-cost.md`、`result-cost.json` 和 `result-cost.csv`。Markdown 展示四工具结果及成本，JSON 保存完整字段、计量单位、缺项和证据引用，CSV 供汇总分析。统一入口为 `benchmark/results/group-result-cost-index.md` 及对应 JSON。
+
+结果表包含：主程序身份、语言版本记录数量、CN/QCP 主程序验证结论、Fulminate/teSpec 测试对数及预期匹配数。成本表包含：CN 验证；Fulminate 插桩／编译／首次执行及单独测试；QCP/teSpec 的生成或测试执行、agent 填写证明、Coq 编译审计、独立内核检查及 ITP 平均小计。各项报告时间、峰值进程内存、token 和统计单位。
+
+ITP 按一次执行的全部待处理 VC 合计，展示平均成本；read 使用已有共享批次除以 12 次需要 ITP 的执行，并明确标为估算。内存峰值不除以次数。ITP 小计与分项不可重复相加，缺测字段记 null／待补齐，不能补 0。完整状态要求四工具结论及必要资源字段均已发布；历史证据存在但尚未绑定时仍标待补齐，后续核对后复用。
+
+运行 `python3 tools/benchmark/build_group_cost_tables.py` 可从各工具已发布回执重建所有组的表；read 发布器自动调用它，无需重跑模型或证明。当前 45 组均有表格入口，数据齐全 1 组（read），其余 44 组待补齐；文件存在不等于评测完成。
