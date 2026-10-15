@@ -3,11 +3,12 @@
 import argparse,collections,json,statistics
 from test_read_variants import ROOT,save,sha
 from publish_abs_tool_results import stage
-from evaluation_expectations import expected,matches
+from evaluation_expectations import expected,matches,summary as evaluation_summary
 from attach_cell_leak_itp import mode_costs
 
 def main(group):
  g=ROOT/'benchmark/programs'/group;b=ROOT/'benchmark/results'/group;plan=json.loads((g/'evaluation-plan.json').read_text());run=b/plan['run_id'];data=json.loads((run/'results.json').read_text());rows=data['runs'];rel=lambda p:str(p.relative_to(ROOT));variants={json.loads(p.read_text())['id']:json.loads(p.read_text()) for p in (g/'variants').glob('*/manifest.json')}
+ data.setdefault('native_summary_before_final_publication',data['summary']);data['summary']=evaluation_summary(rows,plan);save(run/'results.json',data)
  nativepath=b/'20261016-primary-native/receipt.json';n=json.loads(nativepath.read_text());proofpath=b/'20261016-qcp-verify-complete/receipt.json';proof=json.loads(proofpath.read_text());assert proof['status']=='VERIFIED_KERNEL_CHECKED' and proof['kernel_check']['exit_code']==0
  for lang,vid in [('cn',plan['primary_cn_variant']),('qcp',plan['primary_qcp_variant'])]:assert sha(ROOT/variants[vid]['files'][lang]['path'])==n[lang+'_source_sha256']
  cm=n['cn'];assert cm['exit_code']==0

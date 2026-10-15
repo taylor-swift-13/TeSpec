@@ -4,7 +4,7 @@ import argparse,collections,csv,io,json,statistics
 from test_read_variants import ROOT,save,sha
 from publish_abs_tool_results import stage
 from evidence_paths import same_bindings_allow_explicit_empty_values
-from evaluation_expectations import expected as expected_status,matches as matches_expected
+from evaluation_expectations import expected as expected_status,matches as matches_expected,summary as evaluation_summary
 from attach_cell_leak_itp import validate_receipt,mode_costs,statistics_for_off
 
 def main():
@@ -28,7 +28,7 @@ def main():
                 assert sha(ROOT/m['itp']['receipt'])==m['itp']['receipt_sha256'];validate_receipt(ROOT/m['itp']['receipt'],r,mode)
             elif m['status']=='ERROR':assert matches_expected(r,'tespec_'+mode), 'Unexpected ERROR cannot be published as complete'
             else:assert m['status'] in ['PASS','FAIL']
-    save(run/'results.json',data)
+    data.setdefault('native_summary_before_final_publication',data['summary']);data['summary']=evaluation_summary(runs,plan);save(run/'results.json',data)
     rel=lambda p:str(p.relative_to(ROOT))
     native=json.loads(nativepath.read_text());cv=variants[plan['primary_cn_variant']][1];qv=variants[plan['primary_qcp_variant']][1];cn=native['cn']
     for lang,v in [('cn',cv),('qcp',qv)]:assert sha(ROOT/v['files'][lang]['path'])==native[lang+'_source_sha256']
