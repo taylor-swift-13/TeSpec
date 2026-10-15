@@ -4,6 +4,7 @@ import argparse,collections,datetime,json,re,shutil,sys,tempfile
 from pathlib import Path
 from test_read_variants import ROOT,CN,measure,sha,save
 from evaluation_provenance import snapshot
+from evaluation_expectations import matches as matches_expected
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--group',required=True);a=parser.parse_args()
@@ -57,7 +58,7 @@ def main():
                 p=dest/'artifacts/report.json';m['report']=str(p.relative_to(ROOT)) if p.exists() else None;data=json.loads(p.read_text()) if p.exists() else {};m['statuses']=[x.get('status') for x in data.get('results',[])];m['status']=m['statuses'][0] if len(m['statuses'])==1 else 'ERROR';row['tespec_'+mode]=m
             save(cached,row);report['runs'].append(row);save(out/'results.json',report);print(a.group,vid,cid,row['expected'],'fulminate',row['fulminate_test']['status'],'OFF',row['tespec_off']['status'],'ON',row['tespec_on']['status'],flush=True)
     runs=report['runs'];report['summary']={'configurations':len(plan['pairings']),'variant_language_records':len(variants),'case_pairs':len(runs),'expected':dict(collections.Counter(r['expected'] for r in runs))}
-    for tool in ['fulminate_test','tespec_off','tespec_on']:report['summary'][tool]={'statuses':dict(collections.Counter(r[tool]['status'] for r in runs)),'expected_matches':sum(r[tool]['status']==r['expected'] for r in runs)}
+    for tool in ['fulminate_test','tespec_off','tespec_on']:report['summary'][tool]={'statuses':dict(collections.Counter(r[tool]['status'] for r in runs)),'expected_matches':sum(matches_expected(r,tool) for r in runs)}
     save(out/'results.json',report);print(json.dumps(report['summary']),flush=True)
     from collect_tespec_unexpected import collect
     collect()

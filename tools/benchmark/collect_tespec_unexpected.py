@@ -4,6 +4,7 @@ from pathlib import Path
 import collections,csv,hashlib,io,json
 from test_read_variants import ROOT,sha,save
 from evidence_paths import evidence_path,same_bindings_allow_explicit_empty_values
+from evaluation_expectations import expected as expected_status,matches as matches_expected
 OUT=ROOT/'benchmark/results/tespec-unexpected'
 def rel(p):return str(p.relative_to(ROOT))
 def read(p):return json.loads(p.read_text())
@@ -13,19 +14,20 @@ def reproduction(command,issue):
     return cmd
 
 def make_issue(group,row,mode,measurement,final=None,itp=None):
-    actual=measurement.get('status') or (measurement.get('statuses') or ['ERROR'])[0];final=final or actual;expected=row.get('expected',row.get('expected_result'))
-    if actual==expected and final==expected:return None
+    actual=measurement.get('status') or (measurement.get('statuses') or ['ERROR'])[0];final=final or measurement.get('final_status') or actual;expected=expected_status(row,'tespec_'+mode)
+    final_matches=matches_expected(row,'tespec_'+mode,status=final,measurement=measurement)
+    if actual==expected and final_matches:return None
     keyparts=[group,row['variant'],row['case'],mode,row.get('qcp_source_sha256'),row.get('binds_sha256')]
     if row.get('_evaluation_run') not in [None,'20261016-evaluation']:keyparts.append(row['_evaluation_run'])
     key=json.dumps(keyparts,sort_keys=True);issue=hashlib.sha256(key.encode()).hexdigest()[:20]
     p=evidence_path(measurement['report']) if measurement.get('report') else None;report=read(p) if p and p.exists() else {};case=(report.get('results') or [{}])[0]
     assert case.get('status',actual)==actual, 'Aggregate/raw automatic status mismatch: '+issue
-    classification='RESOLVED_AUTOMATIC_GAP' if final==expected else 'UNRESOLVED_UNKNOWN' if actual=='UNKNOWN' else 'UNEXPECTED_ACCEPTANCE' if actual=='PASS' else 'UNEXPECTED_REJECTION' if actual=='FAIL' else 'UNEXPECTED_EXECUTOR_ERROR'
-    if final==expected and actual=='ERROR' and row.get('_resolution'):classification='RESOLVED_CONFIGURATION_ERROR'
+    classification='RESOLVED_AUTOMATIC_GAP' if final_matches else 'UNRESOLVED_UNKNOWN' if actual=='UNKNOWN' else 'UNEXPECTED_ACCEPTANCE' if actual=='PASS' else 'UNEXPECTED_REJECTION' if actual=='FAIL' else 'UNEXPECTED_EXECUTOR_ERROR'
+    if final_matches and actual=='ERROR' and row.get('_resolution'):classification='RESOLVED_CONFIGURATION_ERROR'
     vc=[]
     if p and p.exists():
         for goal in sorted(p.parent.rglob('*_goal.v')):vc.append({'path':rel(goal),'sha256':sha(goal)})
-    return {'id':issue,'evaluation_report':row.get('_evaluation_report'),'resolution':row.get('_resolution'),'group':group,'variant':row['variant'],'paired_qcp_variant':row.get('paired_qcp_variant'),'case':row['case'],'input':row.get('initial'),'mode':mode,'expected':expected,'automatic_status':actual,'final_status':final,'final_matches_expected':final==expected,'classification':classification,'triage_status':'RESOLVED' if final==expected else 'NEEDS_TRIAGE','reason':case.get('reason'),'executor_error':case.get('executor_error'),'source':report.get('source'),'source_sha256':report.get('provenance',{}).get('source_sha256',row.get('qcp_source_sha256')),'binds':row.get('binds'),'binds_sha256':row.get('binds_sha256'),'report':rel(p) if p and p.exists() else measurement.get('report'),'report_sha256':sha(p) if p and p.exists() else None,'stdout':measurement.get('stdout'),'stderr':measurement.get('stderr'),'original_command':measurement.get('command'),'reproduction_command':reproduction(measurement.get('command',[]),issue),'vc_artifacts':vc,'vc_artifacts_status':'PRESENT' if vc else 'NOT_GENERATED_OR_UNAVAILABLE','residual_vcs':case.get('residual_vcs'),'itp':itp or {'status':'NOT_PERFORMED'},'mode_comparison_statistics':f'benchmark/results/{group}/'+row.get('_active_run','20261016-evaluation')+'/statistics.json' if group!='read' else 'benchmark/results/read/20261015-spatial-smt/statistics.json','policy':'Expected result is independently reviewed; preserve original automatic classification. UNKNOWN and unexpected ERROR are not successful detection. Final ITP verdict recorded separately.'}
+    return {'id':issue,'evaluation_report':row.get('_evaluation_report'),'resolution':row.get('_resolution'),'group':group,'variant':row['variant'],'paired_qcp_variant':row.get('paired_qcp_variant'),'case':row['case'],'input':row.get('initial'),'mode':mode,'expected':expected,'automatic_status':actual,'final_status':final,'final_matches_expected':final_matches,'classification':classification,'triage_status':'RESOLVED' if final_matches else 'NEEDS_TRIAGE','reason':case.get('reason'),'executor_error':case.get('executor_error'),'source':report.get('source'),'source_sha256':report.get('provenance',{}).get('source_sha256',row.get('qcp_source_sha256')),'binds':row.get('binds'),'binds_sha256':row.get('binds_sha256'),'report':rel(p) if p and p.exists() else measurement.get('report'),'report_sha256':sha(p) if p and p.exists() else None,'stdout':measurement.get('stdout'),'stderr':measurement.get('stderr'),'original_command':measurement.get('command'),'reproduction_command':reproduction(measurement.get('command',[]),issue),'vc_artifacts':vc,'vc_artifacts_status':'PRESENT' if vc else 'NOT_GENERATED_OR_UNAVAILABLE','residual_vcs':case.get('residual_vcs'),'itp':itp or measurement.get('itp') or {'status':'NOT_PERFORMED'},'mode_comparison_statistics':f'benchmark/results/{group}/'+row.get('_active_run','20261016-evaluation')+'/statistics.json' if group!='read' else 'benchmark/results/read/20261015-spatial-smt/statistics.json','policy':'Expected result is independently reviewed; preserve original automatic classification. UNKNOWN and unexpected ERROR are not successful detection. Final ITP verdict recorded separately.'}
 
 def collect():
     issues=[];coverage=[];active={}

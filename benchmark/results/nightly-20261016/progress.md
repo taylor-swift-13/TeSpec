@@ -2,9 +2,9 @@
 
 完整组 11/45；待补齐 34。截止北京时间 2026-10-16 08:00。
 
-当前组：incr；阶段：READY_FOR_NEXT_GROUP。
+当前组：incr；阶段：ITP_PER_EXECUTION_SERIAL_BATCH_RUNNING。
 
-teSpec 最终不匹配 0 条，已解决自动阶段缺口 12 条。详情见 ../tespec-unexpected/README.md；未评测组不算零异常。
+teSpec 最终不匹配 12 条，已解决自动阶段缺口 13 条。详情见 ../tespec-unexpected/README.md；未评测组不算零异常。
 
 | 程序组 | 状态 | 结果成本表 |
 |---|---|---|

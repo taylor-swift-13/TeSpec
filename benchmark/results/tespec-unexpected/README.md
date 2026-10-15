@@ -1,6 +1,6 @@
 # teSpec 不符合预期的专项台账
 
-已扫描 11 组、549 对变体与输入。最终不匹配 **0** 条；自动阶段缺口经独立 ITP 解决 **12** 条；另有配置错误修正 **30** 条。未评测组不计为零异常。原始分类不改写，人工分析追加到 triage.json，重建不覆盖人工结论。
+已扫描 12 组、652 对变体与输入。最终不匹配 **12** 条；自动阶段缺口经独立 ITP 解决 **13** 条；另有配置错误修正 **30** 条。未评测组不计为零异常。原始分类不改写，人工分析追加到 triage.json，重建不覆盖人工结论。
 
 | 组 | 变体 | 输入 | 模式 | 预期 | 自动 | 最终 | 分类 | 证据 |
 |---|---|---|---|---|---|---|---|---|
@@ -34,6 +34,19 @@
 | const_example | cn_original:const_example | x_5 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/83fa75b2da7384af200e.json) |
 | const_example | cn_original:const_example | x_6 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/ebb4acfcc7c07171fec4.json) |
 | const_example | cn_original:const_example | x_6 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/703e77dcd7e7514ec521.json) |
+| incr | constructed:case_2e28b35274593024 | input_0 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/50bdd48c3a970a043324.json) |
+| incr | constructed:case_2e28b35274593024 | input_1 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/714118c7ffc6770d57b8.json) |
+| incr | constructed:case_2e28b35274593024 | input_2 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4c9edea1b6fa710508fc.json) |
+| incr | constructed:case_2e28b35274593024 | input_3 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3e82a968932b53020b5e.json) |
+| incr | constructed:case_2e28b35274593024 | input_4 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3eb641d4c584e026e3b0.json) |
+| incr | constructed:case_2e28b35274593024 | input_5 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a97f851557ee6164fa99.json) |
+| incr | constructed:case_48b6281ad8e51e2c | input_0 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/54b33da1979ead7766db.json) |
+| incr | constructed:case_48b6281ad8e51e2c | input_1 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ff1cf56a576050d0bb83.json) |
+| incr | constructed:case_48b6281ad8e51e2c | input_2 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f0930996e3c349db96be.json) |
+| incr | constructed:case_48b6281ad8e51e2c | input_3 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4240dacb06eda29edf9d.json) |
+| incr | constructed:case_48b6281ad8e51e2c | input_4 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a066396cf884861f2b5a.json) |
+| incr | constructed:case_48b6281ad8e51e2c | input_5 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0cc8377f2e1dd7c41b52.json) |
+| incr | constructed:case_48b6281ad8e51e2c | input_6 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2526edf36aa1798ae0fd.json) |
 | read | cn_original:read.broken | value_0 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/cf79950128cc8d076c10.json) |
 | read | cn_original:read.broken | value_1 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/b37d0c5293630ebe71d3.json) |
 | read | cn_original:read.broken | value_2 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/d3f538f8a8f84fc3417d.json) |
