@@ -50,3 +50,7 @@ if __name__=='__main__':
     main()
     from collect_tespec_unexpected import collect
     collect()
+    from build_group_cost_tables import main as rebuild_cost_tables
+    rebuild_cost_tables()
+    from refresh_benchmark_progress import refresh
+    refresh()

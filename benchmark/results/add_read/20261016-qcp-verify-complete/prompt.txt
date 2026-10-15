@@ -1,0 +1,113 @@
+Repair Candidate.v from actual Coq diagnostic. Important runtime fact: IntLib defines notation `x % y` as Z.rem x y, whereas unsigned_last_nbits x n = Z.modulo x (2^n). Thus Heq currently proves modulo=modulo but original goal requires modulo=remainder. Because v,w>=0 and modulus>0, use the Coq theorem Z.rem_mod_nonneg (0<=a -> 0<b -> a rem b = a mod b), plus lia/reflexivity. Prefer the LEFT original heap-preserving branch of the disjunction and retain the input heap directly, instead of choosing the pure fallback. Do not alter original goal or statements/module/audit. Edit Candidate.v only, no admits/new axioms, proof escapes, models/delegation or prior benchmark solutions. Compiler/kernel check remain external.
+Actual error:
+File "/home/yangfp/teSpec/benchmark/results/add_read/20261016-qcp-verify-complete/proofs/Candidate.v", line 34, characters 10-13:
+Error:
+In environment
+w, v : Z
+PreH1 : 0 <= v
+PreH2 : v <= 4294967295
+PreH3 : 0 <= w
+PreH4 : w <= 4294967295
+Heq : unsigned_last_nbits (v + w) 32 = (v + w) mod 4294967296
+h : model
+H : (TT && emp) h
+The term "Heq" has type
+ "unsigned_last_nbits (v + w) 32 = (v + w) mod 4294967296"
+while it is expected to have type
+ "(“ unsigned_last_nbits (v + w) 32 = (v + w) % 4294967296 ”) h".
+
+
+Current candidate:
+Require Import PrimaryQcpGoal.
+Require Import Coq.ZArith.ZArith.
+Require Import Coq.Bool.Bool.
+Require Import Coq.Strings.String.
+Require Import Coq.Strings.Ascii.
+Require Import Coq.Lists.List.
+Require Import Coq.Classes.RelationClasses.
+Require Import Coq.Classes.Morphisms.
+Require Import Coq.micromega.Psatz.
+Require Import Coq.Sorting.Permutation.
+From AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.
+Require Import SetsClass.SetsClass. Import SetsNotation.
+From SimpleC.SL Require Import Mem SeparationLogic.
+Require Import Logic.LogicGenerator.demo932.Interface.
+Local Open Scope Z_scope.
+Local Open Scope sets.
+Local Open Scope string_scope.
+Local Open Scope list.
+Import naive_C_Rules.
+Local Open Scope sac.
+Local Open Scope Z_scope.
+
+
+Theorem primary_add_return_wit_1 : PrimaryQcpGoal.add_return_wit_1.
+Proof.
+  unfold PrimaryQcpGoal.add_return_wit_1.
+  right.
+  intros w v PreH1 PreH2 PreH3 PreH4.
+  assert (Heq : unsigned_last_nbits (v + w) 32 =
+                (v + w) mod 4294967296).
+  { unfold unsigned_last_nbits. reflexivity. }
+  intros h H.
+  split.
+  - exact Heq.
+  - exact (proj2 H).
+Qed.
+Module PrimaryCertificate : PrimaryQcpGoal.VC_Correct.
+Definition proof_of_add_return_wit_1 := primary_add_return_wit_1.
+End PrimaryCertificate.
+Print Assumptions primary_add_return_wit_1.
+
+Immutable goal:
+Require Import Coq.ZArith.ZArith.
+Require Import Coq.Bool.Bool.
+Require Import Coq.Strings.String.
+Require Import Coq.Strings.Ascii.
+Require Import Coq.Lists.List.
+Require Import Coq.Classes.RelationClasses.
+Require Import Coq.Classes.Morphisms.
+Require Import Coq.micromega.Psatz.
+Require Import Coq.Sorting.Permutation.
+From AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.
+Require Import SetsClass.SetsClass. Import SetsNotation.
+From SimpleC.SL Require Import Mem SeparationLogic.
+Require Import Logic.LogicGenerator.demo932.Interface.
+Local Open Scope Z_scope.
+Local Open Scope sets.
+Local Open Scope string_scope.
+Local Open Scope list.
+Import naive_C_Rules.
+Local Open Scope sac.
+Local Open Scope Z_scope.
+
+(*----- Function add -----*)
+
+Definition add_return_wit_1 := 
+(
+forall (q_pre: Z) (p_pre: Z) (w: Z) (v: Z) (PreH1 : (0 <= v)) (PreH2 : (v <= UINT_MAX)) (PreH3 : (0 <= w)) (PreH4 : (w <= UINT_MAX)) ,
+  ((p_pre) # UInt  |-> v)
+  **  ((q_pre) # UInt  |-> w)
+|--
+  “ ((unsigned_last_nbits ((v + w )) (32)) = ((v + w ) % ( 4294967296 ) )) ”
+  &&  ((p_pre) # UInt  |-> v)
+  **  ((q_pre) # UInt  |-> w)
+) \/
+(
+forall (w: Z) (v: Z) (PreH1 : (0 <= v)) (PreH2 : (v <= UINT_MAX)) (PreH3 : (0 <= w)) (PreH4 : (w <= UINT_MAX)) ,
+  TT && emp 
+|--
+  “ ((unsigned_last_nbits ((v + w )) (32)) = ((v + w ) % ( 4294967296 ) )) ”
+  &&  emp
+).
+
+Definition add_return_wit_1_split_goal_1 := 
+forall (w: Z) (v: Z) (PreH1 : (0 <= v)) (PreH2 : (v <= UINT_MAX)) (PreH3 : (0 <= w)) (PreH4 : (w <= UINT_MAX)) ,
+  ((unsigned_last_nbits ((v + w )) (32)) = ((v + w ) % ( 4294967296 ) ))
+.
+
+Module Type VC_Correct.
+
+Axiom proof_of_add_return_wit_1 : add_return_wit_1.
+
+End VC_Correct.

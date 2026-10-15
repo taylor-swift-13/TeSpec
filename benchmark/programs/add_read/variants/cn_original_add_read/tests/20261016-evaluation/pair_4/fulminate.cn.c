@@ -1,0 +1,15 @@
+unsigned int add (unsigned int *p, unsigned int *q)
+/*@ requires take m = Owned<unsigned int>(p);
+             take n = Owned<unsigned int>(q);
+    ensures take m2 = Owned<unsigned int>(p);
+            take n2 = Owned<unsigned int>(q);
+            m == m2 && n == n2;
+            return == m + n;
+@*/
+{
+  unsigned int m = *p;
+  unsigned int n = *q;
+  return m+n;
+}
+
+int main(void) /*@ ensures return == 0i32; @*/ { unsigned int left = 4294967295u; unsigned int right = 0u; add(&left, &right); return 0; }

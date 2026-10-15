@@ -1,0 +1,215 @@
+{
+  "schema": "tespec-group-evaluation-plan/v1",
+  "program_group": "add_read",
+  "function": "add",
+  "primary_cn_variant": "cn_original:add_read",
+  "primary_qcp_variant": "qcp_existing:c018f56b16c92d5c0f4b",
+  "run_id": "20261016-evaluation",
+  "pairings": [
+    {
+      "cn_variant": "cn_original:add_read",
+      "qcp_variant": "qcp_existing:c018f56b16c92d5c0f4b",
+      "cases": [
+        {
+          "id": "pair_0",
+          "value": {
+            "v": 0,
+            "w": 0
+          },
+          "expected": "PASS",
+          "cn_body": "unsigned int left = 0u; unsigned int right = 0u; add(&left, &right);",
+          "binds": {
+            "args": {
+              "p": 4096,
+              "q": 8192
+            },
+            "values": {
+              "v": 0,
+              "w": 0
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "return": 0,
+            "preserved_cells": true
+          }
+        },
+        {
+          "id": "pair_1",
+          "value": {
+            "v": 1,
+            "w": 0
+          },
+          "expected": "PASS",
+          "cn_body": "unsigned int left = 1u; unsigned int right = 0u; add(&left, &right);",
+          "binds": {
+            "args": {
+              "p": 4096,
+              "q": 8192
+            },
+            "values": {
+              "v": 1,
+              "w": 0
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "return": 1,
+            "preserved_cells": true
+          }
+        },
+        {
+          "id": "pair_2",
+          "value": {
+            "v": 0,
+            "w": 1
+          },
+          "expected": "PASS",
+          "cn_body": "unsigned int left = 0u; unsigned int right = 1u; add(&left, &right);",
+          "binds": {
+            "args": {
+              "p": 4096,
+              "q": 8192
+            },
+            "values": {
+              "v": 0,
+              "w": 1
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "return": 1,
+            "preserved_cells": true
+          }
+        },
+        {
+          "id": "pair_3",
+          "value": {
+            "v": 5,
+            "w": 7
+          },
+          "expected": "PASS",
+          "cn_body": "unsigned int left = 5u; unsigned int right = 7u; add(&left, &right);",
+          "binds": {
+            "args": {
+              "p": 4096,
+              "q": 8192
+            },
+            "values": {
+              "v": 5,
+              "w": 7
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "return": 12,
+            "preserved_cells": true
+          }
+        },
+        {
+          "id": "pair_4",
+          "value": {
+            "v": 4294967295,
+            "w": 0
+          },
+          "expected": "PASS",
+          "cn_body": "unsigned int left = 4294967295u; unsigned int right = 0u; add(&left, &right);",
+          "binds": {
+            "args": {
+              "p": 4096,
+              "q": 8192
+            },
+            "values": {
+              "v": 4294967295,
+              "w": 0
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "return": 4294967295,
+            "preserved_cells": true
+          }
+        },
+        {
+          "id": "pair_5",
+          "value": {
+            "v": 4294967295,
+            "w": 1
+          },
+          "expected": "PASS",
+          "cn_body": "unsigned int left = 4294967295u; unsigned int right = 1u; add(&left, &right);",
+          "binds": {
+            "args": {
+              "p": 4096,
+              "q": 8192
+            },
+            "values": {
+              "v": 4294967295,
+              "w": 1
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "return": 0,
+            "preserved_cells": true
+          }
+        },
+        {
+          "id": "pair_6",
+          "value": {
+            "v": 4294967295,
+            "w": 4294967295
+          },
+          "expected": "PASS",
+          "cn_body": "unsigned int left = 4294967295u; unsigned int right = 4294967295u; add(&left, &right);",
+          "binds": {
+            "args": {
+              "p": 4096,
+              "q": 8192
+            },
+            "values": {
+              "v": 4294967295,
+              "w": 4294967295
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "return": 4294967294,
+            "preserved_cells": true
+          }
+        },
+        {
+          "id": "pair_7",
+          "value": {
+            "v": 2147483648,
+            "w": 2147483648
+          },
+          "expected": "PASS",
+          "cn_body": "unsigned int left = 2147483648u; unsigned int right = 2147483648u; add(&left, &right);",
+          "binds": {
+            "args": {
+              "p": 4096,
+              "q": 8192
+            },
+            "values": {
+              "v": 2147483648,
+              "w": 2147483648
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "return": 0,
+            "preserved_cells": true
+          }
+        }
+      ]
+    }
+  ],
+  "expectation_basis": "Unsigned 32-bit addition is defined modulo 2^32; CN u32 sum matches QCP explicit modulo. Both distinct allocated unsigned cells are preserved. Cases include both unsigned wrap boundaries.",
+  "excluded_inputs": [
+    {
+      "condition": "p==q or null",
+      "reason": "Two separating Owned/data_at predicates require two disjoint readable cells."
+    }
+  ]
+}

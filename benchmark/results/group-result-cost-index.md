@@ -7,7 +7,7 @@
 | [abs_mem](abs_mem/result-cost.md) | 已齐全 |
 | [abs_mem_struct](abs_mem_struct/result-cost.md) | 已齐全 |
 | [add](add/result-cost.md) | 已齐全 |
-| [add_read](add_read/result-cost.md) | 待补齐 |
+| [add_read](add_read/result-cost.md) | 已齐全 |
 | [add_two_array](add_two_array/result-cost.md) | 待补齐 |
 | [array_load](array_load/result-cost.md) | 待补齐 |
 | [const_example](const_example/result-cost.md) | 待补齐 |

@@ -4,7 +4,7 @@
 
 唯一仓库 `/home/yangfp/teSpec`、唯一 main 分支、禁止新工作树。并行论文修改不混入本任务提交。SSH push main，sac 不 push。执行器和 SMT 引擎实现源码不得提交到此仓库。每次只测一组，正式计量期间避免同时跑其他组的负载。
 
-先读 `benchmark/results/group-result-cost-index.json` 决定哪些组已经完整。查看 `benchmark/results/nightly-20261016/status.json` 当前在做哪一步；若进程仍运行，接续进程而非重复启动。当前 add 的 122 对测试已运行，主程序两条通用 VC 已编译并正在独立内核复查。下一组 add_read。难例保留完整缺项与 teSpec 异常后继续其他组；不能将失败、UNKNOWN 或欠缺成本的组标为完整。
+先读 `benchmark/results/group-result-cost-index.json` 决定哪些组已经完整。查看 `benchmark/results/nightly-20261016/status.json` 当前在做哪一步；若进程仍运行，接续进程而非重复启动。续跑开始后 add 已完成全部 122 对测试、主程序两条通用 VC 的内核检查及完整成本表。add_read 也已完成 8 对测试和原始全称 VC 的内核检查；下一组 add_two_array，实时步骤以 status.json 和组内回执为准。难例保留完整缺项与 teSpec 异常后继续其他组；不能将失败、UNKNOWN 或欠缺成本的组标为完整。
 
 ## 工具入口
 
