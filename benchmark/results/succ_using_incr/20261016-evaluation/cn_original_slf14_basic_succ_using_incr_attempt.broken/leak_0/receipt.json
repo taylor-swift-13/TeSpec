@@ -1,0 +1,168 @@
+{
+  "variant": "cn_original:slf14_basic_succ_using_incr_attempt.broken",
+  "paired_qcp_variant": "qcp_existing:b19235c1c172af223d85",
+  "case": "leak_0",
+  "initial": 0,
+  "expected": "FAIL",
+  "plan_case": {
+    "id": "leak_0",
+    "value": 0,
+    "expected": "FAIL",
+    "cn_body": "unsigned int result = succ_using_incr_attempt(0u); (void)result;",
+    "binds": {
+      "args": {
+        "n": 0
+      },
+      "values": {
+        "v": 0
+      }
+    },
+    "precondition_valid": true,
+    "oracle": {
+      "returned_unsigned": 1,
+      "exit_owned_heap": "emp",
+      "implementation_leaks": true,
+      "reason": "All unsigned inputs legal. Broken implementation returns the increment but leaks one allocated cell; numeric agreement does not satisfy spatial emp."
+    }
+  },
+  "cn_source_sha256": "c3c383566a410d35ede34f01ee894f458e30435ced32393733a094e0107d39a4",
+  "qcp_source_sha256": "b19235c1c172af223d8561a217afcc2c1422f8a2a9f650c3b183ce58ec5e5732",
+  "harness": "benchmark/programs/succ_using_incr/variants/cn_original_slf14_basic_succ_using_incr_attempt.broken/tests/20261016-evaluation/leak_0/fulminate.cn.c",
+  "harness_sha256": "5e6359e01521b3ec5a8f5118fdf1e612fc9249c9bff95ae10abbb563df98af9c",
+  "binds": "benchmark/programs/succ_using_incr/variants/cn_original_slf14_basic_succ_using_incr_attempt.broken/tests/20261016-evaluation/leak_0/binds.json",
+  "binds_sha256": "b4446dc08608a7a5a389eeeacd9c964bee5a414b0656e637c0fb221e4ff964a9",
+  "precondition_valid": true,
+  "fulminate_pipeline": {
+    "command": [
+      "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+      "instrument",
+      "--run",
+      "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+      "--output-dir=/tmp/tespec-group-ndtk_36t",
+      "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples",
+      "/home/yangfp/teSpec/benchmark/programs/succ_using_incr/variants/cn_original_slf14_basic_succ_using_incr_attempt.broken/tests/20261016-evaluation/leak_0/fulminate.cn.c"
+    ],
+    "exit_code": 2,
+    "wall_seconds": 0.11491968001064379,
+    "resources": {
+      "max_process_rss_kib": 44152,
+      "user_seconds": 0.05,
+      "system_seconds": 0.02
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/succ_using_incr/20261016-evaluation/cn_original_slf14_basic_succ_using_incr_attempt.broken/leak_0/fulminate-pipeline/stdout.log",
+    "stderr": "benchmark/results/succ_using_incr/20261016-evaluation/cn_original_slf14_basic_succ_using_incr_attempt.broken/leak_0/fulminate-pipeline/stderr.log"
+  },
+  "instrumented_sources": [
+    {
+      "path": "benchmark/results/succ_using_incr/20261016-evaluation/cn_original_slf14_basic_succ_using_incr_attempt.broken/leak_0/fulminate.cn.exec.c",
+      "sha256": "71a6971a524dcd009802e8a68479984607b1e4518edce39e5269c929c066a110"
+    }
+  ],
+  "instrumented_binary_sha256": "6e7427d24980c3773c9574ceb7df8514d042c7e07a9bc318d208038420a2b4cf",
+  "fulminate_test": {
+    "command": [
+      "/tmp/tespec-group-ndtk_36t/fulminate.cn.exec.out"
+    ],
+    "exit_code": 2,
+    "wall_seconds": 0.0041085269913310185,
+    "resources": {
+      "max_process_rss_kib": 1408,
+      "user_seconds": 0.0,
+      "system_seconds": 0.0
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/succ_using_incr/20261016-evaluation/cn_original_slf14_basic_succ_using_incr_attempt.broken/leak_0/fulminate-test/stdout.log",
+    "stderr": "benchmark/results/succ_using_incr/20261016-evaluation/cn_original_slf14_basic_succ_using_incr_attempt.broken/leak_0/fulminate-test/stderr.log",
+    "status": "FAIL"
+  },
+  "tespec_off": {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "spectest",
+      "run",
+      "/home/yangfp/teSpec/benchmark/programs/succ_using_incr/variants/qcp_existing_b19235c1c172af223d85/qcp/succ_attempt_leak.qcp.c",
+      "--function",
+      "succ_using_incr_attempt",
+      "--binds",
+      "/home/yangfp/teSpec/benchmark/programs/succ_using_incr/variants/cn_original_slf14_basic_succ_using_incr_attempt.broken/tests/20261016-evaluation/leak_0/binds.json",
+      "--execution-mode",
+      "all-boundaries",
+      "--output-dir",
+      "/home/yangfp/teSpec/benchmark/results/succ_using_incr/20261016-evaluation/cn_original_slf14_basic_succ_using_incr_attempt.broken/leak_0/tespec-off/artifacts",
+      "--timeout",
+      "30",
+      "--compact",
+      "--no-spatial-smt",
+      "--spatial-smt-timeout-ms",
+      "2000",
+      "-I",
+      "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+      "-I",
+      "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/supplemental/succ_attempt_leak"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 0.16477980000490788,
+    "resources": {
+      "max_process_rss_kib": 19864,
+      "user_seconds": 0.1,
+      "system_seconds": 0.02
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/succ_using_incr/20261016-evaluation/cn_original_slf14_basic_succ_using_incr_attempt.broken/leak_0/tespec-off/stdout.log",
+    "stderr": "benchmark/results/succ_using_incr/20261016-evaluation/cn_original_slf14_basic_succ_using_incr_attempt.broken/leak_0/tespec-off/stderr.log",
+    "report": "benchmark/results/succ_using_incr/20261016-evaluation/cn_original_slf14_basic_succ_using_incr_attempt.broken/leak_0/tespec-off/artifacts/report.json",
+    "statuses": [
+      "UNKNOWN"
+    ],
+    "status": "UNKNOWN"
+  },
+  "tespec_on": {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "spectest",
+      "run",
+      "/home/yangfp/teSpec/benchmark/programs/succ_using_incr/variants/qcp_existing_b19235c1c172af223d85/qcp/succ_attempt_leak.qcp.c",
+      "--function",
+      "succ_using_incr_attempt",
+      "--binds",
+      "/home/yangfp/teSpec/benchmark/programs/succ_using_incr/variants/cn_original_slf14_basic_succ_using_incr_attempt.broken/tests/20261016-evaluation/leak_0/binds.json",
+      "--execution-mode",
+      "all-boundaries",
+      "--output-dir",
+      "/home/yangfp/teSpec/benchmark/results/succ_using_incr/20261016-evaluation/cn_original_slf14_basic_succ_using_incr_attempt.broken/leak_0/tespec-on/artifacts",
+      "--timeout",
+      "30",
+      "--compact",
+      "--spatial-smt",
+      "--spatial-smt-timeout-ms",
+      "2000",
+      "-I",
+      "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+      "-I",
+      "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/supplemental/succ_attempt_leak"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 0.16482364099647384,
+    "resources": {
+      "max_process_rss_kib": 19828,
+      "user_seconds": 0.1,
+      "system_seconds": 0.02
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/succ_using_incr/20261016-evaluation/cn_original_slf14_basic_succ_using_incr_attempt.broken/leak_0/tespec-on/stdout.log",
+    "stderr": "benchmark/results/succ_using_incr/20261016-evaluation/cn_original_slf14_basic_succ_using_incr_attempt.broken/leak_0/tespec-on/stderr.log",
+    "report": "benchmark/results/succ_using_incr/20261016-evaluation/cn_original_slf14_basic_succ_using_incr_attempt.broken/leak_0/tespec-on/artifacts/report.json",
+    "statuses": [
+      "UNKNOWN"
+    ],
+    "status": "UNKNOWN"
+  },
+  "runtime_dependency_fixtures": []
+}

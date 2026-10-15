@@ -14,10 +14,10 @@
   "mode": "on",
   "expected": "PASS",
   "automatic_status": "UNKNOWN",
-  "final_status": "UNKNOWN",
-  "final_matches_expected": false,
-  "classification": "UNRESOLVED_UNKNOWN",
-  "triage_status": "NEEDS_TRIAGE",
+  "final_status": "PASS",
+  "final_matches_expected": true,
+  "classification": "RESOLVED_AUTOMATIC_GAP",
+  "triage_status": "RESOLVED",
   "reason": "residual_vc_requires_proof",
   "executor_error": null,
   "source": "/home/yangfp/teSpec/benchmark/programs/init_array/variants/qcp_existing_b7a4a77f7787fb355002/qcp/init_array_rev.qcp.c",
@@ -104,17 +104,54 @@
     "proof_of_init_array2_return_wit_1"
   ],
   "itp": {
-    "status": "NOT_PERFORMED"
+    "status": "KERNEL_CHECKED",
+    "final_status": "PASS",
+    "receipt": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-13/attempt-2/coq-receipt.json",
+    "receipt_sha256": "780424c1a0d5eb214e5c8dc2b0a392ea2379dd6d50545ba3cedd7fc30291f434",
+    "attempts": [
+      {
+        "path": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-13/attempt-1/coq-receipt.json",
+        "sha256": "ab5d5e9a838d5f29f26346cde2d010519b0cadc58d5cb29ce7bb05632bebdc06"
+      },
+      {
+        "path": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-13/attempt-2/coq-receipt.json",
+        "sha256": "780424c1a0d5eb214e5c8dc2b0a392ea2379dd6d50545ba3cedd7fc30291f434"
+      }
+    ],
+    "models": [
+      {
+        "path": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-13/attempt-1/model-receipt.json",
+        "sha256": "0db56cde1179de6aaeec874e302af76f31e9cf5455db7324cb73a30da9c87870"
+      },
+      {
+        "path": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-13/attempt-2/model-receipt.json",
+        "sha256": "2e29424c4982331af5f4d9e0bdb983107c21d683abdb792d77c58c14409a79e1"
+      }
+    ],
+    "metrics": {
+      "agent_proof_filling_seconds": 104.93799999999464,
+      "coq_compile_audit_seconds": 3.895962476002751,
+      "independent_kernel_check_seconds": 131.9700463659974,
+      "total_seconds": 240.8040088419948,
+      "tokens": 247087,
+      "model_calls": 2,
+      "peak_process_memory_mib": {
+        "agent_proof_filling": 187.7109375,
+        "coq_compilation_and_assumption_audit": 552.63671875,
+        "independent_kernel_check": 1765.75,
+        "itp": 1765.75
+      }
+    }
   },
   "mode_comparison_statistics": "benchmark/results/init_array/20261016-evaluation/statistics.json",
   "policy": "Expected result is independently reviewed; preserve original automatic classification. UNKNOWN and unexpected ERROR are not successful detection. Final ITP verdict recorded separately.",
   "review": {
-    "status": "OPEN_POSITIVE_ARRAY_VC_ITP_PENDING",
+    "status": "RESOLVED_POSITIVE_EXECUTION_ITP",
     "cause": "Valid uninitialized-char-array loop execution leaves original annotation/spatial VCs unresolved in both spatial-SMT modes. Initialized forward array inputs pass.",
     "program_or_spec_error": false,
     "qualification": "Expected PASS preserved; true residual goals exist and require positive proofs, not a fabricated refutation. No claim that ITP is impossible.",
     "mode_comparison": "OFF and ON each 6 PASS and 12 UNKNOWN. Fulminate 18/18.",
-    "itp_conclusion": "NOT_PERFORMED_POSITIVE_PROOF_PENDING. Each execution must independently prove all its original residual VCs, compile/audit and full kernel-check; no batched certificate or universal proof substitutes for tests.",
+    "itp_conclusion": "All original residual VCs proved for this exact finite execution; compile, original-statement assumption audit and full independent kernel check passed.",
     "separate_primary_gap": "Current generator fails at empty list equality even with full-auto; exact-source archived full certificate retained separately.",
     "coverage_gap": "benchmark/results/init_array/coverage-gap.json",
     "expectation_unchanged": true,
@@ -129,8 +166,9 @@
       "execution_index": 13,
       "model_attempts": 2,
       "actual_tokens": 247087,
-      "status": "PENDING_OR_DEFERRED",
+      "status": "KERNEL_CHECKED",
       "qualification": "Proof-script compile/audit failures do not refute the program or its spec; preserve expected PASS and every failed attempt."
-    }
+    },
+    "itp_receipt": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-13/attempt-2/coq-receipt.json"
   }
 }
