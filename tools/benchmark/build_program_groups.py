@@ -121,6 +121,8 @@ def build():
         }
         if 'primary_verification' in previous:
             manifest['primary_verification'] = previous['primary_verification']
+        if 'tool_results' in previous:
+            manifest['tool_results'] = previous['tool_results']
         save(group / 'manifest.json', manifest)
         index.append({'program_group': family['family'], 'manifest': (group / 'manifest.json').relative_to(ROOT).as_posix(), 'variant_records': len(entries)})
     # Only path locators change. Evidence bytes, source hashes, raw statuses and

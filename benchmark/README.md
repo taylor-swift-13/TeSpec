@@ -76,3 +76,7 @@ SHA-256 values are recorded in the experiment's `dataset-manifest.json`.
 完整测试包括执行测试和必要的 ITP 阶段，正式结果以两阶段合并后的结论为准。自动阶段的 UNKNOWN 应在 ITP 中证明或反证；已有决定性结果无需重复 ITP。主程序的全称验证仍单独复用，不要求所有变体额外做全称验证。规则见仓库根目录下 `benchmark/protocol.json`。
 
 read 的正式入口为 `benchmark/results/read/complete/results.json`、`statistics.json` 和 `cases.csv`，包含 61 对变体与输入的执行结果、ITP 结论及最终结论。原始自动数据完整保留，但不作为完整测试的最终正确率。时间统计包含两阶段实际测得的工作、失败证明尝试和内核检查；共享工作仅计一次。正式统计使用新一轮已计量的 gpt-6.1-sol 证明生成、Coq 编译和内核检查，包含实际 token、各阶段耗时及本地进程峰值内存。旧未计量批次仅作历史保留。
+
+## read 四工具结果入口
+
+`benchmark/results/read/` 下明确提供 `cn/`、`qcp/`、`fulminate/`、`tespec/`，每种工具都有 `results.json` 与 `statistics.json`。其中 CN/QCP 是复用的主程序全称验证，Fulminate/teSpec 是变体的有限测试；teSpec 包含必要的 ITP 阶段。四工具对照见 `comparison.csv`，原始证据位置见 `index.json`。

@@ -115,6 +115,7 @@ def main():
         if path == RESULTS/'read/index.json':
             index['complete_variant_results'] = {vid:[{'report':(OUT/'results.json').relative_to(ROOT).as_posix(),'pointer':'/cases/'+str(i)} for i,c in enumerate(cases) if vid in c['related_variant_records']] for vid in sorted({v for c in cases for v in c['related_variant_records']})}
         save(path,index)
+    subprocess.run([sys.executable,str(ROOT/'tools/benchmark/publish_read_tool_results.py')],check=True)
     print(json.dumps(summary,ensure_ascii=False),flush=True)
 
 if __name__=='__main__':
