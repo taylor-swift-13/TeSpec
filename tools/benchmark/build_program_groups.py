@@ -93,6 +93,8 @@ def build():
             'evidence_catalog': 'benchmark/programs/evidence.json',
             'archive_registry': REGISTRY.relative_to(ROOT).as_posix(),
         }
+        if 'primary_verification' in previous:
+            manifest['primary_verification'] = previous['primary_verification']
         save(group / 'manifest.json', manifest)
         index.append({'program_group': family['family'], 'manifest': (group / 'manifest.json').relative_to(ROOT).as_posix(), 'variant_records': len(entries)})
     # Only path locators change. Evidence bytes, source hashes, raw statuses and
@@ -121,6 +123,10 @@ def validate():
         group = GROUPS / f['family']
         manifest = json.loads((group / 'manifest.json').read_text())
         assert {v['id'] for v in manifest['variants']} == set(f['variant_ids'])
+        if manifest['primary_variant'] is not None:
+            assert manifest['primary_variant'] in f['variant_ids']
+            receipt = manifest.get('primary_verification', {})
+            assert all(manifest['primary_variant'] in original_results[k]['variant_ids'] for k in receipt.get('result_ids', []))
         for entry in manifest['variants']:
             path = ROOT / entry['manifest']
             v = json.loads(path.read_text())
