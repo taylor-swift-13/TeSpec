@@ -31,3 +31,7 @@ Run `python3 tools/benchmark/publish_read_tool_results.py` to rebuild these view
 ## 分阶段资源统计
 
 QCP 与 teSpec 将生成／测试执行、agent 填写证明、Coq 编译与审计、独立内核检查分开统计；各阶段时间、进程峰值内存和 token 见 [stages.csv](stages.csv)／[stages.json](stages.json)。完整总计仍保留，历史测量回执不变。
+
+## 可选空间 SMT 模式
+
+[关闭／开启对照](20261015-spatial-smt/comparison.md)：61 对相同用例各执行两种模式。开启后原有 12 UNKNOWN 全部自动判 FAIL，其余 49 条分类不变；本批无需额外 ITP 判定结果。SMT 查询、反例、原始 VC、时间与 RSS 均保留。当前空间 SMT 功能来自工作区未提交实现，测试以精确模块哈希记录，未把它冒充为起始 revision 的已提交功能。

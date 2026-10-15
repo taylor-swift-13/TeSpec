@@ -53,12 +53,22 @@ def main():
                     avg.get('process_memory',{}).get('itp',{}).get('mean_per_execution_peak_mib',max(x['peak_process_memory_mib'] for x in itprows)) if measured and avg else max(x['peak_process_memory_mib'] for x in itprows) if measured else None,
                     sum(x['tokens'] for x in itprows) if measured else None,
                     '每次需 ITP 的执行均值；内存为各次峰值均值' if avg and not avg.get('estimated',True) else '每次需 ITP 的执行均值；内存为批次峰值' if avg else '一次主程序验证' if tool=='qcp' else 'PENDING_PER_EXECUTION_MEAN',bool(avg and avg.get('estimated',True)))
-        complete=all(x['available'] and x['result']!='PENDING' for x in results) and all(x['status']=='MEASURED' for x in costs)
+        mode_stats_path=folder/'20261015-spatial-smt/statistics.json'
+        test_modes=None
+        if mode_stats_path.is_file():
+            test_modes=read(mode_stats_path)
+            on=test_modes['modes']['on']
+            costs.append({'tool':'tespec --spatial-smt','stage':'测试执行、VC 生成与空间 SMT','unit':'每次测试执行均值；内存为逐次峰值均值','wall_seconds':on['mean_execution_wall_seconds'],'peak_process_memory_mib':on['mean_execution_peak_rss_mib'],'tokens':0,'estimated':False,'status':'MEASURED','source':mode_stats_path.relative_to(ROOT).as_posix()})
+            if on['executions_requiring_itp_for_verdict']==0:
+                costs.append({'tool':'tespec --spatial-smt','stage':'ITP（无需）','unit':'本批无需额外 ITP，总成本为 0；均值不适用','wall_seconds':0,'peak_process_memory_mib':None,'tokens':0,'estimated':False,'status':'NOT_REQUIRED','source':mode_stats_path.relative_to(ROOT).as_posix()})
+        complete=all(x['available'] and x['result']!='PENDING' for x in results) and all(x['status'] in ['MEASURED','NOT_REQUIRED'] for x in costs)
         report={'schema':'tespec-group-result-cost/v1','program_group':name,'primary_variant':group.get('primary_variant'),
             'variant_language_records':len(group['variants']),'complete':complete,
             'results':results,'costs':costs,'evidence_catalog':group['evidence_catalog'],
             'missing_policy':'PENDING/null means not published or not bound to matching evidence; never replace missing data with zero. Existing historical evidence must be reused after hash/scope checks.',
             'itp_policy':'One test execution and all its unresolved VCs form one ITP unit; display mean costs only. read uses 12 independently measured execution ITP tasks; legacy batch estimates are historical. Memory is a measured process peak and is never divided. ITP subtotal overlaps its component rows and must not be added again.'}
+        if test_modes:
+            report['test_modes']={'comparison':(mode_stats_path.parent/'comparison.md').relative_to(ROOT).as_posix(),'statistics':mode_stats_path.relative_to(ROOT).as_posix(),'modes':test_modes['modes'],'certificate':'SMT decisions are NOT_CHECKED by Coq; matching historical refutations are separate evidence.'}
         save(folder/'result-cost.json',report)
         buf=io.StringIO();writer=csv.DictWriter(buf,fieldnames=list(costs[0]),lineterminator='\n');writer.writeheader();writer.writerows(costs);(folder/'result-cost.csv').write_text(buf.getvalue())
         text=f"# {name}：结果与成本表\n\n完整状态：{'已齐全' if complete else '待补齐'}。语言版本记录 {len(group['variants'])} 条；主程序：{group.get('primary_variant') or '待绑定已有验证证据'}。\n\n"
@@ -66,8 +76,13 @@ def main():
         for x in results:text+=f"| {x['tool']} | {x['scope']} | {x['result']} | {x['test_pairs'] if x['test_pairs'] is not None else '—'} |\n"
         text+='\n| 工具 | 阶段 | 时间（秒） | 峰值进程内存（MiB） | token | 口径 |\n|---|---|---:|---:|---:|---|\n'
         def fmt(v):return '待补齐' if v is None else f'{v:.4f}'
-        for x in costs:text+=f"| {x['tool']} | {x['stage']} | {fmt(x['wall_seconds'])} | {fmt(x['peak_process_memory_mib'])} | {fmt(x['tokens'])} | {x['unit']}{'（均摊估算）' if x['estimated'] else ''} |\n"
+        for x in costs:text+=f"| {x['tool']} | {x['stage']} | {fmt(x['wall_seconds'])} | {('—' if x['status']=='NOT_REQUIRED' else fmt(x['peak_process_memory_mib']))} | {fmt(x['tokens'])} | {x['unit']}{'（均摊估算）' if x['estimated'] else ''} |\n"
         text+='\nITP 以一次测试执行的所有待处理 VC 为单位，只展示平均开销；read 的 12 次所需 ITP 各自独立测量后取平均。内存不将总峰值除以次数；read ITP 展示逐次实测峰值的平均值。ITP 合计行与其三个分项重叠，不能再次相加。CN/QCP 与两种测试工具的对象和次数不同。\n\n缺测记为待补齐，不表示已有历史证据作废；须绑定匹配证据后发布。原始证据、计量来源与缺项见 [result-cost.json](result-cost.json)，成本 CSV 见 [result-cost.csv](result-cost.csv)。\n'
+        if test_modes:
+            off=test_modes['modes']['off'];on=test_modes['modes']['on']
+            text+='\n## teSpec 空间 SMT 模式\n\n| 项目 | 关闭 | 开启 |\n|---|---:|---:|\n'
+            text+=f"| 原生 PASS / FAIL / UNKNOWN / ERROR | 22 / 20 / 12 / 7 | 22 / 32 / 0 / 7 |\n| 最终预期匹配（关闭含复用 ITP） | {off['expected_matches']}/61 | {on['expected_matches']}/61 |\n| 每次执行平均时间（秒） | {off['mean_execution_wall_seconds']:.6f} | {on['mean_execution_wall_seconds']:.6f} |\n| 平均单次峰值 RSS（MiB） | {off['mean_execution_peak_rss_mib']:.4f} | {on['mean_execution_peak_rss_mib']:.4f} |\n| 需 ITP 判定的执行数 | {off['executions_requiring_itp_for_verdict']} | {on['executions_requiring_itp_for_verdict']} |\n"
+            text+='\n关闭模式的完整成本仍含已有逐次 ITP；开启模式本批不需要新增 ITP，token 为 0。12 条 SMT 反例与历史内核反证一致，SMT 本身未伪标为 Coq 证书。详细证据与工作区实现哈希见 [模式对照](20261015-spatial-smt/comparison.md)。\n'
         (folder/'result-cost.md').write_text(text)
         index.append({'program_group':name,'complete':complete,'report':(folder/'result-cost.md').relative_to(ROOT).as_posix(),'json':(folder/'result-cost.json').relative_to(ROOT).as_posix(),'csv':(folder/'result-cost.csv').relative_to(ROOT).as_posix()})
     save(OUT/'group-result-cost-index.json',{'groups':index,'groups_total':len(index),'complete_groups':sum(x['complete'] for x in index)})

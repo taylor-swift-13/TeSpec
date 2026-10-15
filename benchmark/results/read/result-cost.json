@@ -189,9 +189,93 @@
       "estimated": false,
       "status": "MEASURED",
       "source": "benchmark/results/read/tespec/statistics.json"
+    },
+    {
+      "tool": "tespec --spatial-smt",
+      "stage": "测试执行、VC 生成与空间 SMT",
+      "unit": "每次测试执行均值；内存为逐次峰值均值",
+      "wall_seconds": 0.1706299096888378,
+      "peak_process_memory_mib": 26.534387807377048,
+      "tokens": 0,
+      "estimated": false,
+      "status": "MEASURED",
+      "source": "benchmark/results/read/20261015-spatial-smt/statistics.json"
+    },
+    {
+      "tool": "tespec --spatial-smt",
+      "stage": "ITP（无需）",
+      "unit": "本批无需额外 ITP，总成本为 0；均值不适用",
+      "wall_seconds": 0,
+      "peak_process_memory_mib": null,
+      "tokens": 0,
+      "estimated": false,
+      "status": "NOT_REQUIRED",
+      "source": "benchmark/results/read/20261015-spatial-smt/statistics.json"
     }
   ],
   "evidence_catalog": "benchmark/results/evidence.json",
   "missing_policy": "PENDING/null means not published or not bound to matching evidence; never replace missing data with zero. Existing historical evidence must be reused after hash/scope checks.",
-  "itp_policy": "One test execution and all its unresolved VCs form one ITP unit; display mean costs only. read uses 12 independently measured execution ITP tasks; legacy batch estimates are historical. Memory is a measured process peak and is never divided. ITP subtotal overlaps its component rows and must not be added again."
+  "itp_policy": "One test execution and all its unresolved VCs form one ITP unit; display mean costs only. read uses 12 independently measured execution ITP tasks; legacy batch estimates are historical. Memory is a measured process peak and is never divided. ITP subtotal overlaps its component rows and must not be added again.",
+  "test_modes": {
+    "comparison": "benchmark/results/read/20261015-spatial-smt/comparison.md",
+    "statistics": "benchmark/results/read/20261015-spatial-smt/statistics.json",
+    "modes": {
+      "off": {
+        "native_status_counts": {
+          "PASS": 22,
+          "UNKNOWN": 12,
+          "FAIL": 20,
+          "ERROR": 7
+        },
+        "final_status_counts": {
+          "PASS": 22,
+          "FAIL": 32,
+          "ERROR": 7
+        },
+        "expected_matches": 61,
+        "execution_wall_seconds_total": 10.505551138106966,
+        "mean_execution_wall_seconds": 0.17222214980503223,
+        "maximum_execution_peak_rss_mib": 19.71875,
+        "mean_execution_peak_rss_mib": 19.522284836065573,
+        "executions_requiring_itp_for_verdict": 12,
+        "residual_itp_groups_in_native_inventory": 32,
+        "itp_source": "benchmark/results/read/20261015-itp-per-execution/receipt.json",
+        "itp_wall_seconds_counted": 2414.4393879989802,
+        "mean_itp_seconds_when_required": 201.20328233324835,
+        "itp_tokens_counted": 1534552,
+        "tokens_newly_consumed": 0,
+        "model_calls_newly_executed": 0,
+        "complete_measured_stage_seconds": 2424.944939137087,
+        "mean_complete_seconds_per_test": 39.753195723558804
+      },
+      "on": {
+        "native_status_counts": {
+          "PASS": 22,
+          "FAIL": 32,
+          "ERROR": 7
+        },
+        "final_status_counts": {
+          "PASS": 22,
+          "FAIL": 32,
+          "ERROR": 7
+        },
+        "expected_matches": 61,
+        "execution_wall_seconds_total": 10.408424491019105,
+        "mean_execution_wall_seconds": 0.1706299096888378,
+        "maximum_execution_peak_rss_mib": 55.234375,
+        "mean_execution_peak_rss_mib": 26.534387807377048,
+        "executions_requiring_itp_for_verdict": 0,
+        "residual_itp_groups_in_native_inventory": 20,
+        "itp_source": null,
+        "itp_wall_seconds_counted": 0,
+        "mean_itp_seconds_when_required": null,
+        "itp_tokens_counted": 0,
+        "tokens_newly_consumed": 0,
+        "model_calls_newly_executed": 0,
+        "complete_measured_stage_seconds": 10.408424491019105,
+        "mean_complete_seconds_per_test": 0.1706299096888378
+      }
+    },
+    "certificate": "SMT decisions are NOT_CHECKED by Coq; matching historical refutations are separate evidence."
+  }
 }

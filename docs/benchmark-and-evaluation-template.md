@@ -308,3 +308,13 @@ ITP 按一次执行的全部待处理 VC 合计，展示平均成本；read 已�
 运行 `python3 tools/benchmark/build_group_cost_tables.py` 可从各工具已发布回执重建所有组的表；read 发布器自动调用它，无需重跑模型或证明。当前 45 组均有表格入口，数据齐全 1 组（read），其余 44 组待补齐；文件存在不等于评测完成。
 
 read 的最终 ITP 平均表必须同时展示平均耗时、平均 token 和平均单次进程峰值内存。内存均值来自各次独立测量的峰值，不是把总峰值除以次数；原始各次峰值及最大峰值均保留供审计。
+
+## 12. 可选 spatial SMT 模式评测
+
+工具提供 `--spatial-smt` 后，每组须保留显式关闭／开启模式的独立对照，使用同一实现、spec 和输入，记录各模式实际命令、模块哈希、依赖版本、查询预算、逐例分类、时间、RSS 与 token。结果不能覆盖旧的默认模式记录。SMT 无法决定的测试结论继续使用每次执行独立 ITP；若自动获得决定性结果，则不虚构 ITP 成本。
+
+read 已完成 61 对相同用例的两模式对照，共 122 次新执行。关闭复现 22 PASS、20 FAIL、12 UNKNOWN、7 ERROR；开启为 22 PASS、32 FAIL、0 UNKNOWN、7 ERROR，61/61 符合逐例预期，其余 49 条分类不变。12 条查询已重放 SAT，非空四字节反例堆、原始 VC 哈希及历史 Coq 反证逐条一致。开启模式执行阶段平均 0.170630 秒、平均单次峰值 RSS 26.5344 MiB，新增 token 0，本批没有需要 ITP 才能决定的测试结论。
+
+SMT 的 certificate 保持 NOT_CHECKED，不能标为新 Coq 内核证书。20 条本来已 FAIL 的数值错误用例保留 residual 清单，已有决定性 INVALID 足以判 FAIL；清单条数不能当作 UNKNOWN 测试数。关闭模式完整成本仍须包含复用的 12 次 ITP，而不是把本次新调用模型次数为 0 写成没有历史证明成本。
+
+产物为 `benchmark/results/<group>/<run>-spatial-smt/{results.json,statistics.json,cases.csv,comparison.md}`；组结果与成本表链接两模式数据。read 测试时功能实现尚未提交，结果保存精确工作区模块哈希并明确这个限制。组件实现的已有未提交工作不混入 benchmark 产物提交。
