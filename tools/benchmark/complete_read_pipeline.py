@@ -6,7 +6,7 @@ import collections, csv, hashlib, io, json, subprocess, sys
 ROOT = Path(__file__).resolve().parents[2]
 RESULTS = ROOT / 'benchmark/results'
 RAW = RESULTS / 'read/20261015-variants/results.json'
-ITP = RESULTS / 'read/20261015-itp-refutations'
+ITP = RESULTS / 'read/20261015-itp-metered'
 OUT = RESULTS / 'read/complete'
 
 def sha(p):
@@ -19,7 +19,7 @@ def save(p, data):
 def main():
     # Audit existing observations and proof receipts; no execution or proof rerun.
     subprocess.run([sys.executable, str(ROOT/'tools/benchmark/validate_read_results.py')], check=True)
-    subprocess.run([sys.executable, str(ROOT/'tools/benchmark/validate_read_itp.py')], check=True)
+    subprocess.run([sys.executable, str(ROOT/'tools/benchmark/validate_metered_read_itp.py')], check=True)
     raw = json.loads(RAW.read_text())
     receipt = json.loads((ITP/'receipt.json').read_text())
     adjudication = json.loads((ITP/'resolved-results.json').read_text())
@@ -58,24 +58,38 @@ def main():
                       'fulminate_expected_result_matched':(row['fulminate_test']['status']=='PASS') if expected=='PASS' else row['fulminate_test']['status']=='RUNTIME_FAILURE'})
     assert len(cases)==61 and sum(c['itp_stage']['required'] for c in cases)==12
     assert all(c['expected_result_matched'] for c in cases)
-    measured_itp = adjudication['measured_compile_and_kernel_wall_seconds_including_failed_attempts']
+    measured = receipt['metrics']
+    measured_itp = measured['total_itp_wall_seconds']
     execution_time = sum(c['execution_stage']['wall_seconds'] for c in cases)
+    execution_rss = max(c['execution_stage']['resources']['max_process_rss_kib'] for c in cases)
+    complete_peak = max(execution_rss*1024, measured['local_peak_process_resident_bytes'])
     metrics = {
         'execution_wall_seconds_total':execution_time,
-        'itp_compile_and_kernel_wall_seconds_including_failed_attempts':measured_itp,
+        'itp_model_generation_wall_seconds':measured['model_wall_seconds'],
+        'itp_compile_audit_wall_seconds':measured['coq_compile_audit_wall_seconds'],
+        'itp_kernel_wall_seconds':measured['kernel_wall_seconds'],
+        'itp_wall_seconds_total':measured_itp,
         'measured_complete_stage_wall_seconds_total':execution_time+measured_itp,
-        'timing_scope':'Sum of measured sequential stage work, including failed proof compilation attempts. Human/chat proof authoring time was not measured; this is not a full elapsed authoring-to-completion measurement.',
-        'kernel_wall_seconds':receipt['kernel_check']['wall_seconds'],
-        'execution_peak_process_rss_kib':max(c['execution_stage']['resources']['max_process_rss_kib'] for c in cases),
-        'itp_peak_rss_kib':None,'complete_peak_rss_kib':None,
-        'execution_model_api_calls':0,'execution_tokens':0,'itp_external_model_api_calls':0,
-        'itp_authoring_tokens':None,'complete_tokens':None,
-        'missing_metrics':['ITP peak RSS','proof authoring elapsed time','proof authoring conversation tokens'],
-        'sharing_policy':'Shared ITP helper/kernel work counted once, not multiplied by 12 cases; no artificial per-case allocation.'}
+        'timing_scope':'Execution measurements reused from unchanged source/input hashes plus a fresh fully metered gpt-6.1-sol ITP run. All model, compilation and independent kernel work in this run counted once. The older unmetered authoring run remains historical and is not retroactively assigned these costs.',
+        'execution_peak_process_rss_kib':execution_rss,
+        'itp_coq_peak_process_rss_kib':measured['coq_peak_process_rss_kib'],
+        'itp_model_client_peak_working_set_bytes':measured['model_client_peak_working_set_bytes'],
+        'itp_peak_process_resident_bytes':measured['local_peak_process_resident_bytes'],
+        'complete_peak_process_resident_bytes':complete_peak,
+        'complete_peak_process_resident_mib':complete_peak/1048576,
+        'memory_scope':measured['memory_definition'],
+        'requested_model':measured['requested_model'],
+        'execution_model_calls':0,'execution_tokens':0,
+        'itp_model_calls':measured['model_calls'],
+        'itp_token_usage':measured['token_usage'],
+        'complete_tokens':measured['token_usage']['total_tokens'],
+        'missing_metrics':[],
+        'sharing_policy':'One shared ITP model call, common helper compilation and kernel replay counted once for the batch; no multiplication or arbitrary per-case allocation.',
+        'reuse_scope':measured['reuse_definition']}
     summary = {'paired_configurations':10,'variant_records_covered':13,'case_pairs':61,
                'execution_stage_counts':dict(collections.Counter(c['execution_stage']['statuses'][0] for c in cases)),
                'itp_required':12,'itp_kernel_checked':12,'final_counts':dict(collections.Counter(c['final_result'] for c in cases)),
-               'final_correct':61,'final_total':61,'final_accuracy':1.0,'verdict_complete':True,'resource_metrics_complete':False,
+               'final_correct':61,'final_total':61,'final_accuracy':1.0,'verdict_complete':True,'resource_metrics_complete':True,
                'fulminate_correct':sum(c['fulminate_expected_result_matched'] for c in cases),
                'automatic_stage_accuracy':49/61,
                'complete':all(c['final_result']!='UNKNOWN' and c['itp_stage']['status']!='PENDING' for c in cases),
@@ -96,6 +110,8 @@ def main():
         index=json.loads(path.read_text())
         index['official_read_result']={'results':(OUT/'results.json').relative_to(ROOT).as_posix(),'statistics':(OUT/'statistics.json').relative_to(ROOT).as_posix(),
                                        'csv':(OUT/'cases.csv').relative_to(ROOT).as_posix(),'stages':report['stages'],'summary':summary}
+        if path == RESULTS/'index.json':
+            index['read_itp_resolution']={'receipt':(ITP/'receipt.json').relative_to(ROOT).as_posix(),'statistics':(ITP/'statistics.json').relative_to(ROOT).as_posix(),'resolved_unknown':12,'raw_results_unchanged':True,'fully_metered':True}
         if path == RESULTS/'read/index.json':
             index['complete_variant_results'] = {vid:[{'report':(OUT/'results.json').relative_to(ROOT).as_posix(),'pointer':'/cases/'+str(i)} for i,c in enumerate(cases) if vid in c['related_variant_records']] for vid in sorted({v for c in cases for v in c['related_variant_records']})}
         save(path,index)

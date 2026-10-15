@@ -34,4 +34,4 @@ python3 tools/benchmark/audit_archive.py
 
 完整测试包括执行测试和必要的 ITP 阶段，正式结果以两阶段合并后的结论为准。自动阶段的 UNKNOWN 应在 ITP 中证明或反证；已有决定性结果无需重复 ITP。主程序的全称验证仍单独复用，不要求所有变体额外做全称验证。规则见仓库根目录下 `benchmark/protocol.json`。
 
-read 的正式入口为 `benchmark/results/read/complete/results.json`、`statistics.json` 和 `cases.csv`，包含 61 对变体与输入的执行结果、ITP 结论及最终结论。原始自动数据完整保留，但不作为完整测试的最终正确率。时间统计包含两阶段实际测得的工作、失败证明尝试和内核检查；共享工作仅计一次。ITP 峰值内存和对话内证明编写 token 未测，保留 null，不能用执行阶段开销代替完整开销。
+read 的正式入口为 `benchmark/results/read/complete/results.json`、`statistics.json` 和 `cases.csv`，包含 61 对变体与输入的执行结果、ITP 结论及最终结论。原始自动数据完整保留，但不作为完整测试的最终正确率。时间统计包含两阶段实际测得的工作、失败证明尝试和内核检查；共享工作仅计一次。正式统计已切换到新一轮可计量的 gpt-6.1-sol 证明生成、Coq 编译和内核检查，记录实际 token、各阶段耗时和本地进程峰值内存。旧的对话编写证明批次作为历史保留，不把新一轮测量冒充旧批次的耗时。
