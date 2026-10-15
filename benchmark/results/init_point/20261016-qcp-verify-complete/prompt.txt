@@ -1,0 +1,289 @@
+Fill every universally quantified Coq 8.20 proof in Candidate.v. Preserve imports, original statements, VC_Correct module implementation and Print Assumptions. PrimaryQcpGoal.v is immutable actual unbound QCP verification output. No Admitted/admit, new axioms, parameters, changed definitions or proof escapes. Edit Candidate.v only; do not read prior benchmark proof solutions, call models, or delegate. External compiler and independent kernel check are controller-owned. WSL runtime access is unavailable inside this isolated task; do not waste a call trying it. The controller can supply actual runtime declarations on a diagnostic repair. Simple entailments can be introduced directly as predicates over heaps. Avoid untyped change (forall h, _ -> _) and avoid cbv on arithmetic comparisons before lia. If an original heap witness is disjoined with a pure reduction, prefer proving the original heap witness. Preserve unchanged spatial frames directly; entailer! and the generic sepcon commutation lemma can introduce functional extensionality. Runtime sets_unfold supports only the goal or one named hypothesis, not in *. INT_MAX, INT_MIN and UINT_MAX are notations for integer literals, not unfoldable definitions. If hnf leaves a pure heap assertion applied to h, use change to its underlying arithmetic proposition before lia. Return briefly.
+
+Actual immutable goal:
+Require Import Coq.ZArith.ZArith.
+Require Import Coq.Bool.Bool.
+Require Import Coq.Strings.String.
+Require Import Coq.Strings.Ascii.
+Require Import Coq.Lists.List.
+Require Import Coq.Classes.RelationClasses.
+Require Import Coq.Classes.Morphisms.
+Require Import Coq.micromega.Psatz.
+Require Import Coq.Sorting.Permutation.
+From AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.
+Require Import SetsClass.SetsClass. Import SetsNotation.
+From SimpleC.SL Require Import Mem SeparationLogic.
+Require Import Logic.LogicGenerator.demo932.Interface.
+Local Open Scope Z_scope.
+Local Open Scope sets.
+Local Open Scope string_scope.
+Local Open Scope list.
+Import naive_C_Rules.
+Local Open Scope sac.
+Local Open Scope Z_scope.
+
+(*----- Function zero -----*)
+
+Definition zero_safety_wit_1 := 
+forall (p_pre: Z) ,
+  ((( &( "p" ) )) # Ptr  |-> p_pre)
+  **  ((p_pre) # Int  |->_)
+|--
+  “ (0 <= INT_MAX) ” 
+  &&  “ ((INT_MIN) <= 0) ”
+.
+
+Definition zero_return_wit_1 := 
+forall (p_pre: Z) ,
+  ((p_pre) # Int  |-> 0)
+|--
+  ((p_pre) # Int  |-> 0)
+.
+
+(*----- Function init_point -----*)
+
+Definition init_point_return_wit_1 := 
+forall (p_pre: Z) ,
+  ((&((p_pre)  # "point" ->ₛ "y")) # Int  |-> 0)
+  **  ((&((p_pre)  # "point" ->ₛ "x")) # Int  |-> 0)
+|--
+  ((&((p_pre)  # "point" ->ₛ "x")) # Int  |-> 0)
+  **  ((&((p_pre)  # "point" ->ₛ "y")) # Int  |-> 0)
+.
+
+Definition init_point_partial_solve_wit_1 := 
+forall (p_pre: Z) ,
+  ((&((p_pre)  # "point" ->ₛ "x")) # Int  |->_)
+  **  ((&((p_pre)  # "point" ->ₛ "y")) # Int  |->_)
+|--
+  ((&((p_pre)  # "point" ->ₛ "x")) # Int  |->_)
+  **  ((&((p_pre)  # "point" ->ₛ "y")) # Int  |->_)
+.
+
+Definition init_point_partial_solve_wit_2 := 
+forall (p_pre: Z) ,
+  ((&((p_pre)  # "point" ->ₛ "x")) # Int  |-> 0)
+  **  ((&((p_pre)  # "point" ->ₛ "y")) # Int  |->_)
+|--
+  ((&((p_pre)  # "point" ->ₛ "y")) # Int  |->_)
+  **  ((&((p_pre)  # "point" ->ₛ "x")) # Int  |-> 0)
+.
+
+Module Type VC_Correct.
+
+Axiom proof_of_zero_safety_wit_1 : zero_safety_wit_1.
+Axiom proof_of_zero_return_wit_1 : zero_return_wit_1.
+Axiom proof_of_init_point_return_wit_1 : init_point_return_wit_1.
+Axiom proof_of_init_point_partial_solve_wit_1 : init_point_partial_solve_wit_1.
+Axiom proof_of_init_point_partial_solve_wit_2 : init_point_partial_solve_wit_2.
+
+End VC_Correct.
+
+Candidate:
+Require Import PrimaryQcpGoal.
+Require Import Coq.ZArith.ZArith.
+Require Import Coq.Bool.Bool.
+Require Import Coq.Strings.String.
+Require Import Coq.Strings.Ascii.
+Require Import Coq.Lists.List.
+Require Import Coq.Classes.RelationClasses.
+Require Import Coq.Classes.Morphisms.
+Require Import Coq.micromega.Psatz.
+Require Import Coq.Sorting.Permutation.
+From AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.
+Require Import SetsClass.SetsClass. Import SetsNotation.
+From SimpleC.SL Require Import Mem SeparationLogic.
+Require Import Logic.LogicGenerator.demo932.Interface.
+Local Open Scope Z_scope.
+Local Open Scope sets.
+Local Open Scope string_scope.
+Local Open Scope list.
+Import naive_C_Rules.
+Local Open Scope sac.
+Local Open Scope Z_scope.
+
+
+Theorem primary_zero_safety_wit_1 : PrimaryQcpGoal.zero_safety_wit_1.
+Proof. Admitted.
+Theorem primary_zero_return_wit_1 : PrimaryQcpGoal.zero_return_wit_1.
+Proof. Admitted.
+Theorem primary_init_point_return_wit_1 : PrimaryQcpGoal.init_point_return_wit_1.
+Proof. Admitted.
+Theorem primary_init_point_partial_solve_wit_1 : PrimaryQcpGoal.init_point_partial_solve_wit_1.
+Proof. Admitted.
+Theorem primary_init_point_partial_solve_wit_2 : PrimaryQcpGoal.init_point_partial_solve_wit_2.
+Proof. Admitted.
+Module PrimaryCertificate : PrimaryQcpGoal.VC_Correct.
+Definition proof_of_zero_safety_wit_1 := primary_zero_safety_wit_1.
+Definition proof_of_zero_return_wit_1 := primary_zero_return_wit_1.
+Definition proof_of_init_point_return_wit_1 := primary_init_point_return_wit_1.
+Definition proof_of_init_point_partial_solve_wit_1 := primary_init_point_partial_solve_wit_1.
+Definition proof_of_init_point_partial_solve_wit_2 := primary_init_point_partial_solve_wit_2.
+End PrimaryCertificate.
+Print Assumptions primary_zero_safety_wit_1.
+Print Assumptions primary_zero_return_wit_1.
+Print Assumptions primary_init_point_return_wit_1.
+Print Assumptions primary_init_point_partial_solve_wit_1.
+Print Assumptions primary_init_point_partial_solve_wit_2.
+
+Runtime arithmetic interface: IntLib notation x % y denotes Z.rem x y; unsigned_last_nbits x n is Z.modulo x (2^n). For nonnegative a and positive b, Z.rem_mod_nonneg relates rem and modulo.
+
+Actual attempt-1 compiler result: exit 137 after 326.259906905 s, max process RSS 10949176 KiB, no stderr. WSL service temporarily stopped accepting commands and has recovered without restart. The unbounded firstorder congruence heap proof caused resource exhaustion; do not use firstorder on a concrete heap assertion. All failed attempt costs will be retained. Subsequent coqc runs are capped at 90 seconds and 4 GiB address space.
+Repair Candidate.v only. Prove commutation by destructing the two heap witnesses of sepcon, swapping them, proving their join pointwise with mem_join_comm and elementary token/STS set equivalence. Avoid runtime generic sepcon_comm/join_comm lemmas whose proofs may import functional extensionality. TokenSet_join and STS_state_join use pointwise set equivalence, so direct pointwise reasoning can close the proof without new axioms. Keep original heap predicate facts unchanged. You may add a locally proved auxiliary lemma in Candidate.v. Do not search Windows or WSL for runtime files; actual declarations follow.
+
+Actual runtime runtime/qcip/SeparationLogic/SeparationLogic/ConAssertion.v:
+Require Import Coq.ZArith.ZArith.
+Require Import Coq.Bool.Bool.
+Require Import Coq.Lists.List.
+Require Import Coq.Classes.RelationClasses.
+Require Import Coq.Classes.Morphisms.
+Require Import Coq.micromega.Psatz.
+Require Import String.
+Require Import Permutation.
+
+From AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.
+Require Import SetsClass.SetsClass. Import SetsNotation.
+From compcert.lib Require Export Integers.
+
+From SimpleC.SL Require Import Mem.
+From SimpleC.SL Require Export IntLib.
+From AUXLib Require Export ListLib.
+From SimpleC.SL Require Export CommonAssertion.
+
+Require Import Logic.LogicGenerator.demo932.Interface.
+
+Local Open Scope Z_scope.
+Local Open Scope sets.
+
+Class STS : Type := {
+  token : Type;
+  STS_state : Type;
+  TokenSet := token -> Prop;
+  STS_state_transition : Type := (STS_state * TokenSet) -> (STS_state * TokenSet) -> Prop;
+  Transition : STS_state_transition;
+  InvownedToken : STS_state -> TokenSet
+}.
+
+Section lowlevel_state.
+
+Context {S : STS}.
+
+Record Lstate : Type := mk_Lstate {
+  s_mem : mem ;
+  s_STS : STS_state -> Prop; 
+  s_token : TokenSet;
+}.
+
+Theorem Lstate_eq_split : forall n m, n.(s_mem) = m.(s_mem) -> n.(s_STS) == m.(s_STS) -> n.(s_token) == m.(s_token) ->
+n = m.
+Proof.
+  intros.
+  destruct n,m; simpl in *.
+  assert (s_STS0 = s_STS1). { apply pred_ext1; tauto. }
+  assert (s_token0 = s_token1). { apply pred_ext1; tauto. }
+  subst. auto.
+Qed.
+
+Definition TokenSet_join (s1 s2 s3 : TokenSet) : Prop :=
+  s3 == s1 ∪ s2 /\ s1 ∩ s2 == ∅.
+
+Definition valid_transtion (s1 s2: STS_state * TokenSet) : Prop := 
+  match s1, s2 with 
+  | (st1, token1), (st2, token2) =>  
+      exists tkf,
+        TokenSet_join (InvownedToken st1) token1 tkf /\ 
+        TokenSet_join (InvownedToken st2) token2 tkf
+  end.
+
+Definition valid_Lstate (ls : Lstate) := forall s, s_STS ls s -> s_token ls ∩ InvownedToken s == ∅.
+
+Definition transtion_disjoint_preserved (T : STS_state_transition) := forall s1 s2 token1 token2,
+  T (s1,token1) (s2,token2) ->
+  token1 ∩ InvownedToken s1 == ∅ /\ token2 ∩ InvownedToken s2 == ∅.
+
+Definition transition_token_preserved (T : STS_state_transition) := forall s1 s2 token1 token2 tf, 
+  T (s1,token1) (s2,token2) ->
+  TokenSet_join token1 (InvownedToken s1) tf <-> TokenSet_join token2 (InvownedToken s2) tf.  
+
+Definition STS_state_join (s1 s2 s3 : STS_state -> Prop) : Prop :=
+  s3 == s1 ∩ s2.
+
+Definition state_join (s1 s2 s3 : Lstate) : Prop := 
+  mem_join s1.(s_mem) s2.(s_mem) s3.(s_mem) /\ 
+  TokenSet_join s1.(s_token) s2.(s_token) s3.(s_token) /\ 
+  STS_state_join s1.(s_STS) s2.(s_STS) s3.(s_STS).
+
+Theorem valid_state_join : forall s1 s2 s3, 
+  state_join s1 s2 s3 ->
+  valid_Lstate s1 -> valid_Lstate s2 ->
+  valid_Lstate s3.
+
+Actual runtime runtime/qcip/SeparationLogic/SeparationLogic/ConAssertion.v:
+End STS_def.
+
+Module Type CSL (L_STS: STS_def) <: SeparationLogicSig.
+
+Import L_STS.
+
+(* Modle Names: LanguageSig. *)
+
+  Definition model : Type := @Lstate sts.
+
+  Definition expr := model -> Prop .
+
+  Definition join : model -> model -> model -> Prop := state_join.
+  
+  Definition is_unit : model -> Prop := state_empty.
+
+(* End LanguageSig. *)
+
+Include DerivedNamesSig.
+
+(* Rules <: PrimitiveRuleSig Names *)
+
+  Theorem unit_join : (forall n : model, exists u : model, is_unit u /\ join n u n) .
+
+Actual runtime runtime/qcip/SeparationLogic/unifysl/LogicGenerator/demo932/Interface.v:
+Require Import Coq.Numbers.BinNums.
+Require Import Coq.PArith.BinPosDef.
+Require Import Logic.lib.PTree.
+Require Import Coq.Sets.Ensembles.
+Require Import Coq.Lists.List.
+Require Import Coq.Classes.Morphisms.
+Import ListNotations.
+
+Module Type LanguageSig.
+(* primitive_types *)
+  Parameter model : Type .
+(* derived types *)
+  Definition expr := (model -> Prop) .
+(* primitive judgements *)
+(* primitive connectives *)
+  Parameter join : (model -> model -> model -> Prop) .
+  Parameter is_unit : (model -> Prop) .
+End LanguageSig.
+
+Module Type DerivedNamesSig (Names: LanguageSig).
+Import Names.
+(* derived connectives *)
+  Definition sepcon := (fun (x y : model -> Prop) (m : model) => exists m1 m2 : model, join m1 m2 m /\ x m1 /\ y m2) .
+  Definition wand := (fun (x y : model -> Prop) (m : model) => forall m1 m2 : model, join m m1 m2 -> x m1 -> y m2) .
+  Definition orp := (fun (x y : model -> Prop) (m : model) => x m \/ y m) .
+  Definition andp := (fun (x y : model -> Prop) (m : model) => x m /\ y m) .
+  Definition impp := (fun (x y : model -> Prop) (m : model) => x m -> y m) .
+  Definition exp := (fun (A : Type) (x : A -> model -> Prop) (m : model) => exists a : A, x a m) .
+
+Actual runtime runtime/qcip/SeparationLogic/SeparationLogic/Mem.v:
+
+Lemma mem_join_comm : forall m1 m2 m,
+  mem_join m1 m2 m ->
+  mem_join m2 m1 m.
+Proof.
+  unfold mem_join. intros.
+  destruct (H p) as [ [ ? [? ?]] | [ [ ? [ ? ? ]] | [ [ ? [ ? ? ]] | [ [n [? [? ?]]] | [n [? [? ?]]] ]]]] ; [ |  |  | right ; right ; right; right ; exists n | right; right; right; left; exists n] ; tauto.
+Qed.
+
+Arguments mem_join_comm [m1] [m2] [m].
+
+
+Actual attempt-2 compiler diagnostic: Candidate.v line 43 variable state_join not found. Runtime file ConAssertion.v is loaded as SimpleC.SL.ConAssertion, but not imported into the unqualified namespace by the current imports. Qualify the runtime definitions as ConAssertion.state_join, ConAssertion.TokenSet_join, ConAssertion.STS_state_join in both new proofs; preserve the existing imports. Same direct constructive proof should then be checked. Avoid generic sepcon commutation lemmas or firstorder. All prior model/compiler costs remain recorded.

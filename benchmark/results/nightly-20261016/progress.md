@@ -1,8 +1,8 @@
 # 夜间评测进度
 
-完整组 15/45；待补齐 30。截止北京时间 2026-10-16 08:00。
+完整组 16/45；待补齐 29。截止北京时间 2026-10-16 08:00。
 
-当前组：init_point；阶段：READY_FOR_NEXT_GROUP。
+当前组：swap；阶段：READY_FOR_NEXT_GROUP。
 
 teSpec 最终不匹配 0 条，已解决自动阶段缺口 25 条。详情见 ../tespec-unexpected/README.md；未评测组不算零异常。
 
@@ -25,7 +25,7 @@ teSpec 最终不匹配 0 条，已解决自动阶段缺口 25 条。详情见 ..
 | incr_first | 完整 | [表](../incr_first/result-cost.md) |
 | incr_two | 待补齐 | [表](../incr_two/result-cost.md) |
 | init_array | 待补齐 | [表](../init_array/result-cost.md) |
-| init_point | 待补齐 | [表](../init_point/result-cost.md) |
+| init_point | 完整 | [表](../init_point/result-cost.md) |
 | list_all | 待补齐 | [表](../list_all/result-cost.md) |
 | mergesort | 待补齐 | [表](../mergesort/result-cost.md) |
 | quadruple | 完整 | [表](../quadruple/result-cost.md) |
