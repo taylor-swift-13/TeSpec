@@ -1,6 +1,6 @@
 # teSpec 不符合预期的专项台账
 
-已扫描 20 组、853 对变体与输入。最终不匹配 **4** 条；自动阶段缺口经独立 ITP 解决 **29** 条；另有配置错误修正 **30** 条。未评测组不计为零异常。原始分类不改写，人工分析追加到 triage.json，重建不覆盖人工结论。
+已扫描 21 组、873 对变体与输入。最终不匹配 **4** 条；自动阶段缺口经独立 ITP 解决 **29** 条；另有配置错误修正 **70** 条。未评测组不计为零异常。原始分类不改写，人工分析追加到 triage.json，重建不覆盖人工结论。
 
 | 组 | 变体 | 输入 | 模式 | 预期 | 自动 | 最终 | 分类 | 证据 |
 |---|---|---|---|---|---|---|---|---|
@@ -53,6 +53,46 @@
 | incr_two | cn_original:slf5_basic_aliased_call.broken | input_1 | on | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/97b9adb7a92fea912cf4.json) |
 | slf3_basic_inplace_double | constructed:case_cd64220fbef61c25 | value_0 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/8f0a71c1328250f32fac.json) |
 | slf3_basic_inplace_double | constructed:case_cd64220fbef61c25 | value_1 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/3c7d990f379c332bb9e9.json) |
+| swap_array | cn_original:swap_array | array_0 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/85cf7bb7aad6854a4633.json) |
+| swap_array | cn_original:swap_array | array_0 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/dbe3af1e7b2016d27aba.json) |
+| swap_array | cn_original:swap_array | array_1 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/de35959fc8fc291ab0b4.json) |
+| swap_array | cn_original:swap_array | array_1 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/36f7df9015bf0d9c852f.json) |
+| swap_array | cn_original:swap_array | array_2 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/c0484ce63f01bd1715de.json) |
+| swap_array | cn_original:swap_array | array_2 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/fd1f161f7c9473818b8d.json) |
+| swap_array | cn_original:swap_array | array_3 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/e8c0a21524d55ee14e82.json) |
+| swap_array | cn_original:swap_array | array_3 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/877b95efeb5b2f2282ed.json) |
+| swap_array | cn_original:swap_array | array_4 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/7f51348d2acae6d2be69.json) |
+| swap_array | cn_original:swap_array | array_4 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/139f8d3d385c50eb1823.json) |
+| swap_array | cn_original:swap_array | array_5 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/dde0be8bc906d6019f4b.json) |
+| swap_array | cn_original:swap_array | array_5 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/fa0dfa945ee3a8e1cbb3.json) |
+| swap_array | cn_original:swap_array | array_6 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/198f0cd92c84c235ae14.json) |
+| swap_array | cn_original:swap_array | array_6 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/03da18d0796ed63bda29.json) |
+| swap_array | cn_original:swap_array | array_7 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/6374147ee177cdbe5222.json) |
+| swap_array | cn_original:swap_array | array_7 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/1716ec387e4ac0aaddc2.json) |
+| swap_array | cn_original:swap_array | array_8 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/b9d4e4daa7cbf06c4a01.json) |
+| swap_array | cn_original:swap_array | array_8 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/bef36cdcc1d26fe82576.json) |
+| swap_array | cn_original:swap_array | array_9 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/811bfc4a4ba0e1e75c67.json) |
+| swap_array | cn_original:swap_array | array_9 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/4cfb7d198a07f0286e5d.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_0 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/e0e9e5a2c0a15b955e7d.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_0 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/e598e7101f0cf4e4a80f.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_1 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/5fd09bd940b81e3f018a.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_1 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/689c074f10ac8237ad40.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_2 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/31461cbb52cf0d731731.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_2 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/ae8b6190d7d774785bd3.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_3 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/979e0af7e647fac216ee.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_3 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/0feb3eb6dd3a1fca5706.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_4 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/e029bff0e5fdd80bf905.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_4 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/497dcc933bc9247486f3.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_5 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/72c7a297862e3ff634ff.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_5 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/a0074052816dc16b22fa.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_6 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/c9fdeabcf9fa9f5240db.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_6 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/b9736b536b6732c34914.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_7 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/1dbc4bf31660c091a277.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_7 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/7fcfec4a40b071612940.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_8 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/3fd29eba0094949e28e4.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_8 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/ace85a6d343a6be17f65.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_9 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/8c1765e65986c2cb8222.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_9 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/b6c81dbdf717c6639a7f.json) |
 | zero | constructed:case_66e065c71f01cce1 | region_0 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/cce54571e0783df4341a.json) |
 | zero | constructed:case_66e065c71f01cce1 | region_1 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/30cb2f0c4bed776bdbb5.json) |
 | read | cn_original:read.broken | value_0 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/cf79950128cc8d076c10.json) |

@@ -1,0 +1,193 @@
+{
+  "variant": "cn_original:swap_array",
+  "paired_qcp_variant": "qcp_existing:aa74963c9ec54dd25e1a",
+  "case": "array_9",
+  "initial": {
+    "array": [
+      -1,
+      -2147483648,
+      0,
+      2147483647
+    ],
+    "i": 3,
+    "j": 1
+  },
+  "expected": "PASS",
+  "plan_case": {
+    "id": "array_9",
+    "value": {
+      "array": [
+        -1,
+        -2147483648,
+        0,
+        2147483647
+      ],
+      "i": 3,
+      "j": 1
+    },
+    "expected": "PASS",
+    "cn_body": "int cells[4] = {-1, -2147483648, 0, 2147483647}; swap_array(cells,4,3,1);",
+    "binds": {
+      "args": {
+        "p": 4096,
+        "n": 4,
+        "i": 3,
+        "j": 1
+      },
+      "values": {
+        "l": [
+          -1,
+          -2147483648,
+          0,
+          2147483647
+        ]
+      }
+    },
+    "precondition_valid": true,
+    "oracle": {
+      "array_after": [
+        -1,
+        2147483647,
+        0,
+        -2147483648
+      ],
+      "distinct_indices_required": true,
+      "all_int_values_in_range": true
+    }
+  },
+  "cn_source_sha256": "ab281b839c149a8e93ba314b862df2bfe71ca6a2a126756af784763531ab818c",
+  "qcp_source_sha256": "aa74963c9ec54dd25e1abb8d7d35b3dfeb7243f104d30bf43ee6cf20f8c1d220",
+  "harness": "benchmark/programs/swap_array/variants/cn_original_swap_array/tests/20261016-evaluation/array_9/fulminate.cn.c",
+  "harness_sha256": "ad14d5513ec0332dedbcf88567138417e3337b0b0217e30ae1496aec28514471",
+  "binds": "benchmark/programs/swap_array/variants/cn_original_swap_array/tests/20261016-evaluation/array_9/binds.json",
+  "binds_sha256": "b1b6b8c024a88d16e861c5eecadbd52e50a7c5d5807aaf4e70bd7a79e14eb137",
+  "precondition_valid": true,
+  "fulminate_pipeline": {
+    "command": [
+      "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+      "instrument",
+      "--run",
+      "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+      "--output-dir=/tmp/tespec-group-vbv93lg6",
+      "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples",
+      "/home/yangfp/teSpec/benchmark/programs/swap_array/variants/cn_original_swap_array/tests/20261016-evaluation/array_9/fulminate.cn.c"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 0.11500339099438861,
+    "resources": {
+      "max_process_rss_kib": 43940,
+      "user_seconds": 0.07,
+      "system_seconds": 0.01
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/swap_array/20261016-evaluation/cn_original_swap_array/array_9/fulminate-pipeline/stdout.log",
+    "stderr": "benchmark/results/swap_array/20261016-evaluation/cn_original_swap_array/array_9/fulminate-pipeline/stderr.log"
+  },
+  "instrumented_sources": [
+    {
+      "path": "benchmark/results/swap_array/20261016-evaluation/cn_original_swap_array/array_9/fulminate.cn.exec.c",
+      "sha256": "4d6785a1d4b56c36f166158c3f5b9facbb92448131e45cad54129e63ab5e75ec"
+    }
+  ],
+  "instrumented_binary_sha256": "cfc15422427716f21af0ec82fe4b714f28628980c00a7472d6087cb01a27e711",
+  "fulminate_test": {
+    "command": [
+      "/tmp/tespec-group-vbv93lg6/fulminate.cn.exec.out"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 0.003939818998333067,
+    "resources": {
+      "max_process_rss_kib": 1136,
+      "user_seconds": 0.0,
+      "system_seconds": 0.0
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/swap_array/20261016-evaluation/cn_original_swap_array/array_9/fulminate-test/stdout.log",
+    "stderr": "benchmark/results/swap_array/20261016-evaluation/cn_original_swap_array/array_9/fulminate-test/stderr.log",
+    "status": "PASS"
+  },
+  "tespec_off": {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "spectest",
+      "run",
+      "/home/yangfp/teSpec/benchmark/programs/swap_array/variants/qcp_existing_aa74963c9ec54dd25e1a/qcp/runtime_swap_array.qcp.c",
+      "--function",
+      "swap_array",
+      "--binds",
+      "/home/yangfp/teSpec/benchmark/programs/swap_array/variants/cn_original_swap_array/tests/20261016-evaluation/array_9/binds.json",
+      "--execution-mode",
+      "all-boundaries",
+      "--output-dir",
+      "/home/yangfp/teSpec/benchmark/results/swap_array/20261016-evaluation/cn_original_swap_array/array_9/tespec-off/artifacts",
+      "--timeout",
+      "30",
+      "--compact",
+      "--no-spatial-smt",
+      "--spatial-smt-timeout-ms",
+      "2000",
+      "-I",
+      "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/supplemental/runtime_swap_array"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 0.1649094949971186,
+    "resources": {
+      "max_process_rss_kib": 19916,
+      "user_seconds": 0.1,
+      "system_seconds": 0.02
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/swap_array/20261016-evaluation/cn_original_swap_array/array_9/tespec-off/stdout.log",
+    "stderr": "benchmark/results/swap_array/20261016-evaluation/cn_original_swap_array/array_9/tespec-off/stderr.log",
+    "report": "benchmark/results/swap_array/20261016-evaluation/cn_original_swap_array/array_9/tespec-off/artifacts/report.json",
+    "statuses": [
+      "ERROR"
+    ],
+    "status": "ERROR"
+  },
+  "tespec_on": {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "spectest",
+      "run",
+      "/home/yangfp/teSpec/benchmark/programs/swap_array/variants/qcp_existing_aa74963c9ec54dd25e1a/qcp/runtime_swap_array.qcp.c",
+      "--function",
+      "swap_array",
+      "--binds",
+      "/home/yangfp/teSpec/benchmark/programs/swap_array/variants/cn_original_swap_array/tests/20261016-evaluation/array_9/binds.json",
+      "--execution-mode",
+      "all-boundaries",
+      "--output-dir",
+      "/home/yangfp/teSpec/benchmark/results/swap_array/20261016-evaluation/cn_original_swap_array/array_9/tespec-on/artifacts",
+      "--timeout",
+      "30",
+      "--compact",
+      "--spatial-smt",
+      "--spatial-smt-timeout-ms",
+      "2000",
+      "-I",
+      "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/supplemental/runtime_swap_array"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 0.16485125799954403,
+    "resources": {
+      "max_process_rss_kib": 19840,
+      "user_seconds": 0.08,
+      "system_seconds": 0.03
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/swap_array/20261016-evaluation/cn_original_swap_array/array_9/tespec-on/stdout.log",
+    "stderr": "benchmark/results/swap_array/20261016-evaluation/cn_original_swap_array/array_9/tespec-on/stderr.log",
+    "report": "benchmark/results/swap_array/20261016-evaluation/cn_original_swap_array/array_9/tespec-on/artifacts/report.json",
+    "statuses": [
+      "ERROR"
+    ],
+    "status": "ERROR"
+  }
+}

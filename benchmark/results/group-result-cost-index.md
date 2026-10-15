@@ -43,7 +43,7 @@
 | [slf_sized_stack](slf_sized_stack/result-cost.md) | 待补齐 |
 | [succ_using_incr](succ_using_incr/result-cost.md) | 待补齐 |
 | [swap](swap/result-cost.md) | 已齐全 |
-| [swap_array](swap_array/result-cost.md) | 待补齐 |
+| [swap_array](swap_array/result-cost.md) | 已齐全 |
 | [transfer](transfer/result-cost.md) | 已齐全 |
 | [transpose](transpose/result-cost.md) | 已齐全 |
 | [zero](zero/result-cost.md) | 已齐全 |
