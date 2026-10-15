@@ -1,0 +1,2921 @@
+{
+  "schema": "tespec-group-finite-evaluation/v1",
+  "program_group": "mergesort",
+  "started_utc": "2026-10-15T23:42:05.158627+00:00",
+  "evaluation_plan": "benchmark/programs/mergesort/evaluation-plan.json",
+  "plan_sha256": "2a0ba3617701b30b3d2b528a9d21ff8345ed1c3a7d1527fc654662d674c46a97",
+  "evaluation_plan_snapshot": "benchmark/results/mergesort/20261016-evaluation/evaluation-plan.executed.json",
+  "toolchain": {
+    "cn_sha256": "1911ca79378e335eb7d14b47856b3397c3cbe247761d13c4d1f084980767ac2b",
+    "executor_sha256": "f50c532f32192803ab6bbdf8620c883579debfb75c291b1ed8a3f1e0fdf2691e",
+    "build": {
+      "schema": "tespec-executor-build/v1",
+      "binary_sha256": "f50c532f32192803ab6bbdf8620c883579debfb75c291b1ed8a3f1e0fdf2691e",
+      "build_type": "Release",
+      "sac_revision": "9a9d7d602c3799ac53f868764aa190bd8324f414",
+      "sac_branch": "tespec-query-simplification",
+      "sac_master_base": "c745d3735276630e0cd0d9102ca081f7f7064813",
+      "smt_revision": "2a0e178cd156ff9946f279546d27c8cf48f460c7",
+      "source_dirty": false,
+      "smt_source_dirty": false,
+      "execution_semantics": "inline-preserve/v1",
+      "query_semantics": "copy-only/v1",
+      "result_semantics": "three-valued-conjunction/v1",
+      "vc_semantics": "path-vc/v1",
+      "architecture_bits": 32,
+      "binary_ground_truth": false,
+      "certificate": "NOT_CHECKED"
+    },
+    "driver_sha256": "eee08bc71dd79cfcdebc6a98e1a5eff55877efabd2374dc57090f2dbac2cc94c",
+    "compiler_wrapper_sha256": "3b80f3dd42fdcb5426f790601599702c1f3532629846af35f7a8ba8ac5554112",
+    "evaluation_source_snapshot": {
+      "schema": "tespec-evaluation-source-snapshot/v1",
+      "recorded_utc": "2026-10-15T23:42:05.271663+00:00",
+      "git_revision": "76da4fc71be69304632a60a19eda8c503fef134e",
+      "reference_commit_audited": null,
+      "module_working_tree_changes": [],
+      "source_files_sha256": {
+        "spectest/__init__.py": "ae0a77e78035e89a77753475c3223041903eb4dd942dd66796d52dced54b792e",
+        "spectest/__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+        "spectest/certificates.py": "3df0f0579eb1820046a5259abe4ae365f8a4bc6423e931e475c3283ce8faafa0",
+        "spectest/cli.py": "31c8ad958f2359b0f6f4b750d42b91615c653ff06636e0ed4c4b63b111a68d92",
+        "spectest/core.py": "0a4ab0b760276f133cf49e1c08952fac19d479da4a0f0a288e8d45ce1f144727",
+        "spectest/errors.py": "51a716d00afa608bf05f1652eb9001ea9e794e4a56b556dd601f4621466ca6d2",
+        "spectest/kernel_replay.py": "e7f57a189a772038620a6dcbade2e5e6ce4afadea0ed108ac1900d2f8c70ea47",
+        "spectest/layout.py": "6dec22ce08e30162bba1a0ccf2c668cc573c975f9c096f97fc53271a00e0ccf8",
+        "spectest/layout_libraries.py": "0461f2888fa3f3b5504bee32eaec1f16a46150c0ea6b5df1b15607c570a90ab6",
+        "spectest/modes.py": "c6670280b891072b0bbb67be937100a34de95c858126b97c3b6ff9056b500b29",
+        "spectest/normalization_association.py": "25e78abe5aec14b36f5d75787192ec3f9a6d2e65d707875b2199f028c88ded92",
+        "spectest/normalization_certificates.py": "03641c57570cb925c1b195d2ade70dc0108ae68d064afbe0f216154fcda7b40a",
+        "spectest/normalized_execution.py": "ed26a9026efa7f4525353a604fb6fe1c4b7343a295427c7429a818dcd668e089",
+        "spectest/preflight.py": "9c037f1f4b8dfa86c7ff88354aa7d67305d88d590dbb6d10b279c7771d8b68da",
+        "spectest/rocq_evaluation.py": "8b99ed97e7051038323592f4eb59b6e93583c3bcb28b186cd55e4bd9742b6483",
+        "spectest/rocq_predicates.py": "222986cd504a9ef529c6b996e91108dc5cc7da6e8c1e59fd315a4ee99349d22f",
+        "spectest/run_certificates.py": "49c59d70c08bb737b716d71fb9a0bf85c3895a6b8da062ef8593487e23f421a1",
+        "spectest/runtime_modules.py": "29cb66de3f9aee9cd6b6088dfabb65b834a4621449f4af01e54609c56c46b77a",
+        "spectest/spatial_smt.py": "f4c37f159f5c5346bf1dd50b9eb4914c22acd17bac1d46ca802e4a08fc8ca870",
+        "spectest/verdict.py": "560ccdd49c436ba31c6ffd8be4db485b60bff6fc1941d61134d9baa1b8a5b6cb",
+        "tools/finite_spatial_smt/__init__.py": "b83490345e2070c5d615dfd66d80c4212862ddc92d454dbf0569d0adb37f67ea",
+        "tools/finite_spatial_smt/collect_corpus.py": "1cb81b587095b902c5b30a421f30620962a63e341c7545383eee03f7a0dcd4fe",
+        "tools/finite_spatial_smt/concrete_oracle.py": "7a639528cee13502df01ca1ffbf7c79c6042a8a7ffdbda2addfda719a6e7b3d3",
+        "tools/finite_spatial_smt/finite_qcp_terms.py": "b83d686dacea39b79aade518ecb8bd84997f08b519b3819ba9effce7b782d7fd",
+        "tools/finite_spatial_smt/finite_spatial_smt.py": "329b727b92b032a6d64095658b156291dd38d85df249cf7df9832eca589331c3",
+        "tools/finite_spatial_smt/freeze_fixtures.py": "96a57f6863f9f6b7ab5f29c5c4837c999b7fe89633588948a425ff2637f81d3b",
+        "tools/finite_spatial_smt/qcp_import.py": "6eefa648e7806f8d1e863e67feecd580a6cce37bb6581837ead9a58e5b2889ac",
+        "tools/finite_spatial_smt/replay_corpus.py": "1dd0752df2224547e6cabe346f7d2e9828e47333272f7645aee95d7c033fc1c0",
+        "tools/finite_spatial_smt/run_unit_tests.py": "2f23b4550b1835bfc451f383c63ed671d4f73bfec50ecfc804812495b6a959d7",
+        "tools/finite_spatial_smt/scan_history.py": "e8978b05c8c50960c7ab147007e09fdcff01db1f5ba25fe07a41a41fdb6620a8",
+        "tools/finite_spatial_smt/test_finite_spatial_smt.py": "14397583ee53308a233580ef10ee60f7a09411419bcd6a969426c770e74309fb",
+        "tools/finite_spatial_smt/test_historical.py": "6cb0f3700a8acdb24263a87c2e069264c1bf43ca3b5ff60db4083d19ad8ba905"
+      },
+      "python_version": "3.10.12 (main, Aug 31 2026, 10:18:17) [GCC 11.4.0]",
+      "z3_solver_installed_version": "4.13.3.0",
+      "scope": "Evaluator and optional spatial backend source identities; binary/runtime/input hashes are recorded by each execution.",
+      "capture_mode": "BEFORE_MEASUREMENTS"
+    }
+  },
+  "runs": [
+    {
+      "variant": "cn_original:mergesort",
+      "paired_qcp_variant": "qcp_existing:480d4273c94f321477a8",
+      "case": "IntList_nil_0",
+      "initial": {
+        "list": [],
+        "second_list": null
+      },
+      "expected": "PASS",
+      "plan_case": {
+        "id": "IntList_nil_0",
+        "value": {
+          "list": [],
+          "second_list": null
+        },
+        "expected": "PASS",
+        "cn_body": "struct int_list *z=IntList_nil(); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+        "binds": {
+          "args": {},
+          "values": {}
+        },
+        "precondition_valid": true,
+        "oracle": {
+          "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+          "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+          "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+        }
+      },
+      "cn_source_sha256": "8c5d2e198f722b12a1dacc76e09955f58d25cc1ee068294b48896dd20d659018",
+      "qcp_source_sha256": "480d4273c94f321477a8db14aeec507b9b2f3a167e20bbbd0a49698f11bd4bd1",
+      "harness": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_nil_0/fulminate.cn.c",
+      "harness_sha256": "89b3bfaf706f83ce639fac406ddc1f3e6e51b6a0ac717a20a8e340bfd07149d1",
+      "binds": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_nil_0/binds.json",
+      "binds_sha256": "0eb6b49ba36be957a70b316d9d4aad87f9e9ed3430139989b792173d6e28d0a1",
+      "precondition_valid": true,
+      "fulminate_pipeline": {
+        "command": [
+          "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+          "instrument",
+          "--run",
+          "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+          "--output-dir=/tmp/tespec-group-e2lat2yi",
+          "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_nil_0/fulminate.cn.c"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.06455936300335452,
+        "resources": {
+          "max_process_rss_kib": 44500,
+          "user_seconds": 0.02,
+          "system_seconds": 0.01
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_nil_0/fulminate-pipeline/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_nil_0/fulminate-pipeline/stderr.log"
+      },
+      "instrumented_sources": [],
+      "fulminate_test": {
+        "status": "NOT_BUILT",
+        "wall_seconds": null,
+        "resources": null,
+        "tokens": 0,
+        "model_calls": 0
+      },
+      "tespec_off": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_nil",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_nil_0/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_nil_0/tespec-off/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--no-spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 0,
+        "wall_seconds": 0.16477282499545254,
+        "resources": {
+          "max_process_rss_kib": 19916,
+          "user_seconds": 0.08,
+          "system_seconds": 0.04
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_nil_0/tespec-off/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_nil_0/tespec-off/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_nil_0/tespec-off/artifacts/report.json",
+        "statuses": [
+          "PASS"
+        ],
+        "status": "PASS"
+      },
+      "tespec_on": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_nil",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_nil_0/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_nil_0/tespec-on/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 0,
+        "wall_seconds": 0.16482785700645763,
+        "resources": {
+          "max_process_rss_kib": 19808,
+          "user_seconds": 0.07,
+          "system_seconds": 0.04
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_nil_0/tespec-on/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_nil_0/tespec-on/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_nil_0/tespec-on/artifacts/report.json",
+        "statuses": [
+          "PASS"
+        ],
+        "status": "PASS"
+      },
+      "runtime_dependency_fixtures": []
+    },
+    {
+      "variant": "cn_original:mergesort",
+      "paired_qcp_variant": "qcp_existing:480d4273c94f321477a8",
+      "case": "IntList_cons_0",
+      "initial": {
+        "list": [],
+        "second_list": null
+      },
+      "expected": "PASS",
+      "plan_case": {
+        "id": "IntList_cons_0",
+        "value": {
+          "list": [],
+          "second_list": null
+        },
+        "expected": "PASS",
+        "cn_body": "struct int_list *xs=0; struct int_list *z=IntList_cons(7,xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+        "binds": {
+          "args": {
+            "h": 7,
+            "t": 0
+          },
+          "values": {
+            "l": []
+          }
+        },
+        "precondition_valid": true,
+        "oracle": {
+          "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+          "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+          "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+        }
+      },
+      "cn_source_sha256": "8c5d2e198f722b12a1dacc76e09955f58d25cc1ee068294b48896dd20d659018",
+      "qcp_source_sha256": "480d4273c94f321477a8db14aeec507b9b2f3a167e20bbbd0a49698f11bd4bd1",
+      "harness": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_cons_0/fulminate.cn.c",
+      "harness_sha256": "c1a24edec13e11598a8a16d58a3955493c674a1777ee1cfd63508ae78e868236",
+      "binds": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_cons_0/binds.json",
+      "binds_sha256": "37ac0e3f2bb52e1fe772db503657498c669c01b8e01ceaebe7575ca2e46e5fc5",
+      "precondition_valid": true,
+      "fulminate_pipeline": {
+        "command": [
+          "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+          "instrument",
+          "--run",
+          "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+          "--output-dir=/tmp/tespec-group-kax87fv1",
+          "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_cons_0/fulminate.cn.c"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.06454543300787918,
+        "resources": {
+          "max_process_rss_kib": 44856,
+          "user_seconds": 0.01,
+          "system_seconds": 0.01
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_0/fulminate-pipeline/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_0/fulminate-pipeline/stderr.log"
+      },
+      "instrumented_sources": [],
+      "fulminate_test": {
+        "status": "NOT_BUILT",
+        "wall_seconds": null,
+        "resources": null,
+        "tokens": 0,
+        "model_calls": 0
+      },
+      "tespec_off": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_cons",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_cons_0/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_0/tespec-off/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--no-spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.16498714400222525,
+        "resources": {
+          "max_process_rss_kib": 20092,
+          "user_seconds": 0.09,
+          "system_seconds": 0.03
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_0/tespec-off/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_0/tespec-off/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_0/tespec-off/artifacts/report.json",
+        "statuses": [
+          "UNKNOWN"
+        ],
+        "status": "UNKNOWN"
+      },
+      "tespec_on": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_cons",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_cons_0/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_0/tespec-on/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.16485395999916364,
+        "resources": {
+          "max_process_rss_kib": 19856,
+          "user_seconds": 0.1,
+          "system_seconds": 0.02
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_0/tespec-on/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_0/tespec-on/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_0/tespec-on/artifacts/report.json",
+        "statuses": [
+          "UNKNOWN"
+        ],
+        "status": "UNKNOWN"
+      },
+      "runtime_dependency_fixtures": []
+    },
+    {
+      "variant": "cn_original:mergesort",
+      "paired_qcp_variant": "qcp_existing:480d4273c94f321477a8",
+      "case": "IntList_cons_1",
+      "initial": {
+        "list": [
+          1
+        ],
+        "second_list": null
+      },
+      "expected": "PASS",
+      "plan_case": {
+        "id": "IntList_cons_1",
+        "value": {
+          "list": [
+            1
+          ],
+          "second_list": null
+        },
+        "expected": "PASS",
+        "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=1; xs0->tail=xs; xs=xs0; struct int_list *z=IntList_cons((-2147483647 - 1),xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+        "binds": {
+          "args": {
+            "h": -2147483648,
+            "t": 8192
+          },
+          "values": {
+            "l": [
+              1
+            ]
+          }
+        },
+        "precondition_valid": true,
+        "oracle": {
+          "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+          "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+          "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+        }
+      },
+      "cn_source_sha256": "8c5d2e198f722b12a1dacc76e09955f58d25cc1ee068294b48896dd20d659018",
+      "qcp_source_sha256": "480d4273c94f321477a8db14aeec507b9b2f3a167e20bbbd0a49698f11bd4bd1",
+      "harness": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_cons_1/fulminate.cn.c",
+      "harness_sha256": "839fb2d000841b9c1c9a721743dced0e5be9641bd6a0839e491a3287df2ba04b",
+      "binds": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_cons_1/binds.json",
+      "binds_sha256": "c3a3c76cbc80a96351953a753c9359fa8e4d03792d18a8dc95aa478a5f9bddef",
+      "precondition_valid": true,
+      "fulminate_pipeline": {
+        "command": [
+          "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+          "instrument",
+          "--run",
+          "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+          "--output-dir=/tmp/tespec-group-md1_8p2_",
+          "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_cons_1/fulminate.cn.c"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.06460248000803404,
+        "resources": {
+          "max_process_rss_kib": 44992,
+          "user_seconds": 0.02,
+          "system_seconds": 0.0
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_1/fulminate-pipeline/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_1/fulminate-pipeline/stderr.log"
+      },
+      "instrumented_sources": [],
+      "fulminate_test": {
+        "status": "NOT_BUILT",
+        "wall_seconds": null,
+        "resources": null,
+        "tokens": 0,
+        "model_calls": 0
+      },
+      "tespec_off": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_cons",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_cons_1/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_1/tespec-off/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--no-spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.1648725410050247,
+        "resources": {
+          "max_process_rss_kib": 20108,
+          "user_seconds": 0.09,
+          "system_seconds": 0.03
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_1/tespec-off/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_1/tespec-off/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_1/tespec-off/artifacts/report.json",
+        "statuses": [
+          "UNKNOWN"
+        ],
+        "status": "UNKNOWN"
+      },
+      "tespec_on": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_cons",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_cons_1/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_1/tespec-on/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.1648761039978126,
+        "resources": {
+          "max_process_rss_kib": 19960,
+          "user_seconds": 0.07,
+          "system_seconds": 0.04
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_1/tespec-on/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_1/tespec-on/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_1/tespec-on/artifacts/report.json",
+        "statuses": [
+          "UNKNOWN"
+        ],
+        "status": "UNKNOWN"
+      },
+      "runtime_dependency_fixtures": []
+    },
+    {
+      "variant": "cn_original:mergesort",
+      "paired_qcp_variant": "qcp_existing:480d4273c94f321477a8",
+      "case": "IntList_cons_2",
+      "initial": {
+        "list": [
+          2,
+          -1
+        ],
+        "second_list": null
+      },
+      "expected": "PASS",
+      "plan_case": {
+        "id": "IntList_cons_2",
+        "value": {
+          "list": [
+            2,
+            -1
+          ],
+          "second_list": null
+        },
+        "expected": "PASS",
+        "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=-1; xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=2; xs1->tail=xs; xs=xs1; struct int_list *z=IntList_cons(2147483647,xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+        "binds": {
+          "args": {
+            "h": 2147483647,
+            "t": 8192
+          },
+          "values": {
+            "l": [
+              2,
+              -1
+            ]
+          }
+        },
+        "precondition_valid": true,
+        "oracle": {
+          "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+          "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+          "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+        }
+      },
+      "cn_source_sha256": "8c5d2e198f722b12a1dacc76e09955f58d25cc1ee068294b48896dd20d659018",
+      "qcp_source_sha256": "480d4273c94f321477a8db14aeec507b9b2f3a167e20bbbd0a49698f11bd4bd1",
+      "harness": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_cons_2/fulminate.cn.c",
+      "harness_sha256": "f566abd89813eb52af291f64f14ec723c9e6e7fe322828d4a3591805e4d8df9a",
+      "binds": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_cons_2/binds.json",
+      "binds_sha256": "8e77b0a5c052ea85baff95a8396e57fd08d2bbc086ed0f0a062b251aa03b8318",
+      "precondition_valid": true,
+      "fulminate_pipeline": {
+        "command": [
+          "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+          "instrument",
+          "--run",
+          "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+          "--output-dir=/tmp/tespec-group-q5cydwch",
+          "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_cons_2/fulminate.cn.c"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.06454743999347556,
+        "resources": {
+          "max_process_rss_kib": 44588,
+          "user_seconds": 0.01,
+          "system_seconds": 0.01
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_2/fulminate-pipeline/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_2/fulminate-pipeline/stderr.log"
+      },
+      "instrumented_sources": [],
+      "fulminate_test": {
+        "status": "NOT_BUILT",
+        "wall_seconds": null,
+        "resources": null,
+        "tokens": 0,
+        "model_calls": 0
+      },
+      "tespec_off": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_cons",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_cons_2/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_2/tespec-off/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--no-spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.16481106900027953,
+        "resources": {
+          "max_process_rss_kib": 19944,
+          "user_seconds": 0.08,
+          "system_seconds": 0.03
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_2/tespec-off/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_2/tespec-off/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_2/tespec-off/artifacts/report.json",
+        "statuses": [
+          "UNKNOWN"
+        ],
+        "status": "UNKNOWN"
+      },
+      "tespec_on": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_cons",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_cons_2/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_2/tespec-on/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.16494161399896257,
+        "resources": {
+          "max_process_rss_kib": 19856,
+          "user_seconds": 0.08,
+          "system_seconds": 0.03
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_2/tespec-on/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_2/tespec-on/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_2/tespec-on/artifacts/report.json",
+        "statuses": [
+          "UNKNOWN"
+        ],
+        "status": "UNKNOWN"
+      },
+      "runtime_dependency_fixtures": []
+    },
+    {
+      "variant": "cn_original:mergesort",
+      "paired_qcp_variant": "qcp_existing:480d4273c94f321477a8",
+      "case": "IntList_cons_3",
+      "initial": {
+        "list": [
+          2147483647,
+          0,
+          -2147483648
+        ],
+        "second_list": null
+      },
+      "expected": "PASS",
+      "plan_case": {
+        "id": "IntList_cons_3",
+        "value": {
+          "list": [
+            2147483647,
+            0,
+            -2147483648
+          ],
+          "second_list": null
+        },
+        "expected": "PASS",
+        "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=(-2147483647 - 1); xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=0; xs1->tail=xs; xs=xs1; struct int_list *xs2=cn_malloc(sizeof(struct int_list)); xs2->head=2147483647; xs2->tail=xs; xs=xs2; struct int_list *z=IntList_cons(-1,xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+        "binds": {
+          "args": {
+            "h": -1,
+            "t": 8192
+          },
+          "values": {
+            "l": [
+              2147483647,
+              0,
+              -2147483648
+            ]
+          }
+        },
+        "precondition_valid": true,
+        "oracle": {
+          "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+          "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+          "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+        }
+      },
+      "cn_source_sha256": "8c5d2e198f722b12a1dacc76e09955f58d25cc1ee068294b48896dd20d659018",
+      "qcp_source_sha256": "480d4273c94f321477a8db14aeec507b9b2f3a167e20bbbd0a49698f11bd4bd1",
+      "harness": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_cons_3/fulminate.cn.c",
+      "harness_sha256": "292d14fd4ec2df2ec1b0996721d9f6fd7d3ac1c63761e427b99dd68fc503d506",
+      "binds": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_cons_3/binds.json",
+      "binds_sha256": "3142d1cec2c47128d9833d3a9b49f198b9ce408da76daba7b6d6ea482916e7c8",
+      "precondition_valid": true,
+      "fulminate_pipeline": {
+        "command": [
+          "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+          "instrument",
+          "--run",
+          "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+          "--output-dir=/tmp/tespec-group-lpz15qj6",
+          "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_cons_3/fulminate.cn.c"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.06452344899298623,
+        "resources": {
+          "max_process_rss_kib": 44436,
+          "user_seconds": 0.01,
+          "system_seconds": 0.01
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_3/fulminate-pipeline/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_3/fulminate-pipeline/stderr.log"
+      },
+      "instrumented_sources": [],
+      "fulminate_test": {
+        "status": "NOT_BUILT",
+        "wall_seconds": null,
+        "resources": null,
+        "tokens": 0,
+        "model_calls": 0
+      },
+      "tespec_off": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_cons",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_cons_3/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_3/tespec-off/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--no-spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.16506119800033048,
+        "resources": {
+          "max_process_rss_kib": 19948,
+          "user_seconds": 0.07,
+          "system_seconds": 0.05
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_3/tespec-off/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_3/tespec-off/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_3/tespec-off/artifacts/report.json",
+        "statuses": [
+          "UNKNOWN"
+        ],
+        "status": "UNKNOWN"
+      },
+      "tespec_on": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_cons",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_cons_3/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_3/tespec-on/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.1649409370002104,
+        "resources": {
+          "max_process_rss_kib": 19884,
+          "user_seconds": 0.08,
+          "system_seconds": 0.03
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_3/tespec-on/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_3/tespec-on/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_cons_3/tespec-on/artifacts/report.json",
+        "statuses": [
+          "UNKNOWN"
+        ],
+        "status": "UNKNOWN"
+      },
+      "runtime_dependency_fixtures": []
+    },
+    {
+      "variant": "cn_original:mergesort",
+      "paired_qcp_variant": "qcp_existing:480d4273c94f321477a8",
+      "case": "IntList_split_0",
+      "initial": {
+        "list": [],
+        "second_list": null
+      },
+      "expected": "PASS",
+      "plan_case": {
+        "id": "IntList_split_0",
+        "value": {
+          "list": [],
+          "second_list": null
+        },
+        "expected": "PASS",
+        "cn_body": "struct int_list *xs=0; struct int_list_pair z=IntList_split(xs); struct int_list *left=z.fst; struct int_list *right=z.snd; while(left!=0) { struct int_list *next_left=left->tail; cn_free_sized(left,sizeof(struct int_list)); left=next_left; } while(right!=0) { struct int_list *next_right=right->tail; cn_free_sized(right,sizeof(struct int_list)); right=next_right; }",
+        "binds": {
+          "args": {
+            "xs": 0
+          },
+          "values": {
+            "l": []
+          }
+        },
+        "precondition_valid": true,
+        "oracle": {
+          "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+          "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+          "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+        }
+      },
+      "cn_source_sha256": "8c5d2e198f722b12a1dacc76e09955f58d25cc1ee068294b48896dd20d659018",
+      "qcp_source_sha256": "480d4273c94f321477a8db14aeec507b9b2f3a167e20bbbd0a49698f11bd4bd1",
+      "harness": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_split_0/fulminate.cn.c",
+      "harness_sha256": "f31e4c5637e0c1f902d8cbac9d5ecb1c4838cd68a0601f1cf4284258e3687e63",
+      "binds": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_split_0/binds.json",
+      "binds_sha256": "b2759f130d4c5b182224d4430d587adfedc99e0d83b7d5ea8e3b3bf6d1f13929",
+      "precondition_valid": true,
+      "fulminate_pipeline": {
+        "command": [
+          "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+          "instrument",
+          "--run",
+          "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+          "--output-dir=/tmp/tespec-group-l29pcfbb",
+          "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_split_0/fulminate.cn.c"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.06449023800087161,
+        "resources": {
+          "max_process_rss_kib": 44440,
+          "user_seconds": 0.01,
+          "system_seconds": 0.01
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_0/fulminate-pipeline/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_0/fulminate-pipeline/stderr.log"
+      },
+      "instrumented_sources": [],
+      "fulminate_test": {
+        "status": "NOT_BUILT",
+        "wall_seconds": null,
+        "resources": null,
+        "tokens": 0,
+        "model_calls": 0
+      },
+      "tespec_off": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_split",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_split_0/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_0/tespec-off/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--no-spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.16487648199836258,
+        "resources": {
+          "max_process_rss_kib": 19852,
+          "user_seconds": 0.08,
+          "system_seconds": 0.04
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_0/tespec-off/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_0/tespec-off/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_0/tespec-off/artifacts/report.json",
+        "statuses": [
+          "ERROR"
+        ],
+        "status": "ERROR"
+      },
+      "tespec_on": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_split",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_split_0/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_0/tespec-on/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.16503146800096147,
+        "resources": {
+          "max_process_rss_kib": 19948,
+          "user_seconds": 0.07,
+          "system_seconds": 0.05
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_0/tespec-on/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_0/tespec-on/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_0/tespec-on/artifacts/report.json",
+        "statuses": [
+          "ERROR"
+        ],
+        "status": "ERROR"
+      },
+      "runtime_dependency_fixtures": []
+    },
+    {
+      "variant": "cn_original:mergesort",
+      "paired_qcp_variant": "qcp_existing:480d4273c94f321477a8",
+      "case": "IntList_split_1",
+      "initial": {
+        "list": [
+          1
+        ],
+        "second_list": null
+      },
+      "expected": "PASS",
+      "plan_case": {
+        "id": "IntList_split_1",
+        "value": {
+          "list": [
+            1
+          ],
+          "second_list": null
+        },
+        "expected": "PASS",
+        "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=1; xs0->tail=xs; xs=xs0; struct int_list_pair z=IntList_split(xs); struct int_list *left=z.fst; struct int_list *right=z.snd; while(left!=0) { struct int_list *next_left=left->tail; cn_free_sized(left,sizeof(struct int_list)); left=next_left; } while(right!=0) { struct int_list *next_right=right->tail; cn_free_sized(right,sizeof(struct int_list)); right=next_right; }",
+        "binds": {
+          "args": {
+            "xs": 8192
+          },
+          "values": {
+            "l": [
+              1
+            ]
+          }
+        },
+        "precondition_valid": true,
+        "oracle": {
+          "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+          "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+          "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+        }
+      },
+      "cn_source_sha256": "8c5d2e198f722b12a1dacc76e09955f58d25cc1ee068294b48896dd20d659018",
+      "qcp_source_sha256": "480d4273c94f321477a8db14aeec507b9b2f3a167e20bbbd0a49698f11bd4bd1",
+      "harness": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_split_1/fulminate.cn.c",
+      "harness_sha256": "21b17c6adc631de47af07360eb4c212865e6d63a93054eaac6ef2afe7cb6858a",
+      "binds": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_split_1/binds.json",
+      "binds_sha256": "2e0290877395455ef06b1bab64ba0e03ccbe89bb8dc8902722331da34cd4e230",
+      "precondition_valid": true,
+      "fulminate_pipeline": {
+        "command": [
+          "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+          "instrument",
+          "--run",
+          "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+          "--output-dir=/tmp/tespec-group-laslf3k6",
+          "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_split_1/fulminate.cn.c"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.06444462599756662,
+        "resources": {
+          "max_process_rss_kib": 44580,
+          "user_seconds": 0.02,
+          "system_seconds": 0.0
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_1/fulminate-pipeline/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_1/fulminate-pipeline/stderr.log"
+      },
+      "instrumented_sources": [],
+      "fulminate_test": {
+        "status": "NOT_BUILT",
+        "wall_seconds": null,
+        "resources": null,
+        "tokens": 0,
+        "model_calls": 0
+      },
+      "tespec_off": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_split",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_split_1/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_1/tespec-off/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--no-spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.164963937990251,
+        "resources": {
+          "max_process_rss_kib": 19948,
+          "user_seconds": 0.08,
+          "system_seconds": 0.04
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_1/tespec-off/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_1/tespec-off/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_1/tespec-off/artifacts/report.json",
+        "statuses": [
+          "ERROR"
+        ],
+        "status": "ERROR"
+      },
+      "tespec_on": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_split",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_split_1/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_1/tespec-on/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.16480887299985625,
+        "resources": {
+          "max_process_rss_kib": 19908,
+          "user_seconds": 0.09,
+          "system_seconds": 0.02
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_1/tespec-on/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_1/tespec-on/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_1/tespec-on/artifacts/report.json",
+        "statuses": [
+          "ERROR"
+        ],
+        "status": "ERROR"
+      },
+      "runtime_dependency_fixtures": []
+    },
+    {
+      "variant": "cn_original:mergesort",
+      "paired_qcp_variant": "qcp_existing:480d4273c94f321477a8",
+      "case": "IntList_split_2",
+      "initial": {
+        "list": [
+          2,
+          -1
+        ],
+        "second_list": null
+      },
+      "expected": "PASS",
+      "plan_case": {
+        "id": "IntList_split_2",
+        "value": {
+          "list": [
+            2,
+            -1
+          ],
+          "second_list": null
+        },
+        "expected": "PASS",
+        "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=-1; xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=2; xs1->tail=xs; xs=xs1; struct int_list_pair z=IntList_split(xs); struct int_list *left=z.fst; struct int_list *right=z.snd; while(left!=0) { struct int_list *next_left=left->tail; cn_free_sized(left,sizeof(struct int_list)); left=next_left; } while(right!=0) { struct int_list *next_right=right->tail; cn_free_sized(right,sizeof(struct int_list)); right=next_right; }",
+        "binds": {
+          "args": {
+            "xs": 8192
+          },
+          "values": {
+            "l": [
+              2,
+              -1
+            ]
+          }
+        },
+        "precondition_valid": true,
+        "oracle": {
+          "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+          "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+          "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+        }
+      },
+      "cn_source_sha256": "8c5d2e198f722b12a1dacc76e09955f58d25cc1ee068294b48896dd20d659018",
+      "qcp_source_sha256": "480d4273c94f321477a8db14aeec507b9b2f3a167e20bbbd0a49698f11bd4bd1",
+      "harness": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_split_2/fulminate.cn.c",
+      "harness_sha256": "f2814a6cce6353e3d8badaed726677759841e8018c73fba5b382b30821ea5f88",
+      "binds": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_split_2/binds.json",
+      "binds_sha256": "3aaf1077709e27f3cf28a088275f5ebac9e6aed4a19f465deeb0da88b7b91d3b",
+      "precondition_valid": true,
+      "fulminate_pipeline": {
+        "command": [
+          "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+          "instrument",
+          "--run",
+          "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+          "--output-dir=/tmp/tespec-group-r2brri_4",
+          "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_split_2/fulminate.cn.c"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.06456577499920968,
+        "resources": {
+          "max_process_rss_kib": 44764,
+          "user_seconds": 0.02,
+          "system_seconds": 0.01
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_2/fulminate-pipeline/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_2/fulminate-pipeline/stderr.log"
+      },
+      "instrumented_sources": [],
+      "fulminate_test": {
+        "status": "NOT_BUILT",
+        "wall_seconds": null,
+        "resources": null,
+        "tokens": 0,
+        "model_calls": 0
+      },
+      "tespec_off": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_split",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_split_2/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_2/tespec-off/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--no-spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.1647276699950453,
+        "resources": {
+          "max_process_rss_kib": 19848,
+          "user_seconds": 0.09,
+          "system_seconds": 0.03
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_2/tespec-off/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_2/tespec-off/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_2/tespec-off/artifacts/report.json",
+        "statuses": [
+          "ERROR"
+        ],
+        "status": "ERROR"
+      },
+      "tespec_on": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_split",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_split_2/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_2/tespec-on/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.164873756992165,
+        "resources": {
+          "max_process_rss_kib": 19928,
+          "user_seconds": 0.07,
+          "system_seconds": 0.04
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_2/tespec-on/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_2/tespec-on/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_2/tespec-on/artifacts/report.json",
+        "statuses": [
+          "ERROR"
+        ],
+        "status": "ERROR"
+      },
+      "runtime_dependency_fixtures": []
+    },
+    {
+      "variant": "cn_original:mergesort",
+      "paired_qcp_variant": "qcp_existing:480d4273c94f321477a8",
+      "case": "IntList_split_3",
+      "initial": {
+        "list": [
+          2147483647,
+          0,
+          -2147483648
+        ],
+        "second_list": null
+      },
+      "expected": "PASS",
+      "plan_case": {
+        "id": "IntList_split_3",
+        "value": {
+          "list": [
+            2147483647,
+            0,
+            -2147483648
+          ],
+          "second_list": null
+        },
+        "expected": "PASS",
+        "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=(-2147483647 - 1); xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=0; xs1->tail=xs; xs=xs1; struct int_list *xs2=cn_malloc(sizeof(struct int_list)); xs2->head=2147483647; xs2->tail=xs; xs=xs2; struct int_list_pair z=IntList_split(xs); struct int_list *left=z.fst; struct int_list *right=z.snd; while(left!=0) { struct int_list *next_left=left->tail; cn_free_sized(left,sizeof(struct int_list)); left=next_left; } while(right!=0) { struct int_list *next_right=right->tail; cn_free_sized(right,sizeof(struct int_list)); right=next_right; }",
+        "binds": {
+          "args": {
+            "xs": 8192
+          },
+          "values": {
+            "l": [
+              2147483647,
+              0,
+              -2147483648
+            ]
+          }
+        },
+        "precondition_valid": true,
+        "oracle": {
+          "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+          "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+          "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+        }
+      },
+      "cn_source_sha256": "8c5d2e198f722b12a1dacc76e09955f58d25cc1ee068294b48896dd20d659018",
+      "qcp_source_sha256": "480d4273c94f321477a8db14aeec507b9b2f3a167e20bbbd0a49698f11bd4bd1",
+      "harness": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_split_3/fulminate.cn.c",
+      "harness_sha256": "530e1453d8c71e73f661a22f1a4846e02a4996c0f5a80814f4991ccbcaeda56b",
+      "binds": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_split_3/binds.json",
+      "binds_sha256": "7f6bb6d3e1379d9b6f9e53b743d48629f0834a77a4a248ed7b27dc2df7279fb0",
+      "precondition_valid": true,
+      "fulminate_pipeline": {
+        "command": [
+          "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+          "instrument",
+          "--run",
+          "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+          "--output-dir=/tmp/tespec-group-74048tj2",
+          "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_split_3/fulminate.cn.c"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.06438131700269878,
+        "resources": {
+          "max_process_rss_kib": 45340,
+          "user_seconds": 0.0,
+          "system_seconds": 0.02
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_3/fulminate-pipeline/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_3/fulminate-pipeline/stderr.log"
+      },
+      "instrumented_sources": [],
+      "fulminate_test": {
+        "status": "NOT_BUILT",
+        "wall_seconds": null,
+        "resources": null,
+        "tokens": 0,
+        "model_calls": 0
+      },
+      "tespec_off": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_split",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_split_3/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_3/tespec-off/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--no-spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.16475942698889412,
+        "resources": {
+          "max_process_rss_kib": 19748,
+          "user_seconds": 0.08,
+          "system_seconds": 0.04
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_3/tespec-off/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_3/tespec-off/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_3/tespec-off/artifacts/report.json",
+        "statuses": [
+          "ERROR"
+        ],
+        "status": "ERROR"
+      },
+      "tespec_on": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_split",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_split_3/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_3/tespec-on/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.16484485600085463,
+        "resources": {
+          "max_process_rss_kib": 19828,
+          "user_seconds": 0.06,
+          "system_seconds": 0.05
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_3/tespec-on/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_3/tespec-on/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_split_3/tespec-on/artifacts/report.json",
+        "statuses": [
+          "ERROR"
+        ],
+        "status": "ERROR"
+      },
+      "runtime_dependency_fixtures": []
+    },
+    {
+      "variant": "cn_original:mergesort",
+      "paired_qcp_variant": "qcp_existing:480d4273c94f321477a8",
+      "case": "IntList_merge_0",
+      "initial": {
+        "list": [],
+        "second_list": [
+          1
+        ]
+      },
+      "expected": "PASS",
+      "plan_case": {
+        "id": "IntList_merge_0",
+        "value": {
+          "list": [],
+          "second_list": [
+            1
+          ]
+        },
+        "expected": "PASS",
+        "cn_body": "struct int_list *xs=0;struct int_list *ys=0; struct int_list *ys0=cn_malloc(sizeof(struct int_list)); ys0->head=1; ys0->tail=ys; ys=ys0; struct int_list *z=IntList_merge(xs,ys); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+        "binds": {
+          "args": {
+            "xs": 0,
+            "ys": 16384
+          },
+          "values": {
+            "l": [],
+            "r": [
+              1
+            ]
+          }
+        },
+        "precondition_valid": true,
+        "oracle": {
+          "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+          "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+          "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+        }
+      },
+      "cn_source_sha256": "8c5d2e198f722b12a1dacc76e09955f58d25cc1ee068294b48896dd20d659018",
+      "qcp_source_sha256": "480d4273c94f321477a8db14aeec507b9b2f3a167e20bbbd0a49698f11bd4bd1",
+      "harness": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_merge_0/fulminate.cn.c",
+      "harness_sha256": "789aaace66c385fab5630d6a7675f2075252a4e3b659ac8a440ec96f426cd8d5",
+      "binds": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_merge_0/binds.json",
+      "binds_sha256": "16a50299fe65449c44be05eefb93c7b8da5145d714e81341a3df0681d86f2baa",
+      "precondition_valid": true,
+      "fulminate_pipeline": {
+        "command": [
+          "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+          "instrument",
+          "--run",
+          "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+          "--output-dir=/tmp/tespec-group-k98ij8yb",
+          "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_merge_0/fulminate.cn.c"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.06454278099408839,
+        "resources": {
+          "max_process_rss_kib": 44820,
+          "user_seconds": 0.02,
+          "system_seconds": 0.01
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_0/fulminate-pipeline/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_0/fulminate-pipeline/stderr.log"
+      },
+      "instrumented_sources": [],
+      "fulminate_test": {
+        "status": "NOT_BUILT",
+        "wall_seconds": null,
+        "resources": null,
+        "tokens": 0,
+        "model_calls": 0
+      },
+      "tespec_off": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_merge",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_merge_0/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_0/tespec-off/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--no-spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.1649233099888079,
+        "resources": {
+          "max_process_rss_kib": 20000,
+          "user_seconds": 0.07,
+          "system_seconds": 0.05
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_0/tespec-off/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_0/tespec-off/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_0/tespec-off/artifacts/report.json",
+        "statuses": [
+          "UNKNOWN"
+        ],
+        "status": "UNKNOWN"
+      },
+      "tespec_on": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_merge",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_merge_0/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_0/tespec-on/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.16456480500346515,
+        "resources": {
+          "max_process_rss_kib": 19968,
+          "user_seconds": 0.09,
+          "system_seconds": 0.03
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_0/tespec-on/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_0/tespec-on/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_0/tespec-on/artifacts/report.json",
+        "statuses": [
+          "UNKNOWN"
+        ],
+        "status": "UNKNOWN"
+      },
+      "runtime_dependency_fixtures": []
+    },
+    {
+      "variant": "cn_original:mergesort",
+      "paired_qcp_variant": "qcp_existing:480d4273c94f321477a8",
+      "case": "IntList_merge_1",
+      "initial": {
+        "list": [
+          1
+        ],
+        "second_list": [
+          2,
+          -1
+        ]
+      },
+      "expected": "PASS",
+      "plan_case": {
+        "id": "IntList_merge_1",
+        "value": {
+          "list": [
+            1
+          ],
+          "second_list": [
+            2,
+            -1
+          ]
+        },
+        "expected": "PASS",
+        "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=1; xs0->tail=xs; xs=xs0;struct int_list *ys=0; struct int_list *ys0=cn_malloc(sizeof(struct int_list)); ys0->head=-1; ys0->tail=ys; ys=ys0; struct int_list *ys1=cn_malloc(sizeof(struct int_list)); ys1->head=2; ys1->tail=ys; ys=ys1; struct int_list *z=IntList_merge(xs,ys); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+        "binds": {
+          "args": {
+            "xs": 8192,
+            "ys": 16384
+          },
+          "values": {
+            "l": [
+              1
+            ],
+            "r": [
+              2,
+              -1
+            ]
+          }
+        },
+        "precondition_valid": true,
+        "oracle": {
+          "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+          "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+          "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+        }
+      },
+      "cn_source_sha256": "8c5d2e198f722b12a1dacc76e09955f58d25cc1ee068294b48896dd20d659018",
+      "qcp_source_sha256": "480d4273c94f321477a8db14aeec507b9b2f3a167e20bbbd0a49698f11bd4bd1",
+      "harness": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_merge_1/fulminate.cn.c",
+      "harness_sha256": "0607c948fcbe582ec5e2c4b015081cf5de7d0c5c35771f0208b7d483770589c4",
+      "binds": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_merge_1/binds.json",
+      "binds_sha256": "6d780fa489cf797226482c8703dde239db675c69b706f4096c73ffea6f215246",
+      "precondition_valid": true,
+      "fulminate_pipeline": {
+        "command": [
+          "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+          "instrument",
+          "--run",
+          "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+          "--output-dir=/tmp/tespec-group-apiaocfe",
+          "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_merge_1/fulminate.cn.c"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.06473030601046048,
+        "resources": {
+          "max_process_rss_kib": 44584,
+          "user_seconds": 0.02,
+          "system_seconds": 0.0
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_1/fulminate-pipeline/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_1/fulminate-pipeline/stderr.log"
+      },
+      "instrumented_sources": [],
+      "fulminate_test": {
+        "status": "NOT_BUILT",
+        "wall_seconds": null,
+        "resources": null,
+        "tokens": 0,
+        "model_calls": 0
+      },
+      "tespec_off": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_merge",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_merge_1/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_1/tespec-off/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--no-spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.16494528100884054,
+        "resources": {
+          "max_process_rss_kib": 20012,
+          "user_seconds": 0.09,
+          "system_seconds": 0.04
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_1/tespec-off/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_1/tespec-off/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_1/tespec-off/artifacts/report.json",
+        "statuses": [
+          "UNKNOWN"
+        ],
+        "status": "UNKNOWN"
+      },
+      "tespec_on": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_merge",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_merge_1/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_1/tespec-on/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.16466318801394664,
+        "resources": {
+          "max_process_rss_kib": 19836,
+          "user_seconds": 0.12,
+          "system_seconds": 0.01
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_1/tespec-on/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_1/tespec-on/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_1/tespec-on/artifacts/report.json",
+        "statuses": [
+          "UNKNOWN"
+        ],
+        "status": "UNKNOWN"
+      },
+      "runtime_dependency_fixtures": []
+    },
+    {
+      "variant": "cn_original:mergesort",
+      "paired_qcp_variant": "qcp_existing:480d4273c94f321477a8",
+      "case": "IntList_merge_2",
+      "initial": {
+        "list": [
+          2,
+          -1
+        ],
+        "second_list": [
+          2147483647,
+          0,
+          -2147483648
+        ]
+      },
+      "expected": "PASS",
+      "plan_case": {
+        "id": "IntList_merge_2",
+        "value": {
+          "list": [
+            2,
+            -1
+          ],
+          "second_list": [
+            2147483647,
+            0,
+            -2147483648
+          ]
+        },
+        "expected": "PASS",
+        "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=-1; xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=2; xs1->tail=xs; xs=xs1;struct int_list *ys=0; struct int_list *ys0=cn_malloc(sizeof(struct int_list)); ys0->head=(-2147483647 - 1); ys0->tail=ys; ys=ys0; struct int_list *ys1=cn_malloc(sizeof(struct int_list)); ys1->head=0; ys1->tail=ys; ys=ys1; struct int_list *ys2=cn_malloc(sizeof(struct int_list)); ys2->head=2147483647; ys2->tail=ys; ys=ys2; struct int_list *z=IntList_merge(xs,ys); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+        "binds": {
+          "args": {
+            "xs": 8192,
+            "ys": 16384
+          },
+          "values": {
+            "l": [
+              2,
+              -1
+            ],
+            "r": [
+              2147483647,
+              0,
+              -2147483648
+            ]
+          }
+        },
+        "precondition_valid": true,
+        "oracle": {
+          "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+          "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+          "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+        }
+      },
+      "cn_source_sha256": "8c5d2e198f722b12a1dacc76e09955f58d25cc1ee068294b48896dd20d659018",
+      "qcp_source_sha256": "480d4273c94f321477a8db14aeec507b9b2f3a167e20bbbd0a49698f11bd4bd1",
+      "harness": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_merge_2/fulminate.cn.c",
+      "harness_sha256": "1b4eecd604e6e5164405d7f797c07d9345f1e346fb5ebfb7d51a80549726b1e0",
+      "binds": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_merge_2/binds.json",
+      "binds_sha256": "f5805f48156da85afa0fd33c47ef143fb7a8da117ec485c16bb29819b43cacc4",
+      "precondition_valid": true,
+      "fulminate_pipeline": {
+        "command": [
+          "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+          "instrument",
+          "--run",
+          "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+          "--output-dir=/tmp/tespec-group-iv3_yjmu",
+          "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_merge_2/fulminate.cn.c"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.06446352200873662,
+        "resources": {
+          "max_process_rss_kib": 44972,
+          "user_seconds": 0.03,
+          "system_seconds": 0.0
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_2/fulminate-pipeline/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_2/fulminate-pipeline/stderr.log"
+      },
+      "instrumented_sources": [],
+      "fulminate_test": {
+        "status": "NOT_BUILT",
+        "wall_seconds": null,
+        "resources": null,
+        "tokens": 0,
+        "model_calls": 0
+      },
+      "tespec_off": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_merge",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_merge_2/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_2/tespec-off/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--no-spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.16468417800206225,
+        "resources": {
+          "max_process_rss_kib": 19988,
+          "user_seconds": 0.09,
+          "system_seconds": 0.05
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_2/tespec-off/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_2/tespec-off/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_2/tespec-off/artifacts/report.json",
+        "statuses": [
+          "UNKNOWN"
+        ],
+        "status": "UNKNOWN"
+      },
+      "tespec_on": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_merge",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_merge_2/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_2/tespec-on/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.16496751298836898,
+        "resources": {
+          "max_process_rss_kib": 19904,
+          "user_seconds": 0.1,
+          "system_seconds": 0.04
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_2/tespec-on/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_2/tespec-on/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_2/tespec-on/artifacts/report.json",
+        "statuses": [
+          "UNKNOWN"
+        ],
+        "status": "UNKNOWN"
+      },
+      "runtime_dependency_fixtures": []
+    },
+    {
+      "variant": "cn_original:mergesort",
+      "paired_qcp_variant": "qcp_existing:480d4273c94f321477a8",
+      "case": "IntList_merge_3",
+      "initial": {
+        "list": [
+          2147483647,
+          0,
+          -2147483648
+        ],
+        "second_list": []
+      },
+      "expected": "PASS",
+      "plan_case": {
+        "id": "IntList_merge_3",
+        "value": {
+          "list": [
+            2147483647,
+            0,
+            -2147483648
+          ],
+          "second_list": []
+        },
+        "expected": "PASS",
+        "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=(-2147483647 - 1); xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=0; xs1->tail=xs; xs=xs1; struct int_list *xs2=cn_malloc(sizeof(struct int_list)); xs2->head=2147483647; xs2->tail=xs; xs=xs2;struct int_list *ys=0; struct int_list *z=IntList_merge(xs,ys); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+        "binds": {
+          "args": {
+            "xs": 8192,
+            "ys": 0
+          },
+          "values": {
+            "l": [
+              2147483647,
+              0,
+              -2147483648
+            ],
+            "r": []
+          }
+        },
+        "precondition_valid": true,
+        "oracle": {
+          "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+          "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+          "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+        }
+      },
+      "cn_source_sha256": "8c5d2e198f722b12a1dacc76e09955f58d25cc1ee068294b48896dd20d659018",
+      "qcp_source_sha256": "480d4273c94f321477a8db14aeec507b9b2f3a167e20bbbd0a49698f11bd4bd1",
+      "harness": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_merge_3/fulminate.cn.c",
+      "harness_sha256": "5b321b8d2df5edb605762cfd681b90fc84c7f4eb9a8481eb18abade6c61dfef5",
+      "binds": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_merge_3/binds.json",
+      "binds_sha256": "c7e6142b7a67c8a0ec912bd33f8be26645cbd4cd2b7e41fb680e83ab46800b6d",
+      "precondition_valid": true,
+      "fulminate_pipeline": {
+        "command": [
+          "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+          "instrument",
+          "--run",
+          "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+          "--output-dir=/tmp/tespec-group-8zdymtif",
+          "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_merge_3/fulminate.cn.c"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.06456119599170052,
+        "resources": {
+          "max_process_rss_kib": 44848,
+          "user_seconds": 0.01,
+          "system_seconds": 0.01
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_3/fulminate-pipeline/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_3/fulminate-pipeline/stderr.log"
+      },
+      "instrumented_sources": [],
+      "fulminate_test": {
+        "status": "NOT_BUILT",
+        "wall_seconds": null,
+        "resources": null,
+        "tokens": 0,
+        "model_calls": 0
+      },
+      "tespec_off": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_merge",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_merge_3/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_3/tespec-off/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--no-spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.16465663599956315,
+        "resources": {
+          "max_process_rss_kib": 19864,
+          "user_seconds": 0.1,
+          "system_seconds": 0.03
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_3/tespec-off/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_3/tespec-off/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_3/tespec-off/artifacts/report.json",
+        "statuses": [
+          "UNKNOWN"
+        ],
+        "status": "UNKNOWN"
+      },
+      "tespec_on": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_merge",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_merge_3/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_3/tespec-on/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.1647969609912252,
+        "resources": {
+          "max_process_rss_kib": 19836,
+          "user_seconds": 0.08,
+          "system_seconds": 0.04
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_3/tespec-on/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_3/tespec-on/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_merge_3/tespec-on/artifacts/report.json",
+        "statuses": [
+          "UNKNOWN"
+        ],
+        "status": "UNKNOWN"
+      },
+      "runtime_dependency_fixtures": []
+    },
+    {
+      "variant": "cn_original:mergesort",
+      "paired_qcp_variant": "qcp_existing:480d4273c94f321477a8",
+      "case": "IntList_mergesort_0",
+      "initial": {
+        "list": [],
+        "second_list": null
+      },
+      "expected": "PASS",
+      "plan_case": {
+        "id": "IntList_mergesort_0",
+        "value": {
+          "list": [],
+          "second_list": null
+        },
+        "expected": "PASS",
+        "cn_body": "struct int_list *xs=0; struct int_list *z=IntList_mergesort(xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+        "binds": {
+          "args": {
+            "xs": 0
+          },
+          "values": {
+            "l": []
+          }
+        },
+        "precondition_valid": true,
+        "oracle": {
+          "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+          "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+          "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+        }
+      },
+      "cn_source_sha256": "8c5d2e198f722b12a1dacc76e09955f58d25cc1ee068294b48896dd20d659018",
+      "qcp_source_sha256": "480d4273c94f321477a8db14aeec507b9b2f3a167e20bbbd0a49698f11bd4bd1",
+      "harness": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_mergesort_0/fulminate.cn.c",
+      "harness_sha256": "ed58668d2c398b3522dc7b3a03588839ed23b959ed330d5e3e8d70af6e0afaba",
+      "binds": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_mergesort_0/binds.json",
+      "binds_sha256": "384f8f2250ff6681d4290842506e84dcd7f9c7c735675d02fe37715980210aa4",
+      "precondition_valid": true,
+      "fulminate_pipeline": {
+        "command": [
+          "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+          "instrument",
+          "--run",
+          "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+          "--output-dir=/tmp/tespec-group-6qdjbglv",
+          "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_mergesort_0/fulminate.cn.c"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.06449086399516091,
+        "resources": {
+          "max_process_rss_kib": 44640,
+          "user_seconds": 0.02,
+          "system_seconds": 0.01
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_0/fulminate-pipeline/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_0/fulminate-pipeline/stderr.log"
+      },
+      "instrumented_sources": [],
+      "fulminate_test": {
+        "status": "NOT_BUILT",
+        "wall_seconds": null,
+        "resources": null,
+        "tokens": 0,
+        "model_calls": 0
+      },
+      "tespec_off": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_mergesort",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_mergesort_0/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_0/tespec-off/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--no-spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.16476243500073906,
+        "resources": {
+          "max_process_rss_kib": 19944,
+          "user_seconds": 0.08,
+          "system_seconds": 0.04
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_0/tespec-off/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_0/tespec-off/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_0/tespec-off/artifacts/report.json",
+        "statuses": [
+          "ERROR"
+        ],
+        "status": "ERROR"
+      },
+      "tespec_on": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_mergesort",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_mergesort_0/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_0/tespec-on/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.16502289900381584,
+        "resources": {
+          "max_process_rss_kib": 19944,
+          "user_seconds": 0.07,
+          "system_seconds": 0.05
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_0/tespec-on/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_0/tespec-on/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_0/tespec-on/artifacts/report.json",
+        "statuses": [
+          "ERROR"
+        ],
+        "status": "ERROR"
+      },
+      "runtime_dependency_fixtures": []
+    },
+    {
+      "variant": "cn_original:mergesort",
+      "paired_qcp_variant": "qcp_existing:480d4273c94f321477a8",
+      "case": "IntList_mergesort_1",
+      "initial": {
+        "list": [
+          1
+        ],
+        "second_list": null
+      },
+      "expected": "PASS",
+      "plan_case": {
+        "id": "IntList_mergesort_1",
+        "value": {
+          "list": [
+            1
+          ],
+          "second_list": null
+        },
+        "expected": "PASS",
+        "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=1; xs0->tail=xs; xs=xs0; struct int_list *z=IntList_mergesort(xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+        "binds": {
+          "args": {
+            "xs": 8192
+          },
+          "values": {
+            "l": [
+              1
+            ]
+          }
+        },
+        "precondition_valid": true,
+        "oracle": {
+          "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+          "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+          "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+        }
+      },
+      "cn_source_sha256": "8c5d2e198f722b12a1dacc76e09955f58d25cc1ee068294b48896dd20d659018",
+      "qcp_source_sha256": "480d4273c94f321477a8db14aeec507b9b2f3a167e20bbbd0a49698f11bd4bd1",
+      "harness": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_mergesort_1/fulminate.cn.c",
+      "harness_sha256": "c1a7f47c372253dd32caa2c83099d71fc37bac0f879f3fb0355b55606ee7e744",
+      "binds": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_mergesort_1/binds.json",
+      "binds_sha256": "b5d19d12213010f2f112553c2eb5e69c329e62f44b8a866446e561bc36bce456",
+      "precondition_valid": true,
+      "fulminate_pipeline": {
+        "command": [
+          "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+          "instrument",
+          "--run",
+          "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+          "--output-dir=/tmp/tespec-group-pfqga0t5",
+          "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_mergesort_1/fulminate.cn.c"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.06455905600159895,
+        "resources": {
+          "max_process_rss_kib": 45312,
+          "user_seconds": 0.02,
+          "system_seconds": 0.01
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_1/fulminate-pipeline/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_1/fulminate-pipeline/stderr.log"
+      },
+      "instrumented_sources": [],
+      "fulminate_test": {
+        "status": "NOT_BUILT",
+        "wall_seconds": null,
+        "resources": null,
+        "tokens": 0,
+        "model_calls": 0
+      },
+      "tespec_off": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_mergesort",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_mergesort_1/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_1/tespec-off/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--no-spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.16520467300142627,
+        "resources": {
+          "max_process_rss_kib": 19932,
+          "user_seconds": 0.07,
+          "system_seconds": 0.04
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_1/tespec-off/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_1/tespec-off/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_1/tespec-off/artifacts/report.json",
+        "statuses": [
+          "ERROR"
+        ],
+        "status": "ERROR"
+      },
+      "tespec_on": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_mergesort",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_mergesort_1/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_1/tespec-on/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.1646737690025475,
+        "resources": {
+          "max_process_rss_kib": 19888,
+          "user_seconds": 0.08,
+          "system_seconds": 0.04
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_1/tespec-on/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_1/tespec-on/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_1/tespec-on/artifacts/report.json",
+        "statuses": [
+          "ERROR"
+        ],
+        "status": "ERROR"
+      },
+      "runtime_dependency_fixtures": []
+    },
+    {
+      "variant": "cn_original:mergesort",
+      "paired_qcp_variant": "qcp_existing:480d4273c94f321477a8",
+      "case": "IntList_mergesort_2",
+      "initial": {
+        "list": [
+          2,
+          -1
+        ],
+        "second_list": null
+      },
+      "expected": "PASS",
+      "plan_case": {
+        "id": "IntList_mergesort_2",
+        "value": {
+          "list": [
+            2,
+            -1
+          ],
+          "second_list": null
+        },
+        "expected": "PASS",
+        "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=-1; xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=2; xs1->tail=xs; xs=xs1; struct int_list *z=IntList_mergesort(xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+        "binds": {
+          "args": {
+            "xs": 8192
+          },
+          "values": {
+            "l": [
+              2,
+              -1
+            ]
+          }
+        },
+        "precondition_valid": true,
+        "oracle": {
+          "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+          "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+          "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+        }
+      },
+      "cn_source_sha256": "8c5d2e198f722b12a1dacc76e09955f58d25cc1ee068294b48896dd20d659018",
+      "qcp_source_sha256": "480d4273c94f321477a8db14aeec507b9b2f3a167e20bbbd0a49698f11bd4bd1",
+      "harness": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_mergesort_2/fulminate.cn.c",
+      "harness_sha256": "738702b10ee39188b2ccc1dc69289d0a69fc18e1f81cfafb3f12d4f619ad8dc4",
+      "binds": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_mergesort_2/binds.json",
+      "binds_sha256": "c87c12b38cc92271b1459d50d9af9ad7f41b568266a91e0a9f6d729d895af0f7",
+      "precondition_valid": true,
+      "fulminate_pipeline": {
+        "command": [
+          "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+          "instrument",
+          "--run",
+          "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+          "--output-dir=/tmp/tespec-group-izhd3su0",
+          "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_mergesort_2/fulminate.cn.c"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.06446589699771721,
+        "resources": {
+          "max_process_rss_kib": 45012,
+          "user_seconds": 0.01,
+          "system_seconds": 0.02
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_2/fulminate-pipeline/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_2/fulminate-pipeline/stderr.log"
+      },
+      "instrumented_sources": [],
+      "fulminate_test": {
+        "status": "NOT_BUILT",
+        "wall_seconds": null,
+        "resources": null,
+        "tokens": 0,
+        "model_calls": 0
+      },
+      "tespec_off": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_mergesort",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_mergesort_2/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_2/tespec-off/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--no-spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.16485908899630886,
+        "resources": {
+          "max_process_rss_kib": 20104,
+          "user_seconds": 0.08,
+          "system_seconds": 0.04
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_2/tespec-off/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_2/tespec-off/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_2/tespec-off/artifacts/report.json",
+        "statuses": [
+          "ERROR"
+        ],
+        "status": "ERROR"
+      },
+      "tespec_on": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_mergesort",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_mergesort_2/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_2/tespec-on/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.164825464002206,
+        "resources": {
+          "max_process_rss_kib": 20108,
+          "user_seconds": 0.09,
+          "system_seconds": 0.03
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_2/tespec-on/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_2/tespec-on/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_2/tespec-on/artifacts/report.json",
+        "statuses": [
+          "ERROR"
+        ],
+        "status": "ERROR"
+      },
+      "runtime_dependency_fixtures": []
+    },
+    {
+      "variant": "cn_original:mergesort",
+      "paired_qcp_variant": "qcp_existing:480d4273c94f321477a8",
+      "case": "IntList_mergesort_3",
+      "initial": {
+        "list": [
+          2147483647,
+          0,
+          -2147483648
+        ],
+        "second_list": null
+      },
+      "expected": "PASS",
+      "plan_case": {
+        "id": "IntList_mergesort_3",
+        "value": {
+          "list": [
+            2147483647,
+            0,
+            -2147483648
+          ],
+          "second_list": null
+        },
+        "expected": "PASS",
+        "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=(-2147483647 - 1); xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=0; xs1->tail=xs; xs=xs1; struct int_list *xs2=cn_malloc(sizeof(struct int_list)); xs2->head=2147483647; xs2->tail=xs; xs=xs2; struct int_list *z=IntList_mergesort(xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+        "binds": {
+          "args": {
+            "xs": 8192
+          },
+          "values": {
+            "l": [
+              2147483647,
+              0,
+              -2147483648
+            ]
+          }
+        },
+        "precondition_valid": true,
+        "oracle": {
+          "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+          "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+          "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+        }
+      },
+      "cn_source_sha256": "8c5d2e198f722b12a1dacc76e09955f58d25cc1ee068294b48896dd20d659018",
+      "qcp_source_sha256": "480d4273c94f321477a8db14aeec507b9b2f3a167e20bbbd0a49698f11bd4bd1",
+      "harness": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_mergesort_3/fulminate.cn.c",
+      "harness_sha256": "7085f4fbb98ea27627c5823e38e6e849be654b5df8515d9a93bad24966c15849",
+      "binds": "benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_mergesort_3/binds.json",
+      "binds_sha256": "fc6ca105104cfa86e119d150e676456c98a529974f48ed11512848ffc9b282bb",
+      "precondition_valid": true,
+      "fulminate_pipeline": {
+        "command": [
+          "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+          "instrument",
+          "--run",
+          "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+          "--output-dir=/tmp/tespec-group-zthfwgjy",
+          "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_mergesort_3/fulminate.cn.c"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.06434904600610025,
+        "resources": {
+          "max_process_rss_kib": 44960,
+          "user_seconds": 0.02,
+          "system_seconds": 0.01
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_3/fulminate-pipeline/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_3/fulminate-pipeline/stderr.log"
+      },
+      "instrumented_sources": [],
+      "fulminate_test": {
+        "status": "NOT_BUILT",
+        "wall_seconds": null,
+        "resources": null,
+        "tokens": 0,
+        "model_calls": 0
+      },
+      "tespec_off": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_mergesort",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_mergesort_3/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_3/tespec-off/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--no-spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.16469669100479223,
+        "resources": {
+          "max_process_rss_kib": 19912,
+          "user_seconds": 0.09,
+          "system_seconds": 0.03
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_3/tespec-off/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_3/tespec-off/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_3/tespec-off/artifacts/report.json",
+        "statuses": [
+          "UNKNOWN"
+        ],
+        "status": "UNKNOWN"
+      },
+      "tespec_on": {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+          "--function",
+          "IntList_mergesort",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/mergesort/variants/cn_original_mergesort/tests/20261016-evaluation/IntList_mergesort_3/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_3/tespec-on/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/merge-sort"
+        ],
+        "exit_code": 1,
+        "wall_seconds": 0.16470344299159478,
+        "resources": {
+          "max_process_rss_kib": 19936,
+          "user_seconds": 0.07,
+          "system_seconds": 0.05
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_3/tespec-on/stdout.log",
+        "stderr": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_3/tespec-on/stderr.log",
+        "report": "benchmark/results/mergesort/20261016-evaluation/cn_original_mergesort/IntList_mergesort_3/tespec-on/artifacts/report.json",
+        "statuses": [
+          "UNKNOWN"
+        ],
+        "status": "UNKNOWN"
+      },
+      "runtime_dependency_fixtures": []
+    }
+  ],
+  "summary": {
+    "configurations": 5,
+    "variant_language_records": 2,
+    "case_pairs": 17,
+    "expected": {
+      "PASS": 17
+    },
+    "fulminate_test": {
+      "statuses": {
+        "NOT_BUILT": 17
+      },
+      "expected_matches": 0
+    },
+    "tespec_off": {
+      "statuses": {
+        "PASS": 1,
+        "UNKNOWN": 9,
+        "ERROR": 7
+      },
+      "expected_matches": 1
+    },
+    "tespec_on": {
+      "statuses": {
+        "PASS": 1,
+        "UNKNOWN": 9,
+        "ERROR": 7
+      },
+      "expected_matches": 1
+    }
+  }
+}

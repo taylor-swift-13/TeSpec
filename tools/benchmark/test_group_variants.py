@@ -36,7 +36,7 @@ def main():
                 row=json.loads(cached.read_text());assert row['plan_case']==case;report['runs'].append(row);continue
             inp=vp.parent/'tests'/plan['run_id']/cid;inp.mkdir(parents=True,exist_ok=True)
             harness=inp/'fulminate.cn.c';harness.write_text(source+'\nint main(void) /*@ ensures return == 0i32; @*/ { '+case['cn_body']+' return 0; }\n')
-            binds=inp/'binds.json';save(binds,[dict(case['binds'],id=cid)])
+            binds=inp/'binds.json';save(binds,[dict(case['binds'],id=cid if re.fullmatch(r'[A-Za-z_]\w*',cid) else 'case_'+re.sub(r'\W','_',cid))])
             row={'variant':vid,'paired_qcp_variant':qid,'case':cid,'initial':case.get('value'),'expected':case['expected'],'plan_case':case,'cn_source_sha256':sha(cn),'qcp_source_sha256':sha(qcp),'harness':str(harness.relative_to(ROOT)),'harness_sha256':sha(harness),'binds':str(binds.relative_to(ROOT)),'binds_sha256':sha(binds),'precondition_valid':True}
             previous=reuse_rows.get((vid,cid))
             if previous:

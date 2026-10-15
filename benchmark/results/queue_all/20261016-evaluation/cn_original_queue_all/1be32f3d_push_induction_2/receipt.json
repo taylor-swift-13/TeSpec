@@ -1,0 +1,277 @@
+{
+  "variant": "cn_original:queue_all",
+  "paired_qcp_variant": "qcp_existing:1be32f3d3f9a7e3fda7d",
+  "case": "1be32f3d_push_induction_2",
+  "initial": {
+    "sequence": [
+      2,
+      -1
+    ],
+    "payload": 2147483647
+  },
+  "expected": "PASS",
+  "plan_case": {
+    "id": "1be32f3d_push_induction_2",
+    "value": {
+      "sequence": [
+        2,
+        -1
+      ],
+      "payload": 2147483647
+    },
+    "expected": "PASS",
+    "cn_body": "struct int_queueCell *front=0; struct int_queueCell *front0=cn_malloc(sizeof(struct int_queueCell)); front0->first=2147483647; front0->next=front; front=front0; struct int_queueCell *front1=cn_malloc(sizeof(struct int_queueCell)); front1->first=-1; front1->next=front; front=front1; struct int_queueCell *front2=cn_malloc(sizeof(struct int_queueCell)); front2->first=2; front2->next=front; front=front2; struct int_queueCell *p=front; while(p->next!=0) p=p->next; struct int_queueCell *endpoint=cn_malloc(sizeof(struct int_queueCell)); endpoint->first=0; endpoint->next=0; p->next=endpoint; push_induction(front,p); while(front!=0) { struct int_queueCell *next_front=front->next; cn_free_sized(front,sizeof(struct int_queueCell)); front=next_front; }",
+    "binds": {
+      "args": {
+        "front": 8192,
+        "p": 12288
+      },
+      "values": {
+        "v": 2147483647,
+        "y": 16384,
+        "l": [
+          2,
+          -1
+        ]
+      }
+    },
+    "precondition_valid": true,
+    "oracle": {
+      "legal_input": "Finite disjoint queue cells with null terminal next; nonempty only for pop. Queue4096, listroot8192. Segment helper has prefix root8192 (or p12288 for empty prefix), owned p12288 pointing to distinct non-null endpoint16384; front != endpoint, endpoint ownership framed separately.",
+      "mapping": "CN int_queueCell first/next maps to QCP list data/next where used; guarded translation keeps identical field names.",
+      "semantics": "FIFO pop returns first and leaves tail; push appends exactly payload; helper changes no bytes but extends owned segment endpoint logically. Existing supplied guard variants not assumed specification-equivalent on excluded alias states.",
+      "scope": "No-argument empty has one distinct entry. Only translated core bodies are paired; trusted assertion helpers, external alloc/free and original CN main have explicit unpaired coverage gap."
+    }
+  },
+  "cn_source_sha256": "6bfd5a175bc13f74fde51ff2e4e7cb210b67955a0e111c676fcc7791034ee7f3",
+  "qcp_source_sha256": "1be32f3d3f9a7e3fda7d5efc183fdd53643a22398d4ee9df6c5026f5e657d09a",
+  "harness": "benchmark/programs/queue_all/variants/cn_original_queue_all/tests/20261016-evaluation/1be32f3d_push_induction_2/fulminate.cn.c",
+  "harness_sha256": "3a7ecf969835c95e15ec64009dd53e044751f40148c04401cbf17cf121744a4d",
+  "binds": "benchmark/results/queue_all/20261016-evaluation/cn_original_queue_all/1be32f3d_push_induction_2/tespec-bind-id-repair-off/binds.json",
+  "binds_sha256": "f65d2320d5c60d193d49cbbc2760ad068511ca37398b9bba76d424b1fb7f5c50",
+  "precondition_valid": true,
+  "fulminate_pipeline": {
+    "command": [
+      "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+      "instrument",
+      "--run",
+      "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+      "--output-dir=/tmp/tespec-group-hldhgrez",
+      "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples",
+      "/home/yangfp/teSpec/benchmark/programs/queue_all/variants/cn_original_queue_all/tests/20261016-evaluation/1be32f3d_push_induction_2/fulminate.cn.c"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 0.06441074299800675,
+    "resources": {
+      "max_process_rss_kib": 45660,
+      "user_seconds": 0.03,
+      "system_seconds": 0.0
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/queue_all/20261016-evaluation/cn_original_queue_all/1be32f3d_push_induction_2/fulminate-pipeline/stdout.log",
+    "stderr": "benchmark/results/queue_all/20261016-evaluation/cn_original_queue_all/1be32f3d_push_induction_2/fulminate-pipeline/stderr.log"
+  },
+  "instrumented_sources": [],
+  "fulminate_test": {
+    "status": "NOT_BUILT",
+    "wall_seconds": null,
+    "resources": null,
+    "tokens": 0,
+    "model_calls": 0
+  },
+  "tespec_off": {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "spectest",
+      "run",
+      "/home/yangfp/teSpec/benchmark/programs/queue_all/variants/qcp_existing_1be32f3d3f9a7e3fda7d/qcp/push_induction.qcp.c",
+      "--function",
+      "push_induction",
+      "--binds",
+      "/home/yangfp/teSpec/benchmark/results/queue_all/20261016-evaluation/cn_original_queue_all/1be32f3d_push_induction_2/tespec-bind-id-repair-off/binds.json",
+      "--execution-mode",
+      "all-boundaries",
+      "--output-dir",
+      "/home/yangfp/teSpec/benchmark/results/queue_all/20261016-evaluation/cn_original_queue_all/1be32f3d_push_induction_2/tespec-bind-id-repair-off/artifacts",
+      "--timeout",
+      "30",
+      "--compact",
+      "--no-spatial-smt",
+      "--spatial-smt-timeout-ms",
+      "2000",
+      "-I",
+      "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+      "-I",
+      "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/advanced/queue-guarded"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 0.21515546999580692,
+    "resources": {
+      "max_process_rss_kib": 19828,
+      "user_seconds": 0.1,
+      "system_seconds": 0.05
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/queue_all/20261016-evaluation/cn_original_queue_all/1be32f3d_push_induction_2/tespec-bind-id-repair-off/stdout.log",
+    "stderr": "benchmark/results/queue_all/20261016-evaluation/cn_original_queue_all/1be32f3d_push_induction_2/tespec-bind-id-repair-off/stderr.log",
+    "report": "benchmark/results/queue_all/20261016-evaluation/cn_original_queue_all/1be32f3d_push_induction_2/tespec-bind-id-repair-off/artifacts/report.json",
+    "statuses": [
+      "UNKNOWN"
+    ],
+    "status": "UNKNOWN"
+  },
+  "tespec_on": {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "spectest",
+      "run",
+      "/home/yangfp/teSpec/benchmark/programs/queue_all/variants/qcp_existing_1be32f3d3f9a7e3fda7d/qcp/push_induction.qcp.c",
+      "--function",
+      "push_induction",
+      "--binds",
+      "/home/yangfp/teSpec/benchmark/results/queue_all/20261016-evaluation/cn_original_queue_all/1be32f3d_push_induction_2/tespec-bind-id-repair-on/binds.json",
+      "--execution-mode",
+      "all-boundaries",
+      "--output-dir",
+      "/home/yangfp/teSpec/benchmark/results/queue_all/20261016-evaluation/cn_original_queue_all/1be32f3d_push_induction_2/tespec-bind-id-repair-on/artifacts",
+      "--timeout",
+      "30",
+      "--compact",
+      "--spatial-smt",
+      "--spatial-smt-timeout-ms",
+      "2000",
+      "-I",
+      "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+      "-I",
+      "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/advanced/queue-guarded"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 0.21494546301255468,
+    "resources": {
+      "max_process_rss_kib": 19904,
+      "user_seconds": 0.13,
+      "system_seconds": 0.02
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/queue_all/20261016-evaluation/cn_original_queue_all/1be32f3d_push_induction_2/tespec-bind-id-repair-on/stdout.log",
+    "stderr": "benchmark/results/queue_all/20261016-evaluation/cn_original_queue_all/1be32f3d_push_induction_2/tespec-bind-id-repair-on/stderr.log",
+    "report": "benchmark/results/queue_all/20261016-evaluation/cn_original_queue_all/1be32f3d_push_induction_2/tespec-bind-id-repair-on/artifacts/report.json",
+    "statuses": [
+      "UNKNOWN"
+    ],
+    "status": "UNKNOWN"
+  },
+  "runtime_dependency_fixtures": [],
+  "prior_tespec_attempts": {
+    "off": [
+      {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/queue_all/variants/qcp_existing_1be32f3d3f9a7e3fda7d/qcp/push_induction.qcp.c",
+          "--function",
+          "push_induction",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/queue_all/variants/cn_original_queue_all/tests/20261016-evaluation/1be32f3d_push_induction_2/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/queue_all/20261016-evaluation/cn_original_queue_all/1be32f3d_push_induction_2/tespec-off/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--no-spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/advanced/queue-guarded"
+        ],
+        "exit_code": 2,
+        "wall_seconds": 0.06486878699797671,
+        "resources": {
+          "max_process_rss_kib": 17672,
+          "user_seconds": 0.03,
+          "system_seconds": 0.0
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/queue_all/20261016-evaluation/cn_original_queue_all/1be32f3d_push_induction_2/tespec-off/stdout.log",
+        "stderr": "benchmark/results/queue_all/20261016-evaluation/cn_original_queue_all/1be32f3d_push_induction_2/tespec-off/stderr.log",
+        "report": null,
+        "statuses": [],
+        "status": "ERROR"
+      }
+    ],
+    "on": [
+      {
+        "command": [
+          "/usr/bin/python3",
+          "-m",
+          "spectest",
+          "run",
+          "/home/yangfp/teSpec/benchmark/programs/queue_all/variants/qcp_existing_1be32f3d3f9a7e3fda7d/qcp/push_induction.qcp.c",
+          "--function",
+          "push_induction",
+          "--binds",
+          "/home/yangfp/teSpec/benchmark/programs/queue_all/variants/cn_original_queue_all/tests/20261016-evaluation/1be32f3d_push_induction_2/binds.json",
+          "--execution-mode",
+          "all-boundaries",
+          "--output-dir",
+          "/home/yangfp/teSpec/benchmark/results/queue_all/20261016-evaluation/cn_original_queue_all/1be32f3d_push_induction_2/tespec-on/artifacts",
+          "--timeout",
+          "30",
+          "--compact",
+          "--spatial-smt",
+          "--spatial-smt-timeout-ms",
+          "2000",
+          "-I",
+          "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+          "-I",
+          "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/advanced/queue-guarded"
+        ],
+        "exit_code": 2,
+        "wall_seconds": 0.06448284799989779,
+        "resources": {
+          "max_process_rss_kib": 17460,
+          "user_seconds": 0.03,
+          "system_seconds": 0.0
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/queue_all/20261016-evaluation/cn_original_queue_all/1be32f3d_push_induction_2/tespec-on/stdout.log",
+        "stderr": "benchmark/results/queue_all/20261016-evaluation/cn_original_queue_all/1be32f3d_push_induction_2/tespec-on/stderr.log",
+        "report": null,
+        "statuses": [],
+        "status": "ERROR"
+      }
+    ]
+  },
+  "bind_identifier_repairs": [
+    {
+      "mode": "off",
+      "original_binds": "benchmark/programs/queue_all/variants/cn_original_queue_all/tests/20261016-evaluation/1be32f3d_push_induction_2/binds.json",
+      "original_binds_sha256": "73304ba2ec6bb5dc47cf21bb673516358bf5ba33d20b3bfbbdb62cd4332e279c",
+      "actual_binds": "benchmark/results/queue_all/20261016-evaluation/cn_original_queue_all/1be32f3d_push_induction_2/tespec-bind-id-repair-off/binds.json",
+      "actual_binds_sha256": "f65d2320d5c60d193d49cbbc2760ad068511ca37398b9bba76d424b1fb7f5c50",
+      "only_change": "Prefix case_ to internal run ID. All argument/With values, source and oracle unchanged."
+    },
+    {
+      "mode": "on",
+      "original_binds": "benchmark/programs/queue_all/variants/cn_original_queue_all/tests/20261016-evaluation/1be32f3d_push_induction_2/binds.json",
+      "original_binds_sha256": "73304ba2ec6bb5dc47cf21bb673516358bf5ba33d20b3bfbbdb62cd4332e279c",
+      "actual_binds": "benchmark/results/queue_all/20261016-evaluation/cn_original_queue_all/1be32f3d_push_induction_2/tespec-bind-id-repair-on/binds.json",
+      "actual_binds_sha256": "f65d2320d5c60d193d49cbbc2760ad068511ca37398b9bba76d424b1fb7f5c50",
+      "only_change": "Prefix case_ to internal run ID. All argument/With values, source and oracle unchanged."
+    }
+  ],
+  "binds_before_identifier_repair": "benchmark/programs/queue_all/variants/cn_original_queue_all/tests/20261016-evaluation/1be32f3d_push_induction_2/binds.json"
+}

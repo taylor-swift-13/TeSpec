@@ -1,0 +1,163 @@
+{
+  "variant": "cn_original:Dbl_Linked_List__remove",
+  "paired_qcp_variant": "qcp_existing:39de642df59971ac1570",
+  "case": "shape_payload_5",
+  "initial": {
+    "current": 2147483647,
+    "left": [],
+    "right": []
+  },
+  "expected": "PASS",
+  "plan_case": {
+    "id": "shape_payload_5",
+    "value": {
+      "current": 2147483647,
+      "left": [],
+      "right": []
+    },
+    "expected": "PASS",
+    "cn_body": "struct node *n=cn_malloc(sizeof(struct node)); n->data=2147483647; n->prev=0; n->next=0; struct node_and_int *pair=remove(n); free_node_and_int(pair);",
+    "binds": {
+      "args": {
+        "n": 4096
+      },
+      "values": {
+        "h": 2147483647,
+        "p": 0,
+        "q": 0,
+        "ll": [],
+        "lr": []
+      }
+    },
+    "precondition_valid": true,
+    "oracle": {
+      "semantic_result": "remove current non-null node, preserve neighbours and return old current data with next node preferred over previous",
+      "contracts": "Annotated CN has original ownership/output contract. orig.broken has no remove contract; same valid C implementation with missing annotations, not assumed contract-equivalent to supplied QCP. Runtime cannot check absent CN contract; record this coverage limitation.",
+      "heap": "Fresh disjoint nodes with mutually consistent prev/next, finite DLL left/right; current4096, previous8192, next12288. Harness frees returned pair and surviving nodes after subject postcondition; current freed by subject."
+    }
+  },
+  "cn_source_sha256": "494e1af65473162501661b4b670a9a77ce51c7b3b4e93571d59b78836c2191b2",
+  "qcp_source_sha256": "39de642df59971ac1570901f2f95824b45ab608b194ff4f163e11e7cbf64348f",
+  "harness": "benchmark/programs/dll_remove/variants/cn_original_Dbl_Linked_List__remove/tests/20261016-evaluation/shape_payload_5/fulminate.cn.c",
+  "harness_sha256": "381c8d98199e545c60a102f4221a8942c9481eb1222b6fa4f911e57249f6b3fa",
+  "binds": "benchmark/programs/dll_remove/variants/cn_original_Dbl_Linked_List__remove/tests/20261016-evaluation/shape_payload_5/binds.json",
+  "binds_sha256": "5d5aad4ed46ac22a6e956e4dcddd2a688621bb42ba5f84661fc7da0f13420a33",
+  "precondition_valid": true,
+  "fulminate_pipeline": {
+    "command": [
+      "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+      "instrument",
+      "--run",
+      "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+      "--output-dir=/tmp/tespec-group-kooy1bcs",
+      "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples/Dbl_Linked_List",
+      "/home/yangfp/teSpec/benchmark/programs/dll_remove/variants/cn_original_Dbl_Linked_List__remove/tests/20261016-evaluation/shape_payload_5/fulminate.cn.c"
+    ],
+    "exit_code": 2,
+    "wall_seconds": 0.06474638800136745,
+    "resources": {
+      "max_process_rss_kib": 42404,
+      "user_seconds": 0.02,
+      "system_seconds": 0.01
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/dll_remove/20261016-evaluation/cn_original_Dbl_Linked_List__remove/shape_payload_5/fulminate-pipeline/stdout.log",
+    "stderr": "benchmark/results/dll_remove/20261016-evaluation/cn_original_Dbl_Linked_List__remove/shape_payload_5/fulminate-pipeline/stderr.log"
+  },
+  "instrumented_sources": [],
+  "fulminate_test": {
+    "status": "NOT_BUILT",
+    "wall_seconds": null,
+    "resources": null,
+    "tokens": 0,
+    "model_calls": 0
+  },
+  "tespec_off": {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "spectest",
+      "run",
+      "/home/yangfp/teSpec/benchmark/programs/dll_remove/variants/qcp_existing_39de642df59971ac1570/qcp/dll_remove_orig.qcp.c",
+      "--function",
+      "remove",
+      "--binds",
+      "/home/yangfp/teSpec/benchmark/programs/dll_remove/variants/cn_original_Dbl_Linked_List__remove/tests/20261016-evaluation/shape_payload_5/binds.json",
+      "--execution-mode",
+      "all-boundaries",
+      "--output-dir",
+      "/home/yangfp/teSpec/benchmark/results/dll_remove/20261016-evaluation/cn_original_Dbl_Linked_List__remove/shape_payload_5/tespec-off/artifacts",
+      "--timeout",
+      "30",
+      "--compact",
+      "--no-spatial-smt",
+      "--spatial-smt-timeout-ms",
+      "2000",
+      "-I",
+      "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+      "-I",
+      "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/supplemental/dll_remove_orig"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 0.16489628799899947,
+    "resources": {
+      "max_process_rss_kib": 19900,
+      "user_seconds": 0.08,
+      "system_seconds": 0.04
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/dll_remove/20261016-evaluation/cn_original_Dbl_Linked_List__remove/shape_payload_5/tespec-off/stdout.log",
+    "stderr": "benchmark/results/dll_remove/20261016-evaluation/cn_original_Dbl_Linked_List__remove/shape_payload_5/tespec-off/stderr.log",
+    "report": "benchmark/results/dll_remove/20261016-evaluation/cn_original_Dbl_Linked_List__remove/shape_payload_5/tespec-off/artifacts/report.json",
+    "statuses": [
+      "UNKNOWN"
+    ],
+    "status": "UNKNOWN"
+  },
+  "tespec_on": {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "spectest",
+      "run",
+      "/home/yangfp/teSpec/benchmark/programs/dll_remove/variants/qcp_existing_39de642df59971ac1570/qcp/dll_remove_orig.qcp.c",
+      "--function",
+      "remove",
+      "--binds",
+      "/home/yangfp/teSpec/benchmark/programs/dll_remove/variants/cn_original_Dbl_Linked_List__remove/tests/20261016-evaluation/shape_payload_5/binds.json",
+      "--execution-mode",
+      "all-boundaries",
+      "--output-dir",
+      "/home/yangfp/teSpec/benchmark/results/dll_remove/20261016-evaluation/cn_original_Dbl_Linked_List__remove/shape_payload_5/tespec-on/artifacts",
+      "--timeout",
+      "30",
+      "--compact",
+      "--spatial-smt",
+      "--spatial-smt-timeout-ms",
+      "2000",
+      "-I",
+      "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+      "-I",
+      "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/supplemental/dll_remove_orig"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 0.16478531900793314,
+    "resources": {
+      "max_process_rss_kib": 19908,
+      "user_seconds": 0.09,
+      "system_seconds": 0.03
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/dll_remove/20261016-evaluation/cn_original_Dbl_Linked_List__remove/shape_payload_5/tespec-on/stdout.log",
+    "stderr": "benchmark/results/dll_remove/20261016-evaluation/cn_original_Dbl_Linked_List__remove/shape_payload_5/tespec-on/stderr.log",
+    "report": "benchmark/results/dll_remove/20261016-evaluation/cn_original_Dbl_Linked_List__remove/shape_payload_5/tespec-on/artifacts/report.json",
+    "statuses": [
+      "UNKNOWN"
+    ],
+    "status": "UNKNOWN"
+  },
+  "runtime_dependency_fixtures": []
+}

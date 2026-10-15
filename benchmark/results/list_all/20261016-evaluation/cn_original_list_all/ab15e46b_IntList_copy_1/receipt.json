@@ -1,0 +1,163 @@
+{
+  "variant": "cn_original:list_all",
+  "paired_qcp_variant": "qcp_existing:ab15e46be3488118dfcd",
+  "case": "ab15e46b_IntList_copy_1",
+  "initial": {
+    "list": [
+      1
+    ],
+    "second_list": null
+  },
+  "expected": "PASS",
+  "plan_case": {
+    "id": "ab15e46b_IntList_copy_1",
+    "value": {
+      "list": [
+        1
+      ],
+      "second_list": null
+    },
+    "expected": "PASS",
+    "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=1; xs0->tail=xs; xs=xs0; struct int_list *z=IntList_copy(xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; } while(xs!=0) { struct int_list *next_xs=xs->tail; cn_free_sized(xs,sizeof(struct int_list)); xs=next_xs; }",
+    "binds": {
+      "args": {
+        "xs": 8192
+      },
+      "values": {
+        "l": [
+          1
+        ]
+      }
+    },
+    "precondition_valid": true,
+    "oracle": {
+      "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+      "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+      "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+    }
+  },
+  "cn_source_sha256": "fd804dc9eef06b70c80ecff22346a88f87e42828760c51d4429859c9ac4d9ce4",
+  "qcp_source_sha256": "ab15e46be3488118dfcdea0125fc5e2457e308bb0b512f13a99ea9380986a7a6",
+  "harness": "benchmark/programs/list_all/variants/cn_original_list_all/tests/20261016-evaluation/ab15e46b_IntList_copy_1/fulminate.cn.c",
+  "harness_sha256": "9d05523e54d552c12ebbd12bf854f7a5f717f631143dd820d7c2dd92e7d2f00d",
+  "binds": "benchmark/programs/list_all/variants/cn_original_list_all/tests/20261016-evaluation/ab15e46b_IntList_copy_1/binds.json",
+  "binds_sha256": "0ddf13f0862acb4838747b33b5e7343f22a8d1f9d9453477f30193ed45c4c0bd",
+  "precondition_valid": true,
+  "fulminate_pipeline": {
+    "command": [
+      "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+      "instrument",
+      "--run",
+      "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+      "--output-dir=/tmp/tespec-group-xdpnjpgi",
+      "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples",
+      "/home/yangfp/teSpec/benchmark/programs/list_all/variants/cn_original_list_all/tests/20261016-evaluation/ab15e46b_IntList_copy_1/fulminate.cn.c"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 0.06456503701338079,
+    "resources": {
+      "max_process_rss_kib": 45704,
+      "user_seconds": 0.03,
+      "system_seconds": 0.0
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/list_all/20261016-evaluation/cn_original_list_all/ab15e46b_IntList_copy_1/fulminate-pipeline/stdout.log",
+    "stderr": "benchmark/results/list_all/20261016-evaluation/cn_original_list_all/ab15e46b_IntList_copy_1/fulminate-pipeline/stderr.log"
+  },
+  "instrumented_sources": [],
+  "fulminate_test": {
+    "status": "NOT_BUILT",
+    "wall_seconds": null,
+    "resources": null,
+    "tokens": 0,
+    "model_calls": 0
+  },
+  "tespec_off": {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "spectest",
+      "run",
+      "/home/yangfp/teSpec/benchmark/programs/list_all/variants/qcp_existing_ab15e46be3488118dfcd/qcp/list-all.c",
+      "--function",
+      "IntList_copy",
+      "--binds",
+      "/home/yangfp/teSpec/benchmark/programs/list_all/variants/cn_original_list_all/tests/20261016-evaluation/ab15e46b_IntList_copy_1/binds.json",
+      "--execution-mode",
+      "all-boundaries",
+      "--output-dir",
+      "/home/yangfp/teSpec/benchmark/results/list_all/20261016-evaluation/cn_original_list_all/ab15e46b_IntList_copy_1/tespec-off/artifacts",
+      "--timeout",
+      "30",
+      "--compact",
+      "--no-spatial-smt",
+      "--spatial-smt-timeout-ms",
+      "2000",
+      "-I",
+      "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+      "-I",
+      "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/cases"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 0.165115854004398,
+    "resources": {
+      "max_process_rss_kib": 19776,
+      "user_seconds": 0.09,
+      "system_seconds": 0.03
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/list_all/20261016-evaluation/cn_original_list_all/ab15e46b_IntList_copy_1/tespec-off/stdout.log",
+    "stderr": "benchmark/results/list_all/20261016-evaluation/cn_original_list_all/ab15e46b_IntList_copy_1/tespec-off/stderr.log",
+    "report": "benchmark/results/list_all/20261016-evaluation/cn_original_list_all/ab15e46b_IntList_copy_1/tespec-off/artifacts/report.json",
+    "statuses": [
+      "UNKNOWN"
+    ],
+    "status": "UNKNOWN"
+  },
+  "tespec_on": {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "spectest",
+      "run",
+      "/home/yangfp/teSpec/benchmark/programs/list_all/variants/qcp_existing_ab15e46be3488118dfcd/qcp/list-all.c",
+      "--function",
+      "IntList_copy",
+      "--binds",
+      "/home/yangfp/teSpec/benchmark/programs/list_all/variants/cn_original_list_all/tests/20261016-evaluation/ab15e46b_IntList_copy_1/binds.json",
+      "--execution-mode",
+      "all-boundaries",
+      "--output-dir",
+      "/home/yangfp/teSpec/benchmark/results/list_all/20261016-evaluation/cn_original_list_all/ab15e46b_IntList_copy_1/tespec-on/artifacts",
+      "--timeout",
+      "30",
+      "--compact",
+      "--spatial-smt",
+      "--spatial-smt-timeout-ms",
+      "2000",
+      "-I",
+      "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+      "-I",
+      "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/cases"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 0.1647424449911341,
+    "resources": {
+      "max_process_rss_kib": 19944,
+      "user_seconds": 0.08,
+      "system_seconds": 0.03
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/list_all/20261016-evaluation/cn_original_list_all/ab15e46b_IntList_copy_1/tespec-on/stdout.log",
+    "stderr": "benchmark/results/list_all/20261016-evaluation/cn_original_list_all/ab15e46b_IntList_copy_1/tespec-on/stderr.log",
+    "report": "benchmark/results/list_all/20261016-evaluation/cn_original_list_all/ab15e46b_IntList_copy_1/tespec-on/artifacts/report.json",
+    "statuses": [
+      "UNKNOWN"
+    ],
+    "status": "UNKNOWN"
+  },
+  "runtime_dependency_fixtures": []
+}

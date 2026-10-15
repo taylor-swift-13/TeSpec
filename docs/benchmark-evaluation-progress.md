@@ -171,3 +171,32 @@ const_example_lessgood 的3个原始QCP全称目标现已独立编译、假设�
 runway__funcs2: all existing variants, 150 actual input pairs; Fulminate 0/150 expected matches. OFF {'ERROR': 42, 'PASS': 30, 'UNKNOWN': 78}, ON {'ERROR': 42, 'PASS': 30, 'UNKNOWN': 78}. Original CN trust scope disclosed; QCP original generation targets 215, proof/refutation and kernel stages pending. Unexpected cases individually recorded, UNKNOWN not successful. No-argument clients have one distinct entry each. Native shared-host overlap disclosed. Whole group remains incomplete.
 
 runway__funcs2 全部6语言记录、40函数变体、150个合法结构体状态已尝试。六字段具体入口fixture逐字节审计仅加Require等式，原body/post不变；两模式各30 PASS、78 UNKNOWN、42 ERROR。原snapshot版本30个用例两模式全PASS，直接用原With绑定的一次正确消融也PASS；另一次诊断误用其他变体的空With绑定，明确标为无效诊断配置、保留成本，不计额外输入或工具错误。其余源码编码存在分支上限、调用绑定和无效executor JSON等异常，逐例区分完整执行/入口/残余目标。Fulminate150次NOT_BUILT；另外4次有界兼容探测依次暴露旧bool逻辑类型、C bool类型不匹配、未解释INACTIVE及头文件函数插桩缺失__cn_ret/epilogue；均未造出测试二进制，原规约和冻结PASS不改，154次流水线成本全计。兼容探测的不同头文件环境已分别冻结，可复现，原始命令不改。QCP生成215原始全称目标，实际预编译原Goal发现缺UndefStructPredState上下文，失败时间/RSS单列；历史仅手工tick目标加原生自动结果，不能冒称当前215全目标独立内核证书。未启动无上下文目标的无效模型任务，agent/内核仍PENDING；源/原始VC/hash/失败记录全部保留。完整20/45，扫描39组。
+
+Dbl_Linked_List__singleton: all existing variants, 7 actual input pairs; Fulminate 0/7 expected matches. OFF {'UNKNOWN': 7}, ON {'UNKNOWN': 7}. Original CN trust scope disclosed; QCP original generation targets 4, proof/refutation and kernel stages pending. Unexpected cases individually recorded, UNKNOWN not successful. No-argument clients have one distinct entry each. Native shared-host overlap disclosed. Whole group remains incomplete.
+
+dll_add: all existing variants, 14 actual input pairs; Fulminate 0/14 expected matches. OFF {'UNKNOWN': 14}, ON {'UNKNOWN': 14}. Original CN trust scope disclosed; QCP original generation targets 17, proof/refutation and kernel stages pending. Unexpected cases individually recorded, UNKNOWN not successful. No-argument clients have one distinct entry each. Native shared-host overlap disclosed. Whole group remains incomplete.
+
+dll_remove: all existing variants, 18 actual input pairs; Fulminate 0/18 expected matches. OFF {'UNKNOWN': 18}, ON {'UNKNOWN': 18}. Original CN trust scope disclosed; QCP original generation targets 19, proof/refutation and kernel stages pending. Unexpected cases individually recorded, UNKNOWN not successful. No-argument clients have one distinct entry each. Native shared-host overlap disclosed. Whole group remains incomplete.
+
+mergesort: all existing variants, 17 actual input pairs; Fulminate 0/17 expected matches. OFF {'PASS': 1, 'UNKNOWN': 9, 'ERROR': 7}, ON {'PASS': 1, 'UNKNOWN': 9, 'ERROR': 7}. Original CN trust scope disclosed; QCP original generation targets 40, proof/refutation and kernel stages pending. Unexpected cases individually recorded, UNKNOWN not successful. No-argument clients have one distinct entry each. Native shared-host overlap disclosed. Whole group remains incomplete.
+
+list_all: all existing variants, 94 actual input pairs; Fulminate 0/94 expected matches. OFF {'PASS': 1, 'UNKNOWN': 32, 'ERROR': 61}, ON {'PASS': 1, 'UNKNOWN': 32, 'ERROR': 61}. Original CN trust scope disclosed; QCP original generation targets 0, proof/refutation and kernel stages pending. Unexpected cases individually recorded, UNKNOWN not successful. No-argument clients have one distinct entry each. Native shared-host overlap disclosed. Whole group remains incomplete.
+
+queue_all: all existing variants, 34 actual input pairs; Fulminate 0/34 expected matches. OFF {'ERROR': 25, 'UNKNOWN': 9}, ON {'ERROR': 25, 'UNKNOWN': 9}. Original CN trust scope disclosed; QCP original generation targets 0, proof/refutation and kernel stages pending. Unexpected cases individually recorded, UNKNOWN not successful. No-argument clients have one distinct entry each. Native shared-host overlap disclosed. Whole group remains incomplete.
+
+list_all: all existing variants, 94 actual input pairs; Fulminate 0/94 expected matches. OFF {'PASS': 2, 'UNKNOWN': 85, 'ERROR': 7}, ON {'PASS': 2, 'UNKNOWN': 85, 'ERROR': 7}. Original CN trust scope disclosed; QCP original generation targets 0, proof/refutation and kernel stages pending. Unexpected cases individually recorded, UNKNOWN not successful. No-argument clients have one distinct entry each. Native shared-host overlap disclosed. Whole group remains incomplete.
+
+queue_all: all existing variants, 34 actual input pairs; Fulminate 0/34 expected matches. OFF {'UNKNOWN': 31, 'ERROR': 3}, ON {'UNKNOWN': 31, 'ERROR': 3}. Original CN trust scope disclosed; QCP original generation targets 0, proof/refutation and kernel stages pending. Unexpected cases individually recorded, UNKNOWN not successful. No-argument clients have one distinct entry each. Native shared-host overlap disclosed. Whole group remains incomplete.
+
+
+## 07:53 核对：45 组已有实测记录，20 组完整
+
+按各组实际评测报告（read 复用既有空间 SMT 两模式报告）汇总，共45组、1551个 CN/QCP 测试配对；该数字不是1551个不同输入状态，部分现有 CN 变体共享同一 QCP 输入。完整评测仍20/45，其余25组有明确缺口，不能把首轮扫描称作全部完成。attempt-coverage.json 为逐组报告指针与实际配对数。
+
+本轮补测 singleton 7、dll_add 14、dll_remove 18、mergesort 17、list_all 94、queue_all 34，共184配对，均实际执行 OFF/ON。dll_add 目前只覆盖空链表分支，非空分支仍有缺口；两个 DLL orig.broken 原始版本缺少函数规约，不能把相同 C 实现误标为错误实现。list_all/queue_all 原始 CN-only 客户端和可信辅助函数也不冒充已配对覆盖。
+
+singleton 的全部4个原始全称 VC 已通过独立 Coq 内核检查：1个全局闭合，3个仅保留原运行时 eval_addr_expr 参数，没有新增证明公理。5次 gpt-6.1-sol 调用（包括未填完、编译失败和引入额外公理而被拒绝的轮次）实际591827 tokens；原生0.016198秒、agent284.063秒、编译/假设审计及两个额外诊断11.952633秒、独立内核127.042882秒，总423.074712秒，最大单进程RSS1766.886719MiB。原 DLLSupplement.v 仅以字节相同的原始逻辑定义提供编译上下文，原始Goal没有修改。CN/Fulminate 在原始依赖 IntList 前向资源谓词处失败，teSpec缺少 malloc_node 执行体，所以本组仍未完整。
+
+本轮 list_all/queue_all 各61/25个配对的初始内部绑定ID以数字开头，是评测适配器配置错误。172次失败的模式执行日志与成本保留，仅给内部ID加 case_ 后重新执行；源、参数、With绑定值与冻结预期不变。最终 list_all 两模式各2 PASS/85 UNKNOWN/7 ERROR，queue_all 各31 UNKNOWN/3 ERROR。成本表包含全部失败与重试，配置修复清单在 tespec-unexpected/configuration-repairs-20261016-bind-ids.json。其余 ERROR 是实际执行器的结构体初始化等错误，不算成功检出。
+
+merge/list 原始 CN 的分离 magic comment 兼容问题、queue/DLL 前向资源谓词、外部无执行体、入口约束/残余原始VC均如实保留。queue 原始 assert_not_equal 无前提却声称任意指针不等的假设，单独记录 original-assumption-gap.md；本次实际首先发生解析失败，未把这条逻辑缺口编造成运行时反例。所有未执行的证明阶段仍为空值/PENDING；未构建的 Fulminate 独立测试时间和RSS为空值。

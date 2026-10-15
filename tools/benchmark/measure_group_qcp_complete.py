@@ -32,7 +32,17 @@ def main():
     assert 'Module PrimaryCertificate : PrimaryQcpGoal.VC_Correct.' in text
     tokens=shlex.split((RUNTIME/'_CoqProject').read_text());flags=[str(RUNTIME/t) if i%3==1 else t for i,t in enumerate(tokens)]+['-Q',str(src),'']
     receipt={'schema':'tespec-qcp-complete-primary-verification/v1','program_group':a.group,'scope':'Original unbound universal VC_Correct implemented, all emitted obligations proved. No concrete input bindings.','native_receipt':str(nativepath.relative_to(ROOT)),'native':native['qcp'],'native_attempts':native_attempts,'goal':str((src/'PrimaryQcpGoal.v').relative_to(ROOT)),'original_goal':native['goal'],'original_goal_sha256':native['goal_sha256'],'proof':str((src/'Candidate.v').relative_to(ROOT)),'proof_sha256':sha(src/'Candidate.v'),'model':model,'obligations':names,'compilation':previous['compilation'] if previous else [],'models':(previous.get('models',[previous['model']]) if previous else [])+[model]}
-    for path in [src/'PrimaryQcpGoal.v',src/'Candidate.v']:
+    context_files=[]
+    context_path=task/'proof-context.json'
+    if context_path.exists():
+        context=json.loads(context_path.read_text());receipt['proof_context']=context
+        for item in context['files']:
+            original=ROOT/item['original_source'];assert sha(original)==item['sha256']
+            assert item['name']==Path(item['name']).name and item['name'].endswith('.v')
+            supplied=task/item['name'];assert sha(supplied)==item['sha256']
+            assert not re.search(r'\b(?:Admitted|admit|Axiom|Parameter)\b',supplied.read_text()),'Context must be definitions/proofs without new axioms'
+            shutil.copyfile(supplied,src/item['name']);context_files.append(src/item['name'])
+    for path in context_files+[src/'PrimaryQcpGoal.v',src/'Candidate.v']:
         m=measure([COQ/'coqc',*flags,path],out/'compilation'/('attempt-'+str(a.attempt))/path.stem,src);receipt['compilation'].append(m);save(out/'pending-receipt.json',receipt);assert m['exit_code']==0,(ROOT/m['stderr']).read_text();print(path.name,'compiled',flush=True)
     audit=(ROOT/receipt['compilation'][-1]['stdout']).read_text();closed=audit.count('Closed under the global context');addr=audit.count('Axioms:\neval_addr_expr : rvalue_expr -> addr');assert closed+addr==len(names),audit
     assert not audit.replace('Closed under the global context','').replace('Axioms:\neval_addr_expr : rvalue_expr -> addr','').strip(),audit

@@ -1,0 +1,370 @@
+Fill every universally quantified Coq 8.20 proof in Candidate.v. Preserve imports, original statements, VC_Correct module implementation and Print Assumptions. PrimaryQcpGoal.v is immutable actual unbound QCP verification output. No Admitted/admit, new axioms, parameters, changed definitions or proof escapes. Edit Candidate.v only; do not read prior benchmark proof solutions, call models, or delegate. External compiler and independent kernel check are controller-owned. WSL runtime access is unavailable inside this isolated task; do not waste a call trying it. The controller can supply actual runtime declarations on a diagnostic repair. Simple entailments can be introduced directly as predicates over heaps. A block of several pure heap conditions can be grouped as ONE conjunction before the spatial assertion. Split the pure block from the spatial subgoal, then prove the entire PURE block (repeat split/assumption there only); do not use one outer split per individual arithmetic fact. Avoid untyped change (forall h, _ -> _) and avoid cbv on arithmetic comparisons before lia. If an original heap witness is disjoined with a pure reduction, prefer proving the original heap witness. Preserve unchanged spatial frames directly; entailer! and the generic sepcon commutation lemma can introduce functional extensionality. Runtime sets_unfold supports only the goal or one named hypothesis, not in *. INT_MAX, INT_MIN and UINT_MAX are notations for integer literals, not unfoldable definitions. If hnf leaves a pure heap assertion applied to h, use change to its underlying arithmetic proposition before lia. Return briefly.
+
+Actual immutable goal:
+Require Import Coq.ZArith.ZArith.
+Require Import Coq.Bool.Bool.
+Require Import Coq.Strings.String.
+Require Import Coq.Strings.Ascii.
+Require Import Coq.Lists.List.
+Require Import Coq.Classes.RelationClasses.
+Require Import Coq.Classes.Morphisms.
+Require Import Coq.micromega.Psatz.
+Require Import Coq.Sorting.Permutation.
+From AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.
+Require Import SetsClass.SetsClass. Import SetsNotation.
+From SimpleC.SL Require Import Mem SeparationLogic.
+Require Import Logic.LogicGenerator.demo932.Interface.
+Local Open Scope Z_scope.
+Local Open Scope sets.
+Local Open Scope string_scope.
+Local Open Scope list.
+Import naive_C_Rules.
+Require Import DLLSupplement.
+Local Open Scope sac.
+Local Open Scope Z_scope.
+
+(*----- Function singleton -----*)
+
+Definition singleton_safety_wit_1 := 
+forall (element_pre: Z) (e: Z) (retval: Z) (PreH1 : (retval <> 0)) (PreH2 : (element_pre = e)) ,
+  ((&((retval)  # "node" ->ₛ "data")) # Int  |-> element_pre)
+  **  ((&((retval)  # "node" ->ₛ "prev")) # Ptr  |->_)
+  **  ((&((retval)  # "node" ->ₛ "next")) # Ptr  |->_)
+  **  ((( &( "n" ) )) # Ptr  |-> retval)
+  **  ((( &( "element" ) )) # Int  |-> element_pre)
+|--
+  “ (0 <= INT_MAX) ” 
+  &&  “ ((INT_MIN) <= 0) ”
+.
+
+Definition singleton_safety_wit_2 := 
+forall (element_pre: Z) (e: Z) (retval: Z) (PreH1 : (retval <> 0)) (PreH2 : (element_pre = e)) ,
+  ((&((retval)  # "node" ->ₛ "data")) # Int  |-> element_pre)
+  **  ((&((retval)  # "node" ->ₛ "prev")) # Ptr  |-> 0)
+  **  ((&((retval)  # "node" ->ₛ "next")) # Ptr  |->_)
+  **  ((( &( "n" ) )) # Ptr  |-> retval)
+  **  ((( &( "element" ) )) # Int  |-> element_pre)
+|--
+  “ (0 <= INT_MAX) ” 
+  &&  “ ((INT_MIN) <= 0) ”
+.
+
+Definition singleton_return_wit_1 := 
+forall (element_pre: Z) (e: Z) (retval: Z) (PreH1 : (retval <> 0)) (PreH2 : (element_pre = e)) ,
+  ((&((retval)  # "node" ->ₛ "data")) # Int  |-> element_pre)
+  **  ((&((retval)  # "node" ->ₛ "prev")) # Ptr  |-> 0)
+  **  ((&((retval)  # "node" ->ₛ "next")) # Ptr  |-> 0)
+|--
+  (Dll retval (@nil Z) e (@nil Z) )
+.
+
+Definition singleton_partial_solve_wit_1 := 
+forall (element_pre: Z) (e: Z) (PreH1 : (element_pre = e)) ,
+  TT && emp 
+|--
+  “ (element_pre = e) ”
+  &&  emp
+.
+
+Module Type VC_Correct.
+
+Axiom proof_of_singleton_safety_wit_1 : singleton_safety_wit_1.
+Axiom proof_of_singleton_safety_wit_2 : singleton_safety_wit_2.
+Axiom proof_of_singleton_return_wit_1 : singleton_return_wit_1.
+Axiom proof_of_singleton_partial_solve_wit_1 : singleton_partial_solve_wit_1.
+
+End VC_Correct.
+
+Candidate:
+Require Import PrimaryQcpGoal.
+Require Import Coq.ZArith.ZArith.
+Require Import Coq.Bool.Bool.
+Require Import Coq.Strings.String.
+Require Import Coq.Strings.Ascii.
+Require Import Coq.Lists.List.
+Require Import Coq.Classes.RelationClasses.
+Require Import Coq.Classes.Morphisms.
+Require Import Coq.micromega.Psatz.
+Require Import Coq.Sorting.Permutation.
+From AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.
+Require Import SetsClass.SetsClass. Import SetsNotation.
+From SimpleC.SL Require Import Mem SeparationLogic.
+Require Import Logic.LogicGenerator.demo932.Interface.
+Local Open Scope Z_scope.
+Local Open Scope sets.
+Local Open Scope string_scope.
+Local Open Scope list.
+Import naive_C_Rules.
+Require Import DLLSupplement.
+Local Open Scope sac.
+Local Open Scope Z_scope.
+
+
+Theorem primary_singleton_safety_wit_1 : PrimaryQcpGoal.singleton_safety_wit_1.
+Proof. Admitted.
+Theorem primary_singleton_safety_wit_2 : PrimaryQcpGoal.singleton_safety_wit_2.
+Proof. Admitted.
+Theorem primary_singleton_return_wit_1 : PrimaryQcpGoal.singleton_return_wit_1.
+Proof. Admitted.
+Theorem primary_singleton_partial_solve_wit_1 : PrimaryQcpGoal.singleton_partial_solve_wit_1.
+Proof. Admitted.
+Module PrimaryCertificate : PrimaryQcpGoal.VC_Correct.
+Definition proof_of_singleton_safety_wit_1 := primary_singleton_safety_wit_1.
+Definition proof_of_singleton_safety_wit_2 := primary_singleton_safety_wit_2.
+Definition proof_of_singleton_return_wit_1 := primary_singleton_return_wit_1.
+Definition proof_of_singleton_partial_solve_wit_1 := primary_singleton_partial_solve_wit_1.
+End PrimaryCertificate.
+Print Assumptions primary_singleton_safety_wit_1.
+Print Assumptions primary_singleton_safety_wit_2.
+Print Assumptions primary_singleton_return_wit_1.
+Print Assumptions primary_singleton_partial_solve_wit_1.
+
+Runtime arithmetic interface: IntLib notation x % y denotes Z.rem x y; unsigned_last_nbits x n is Z.modulo x (2^n). For nonnegative a and positive b, Z.rem_mod_nonneg relates rem and modulo.
+
+Coq compiler searches have a 90-second / 4-GiB address-space cap. Do not use unbounded firstorder on concrete heap predicates. For spatial commutation, preserve the two heap predicate facts, swap their sepcon witnesses, and reason directly about the join pointwise; generic join/sepcon commutation lemmas can bring functional extensionality. Runtime names are qualified ConAssertion.state_join, ConAssertion.TokenSet_join, ConAssertion.STS_state_join (not unqualified). Actual declarations:
+Definition TokenSet_join (s1 s2 s3 : TokenSet) : Prop :=
+  s3 == s1 ∪ s2 /\ s1 ∩ s2 == ∅.
+
+Definition STS_state_join (s1 s2 s3 : STS_state -> Prop) : Prop :=
+  s3 == s1 ∩ s2.
+
+Definition state_join (s1 s2 s3 : Lstate) : Prop := 
+  mem_join s1.(s_mem) s2.(s_mem) s3.(s_mem) /\ 
+  TokenSet_join s1.(s_token) s2.(s_token) s3.(s_token) /\ 
+  STS_state_join s1.(s_STS) s2.(s_STS) s3.(s_STS).
+
+The runtime Mem.mem_join_comm proves memory-join commutation without new axioms and takes its three memory arguments implicitly. Sets equivalence is pointwise; sets_unfold in a named hypothesis exposes its pointwise statement.
+
+Repair attempt1 left return witness Admitted because controller omitted imported predicate definitions. Actual original definitions now supplied and locked as DLLSupplement.v:
+Require Import Coq.ZArith.ZArith.
+Require Import Coq.Bool.Bool.
+Require Import Coq.Strings.String.
+Require Import Coq.Strings.Ascii.
+Require Import Coq.Lists.List.
+Require Import Coq.Classes.RelationClasses.
+Require Import Coq.Classes.Morphisms.
+Require Import Coq.micromega.Psatz.
+Require Import Coq.Sorting.Permutation.
+From AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.
+Require Import SetsClass.SetsClass. Import SetsNotation.
+From SimpleC.SL Require Import Mem SeparationLogic.
+Require Import Logic.LogicGenerator.demo932.Interface.
+Local Open Scope Z_scope.
+Local Open Scope sets.
+Local Open Scope string_scope.
+Local Open Scope list.
+Import naive_C_Rules.
+Local Open Scope sac.
+Fixpoint DLLLeft (p n:Z) (l:list Z) : Assertion := match l with
+| nil => “p=0” && emp
+| a::tl => “p<>0” && EX q:Z, &(p # "node" ->ₛ "data") # Int |-> a ** &(p # "node" ->ₛ "prev") # Ptr |-> q ** &(p # "node" ->ₛ "next") # Ptr |-> n ** DLLLeft q p tl end.
+Fixpoint DLLRight (p n:Z) (l:list Z) : Assertion := match l with
+| nil => “p=0” && emp
+| a::tl => “p<>0” && EX q:Z, &(p # "node" ->ₛ "data") # Int |-> a ** &(p # "node" ->ₛ "next") # Ptr |-> q ** &(p # "node" ->ₛ "prev") # Ptr |-> n ** DLLRight q p tl end.
+Definition Dll (n:Z) (ll:list Z) (h:Z) (lr:list Z):Assertion :=
+ (“n=0” && “ll=nil” && “lr=nil” && “h=0” && emp) ||
+ (“n<>0” && EX p:Z, EX q:Z, &(n # "node" ->ₛ "data") # Int |-> h ** &(n # "node" ->ₛ "prev") # Ptr |-> p ** &(n # "node" ->ₛ "next") # Ptr |-> q ** DLLLeft p n ll ** DLLRight q n lr).
+Definition dll_tail (l:list Z) := match l with nil=>nil | _::tl=>tl end.
+
+Finish all four original targets. Use nil unfolds in DLLLeft/Right, choose p=q=0 in non-null Dll branch. Original three cell predicates plus two emp frames; standard sepcon emp introduction/elimination can be unfolded directly if needed. No Admitted. Previous failed model call remains counted.
+
+Actual attempt2 compiled DLLSupplement and original Goal, but return witness entailer! left open goals. Controller diagnostic after identical tactic:
+1 goal
+  
+  e, retval : Z
+  PreH1 : retval <> 0
+  ============================
+  forall h : model,
+  (&( retval # "node" ->ₛ "data") # Int |-> e **
+   &( retval # "node" ->ₛ "prev") # Ptr |-> 0 **
+   &( retval # "node" ->ₛ "next") # Ptr |-> 0) h ->
+  (&( retval # "node" ->ₛ "data") # Int |-> e **
+   &( retval # "node" ->ₛ "prev") # Ptr |-> 0 **
+   &( retval # "node" ->ₛ "next") # Ptr |-> 0 ** (“ 0 = 0 ” && emp) **
+   (“ 0 = 0 ” && emp)) h
+
+Repair Candidate.v only. Finish every target, no admitted. Preserve strict original assumptions.
+
+Attempt3 failed at guessed sepcon_emp intro names. Actual runtime declarations from controller read:
+runtime/qcip/SeparationLogic/SeparationLogic/CommonAssertion.v:
+
+Lemma sepcon_emp_equiv : 
+  forall x, x ** emp --||-- x.
+Proof.
+  intros. split.
+  apply derivable1_sepcon_emp_l.
+  apply derivable1_sepcon_emp_r.
+Qed.
+
+runtime/qcip/SeparationLogic/SeparationLogic/CommonAssertion.v:
+
+Lemma sepcon_emp_logic_equiv' : forall x : Assertion, emp ** x --||-- x.
+intros. split ; entailer!.
+Qed.
+
+Ltac elim_emp :=
+repeat progress (try (rewrite sepcon_emp_equiv || rewrite sepcon_emp_logic_equiv')).
+
+Lemma elim_wand_emp_emp : emp --||-- emp -* emp.
+runtime/qcip/SeparationLogic/unifysl/LogicGenerator/demo932/Interface.v:
+  Definition __derivable1_provable : (forall x y : expr, derivable1 x y <-> provable (impp x y)) := __derivable1_provable .
+  Definition logic_equiv_sepcon_emp : (forall x : expr, logic_equiv (sepcon x emp) x) := logic_equiv_sepcon_emp .
+  Definition logic_equiv_andp_truep : (forall x : expr, logic_equiv (andp x truep) x) := logic_equiv_andp_truep .
+  Definition logic_equiv_truep_andp : (forall x : expr, logic_equiv (andp truep x) x) := logic_equiv_truep_andp .
+  Definition logic_equiv_sepcon_comm : (forall x y : expr, logic_equiv (sepcon x y) (sepcon y x)) := logic_equiv_sepcon_comm .
+  Definition logic_equiv_sepcon_assoc : (forall x y z : expr, logic_equiv (sepcon x (sepcon y z)) (sepcon (sepcon x y) z)) := logic_equiv_sepcon_assoc .
+  Definition logic_equiv_orp_congr : (forall x1 x2 y1 y2 : expr, logic_equiv x1 x2 -> logic_equiv y1 y2 -> logic_equiv (orp x1 y1) (orp x2 y2)) := logic_equiv_orp_congr .
+  Definition logic_equiv_orp_comm : (forall x y : expr, logic_equiv (orp x y) (orp y x)) := logic_equiv_orp_comm .
+  Definition logic_equiv_orp_assoc : (forall x y z : expr, logic_equiv (orp (orp x y) z) (orp x (orp y z))) := logic_equiv_orp_assoc .
+runtime/qcip/SeparationLogic/unifysl/LogicGenerator/demo932/Interface.v:
+  Definition derivable1_orp_sepcon_l : (forall x y z : expr, derivable1 (sepcon (orp x y) z) (orp (sepcon x z) (sepcon y z))) := derivable1_orp_sepcon_l .
+  Definition derivable1_sepcon_emp_l : (forall x : expr, derivable1 (sepcon x emp) x) := derivable1_sepcon_emp_l .
+  Definition derivable1_sepcon_emp_r : (forall x : expr, derivable1 x (sepcon x emp)) := derivable1_sepcon_emp_r .
+  Definition derivable1s_wand_sepcon_adjoint : (forall x y z : expr, derivable1 (sepcon x y) z <-> derivable1 x (wand y z)) := derivable1s_wand_sepcon_adjoint .
+  Definition derivable1_sepcon_comm : (forall x y : expr, derivable1 (sepcon x y) (sepcon y x)) := derivable1_sepcon_comm .
+  Definition derivable1_sepcon_assoc1 : (forall x y z : expr, derivable1 (sepcon x (sepcon y z)) (sepcon (sepcon x y) z)) := derivable1_sepcon_assoc1 .
+  Definition derivable1_sepcon_mono : (forall x1 x2 y1 y2 : expr, derivable1 x1 x2 -> derivable1 y1 y2 -> derivable1 (sepcon x1 y1) (sepcon x2 y2)) := derivable1_sepcon_mono .
+  Definition derivable1_iffp_intros : (forall x y : expr, derivable1 (impp x y) (impp (impp y x) (iffp x y))) := derivable1_iffp_intros .
+  Definition derivable1_iffp_elim1 : (forall x y : expr, derivable1 (iffp x y) (impp x y)) := derivable1_iffp_elim1 .
+runtime/qcip/SeparationLogic/unifysl/LogicGenerator/demo932/Interface.v:
+  Definition derivable1_sepcon_emp_l : (forall x : expr, derivable1 (sepcon x emp) x) := derivable1_sepcon_emp_l .
+  Definition derivable1_sepcon_emp_r : (forall x : expr, derivable1 x (sepcon x emp)) := derivable1_sepcon_emp_r .
+  Definition derivable1s_wand_sepcon_adjoint : (forall x y z : expr, derivable1 (sepcon x y) z <-> derivable1 x (wand y z)) := derivable1s_wand_sepcon_adjoint .
+  Definition derivable1_sepcon_comm : (forall x y : expr, derivable1 (sepcon x y) (sepcon y x)) := derivable1_sepcon_comm .
+  Definition derivable1_sepcon_assoc1 : (forall x y z : expr, derivable1 (sepcon x (sepcon y z)) (sepcon (sepcon x y) z)) := derivable1_sepcon_assoc1 .
+  Definition derivable1_sepcon_mono : (forall x1 x2 y1 y2 : expr, derivable1 x1 x2 -> derivable1 y1 y2 -> derivable1 (sepcon x1 y1) (sepcon x2 y2)) := derivable1_sepcon_mono .
+  Definition derivable1_iffp_intros : (forall x y : expr, derivable1 (impp x y) (impp (impp y x) (iffp x y))) := derivable1_iffp_intros .
+  Definition derivable1_iffp_elim1 : (forall x y : expr, derivable1 (iffp x y) (impp x y)) := derivable1_iffp_elim1 .
+  Definition derivable1_iffp_elim2 : (forall x y : expr, derivable1 (iffp x y) (impp y x)) := derivable1_iffp_elim2 .
+runtime/qcip/SeparationLogic/unifysl/LogicGenerator/demo932/Interface.v:
+  Definition logic_equiv_trans_instance : (Transitive logic_equiv) := logic_equiv_trans_instance .
+  Definition provable_sepcon_emp_logic_equiv : (forall x : expr, logic_equiv (sepcon x emp) x) := provable_sepcon_emp_logic_equiv .
+  Definition derivable1_exp_andp_l : (forall (A : Type) (P : A -> expr) (Q : expr), derivable1 (andp (exp A P) Q) (exp A (fun x : A => andp (P x) Q))) := derivable1_exp_andp_l .
+  Definition derivable1_andp_exp_l : (forall (A : Type) (P : expr) (Q : A -> expr), derivable1 (andp P (exp A Q)) (exp A (fun x : A => andp P (Q x)))) := derivable1_andp_exp_l .
+  Definition derivable1_exp_sepcon_l : (forall (A : Type) (P : A -> expr) (Q : expr), derivable1 (sepcon (exp A P) Q) (exp A (fun x : A => sepcon (P x) Q))) := derivable1_exp_sepcon_l .
+  Definition derivable1_sepcon_exp_l : (forall (A : Type) (P : expr) (Q : A -> expr), derivable1 (sepcon P (exp A Q)) (exp A (fun x : A => sepcon P (Q x)))) := derivable1_sepcon_exp_l .
+  Definition derivable1_iter_sepcon_flatten : (forall xs1 xs2 xs3 : list expr, derivable1 (iter_sepcon (xs1 ++ iter_sepcon xs2 :: xs3)) (iter_sepcon (xs1 ++ xs2 ++ xs3))) := derivable1_iter_sepcon_flatten .
+  Definition derivable1_sepcon_coq_prop_andp_l : (forall (P : expr) (Q : Prop) (R : expr), derivable1 (sepcon P (andp (coq_prop Q) R)) (andp (coq_prop Q) (sepcon P R))) := derivable1_sepcon_coq_prop_andp_l .
+  Definition derivable1_sepcon_coq_prop_andp_r : (forall (P : expr) (Q : Prop) (R : expr), derivable1 (andp (coq_prop Q) (sepcon P R)) (sepcon P (andp (coq_prop Q) R))) := derivable1_sepcon_coq_prop_andp_r .
+runtime/qcip/SeparationLogic/unifysl/LogicGenerator/demo6/interface_6.v:
+  Definition logic_equiv_trans : (forall x y z : expr, logic_equiv x y -> logic_equiv y z -> logic_equiv x z) := logic_equiv_trans .
+  Definition derivable1_sepcon_emp_l : (forall x : expr, derivable1 (sepcon x emp) x) := derivable1_sepcon_emp_l .
+  Definition derivable1_sepcon_emp_r : (forall x : expr, derivable1 x (sepcon x emp)) := derivable1_sepcon_emp_r .
+  Definition derivable1_sepcon_comm : (forall x y : expr, derivable1 (sepcon x y) (sepcon y x)) := derivable1_sepcon_comm .
+  Definition derivable1_sepcon_assoc1 : (forall x y z : expr, derivable1 (sepcon x (sepcon y z)) (sepcon (sepcon x y) z)) := derivable1_sepcon_assoc1 .
+  Definition derivable1_sepcon_mono : (forall x1 x2 y1 y2 : expr, derivable1 x1 x2 -> derivable1 y1 y2 -> derivable1 (sepcon x1 y1) (sepcon x2 y2)) := derivable1_sepcon_mono .
+  Definition derivable1_refl : (forall x : expr, derivable1 x x) := derivable1_refl .
+  Definition derivable1_trans : (forall x y z : expr, derivable1 x y -> derivable1 y z -> derivable1 x z) := derivable1_trans .
+  Definition provable_sepcon_emp_derives : (forall x : expr, provable (impp (sepcon x emp) x)) := provable_sepcon_emp_derives .
+runtime/qcip/SeparationLogic/unifysl/LogicGenerator/demo6/interface_6.v:
+  Definition derivable1_sepcon_emp_l : (forall x : expr, derivable1 (sepcon x emp) x) := derivable1_sepcon_emp_l .
+  Definition derivable1_sepcon_emp_r : (forall x : expr, derivable1 x (sepcon x emp)) := derivable1_sepcon_emp_r .
+  Definition derivable1_sepcon_comm : (forall x y : expr, derivable1 (sepcon x y) (sepcon y x)) := derivable1_sepcon_comm .
+  Definition derivable1_sepcon_assoc1 : (forall x y z : expr, derivable1 (sepcon x (sepcon y z)) (sepcon (sepcon x y) z)) := derivable1_sepcon_assoc1 .
+  Definition derivable1_sepcon_mono : (forall x1 x2 y1 y2 : expr, derivable1 x1 x2 -> derivable1 y1 y2 -> derivable1 (sepcon x1 y1) (sepcon x2 y2)) := derivable1_sepcon_mono .
+  Definition derivable1_refl : (forall x : expr, derivable1 x x) := derivable1_refl .
+  Definition derivable1_trans : (forall x y z : expr, derivable1 x y -> derivable1 y z -> derivable1 x z) := derivable1_trans .
+  Definition provable_sepcon_emp_derives : (forall x : expr, provable (impp (sepcon x emp) x)) := provable_sepcon_emp_derives .
+  Definition provable_derives_sepcon_emp : (forall x : expr, provable (impp x (sepcon x emp))) := provable_derives_sepcon_emp .
+runtime/qcip/SeparationLogic/unifysl/LogicGenerator/demo6/interface_6.v:
+  Definition derivable1_trans : (forall x y z : expr, derivable1 x y -> derivable1 y z -> derivable1 x z) := derivable1_trans .
+  Definition provable_sepcon_emp_derives : (forall x : expr, provable (impp (sepcon x emp) x)) := provable_sepcon_emp_derives .
+  Definition provable_derives_sepcon_emp : (forall x : expr, provable (impp x (sepcon x emp))) := provable_derives_sepcon_emp .
+  Definition provable_sepcon_comm_impp : (forall x y : expr, provable (impp (sepcon x y) (sepcon y x))) := provable_sepcon_comm_impp .
+  Definition provable_sepcon_assoc1 : (forall x y z : expr, provable (impp (sepcon x (sepcon y z)) (sepcon (sepcon x y) z))) := provable_sepcon_assoc1 .
+  Definition provable_iffp_intros : (forall x y : expr, provable (impp (impp x y) (impp (impp y x) (iffp x y)))) := provable_iffp_intros .
+  Definition provable_iffp_elim1 : (forall x y : expr, provable (impp (iffp x y) (impp x y))) := provable_iffp_elim1 .
+  Definition provable_iffp_elim2 : (forall x y : expr, provable (impp (iffp x y) (impp y x))) := provable_iffp_elim2 .
+  Definition provable_impp_refl : (forall x : expr, provable (impp x x)) := provable_impp_refl .
+runtime/qcip/SeparationLogic/unifysl/LogicGenerator/demo6/interface_6.v:
+  Definition provable_sepcon_emp_derives : (forall x : expr, provable (impp (sepcon x emp) x)) := provable_sepcon_emp_derives .
+  Definition provable_derives_sepcon_emp : (forall x : expr, provable (impp x (sepcon x emp))) := provable_derives_sepcon_emp .
+  Definition provable_sepcon_comm_impp : (forall x y : expr, provable (impp (sepcon x y) (sepcon y x))) := provable_sepcon_comm_impp .
+  Definition provable_sepcon_assoc1 : (forall x y z : expr, provable (impp (sepcon x (sepcon y z)) (sepcon (sepcon x y) z))) := provable_sepcon_assoc1 .
+  Definition provable_iffp_intros : (forall x y : expr, provable (impp (impp x y) (impp (impp y x) (iffp x y)))) := provable_iffp_intros .
+  Definition provable_iffp_elim1 : (forall x y : expr, provable (impp (iffp x y) (impp x y))) := provable_iffp_elim1 .
+  Definition provable_iffp_elim2 : (forall x y : expr, provable (impp (iffp x y) (impp y x))) := provable_iffp_elim2 .
+  Definition provable_impp_refl : (forall x : expr, provable (impp x x)) := provable_impp_refl .
+  Definition provable_impp_refl' : (forall x y : expr, x = y -> provable (impp x y)) := provable_impp_refl' .
+runtime/qcip/SeparationLogic/unifysl/LogicGenerator/demo6/interface_6.v:
+  Definition provables_sepcon_assoc : (forall x y z w : expr, provable (impp (sepcon (sepcon y x) z) w) -> provable (impp (sepcon x (sepcon y z)) w)) := provables_sepcon_assoc .
+  Definition provable_sepcon_emp_derives : (forall x : expr, provable (impp (sepcon x emp) x)) := provable_sepcon_emp_derives .
+  Definition provables_sepcon_proper_impp : (Proper ((fun x y : expr => provable (impp x y)) ==> (fun x y : expr => provable (impp x y)) ==> (fun x y : expr => provable (impp x y))) sepcon) := provables_sepcon_proper_impp .
+  Definition provables_sepcon_proper_iffp : (Proper ((fun x y : expr => provable (iffp x y)) ==> (fun x y : expr => provable (iffp x y)) ==> (fun x y : expr => provable (iffp x y))) sepcon) := provables_sepcon_proper_iffp .
+  Definition expr_deep : Set := expr_deep .
+  Definition impp_deep : (expr_deep -> expr_deep -> expr_deep) := impp_deep .
+  Definition sepcon_deep : (expr_deep -> expr_deep -> expr_deep) := sepcon_deep .
+  Definition emp_deep : expr_deep := emp_deep .
+  Definition varp_deep : (nat -> expr_deep) := varp_deep .
+runtime/qcip/SeparationLogic/unifysl/LogicGenerator/demo6/interface_6.v:
+  Definition logic_equiv_sepcon_assoc : (forall x y z : expr, logic_equiv (sepcon x (sepcon y z)) (sepcon (sepcon x y) z)) := logic_equiv_sepcon_assoc .
+  Definition provable_sepcon_emp_logic_equiv : (forall x : expr, logic_equiv (sepcon x emp) x) := provable_sepcon_emp_logic_equiv .
+  Definition derivable1_proper_derivable1 : (Proper (derivable1 --> derivable1 ==> Basics.impl) derivable1) := derivable1_proper_derivable1 .
+  Definition logic_equiv_proper_logic_equiv : (Proper (logic_equiv ==> logic_equiv ==> Basics.impl) logic_equiv) := logic_equiv_proper_logic_equiv .
+  Definition logic_equiv_proper_derivable1 : (Proper (logic_equiv ==> logic_equiv ==> Basics.impl) derivable1) := logic_equiv_proper_derivable1 .
+  Definition derivable1s_sepcon_proper : (Proper (derivable1 ==> derivable1 ==> derivable1) sepcon) := derivable1s_sepcon_proper .
+  End LogicTheorem.
+(* derived rules as instance *)
+  #[export] Existing Instance provable_impp_refl_instance .
+runtime/qcip/SeparationLogic/unifysl/LogicGenerator/demo/implementation_bedrock2.v:
+  
+  Lemma provable_sepcon_emp : (forall x : expr, provable (iffp (sepcon x emp) x)) .
+  Proof.
+    intros.
+    apply sep_emp_True_r.
+  Qed.
+  
+  End NaiveRule.
+End NaiveRule.
+runtime/qcip/SeparationLogic/unifysl/LogicGenerator/demo933/Interface.v:
+  Definition __derivable1_provable : (forall x y : expr, derivable1 x y <-> provable (impp x y)) := __derivable1_provable .
+  Definition logic_equiv_sepcon_emp : (forall x : expr, logic_equiv (sepcon x emp) x) := logic_equiv_sepcon_emp .
+  Definition logic_equiv_andp_truep : (forall x : expr, logic_equiv (andp x truep) x) := logic_equiv_andp_truep .
+  Definition logic_equiv_truep_andp : (forall x : expr, logic_equiv (andp truep x) x) := logic_equiv_truep_andp .
+  Definition logic_equiv_sepcon_comm : (forall x y : expr, logic_equiv (sepcon x y) (sepcon y x)) := logic_equiv_sepcon_comm .
+  Definition logic_equiv_sepcon_assoc : (forall x y z : expr, logic_equiv (sepcon x (sepcon y z)) (sepcon (sepcon x y) z)) := logic_equiv_sepcon_assoc .
+  Definition logic_equiv_andp_congr : (forall x1 x2 y1 y2 : expr, logic_equiv x1 x2 -> logic_equiv y1 y2 -> logic_equiv (andp x1 y1) (andp x2 y2)) := logic_equiv_andp_congr .
+  Definition logic_equiv_andp_comm : (forall x y : expr, logic_equiv (andp x y) (andp y x)) := logic_equiv_andp_comm .
+  Definition logic_equiv_andp_assoc : (forall x y z : expr, logic_equiv (andp (andp x y) z) (andp x (andp y z))) := logic_equiv_andp_assoc .
+runtime/qcip/SeparationLogic/unifysl/LogicGenerator/demo933/Interface.v:
+  Definition derivable1_orp_sepcon_l : (forall x y z : expr, derivable1 (sepcon (orp x y) z) (orp (sepcon x z) (sepcon y z))) := derivable1_orp_sepcon_l .
+  Definition derivable1_sepcon_emp_l : (forall x : expr, derivable1 (sepcon x emp) x) := derivable1_sepcon_emp_l .
+  Definition derivable1_sepcon_emp_r : (forall x : expr, derivable1 x (sepcon x emp)) := derivable1_sepcon_emp_r .
+  Definition derivable1s_wand_sepcon_adjoint : (forall x y z : expr, derivable1 (sepcon x y) z <-> derivable1 x (wand y z)) := derivable1s_wand_sepcon_adjoint .
+  Definition derivable1_sepcon_comm : (forall x y : expr, derivable1 (sepcon x y) (sepcon y x)) := derivable1_sepcon_comm .
+  Definition derivable1_sepcon_assoc1 : (forall x y z : expr, derivable1 (sepcon x (sepcon y z)) (sepcon (sepcon x y) z)) := derivable1_sepcon_assoc1 .
+  Definition derivable1_sepcon_mono : (forall x1 x2 y1 y2 : expr, derivable1 x1 x2 -> derivable1 y1 y2 -> derivable1 (sepcon x1 y1) (sepcon x2 y2)) := derivable1_sepcon_mono .
+  Definition derivable1_iffp_intros : (forall x y : expr, derivable1 (impp x y) (impp (impp y x) (iffp x y))) := derivable1_iffp_intros .
+  Definition derivable1_iffp_elim1 : (forall x y : expr, derivable1 (iffp x y) (impp x y)) := derivable1_iffp_elim1 .
+runtime/qcip/SeparationLogic/unifysl/LogicGenerator/demo933/Interface.v:
+  Definition derivable1_sepcon_emp_l : (forall x : expr, derivable1 (sepcon x emp) x) := derivable1_sepcon_emp_l .
+  Definition derivable1_sepcon_emp_r : (forall x : expr, derivable1 x (sepcon x emp)) := derivable1_sepcon_emp_r .
+  Definition derivable1s_wand_sepcon_adjoint : (forall x y z : expr, derivable1 (sepcon x y) z <-> derivable1 x (wand y z)) := derivable1s_wand_sepcon_adjoint .
+  Definition derivable1_sepcon_comm : (forall x y : expr, derivable1 (sepcon x y) (sepcon y x)) := derivable1_sepcon_comm .
+  Definition derivable1_sepcon_assoc1 : (forall x y z : expr, derivable1 (sepcon x (sepcon y z)) (sepcon (sepcon x y) z)) := derivable1_sepcon_assoc1 .
+  Definition derivable1_sepcon_mono : (forall x1 x2 y1 y2 : expr, derivable1 x1 x2 -> derivable1 y1 y2 -> derivable1 (sepcon x1 y1) (sepcon x2 y2)) := derivable1_sepcon_mono .
+  Definition derivable1_iffp_intros : (forall x y : expr, derivable1 (impp x y) (impp (impp y x) (iffp x y))) := derivable1_iffp_intros .
+  Definition derivable1_iffp_elim1 : (forall x y : expr, derivable1 (iffp x y) (impp x y)) := derivable1_iffp_elim1 .
+  Definition derivable1_iffp_elim2 : (forall x y : expr, derivable1 (iffp x y) (impp y x)) := derivable1_iffp_elim2 .
+runtime/qcip/SeparationLogic/unifysl/LogicGenerator/demo933/Interface.v:
+  Definition logic_equiv_trans_instance : (Transitive logic_equiv) := logic_equiv_trans_instance .
+  Definition provable_sepcon_emp_logic_equiv : (forall x : expr, logic_equiv (sepcon x emp) x) := provable_sepcon_emp_logic_equiv .
+  Definition derivable1_exp_andp_l : (forall (A : Type) (P : A -> expr) (Q : expr), derivable1 (andp (exp A P) Q) (exp A (fun x : A => andp (P x) Q))) := derivable1_exp_andp_l .
+  Definition derivable1_andp_exp_l : (forall (A : Type) (P : expr) (Q : A -> expr), derivable1 (andp P (exp A Q)) (exp A (fun x : A => andp P (Q x)))) := derivable1_andp_exp_l .
+  Definition derivable1_exp_sepcon_l : (forall (A : Type) (P : A -> expr) (Q : expr), derivable1 (sepcon 
+Use real imported interface and instance lemmas with exact types. Do not call external compilers; repair entire Candidate. All calls counted.
+
+Attempt4 compiled, BUT library derivable1_sepcon_emp_r introduced PropExtensionality and FunctionalExtensionality into return target. Strict audit rejected it. Do not retain this lemma use. Construct the actual sepcon witness with unit_join or empty_state directly. Actual runtime primitive:
+  Theorem unit_join : (forall n : model, exists u : model, is_unit u /\ join n u n) .
+  Proof.
+    intros. exists empty_state.
+    unfold is_unit , join , state_join.
+    split ; [apply empty_state_is_empty | ].
+    intros. 
+    split ;  [solve_empmem | unfold empty_state ; simpl; split].
+    - unfold TokenSet_join. sets_unfold. tauto.
+    - unfold STS_state_join. sets_unfold.  tauto. 
+  Qed.
+      
+
+The imported naive_C_Rules module exposes unit_join. This avoids generic derived implication/equivalence machinery; P hp to (P ** (pure True && emp)) hp can use hp,u with unit_join hp and preserve HP without assertion extensionality. Please ensure every theorem only retains original eval_addr_expr parameter, or is globally closed. No new assumptions, no changed statements.

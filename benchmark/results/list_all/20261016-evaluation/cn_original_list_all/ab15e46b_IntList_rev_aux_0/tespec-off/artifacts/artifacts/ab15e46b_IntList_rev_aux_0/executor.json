@@ -1,0 +1,205 @@
+{
+  "spec_test": {
+    "schema": "sac-spec-test/v1",
+    "execution_semantics": "inline-preserve/v1",
+    "query_semantics": "copy-only/v1",
+    "mode": "no-expand",
+    "scope": "execution",
+    "annotation_policy": "check-preserve",
+    "completed": true,
+    "overall": "UNKNOWN",
+    "precondition_result": "UNKNOWN",
+    "test_result": "UNKNOWN",
+    "result_semantics": "three-valued-conjunction/v1",
+    "vc_semantics": "path-vc/v1",
+    "vc_results": [
+      {
+        "kind": "safety",
+        "name": null,
+        "line": 66,
+        "status": "VALID",
+        "path": "PROP[\n  prop_false ]\nLOCAL[\n  Temp xs xs_469_addr;\n  Temp ys ys_466_addr ]\nSEP[\n  store(xs_469_addr, 0, struct list*);\n  store(ys_466_addr, 16384, struct list*);\n  sll (0, nil(Z_1));\n  sll (16384, cons(Z_1, 1, nil(Z_1))) ]\n",
+        "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+      },
+      {
+        "kind": "safety",
+        "name": null,
+        "line": 66,
+        "status": "VALID",
+        "path": "PROP[]\nLOCAL[\n  Temp xs xs_469_addr;\n  Temp ys ys_466_addr ]\nSEP[\n  store(xs_469_addr, 0, struct list*);\n  store(ys_466_addr, 16384, struct list*);\n  sll (0, nil(Z_1));\n  sll (16384, cons(Z_1, 1, nil(Z_1))) ]\n",
+        "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+      },
+      {
+        "kind": "safety",
+        "name": null,
+        "line": 66,
+        "status": "VALID",
+        "path": "EX ys_533_addr xs_532_addr tmp_519_addr y_522_free \nPROP[\n  prop_false ]\nLOCAL[\n  Temp ys ys_533_addr;\n  Temp xs xs_532_addr;\n  Temp tmp tmp_519_addr ]\nSEP[\n  store(ys_533_addr, 0, struct list*);\n  store(xs_532_addr, 16384, struct list*);\n  store(16388, 0, struct list*);\n  store(16384, 1, signed int);\n  store(tmp_519_addr, 0, struct list*);\n  store(xs_469_addr, 0, struct list*);\n  store(ys_466_addr, 16384, struct list*) ]\n",
+        "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+      },
+      {
+        "kind": "safety",
+        "name": null,
+        "line": 66,
+        "status": "VALID",
+        "path": "EX ys_533_addr xs_532_addr tmp_519_addr y_522_free \nPROP[\n  y_522_free == 0 ]\nLOCAL[\n  Temp ys ys_533_addr;\n  Temp xs xs_532_addr;\n  Temp tmp tmp_519_addr ]\nSEP[\n  store(ys_533_addr, 0, struct list*);\n  store(xs_532_addr, 16384, struct list*);\n  store(16388, 0, struct list*);\n  store(16384, 1, signed int);\n  store(tmp_519_addr, 0, struct list*);\n  store(xs_469_addr, 0, struct list*);\n  store(ys_466_addr, 16384, struct list*) ]\n",
+        "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+      },
+      {
+        "kind": "entailment",
+        "name": null,
+        "line": 60,
+        "status": "VALID",
+        "path": "PROP[\n  y_522_free == 0 ]\nLOCAL[\n  Temp xs xs_469_addr;\n  Temp ys ys_466_addr;\n  Temp tmp tmp_519_addr ]\nSEP[\n  store(16388, 0, struct list*);\n  store(16384, 1, signed int) ]\n",
+        "goal": "EX retval_531 \nPROP[\n  retval_531 == 16384;\n  y_522_free == 0 ]\nLOCAL[\n  Temp tmp tmp_519_addr;\n  Temp xs xs_469_addr;\n  Temp ys ys_466_addr ]\nSEP[\n  sll (16384, cons(Z_1, 1, nil(Z_1))) ]\n"
+      },
+      {
+        "kind": "return",
+        "name": null,
+        "line": 60,
+        "status": "VALID",
+        "path": "PROP[\n  y_522_free == 0 ]\nLOCAL[]\nSEP[\n  store(16388, 0, struct list*);\n  store(16384, 1, signed int) ]\n",
+        "goal": "PROP[]\nLOCAL[]\nSEP[\n  sll (16384, cons(Z_1, 1, nil(Z_1))) ]\n"
+      }
+    ],
+    "phases": {
+      "precondition": "UNKNOWN",
+      "safety": "PASS",
+      "postcondition": "PASS",
+      "annotations": "PASS"
+    },
+    "abstraction_events": [
+      {
+        "kind": "inline-call",
+        "function": "IntList_rev_aux",
+        "count": 1
+      },
+      {
+        "kind": "contract-check",
+        "function": "IntList_rev_aux",
+        "count": 1
+      }
+    ],
+    "limit_reason": null,
+    "architecture_bits": 32,
+    "target_layout": {
+      "schema": "sac-target-layout/v1",
+      "architecture_bits": 32,
+      "byte_order": "big",
+      "pointer_size": 4,
+      "memory_rules": "naive_C_Rules",
+      "field_address_semantics": "base-plus-byte-offset/v1",
+      "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+      "aggregates": [
+        {
+          "id": 369,
+          "kind": "struct",
+          "name": "list",
+          "defined": true,
+          "size": 8,
+          "alignment": 4,
+          "fields": [
+            {
+              "id": 371,
+              "name": "data",
+              "offset": 0,
+              "size": 4,
+              "alignment": 4,
+              "type": {
+                "kind": "basic",
+                "name": "int"
+              },
+              "computational": true
+            },
+            {
+              "id": 370,
+              "name": "next",
+              "offset": 4,
+              "size": 4,
+              "alignment": 4,
+              "type": {
+                "kind": "pointer",
+                "target": {
+                  "kind": "struct",
+                  "id": 369
+                }
+              },
+              "computational": true
+            }
+          ]
+        }
+      ],
+      "aliases": []
+    },
+    "certificate": "NOT_CHECKED"
+  },
+  "preconditions": [
+    {
+      "goal": "IntList_rev_aux_precondition_wit_1",
+      "status": "UNKNOWN",
+      "proof": "manual"
+    }
+  ],
+  "fileName": "/home/yangfp/teSpec/benchmark/results/list_all/20261016-evaluation/cn_original_list_all/ab15e46b_IntList_rev_aux_0/tespec-off/artifacts/artifacts/ab15e46b_IntList_rev_aux_0/input.c",
+  "functionName": "IntList_rev_aux",
+  "loaded_strategies": [
+    "sll",
+    "common",
+    "string_literal"
+  ],
+  "result": "success",
+  "verificationStatus": "unproved",
+  "has_manual_obligations": true,
+  "manual_obligation_count": 1,
+  "manual_obligations": [
+    {
+      "kind": "precondition",
+      "goal": "IntList_rev_aux_precondition_wit_1"
+    }
+  ],
+  "errormessage": null,
+  "warningmessage": null,
+  "current_assertions": null,
+  "FunctionDerivation": null,
+  "WitnessList": [
+    {
+      "functionName": "IntList_rev_aux",
+      "Witness": {
+        "safety_checker_wit": {
+          "total": 4,
+          "auto_solved": 4,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "entailment_checker_wit": {
+          "total": 1,
+          "auto_solved": 1,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "return_checker_wit": {
+          "total": 1,
+          "auto_solved": 1,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "partial_solve_wit": {
+          "total": 2,
+          "auto_solved": 2,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "which_implies_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "total_witness_count": {
+          "auto_solved": 8,
+          "manual": 0
+        }
+      }
+    }
+  ]
+}

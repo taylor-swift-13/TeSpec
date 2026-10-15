@@ -1,0 +1,14 @@
+#include "./headers.h"
+
+struct node *singleton(int element)
+/*@ ensures take Ret = Dll_at(return);
+        Ret == Dll{left: Seq_Nil{}, curr: struct node{data: element, prev: NULL, next: NULL}, right: Seq_Nil{}};
+@*/
+{
+   struct node *n = malloc_node();
+   n->data = element;
+   n->prev = 0;
+   n->next = 0;
+   return n;
+}
+int main(void) /*@ ensures return == 0i32; @*/ { struct node *n = singleton(5); free_node(n); return 0; }

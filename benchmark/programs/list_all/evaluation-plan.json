@@ -1,0 +1,2945 @@
+{
+  "schema": "tespec-group-evaluation-plan/v1",
+  "program_group": "list_all",
+  "function": "IntList_length",
+  "primary_cn_variant": "cn_original:list_all",
+  "primary_qcp_variant": "qcp_existing:11aff98e8bef27844c51",
+  "run_id": "20261016-evaluation",
+  "pairings": [
+    {
+      "cn_variant": "cn_original:list_all",
+      "qcp_variant": "qcp_existing:ab15e46be3488118dfcd",
+      "function": "IntList_nil",
+      "cases": [
+        {
+          "id": "ab15e46b_IntList_nil_0",
+          "value": {
+            "list": [],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *z=IntList_nil(); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {},
+            "values": {}
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:list_all",
+      "qcp_variant": "qcp_existing:ab15e46be3488118dfcd",
+      "function": "IntList_cons",
+      "cases": [
+        {
+          "id": "ab15e46b_IntList_cons_0",
+          "value": {
+            "list": [],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *z=IntList_cons(7,xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "h": 7,
+              "t": 0
+            },
+            "values": {
+              "l": [],
+              "h0": 7
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "ab15e46b_IntList_cons_1",
+          "value": {
+            "list": [
+              1
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=1; xs0->tail=xs; xs=xs0; struct int_list *z=IntList_cons((-2147483647 - 1),xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "h": -2147483648,
+              "t": 8192
+            },
+            "values": {
+              "l": [
+                1
+              ],
+              "h0": -2147483648
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "ab15e46b_IntList_cons_2",
+          "value": {
+            "list": [
+              2,
+              -1
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=-1; xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=2; xs1->tail=xs; xs=xs1; struct int_list *z=IntList_cons(2147483647,xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "h": 2147483647,
+              "t": 8192
+            },
+            "values": {
+              "l": [
+                2,
+                -1
+              ],
+              "h0": 2147483647
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "ab15e46b_IntList_cons_3",
+          "value": {
+            "list": [
+              2147483647,
+              0,
+              -2147483648
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=(-2147483647 - 1); xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=0; xs1->tail=xs; xs=xs1; struct int_list *xs2=cn_malloc(sizeof(struct int_list)); xs2->head=2147483647; xs2->tail=xs; xs=xs2; struct int_list *z=IntList_cons(-1,xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "h": -1,
+              "t": 8192
+            },
+            "values": {
+              "l": [
+                2147483647,
+                0,
+                -2147483648
+              ],
+              "h0": -1
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:list_all",
+      "qcp_variant": "qcp_existing:ab15e46be3488118dfcd",
+      "function": "IntList_copy",
+      "cases": [
+        {
+          "id": "ab15e46b_IntList_copy_0",
+          "value": {
+            "list": [],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *z=IntList_copy(xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; } while(xs!=0) { struct int_list *next_xs=xs->tail; cn_free_sized(xs,sizeof(struct int_list)); xs=next_xs; }",
+          "binds": {
+            "args": {
+              "xs": 0
+            },
+            "values": {
+              "l": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "ab15e46b_IntList_copy_1",
+          "value": {
+            "list": [
+              1
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=1; xs0->tail=xs; xs=xs0; struct int_list *z=IntList_copy(xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; } while(xs!=0) { struct int_list *next_xs=xs->tail; cn_free_sized(xs,sizeof(struct int_list)); xs=next_xs; }",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "ab15e46b_IntList_copy_2",
+          "value": {
+            "list": [
+              2,
+              -1
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=-1; xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=2; xs1->tail=xs; xs=xs1; struct int_list *z=IntList_copy(xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; } while(xs!=0) { struct int_list *next_xs=xs->tail; cn_free_sized(xs,sizeof(struct int_list)); xs=next_xs; }",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                2,
+                -1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "ab15e46b_IntList_copy_3",
+          "value": {
+            "list": [
+              2147483647,
+              0,
+              -2147483648
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=(-2147483647 - 1); xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=0; xs1->tail=xs; xs=xs1; struct int_list *xs2=cn_malloc(sizeof(struct int_list)); xs2->head=2147483647; xs2->tail=xs; xs=xs2; struct int_list *z=IntList_copy(xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; } while(xs!=0) { struct int_list *next_xs=xs->tail; cn_free_sized(xs,sizeof(struct int_list)); xs=next_xs; }",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                2147483647,
+                0,
+                -2147483648
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:list_all",
+      "qcp_variant": "qcp_existing:ab15e46be3488118dfcd",
+      "function": "IntList_free_list",
+      "cases": [
+        {
+          "id": "ab15e46b_IntList_free_list_0",
+          "value": {
+            "list": [],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; IntList_free_list(xs);",
+          "binds": {
+            "args": {
+              "xs": 0
+            },
+            "values": {
+              "l": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "ab15e46b_IntList_free_list_1",
+          "value": {
+            "list": [
+              1
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=1; xs0->tail=xs; xs=xs0; IntList_free_list(xs);",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "ab15e46b_IntList_free_list_2",
+          "value": {
+            "list": [
+              2,
+              -1
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=-1; xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=2; xs1->tail=xs; xs=xs1; IntList_free_list(xs);",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                2,
+                -1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "ab15e46b_IntList_free_list_3",
+          "value": {
+            "list": [
+              2147483647,
+              0,
+              -2147483648
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=(-2147483647 - 1); xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=0; xs1->tail=xs; xs=xs1; struct int_list *xs2=cn_malloc(sizeof(struct int_list)); xs2->head=2147483647; xs2->tail=xs; xs=xs2; IntList_free_list(xs);",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                2147483647,
+                0,
+                -2147483648
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:list_all",
+      "qcp_variant": "qcp_existing:ab15e46be3488118dfcd",
+      "function": "IntList_length",
+      "cases": [
+        {
+          "id": "ab15e46b_IntList_length_0",
+          "value": {
+            "list": [],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; unsigned int z=IntList_length(xs); (void)z; while(xs!=0) { struct int_list *next_xs=xs->tail; cn_free_sized(xs,sizeof(struct int_list)); xs=next_xs; }",
+          "binds": {
+            "args": {
+              "xs": 0
+            },
+            "values": {
+              "l": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "ab15e46b_IntList_length_1",
+          "value": {
+            "list": [
+              1
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=1; xs0->tail=xs; xs=xs0; unsigned int z=IntList_length(xs); (void)z; while(xs!=0) { struct int_list *next_xs=xs->tail; cn_free_sized(xs,sizeof(struct int_list)); xs=next_xs; }",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "ab15e46b_IntList_length_2",
+          "value": {
+            "list": [
+              2,
+              -1
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=-1; xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=2; xs1->tail=xs; xs=xs1; unsigned int z=IntList_length(xs); (void)z; while(xs!=0) { struct int_list *next_xs=xs->tail; cn_free_sized(xs,sizeof(struct int_list)); xs=next_xs; }",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                2,
+                -1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "ab15e46b_IntList_length_3",
+          "value": {
+            "list": [
+              2147483647,
+              0,
+              -2147483648
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=(-2147483647 - 1); xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=0; xs1->tail=xs; xs=xs1; struct int_list *xs2=cn_malloc(sizeof(struct int_list)); xs2->head=2147483647; xs2->tail=xs; xs=xs2; unsigned int z=IntList_length(xs); (void)z; while(xs!=0) { struct int_list *next_xs=xs->tail; cn_free_sized(xs,sizeof(struct int_list)); xs=next_xs; }",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                2147483647,
+                0,
+                -2147483648
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:list_all",
+      "qcp_variant": "qcp_existing:ab15e46be3488118dfcd",
+      "function": "IntList_rev_aux",
+      "cases": [
+        {
+          "id": "ab15e46b_IntList_rev_aux_0",
+          "value": {
+            "list": [],
+            "second_list": [
+              1
+            ]
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0;struct int_list *ys=0; struct int_list *ys0=cn_malloc(sizeof(struct int_list)); ys0->head=1; ys0->tail=ys; ys=ys0; struct int_list *z=IntList_rev_aux(xs,ys); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 0,
+              "ys": 16384
+            },
+            "values": {
+              "a": [],
+              "b": [
+                1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "ab15e46b_IntList_rev_aux_1",
+          "value": {
+            "list": [
+              1
+            ],
+            "second_list": [
+              2,
+              -1
+            ]
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=1; xs0->tail=xs; xs=xs0;struct int_list *ys=0; struct int_list *ys0=cn_malloc(sizeof(struct int_list)); ys0->head=-1; ys0->tail=ys; ys=ys0; struct int_list *ys1=cn_malloc(sizeof(struct int_list)); ys1->head=2; ys1->tail=ys; ys=ys1; struct int_list *z=IntList_rev_aux(xs,ys); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 8192,
+              "ys": 16384
+            },
+            "values": {
+              "a": [
+                1
+              ],
+              "b": [
+                2,
+                -1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "ab15e46b_IntList_rev_aux_2",
+          "value": {
+            "list": [
+              2,
+              -1
+            ],
+            "second_list": [
+              2147483647,
+              0,
+              -2147483648
+            ]
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=-1; xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=2; xs1->tail=xs; xs=xs1;struct int_list *ys=0; struct int_list *ys0=cn_malloc(sizeof(struct int_list)); ys0->head=(-2147483647 - 1); ys0->tail=ys; ys=ys0; struct int_list *ys1=cn_malloc(sizeof(struct int_list)); ys1->head=0; ys1->tail=ys; ys=ys1; struct int_list *ys2=cn_malloc(sizeof(struct int_list)); ys2->head=2147483647; ys2->tail=ys; ys=ys2; struct int_list *z=IntList_rev_aux(xs,ys); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 8192,
+              "ys": 16384
+            },
+            "values": {
+              "a": [
+                2,
+                -1
+              ],
+              "b": [
+                2147483647,
+                0,
+                -2147483648
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "ab15e46b_IntList_rev_aux_3",
+          "value": {
+            "list": [
+              2147483647,
+              0,
+              -2147483648
+            ],
+            "second_list": []
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=(-2147483647 - 1); xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=0; xs1->tail=xs; xs=xs1; struct int_list *xs2=cn_malloc(sizeof(struct int_list)); xs2->head=2147483647; xs2->tail=xs; xs=xs2;struct int_list *ys=0; struct int_list *z=IntList_rev_aux(xs,ys); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 8192,
+              "ys": 0
+            },
+            "values": {
+              "a": [
+                2147483647,
+                0,
+                -2147483648
+              ],
+              "b": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:list_all",
+      "qcp_variant": "qcp_existing:ab15e46be3488118dfcd",
+      "function": "IntList_rev",
+      "cases": [
+        {
+          "id": "ab15e46b_IntList_rev_0",
+          "value": {
+            "list": [],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *z=IntList_rev(xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 0
+            },
+            "values": {
+              "l": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "ab15e46b_IntList_rev_1",
+          "value": {
+            "list": [
+              1
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=1; xs0->tail=xs; xs=xs0; struct int_list *z=IntList_rev(xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "ab15e46b_IntList_rev_2",
+          "value": {
+            "list": [
+              2,
+              -1
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=-1; xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=2; xs1->tail=xs; xs=xs1; struct int_list *z=IntList_rev(xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                2,
+                -1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "ab15e46b_IntList_rev_3",
+          "value": {
+            "list": [
+              2147483647,
+              0,
+              -2147483648
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=(-2147483647 - 1); xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=0; xs1->tail=xs; xs=xs1; struct int_list *xs2=cn_malloc(sizeof(struct int_list)); xs2->head=2147483647; xs2->tail=xs; xs=xs2; struct int_list *z=IntList_rev(xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                2147483647,
+                0,
+                -2147483648
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:list_all",
+      "qcp_variant": "qcp_existing:ab15e46be3488118dfcd",
+      "function": "IntList_append",
+      "cases": [
+        {
+          "id": "ab15e46b_IntList_append_0",
+          "value": {
+            "list": [],
+            "second_list": [
+              1
+            ]
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0;struct int_list *ys=0; struct int_list *ys0=cn_malloc(sizeof(struct int_list)); ys0->head=1; ys0->tail=ys; ys=ys0; struct int_list *z=IntList_append(xs,ys); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 0,
+              "ys": 16384
+            },
+            "values": {
+              "a": [],
+              "b": [
+                1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "ab15e46b_IntList_append_1",
+          "value": {
+            "list": [
+              1
+            ],
+            "second_list": [
+              2,
+              -1
+            ]
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=1; xs0->tail=xs; xs=xs0;struct int_list *ys=0; struct int_list *ys0=cn_malloc(sizeof(struct int_list)); ys0->head=-1; ys0->tail=ys; ys=ys0; struct int_list *ys1=cn_malloc(sizeof(struct int_list)); ys1->head=2; ys1->tail=ys; ys=ys1; struct int_list *z=IntList_append(xs,ys); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 8192,
+              "ys": 16384
+            },
+            "values": {
+              "a": [
+                1
+              ],
+              "b": [
+                2,
+                -1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "ab15e46b_IntList_append_2",
+          "value": {
+            "list": [
+              2,
+              -1
+            ],
+            "second_list": [
+              2147483647,
+              0,
+              -2147483648
+            ]
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=-1; xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=2; xs1->tail=xs; xs=xs1;struct int_list *ys=0; struct int_list *ys0=cn_malloc(sizeof(struct int_list)); ys0->head=(-2147483647 - 1); ys0->tail=ys; ys=ys0; struct int_list *ys1=cn_malloc(sizeof(struct int_list)); ys1->head=0; ys1->tail=ys; ys=ys1; struct int_list *ys2=cn_malloc(sizeof(struct int_list)); ys2->head=2147483647; ys2->tail=ys; ys=ys2; struct int_list *z=IntList_append(xs,ys); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 8192,
+              "ys": 16384
+            },
+            "values": {
+              "a": [
+                2,
+                -1
+              ],
+              "b": [
+                2147483647,
+                0,
+                -2147483648
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "ab15e46b_IntList_append_3",
+          "value": {
+            "list": [
+              2147483647,
+              0,
+              -2147483648
+            ],
+            "second_list": []
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=(-2147483647 - 1); xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=0; xs1->tail=xs; xs=xs1; struct int_list *xs2=cn_malloc(sizeof(struct int_list)); xs2->head=2147483647; xs2->tail=xs; xs=xs2;struct int_list *ys=0; struct int_list *z=IntList_append(xs,ys); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 8192,
+              "ys": 0
+            },
+            "values": {
+              "a": [
+                2147483647,
+                0,
+                -2147483648
+              ],
+              "b": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:list_all",
+      "qcp_variant": "qcp_existing:ab15e46be3488118dfcd",
+      "function": "IntList_append2",
+      "cases": [
+        {
+          "id": "ab15e46b_IntList_append2_0",
+          "value": {
+            "list": [],
+            "second_list": [
+              1
+            ]
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0;struct int_list *ys=0; struct int_list *ys0=cn_malloc(sizeof(struct int_list)); ys0->head=1; ys0->tail=ys; ys=ys0; struct int_list *z=IntList_append2(xs,ys); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; } while(xs!=0) { struct int_list *next_xs=xs->tail; cn_free_sized(xs,sizeof(struct int_list)); xs=next_xs; } while(ys!=0) { struct int_list *next_ys=ys->tail; cn_free_sized(ys,sizeof(struct int_list)); ys=next_ys; }",
+          "binds": {
+            "args": {
+              "xs": 0,
+              "ys": 16384
+            },
+            "values": {
+              "a": [],
+              "b": [
+                1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "ab15e46b_IntList_append2_1",
+          "value": {
+            "list": [
+              1
+            ],
+            "second_list": [
+              2,
+              -1
+            ]
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=1; xs0->tail=xs; xs=xs0;struct int_list *ys=0; struct int_list *ys0=cn_malloc(sizeof(struct int_list)); ys0->head=-1; ys0->tail=ys; ys=ys0; struct int_list *ys1=cn_malloc(sizeof(struct int_list)); ys1->head=2; ys1->tail=ys; ys=ys1; struct int_list *z=IntList_append2(xs,ys); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; } while(xs!=0) { struct int_list *next_xs=xs->tail; cn_free_sized(xs,sizeof(struct int_list)); xs=next_xs; } while(ys!=0) { struct int_list *next_ys=ys->tail; cn_free_sized(ys,sizeof(struct int_list)); ys=next_ys; }",
+          "binds": {
+            "args": {
+              "xs": 8192,
+              "ys": 16384
+            },
+            "values": {
+              "a": [
+                1
+              ],
+              "b": [
+                2,
+                -1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "ab15e46b_IntList_append2_2",
+          "value": {
+            "list": [
+              2,
+              -1
+            ],
+            "second_list": [
+              2147483647,
+              0,
+              -2147483648
+            ]
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=-1; xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=2; xs1->tail=xs; xs=xs1;struct int_list *ys=0; struct int_list *ys0=cn_malloc(sizeof(struct int_list)); ys0->head=(-2147483647 - 1); ys0->tail=ys; ys=ys0; struct int_list *ys1=cn_malloc(sizeof(struct int_list)); ys1->head=0; ys1->tail=ys; ys=ys1; struct int_list *ys2=cn_malloc(sizeof(struct int_list)); ys2->head=2147483647; ys2->tail=ys; ys=ys2; struct int_list *z=IntList_append2(xs,ys); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; } while(xs!=0) { struct int_list *next_xs=xs->tail; cn_free_sized(xs,sizeof(struct int_list)); xs=next_xs; } while(ys!=0) { struct int_list *next_ys=ys->tail; cn_free_sized(ys,sizeof(struct int_list)); ys=next_ys; }",
+          "binds": {
+            "args": {
+              "xs": 8192,
+              "ys": 16384
+            },
+            "values": {
+              "a": [
+                2,
+                -1
+              ],
+              "b": [
+                2147483647,
+                0,
+                -2147483648
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "ab15e46b_IntList_append2_3",
+          "value": {
+            "list": [
+              2147483647,
+              0,
+              -2147483648
+            ],
+            "second_list": []
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=(-2147483647 - 1); xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=0; xs1->tail=xs; xs=xs1; struct int_list *xs2=cn_malloc(sizeof(struct int_list)); xs2->head=2147483647; xs2->tail=xs; xs=xs2;struct int_list *ys=0; struct int_list *z=IntList_append2(xs,ys); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; } while(xs!=0) { struct int_list *next_xs=xs->tail; cn_free_sized(xs,sizeof(struct int_list)); xs=next_xs; } while(ys!=0) { struct int_list *next_ys=ys->tail; cn_free_sized(ys,sizeof(struct int_list)); ys=next_ys; }",
+          "binds": {
+            "args": {
+              "xs": 8192,
+              "ys": 0
+            },
+            "values": {
+              "a": [
+                2147483647,
+                0,
+                -2147483648
+              ],
+              "b": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:list_all",
+      "qcp_variant": "qcp_existing:11aff98e8bef27844c51",
+      "function": "IntList_nil",
+      "cases": [
+        {
+          "id": "11aff98e_IntList_nil_0",
+          "value": {
+            "list": [],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *z=IntList_nil(); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {},
+            "values": {}
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:list_all",
+      "qcp_variant": "qcp_existing:11aff98e8bef27844c51",
+      "function": "IntList_cons",
+      "cases": [
+        {
+          "id": "11aff98e_IntList_cons_0",
+          "value": {
+            "list": [],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *z=IntList_cons(7,xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "h": 7,
+              "t": 0
+            },
+            "values": {
+              "l": [],
+              "h0": 7
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_cons_1",
+          "value": {
+            "list": [
+              1
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=1; xs0->tail=xs; xs=xs0; struct int_list *z=IntList_cons((-2147483647 - 1),xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "h": -2147483648,
+              "t": 8192
+            },
+            "values": {
+              "l": [
+                1
+              ],
+              "h0": -2147483648
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_cons_2",
+          "value": {
+            "list": [
+              2,
+              -1
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=-1; xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=2; xs1->tail=xs; xs=xs1; struct int_list *z=IntList_cons(2147483647,xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "h": 2147483647,
+              "t": 8192
+            },
+            "values": {
+              "l": [
+                2,
+                -1
+              ],
+              "h0": 2147483647
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_cons_3",
+          "value": {
+            "list": [
+              2147483647,
+              0,
+              -2147483648
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=(-2147483647 - 1); xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=0; xs1->tail=xs; xs=xs1; struct int_list *xs2=cn_malloc(sizeof(struct int_list)); xs2->head=2147483647; xs2->tail=xs; xs=xs2; struct int_list *z=IntList_cons(-1,xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "h": -1,
+              "t": 8192
+            },
+            "values": {
+              "l": [
+                2147483647,
+                0,
+                -2147483648
+              ],
+              "h0": -1
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:list_all",
+      "qcp_variant": "qcp_existing:11aff98e8bef27844c51",
+      "function": "IntList_copy",
+      "cases": [
+        {
+          "id": "11aff98e_IntList_copy_0",
+          "value": {
+            "list": [],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *z=IntList_copy(xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; } while(xs!=0) { struct int_list *next_xs=xs->tail; cn_free_sized(xs,sizeof(struct int_list)); xs=next_xs; }",
+          "binds": {
+            "args": {
+              "xs": 0
+            },
+            "values": {
+              "l": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_copy_1",
+          "value": {
+            "list": [
+              1
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=1; xs0->tail=xs; xs=xs0; struct int_list *z=IntList_copy(xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; } while(xs!=0) { struct int_list *next_xs=xs->tail; cn_free_sized(xs,sizeof(struct int_list)); xs=next_xs; }",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_copy_2",
+          "value": {
+            "list": [
+              2,
+              -1
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=-1; xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=2; xs1->tail=xs; xs=xs1; struct int_list *z=IntList_copy(xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; } while(xs!=0) { struct int_list *next_xs=xs->tail; cn_free_sized(xs,sizeof(struct int_list)); xs=next_xs; }",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                2,
+                -1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_copy_3",
+          "value": {
+            "list": [
+              2147483647,
+              0,
+              -2147483648
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=(-2147483647 - 1); xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=0; xs1->tail=xs; xs=xs1; struct int_list *xs2=cn_malloc(sizeof(struct int_list)); xs2->head=2147483647; xs2->tail=xs; xs=xs2; struct int_list *z=IntList_copy(xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; } while(xs!=0) { struct int_list *next_xs=xs->tail; cn_free_sized(xs,sizeof(struct int_list)); xs=next_xs; }",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                2147483647,
+                0,
+                -2147483648
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:list_all",
+      "qcp_variant": "qcp_existing:11aff98e8bef27844c51",
+      "function": "IntList_free_list",
+      "cases": [
+        {
+          "id": "11aff98e_IntList_free_list_0",
+          "value": {
+            "list": [],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; IntList_free_list(xs);",
+          "binds": {
+            "args": {
+              "xs": 0
+            },
+            "values": {
+              "l": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_free_list_1",
+          "value": {
+            "list": [
+              1
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=1; xs0->tail=xs; xs=xs0; IntList_free_list(xs);",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_free_list_2",
+          "value": {
+            "list": [
+              2,
+              -1
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=-1; xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=2; xs1->tail=xs; xs=xs1; IntList_free_list(xs);",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                2,
+                -1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_free_list_3",
+          "value": {
+            "list": [
+              2147483647,
+              0,
+              -2147483648
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=(-2147483647 - 1); xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=0; xs1->tail=xs; xs=xs1; struct int_list *xs2=cn_malloc(sizeof(struct int_list)); xs2->head=2147483647; xs2->tail=xs; xs=xs2; IntList_free_list(xs);",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                2147483647,
+                0,
+                -2147483648
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:list_all",
+      "qcp_variant": "qcp_existing:11aff98e8bef27844c51",
+      "function": "IntList_length",
+      "cases": [
+        {
+          "id": "11aff98e_IntList_length_0",
+          "value": {
+            "list": [],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; unsigned int z=IntList_length(xs); (void)z; while(xs!=0) { struct int_list *next_xs=xs->tail; cn_free_sized(xs,sizeof(struct int_list)); xs=next_xs; }",
+          "binds": {
+            "args": {
+              "xs": 0
+            },
+            "values": {
+              "l": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_length_1",
+          "value": {
+            "list": [
+              1
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=1; xs0->tail=xs; xs=xs0; unsigned int z=IntList_length(xs); (void)z; while(xs!=0) { struct int_list *next_xs=xs->tail; cn_free_sized(xs,sizeof(struct int_list)); xs=next_xs; }",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_length_2",
+          "value": {
+            "list": [
+              2,
+              -1
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=-1; xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=2; xs1->tail=xs; xs=xs1; unsigned int z=IntList_length(xs); (void)z; while(xs!=0) { struct int_list *next_xs=xs->tail; cn_free_sized(xs,sizeof(struct int_list)); xs=next_xs; }",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                2,
+                -1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_length_3",
+          "value": {
+            "list": [
+              2147483647,
+              0,
+              -2147483648
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=(-2147483647 - 1); xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=0; xs1->tail=xs; xs=xs1; struct int_list *xs2=cn_malloc(sizeof(struct int_list)); xs2->head=2147483647; xs2->tail=xs; xs=xs2; unsigned int z=IntList_length(xs); (void)z; while(xs!=0) { struct int_list *next_xs=xs->tail; cn_free_sized(xs,sizeof(struct int_list)); xs=next_xs; }",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                2147483647,
+                0,
+                -2147483648
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:list_all",
+      "qcp_variant": "qcp_existing:11aff98e8bef27844c51",
+      "function": "IntList_rev_aux",
+      "cases": [
+        {
+          "id": "11aff98e_IntList_rev_aux_0",
+          "value": {
+            "list": [],
+            "second_list": [
+              1
+            ]
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0;struct int_list *ys=0; struct int_list *ys0=cn_malloc(sizeof(struct int_list)); ys0->head=1; ys0->tail=ys; ys=ys0; struct int_list *z=IntList_rev_aux(xs,ys); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 0,
+              "ys": 16384
+            },
+            "values": {
+              "a": [],
+              "b": [
+                1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_rev_aux_1",
+          "value": {
+            "list": [
+              1
+            ],
+            "second_list": [
+              2,
+              -1
+            ]
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=1; xs0->tail=xs; xs=xs0;struct int_list *ys=0; struct int_list *ys0=cn_malloc(sizeof(struct int_list)); ys0->head=-1; ys0->tail=ys; ys=ys0; struct int_list *ys1=cn_malloc(sizeof(struct int_list)); ys1->head=2; ys1->tail=ys; ys=ys1; struct int_list *z=IntList_rev_aux(xs,ys); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 8192,
+              "ys": 16384
+            },
+            "values": {
+              "a": [
+                1
+              ],
+              "b": [
+                2,
+                -1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_rev_aux_2",
+          "value": {
+            "list": [
+              2,
+              -1
+            ],
+            "second_list": [
+              2147483647,
+              0,
+              -2147483648
+            ]
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=-1; xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=2; xs1->tail=xs; xs=xs1;struct int_list *ys=0; struct int_list *ys0=cn_malloc(sizeof(struct int_list)); ys0->head=(-2147483647 - 1); ys0->tail=ys; ys=ys0; struct int_list *ys1=cn_malloc(sizeof(struct int_list)); ys1->head=0; ys1->tail=ys; ys=ys1; struct int_list *ys2=cn_malloc(sizeof(struct int_list)); ys2->head=2147483647; ys2->tail=ys; ys=ys2; struct int_list *z=IntList_rev_aux(xs,ys); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 8192,
+              "ys": 16384
+            },
+            "values": {
+              "a": [
+                2,
+                -1
+              ],
+              "b": [
+                2147483647,
+                0,
+                -2147483648
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_rev_aux_3",
+          "value": {
+            "list": [
+              2147483647,
+              0,
+              -2147483648
+            ],
+            "second_list": []
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=(-2147483647 - 1); xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=0; xs1->tail=xs; xs=xs1; struct int_list *xs2=cn_malloc(sizeof(struct int_list)); xs2->head=2147483647; xs2->tail=xs; xs=xs2;struct int_list *ys=0; struct int_list *z=IntList_rev_aux(xs,ys); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 8192,
+              "ys": 0
+            },
+            "values": {
+              "a": [
+                2147483647,
+                0,
+                -2147483648
+              ],
+              "b": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:list_all",
+      "qcp_variant": "qcp_existing:11aff98e8bef27844c51",
+      "function": "IntList_rev",
+      "cases": [
+        {
+          "id": "11aff98e_IntList_rev_0",
+          "value": {
+            "list": [],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *z=IntList_rev(xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 0
+            },
+            "values": {
+              "l": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_rev_1",
+          "value": {
+            "list": [
+              1
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=1; xs0->tail=xs; xs=xs0; struct int_list *z=IntList_rev(xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_rev_2",
+          "value": {
+            "list": [
+              2,
+              -1
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=-1; xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=2; xs1->tail=xs; xs=xs1; struct int_list *z=IntList_rev(xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                2,
+                -1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_rev_3",
+          "value": {
+            "list": [
+              2147483647,
+              0,
+              -2147483648
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=(-2147483647 - 1); xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=0; xs1->tail=xs; xs=xs1; struct int_list *xs2=cn_malloc(sizeof(struct int_list)); xs2->head=2147483647; xs2->tail=xs; xs=xs2; struct int_list *z=IntList_rev(xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                2147483647,
+                0,
+                -2147483648
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:list_all",
+      "qcp_variant": "qcp_existing:11aff98e8bef27844c51",
+      "function": "IntList_append",
+      "cases": [
+        {
+          "id": "11aff98e_IntList_append_0",
+          "value": {
+            "list": [],
+            "second_list": [
+              1
+            ]
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0;struct int_list *ys=0; struct int_list *ys0=cn_malloc(sizeof(struct int_list)); ys0->head=1; ys0->tail=ys; ys=ys0; struct int_list *z=IntList_append(xs,ys); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 0,
+              "ys": 16384
+            },
+            "values": {
+              "a": [],
+              "b": [
+                1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_append_1",
+          "value": {
+            "list": [
+              1
+            ],
+            "second_list": [
+              2,
+              -1
+            ]
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=1; xs0->tail=xs; xs=xs0;struct int_list *ys=0; struct int_list *ys0=cn_malloc(sizeof(struct int_list)); ys0->head=-1; ys0->tail=ys; ys=ys0; struct int_list *ys1=cn_malloc(sizeof(struct int_list)); ys1->head=2; ys1->tail=ys; ys=ys1; struct int_list *z=IntList_append(xs,ys); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 8192,
+              "ys": 16384
+            },
+            "values": {
+              "a": [
+                1
+              ],
+              "b": [
+                2,
+                -1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_append_2",
+          "value": {
+            "list": [
+              2,
+              -1
+            ],
+            "second_list": [
+              2147483647,
+              0,
+              -2147483648
+            ]
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=-1; xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=2; xs1->tail=xs; xs=xs1;struct int_list *ys=0; struct int_list *ys0=cn_malloc(sizeof(struct int_list)); ys0->head=(-2147483647 - 1); ys0->tail=ys; ys=ys0; struct int_list *ys1=cn_malloc(sizeof(struct int_list)); ys1->head=0; ys1->tail=ys; ys=ys1; struct int_list *ys2=cn_malloc(sizeof(struct int_list)); ys2->head=2147483647; ys2->tail=ys; ys=ys2; struct int_list *z=IntList_append(xs,ys); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 8192,
+              "ys": 16384
+            },
+            "values": {
+              "a": [
+                2,
+                -1
+              ],
+              "b": [
+                2147483647,
+                0,
+                -2147483648
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_append_3",
+          "value": {
+            "list": [
+              2147483647,
+              0,
+              -2147483648
+            ],
+            "second_list": []
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=(-2147483647 - 1); xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=0; xs1->tail=xs; xs=xs1; struct int_list *xs2=cn_malloc(sizeof(struct int_list)); xs2->head=2147483647; xs2->tail=xs; xs=xs2;struct int_list *ys=0; struct int_list *z=IntList_append(xs,ys); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 8192,
+              "ys": 0
+            },
+            "values": {
+              "a": [
+                2147483647,
+                0,
+                -2147483648
+              ],
+              "b": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:list_all",
+      "qcp_variant": "qcp_existing:11aff98e8bef27844c51",
+      "function": "IntList_append2",
+      "cases": [
+        {
+          "id": "11aff98e_IntList_append2_0",
+          "value": {
+            "list": [],
+            "second_list": [
+              1
+            ]
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0;struct int_list *ys=0; struct int_list *ys0=cn_malloc(sizeof(struct int_list)); ys0->head=1; ys0->tail=ys; ys=ys0; struct int_list *z=IntList_append2(xs,ys); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; } while(xs!=0) { struct int_list *next_xs=xs->tail; cn_free_sized(xs,sizeof(struct int_list)); xs=next_xs; } while(ys!=0) { struct int_list *next_ys=ys->tail; cn_free_sized(ys,sizeof(struct int_list)); ys=next_ys; }",
+          "binds": {
+            "args": {
+              "xs": 0,
+              "ys": 16384
+            },
+            "values": {
+              "a": [],
+              "b": [
+                1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_append2_1",
+          "value": {
+            "list": [
+              1
+            ],
+            "second_list": [
+              2,
+              -1
+            ]
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=1; xs0->tail=xs; xs=xs0;struct int_list *ys=0; struct int_list *ys0=cn_malloc(sizeof(struct int_list)); ys0->head=-1; ys0->tail=ys; ys=ys0; struct int_list *ys1=cn_malloc(sizeof(struct int_list)); ys1->head=2; ys1->tail=ys; ys=ys1; struct int_list *z=IntList_append2(xs,ys); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; } while(xs!=0) { struct int_list *next_xs=xs->tail; cn_free_sized(xs,sizeof(struct int_list)); xs=next_xs; } while(ys!=0) { struct int_list *next_ys=ys->tail; cn_free_sized(ys,sizeof(struct int_list)); ys=next_ys; }",
+          "binds": {
+            "args": {
+              "xs": 8192,
+              "ys": 16384
+            },
+            "values": {
+              "a": [
+                1
+              ],
+              "b": [
+                2,
+                -1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_append2_2",
+          "value": {
+            "list": [
+              2,
+              -1
+            ],
+            "second_list": [
+              2147483647,
+              0,
+              -2147483648
+            ]
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=-1; xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=2; xs1->tail=xs; xs=xs1;struct int_list *ys=0; struct int_list *ys0=cn_malloc(sizeof(struct int_list)); ys0->head=(-2147483647 - 1); ys0->tail=ys; ys=ys0; struct int_list *ys1=cn_malloc(sizeof(struct int_list)); ys1->head=0; ys1->tail=ys; ys=ys1; struct int_list *ys2=cn_malloc(sizeof(struct int_list)); ys2->head=2147483647; ys2->tail=ys; ys=ys2; struct int_list *z=IntList_append2(xs,ys); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; } while(xs!=0) { struct int_list *next_xs=xs->tail; cn_free_sized(xs,sizeof(struct int_list)); xs=next_xs; } while(ys!=0) { struct int_list *next_ys=ys->tail; cn_free_sized(ys,sizeof(struct int_list)); ys=next_ys; }",
+          "binds": {
+            "args": {
+              "xs": 8192,
+              "ys": 16384
+            },
+            "values": {
+              "a": [
+                2,
+                -1
+              ],
+              "b": [
+                2147483647,
+                0,
+                -2147483648
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_append2_3",
+          "value": {
+            "list": [
+              2147483647,
+              0,
+              -2147483648
+            ],
+            "second_list": []
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=(-2147483647 - 1); xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=0; xs1->tail=xs; xs=xs1; struct int_list *xs2=cn_malloc(sizeof(struct int_list)); xs2->head=2147483647; xs2->tail=xs; xs=xs2;struct int_list *ys=0; struct int_list *z=IntList_append2(xs,ys); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; } while(xs!=0) { struct int_list *next_xs=xs->tail; cn_free_sized(xs,sizeof(struct int_list)); xs=next_xs; } while(ys!=0) { struct int_list *next_ys=ys->tail; cn_free_sized(ys,sizeof(struct int_list)); ys=next_ys; }",
+          "binds": {
+            "args": {
+              "xs": 8192,
+              "ys": 0
+            },
+            "values": {
+              "a": [
+                2147483647,
+                0,
+                -2147483648
+              ],
+              "b": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:list_all",
+      "qcp_variant": "qcp_existing:11aff98e8bef27844c51",
+      "function": "IntList_rev_loop",
+      "cases": [
+        {
+          "id": "11aff98e_IntList_rev_loop_0",
+          "value": {
+            "list": [],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *z=IntList_rev_loop(xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 0
+            },
+            "values": {
+              "l": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_rev_loop_1",
+          "value": {
+            "list": [
+              1
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=1; xs0->tail=xs; xs=xs0; struct int_list *z=IntList_rev_loop(xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_rev_loop_2",
+          "value": {
+            "list": [
+              2,
+              -1
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=-1; xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=2; xs1->tail=xs; xs=xs1; struct int_list *z=IntList_rev_loop(xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                2,
+                -1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_rev_loop_3",
+          "value": {
+            "list": [
+              2147483647,
+              0,
+              -2147483648
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=(-2147483647 - 1); xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=0; xs1->tail=xs; xs=xs1; struct int_list *xs2=cn_malloc(sizeof(struct int_list)); xs2->head=2147483647; xs2->tail=xs; xs=xs2; struct int_list *z=IntList_rev_loop(xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                2147483647,
+                0,
+                -2147483648
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:list_all",
+      "qcp_variant": "qcp_existing:11aff98e8bef27844c51",
+      "function": "IntList_split",
+      "cases": [
+        {
+          "id": "11aff98e_IntList_split_0",
+          "value": {
+            "list": [],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list_pair z=IntList_split(xs); struct int_list *left=z.fst; struct int_list *right=z.snd; while(left!=0) { struct int_list *next_left=left->tail; cn_free_sized(left,sizeof(struct int_list)); left=next_left; } while(right!=0) { struct int_list *next_right=right->tail; cn_free_sized(right,sizeof(struct int_list)); right=next_right; }",
+          "binds": {
+            "args": {
+              "xs": 0
+            },
+            "values": {
+              "l": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_split_1",
+          "value": {
+            "list": [
+              1
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=1; xs0->tail=xs; xs=xs0; struct int_list_pair z=IntList_split(xs); struct int_list *left=z.fst; struct int_list *right=z.snd; while(left!=0) { struct int_list *next_left=left->tail; cn_free_sized(left,sizeof(struct int_list)); left=next_left; } while(right!=0) { struct int_list *next_right=right->tail; cn_free_sized(right,sizeof(struct int_list)); right=next_right; }",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_split_2",
+          "value": {
+            "list": [
+              2,
+              -1
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=-1; xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=2; xs1->tail=xs; xs=xs1; struct int_list_pair z=IntList_split(xs); struct int_list *left=z.fst; struct int_list *right=z.snd; while(left!=0) { struct int_list *next_left=left->tail; cn_free_sized(left,sizeof(struct int_list)); left=next_left; } while(right!=0) { struct int_list *next_right=right->tail; cn_free_sized(right,sizeof(struct int_list)); right=next_right; }",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                2,
+                -1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_split_3",
+          "value": {
+            "list": [
+              2147483647,
+              0,
+              -2147483648
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=(-2147483647 - 1); xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=0; xs1->tail=xs; xs=xs1; struct int_list *xs2=cn_malloc(sizeof(struct int_list)); xs2->head=2147483647; xs2->tail=xs; xs=xs2; struct int_list_pair z=IntList_split(xs); struct int_list *left=z.fst; struct int_list *right=z.snd; while(left!=0) { struct int_list *next_left=left->tail; cn_free_sized(left,sizeof(struct int_list)); left=next_left; } while(right!=0) { struct int_list *next_right=right->tail; cn_free_sized(right,sizeof(struct int_list)); right=next_right; }",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                2147483647,
+                0,
+                -2147483648
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:list_all",
+      "qcp_variant": "qcp_existing:11aff98e8bef27844c51",
+      "function": "IntList_merge",
+      "cases": [
+        {
+          "id": "11aff98e_IntList_merge_0",
+          "value": {
+            "list": [],
+            "second_list": [
+              1
+            ]
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0;struct int_list *ys=0; struct int_list *ys0=cn_malloc(sizeof(struct int_list)); ys0->head=1; ys0->tail=ys; ys=ys0; struct int_list *z=IntList_merge(xs,ys); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 0,
+              "ys": 16384
+            },
+            "values": {
+              "l": [],
+              "r": [
+                1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_merge_1",
+          "value": {
+            "list": [
+              1
+            ],
+            "second_list": [
+              2,
+              -1
+            ]
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=1; xs0->tail=xs; xs=xs0;struct int_list *ys=0; struct int_list *ys0=cn_malloc(sizeof(struct int_list)); ys0->head=-1; ys0->tail=ys; ys=ys0; struct int_list *ys1=cn_malloc(sizeof(struct int_list)); ys1->head=2; ys1->tail=ys; ys=ys1; struct int_list *z=IntList_merge(xs,ys); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 8192,
+              "ys": 16384
+            },
+            "values": {
+              "l": [
+                1
+              ],
+              "r": [
+                2,
+                -1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_merge_2",
+          "value": {
+            "list": [
+              2,
+              -1
+            ],
+            "second_list": [
+              2147483647,
+              0,
+              -2147483648
+            ]
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=-1; xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=2; xs1->tail=xs; xs=xs1;struct int_list *ys=0; struct int_list *ys0=cn_malloc(sizeof(struct int_list)); ys0->head=(-2147483647 - 1); ys0->tail=ys; ys=ys0; struct int_list *ys1=cn_malloc(sizeof(struct int_list)); ys1->head=0; ys1->tail=ys; ys=ys1; struct int_list *ys2=cn_malloc(sizeof(struct int_list)); ys2->head=2147483647; ys2->tail=ys; ys=ys2; struct int_list *z=IntList_merge(xs,ys); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 8192,
+              "ys": 16384
+            },
+            "values": {
+              "l": [
+                2,
+                -1
+              ],
+              "r": [
+                2147483647,
+                0,
+                -2147483648
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_merge_3",
+          "value": {
+            "list": [
+              2147483647,
+              0,
+              -2147483648
+            ],
+            "second_list": []
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=(-2147483647 - 1); xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=0; xs1->tail=xs; xs=xs1; struct int_list *xs2=cn_malloc(sizeof(struct int_list)); xs2->head=2147483647; xs2->tail=xs; xs=xs2;struct int_list *ys=0; struct int_list *z=IntList_merge(xs,ys); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 8192,
+              "ys": 0
+            },
+            "values": {
+              "l": [
+                2147483647,
+                0,
+                -2147483648
+              ],
+              "r": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:list_all",
+      "qcp_variant": "qcp_existing:11aff98e8bef27844c51",
+      "function": "IntList_mergesort",
+      "cases": [
+        {
+          "id": "11aff98e_IntList_mergesort_0",
+          "value": {
+            "list": [],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *z=IntList_mergesort(xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 0
+            },
+            "values": {
+              "l": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_mergesort_1",
+          "value": {
+            "list": [
+              1
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=1; xs0->tail=xs; xs=xs0; struct int_list *z=IntList_mergesort(xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_mergesort_2",
+          "value": {
+            "list": [
+              2,
+              -1
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=-1; xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=2; xs1->tail=xs; xs=xs1; struct int_list *z=IntList_mergesort(xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                2,
+                -1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_mergesort_3",
+          "value": {
+            "list": [
+              2147483647,
+              0,
+              -2147483648
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=(-2147483647 - 1); xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=0; xs1->tail=xs; xs=xs1; struct int_list *xs2=cn_malloc(sizeof(struct int_list)); xs2->head=2147483647; xs2->tail=xs; xs=xs2; struct int_list *z=IntList_mergesort(xs); while(z!=0) { struct int_list *next_z=z->tail; cn_free_sized(z,sizeof(struct int_list)); z=next_z; }",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                2147483647,
+                0,
+                -2147483648
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:list_all",
+      "qcp_variant": "qcp_existing:11aff98e8bef27844c51",
+      "function": "refUnsignedInt",
+      "cases": [
+        {
+          "id": "11aff98e_refUnsignedInt_0",
+          "value": {
+            "list": [],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "unsigned int *z=refUnsignedInt(0u); cn_free_sized(z,sizeof(unsigned int));",
+          "binds": {
+            "args": {
+              "v": 0
+            },
+            "values": {}
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_refUnsignedInt_1",
+          "value": {
+            "list": [
+              1
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "unsigned int *z=refUnsignedInt(1u); cn_free_sized(z,sizeof(unsigned int));",
+          "binds": {
+            "args": {
+              "v": 1
+            },
+            "values": {}
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_refUnsignedInt_2",
+          "value": {
+            "list": [
+              2,
+              -1
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "unsigned int *z=refUnsignedInt(4294967294u); cn_free_sized(z,sizeof(unsigned int));",
+          "binds": {
+            "args": {
+              "v": 4294967294
+            },
+            "values": {}
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_refUnsignedInt_3",
+          "value": {
+            "list": [
+              2147483647,
+              0,
+              -2147483648
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "unsigned int *z=refUnsignedInt(4294967295u); cn_free_sized(z,sizeof(unsigned int));",
+          "binds": {
+            "args": {
+              "v": 4294967295
+            },
+            "values": {}
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:list_all",
+      "qcp_variant": "qcp_existing:11aff98e8bef27844c51",
+      "function": "IntList_length_acc_aux",
+      "cases": [
+        {
+          "id": "11aff98e_IntList_length_acc_aux_0",
+          "value": {
+            "list": [],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; unsigned int acc=0u; IntList_length_acc_aux(xs,&acc); while(xs!=0) { struct int_list *next_xs=xs->tail; cn_free_sized(xs,sizeof(struct int_list)); xs=next_xs; }",
+          "binds": {
+            "args": {
+              "xs": 0,
+              "p": 4096
+            },
+            "values": {
+              "l": [],
+              "n": 0
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_length_acc_aux_1",
+          "value": {
+            "list": [
+              1
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=1; xs0->tail=xs; xs=xs0; unsigned int acc=1u; IntList_length_acc_aux(xs,&acc); while(xs!=0) { struct int_list *next_xs=xs->tail; cn_free_sized(xs,sizeof(struct int_list)); xs=next_xs; }",
+          "binds": {
+            "args": {
+              "xs": 8192,
+              "p": 4096
+            },
+            "values": {
+              "l": [
+                1
+              ],
+              "n": 1
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_length_acc_aux_2",
+          "value": {
+            "list": [
+              2,
+              -1
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=-1; xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=2; xs1->tail=xs; xs=xs1; unsigned int acc=4294967294u; IntList_length_acc_aux(xs,&acc); while(xs!=0) { struct int_list *next_xs=xs->tail; cn_free_sized(xs,sizeof(struct int_list)); xs=next_xs; }",
+          "binds": {
+            "args": {
+              "xs": 8192,
+              "p": 4096
+            },
+            "values": {
+              "l": [
+                2,
+                -1
+              ],
+              "n": 4294967294
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_length_acc_aux_3",
+          "value": {
+            "list": [
+              2147483647,
+              0,
+              -2147483648
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=(-2147483647 - 1); xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=0; xs1->tail=xs; xs=xs1; struct int_list *xs2=cn_malloc(sizeof(struct int_list)); xs2->head=2147483647; xs2->tail=xs; xs=xs2; unsigned int acc=4294967295u; IntList_length_acc_aux(xs,&acc); while(xs!=0) { struct int_list *next_xs=xs->tail; cn_free_sized(xs,sizeof(struct int_list)); xs=next_xs; }",
+          "binds": {
+            "args": {
+              "xs": 8192,
+              "p": 4096
+            },
+            "values": {
+              "l": [
+                2147483647,
+                0,
+                -2147483648
+              ],
+              "n": 4294967295
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        }
+      ]
+    },
+    {
+      "cn_variant": "cn_original:list_all",
+      "qcp_variant": "qcp_existing:11aff98e8bef27844c51",
+      "function": "IntList_length_acc",
+      "cases": [
+        {
+          "id": "11aff98e_IntList_length_acc_0",
+          "value": {
+            "list": [],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; unsigned int z=IntList_length_acc(xs); (void)z; while(xs!=0) { struct int_list *next_xs=xs->tail; cn_free_sized(xs,sizeof(struct int_list)); xs=next_xs; }",
+          "binds": {
+            "args": {
+              "xs": 0
+            },
+            "values": {
+              "l": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_length_acc_1",
+          "value": {
+            "list": [
+              1
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=1; xs0->tail=xs; xs=xs0; unsigned int z=IntList_length_acc(xs); (void)z; while(xs!=0) { struct int_list *next_xs=xs->tail; cn_free_sized(xs,sizeof(struct int_list)); xs=next_xs; }",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_length_acc_2",
+          "value": {
+            "list": [
+              2,
+              -1
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=-1; xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=2; xs1->tail=xs; xs=xs1; unsigned int z=IntList_length_acc(xs); (void)z; while(xs!=0) { struct int_list *next_xs=xs->tail; cn_free_sized(xs,sizeof(struct int_list)); xs=next_xs; }",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                2,
+                -1
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        },
+        {
+          "id": "11aff98e_IntList_length_acc_3",
+          "value": {
+            "list": [
+              2147483647,
+              0,
+              -2147483648
+            ],
+            "second_list": null
+          },
+          "expected": "PASS",
+          "cn_body": "struct int_list *xs=0; struct int_list *xs0=cn_malloc(sizeof(struct int_list)); xs0->head=(-2147483647 - 1); xs0->tail=xs; xs=xs0; struct int_list *xs1=cn_malloc(sizeof(struct int_list)); xs1->head=0; xs1->tail=xs; xs=xs1; struct int_list *xs2=cn_malloc(sizeof(struct int_list)); xs2->head=2147483647; xs2->tail=xs; xs=xs2; unsigned int z=IntList_length_acc(xs); (void)z; while(xs!=0) { struct int_list *next_xs=xs->tail; cn_free_sized(xs,sizeof(struct int_list)); xs=next_xs; }",
+          "binds": {
+            "args": {
+              "xs": 8192
+            },
+            "values": {
+              "l": [
+                2147483647,
+                0,
+                -2147483648
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "legal_heap": "Finite disjoint heap chains, no cycles/shared nodes; QCP xs8192 and ys16384 are disjoint roots. CN head/tail maps to QCP data/next by layout. Cleanup follows destructive vs copying ownership to free each node exactly once after postcondition.",
+            "specification": "Preserve exact function contract, merge is specified recursive sequence merge even for unsorted input, not falsely claimed sorted result. length unsigned arithmetic modulo2^32. Empty lists valid.",
+            "scope": "Source extra CN-only functions/trusted original main and allocation wrappers absent from a translation are unpaired scope gaps, never claimed tested."
+          }
+        }
+      ]
+    }
+  ],
+  "expectation_basis": "All existing CN/QCP records; every translated core function with body has four legal finite chain entries, except no-argument nil one distinct entry. Includes duplicates/sign extremes and unsigned wraparound where applicable. No allocator body fabricated for teSpec; missing external execution remains UNKNOWN. CN-only functions/client in partial translation are disclosed coverage gaps.",
+  "cn_trust_qualification": "Original untrusted list core, trusted allocation/free wrappers and original main. External QCP allocation/free contracts assumed for universal verification only. CN original additional functions and client are not universal counterparts of truncated translation.",
+  "cn_acceptance_verdict": "ACCEPTED_CORE_WITH_DECLARED_TRUSTED_EXTERNALS"
+}
