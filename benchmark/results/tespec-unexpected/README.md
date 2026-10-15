@@ -1,6 +1,6 @@
 # teSpec 不符合预期的专项台账
 
-已扫描 32 组、1066 对变体与输入。最终不匹配 **304** 条；自动阶段缺口经独立 ITP 解决 **41** 条；另有配置错误修正 **70** 条。未评测组不计为零异常。原始分类不改写，人工分析追加到 triage.json，重建不覆盖人工结论。
+已扫描 35 组、1102 对变体与输入。最终不匹配 **352** 条；自动阶段缺口经独立 ITP 解决 **41** 条；另有配置错误修正 **70** 条。未评测组不计为零异常。原始分类不改写，人工分析追加到 triage.json，重建不覆盖人工结论。
 
 | 组 | 变体 | 输入 | 模式 | 预期 | 自动 | 最终 | 分类 | 证据 |
 |---|---|---|---|---|---|---|---|---|
@@ -183,6 +183,26 @@
 | ref_greater | cn_original:slf_ref_greater | weak_ge_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ac7444e323c4abf698d0.json) |
 | ref_greater | cn_original:slf_ref_greater | weak_ge_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7576e150a8a682d7dc0e.json) |
 | ref_greater | cn_original:slf_ref_greater | weak_ge_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/bdebe8406f8b9bb0963b.json) |
+| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_0 | off | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/05b5ba05e3e7898b2b60.json) |
+| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_0 | on | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/cc224b3f61989aa02b1b.json) |
+| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_1 | off | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1584982beef48a347adb.json) |
+| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_1 | on | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f53f0dd06468c025fddf.json) |
+| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_2 | off | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ac498435030e44153fb7.json) |
+| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_2 | on | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/25006c3256bb8d9e0a06.json) |
+| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_3 | off | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/af3735e18a6b4bff6bf4.json) |
+| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_3 | on | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7098bce84d2bd07b6d54.json) |
+| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_4 | off | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1e68de2f5ccc37264f53.json) |
+| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_4 | on | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d2f4d0c06049e7057020.json) |
+| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_5 | off | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f852f80706c604e134f2.json) |
+| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_5 | on | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/98f92a709d8a515cb8d8.json) |
+| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | malloc_int_only_entry | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b06a1efe9da49f94a50e.json) |
+| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | malloc_int_only_entry | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/deb05472091dab25d62c.json) |
+| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | original_main_translation0_only_entry | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3d6dd9f89a2559d4d887.json) |
+| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | original_main_translation0_only_entry | on | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7de218df4dbbff44b5e5.json) |
+| runtime-extras__double_free | cn_original:runtime-extras__double_free.broken | original_main_translation0_only_entry | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/99af3e9a170734aa1bf7.json) |
+| runtime-extras__double_free | cn_original:runtime-extras__double_free.broken | original_main_translation0_only_entry | on | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b051a7306bb5cb8a9bf3.json) |
+| runtime-extras__double_free | cn_original:runtime-extras__double_free.broken | original_main_translation1_only_entry | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/69d0c52f7659b817de35.json) |
+| runtime-extras__double_free | cn_original:runtime-extras__double_free.broken | original_main_translation1_only_entry | on | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/78ba5ba7ab6e1bdb34b2.json) |
 | runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation0_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ed5b686b2fa7ad2e30c5.json) |
 | runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation0_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a54616671351dd70a91a.json) |
 | runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation0_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/14ae12221ac87c7d55eb.json) |
@@ -275,6 +295,34 @@
 | runtime-extras__same_func_malloc_free | cn_original:runtime-extras__same_func_malloc_free | original_main_translation1_only_entry | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/dcd0ecec3d1507599cbe.json) |
 | runtime-extras__same_func_malloc_free | cn_original:runtime-extras__same_func_malloc_free | original_main_translation2_only_entry | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a6cfe30bd83d2daa80c3.json) |
 | runtime-extras__same_func_malloc_free | cn_original:runtime-extras__same_func_malloc_free | original_main_translation2_only_entry | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/29b08928955e063faee7.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/dc6f9f46150b0ba0b57f.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7b74f2d4cf0a13e6fc45.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e16ab5fac2876534eac2.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/41ef5bf6455b601098e8.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/bb16d152820cc245d4b5.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a234e1a24012a3843e85.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0ba9083a8b0d97e31cc7.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7eec7b074c20425a2d30.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_4 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/08ae055077e28b51d950.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0269b8bca30363d8919a.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e824116ca728eb43b682.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b996bbf8fa7bee925959.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | original_main_translation0_only_entry | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ba6759a4083a461b74f5.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | original_main_translation0_only_entry | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/58da61adb85b690b4b2a.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e7d26290ef64161b2c0c.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/58c4a01cba94088082dc.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1ccffb225af3604d3af1.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/86e6776f72567ddb37dd.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/272dbabdcc91ad0ad899.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/64fa6f36532a5a847294.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8cfa2cec3bfa0bc5c257.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/445f1ec6ec893bb5fe9c.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_4 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c4c242b658d110097978.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/088848d13180c288cf8a.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0a098a7b1de073adef44.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a01c838cb24371065447.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | original_main_translation1_only_entry | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/65ce25f528a8db627f29.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | original_main_translation1_only_entry | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e02819974a4b4c11e8f7.json) |
 | slf17_get_and_free | cn_original:slf17_get_and_free | original_free_body_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/69d7e5f08e73cf521967.json) |
 | slf17_get_and_free | cn_original:slf17_get_and_free | original_free_body_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/92cfa442e4569b21dc97.json) |
 | slf17_get_and_free | cn_original:slf17_get_and_free | original_free_body_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6b135a4a3e53c84f9fff.json) |

@@ -1,0 +1,60 @@
+{
+  "program_group": "runtime-extras__double_free",
+  "status": "INCOMPLETE_TRUST_SCOPE_AND_PENDING_CERTIFICATES",
+  "case_pairs": 14,
+  "fulminate_matches": 14,
+  "tespec_off_matches": 12,
+  "tespec_on_matches": 12,
+  "cn_trust_qualification": "All original target functions and main are CN trusted. Original whole-module CN acceptance would not prove their contracts or refute incorrect bodies.",
+  "original_primary_native": "benchmark/results/runtime-extras__double_free/20261016-primary-native/pending-receipt.json",
+  "qcp_original_targets": [],
+  "issue_details": [
+    {
+      "id": "99af3e9a170734aa1bf7",
+      "report": "benchmark/results/runtime-extras__double_free/20261016-evaluation/cn_original_runtime-extras__double_free.broken/original_main_translation0_only_entry/tespec-off/artifacts/report.json",
+      "reason": "missing_function_body",
+      "residual_targets": [],
+      "execution_completed": false,
+      "itp_conclusion": "NOT_PERFORMED_NO_COMPLETE_EXECUTION_OR_ORIGINAL_RESIDUAL_TARGET"
+    },
+    {
+      "id": "b051a7306bb5cb8a9bf3",
+      "report": "benchmark/results/runtime-extras__double_free/20261016-evaluation/cn_original_runtime-extras__double_free.broken/original_main_translation0_only_entry/tespec-on/artifacts/report.json",
+      "reason": "missing_function_body",
+      "residual_targets": [],
+      "execution_completed": false,
+      "itp_conclusion": "NOT_PERFORMED_NO_COMPLETE_EXECUTION_OR_ORIGINAL_RESIDUAL_TARGET"
+    },
+    {
+      "id": "69d0c52f7659b817de35",
+      "report": "benchmark/results/runtime-extras__double_free/20261016-evaluation/cn_original_runtime-extras__double_free.broken/original_main_translation1_only_entry/tespec-off/artifacts/report.json",
+      "reason": "missing_function_body",
+      "residual_targets": [],
+      "execution_completed": false,
+      "itp_conclusion": "NOT_PERFORMED_NO_COMPLETE_EXECUTION_OR_ORIGINAL_RESIDUAL_TARGET"
+    },
+    {
+      "id": "78ba5ba7ab6e1bdb34b2",
+      "report": "benchmark/results/runtime-extras__double_free/20261016-evaluation/cn_original_runtime-extras__double_free.broken/original_main_translation1_only_entry/tespec-on/artifacts/report.json",
+      "reason": "missing_function_body",
+      "residual_targets": [],
+      "execution_completed": false,
+      "itp_conclusion": "NOT_PERFORMED_NO_COMPLETE_EXECUTION_OR_ORIGINAL_RESIDUAL_TARGET"
+    }
+  ],
+  "single_entry_exception": "Each original no-argument main has exactly one distinct entry per existing translation; repeated runs are not invented additional inputs.",
+  "next_action": "Preserve all variants/oracles; finish original-target proof/refutation and per-execution ITP where available; add supported external execution for missing bodies. Continue other groups.",
+  "qcp_observed_expected_native_rejection": {
+    "Main Error Message": "fatal error: Cannot execute function cn_free_sized for spec (null)",
+    "fileName": "/home/yangfp/teSpec/benchmark/programs/runtime-extras__double_free/variants/qcp_existing_45f9f4ea9a2e0cbc50db/qcp/double_free.qcp.c",
+    "line": 18,
+    "column": 21,
+    "additional_info": [
+      "Function call failed because the caller assertion does not entail the callee Require assertion after substituting actual arguments.\n",
+      "Function call argument bindings:\n  argument 1: p <- retval_406\n  argument 2: n <- (Size_of unsigned int)\n",
+      "Callee precondition after substituting actual arguments:\nEX x_418_free \nPROP[\n  (Size_of unsigned int) == 4 ]\nLOCAL[]\nSEP[\n  store(retval_406, x_418_free, unsigned int) ]\n\n",
+      "Caller current assertion:\nEX p_403_addr retval_406 x_409_addr retval_413 \nPROP[\n  retval_413 == 5;\n  retval_406 != 0 ]\nLOCAL[\n  Temp x x_409_addr;\n  Temp p p_403_addr ]\nSEP[\n  store(x_409_addr, retval_413, unsigned int);\n  store(p_403_addr, retval_406, unsigned int*) ]\n\n"
+    ]
+  },
+  "qcp_rejection_qualification": "Original whole module is negative: double_free main attempts a second free, bad_free frees with emp and no owned cell. Native rejection at free precondition is consistent with these source defects; not a Coq refutation of a generated complete VC module. Trusted CN acceptance does not validate those bodies."
+}

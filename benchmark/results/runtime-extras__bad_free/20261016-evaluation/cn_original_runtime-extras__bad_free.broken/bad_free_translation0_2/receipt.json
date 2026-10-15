@@ -1,0 +1,171 @@
+{
+  "variant": "cn_original:runtime-extras__bad_free.broken",
+  "paired_qcp_variant": "qcp_existing:cb114566e2b0eb204891",
+  "case": "bad_free_translation0_2",
+  "initial": 12288,
+  "expected": "ERROR",
+  "plan_case": {
+    "id": "bad_free_translation0_2",
+    "value": 12288,
+    "expected": "ERROR",
+    "cn_body": "bad_free((int*)12288ul);",
+    "binds": {
+      "args": {
+        "p": 12288
+      },
+      "values": {}
+    },
+    "precondition_valid": true,
+    "oracle": {
+      "precondition_heap": "emp",
+      "reason": "Any nonzero aligned p is allowed by the original emp entry; freeing without owned allocation is an invalid operation. Expected execution permission error, not a failed read precondition or fabricated allocated input.",
+      "no_input_allocation": true
+    },
+    "expected_by_tool": {
+      "fulminate_test": "FAIL",
+      "tespec_off": "ERROR",
+      "tespec_on": "ERROR"
+    },
+    "expected_executor_error_contains": "Permission"
+  },
+  "cn_source_sha256": "f5726fcf79cd7ffffc03177f7576ad9445e1ecac5faa4f7c63bbb335c0f7b581",
+  "qcp_source_sha256": "cb114566e2b0eb2048914bfa1c5ad264a9aa81f32cfa085048554b65b7cb5a6e",
+  "harness": "benchmark/programs/runtime-extras__bad_free/variants/cn_original_runtime-extras__bad_free.broken/tests/20261016-evaluation/bad_free_translation0_2/fulminate.cn.c",
+  "harness_sha256": "3227209eb24084d53660115f4e1e62b3bec422e860d83340f162de1e302b537f",
+  "binds": "benchmark/programs/runtime-extras__bad_free/variants/cn_original_runtime-extras__bad_free.broken/tests/20261016-evaluation/bad_free_translation0_2/binds.json",
+  "binds_sha256": "7b0c7526e66ffa99df2d5c8f575f01178725d049594e7f2c46682986d7ebfd28",
+  "precondition_valid": true,
+  "fulminate_pipeline": {
+    "command": [
+      "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+      "instrument",
+      "--run",
+      "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+      "--output-dir=/tmp/tespec-group-u58n0oq2",
+      "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples/runtime-extras",
+      "/home/yangfp/teSpec/benchmark/programs/runtime-extras__bad_free/variants/cn_original_runtime-extras__bad_free.broken/tests/20261016-evaluation/bad_free_translation0_2/fulminate.cn.c"
+    ],
+    "exit_code": 5,
+    "wall_seconds": 0.11470199799805414,
+    "resources": {
+      "max_process_rss_kib": 44212,
+      "user_seconds": 0.05,
+      "system_seconds": 0.02
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/runtime-extras__bad_free/20261016-evaluation/cn_original_runtime-extras__bad_free.broken/bad_free_translation0_2/fulminate-pipeline/stdout.log",
+    "stderr": "benchmark/results/runtime-extras__bad_free/20261016-evaluation/cn_original_runtime-extras__bad_free.broken/bad_free_translation0_2/fulminate-pipeline/stderr.log"
+  },
+  "instrumented_sources": [
+    {
+      "path": "benchmark/results/runtime-extras__bad_free/20261016-evaluation/cn_original_runtime-extras__bad_free.broken/bad_free_translation0_2/fulminate.cn.exec.c",
+      "sha256": "b220dd157bf18c82590a4df8acbc7ddd00b1e5fb5dadbefdb47f25c84096b20e"
+    }
+  ],
+  "instrumented_binary_sha256": "f2cd6d95a3a857411817d8eb82f637ffa195f9847f52577997a52de70492a822",
+  "fulminate_test": {
+    "command": [
+      "/tmp/tespec-group-u58n0oq2/fulminate.cn.exec.out"
+    ],
+    "exit_code": 5,
+    "wall_seconds": 0.003763341999729164,
+    "resources": {
+      "max_process_rss_kib": 1400,
+      "user_seconds": 0.0,
+      "system_seconds": 0.0
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/runtime-extras__bad_free/20261016-evaluation/cn_original_runtime-extras__bad_free.broken/bad_free_translation0_2/fulminate-test/stdout.log",
+    "stderr": "benchmark/results/runtime-extras__bad_free/20261016-evaluation/cn_original_runtime-extras__bad_free.broken/bad_free_translation0_2/fulminate-test/stderr.log",
+    "status": "FAIL"
+  },
+  "tespec_off": {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "spectest",
+      "run",
+      "/home/yangfp/teSpec/benchmark/programs/runtime-extras__bad_free/variants/qcp_existing_cb114566e2b0eb204891/qcp/bad_free.qcp.c",
+      "--function",
+      "bad_free",
+      "--binds",
+      "/home/yangfp/teSpec/benchmark/programs/runtime-extras__bad_free/variants/cn_original_runtime-extras__bad_free.broken/tests/20261016-evaluation/bad_free_translation0_2/binds.json",
+      "--execution-mode",
+      "all-boundaries",
+      "--output-dir",
+      "/home/yangfp/teSpec/benchmark/results/runtime-extras__bad_free/20261016-evaluation/cn_original_runtime-extras__bad_free.broken/bad_free_translation0_2/tespec-off/artifacts",
+      "--timeout",
+      "30",
+      "--compact",
+      "--no-spatial-smt",
+      "--spatial-smt-timeout-ms",
+      "2000",
+      "-I",
+      "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+      "-I",
+      "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/supplemental/bad_free"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 0.16468167399580125,
+    "resources": {
+      "max_process_rss_kib": 19908,
+      "user_seconds": 0.08,
+      "system_seconds": 0.03
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/runtime-extras__bad_free/20261016-evaluation/cn_original_runtime-extras__bad_free.broken/bad_free_translation0_2/tespec-off/stdout.log",
+    "stderr": "benchmark/results/runtime-extras__bad_free/20261016-evaluation/cn_original_runtime-extras__bad_free.broken/bad_free_translation0_2/tespec-off/stderr.log",
+    "report": "benchmark/results/runtime-extras__bad_free/20261016-evaluation/cn_original_runtime-extras__bad_free.broken/bad_free_translation0_2/tespec-off/artifacts/report.json",
+    "statuses": [
+      "UNKNOWN"
+    ],
+    "status": "UNKNOWN"
+  },
+  "tespec_on": {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "spectest",
+      "run",
+      "/home/yangfp/teSpec/benchmark/programs/runtime-extras__bad_free/variants/qcp_existing_cb114566e2b0eb204891/qcp/bad_free.qcp.c",
+      "--function",
+      "bad_free",
+      "--binds",
+      "/home/yangfp/teSpec/benchmark/programs/runtime-extras__bad_free/variants/cn_original_runtime-extras__bad_free.broken/tests/20261016-evaluation/bad_free_translation0_2/binds.json",
+      "--execution-mode",
+      "all-boundaries",
+      "--output-dir",
+      "/home/yangfp/teSpec/benchmark/results/runtime-extras__bad_free/20261016-evaluation/cn_original_runtime-extras__bad_free.broken/bad_free_translation0_2/tespec-on/artifacts",
+      "--timeout",
+      "30",
+      "--compact",
+      "--spatial-smt",
+      "--spatial-smt-timeout-ms",
+      "2000",
+      "-I",
+      "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+      "-I",
+      "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/supplemental/bad_free"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 0.16476462199352682,
+    "resources": {
+      "max_process_rss_kib": 19808,
+      "user_seconds": 0.07,
+      "system_seconds": 0.03
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/runtime-extras__bad_free/20261016-evaluation/cn_original_runtime-extras__bad_free.broken/bad_free_translation0_2/tespec-on/stdout.log",
+    "stderr": "benchmark/results/runtime-extras__bad_free/20261016-evaluation/cn_original_runtime-extras__bad_free.broken/bad_free_translation0_2/tespec-on/stderr.log",
+    "report": "benchmark/results/runtime-extras__bad_free/20261016-evaluation/cn_original_runtime-extras__bad_free.broken/bad_free_translation0_2/tespec-on/artifacts/report.json",
+    "statuses": [
+      "UNKNOWN"
+    ],
+    "status": "UNKNOWN"
+  },
+  "runtime_dependency_fixtures": []
+}

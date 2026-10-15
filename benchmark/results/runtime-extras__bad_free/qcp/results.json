@@ -1,0 +1,59 @@
+{
+  "tool": "qcp",
+  "program_group": "runtime-extras__bad_free",
+  "verdict": "NATIVE_GENERATION_INCOMPLETE",
+  "evidence": "benchmark/results/runtime-extras__bad_free/20261016-primary-native/pending-receipt.json",
+  "goal": null,
+  "goal_sha256": null,
+  "original_vc_correct_targets": [],
+  "scope": "Native generation alone is not verification. Positive original targets require full proofs; original negative modules require correctly scoped rejection/refutation, never a proof of false VC_Correct. Historical evidence is retained in the existing catalogue and not assigned fabricated zero costs.",
+  "source": {
+    "path": "benchmark/programs/runtime-extras__bad_free/variants/qcp_existing_cb114566e2b0eb204891/qcp/bad_free.qcp.c",
+    "sha256": "cb114566e2b0eb2048914bfa1c5ad264a9aa81f32cfa085048554b65b7cb5a6e",
+    "provenance_path": "arxiv/benchmark-support/selection/qcp-migration/supplemental/bad_free/bad_free.qcp.c",
+    "include_dirs": [
+      "arxiv/benchmark-support/selection/qcp-migration/supplemental/bad_free"
+    ],
+    "scope": "Byte-identical benchmark input; dependencies and archived proof context remain recorded separately."
+  },
+  "native_generation_measurement": {
+    "command": [
+      "/home/yangfp/teSpec/bin/tespec-symexec",
+      "--input-file=/home/yangfp/teSpec/benchmark/programs/runtime-extras__bad_free/variants/qcp_existing_cb114566e2b0eb204891/qcp/bad_free.qcp.c",
+      "--Json-output",
+      "--no-strategy-gen",
+      "--gen-and-backup",
+      "--coq-output-dir=/home/yangfp/teSpec/benchmark/results/runtime-extras__bad_free/20261016-primary-native/qcp/vc",
+      "--no-logic-path",
+      "--disable-solver-info",
+      "--no-exec-info",
+      "-I/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+      "-I/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/supplemental/bad_free"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 0.007977818007930182,
+    "resources": {
+      "max_process_rss_kib": 5016,
+      "user_seconds": 0.0,
+      "system_seconds": 0.0
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/runtime-extras__bad_free/20261016-primary-native/qcp/stdout.log",
+    "stderr": "benchmark/results/runtime-extras__bad_free/20261016-primary-native/qcp/stderr.log"
+  },
+  "native_rejection": {
+    "Main Error Message": "fatal error: Cannot execute function cn_free_sized for spec (null)",
+    "fileName": "/home/yangfp/teSpec/benchmark/programs/runtime-extras__bad_free/variants/qcp_existing_cb114566e2b0eb204891/qcp/bad_free.qcp.c",
+    "line": 14,
+    "column": 21,
+    "additional_info": [
+      "Function call failed because the caller assertion does not entail the callee Require assertion after substituting actual arguments.\n",
+      "Function call argument bindings:\n  argument 1: p <- p_396_pre\n  argument 2: n <- (Size_of signed int)\n",
+      "Callee precondition after substituting actual arguments:\nEX x_404_free \nPROP[\n  (Size_of signed int) == 4 ]\nLOCAL[]\nSEP[\n  store(p_396_pre, x_404_free, signed int) ]\n\n",
+      "Caller current assertion:\nPROP[]\nLOCAL[\n  Temp p p_397_addr ]\nSEP[\n  store(p_397_addr, p_396_pre, signed int*) ]\n\n"
+    ]
+  },
+  "native_rejection_stdout_sha256": "b2e536eed1cafcb2e756e8a8f9ad25b9e07ec2b862665eab319b37b1004a3845",
+  "expected_rejection_scope": "Original whole module is negative: double_free main attempts a second free, bad_free frees with emp and no owned cell. Native rejection at free precondition is consistent with these source defects; not a Coq refutation of a generated complete VC module. Trusted CN acceptance does not validate those bodies."
+}

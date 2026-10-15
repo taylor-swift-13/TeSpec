@@ -1,0 +1,163 @@
+{
+  "variant": "cn_original:runtime-extras__double_free.broken",
+  "paired_qcp_variant": "qcp_existing:8932bb7fdca5206957fc",
+  "case": "original_main_translation1_only_entry",
+  "initial": null,
+  "expected": "FAIL",
+  "plan_case": {
+    "id": "original_main_translation1_only_entry",
+    "value": null,
+    "expected": "FAIL",
+    "cn_body": "\n    unsigned int *p = cn_malloc(sizeof(unsigned int));\n    *p = 5;\n    unsigned int x = deref(p);\n    /*@ assert (x == 5u32); @*/\n    /*@ assert (*p == 5u32); @*/\n    cn_free_sized(p, sizeof(unsigned int));\n    // double free\n    cn_free_sized(p, sizeof(unsigned int));\n",
+    "binds": {
+      "args": {},
+      "values": {}
+    },
+    "precondition_valid": true,
+    "oracle": {
+      "entry_cardinality": 1,
+      "original_CN_assertions_retained": true,
+      "reason": "Original client body, original free count, and assertions retained. Double-free client is invalid on second free; bad_free client calls a callee lacking free ownership permission. Positive up-allocate/down-free client releases its allocation. Each no-argument client has one distinct entry."
+    }
+  },
+  "cn_source_sha256": "e24ff62d76debaed42c447058deaae866b97f1ef604957e0db6db592275e4feb",
+  "qcp_source_sha256": "8932bb7fdca5206957fcabdcc2b1f0ddcd87f99093dff4d5101057d831fc0979",
+  "harness": "benchmark/programs/runtime-extras__double_free/variants/cn_original_runtime-extras__double_free.broken/tests/20261016-evaluation/original_main_translation1_only_entry/fulminate.cn.c",
+  "harness_sha256": "d804aad2777fbfbc902d85b2da705a83e3bff549a259b1a07377adcec02e1cbf",
+  "binds": "benchmark/programs/runtime-extras__double_free/variants/cn_original_runtime-extras__double_free.broken/tests/20261016-evaluation/original_main_translation1_only_entry/binds.json",
+  "binds_sha256": "c047b14d8611e3ab71d439f5c5e84dcdfbd5ef34757c680a70e032e29ba6faec",
+  "precondition_valid": true,
+  "fulminate_pipeline": {
+    "command": [
+      "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+      "instrument",
+      "--run",
+      "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+      "--output-dir=/tmp/tespec-group-ch6tlqx8",
+      "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples/runtime-extras",
+      "/home/yangfp/teSpec/benchmark/programs/runtime-extras__double_free/variants/cn_original_runtime-extras__double_free.broken/tests/20261016-evaluation/original_main_translation1_only_entry/fulminate.cn.c"
+    ],
+    "exit_code": 5,
+    "wall_seconds": 0.11465138201310765,
+    "resources": {
+      "max_process_rss_kib": 44108,
+      "user_seconds": 0.06,
+      "system_seconds": 0.02
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/runtime-extras__double_free/20261016-evaluation/cn_original_runtime-extras__double_free.broken/original_main_translation1_only_entry/fulminate-pipeline/stdout.log",
+    "stderr": "benchmark/results/runtime-extras__double_free/20261016-evaluation/cn_original_runtime-extras__double_free.broken/original_main_translation1_only_entry/fulminate-pipeline/stderr.log"
+  },
+  "instrumented_sources": [
+    {
+      "path": "benchmark/results/runtime-extras__double_free/20261016-evaluation/cn_original_runtime-extras__double_free.broken/original_main_translation1_only_entry/fulminate.cn.exec.c",
+      "sha256": "8bf69d19600e417c97d26c1b8ba7d3fdf3f13658f33acaa669a677a7d1ad9749"
+    }
+  ],
+  "instrumented_binary_sha256": "b63f0d3b5c7a2085804df864c3d90a569f16ac53a60c69ab0b79d4629384c8e5",
+  "fulminate_test": {
+    "command": [
+      "/tmp/tespec-group-ch6tlqx8/fulminate.cn.exec.out"
+    ],
+    "exit_code": 5,
+    "wall_seconds": 0.003955548003432341,
+    "resources": {
+      "max_process_rss_kib": 1404,
+      "user_seconds": 0.0,
+      "system_seconds": 0.0
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/runtime-extras__double_free/20261016-evaluation/cn_original_runtime-extras__double_free.broken/original_main_translation1_only_entry/fulminate-test/stdout.log",
+    "stderr": "benchmark/results/runtime-extras__double_free/20261016-evaluation/cn_original_runtime-extras__double_free.broken/original_main_translation1_only_entry/fulminate-test/stderr.log",
+    "status": "FAIL"
+  },
+  "tespec_off": {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "spectest",
+      "run",
+      "/home/yangfp/teSpec/benchmark/programs/runtime-extras__double_free/variants/qcp_existing_8932bb7fdca5206957fc/qcp/double-free.c",
+      "--function",
+      "main",
+      "--binds",
+      "/home/yangfp/teSpec/benchmark/programs/runtime-extras__double_free/variants/cn_original_runtime-extras__double_free.broken/tests/20261016-evaluation/original_main_translation1_only_entry/binds.json",
+      "--execution-mode",
+      "all-boundaries",
+      "--output-dir",
+      "/home/yangfp/teSpec/benchmark/results/runtime-extras__double_free/20261016-evaluation/cn_original_runtime-extras__double_free.broken/original_main_translation1_only_entry/tespec-off/artifacts",
+      "--timeout",
+      "30",
+      "--compact",
+      "--no-spatial-smt",
+      "--spatial-smt-timeout-ms",
+      "2000",
+      "-I",
+      "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+      "-I",
+      "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/cases"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 0.164844891987741,
+    "resources": {
+      "max_process_rss_kib": 20040,
+      "user_seconds": 0.08,
+      "system_seconds": 0.03
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/runtime-extras__double_free/20261016-evaluation/cn_original_runtime-extras__double_free.broken/original_main_translation1_only_entry/tespec-off/stdout.log",
+    "stderr": "benchmark/results/runtime-extras__double_free/20261016-evaluation/cn_original_runtime-extras__double_free.broken/original_main_translation1_only_entry/tespec-off/stderr.log",
+    "report": "benchmark/results/runtime-extras__double_free/20261016-evaluation/cn_original_runtime-extras__double_free.broken/original_main_translation1_only_entry/tespec-off/artifacts/report.json",
+    "statuses": [
+      "UNKNOWN"
+    ],
+    "status": "UNKNOWN"
+  },
+  "tespec_on": {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "spectest",
+      "run",
+      "/home/yangfp/teSpec/benchmark/programs/runtime-extras__double_free/variants/qcp_existing_8932bb7fdca5206957fc/qcp/double-free.c",
+      "--function",
+      "main",
+      "--binds",
+      "/home/yangfp/teSpec/benchmark/programs/runtime-extras__double_free/variants/cn_original_runtime-extras__double_free.broken/tests/20261016-evaluation/original_main_translation1_only_entry/binds.json",
+      "--execution-mode",
+      "all-boundaries",
+      "--output-dir",
+      "/home/yangfp/teSpec/benchmark/results/runtime-extras__double_free/20261016-evaluation/cn_original_runtime-extras__double_free.broken/original_main_translation1_only_entry/tespec-on/artifacts",
+      "--timeout",
+      "30",
+      "--compact",
+      "--spatial-smt",
+      "--spatial-smt-timeout-ms",
+      "2000",
+      "-I",
+      "/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+      "-I",
+      "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/cases"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 0.16488690199912526,
+    "resources": {
+      "max_process_rss_kib": 20036,
+      "user_seconds": 0.11,
+      "system_seconds": 0.01
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/runtime-extras__double_free/20261016-evaluation/cn_original_runtime-extras__double_free.broken/original_main_translation1_only_entry/tespec-on/stdout.log",
+    "stderr": "benchmark/results/runtime-extras__double_free/20261016-evaluation/cn_original_runtime-extras__double_free.broken/original_main_translation1_only_entry/tespec-on/stderr.log",
+    "report": "benchmark/results/runtime-extras__double_free/20261016-evaluation/cn_original_runtime-extras__double_free.broken/original_main_translation1_only_entry/tespec-on/artifacts/report.json",
+    "statuses": [
+      "UNKNOWN"
+    ],
+    "status": "UNKNOWN"
+  },
+  "runtime_dependency_fixtures": []
+}
