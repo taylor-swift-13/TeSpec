@@ -7,15 +7,15 @@ ROOT = Path(__file__).resolve().parents[2]
 
 def main():
     tracked = subprocess.check_output(
-        ['git', '-C', str(ROOT), 'ls-files', '-z', 'benchmark-support/selection', 'third_party/fulminate-cn'],
+        ['git', '-C', str(ROOT), 'ls-files', '-z', 'arxiv/benchmark-support/selection', 'arxiv/fulminate-cn'],
     ).decode().split('\0')
     with tempfile.TemporaryDirectory(prefix='tespec-archive-audit-') as workspace:
         view = Path(workspace)
         for path in filter(None, tracked):
-            if path.startswith('third_party/fulminate-cn/'):
-                old = 'benchmark/selection/sources/fulminate-cn/' + path[len('third_party/fulminate-cn/'):]
+            if path.startswith('arxiv/fulminate-cn/'):
+                old = 'benchmark/selection/sources/fulminate-cn/' + path[len('arxiv/fulminate-cn/'):]
             else:
-                old = 'benchmark/selection/' + path[len('benchmark-support/selection/'):]
+                old = 'benchmark/selection/' + path[len('arxiv/benchmark-support/selection/'):]
             target = view / old
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(ROOT / path, target)

@@ -1,6 +1,6 @@
 # Benchmarks
 
-CN/Fulminate benchmark 按程序组组织，入口为 [programs/index.json](programs/index.json)，共 45 组。原始 76 个 CN 文件保存在仓库的 [third_party/fulminate-cn](../third_party/fulminate-cn/README.md)，不在 benchmark 下存放来源快照。
+CN/Fulminate benchmark 按程序组组织，入口为 [programs/index.json](programs/index.json)，共 45 组。原始 76 个 CN 文件保存在仓库的 [arxiv/fulminate-cn](../arxiv/fulminate-cn/README.md)，不在 benchmark 下存放来源快照。
 
 ```text
 benchmark/programs/
@@ -22,7 +22,7 @@ CN/QCP 文件仅在已有对应版本时出现；不伪造缺失的翻译。变�
 
 测试输入及原始结果按变体归入组内，包含原始状态、作用范围和证据索引。历史 main 的存在不代表已执行；输入集合可含多个用例，不能把集合数当用例数。已有测试未覆盖的变体仍保留缺口。
 
-历史迁移过程、冻结测量和证明文件保存在 [benchmark-support/selection](../benchmark-support/README.md)。`evidence.json` 给出文件当前位置及原始哈希；[path-map.json](../benchmark-support/path-map.json) 解析旧报告中的原路径。迁移不修改证据原文，不重新运行验证、不改变 PASS/UNKNOWN 或时间、内存、token 值。
+历史迁移过程、冻结测量和证明文件保存在 [arxiv/benchmark-support/selection](../arxiv/benchmark-support/README.md)。`evidence.json` 给出文件当前位置及原始哈希；[path-map.json](../arxiv/benchmark-support/path-map.json) 解析旧报告中的原路径。迁移不修改证据原文，不重新运行验证、不改变 PASS/UNKNOWN 或时间、内存、token 值。
 
 重建与审计：
 

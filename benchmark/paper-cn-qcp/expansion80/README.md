@@ -1,7 +1,7 @@
 # 80-program paired benchmark draft
 
 This directory preserves the historical 80-subject batch and its evidence.
-The current [source-complete selection](../../../benchmark-support/selection/README.md) includes all
+The current [source-complete selection](../../../arxiv/benchmark-support/selection/README.md) includes all
 pinned Fulminate CN examples, then selects QCP/CAV additions by category and
 experiment question. The historical count is not a limit on the current suite.
 

@@ -4,12 +4,14 @@ from pathlib import Path
 import argparse, collections, hashlib, json, re, shutil
 
 ROOT = Path(__file__).resolve().parents[2]
-ARCHIVE = ROOT / 'benchmark-support/selection'
+ARCHIVE = ROOT / 'arxiv/benchmark-support/selection'
 GROUPS = ROOT / 'benchmark/programs'
 REGISTRY = ARCHIVE / 'paired-mutations/grouping/existing-variants-and-results.json'
 PREFIXES = {
-    'benchmark/selection/sources/fulminate-cn/': 'third_party/fulminate-cn/',
-    'benchmark/selection/': 'benchmark-support/selection/',
+    'third_party/fulminate-cn/': 'arxiv/fulminate-cn/',
+    'benchmark-support/': 'arxiv/benchmark-support/',
+    'benchmark/selection/sources/fulminate-cn/': 'arxiv/fulminate-cn/',
+    'benchmark/selection/': 'arxiv/benchmark-support/selection/',
 }
 
 def relocated(path):
@@ -80,10 +82,12 @@ def build():
             save(folder / 'tests/inputs.json', test_entries)
             save(folder / 'tests/results.json', [results[k] for k in v['result_ids']])
             entries.append({'id': vid, 'manifest': (folder / 'manifest.json').relative_to(ROOT).as_posix()})
+        existing_manifest = group / 'manifest.json'
+        previous = json.loads(existing_manifest.read_text()) if existing_manifest.is_file() else {}
         manifest = {
             'schema': 'tespec-grouped-benchmark/v1', 'program_group': family['family'],
-            'primary_variant': None,
-            'primary_selection_status': 'PENDING_EXPLICIT_BINDING_TO_REUSABLE_VERIFICATION',
+            'primary_variant': previous.get('primary_variant'),
+            'primary_selection_status': previous.get('primary_selection_status', 'PENDING_EXPLICIT_BINDING_TO_REUSABLE_VERIFICATION'),
             'verification_policy': 'Only designated primary requires CN/QCP formal verification; reuse matching archived proofs. Other variants require testing only.',
             'variants': entries,
             'evidence_catalog': 'benchmark/programs/evidence.json',
@@ -96,8 +100,8 @@ def build():
     evidence = dict(data)
     evidence['artifacts'] = [dict(a, archived_path=a['path'], path=relocated(a['path'])) for a in data['artifacts']]
     save(GROUPS / 'evidence.json', evidence)
-    save(GROUPS / 'index.json', {'schema': 'tespec-program-groups/v1', 'groups': index, 'source_snapshot': 'third_party/fulminate-cn', 'path_map': PREFIXES, 'policy': data['policy']})
-    save(ROOT / 'benchmark-support/path-map.json', PREFIXES)
+    save(GROUPS / 'index.json', {'schema': 'tespec-program-groups/v1', 'groups': index, 'source_snapshot': 'arxiv/fulminate-cn', 'path_map': PREFIXES, 'policy': data['policy']})
+    save(ROOT / 'arxiv/benchmark-support/path-map.json', PREFIXES)
     validate()
 
 def validate():
@@ -149,7 +153,7 @@ def validate():
             value = value[int(part)] if isinstance(value, list) else value[part]
     assert not (ROOT / 'benchmark/selection').exists()
     assert not (ROOT / 'benchmark/sources').exists()
-    assert len(list((ROOT / 'third_party/fulminate-cn/src/examples').rglob('*.c'))) == 76
+    assert len(list((ROOT / 'arxiv/fulminate-cn/src/examples').rglob('*.c'))) == 76
     print(f'PASS: 45 groups, {count} group-local variant entries; 76 originals outside benchmark; {len(current["artifacts"])} evidence hashes and all archived result/input pointers preserved.')
 
 if __name__ == '__main__':
