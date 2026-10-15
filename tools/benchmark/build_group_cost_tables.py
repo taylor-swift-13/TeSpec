@@ -65,17 +65,21 @@ def main():
             costs.append({'tool':'tespec --spatial-smt','stage':'测试执行、VC 生成与空间 SMT','unit':'每次测试执行均值；内存为逐次峰值均值','wall_seconds':on['mean_execution_wall_seconds'],'peak_process_memory_mib':on['mean_execution_peak_rss_mib'],'tokens':0,'estimated':False,'status':'MEASURED','source':mode_stats_path.relative_to(ROOT).as_posix()})
             if on['executions_requiring_itp_for_verdict']==0:
                 costs.append({'tool':'tespec --spatial-smt','stage':'ITP（无需）','unit':'本批无需额外 ITP，总成本为 0；均值不适用','wall_seconds':0,'peak_process_memory_mib':None,'tokens':0,'estimated':False,'status':'NOT_REQUIRED','source':mode_stats_path.relative_to(ROOT).as_posix()})
-        complete=all(x['available'] and x['result']!='PENDING' for x in results) and all(x['status'] in ['MEASURED','NOT_REQUIRED'] for x in costs)
+        complete=all(x['available'] and x['result']!='PENDING' for x in results) and all(x['status'] in ['MEASURED','NOT_REQUIRED'] for x in costs) and next(x['result'] for x in results if x['tool']=='cn')=='VERIFIED' and next(x['result'] for x in results if x['tool']=='qcp').startswith('VERIFIED_KERNEL_CHECKED')
         report={'schema':'tespec-group-result-cost/v1','program_group':name,'primary_variant':group.get('primary_variant'),
             'variant_language_records':len(group['variants']),'complete':complete,
             'results':results,'costs':costs,'evidence_catalog':group['evidence_catalog'],
             'missing_policy':'PENDING/null means not published or not bound to matching evidence; never replace missing data with zero. Existing historical evidence must be reused after hash/scope checks.',
             'itp_policy':'One test execution and all its unresolved VCs form one ITP unit; display mean costs only. read uses 12 independently measured execution ITP tasks; legacy batch estimates are historical. Memory is a measured process peak and is never divided. ITP subtotal overlaps its component rows and must not be added again.'}
+        if group.get('current_coverage_gap'):
+            report['coverage_gap']=group['current_coverage_gap']
         if test_modes:
             report['test_modes']={'comparison':(mode_stats_path.parent/'comparison.md').relative_to(ROOT).as_posix(),'statistics':mode_stats_path.relative_to(ROOT).as_posix(),'modes':test_modes['modes'],'certificate':'SMT decisions are NOT_CHECKED by Coq; matching historical refutations are separate evidence.'}
         save(folder/'result-cost.json',report)
         buf=io.StringIO();writer=csv.DictWriter(buf,fieldnames=list(costs[0]),lineterminator='\n');writer.writeheader();writer.writerows(costs);(folder/'result-cost.csv').write_text(buf.getvalue())
         text=f"# {name}：结果与成本表\n\n完整状态：{'已齐全' if complete else '待补齐'}。语言版本记录 {len(group['variants'])} 条；主程序：{group.get('primary_variant') or '待绑定已有验证证据'}。\n\n"
+        if group.get('current_coverage_gap'):
+            text+='本组尚未完成；已测失败尝试和未运行阶段分别保留，见 [覆盖缺口](coverage-gap.json)。\n\n'
         text+='| 工具 | 范围 | 结果／预期匹配 | 测试对数 |\n|---|---|---|---:|\n'
         for x in results:text+=f"| {x['tool']} | {x['scope']} | {x['result']} | {x['test_pairs'] if x['test_pairs'] is not None else '—'} |\n"
         text+='\n| 工具 | 阶段 | 时间（秒） | 峰值进程内存（MiB） | token | 口径 |\n|---|---|---:|---:|---:|---|\n'

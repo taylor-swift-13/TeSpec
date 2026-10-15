@@ -8,6 +8,13 @@ from evaluation_provenance import snapshot
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--group',required=True);a=parser.parse_args()
     group=ROOT/'benchmark/programs'/a.group;planpath=group/'evaluation-plan.json';plan=json.loads(planpath.read_text());assert plan['program_group']==a.group
+    keys=[(pair['cn_variant'],case['id']) for pair in plan['pairings'] for case in pair['cases']]
+    assert len(keys)==len(set(keys)), 'Each (CN variant, case id) must identify one target/pairing; use distinct case IDs for different clients'
+    for pair in plan['pairings']:
+        assert isinstance(pair.get('function',plan['function']),str)
+        for case in pair['cases']:
+            assert isinstance(case['binds'].get('args',{}),dict) and isinstance(case['binds'].get('values'),dict), 'Every case needs valid args and an explicit values object'
+            assert case['expected'] in ['PASS','FAIL','ERROR'] and case['precondition_valid']
     out=ROOT/'benchmark/results'/a.group/plan['run_id'];variants={}
     snapshot_path=out/'evaluation-plan.executed.json'
     if snapshot_path.exists():assert sha(snapshot_path)==sha(planpath),'Do not overwrite a measured run with a changed plan'

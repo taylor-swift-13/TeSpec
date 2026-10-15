@@ -38,6 +38,7 @@ folder=BASE/('attempt-'+str(args.attempt));folder.mkdir(parents=True,exist_ok=Tr
 assert not (folder/'model-receipt.json').exists(),'Do not overwrite a metered attempt'
 locked={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in BASE.glob('*.v') if p.name!='Candidate.v'}
 prompt=(BASE/'prompt.txt').read_text(encoding='utf-8')
+(folder/'prompt.txt').write_bytes(prompt.encode('utf-8'))
 cmd=[exe,'exec','--json','--skip-git-repo-check','--ephemeral','--model','gpt-6.1-sol','--sandbox','workspace-write','-C',str(BASE),'-']
 stdout=folder/'agent.stdout.jsonl';stderr=folder/'agent.stderr.log';start=time.monotonic();rss={'sampled_tree_peak_working_set_bytes':0,'max_process_peak_working_set_bytes':0,'sampling_interval_ms':20,'platform':'Windows Codex model client; remote service and GPU memory excluded'};stop=threading.Event()
 with stdout.open('wb') as out,stderr.open('wb') as err:

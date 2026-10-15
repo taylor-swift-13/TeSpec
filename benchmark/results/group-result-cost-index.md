@@ -16,13 +16,13 @@
 | [dll_remove](dll_remove/result-cost.md) | 待补齐 |
 | [example_let](example_let/result-cost.md) | 已齐全 |
 | [incr](incr/result-cost.md) | 待补齐 |
-| [incr_first](incr_first/result-cost.md) | 待补齐 |
+| [incr_first](incr_first/result-cost.md) | 已齐全 |
 | [incr_two](incr_two/result-cost.md) | 待补齐 |
 | [init_array](init_array/result-cost.md) | 待补齐 |
 | [init_point](init_point/result-cost.md) | 待补齐 |
 | [list_all](list_all/result-cost.md) | 待补齐 |
 | [mergesort](mergesort/result-cost.md) | 待补齐 |
-| [quadruple](quadruple/result-cost.md) | 待补齐 |
+| [quadruple](quadruple/result-cost.md) | 已齐全 |
 | [queue_all](queue_all/result-cost.md) | 待补齐 |
 | [read](read/result-cost.md) | 已齐全 |
 | [ref](ref/result-cost.md) | 待补齐 |

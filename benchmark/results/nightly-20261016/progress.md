@@ -1,8 +1,8 @@
 # 夜间评测进度
 
-完整组 9/45；待补齐 36。截止北京时间 2026-10-16 08:00。
+完整组 11/45；待补齐 34。截止北京时间 2026-10-16 08:00。
 
-当前组：Dbl_Linked_List__singleton；阶段：READY_FOR_NEXT_GROUP。
+当前组：incr；阶段：READY_FOR_NEXT_GROUP。
 
 teSpec 最终不匹配 0 条，已解决自动阶段缺口 12 条。详情见 ../tespec-unexpected/README.md；未评测组不算零异常。
 
@@ -22,13 +22,13 @@ teSpec 最终不匹配 0 条，已解决自动阶段缺口 12 条。详情见 ..
 | dll_remove | 待补齐 | [表](../dll_remove/result-cost.md) |
 | example_let | 完整 | [表](../example_let/result-cost.md) |
 | incr | 待补齐 | [表](../incr/result-cost.md) |
-| incr_first | 待补齐 | [表](../incr_first/result-cost.md) |
+| incr_first | 完整 | [表](../incr_first/result-cost.md) |
 | incr_two | 待补齐 | [表](../incr_two/result-cost.md) |
 | init_array | 待补齐 | [表](../init_array/result-cost.md) |
 | init_point | 待补齐 | [表](../init_point/result-cost.md) |
 | list_all | 待补齐 | [表](../list_all/result-cost.md) |
 | mergesort | 待补齐 | [表](../mergesort/result-cost.md) |
-| quadruple | 待补齐 | [表](../quadruple/result-cost.md) |
+| quadruple | 完整 | [表](../quadruple/result-cost.md) |
 | queue_all | 待补齐 | [表](../queue_all/result-cost.md) |
 | read | 完整 | [表](../read/result-cost.md) |
 | ref | 待补齐 | [表](../ref/result-cost.md) |
