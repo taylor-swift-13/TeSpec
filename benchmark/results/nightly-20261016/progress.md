@@ -1,8 +1,8 @@
 # 夜间评测进度
 
-完整组 14/45；待补齐 31。截止北京时间 2026-10-16 08:00。
+完整组 15/45；待补齐 30。截止北京时间 2026-10-16 08:00。
 
-当前组：slf_quadruple_mem；阶段：READY_FOR_NEXT_GROUP。
+当前组：init_point；阶段：READY_FOR_NEXT_GROUP。
 
 teSpec 最终不匹配 0 条，已解决自动阶段缺口 25 条。详情见 ../tespec-unexpected/README.md；未评测组不算零异常。
 
@@ -45,7 +45,7 @@ teSpec 最终不匹配 0 条，已解决自动阶段缺口 25 条。详情见 ..
 | slf17_get_and_free | 待补齐 | [表](../slf17_get_and_free/result-cost.md) |
 | slf18_two_dice | 待补齐 | [表](../slf18_two_dice/result-cost.md) |
 | slf3_basic_inplace_double | 待补齐 | [表](../slf3_basic_inplace_double/result-cost.md) |
-| slf_quadruple_mem | 待补齐 | [表](../slf_quadruple_mem/result-cost.md) |
+| slf_quadruple_mem | 完整 | [表](../slf_quadruple_mem/result-cost.md) |
 | slf_sized_stack | 待补齐 | [表](../slf_sized_stack/result-cost.md) |
 | succ_using_incr | 待补齐 | [表](../succ_using_incr/result-cost.md) |
 | swap | 待补齐 | [表](../swap/result-cost.md) |

@@ -39,7 +39,7 @@
 | [slf17_get_and_free](slf17_get_and_free/result-cost.md) | 待补齐 |
 | [slf18_two_dice](slf18_two_dice/result-cost.md) | 待补齐 |
 | [slf3_basic_inplace_double](slf3_basic_inplace_double/result-cost.md) | 待补齐 |
-| [slf_quadruple_mem](slf_quadruple_mem/result-cost.md) | 待补齐 |
+| [slf_quadruple_mem](slf_quadruple_mem/result-cost.md) | 已齐全 |
 | [slf_sized_stack](slf_sized_stack/result-cost.md) | 待补齐 |
 | [succ_using_incr](succ_using_incr/result-cost.md) | 待补齐 |
 | [swap](swap/result-cost.md) | 待补齐 |

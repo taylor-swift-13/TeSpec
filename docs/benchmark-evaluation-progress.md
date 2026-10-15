@@ -82,3 +82,6 @@ transfer 完整收尾：16 对输入，Fulminate、teSpec OFF/ON 均逐例匹配
 
 
 transpose 完整收尾：24 对输入，Fulminate、teSpec OFF/ON 均逐例匹配独立预期；主程序 CN 与 QCP 1 个原始全称 VC 已编译、假设审计并独立内核检查。gpt-6.1-sol 实际 1 次调用，54,786 token；四工具分阶段时间与 RSS 已保存。完整进度 14/45，下一组 slf_quadruple_mem。
+
+
+slf_quadruple_mem 完整收尾：7 对输入，Fulminate、teSpec OFF/ON 均逐例匹配独立预期；主程序 CN 与 QCP 3 个原始全称 VC 已编译、假设审计并独立内核检查。gpt-6.1-sol 实际 1 次调用，55,340 token；四工具分阶段时间与 RSS 已保存。完整进度 15/45，下一组 init_point。
