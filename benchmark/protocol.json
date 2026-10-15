@@ -55,5 +55,30 @@
     "formal_scope": "Test-specific VC checking is part of testing and does not impose universal formal verification on every variant. Main-program verification is still once per group and reused.",
     "resource_accounting": "Include execution plus ITP generation/repair, compilation, assumption audit and kernel check. Count failed attempts and shared stage work once. Report unknown time/memory/token measurements as null, never zero.",
     "model_policy": "Use requested gpt-6.1-sol for model-assisted proof authoring when invoked; preserve actual model and token receipts. Unmetered conversation authoring is reported as missing telemetry, not zero tokens."
+  },
+  "stage_resource_accounting": {
+    "required_tools": [
+      "qcp",
+      "tespec"
+    ],
+    "disjoint_stages": [
+      "generation_or_test_execution_with_native_automatic_processing",
+      "agent_proof_filling",
+      "coq_compilation_and_assumption_audit",
+      "independent_kernel_check"
+    ],
+    "required_metrics": [
+      "wall_seconds",
+      "peak_local_process_resident_memory",
+      "input_tokens",
+      "output_tokens",
+      "total_tokens"
+    ],
+    "rules": [
+      "Preserve complete pipeline totals alongside separate stage costs.",
+      "Assign actual model tokens to agent proof filling only; unmeasured usage must not be zero.",
+      "Do not claim isolated pure generation timing when only combined native execution/automatic-processing timing exists.",
+      "Sum stage time and tokens once; complete memory is the largest stage process peak."
+    ]
   }
 }

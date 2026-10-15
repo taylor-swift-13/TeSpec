@@ -23,3 +23,7 @@ Fulminate and complete teSpec cover 61 paired variant/input cases across 10 conf
 `20261015-variants/` retains raw executions. `20261015-itp-metered/` retains measured model/Coq proof evidence. `complete/` is the full staged teSpec result. `20261015-itp-refutations/` is the older unmetered authoring history.
 
 Run `python3 tools/benchmark/publish_read_tool_results.py` to rebuild these views. `complete_read_pipeline.py` also refreshes them. All result files are derived from actual saved measurements and immutable source/goal/log hashes; no performance value is synthesized or moved between incompatible variants.
+
+## 分阶段资源统计
+
+QCP 与 teSpec 将生成／测试执行、agent 填写证明、Coq 编译与审计、独立内核检查分开统计；各阶段时间、进程峰值内存和 token 见 [stages.csv](stages.csv)／[stages.json](stages.json)。完整总计仍保留，历史测量回执不变。

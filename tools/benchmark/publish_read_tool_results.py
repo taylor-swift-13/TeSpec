@@ -10,6 +10,37 @@ PRIMARY='constructed:case_6d90d7cd08323aa9'
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def save(p,d):p.parent.mkdir(parents=True,exist_ok=True);p.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n')
 
+def split_proof_stages(tool, metrics, receipt):
+    """Derive disjoint measured stages; never attribute agent/Coq cost to VC generation."""
+    qcp=tool=='qcp'
+    compilation=receipt['compilation']
+    kernel=receipt['kernel_check']
+    usage=metrics['token_usage'] if qcp else metrics['itp_token_usage']
+    rows=[]
+    def add(stage, seconds, memory_bytes, tokens=0, model=None):
+        rows.append({'tool':tool,'stage':stage,'wall_seconds':seconds,
+                     'peak_process_resident_bytes':memory_bytes,'peak_process_memory_mib':memory_bytes/1024**2,
+                     'input_tokens':usage['input_tokens'] if tokens else 0,
+                     'output_tokens':usage['output_tokens'] if tokens else 0,
+                     'total_tokens':tokens,'model':model})
+    add('vc_generation_and_automatic_processing' if qcp else 'test_execution_and_vc_generation',
+        metrics['native_auto_wall_seconds'] if qcp else metrics['execution_wall_seconds_total'],
+        (metrics['native_peak_process_rss_kib'] if qcp else metrics['execution_peak_process_rss_kib'])*1024)
+    add('agent_proof_filling',metrics['model_wall_seconds'] if qcp else metrics['itp_model_generation_wall_seconds'],
+        metrics['model_client_peak_working_set_bytes'] if qcp else metrics['itp_model_client_peak_working_set_bytes'],
+        usage['total_tokens'],metrics['requested_model'])
+    add('coq_compilation_and_assumption_audit',sum(r['wall_seconds'] for r in compilation),
+        max(r['resources']['max_process_rss_kib'] for r in compilation)*1024)
+    add('independent_kernel_check',kernel['wall_seconds'],kernel['resources']['max_process_rss_kib']*1024)
+    total=metrics['wall_seconds'] if qcp else metrics['measured_complete_stage_wall_seconds_total']
+    assert abs(sum(r['wall_seconds'] for r in rows)-total)<1e-8
+    assert sum(r['total_tokens'] for r in rows)==usage['total_tokens']
+    peak=metrics['peak_process_resident_bytes'] if qcp else metrics['complete_peak_process_resident_bytes']
+    assert max(r['peak_process_resident_bytes'] for r in rows)==peak
+    metrics['stages']=rows
+    metrics['stage_accounting_note']='Disjoint measured stages: generation/execution, agent proof filling, Coq compilation/audit, independent kernel check. Generation includes native automatic processing; no finer timing was collected. Agent wall time is the measured CLI invocation, not remote inference alone. Shared batch work counted once.'
+    return rows
+
 def main():
     main_manifest=ROOT/'benchmark/programs/read/variants/constructed_case_6d90d7cd08323aa9/manifest.json'
     primary=json.loads(main_manifest.read_text())
@@ -51,6 +82,7 @@ def main():
             results['facts'].pop('itp_required',None)
             results['facts'].update(proof_pipeline_completed=True,kernel_checked=True,assumptions='Closed under the global context',proof_generation_model=cert['metrics']['requested_model'])
             stats=dict(cert['metrics'])
+            split_proof_stages('qcp',stats,cert)
             stats['full_verification_complete']=True
             stats['automatic_stage_only']=run[key]
         save(OUT/tool/'results.json',results);save(OUT/tool/'statistics.json',stats)
@@ -79,12 +111,26 @@ def main():
     # Publish the complete test (including ITP), not just the native execution stage.
     result={'schema':'tespec-read-tool-result/v1','tool':'tespec','scope':'Complete finite testing: execution plus required ITP generation, compilation/audit and independent kernel replay.',
             'complete_result':'benchmark/results/read/complete/results.json','summary':complete['summary'],'cases':complete['cases']}
+    split_proof_stages('tespec',complete['metrics'],json.loads((OUT/'20261015-itp-metered/attempt-1/coq-receipt.json').read_text()))
+    save(OUT/'complete/statistics.json',{'summary':complete['summary'],'metrics':complete['metrics']})
+    save(OUT/'complete/results.json',complete)
     save(OUT/'tespec/results.json',result);save(OUT/'tespec/statistics.json',complete['metrics'])
     entries['tespec']={'results':(OUT/'tespec/results.json').relative_to(ROOT).as_posix(),'statistics':(OUT/'tespec/statistics.json').relative_to(ROOT).as_posix(),'correct':61,'total':61,'scope':'variant_finite_testing_plus_itp'}
     m=complete['metrics'];comparison.append({'tool':'tespec','scope':'variant_finite_testing_plus_itp','result':'61/61','test_cases':61,'correct':61,'accuracy':1.0,'wall_seconds':m['measured_complete_stage_wall_seconds_total'],'peak_process_memory_mib':m['complete_peak_process_resident_mib'],'input_tokens':m['itp_token_usage']['input_tokens'],'output_tokens':m['itp_token_usage']['output_tokens'],'total_tokens':m['complete_tokens'],'model':m['requested_model']})
-    buf=io.StringIO();w=csv.DictWriter(buf,fieldnames=list(comparison[0]));w.writeheader();w.writerows(comparison);(OUT/'comparison.csv').write_text(buf.getvalue())
-    save(OUT/'comparison.json',{'tools':comparison,'scope_note':'CN/QCP verify the primary once; Fulminate/teSpec test variants on finite inputs. Verification and testing accuracies/denominators are not interchangeable.','entries':entries})
-    p=OUT/'index.json';index=json.loads(p.read_text());index['tools']=entries;index['comparison']='benchmark/results/read/comparison.json';save(p,index)
+    stage_rows=[]
+    for row in comparison:
+        stats=json.loads((OUT/row['tool']/'statistics.json').read_text())
+        stages=stats.get('stages',[])
+        for name,key in [('generation','wall_seconds'),('agent_proof_filling','wall_seconds'),('coq_compilation_and_assumption_audit','wall_seconds'),('independent_kernel_check','wall_seconds')]:
+            stage=next((r for r in stages if r['stage']==name or (name=='generation' and r['stage'] in ['vc_generation_and_automatic_processing','test_execution_and_vc_generation'])),None)
+            row[name+'_wall_seconds']=stage[key] if stage else None
+        stage_rows.extend(stages)
+    save(OUT/'stages.json',{'schema':'tespec-read-stage-comparison/v1','stages':stage_rows,'note':'QCP verifies one primary; teSpec tests 61 variant/input pairs. Stage timings sum measured work from reused and fresh receipts, not a single continuous run.'})
+    stagebuf=io.StringIO();stagewriter=csv.DictWriter(stagebuf,fieldnames=list(stage_rows[0]),lineterminator="\n");stagewriter.writeheader();stagewriter.writerows(stage_rows)
+    (OUT/'stages.csv').write_text(stagebuf.getvalue())
+    buf=io.StringIO();w=csv.DictWriter(buf,fieldnames=list(comparison[0]),lineterminator="\n");w.writeheader();w.writerows(comparison);(OUT/'comparison.csv').write_text(buf.getvalue())
+    save(OUT/'comparison.json',{'tools':comparison,'scope_note':'CN/QCP verify the primary once; Fulminate/teSpec test variants on finite inputs. Verification and testing accuracies/denominators are not interchangeable.','entries':entries,'stage_comparison':'benchmark/results/read/stages.json'})
+    p=OUT/'index.json';index=json.loads(p.read_text());index['tools']=entries;index['comparison']='benchmark/results/read/comparison.json';index['stage_comparison']='benchmark/results/read/stages.json';save(p,index)
     p=ROOT/'benchmark/programs/read/manifest.json';group=json.loads(p.read_text());group['tool_results']=entries
     if entries['qcp']['verdict']=='VERIFIED_KERNEL_CHECKED':
         group['primary_verification']['mode']='REUSED_NATIVE_VERIFICATION_PLUS_COMPLETED_QCP_PROOF'
