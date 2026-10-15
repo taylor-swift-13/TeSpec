@@ -1,0 +1,7 @@
+Require Import ExecutionGoal.
+Print Assumptions ExecutionGoal.init_array2_entail_wit_1_split_goal_spatial.
+Print Assumptions ExecutionGoal.init_array2_entail_wit_1.
+Print Assumptions ExecutionGoal.init_array2_entail_wit_2_split_goal_1.
+Print Assumptions ExecutionGoal.init_array2_entail_wit_2_split_goal_spatial.
+Print Assumptions ExecutionGoal.init_array2_entail_wit_2.
+Print Assumptions ExecutionGoal.init_array2_return_wit_1.

@@ -26,6 +26,7 @@ def main(group):
   match=next((row['tespec_'+mode] for row in rows for mode in ['off','on'] if row['tespec_'+mode].get('report')==issue['report']),None)
   if match and match.get('itp'):triage.setdefault(issue['id'],{}).update(status='RESOLVED_POSITIVE_EXECUTION_ITP',itp_conclusion='All original residual VCs proved for this exact finite execution; compile, original-statement assumption audit and full independent kernel check passed.',itp_receipt=match['itp']['receipt'])
  save(ledger/'triage.json',triage)
+ subprocess.run(['python3','tools/benchmark/audit_positive_execution_attempts.py','--group',group],cwd=ROOT,check=True)
  for script in ['collect_tespec_unexpected','build_group_cost_tables','refresh_benchmark_progress']:subprocess.run(['python3','tools/benchmark/'+script+'.py'],cwd=ROOT,check=True)
  print(group,'positive ITP done',sum(modes[m]['completed_independent_itp_executions'] for m in modes),'pending',sum(modes[m]['pending_independent_itp_executions'] for m in modes),flush=True)
 if __name__=='__main__':

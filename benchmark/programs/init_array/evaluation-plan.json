@@ -606,5 +606,13 @@
       ]
     }
   ],
-  "expectation_basis": "All three CN and QCP variants: initialized forward, uninitialized forward, uninitialized reverse. Zero length allowed only in forward entries; reverse requires n>0. Initial concrete char values use shared signed/unsigned portable range 0..127; uninitialized storage has no claimed scalar bytes. Body zeroes all cells, while each archived post guarantees initialized ownership only; no stronger zero-array verification is claimed. Loop lengths stay below executor unroll limit. Legacy absolute strategy locator must resolve to the byte-identical archived logical strategy through a temporary, logged compatibility wrapper; immutable QCP source is not edited."
+  "expectation_basis": "All three CN and QCP variants: initialized forward, uninitialized forward, uninitialized reverse. Zero length allowed only in forward entries; reverse requires n>0. Initial concrete char values use shared signed/unsigned portable range 0..127; uninitialized storage has no claimed scalar bytes. Body zeroes all cells, while each archived post guarantees initialized ownership only; no stronger zero-array verification is claimed. Loop lengths stay below executor unroll limit. Legacy absolute strategy locator must resolve to the byte-identical archived logical strategy through a temporary, logged compatibility wrapper; immutable QCP source is not edited.",
+  "test_itp_assumption_audit_policy": {
+    "allowed_standard_library_axioms": [
+      "FunctionalExtensionality.functional_extensionality_dep"
+    ],
+    "required_runtime_helper": "join_assoc",
+    "runtime_helper_source": "runtime/qcip/SeparationLogic/SeparationLogic/ConAssertion.v:364",
+    "rationale": "Finite CharArray VCs may require heap reassociation. Actual imported unit_join and join_comm audit globally closed, while join_assoc uses existing Coq standard functional extensionality. Preserve every original target; separately audit original type parameters and runtime helper, and explicitly qualify any dependent certificate. No new proof axioms or weakened spec."
+  }
 }

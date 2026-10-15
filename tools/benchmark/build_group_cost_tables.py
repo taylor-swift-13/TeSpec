@@ -73,6 +73,8 @@ def main():
             'itp_policy':'One test execution and all its unresolved VCs form one ITP unit; display mean costs only. read uses 12 independently measured execution ITP tasks; legacy batch estimates are historical. Memory is a measured process peak and is never divided. ITP subtotal overlaps its component rows and must not be added again.'}
         if group.get('current_coverage_gap'):
             report['coverage_gap']=group['current_coverage_gap']
+        observed_path=folder/'20261016-positive-itp-per-execution/observed-attempt-costs.json'
+        if observed_path.is_file():report['observed_positive_itp_attempt_costs']={'source':observed_path.relative_to(ROOT).as_posix(),'scope':'All preserved completed model/compile/kernel attempts including deferred repairs; raw observed values, not final per-execution means. In-flight phases remain unknown.'}
         if test_modes:
             report['test_modes']={'comparison':(mode_stats_path.parent/'comparison.md').relative_to(ROOT).as_posix(),'statistics':mode_stats_path.relative_to(ROOT).as_posix(),'modes':test_modes['modes'],'certificate':'SMT decisions are NOT_CHECKED by Coq; matching historical refutations are separate evidence.'}
         save(folder/'result-cost.json',report)

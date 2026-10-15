@@ -14,10 +14,10 @@
   "mode": "off",
   "expected": "PASS",
   "automatic_status": "UNKNOWN",
-  "final_status": "UNKNOWN",
-  "final_matches_expected": false,
-  "classification": "UNRESOLVED_UNKNOWN",
-  "triage_status": "NEEDS_TRIAGE",
+  "final_status": "PASS",
+  "final_matches_expected": true,
+  "classification": "RESOLVED_AUTOMATIC_GAP",
+  "triage_status": "RESOLVED",
   "reason": "residual_vc_requires_proof",
   "executor_error": null,
   "source": "/home/yangfp/teSpec/benchmark/programs/init_array/variants/qcp_existing_2ec41f4ccb0e80bbe3cb/qcp/init_array2.qcp.c",
@@ -98,17 +98,74 @@
     "proof_of_init_array2_return_wit_1"
   ],
   "itp": {
-    "status": "NOT_PERFORMED"
+    "status": "KERNEL_CHECKED",
+    "final_status": "PASS",
+    "receipt": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-06/attempt-3/coq-receipt.json",
+    "receipt_sha256": "f077c09aae75753f467b93cb62a536eb5ed0c8480bff6ce5f5eab93ac04be30e",
+    "attempts": [
+      {
+        "path": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-06/attempt-1/coq-receipt.json",
+        "sha256": "4fc53dcdb60aca73752d2d7760c982225999b20fd19a05f321aa9d87888b0828"
+      },
+      {
+        "path": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-06/attempt-2/coq-receipt.json",
+        "sha256": "edd033efd52c8ba1ff029c743ab2a6985a596ded99535716f0aacd2225ee2241"
+      },
+      {
+        "path": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-06/attempt-3/coq-receipt.json",
+        "sha256": "f077c09aae75753f467b93cb62a536eb5ed0c8480bff6ce5f5eab93ac04be30e"
+      }
+    ],
+    "models": [
+      {
+        "path": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-06/attempt-1/model-receipt.json",
+        "sha256": "59850dac63335755811fbe5b6873533abaa9e0cd2c2d76debcfcb5af50ebbb5d"
+      },
+      {
+        "path": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-06/attempt-2/model-receipt.json",
+        "sha256": "d60991f0bcaa75f70d0b4e41ab404f6447b9e5f1fc792fd4f5df49ca818bdb9c"
+      },
+      {
+        "path": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-06/attempt-3/model-receipt.json",
+        "sha256": "f8e5ecf398d58c0417c4f6fd38a3b71ce788b656a6328d896d7d116cc35df5c6"
+      }
+    ],
+    "metrics": {
+      "agent_proof_filling_seconds": 397.84300000000803,
+      "coq_compile_audit_seconds": 6.099415222022799,
+      "independent_kernel_check_seconds": 129.08577310299734,
+      "total_seconds": 533.0281883250282,
+      "tokens": 667357,
+      "model_calls": 3,
+      "peak_process_memory_mib": {
+        "agent_proof_filling": 293.43359375,
+        "coq_compilation_and_assumption_audit": 554.4609375,
+        "independent_kernel_check": 1765.8203125,
+        "itp": 1765.8203125
+      }
+    },
+    "proof_reference": {
+      "schema": "tespec-exact-finite-goal-proof-reference/v1",
+      "mode": "EXACT_GOAL_CERTIFICATE_REUSE_REPAIR",
+      "source_certificate": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-07/attempt-2/coq-receipt.json",
+      "source_certificate_sha256": "1f970e99fcd44f36ad67efc1365a534fef90cd793db3ddce0c5d426be02d021c",
+      "source_candidate": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-07/attempt-2/proofs/Candidate.v",
+      "source_candidate_sha256": "d87941096cdccc44c987a64b236ddde69e6132979ceacfeaa3278898942823e3",
+      "original_goal_sha256": "8baa474ee0c7ae5337136b08be394f8cb3d3300fb5bc92d69a743260e7854098",
+      "reference_file": "ExactGoalProofReference.txt",
+      "reference_file_sha256": "d87941096cdccc44c987a64b236ddde69e6132979ceacfeaa3278898942823e3",
+      "qualification": "Explicit byte-identical entire finite-goal certificate reuse after failed fresh attempts, not independent from-scratch proof search. Actual model reviews/fills Candidate; this execution separately compiles/audits/full-coqchk checks all10 residual targets. Previous attempts are counted; no shared batch check."
+    }
   },
   "mode_comparison_statistics": "benchmark/results/init_array/20261016-evaluation/statistics.json",
   "policy": "Expected result is independently reviewed; preserve original automatic classification. UNKNOWN and unexpected ERROR are not successful detection. Final ITP verdict recorded separately.",
   "review": {
-    "status": "OPEN_POSITIVE_ARRAY_VC_ITP_PENDING",
+    "status": "RESOLVED_POSITIVE_EXECUTION_ITP",
     "cause": "Valid uninitialized-char-array loop execution leaves original annotation/spatial VCs unresolved in both spatial-SMT modes. Initialized forward array inputs pass.",
     "program_or_spec_error": false,
     "qualification": "Expected PASS preserved; true residual goals exist and require positive proofs, not a fabricated refutation. No claim that ITP is impossible.",
     "mode_comparison": "OFF and ON each 6 PASS and 12 UNKNOWN. Fulminate 18/18.",
-    "itp_conclusion": "NOT_PERFORMED_POSITIVE_PROOF_PENDING. Each execution must independently prove all its original residual VCs, compile/audit and full kernel-check; no batched certificate or universal proof substitutes for tests.",
+    "itp_conclusion": "All original residual VCs proved for this exact finite execution; compile, original-statement assumption audit and full independent kernel check passed.",
     "separate_primary_gap": "Current generator fails at empty list equality even with full-auto; exact-source archived full certificate retained separately.",
     "coverage_gap": "benchmark/results/init_array/coverage-gap.json",
     "expectation_unchanged": true,
@@ -117,6 +174,15 @@
       "on_mode_queries": 0,
       "reason": "loop-invariant abstraction events block refinement before any SMT query",
       "qualification": "Not evidence of a backend timeout or inability after an actual query; do not remove guard without discharging abstraction VCs."
-    }
+    },
+    "positive_itp_observed_attempts": {
+      "source": "benchmark/results/init_array/20261016-positive-itp-per-execution/observed-attempt-costs.json",
+      "execution_index": 6,
+      "model_attempts": 3,
+      "actual_tokens": 667357,
+      "status": "KERNEL_CHECKED",
+      "qualification": "Proof-script compile/audit failures do not refute the program or its spec; preserve expected PASS and every failed attempt."
+    },
+    "itp_receipt": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-06/attempt-3/coq-receipt.json"
   }
 }

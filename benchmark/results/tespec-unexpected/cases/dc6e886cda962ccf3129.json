@@ -14,10 +14,10 @@
   "mode": "on",
   "expected": "PASS",
   "automatic_status": "UNKNOWN",
-  "final_status": "UNKNOWN",
-  "final_matches_expected": false,
-  "classification": "UNRESOLVED_UNKNOWN",
-  "triage_status": "NEEDS_TRIAGE",
+  "final_status": "PASS",
+  "final_matches_expected": true,
+  "classification": "RESOLVED_AUTOMATIC_GAP",
+  "triage_status": "RESOLVED",
   "reason": "residual_vc_requires_proof",
   "executor_error": null,
   "source": "/home/yangfp/teSpec/benchmark/programs/init_array/variants/qcp_existing_2ec41f4ccb0e80bbe3cb/qcp/init_array2.qcp.c",
@@ -98,17 +98,54 @@
     "proof_of_init_array2_return_wit_1"
   ],
   "itp": {
-    "status": "NOT_PERFORMED"
+    "status": "KERNEL_CHECKED",
+    "final_status": "PASS",
+    "receipt": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-07/attempt-2/coq-receipt.json",
+    "receipt_sha256": "1f970e99fcd44f36ad67efc1365a534fef90cd793db3ddce0c5d426be02d021c",
+    "attempts": [
+      {
+        "path": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-07/attempt-1/coq-receipt.json",
+        "sha256": "89e4077391076c7d90a42a9c17bf10429dac7390ba4a06868de70781ca7ac7e1"
+      },
+      {
+        "path": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-07/attempt-2/coq-receipt.json",
+        "sha256": "1f970e99fcd44f36ad67efc1365a534fef90cd793db3ddce0c5d426be02d021c"
+      }
+    ],
+    "models": [
+      {
+        "path": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-07/attempt-1/model-receipt.json",
+        "sha256": "6ad69651db49b3410baade9906648affa7e57a0380ad3bc6e73b742d7b852d23"
+      },
+      {
+        "path": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-07/attempt-2/model-receipt.json",
+        "sha256": "e3a5db1b1b1ec4ab14d48ea414199b2c7da3534f0af623e1fc45a800ab0ecf29"
+      }
+    ],
+    "metrics": {
+      "agent_proof_filling_seconds": 194.2509999999893,
+      "coq_compile_audit_seconds": 3.8229320899990853,
+      "independent_kernel_check_seconds": 125.32285159600724,
+      "total_seconds": 323.3967836859956,
+      "tokens": 393376,
+      "model_calls": 2,
+      "peak_process_memory_mib": {
+        "agent_proof_filling": 292.8046875,
+        "coq_compilation_and_assumption_audit": 554.4296875,
+        "independent_kernel_check": 1766.05078125,
+        "itp": 1766.05078125
+      }
+    }
   },
   "mode_comparison_statistics": "benchmark/results/init_array/20261016-evaluation/statistics.json",
   "policy": "Expected result is independently reviewed; preserve original automatic classification. UNKNOWN and unexpected ERROR are not successful detection. Final ITP verdict recorded separately.",
   "review": {
-    "status": "OPEN_POSITIVE_ARRAY_VC_ITP_PENDING",
+    "status": "RESOLVED_POSITIVE_EXECUTION_ITP",
     "cause": "Valid uninitialized-char-array loop execution leaves original annotation/spatial VCs unresolved in both spatial-SMT modes. Initialized forward array inputs pass.",
     "program_or_spec_error": false,
     "qualification": "Expected PASS preserved; true residual goals exist and require positive proofs, not a fabricated refutation. No claim that ITP is impossible.",
     "mode_comparison": "OFF and ON each 6 PASS and 12 UNKNOWN. Fulminate 18/18.",
-    "itp_conclusion": "NOT_PERFORMED_POSITIVE_PROOF_PENDING. Each execution must independently prove all its original residual VCs, compile/audit and full kernel-check; no batched certificate or universal proof substitutes for tests.",
+    "itp_conclusion": "All original residual VCs proved for this exact finite execution; compile, original-statement assumption audit and full independent kernel check passed.",
     "separate_primary_gap": "Current generator fails at empty list equality even with full-auto; exact-source archived full certificate retained separately.",
     "coverage_gap": "benchmark/results/init_array/coverage-gap.json",
     "expectation_unchanged": true,
@@ -117,6 +154,15 @@
       "on_mode_queries": 0,
       "reason": "loop-invariant abstraction events block refinement before any SMT query",
       "qualification": "Not evidence of a backend timeout or inability after an actual query; do not remove guard without discharging abstraction VCs."
+    },
+    "itp_receipt": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-07/attempt-2/coq-receipt.json",
+    "positive_itp_observed_attempts": {
+      "source": "benchmark/results/init_array/20261016-positive-itp-per-execution/observed-attempt-costs.json",
+      "execution_index": 7,
+      "model_attempts": 2,
+      "actual_tokens": 393376,
+      "status": "KERNEL_CHECKED",
+      "qualification": "Proof-script compile/audit failures do not refute the program or its spec; preserve expected PASS and every failed attempt."
     }
   }
 }

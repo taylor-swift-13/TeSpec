@@ -379,3 +379,12 @@ all-boundaries 在声明为外部函数的 malloc/free/rand 处停下、入口 S
 
 
 正例 UNKNOWN 可用 positive_execution_itp.py 按执行冻结全部原始残余目标，实际模型只填 Candidate.v。编译后对照原始语句与证明的 Print Assumptions；仅原始类型参数可保留，不增加证明公理。attach_positive_execution_itp.py 核对逐例 report/binds/source/goal/model/prompt/证明/日志哈希和完整内核回执后追加 PASS，原 UNKNOWN 不改；失败尝试、额外审计调用和每次执行所有目标都计入同一任务。残余目标不等同于所有已自动判定的原生 VC，原生结果不冒称重新内核认证。
+
+
+### 正向测试 ITP 的审计、修复与同目标证书复用
+
+正向证明必须逐一绑定实际残余目标的完整限定类型 ExecutionGoal.<原名字>，不能只比较可编辑模板或定理名字。audit_positive_execution_attempts.py 同时核对全部已检查目标、原始模型 usage/prompt/事件日志以及 Coq 日志哈希；observed-attempt-costs.json 保存已完成的模型、编译和内核阶段实测，包含失败与暂缓的修复。在途阶段未完成，不捏造数值；全体所需执行未完成前，不把部分均值当作最终完整均值，最终仍只展示逐执行平均。
+
+数组重排可使用已存在的运行时引理。当前实际审计 unit_join、join_comm 为全局封闭；join_assoc 依赖 Coq 标准函数外延性。只有组计划明确许可、实际独立打印该引理的假设、证明新增依赖仅为该项时，才接受带限定的证书。原始类型参数与 standard_library_axioms 分栏，不能把函数外延性写成原始类型参数或声称证书全局封闭。额外引入 propositional_extensionality 的候选即使编译通过也被本组审计拒绝，失败成本保留。
+
+正向修复中允许显式引用另一模式的同目标已检查证书，但必须核对整个原始 VC 文件 SHA256、完整残余目标清单、QCP 源码和 binds 哈希均完全一致，保留 proof-reference.json 的来源证书与证明哈希。新执行仍有实际 gpt-6.1-sol 审阅／填写调用，并分别编译、假设审计、完整 coqchk；所有之前失败尝试继续计入该执行。此类尝试标为 EXACT_GOAL_CERTIFICATE_REUSE_REPAIR，不宣称从零独立证明搜索，不把原证书的搜索成本重复收费，也不能用一次批次内核检查替代各次检查。此规则不放宽不同输入反例证明的证据绑定，也不能把全称函数证明代替未完成的测试执行。

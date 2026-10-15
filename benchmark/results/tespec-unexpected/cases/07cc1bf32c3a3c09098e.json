@@ -14,10 +14,10 @@
   "mode": "on",
   "expected": "PASS",
   "automatic_status": "UNKNOWN",
-  "final_status": "UNKNOWN",
-  "final_matches_expected": false,
-  "classification": "UNRESOLVED_UNKNOWN",
-  "triage_status": "NEEDS_TRIAGE",
+  "final_status": "PASS",
+  "final_matches_expected": true,
+  "classification": "RESOLVED_AUTOMATIC_GAP",
+  "triage_status": "RESOLVED",
   "reason": "residual_vc_requires_proof",
   "executor_error": null,
   "source": "/home/yangfp/teSpec/benchmark/programs/init_array/variants/qcp_existing_2ec41f4ccb0e80bbe3cb/qcp/init_array2.qcp.c",
@@ -96,17 +96,82 @@
     "proof_of_init_array2_return_wit_1"
   ],
   "itp": {
-    "status": "NOT_PERFORMED"
+    "status": "KERNEL_CHECKED",
+    "final_status": "PASS",
+    "receipt": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-05/attempt-4/coq-receipt.json",
+    "receipt_sha256": "880b6a112c6bf4a10bbac6743a611088272677c2572678a298be187629b9c9c0",
+    "attempts": [
+      {
+        "path": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-05/attempt-1/coq-receipt.json",
+        "sha256": "7da5e415d116b5c06c5e5bdfff78da010df34315063e58f133f1092bc2215e2a"
+      },
+      {
+        "path": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-05/attempt-2/coq-receipt.json",
+        "sha256": "38d3dc3b65616a5bef9cbd41ff9faa7d415cab7c2b1b304a38ed4a4e97a0f10d"
+      },
+      {
+        "path": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-05/attempt-3/coq-receipt.json",
+        "sha256": "b410434df050d6a4949563a178558294a9144db51f19b3aa615d17c2a52ac554"
+      },
+      {
+        "path": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-05/attempt-4/coq-receipt.json",
+        "sha256": "880b6a112c6bf4a10bbac6743a611088272677c2572678a298be187629b9c9c0"
+      }
+    ],
+    "models": [
+      {
+        "path": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-05/attempt-1/model-receipt.json",
+        "sha256": "d0360841a0997081f77e45c4c23220c568bf461924695c8b2707671ea4f5f1d0"
+      },
+      {
+        "path": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-05/attempt-2/model-receipt.json",
+        "sha256": "b807790b3d3407f01498124e42b5a566c296739ac11a6dfd003dacc9e31fe80c"
+      },
+      {
+        "path": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-05/attempt-3/model-receipt.json",
+        "sha256": "7efb13d39581518e0e16735403e5783993a05fd2809fedf19ec43a29f174c12e"
+      },
+      {
+        "path": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-05/attempt-4/model-receipt.json",
+        "sha256": "a7d86631e39bd5424b767b0f9400c4b6dc9f55bb07f0fafcba019ab85cbf2a1f"
+      }
+    ],
+    "metrics": {
+      "agent_proof_filling_seconds": 283.32900000001246,
+      "coq_compile_audit_seconds": 20.025310115976026,
+      "independent_kernel_check_seconds": 131.24342934699962,
+      "total_seconds": 434.5977394629881,
+      "tokens": 915312,
+      "model_calls": 4,
+      "peak_process_memory_mib": {
+        "agent_proof_filling": 294.5859375,
+        "coq_compilation_and_assumption_audit": 725.72265625,
+        "independent_kernel_check": 1998.25,
+        "itp": 1998.25
+      }
+    },
+    "proof_reference": {
+      "schema": "tespec-exact-finite-goal-proof-reference/v1",
+      "mode": "EXACT_GOAL_CERTIFICATE_REUSE_REPAIR",
+      "source_certificate": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-04/attempt-3/coq-receipt.json",
+      "source_certificate_sha256": "8004d5f35091226402352fd5e6b86e330cbc046e03ed5afdfc439cc51781b454",
+      "source_candidate": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-04/attempt-3/proofs/Candidate.v",
+      "source_candidate_sha256": "914ab883e1ffc9c131a6eebb383f473d8e2b332eb57e42f0da5b2300ab4045c5",
+      "original_goal_sha256": "c5820c438a9ac514bae0299d89db7849a740023802084623ab82e2e94f46d788",
+      "reference_file": "ExactGoalProofReference.txt",
+      "reference_file_sha256": "914ab883e1ffc9c131a6eebb383f473d8e2b332eb57e42f0da5b2300ab4045c5",
+      "qualification": "This is explicit byte-identical original finite-goal certificate reuse, not a fresh independent mathematical search. The new actual model reviews/fills Candidate; all residual VCs still separately compile, audit and undergo full coqchk for this execution. Every previous failed attempt remains counted."
+    }
   },
   "mode_comparison_statistics": "benchmark/results/init_array/20261016-evaluation/statistics.json",
   "policy": "Expected result is independently reviewed; preserve original automatic classification. UNKNOWN and unexpected ERROR are not successful detection. Final ITP verdict recorded separately.",
   "review": {
-    "status": "OPEN_POSITIVE_ARRAY_VC_ITP_PENDING",
+    "status": "RESOLVED_POSITIVE_EXECUTION_ITP",
     "cause": "Valid uninitialized-char-array loop execution leaves original annotation/spatial VCs unresolved in both spatial-SMT modes. Initialized forward array inputs pass.",
     "program_or_spec_error": false,
     "qualification": "Expected PASS preserved; true residual goals exist and require positive proofs, not a fabricated refutation. No claim that ITP is impossible.",
     "mode_comparison": "OFF and ON each 6 PASS and 12 UNKNOWN. Fulminate 18/18.",
-    "itp_conclusion": "NOT_PERFORMED_POSITIVE_PROOF_PENDING. Each execution must independently prove all its original residual VCs, compile/audit and full kernel-check; no batched certificate or universal proof substitutes for tests.",
+    "itp_conclusion": "All original residual VCs proved for this exact finite execution; compile, original-statement assumption audit and full independent kernel check passed.",
     "separate_primary_gap": "Current generator fails at empty list equality even with full-auto; exact-source archived full certificate retained separately.",
     "coverage_gap": "benchmark/results/init_array/coverage-gap.json",
     "expectation_unchanged": true,
@@ -115,6 +180,15 @@
       "on_mode_queries": 0,
       "reason": "loop-invariant abstraction events block refinement before any SMT query",
       "qualification": "Not evidence of a backend timeout or inability after an actual query; do not remove guard without discharging abstraction VCs."
-    }
+    },
+    "positive_itp_observed_attempts": {
+      "source": "benchmark/results/init_array/20261016-positive-itp-per-execution/observed-attempt-costs.json",
+      "execution_index": 5,
+      "model_attempts": 4,
+      "actual_tokens": 915312,
+      "status": "KERNEL_CHECKED",
+      "qualification": "Proof-script compile/audit failures do not refute the program or its spec; preserve expected PASS and every failed attempt."
+    },
+    "itp_receipt": "benchmark/results/init_array/20261016-positive-itp-per-execution/execution-05/attempt-4/coq-receipt.json"
   }
 }

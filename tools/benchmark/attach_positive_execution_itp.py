@@ -11,11 +11,22 @@ def validate_receipt(path,row,mode):
     assert sha(ROOT/b['report'])==b['report_sha256'] and sha(ROOT/b['goal'])==b['goal_sha256']
     assert sha(ROOT/r['candidate'])==r['candidate_sha256'];text=(ROOT/r['candidate']).read_text();assert not re.search(r'\b(?:Admitted|admit|Axiom|Parameter|native_cast_no_check|vm_cast_no_check|exact_no_check)\b',text)
     assert b['proof_kind']=='POSITIVE_ORIGINAL_RESIDUAL_VCS' and {x['name'] for x in r['goals']}=={'resolved_'+n for n in b['residual_vcs']}
+    from positive_execution_itp import statements
+    expected=[('resolved_'+n,'ExecutionGoal.'+n) for n in b['residual_vcs']]
+    assert statements(text)==[(g['name'],g['statement']) for g in r['goals']]==expected
+    if r.get('proof_reference'):
+        ref=r['proof_reference'];prior_path=ROOT/ref['source_certificate'];assert sha(prior_path)==ref['source_certificate_sha256'];prior=json.loads(prior_path.read_text());assert prior['status']=='KERNEL_CHECKED' and prior['kernel_check']['exit_code']==0
+        assert ref['original_goal_sha256']==b['goal_sha256']==prior['binding']['goal_sha256'] and b['residual_vcs']==prior['binding']['residual_vcs']
+        assert b['qcp_source_sha256']==prior['binding']['qcp_source_sha256'] and b['binds_sha256']==prior['binding']['binds_sha256'];assert sha(ROOT/ref['source_candidate'])==ref['source_candidate_sha256']==prior['candidate_sha256']
+
     for s in r['compilation']+[r['kernel_check']]:
       for stream in ['stdout','stderr']:assert sha(ROOT/s[stream])==s[stream+'_sha256']
     from positive_execution_itp import symbols
     audit=(ROOT/r['assumptions']['raw_audit']).read_text();baseline=(ROOT/r['assumptions']['original_statement_audit']).read_text();allowed={'sizeof_union_type','sizeof_struct_type','sizeof_enum_type','sizeof_alias_type','eval_addr_expr'}
-    assert symbols(audit)<=symbols(baseline)<=allowed and audit.count('Closed under the global context')+audit.count('Axioms:')==len(b['residual_vcs'])
+    if r['assumptions'].get('policy'):
+        policy_path=ROOT/r['assumptions']['policy'];assert sha(policy_path)==r['assumptions']['policy_sha256'];policy=json.loads(policy_path.read_text())['test_itp_assumption_audit_policy'];assert policy['required_runtime_helper']=='join_assoc' and policy['allowed_standard_library_axioms']==['FunctionalExtensionality.functional_extensionality_dep'];baseline,helper=baseline.split('POSITIVE_RUNTIME_HELPER\n',1);extra=symbols(audit)-symbols(baseline);assert extra<=set(policy['allowed_standard_library_axioms']) and extra<=symbols(helper) and extra==set(r['assumptions']['standard_library_axioms'])
+    else:assert symbols(audit)<=symbols(baseline)
+    assert symbols(baseline)<=allowed and audit.count('Closed under the global context')+audit.count('Axioms:')==len(b['residual_vcs'])
     return r
 
 def attach(group,allow_partial=False):
@@ -33,6 +44,7 @@ def attach(group,allow_partial=False):
       peaks={'agent_proof_filling':max(m['resources']['max_process_peak_working_set_bytes'] for m in models)/1048576,'coq_compilation_and_assumption_audit':max(s['resources']['max_process_rss_kib'] for s in compile_rows)/1024,'independent_kernel_check':max(s['resources']['max_process_rss_kib'] for s in kernel_rows)/1024};peaks['itp']=max(peaks.values())
       metrics={'agent_proof_filling_seconds':model_seconds,'coq_compile_audit_seconds':compile_seconds,'independent_kernel_check_seconds':kernel_seconds,'total_seconds':model_seconds+compile_seconds+kernel_seconds,'tokens':tokens,'model_calls':len(models),'peak_process_memory_mib':peaks}
       evidence={'status':'KERNEL_CHECKED','final_status':'PASS','receipt':str(p.relative_to(ROOT)),'receipt_sha256':sha(p),'attempts':[{'path':str(p.relative_to(ROOT)),'sha256':sha(p)} for p,_ in receipts],'models':[{'path':str(p.relative_to(ROOT)),'sha256':sha(p)} for p in modelpaths],'metrics':metrics}
+      if r.get('proof_reference'):evidence['proof_reference']=r['proof_reference']
       row['tespec_'+mode]['itp']=evidence;row['tespec_'+mode]['final_status']='PASS';done.append({'variant':row['variant'],'case':row['case'],'mode':mode,**evidence})
     snapshot=path.parent/'results.native-before-itp.json'
     if not snapshot.exists():snapshot.write_bytes(path.read_bytes())

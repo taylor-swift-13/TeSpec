@@ -1,0 +1,95 @@
+
+
+Controller-supplied actual runtime definitions (no prior input-specific proofs):
+Actual runtime SeparationLogic/CommonAssertion.v:299-305:
+Definition store_char (x : addr) (v : Z) :=
+  “ isvalidptr_char x /\ v <= Byte.max_signed /\ v >= Byte.min_signed ” && store_byte x v.
+
+Definition undef_store_char (x : addr) :=
+  “ isvalidptr_char x ” && store_byte_noninit x.
+
+Definition store_uchar (x : addr) (v : Z) :=
+
+Actual runtime SeparationLogic/CommonAssertion.v:403-407:
+Fixpoint store_array_rec {A : Type} (storeA : addr -> Z -> A -> CRules.expr) (x: addr) (lo hi: Z) (l: list A): CRules.expr :=
+  match l with
+  | nil     => “ lo = hi ” && “ l = nil ” && emp
+  | a :: l0 => storeA x lo a ** store_array_rec storeA x (lo + 1) hi l0
+  end.
+
+Actual runtime SeparationLogic/CommonAssertion.v:416-426:
+Definition store_array {A : Type} (storeA : addr -> Z -> A -> CRules.expr) (x: addr) (n: Z) (l: list A): CRules.expr :=
+  store_array_rec storeA x 0 n l.
+
+Fixpoint store_undef_array_rec (storeA : addr -> Z -> CRules.expr) (x: addr) (lo hi: Z) (n: nat): CRules.expr :=
+  match n with 
+    | O => “ lo = hi ” && emp 
+    | S n' => storeA x lo ** store_undef_array_rec storeA x (lo + 1) hi n'
+  end.
+
+Fixpoint store_undef_array_missing_i_rec (storeA : addr -> Z -> CRules.expr) (x: addr) (i lo hi: Z) (n: nat): CRules.expr :=
+  match n with 
+
+Actual runtime SeparationLogic/CommonAssertion.v:432-434:
+Definition store_undef_array (storeA : addr -> Z -> CRules.expr) (x: addr) (n: Z): CRules.expr :=
+  store_undef_array_rec storeA x 0 n (Z.to_nat n).
+
+
+Actual runtime SeparationLogic/ArrayLibCore.v:223-240:
+Definition seg x lo hi (l : list A): Assertion :=
+  store_array_rec storeA x lo hi l.
+
+Definition missing_i x i lo hi (l : list A): Assertion :=
+  store_array_missing_i_rec storeA x i lo hi l.
+
+Definition full x n (l : list A): Assertion :=
+  store_array storeA x n l.
+
+Definition undef_seg x lo hi : Assertion :=
+  store_undef_array_rec undefstoreA x lo hi (Z.to_nat (hi - lo)).
+
+Definition undef_missing_i x i lo hi : Assertion :=
+  store_undef_array_missing_i_rec undefstoreA x i lo hi (Z.to_nat (hi - lo)).
+
+Definition undef_full x n : Assertion :=
+  store_undef_array undefstoreA x n.
+
+
+Actual runtime SeparationLogic/ArrayLib.v:71-91:
+
+  Lemma undefstore_to_align : forall x lo, undefstoreA x lo |-- store_align_n sizeA.
+  Proof.
+    intros.
+    unfold undefstoreA, sizeA.
+    rewrite sizeof_char.
+    apply undef_store_char_align.
+  Qed.
+
+  Lemma sizeA_valid : 0 < sizeA < Int.max_unsigned.
+  Proof.
+    unfold sizeA.
+    rewrite sizeof_char.
+    replace Int.max_unsigned with 4294967295 by reflexivity.
+    lia.
+  Qed.
+
+End StoreCharAsElement.
+
+Module CharArray := ArrayLib (StoreCharAsElement).
+
+
+Actual runtime SeparationLogic/ConAssertion.v:53-55:
+Definition TokenSet_join (s1 s2 s3 : TokenSet) : Prop :=
+  s3 == s1 ∪ s2 /\ s1 ∩ s2 == ∅.
+
+
+Actual runtime SeparationLogic/ConAssertion.v:74-81:
+Definition STS_state_join (s1 s2 s3 : STS_state -> Prop) : Prop :=
+  s3 == s1 ∩ s2.
+
+Definition state_join (s1 s2 s3 : Lstate) : Prop := 
+  mem_join s1.(s_mem) s2.(s_mem) s3.(s_mem) /\ 
+  TokenSet_join s1.(s_token) s2.(s_token) s3.(s_token) /\ 
+  STS_state_join s1.(s_STS) s2.(s_STS) s3.(s_STS).
+
+Coq pure heap assertions: andp/coq_prop must be exposed before reflexivity; a target containing A /\ B requires both conjuncts, not a single reflexivity. For terminal zero-length store_array_rec the pure facts are lo=hi AND l=nil; undef terminal has only lo=hi. For finite concrete array proofs preserve/rearrange actual separating-heap witnesses and append an emp unit with unit_join; generic separation algebra tactics may add unwanted extensionality. No unbounded firstorder or blind cbv of all runtime definitions. Do not read host home or other workspaces searching for Coq; supplied declarations are the intended context.
