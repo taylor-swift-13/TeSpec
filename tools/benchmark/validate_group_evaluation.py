@@ -1,0 +1,32 @@
+#!/usr/bin/env python3
+"""Audit current group result/proof/cost publication without rerunning experiments."""
+import argparse,json,re
+from test_read_variants import ROOT,sha
+
+def load(p):return json.loads(p.read_text())
+def main():
+    p=argparse.ArgumentParser();p.add_argument('--group',required=True);a=p.parse_args();g=ROOT/'benchmark/programs'/a.group;b=ROOT/'benchmark/results'/a.group;manifest=load(g/'manifest.json');idx=load(b/'index.json');data=load(ROOT/idx['evaluation']);runs=data['runs'];table=load(b/'result-cost.json');assert table['complete']
+    variants={load(ROOT/v['manifest'])['id']:load(ROOT/v['manifest']) for v in manifest['variants']};covered=set()
+    for r in runs:
+        covered.update([r['variant'],r['paired_qcp_variant']]);assert r['precondition_valid'] and r['expected'] in ['PASS','FAIL','ERROR']
+        for k in ['harness','binds']:assert sha(ROOT/r[k])==r[k+'_sha256']
+        for lang,vid in [('cn',r['variant']),('qcp',r['paired_qcp_variant'])]:assert sha(ROOT/variants[vid]['files'][lang]['path'])==r[lang+'_source_sha256']==variants[vid]['files'][lang]['sha256']
+        for k in ['fulminate_pipeline','fulminate_test','tespec_off','tespec_on']:
+            m=r[k];assert m['resources']['max_process_rss_kib']>0 and m['wall_seconds']>0
+            for field in ['stdout','stderr']:assert sha(ROOT/m[field])==m[field+'_sha256']
+            if k.startswith('tespec'):
+                assert sha(ROOT/m['report'])==m['report_sha256'];assert load(ROOT/m['report'])['results'][0]['status']==m['status']
+        for f in r['instrumented_sources']:assert sha(ROOT/f['path'])==f['sha256']
+    assert covered==set(variants),'Some existing variant records have not been tested'
+    for tool,key in [('fulminate','fulminate_test'),('tespec','tespec_off')]:
+        pub=load(b/tool/'results.json');assert pub['summary']['case_pairs']==len(runs);assert pub['summary']['correct']==sum(r[key]['status']==r['expected'] for r in runs)
+    q=load(ROOT/idx['qcp_receipt']);assert q['status']=='VERIFIED_KERNEL_CHECKED' and q['kernel_check']['exit_code']==0
+    assert sha(ROOT/q['proof'])==q['proof_sha256'];assert sha(ROOT/q['original_goal'])==q['original_goal_sha256'];assert sha(ROOT/q['goal'])==q['original_goal_sha256']
+    candidate=(ROOT/q['proof']).read_text();assert not re.search(r'\b(?:Admitted|admit|Axiom|Parameter)\b',candidate)
+    model=q['model'];assert model['requested_model']=='gpt-6.1-sol' and model['exit_code']==0;assert sha((ROOT/idx['qcp_receipt']).parent/'agent.stdout.jsonl')==model['raw_event_log_sha256']
+    stat=load(b/'qcp/statistics.json');assert abs(sum(x['wall_seconds'] for x in stat['stages'])-stat['wall_seconds'])<1e-7;assert stat['tokens']==sum(u['input_tokens']+u['output_tokens'] for u in model['token_usage'])
+    modes=load(ROOT/manifest['test_modes_statistics']);assert modes['results_sha256']==sha(ROOT/idx['evaluation']);assert modes['case_pairs']==len(runs)
+    for mode in ['off','on']:
+        assert modes['modes'][mode]['expected_matches']==sum(r['tespec_'+mode]['status']==r['expected'] for r in runs)
+    print(f'PASS {a.group}: {len(covered)} language records, {len(runs)} input pairs, exact source/log/proof hashes, full primary verification and disjoint stage costs.')
+if __name__=='__main__':main()

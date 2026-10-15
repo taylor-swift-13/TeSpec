@@ -1,0 +1,132 @@
+{
+  "schema": "tespec-group-evaluation-plan/v1",
+  "program_group": "abs_mem",
+  "function": "abs_mem",
+  "primary_cn_variant": "cn_original:abs_mem",
+  "primary_qcp_variant": "qcp_existing:e65b2638921bc5c296d1",
+  "run_id": "20261016-evaluation",
+  "pairings": [
+    {
+      "cn_variant": "cn_original:abs_mem",
+      "qcp_variant": "qcp_existing:e65b2638921bc5c296d1",
+      "cases": [
+        {
+          "id": "value_0",
+          "value": -2147483647,
+          "expected": "PASS",
+          "cn_body": "int cell = -2147483647; abs_mem(&cell);",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "v": -2147483647
+            }
+          },
+          "precondition_valid": true
+        },
+        {
+          "id": "value_1",
+          "value": -7,
+          "expected": "PASS",
+          "cn_body": "int cell = -7; abs_mem(&cell);",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "v": -7
+            }
+          },
+          "precondition_valid": true
+        },
+        {
+          "id": "value_2",
+          "value": -1,
+          "expected": "PASS",
+          "cn_body": "int cell = -1; abs_mem(&cell);",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "v": -1
+            }
+          },
+          "precondition_valid": true
+        },
+        {
+          "id": "value_3",
+          "value": 0,
+          "expected": "PASS",
+          "cn_body": "int cell = 0; abs_mem(&cell);",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "v": 0
+            }
+          },
+          "precondition_valid": true
+        },
+        {
+          "id": "value_4",
+          "value": 1,
+          "expected": "PASS",
+          "cn_body": "int cell = 1; abs_mem(&cell);",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "v": 1
+            }
+          },
+          "precondition_valid": true
+        },
+        {
+          "id": "value_5",
+          "value": 7,
+          "expected": "PASS",
+          "cn_body": "int cell = 7; abs_mem(&cell);",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "v": 7
+            }
+          },
+          "precondition_valid": true
+        },
+        {
+          "id": "value_6",
+          "value": 2147483647,
+          "expected": "PASS",
+          "cn_body": "int cell = 2147483647; abs_mem(&cell);",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "v": 2147483647
+            }
+          },
+          "precondition_valid": true
+        }
+      ]
+    }
+  ],
+  "excluded_inputs": [
+    {
+      "value": -2147483648,
+      "reason": "Both primary contracts explicitly exclude INT_MIN; this is not an expected-negative valid-input test."
+    },
+    {
+      "pointer": 0,
+      "reason": "Owned<int>(p) and data_at(p,int,v) require readable allocated memory."
+    }
+  ],
+  "expectation_basis": "Correct implementation returns mathematical absolute value and preserves the owned integer cell; all selected values satisfy INT_MIN < v."
+}
