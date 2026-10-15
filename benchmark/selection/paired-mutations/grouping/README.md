@@ -53,3 +53,11 @@ python3 benchmark/selection/paired-mutations/grouping/reuse.py
 python3 benchmark/selection/paired-mutations/grouping/validate.py
 python3 benchmark/selection/paired-mutations/grouping/validate-reuse.py
 ```
+
+## 程序、变体、测试用例与验证单位
+
+层级为：程序组 → 变体（固定的一对实现与规约）→ 多个测试用例。实现或规约都可以改变，两者同时改变也可以；改变后作为新的变体。CN 与 QCP 是相应变体的语言版本，对应范围单独记录。
+
+每个变体的 CN、QCP 形式验证各执行一次，覆盖满足其前条件的输入，不随有限测试用例数重复。QCP 一次验证产生的全部 VC 都须完成，manual 证明和所需内核检查也必须完成，才算通过。Fulminate 和 teSpec 则分别按变体及测试用例运行；越过该变体前条件的输入另行标记。每个变体应有多个适用用例，缺失用例明确记为覆盖缺口，已有的输入集合不自动等于完成覆盖。
+
+验证的时间、峰值内存、实际 token 按变体及工具记录一次；测试指标按变体、用例及工具记录，再注明用例数汇总。不把验证开销乘以用例数。源码、规约、依赖、工具版本、配置和证明上下文匹配时可复用旧验证结果；复用测试结果还须输入匹配。历史重复实验保留，不作为新的重复运行要求。

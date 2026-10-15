@@ -9,5 +9,31 @@
   "reuse_existing_inputs_and_results": true,
   "source_match_policy": "Exact source/goal/input hashes when available; weaker manifest/case associations labelled explicitly. Never move a PASS, counterexample or measurement to a changed contract/input silently.",
   "unknown_policy": "Preserve UNKNOWN, errors, residual manual obligations, missing measurements and prepared-only inputs. No invented PASS or zero resource usage.",
-  "legacy_generators": "Frozen seven-slot generation scripts remain for historical reproduction only; they do not impose the current admission policy."
+  "legacy_generators": "Frozen seven-slot generation scripts remain for historical reproduction only; they do not impose the current admission policy.",
+  "hierarchy": [
+    "program_family",
+    "variant_implementation_and_specification",
+    "test_case"
+  ],
+  "variant_identity": "A variant fixes both implementation and specification. Either or both may change; changed implementation or spec creates a new variant. CN and QCP are language representations of the corresponding variant with alignment scope recorded.",
+  "execution_policy": {
+    "formal_verification_unit": "variant_and_verifier",
+    "formal_verification_runs_per_variant_per_verifier": 1,
+    "formal_verifiers": [
+      "CN",
+      "QCP"
+    ],
+    "formal_verification_input_scope": "Universal over inputs satisfying the variant precondition; not repeated for each finite test case.",
+    "testing_unit": "variant_and_test_case_and_tool",
+    "test_tools": [
+      "Fulminate",
+      "teSpec"
+    ],
+    "test_cases_per_variant": "Multiple applicable cases; reuse existing cases and record missing coverage explicitly.",
+    "test_applicability": "Evaluate against this variant precondition. Outside-precondition cases must be marked separately and cannot establish an implementation bug under the contract.",
+    "resource_accounting": "Record verification time, peak memory and actual tokens once per variant/tool. Record test time, peak memory and actual tokens per variant/input/tool; aggregate with case counts. Never multiply verification metrics by test count.",
+    "reuse_key": "Implementation, specification, dependencies, tool/version/configuration and proof context must match for verification reuse; test reuse additionally requires matching input.",
+    "qcp_completion": "One verification run may generate multiple VCs. All required VCs, including manual obligations, must be discharged and required proof/kernel checks completed before PASS. Residual VCs and UNKNOWN remain incomplete.",
+    "historical_repeats": "Preserve old repeated measurements as historical observations; no new mandatory repeated verification runs."
+  }
 }
