@@ -1,10 +1,10 @@
 # 夜间评测进度
 
-完整组 17/45；待补齐 28。截止北京时间 2026-10-16 08:00。
+完整组 18/45；待补齐 27。截止北京时间 2026-10-16 08:00。
 
-当前组：slf3_basic_inplace_double；阶段：ITP_PER_EXECUTION_SERIAL_BATCH_RUNNING。
+当前组：incr_two；阶段：READY_FOR_NEXT_GROUP。
 
-teSpec 最终不匹配 2 条，已解决自动阶段缺口 25 条。详情见 ../tespec-unexpected/README.md；未评测组不算零异常。
+teSpec 最终不匹配 0 条，已解决自动阶段缺口 27 条。详情见 ../tespec-unexpected/README.md；未评测组不算零异常。
 
 | 程序组 | 状态 | 结果成本表 |
 |---|---|---|
@@ -44,7 +44,7 @@ teSpec 最终不匹配 2 条，已解决自动阶段缺口 25 条。详情见 ..
 | runway__funcs2 | 待补齐 | [表](../runway__funcs2/result-cost.md) |
 | slf17_get_and_free | 待补齐 | [表](../slf17_get_and_free/result-cost.md) |
 | slf18_two_dice | 待补齐 | [表](../slf18_two_dice/result-cost.md) |
-| slf3_basic_inplace_double | 待补齐 | [表](../slf3_basic_inplace_double/result-cost.md) |
+| slf3_basic_inplace_double | 完整 | [表](../slf3_basic_inplace_double/result-cost.md) |
 | slf_quadruple_mem | 完整 | [表](../slf_quadruple_mem/result-cost.md) |
 | slf_sized_stack | 待补齐 | [表](../slf_sized_stack/result-cost.md) |
 | succ_using_incr | 待补齐 | [表](../succ_using_incr/result-cost.md) |
