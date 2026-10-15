@@ -1,0 +1,116 @@
+Require Import ConcreteCell ExecutionGoal.
+Require Import Coq.ZArith.ZArith.
+Require Import Coq.Bool.Bool.
+Require Import Coq.Strings.String.
+Require Import Coq.Strings.Ascii.
+Require Import Coq.Lists.List.
+Require Import Coq.Classes.RelationClasses.
+Require Import Coq.Classes.Morphisms.
+Require Import Coq.micromega.Psatz.
+Require Import Coq.Sorting.Permutation.
+From AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.
+Require Import SetsClass.SetsClass. Import SetsNotation.
+From SimpleC.SL Require Import Mem SeparationLogic.
+Require Import Logic.LogicGenerator.demo932.Interface.
+Local Open Scope Z_scope.
+Local Open Scope sets.
+Local Open Scope string_scope.
+Local Open Scope list.
+Import naive_C_Rules.
+Local Open Scope sac.
+
+
+
+Theorem entry_cell : (4096 # UInt |-> (5)) (st (cell 0 0 0 5)).
+Proof.
+  unfold store_uint.
+  split.
+  - change (isvalidptr_int 4096 /\ 5 >= 0 /\ 5 <= Int.max_unsigned).
+    vm_compute; repeat split; lia.
+  - unfold store_4byte.
+    exists 0, 0, 0, 5.
+    split.
+    + change (merge_int 0 0 0 5 5).
+      vm_compute; repeat split; lia.
+    + exists (st (single_byte_mem 4096 0)), (st (tail1 0 0 5)).
+      split; [apply st_join; apply join0 |].
+      split; [apply byte_at |].
+      exists (st (single_byte_mem 4097 0)), (st (tail2 0 5)).
+      split; [apply st_join; apply join1 |].
+      split; [apply byte_at |].
+      exists (st (single_byte_mem 4098 0)), (st (single_byte_mem 4099 5)).
+      split; [apply st_join; apply join2 |].
+      split; apply byte_at.
+Qed.
+Theorem exit_cell : (4096 # UInt |-> (6)) (st (cell 0 0 0 6)).
+Proof.
+  unfold store_uint.
+  split.
+  - change (isvalidptr_int 4096 /\ 6 >= 0 /\ 6 <= Int.max_unsigned).
+    vm_compute; repeat split; lia.
+  - unfold store_4byte.
+    exists 0, 0, 0, 6.
+    split.
+    + change (merge_int 0 0 0 6 6).
+      vm_compute; repeat split; lia.
+    + exists (st (single_byte_mem 4096 0)), (st (tail1 0 0 6)).
+      split; [apply st_join; apply join0 |].
+      split; [apply byte_at |].
+      exists (st (single_byte_mem 4097 0)), (st (tail2 0 6)).
+      split; [apply st_join; apply join1 |].
+      split; [apply byte_at |].
+      exists (st (single_byte_mem 4098 0)), (st (single_byte_mem 4099 6)).
+      split; [apply st_join; apply join2 |].
+      split; apply byte_at.
+Qed.
+Theorem refute_incr_return_wit_1_split_goal_spatial : ~ ExecutionGoal.incr_return_wit_1_split_goal_spatial.
+Proof.
+  unfold ExecutionGoal.incr_return_wit_1_split_goal_spatial.
+  intro H.
+  specialize (H 4096 5 ltac:(lia) ltac:(lia)
+    eq_refl eq_refl ltac:(lia) ltac:(lia)).
+  specialize (H (st (cell 0 0 0 6)) exit_cell).
+  destruct H as [_ Hempty].
+  exact (ConcreteCell.cell_not_emp 0 0 0 6 Hempty).
+Qed.
+Theorem refute_incr_return_wit_1 : ~ ExecutionGoal.incr_return_wit_1.
+Proof.
+  unfold ExecutionGoal.incr_return_wit_1.
+  intros [H | H].
+  - specialize (H 4096 5 eq_refl eq_refl ltac:(lia) ltac:(lia)).
+    specialize (H (st (cell 0 0 0 6)) exit_cell).
+    destruct H as [_ Hempty].
+    exact (ConcreteCell.cell_not_emp 0 0 0 6 Hempty).
+  - specialize (H 4096 5 ltac:(lia) ltac:(lia)
+      eq_refl eq_refl ltac:(lia) ltac:(lia)).
+    specialize (H (st (cell 0 0 0 6)) exit_cell).
+    destruct H as [_ Hempty].
+    exact (ConcreteCell.cell_not_emp 0 0 0 6 Hempty).
+Qed.
+Theorem entry_sat : ExecutionGoal.incr_precondition_wit_1.
+Proof.
+  unfold ExecutionGoal.incr_precondition_wit_1.
+  exists 4096, 5.
+  intro H.
+  assert (Hentry :
+    ( “ (4096 = 4096) ” && “ (5 = 5) ” && “ (0 <= 5) ”
+      && “ (5 <= UINT_MAX) ” && (4096 # UInt |-> 5))
+      (st (cell 0 0 0 5))).
+  { split.
+    - split.
+      + split.
+        * split.
+          -- change (4096 = 4096); reflexivity.
+          -- change (5 = 5); reflexivity.
+        * change (0 <= 5); lia.
+      + change (5 <= UINT_MAX); lia.
+    - exact entry_cell. }
+  specialize (H (st (cell 0 0 0 5)) Hentry).
+  change False in H.
+  exact H.
+Qed.
+Print Assumptions entry_cell.
+Print Assumptions exit_cell.
+Print Assumptions refute_incr_return_wit_1_split_goal_spatial.
+Print Assumptions refute_incr_return_wit_1.
+Print Assumptions entry_sat.

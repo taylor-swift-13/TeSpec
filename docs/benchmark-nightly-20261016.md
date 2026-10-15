@@ -72,3 +72,8 @@ teSpec ON 原生 103/103；OFF 原生 90/103，13 个遗漏出口 ownership 的�
 CN 主程序原文件已验证；QCP 原始 2 VC 全称证明、假设审计和独立内核通过，实际 gpt-6.1-sol 1 次、75,692 token。证明阶段成本已保存。整组仍未完整，四工具进行中表和不完整 ITP 成本保持 PENDING，完整进度仍 11/45。
 
 当前 Windows 串行 ITP 控制器 PID 17680、会话 78718。状态文件 /mnt/c/Users/50635/Documents/Codex/2026-10-14/jin/work/incr-itp-per-execution/controller-status.json；启动后先检查和接续，禁止重复发起。工具 cell_leak_itp.py 每次只编译并核查一个执行的全部残余目标；attach_cell_leak_itp.py --group incr --allow-partial 可只导入已经完成的证书。所有完成后去掉 --allow-partial，运行 publish_group_evaluation.py 与 validate_group_evaluation.py。若有失败任务，保留模型/编译日志和成本，记录缺口后继续其他组。
+
+
+## 串行 ITP 续接检查（02:43）
+
+已核查原控制器 PID 17680 / 会话 78718 正常运行，未重复启动。独立内核通过并审计导入 3/13 次，incr OFF 当前最终 93/103；原生仍是 13 UNKNOWN，专门台账尚有 10 条未解决。新导入执行 01、02 的各次失败模型/编译记录全部保留。整组仍不计完整，ITP 均值/总成本继续 PENDING。等待当前串行任务完成；此期间只准备了 transfer（16 对）和 transpose（24 对）的独立预期计划，没有对其他组启动计量或填造结果。
