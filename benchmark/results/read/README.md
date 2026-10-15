@@ -1,3 +1,7 @@
+# read ITP 展示入口
+
+每次需要 ITP 的测试执行平均开销见 [tespec/itp-average.md](tespec/itp-average.md)。这是现有共享批次按 12 次执行均摊的估算；原始批次数据保留用于审计。
+
 # Read benchmark results
 
 Start with the four named tool entries:

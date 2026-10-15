@@ -224,45 +224,33 @@ Fulminate 的一条不匹配是：返回值取负的错误实现，在 `INT_MIN`
 - CN、Fulminate 本批未调用模型，因此 token 为实际的 0；不是漏采集。
 - QCP 原生阶段的 1 个自动 VC、0 个 manual 不能替代完整证明产物。本批补齐了 gpt-6.1-sol 调用和 Coq 检查，模型 token 按实际回执计入。若其他实例已有完整可检查的自动证明，则可以复用；只有实际未调用模型时才能将相应 token 记为 0。
 - Fulminate 表中耗时包含插桩／编译／首次执行 7.0446 秒，以及单独运行 0.2346 秒。仅运行测试时的峰值为 1.3672 MiB；完整已测阶段峰值来自插桩流水线。
-- teSpec 包含执行测试和完整计量的 ITP。详细的输入、缓存输入、输出 token 及各阶段耗时见下表和模型回执。
+- teSpec 完整流程总计用于四工具审计；ITP 最终展示仅采用下方按执行次数均摊的平均值，原始用量回执保留。
 
 原始统计入口：[CN](../benchmark/results/read/cn/statistics.json)、[QCP](../benchmark/results/read/qcp/statistics.json)、[Fulminate](../benchmark/results/read/fulminate/statistics.json)、[teSpec](../benchmark/results/read/tespec/statistics.json)。
 
 QCP 完整验证的阶段耗时为：复用的原生自动阶段 0.006401 秒、模型证明生成 49.3910 秒、Coq 编译／假设审计 1.6964 秒、独立内核检查 126.6930 秒。模型 input 125,511（其中 cached input 118,656），output 617，共 126,128 token。原始未绑定输入的全称 VC、VC_Correct 证明模块及内核检查回执见 [完整 QCP 验证回执](../benchmark/results/read/20261015-qcp-verify-complete/receipt.json)。
 
-### QCP / teSpec 分阶段统计（正式口径）
+### 分阶段原始测量与 ITP 展示
 
-生成阶段与 agent 填写证明分开计量；Coq 检查也独立列出。每项均保存耗时、峰值内存和 token，完整流程总计继续保留。机器可读明细见 [stages.csv](../benchmark/results/read/stages.csv) 和 [stages.json](../benchmark/results/read/stages.json)；各工具 statistics.json 的 `stages` 字段保存同一数据，comparison.csv 同时提供四项阶段耗时列。
+生成／执行与 agent 填写证明、Coq 编译审计、独立内核检查分别计量，各自保存时间、峰值内存和 token。原始阶段总量保存在 statistics.json、[stages.csv](../benchmark/results/read/stages.csv) 和 [stages.json](../benchmark/results/read/stages.json) 中供审计；最终 ITP 展示使用下面的每次执行平均值。
 
-| 工具 | 阶段 | 耗时（秒） | 峰值进程内存（MiB） | 总 token |
-|---|---|---:|---:|---:|
-| qcp | VC 生成与自动处理 | 0.006401 | 4.4375 | 0 |
-| qcp | agent 填写证明 | 49.391000 | 189.3906 | 126,128 |
-| qcp | Coq 编译与假设审计 | 1.696367 | 514.5898 | 0 |
-| qcp | 独立内核检查 | 126.693018 | 1996.0273 | 0 |
-| tespec | 61 对测试执行与 VC 生成 | 10.446567 | 19.7305 | 0 |
-| tespec | agent 填写证明 | 56.047000 | 188.2383 | 133,915 |
-| tespec | Coq 编译与假设审计 | 16.013148 | 613.8320 | 0 |
-| tespec | 独立内核检查 | 129.237032 | 1989.5039 | 0 |
+后续 ITP 以一次测试执行为单位：该次执行的所有待处理 VC、所需证明修复与检查合计计量一次。不同测试执行分别测量，不能把一个 VC 或一项定理计作一次 ITP。read 例外复用已有共享批次，按 12 次需要 ITP 的执行均摊估算，不对全部 61 次测试均摊。每阶段峰值内存保留原值，不按执行次数相除。
 
-生成阶段当前只有原生执行器整体计时：QCP 包含 VC 生成与自动处理，teSpec 包含测试执行、VC 生成与自动判定；没有单独采集纯 VC 写出时间，不能再人为拆分。agent 填写证明采用实际 gpt-6.1-sol CLI 调用耗时，含客户端及服务等待，不等于纯模型推理时间。
+### teSpec ITP 平均开销（展示口径）
 
-所有模型 token 归入 agent 填写证明阶段，编译和内核检查未调用模型，token 为 0。每项内存是该阶段本地单进程峰值；总内存取最大值。teSpec 的证明填写、共享辅助库编译和内核检查按整批各计一次，不乘以 12 条 UNKNOWN 或 36 项结论。阶段之和须与完整总计一致，复用原始测量与证据，不重跑、不改写历史回执。
+以需要 ITP 的 12 次测试执行为分母；同次执行的所有待处理 VC 合计为一次 ITP。以下是共享批次均摊估算，不是逐次独立实测；不按定理数计数。
 
-### teSpec 与 ITP 阶段明细
+| 项目 | 每次测试执行的平均值 |
+|---|---:|
+| agent 填写证明 | 4.6706 秒 |
+| Coq 编译与审计 | 1.3344 秒 |
+| 独立内核检查 | 10.7698 秒 |
+| ITP 合计 | 16.7748 秒 |
+| 输入 token | 11039.08 |
+| 输出 token | 120.50 |
+| 总 token | 11159.58 |
 
-完整 teSpec 计量如下；数值按展示精度四舍五入，原始精度见 [完整统计](../benchmark/results/read/complete/statistics.json) 与 [ITP 统计](../benchmark/results/read/20261015-itp-metered/statistics.json)。
-
-| 阶段 | 耗时（秒） | 最大本地进程内存（MiB） |
-|---|---:|---:|
-| 执行测试 | 10.4466 | 19.7305 |
-| gpt-6.1-sol 证明生成 | 56.0470 | 188.2383 |
-| Coq 编译与审计 | 16.0131 | 613.8320 |
-| 独立内核检查 | 129.2370 | 1989.5039 |
-| ITP 小计 | 201.2972 | 1989.5039 |
-| 完整测试 | 211.7437 | 1989.5039 |
-
-模型调用 1 次；input 132,469（其中 cached input 109,184），output 1,446，总计 **133,915 token**。内核检查产生了约 1.94 GiB 的本地进程峰值，而不是 read 的一个整数单元消耗这些内存。
+模型 gpt-6.1-sol。峰值内存不能按次数相除，不展示为每次平均内存；原始峰值和批次总量仍保留在审计数据中。
 
 CN/QCP 的主程序验证与 Fulminate/teSpec 的变体测试采用不同评测对象和分母，不能据此直接推导相同工作量下的速度或正确率优势。
 

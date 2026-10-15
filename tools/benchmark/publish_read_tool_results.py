@@ -116,6 +116,35 @@ def main():
     save(OUT/'complete/results.json',complete)
     save(OUT/'tespec/results.json',result);save(OUT/'tespec/statistics.json',complete['metrics'])
     entries['tespec']={'results':(OUT/'tespec/results.json').relative_to(ROOT).as_posix(),'statistics':(OUT/'tespec/statistics.json').relative_to(ROOT).as_posix(),'correct':61,'total':61,'scope':'variant_finite_testing_plus_itp'}
+    # User-requested read presentation: mean ITP cost per execution requiring ITP.
+    m=complete['metrics'];n=complete['summary']['itp_required']
+    mean={'schema':'tespec-itp-per-execution-mean/v1','tool':'tespec','group':'read',
+          'unit':'One test execution requiring ITP, including all its unresolved VCs and proof repairs/checks',
+          'estimation':'Shared batch measurement divided by 12 executions; estimated allocation, not independently measured per execution.',
+          'executions_requiring_itp':n,'display_policy':'Show mean ITP costs only; preserve raw batch totals in source receipts.',
+          'mean_agent_proof_filling_seconds':m['itp_model_generation_wall_seconds']/n,
+          'mean_coq_compile_audit_seconds':m['itp_compile_audit_wall_seconds']/n,
+          'mean_independent_kernel_check_seconds':m['itp_kernel_wall_seconds']/n,
+          'mean_itp_seconds':m['itp_wall_seconds_total']/n,
+          'mean_input_tokens':m['itp_token_usage']['input_tokens']/n,
+          'mean_output_tokens':m['itp_token_usage']['output_tokens']/n,
+          'mean_total_tokens':m['complete_tokens']/n,
+          'model':m['requested_model'],
+          'memory_note':'Batch process peak is not divided or described as mean per-execution memory.',
+          'source':'benchmark/results/read/20261015-itp-metered/receipt.json'}
+    save(OUT/'tespec/itp-average.json',mean)
+    (OUT/'tespec/itp-average.md').write_text(
+        '# read ITP 平均开销\n\n'
+        '以需要 ITP 的 12 次测试执行为分母；同次执行的所有待处理 VC 合计为一次 ITP。以下是共享批次均摊估算，不是逐次独立实测；不按定理数计数。\n\n'
+        '| 项目 | 每次测试执行的平均值 |\n|---|---:|\n'
+        f"| agent 填写证明 | {mean['mean_agent_proof_filling_seconds']:.4f} 秒 |\n"
+        f"| Coq 编译与审计 | {mean['mean_coq_compile_audit_seconds']:.4f} 秒 |\n"
+        f"| 独立内核检查 | {mean['mean_independent_kernel_check_seconds']:.4f} 秒 |\n"
+        f"| ITP 合计 | {mean['mean_itp_seconds']:.4f} 秒 |\n"
+        f"| 输入 token | {mean['mean_input_tokens']:.2f} |\n"
+        f"| 输出 token | {mean['mean_output_tokens']:.2f} |\n"
+        f"| 总 token | {mean['mean_total_tokens']:.2f} |\n\n"
+        '模型 gpt-6.1-sol。峰值内存不能按次数相除，不展示为每次平均内存；原始峰值和批次总量仍保留在审计数据中。\n')
     m=complete['metrics'];comparison.append({'tool':'tespec','scope':'variant_finite_testing_plus_itp','result':'61/61','test_cases':61,'correct':61,'accuracy':1.0,'wall_seconds':m['measured_complete_stage_wall_seconds_total'],'peak_process_memory_mib':m['complete_peak_process_resident_mib'],'input_tokens':m['itp_token_usage']['input_tokens'],'output_tokens':m['itp_token_usage']['output_tokens'],'total_tokens':m['complete_tokens'],'model':m['requested_model']})
     stage_rows=[]
     for row in comparison:
