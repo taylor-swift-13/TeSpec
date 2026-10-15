@@ -1,10 +1,10 @@
 # 夜间评测进度
 
-完整组 18/45；待补齐 27。截止北京时间 2026-10-16 08:00。
+完整组 19/45；待补齐 26。截止北京时间 2026-10-16 08:00。
 
-当前组：zero；阶段：ITP_PER_EXECUTION_SERIAL_BATCH_RUNNING。
+当前组：swap_array；阶段：READY_FOR_NEXT_GROUP。
 
-teSpec 最终不匹配 6 条，已解决自动阶段缺口 27 条。详情见 ../tespec-unexpected/README.md；未评测组不算零异常。
+teSpec 最终不匹配 4 条，已解决自动阶段缺口 29 条。详情见 ../tespec-unexpected/README.md；未评测组不算零异常。
 
 | 程序组 | 状态 | 结果成本表 |
 |---|---|---|
@@ -52,4 +52,4 @@ teSpec 最终不匹配 6 条，已解决自动阶段缺口 27 条。详情见 ..
 | swap_array | 待补齐 | [表](../swap_array/result-cost.md) |
 | transfer | 完整 | [表](../transfer/result-cost.md) |
 | transpose | 完整 | [表](../transpose/result-cost.md) |
-| zero | 待补齐 | [表](../zero/result-cost.md) |
+| zero | 完整 | [表](../zero/result-cost.md) |

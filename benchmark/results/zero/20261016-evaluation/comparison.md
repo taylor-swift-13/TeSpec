@@ -1,3 +1,3 @@
-# zero：评测进行中
+# zero 空间 SMT 对照
 
-两模式原始结果与逐例预期已保存。OFF 所需 ITP 未全部完成，不能把 UNKNOWN 算作成功。成本和已完成独立证据见 statistics.json 与 ../20261016-itp-per-execution/index.json。
+相同 46 个合法输入，逐次关闭／开启空间 SMT。完整分类、逐输入预期、时间和 RSS 见 results.json；模式均值见 statistics.json。OFF 需要 ITP 的执行数为 2，ON 为 0；仅对实际需要 ITP 的独立执行统计均值和逐次峰值均值，所有修复尝试计入。单轮顺序运行不支持加速结论。

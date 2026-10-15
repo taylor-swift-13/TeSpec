@@ -1,6 +1,6 @@
 # teSpec 不符合预期的专项台账
 
-已扫描 20 组、853 对变体与输入。最终不匹配 **6** 条；自动阶段缺口经独立 ITP 解决 **27** 条；另有配置错误修正 **30** 条。未评测组不计为零异常。原始分类不改写，人工分析追加到 triage.json，重建不覆盖人工结论。
+已扫描 20 组、853 对变体与输入。最终不匹配 **4** 条；自动阶段缺口经独立 ITP 解决 **29** 条；另有配置错误修正 **30** 条。未评测组不计为零异常。原始分类不改写，人工分析追加到 triage.json，重建不覆盖人工结论。
 
 | 组 | 变体 | 输入 | 模式 | 预期 | 自动 | 最终 | 分类 | 证据 |
 |---|---|---|---|---|---|---|---|---|
@@ -53,8 +53,8 @@
 | incr_two | cn_original:slf5_basic_aliased_call.broken | input_1 | on | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/97b9adb7a92fea912cf4.json) |
 | slf3_basic_inplace_double | constructed:case_cd64220fbef61c25 | value_0 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/8f0a71c1328250f32fac.json) |
 | slf3_basic_inplace_double | constructed:case_cd64220fbef61c25 | value_1 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/3c7d990f379c332bb9e9.json) |
-| zero | constructed:case_66e065c71f01cce1 | region_0 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/cce54571e0783df4341a.json) |
-| zero | constructed:case_66e065c71f01cce1 | region_1 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/30cb2f0c4bed776bdbb5.json) |
+| zero | constructed:case_66e065c71f01cce1 | region_0 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/cce54571e0783df4341a.json) |
+| zero | constructed:case_66e065c71f01cce1 | region_1 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/30cb2f0c4bed776bdbb5.json) |
 | read | cn_original:read.broken | value_0 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/cf79950128cc8d076c10.json) |
 | read | cn_original:read.broken | value_1 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/b37d0c5293630ebe71d3.json) |
 | read | cn_original:read.broken | value_2 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/d3f538f8a8f84fc3417d.json) |
