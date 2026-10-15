@@ -3,6 +3,7 @@
 import argparse,collections,datetime,json,re,shutil,sys,tempfile
 from pathlib import Path
 from test_read_variants import ROOT,CN,measure,sha,save
+from evaluation_provenance import snapshot
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--group',required=True);a=parser.parse_args()
@@ -10,7 +11,7 @@ def main():
     out=ROOT/'benchmark/results'/a.group/plan['run_id'];variants={}
     for p in (group/'variants').glob('*/manifest.json'):
         v=json.loads(p.read_text());variants[v['id']]=(p,v)
-    report={'schema':'tespec-group-finite-evaluation/v1','program_group':a.group,'started_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'evaluation_plan':str(planpath.relative_to(ROOT)),'plan_sha256':sha(planpath),'toolchain':{'cn_sha256':sha(CN),'executor_sha256':sha(ROOT/'bin/tespec-symexec'),'build':json.loads((ROOT/'bin/tespec-symexec.build.json').read_text()),'driver_sha256':sha(Path(__file__)),'compiler_wrapper_sha256':sha(ROOT/'tools/benchmark/gcc-no-builtins.sh')},'runs':[]}
+    report={'schema':'tespec-group-finite-evaluation/v1','program_group':a.group,'started_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'evaluation_plan':str(planpath.relative_to(ROOT)),'plan_sha256':sha(planpath),'toolchain':{'cn_sha256':sha(CN),'executor_sha256':sha(ROOT/'bin/tespec-symexec'),'build':json.loads((ROOT/'bin/tespec-symexec.build.json').read_text()),'driver_sha256':sha(Path(__file__)),'compiler_wrapper_sha256':sha(ROOT/'tools/benchmark/gcc-no-builtins.sh'),'evaluation_source_snapshot':snapshot()},'runs':[]}
     for pair in plan['pairings']:
         vid,qid=pair['cn_variant'],pair['qcp_variant'];vp,v=variants[vid];qv=variants[qid][1];cn=ROOT/v['files']['cn']['path'];qcp=ROOT/qv['files']['qcp']['path']
         assert sha(cn)==v['files']['cn']['sha256'] and sha(qcp)==qv['files']['qcp']['sha256']
@@ -40,4 +41,6 @@ def main():
     runs=report['runs'];report['summary']={'configurations':len(plan['pairings']),'variant_language_records':len(variants),'case_pairs':len(runs),'expected':dict(collections.Counter(r['expected'] for r in runs))}
     for tool in ['fulminate_test','tespec_off','tespec_on']:report['summary'][tool]={'statuses':dict(collections.Counter(r[tool]['status'] for r in runs)),'expected_matches':sum(r[tool]['status']==r['expected'] for r in runs)}
     save(out/'results.json',report);print(json.dumps(report['summary']),flush=True)
+    from collect_tespec_unexpected import collect
+    collect()
 if __name__=='__main__':main()
