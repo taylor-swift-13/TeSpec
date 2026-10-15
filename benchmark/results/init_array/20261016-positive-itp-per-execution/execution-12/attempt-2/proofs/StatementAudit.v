@@ -1,0 +1,11 @@
+Require Import ExecutionGoal.
+Print Assumptions ExecutionGoal.init_array2_entail_wit_1_split_goal_spatial.
+Print Assumptions ExecutionGoal.init_array2_entail_wit_1.
+Print Assumptions ExecutionGoal.init_array2_entail_wit_2_split_goal_1.
+Print Assumptions ExecutionGoal.init_array2_entail_wit_2_split_goal_spatial.
+Print Assumptions ExecutionGoal.init_array2_entail_wit_2.
+Print Assumptions ExecutionGoal.init_array2_return_wit_1.
+From SimpleC.SL Require Import Mem SeparationLogic.
+Import naive_C_Rules.
+Goal True. idtac "POSITIVE_RUNTIME_HELPER". exact I. Qed.
+Print Assumptions join_assoc.

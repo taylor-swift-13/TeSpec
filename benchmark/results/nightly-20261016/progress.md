@@ -4,7 +4,7 @@
 
 当前组：init_array；阶段：POSITIVE_EXECUTION_ITP_CONTROLLER_RUNNING。
 
-teSpec 最终不匹配 180 条，已解决自动阶段缺口 37 条。详情见 ../tespec-unexpected/README.md；未评测组不算零异常。
+teSpec 最终不匹配 179 条，已解决自动阶段缺口 38 条。详情见 ../tespec-unexpected/README.md；未评测组不算零异常。
 
 | 程序组 | 状态 | 结果成本表 |
 |---|---|---|

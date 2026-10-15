@@ -1,6 +1,6 @@
 # teSpec 不符合预期的专项台账
 
-已扫描 26 组、971 对变体与输入。最终不匹配 **180** 条；自动阶段缺口经独立 ITP 解决 **37** 条；另有配置错误修正 **70** 条。未评测组不计为零异常。原始分类不改写，人工分析追加到 triage.json，重建不覆盖人工结论。
+已扫描 26 组、971 对变体与输入。最终不匹配 **179** 条；自动阶段缺口经独立 ITP 解决 **38** 条；另有配置错误修正 **70** 条。未评测组不计为零异常。原始分类不改写，人工分析追加到 triage.json，重建不覆盖人工结论。
 
 | 组 | 变体 | 输入 | 模式 | 预期 | 自动 | 最终 | 分类 | 证据 |
 |---|---|---|---|---|---|---|---|---|
@@ -63,7 +63,7 @@
 | init_array | cn_original:init_array2 | length_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9c00b4e6e64f0e5f8b87.json) |
 | init_array | cn_original:init_array2 | length_8 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/bc7e8fcc756086093964.json) |
 | init_array | cn_original:init_array2 | length_8 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c8ad06aff893dd098809.json) |
-| init_array | cn_original:init_array_rev | length_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b9148ba6cf62617ad47a.json) |
+| init_array | cn_original:init_array_rev | length_1 | off | PASS | UNKNOWN | PASS | RESOLVED_AUTOMATIC_GAP | [详情](cases/b9148ba6cf62617ad47a.json) |
 | init_array | cn_original:init_array_rev | length_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6c0a28d14e2d2230f329.json) |
 | init_array | cn_original:init_array_rev | length_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/087ec45509f9bec26821.json) |
 | init_array | cn_original:init_array_rev | length_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f78e1060bc01e7a9152e.json) |
