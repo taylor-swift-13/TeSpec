@@ -23,6 +23,17 @@ from .core import (
 )
 
 
+def _spatial_smt_arguments(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument(
+        "--spatial-smt", action=argparse.BooleanOptionalAction, default=None,
+        help="opt in to finite spatial SMT for residual return VCs; default keeps ITP behavior",
+    )
+    parser.add_argument(
+        "--spatial-smt-timeout-ms", type=int, default=None,
+        help="SMT query timeout (1..60000 ms; default 2000); unresolved VCs keep ITP fallback",
+    )
+
+
 def _check_parser(prog: str = "qcp-spectest") -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog=prog,
@@ -41,6 +52,7 @@ def _check_parser(prog: str = "qcp-spectest") -> argparse.ArgumentParser:
         action="store_true",
         help="print compact JSON instead of indented JSON",
     )
+    _spatial_smt_arguments(parser)
     return parser
 
 
@@ -228,6 +240,7 @@ def _run_parser() -> argparse.ArgumentParser:
         help="extra include directory, absolute or relative to qcip-root",
     )
     parser.add_argument("--compact", action="store_true")
+    _spatial_smt_arguments(parser)
     return parser
 
 
@@ -269,6 +282,10 @@ def _run_source(argv: list[str]) -> int:
         job["qcp"]["loop_unroll_limit"] = (
             args.loop_unroll_limit if args.loop_unroll_limit is not None else 64
         )
+        if args.spatial_smt is not None:
+            job["qcp"]["spatial_smt"] = args.spatial_smt
+        if args.spatial_smt_timeout_ms is not None:
+            job["qcp"]["spatial_smt_timeout_ms"] = args.spatial_smt_timeout_ms
         if args.spec_file is not None:
             job["spec_file"] = str(args.spec_file.expanduser().resolve())
         if args.spec is not None:
@@ -521,7 +538,12 @@ def main(argv: list[str] | None = None) -> int:
         argv = argv[1:]
     args = _check_parser("qcp-spectest check").parse_args(argv)
     try:
-        report = run_job(args.job, args.output_dir)
+        options = {}
+        if args.spatial_smt is not None:
+            options["spatial_smt"] = args.spatial_smt
+        if args.spatial_smt_timeout_ms is not None:
+            options["spatial_smt_timeout_ms"] = args.spatial_smt_timeout_ms
+        report = run_job(args.job, args.output_dir, **options)
     except JobError as error:
         print(
             json.dumps(

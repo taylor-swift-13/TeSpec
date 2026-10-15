@@ -37,6 +37,8 @@ TeSpec 先检查实例化的 Require 是否可满足，再检查安全性和 Ens
 
 [本次实现与验收记录](docs/evaluation/spec-test-implementation.md)包含两种模式的使用方式、实际测试结果和剩余障碍。
 
+可选 `--spatial-smt` 对剩余有限空间 return VC 进行自动判定；默认关闭，未判定的 VC 继续保留给 ITP。参见[空间 SMT 后端](docs/spatial-smt.md)。
+
 ## 使用流程
 
 每次测试都对应一个具体 bind。程序执行结束后，TeSpec 仍使用实际终态检查

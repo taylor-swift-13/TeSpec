@@ -157,6 +157,8 @@ class QcpConfig:
     loop_unroll_limit: int
     call_depth_limit: int
     architecture_bits: int
+    spatial_smt: bool = False
+    spatial_smt_timeout_ms: int = 2000
 
 
 @dataclass(frozen=True)
@@ -1326,6 +1328,12 @@ def _parse_qcp_config(job: dict[str, Any], base: Path, source_dir: Path) -> QcpC
     architecture_bits = raw.get("architecture_bits", 32)
     if type(architecture_bits) is not int or architecture_bits not in (32, 64):
         raise JobError("qcp.architecture_bits must be 32 or 64")
+    spatial_smt = raw.get("spatial_smt", False)
+    if type(spatial_smt) is not bool:
+        raise JobError("qcp.spatial_smt must be a boolean")
+    spatial_timeout = raw.get("spatial_smt_timeout_ms", 2000)
+    if type(spatial_timeout) is not int or not 1 <= spatial_timeout <= 60000:
+        raise JobError("qcp.spatial_smt_timeout_ms must be an integer from 1 to 60000")
     instance_trace = raw.get("instance_trace", False)
     if not isinstance(instance_trace, bool):
         raise JobError("qcp.instance_trace must be a boolean")
@@ -1364,6 +1372,8 @@ def _parse_qcp_config(job: dict[str, Any], base: Path, source_dir: Path) -> QcpC
         loop_unroll_limit=loop_unroll_limit,
         call_depth_limit=call_depth_limit,
         architecture_bits=architecture_bits,
+        spatial_smt=spatial_smt,
+        spatial_smt_timeout_ms=spatial_timeout,
     )
 
 
@@ -1829,13 +1839,22 @@ def _report_provenance(
     }
 
 
-def run_job(job_path: Path, output_override: Path | None = None) -> dict[str, Any]:
+def run_job(
+    job_path: Path, output_override: Path | None = None, *,
+    spatial_smt: bool | None = None, spatial_smt_timeout_ms: int | None = None,
+) -> dict[str, Any]:
     job_path = job_path.expanduser().resolve()
     try:
         job = json.loads(job_path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as error:
         raise JobError(f"cannot read job file {job_path}: {error}") from error
     job = _require_object(job, "job")
+    if spatial_smt is not None or spatial_smt_timeout_ms is not None:
+        job["qcp"] = dict(_require_object(job.get("qcp", {}), "qcp"))
+        if spatial_smt is not None:
+            job["qcp"]["spatial_smt"] = spatial_smt
+        if spatial_smt_timeout_ms is not None:
+            job["qcp"]["spatial_smt_timeout_ms"] = spatial_smt_timeout_ms
     base = job_path.parent
 
     source_path = _resolve(base, job.get("source"), "source")
@@ -2033,6 +2052,11 @@ def run_job(job_path: Path, output_override: Path | None = None) -> dict[str, An
                 "peak_rss_kib": case_result.get("peak_rss_kb"),
             },
         )
+        if config.spatial_smt:
+            from .spatial_smt import refine_case
+
+            refine_case(case_result, stdout_path, case_dir / "spatial-smt",
+                        timeout_ms=config.spatial_smt_timeout_ms)
         results.append(case_result)
 
     counts = {
@@ -2050,6 +2074,7 @@ def run_job(job_path: Path, output_override: Path | None = None) -> dict[str, An
         if isinstance(result.get("vc"), dict)
         and result["vc"].get("status") == "residual"
         and result["vc"].get("residual_goals")
+        and result.get("spatial_smt", {}).get("itp_required", True)
     ]
     report = {
         "schema": "qcp-spectest-report/v1",
@@ -2106,6 +2131,12 @@ def run_job(job_path: Path, output_override: Path | None = None) -> dict[str, An
             ),
         },
     }
+    if config.spatial_smt:
+        report["vc_policy"]["spatial_smt"] = {
+            "enabled": True, "timeout_ms_per_query": config.spatial_smt_timeout_ms,
+            "backend": "finite-spatial-smt/v1", "certificate": "NOT_CHECKED",
+            "fallback": "original_itp_vcs", "stage": "after_executor",
+        }
     report_path = output_dir / "report.json"
     report_path.write_text(
         json.dumps(report, ensure_ascii=False, indent=2) + "\n",

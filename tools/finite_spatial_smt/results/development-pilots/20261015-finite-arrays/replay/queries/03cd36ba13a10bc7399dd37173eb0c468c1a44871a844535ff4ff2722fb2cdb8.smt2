@@ -1,0 +1,16 @@
+; benchmark generated from python API
+(set-info :status unknown)
+(declare-fun __fsm_owned () (Array Int Bool))
+(declare-fun __fsm_memory () (Array Int Int))
+(declare-fun __fsm_initialized () (Array Int Bool))
+(assert
+ (let (($x3175 (= __fsm_owned (store ((as const (Array Int Bool)) false) (+ (+ 4096 0) 0) true))))
+(let ((?x1968 (+ 4096 0)))
+(let ((?x2436 (+ ?x1968 0)))
+(let ((?x2660 (select __fsm_memory ?x2436)))
+(let (($x675 (and (>= ?x1968 0) (<= (- (+ ?x1968 1) 1) 4294967295) (= (mod ?x1968 1) 0) (>= (- 117) (- 128)) (<= (- 117) 127) (>= ?x2660 0) (< ?x2660 256) (select __fsm_initialized ?x2436) (= ?x2660 (mod (div (- 117) 1) 256)) $x3175)))
+(let (($x3035 (or $x675)))
+(let (($x3370 (and (>= 4096 0) (<= (- (+ 4096 1) 1) 4294967295) (= (mod 4096 1) 0) (>= 0 (- 128)) (<= 0 127) (>= (select __fsm_memory ?x1968) 0) (< (select __fsm_memory ?x1968) 256) (select __fsm_initialized ?x1968) (= (select __fsm_memory ?x1968) (mod (div 0 1) 256)) (= __fsm_owned (store ((as const (Array Int Bool)) false) ?x1968 true)))))
+(let (($x988 (or $x3370)))
+(and $x988 (not $x3035)))))))))))
+(check-sat)
