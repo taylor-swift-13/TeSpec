@@ -147,3 +147,18 @@ swap_array 完整收尾：20 对输入，完整逐例预期与原始／最终分
 swap_array 收尾审计：20 个逻辑输入每个模式均有首轮缺头文件 ERROR 和修正后 PASS，共计每模式 40 次实际 teSpec 尝试；统计已逐项核对为两轮之和及逐输入最大 RSS。Fulminate 复用 exact-source / exact-harness 原始测量一次，未重复运行/重复计费。首轮 40 条配置 ERROR 保留且分类 RESOLVED_CONFIGURATION_ERROR。QCP 5 原始 VC 已实现 VC_Correct，2 次实际模型共 196,860 token、失败编译与原始目标/库假设审计成本全部计入；总验证 237.054294732 秒、2033.03125 MiB 峰值。结论明确限定为 VERIFIED_KERNEL_CHECKED_WITH_RUNTIME_LIBRARY_ASSUMPTIONS：原目标自带 4 个 sizeof 参数，加原有 IntArray.full_split_to_missing_i 使用的标准函数外延性；没有新声明证明公理，不能写 globally closed。完整进度 20/45。ref 的 6 个现有语言变体、24 个合法标量/框架输入计划已独立准备，尚未执行。
 
 ref 已测全部 6 个变体记录、24 对合法输入；Fulminate 24/24（返回分配在目标规约监测后由客户释放），teSpec OFF/ON 各 0/24：均入口 SAT，遇仅有声明的 mallocUnsignedInt 后 missing_function_body、execution_completed=false、residual_vcs=[]。48 条运行模式结果已逐例专项记录和 triage，原始 UNKNOWN 不改写。没有完整执行或原始残余目标，不能用主程序全称证明代替测试 ITP，也没有编造模型/内核零成本。主程序 CN 与 QCP 2 原始 VC、所有实际修复、假设审计与独立内核检查均完成；整组仍不完整、测试 ITP PENDING。按难例策略继续 ref_greater，已准备 8 个现有记录、30 对合法输入但尚未执行。完整进度仍 20/45。
+
+ref_greater 已跑 8 现有记录、30 合法输入；Fulminate 30/30，OFF/ON 各 30 UNKNOWN（入口 SAT，mallocUnsignedInt 无函数体、执行未完成、无残余目标）。另一次原模块 CN 验证实际失败：未 trusted 的 main 没有释放返回的 RW<unsigned int>，报 Left-over unused resource；这不是目标函数的反例，QCP 翻译本来也不含该 main，不能混淆验证范围。保留 CN 失败时间/RSS/日志/源哈希，QCP 未运行和测试 ITP 缺目标均为 PENDING，不填零。60 条工具缺口逐例 triage；保持预期 PASS。先继续 init_array，完整进度仍 20/45。
+
+init_array 计划已准备 6 记录/18 合法长度输入（前向允许 0，反向 n>0），原规约只保证初始化 ownership，不把实际零化的参考值冒称为已验证的更强后置条件。反向原 QCP 含旧 benchmark/selection 的绝对策略定位；新增 with_legacy_strategy_locator.py 保留源/策略字节与哈希，临时创建旧定位文件，子进程退出后清理，仅组下 dependencies 留存规范副本。成功与失败子进程的清理均已实际检查，benchmark/selection 不残留；每条测量命令包含该 wrapper，重现不依赖未记录的常驻别名。wrapper/策略哈希随结果保存并在发布、审计时核对。
+
+init_array：全部 6 语言变体、18 合法输入已实跑。Fulminate 18/18，teSpec OFF/ON 各 6 PASS、12 UNKNOWN；24 个模式执行均入口 SAT、执行完成并存在真实残余 VC，属于正例证明自动化缺口，逐执行正向 ITP 尚待完成，不计通过。主 CN 通过；当前 QCP 在 repeat_Z 0 0 = nil 的有效初始不变量处 Partial Solve Invariant Error，原配置与 --full-auto 两次实际时间/RSS 都保留。同一源哈希的历史六 VC 完整证书与目标文件已逐一复核 SHA256，保留其历史有效性；历史阶段成本缺失和本轮未重放均不填零。反向数组的旧绝对策略路径由逐次命令记录的临时只读兼容文件解析，策略内容哈希锁定，结束后移除兼容路径，原程序不改。完整组仍 20/45，转下一组。
+
+ref_greater 的 QCP 主程序现已独立尝试生成（不再受 CN client 失败阻断）：当前生成器不能建立传给 refUnsignedInt 的 unsigned_last_nbits(n0+1,32) 取值范围，停止于调用前置检查，没有完整 VC 模块。新增实际失败时间/RSS/命令/日志均已保存，未调用证明模型，不捏造完整证明或零成本；与前述缺少分配器函数体的逐输入测试问题分列。
+
+slf17_get_and_free 已跑全部现有变体、12 组合法输入：Fulminate 12/12，teSpec OFF/ON 各 12 UNKNOWN（入口 SAT，外部 free 无函数体，执行未完成、无原始残余目标）。原 CN 因外部接口没有规约而拒绝，失败时间/RSS 单列。QCP 主程序独立完成 5 个原始全称 VC、编译与假设审计及完整 coqchk；所有 gpt-6.1-sol 尝试都计入成本，验证证书不替代测试执行。假设限定见 receipt；不声称全部全局闭合。该组仍不完整，完整进度保持 20/45。
+
+
+slf18_two_dice 已跑全部现有变体、14 组合法输入：Fulminate 14/14，teSpec OFF/ON 各 14 UNKNOWN（入口 SAT，外部 rand 无函数体，执行未完成、无原始残余目标）。原 CN 因外部接口没有规约而拒绝，失败时间/RSS 单列。QCP 主程序独立完成 11 个原始全称 VC、编译与假设审计及完整 coqchk；所有 gpt-6.1-sol 尝试都计入成本，验证证书不替代测试执行。假设限定见 receipt；不声称全部全局闭合。该组仍不完整，完整进度保持 20/45。
+
+init_array 的首个正向逐执行 ITP 已实际完成：未初始化前向数组 n=0、OFF 的两个原始残余 VC 全部证明、编译、原始语句参数对照审计及独立 coqchk 通过。原始 UNKNOWN 保留，最终追加 PASS；没有新增证明公理，原 VC 内的 sizeof_* 类型参数如实披露。另 23 个模式执行的独立任务已冻结，由 PID19472/session16301 串行控制器继续实际 gpt-6.1-sol、所有修复、编译审计和内核计量；首个任务的三个审计诊断调用也计入真实时间/RSS。完整组仍20/45，当前已扫描26组，不能把已有同源历史证明或未执行完的外部调用算成完整组。

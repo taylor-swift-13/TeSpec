@@ -1,0 +1,44 @@
+{
+  "tool": "qcp",
+  "verdict": "CURRENT_GENERATOR_REJECTED",
+  "evidence": "benchmark/results/ref_greater/20261016-primary-native/pending-receipt.json",
+  "original_measurement": {
+    "command": [
+      "/home/yangfp/teSpec/bin/tespec-symexec",
+      "--input-file=/home/yangfp/teSpec/benchmark/programs/ref_greater/variants/qcp_existing_d7065cd453df9d6d7f62/qcp/slf11_basic_ref_greater.qcp.c",
+      "--Json-output",
+      "--no-strategy-gen",
+      "--gen-and-backup",
+      "--coq-output-dir=/home/yangfp/teSpec/benchmark/results/ref_greater/20261016-primary-native/qcp/vc",
+      "--no-logic-path",
+      "--disable-solver-info",
+      "--no-exec-info",
+      "-I/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+      "-I/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple/advanced"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 0.01686779799638316,
+    "resources": {
+      "max_process_rss_kib": 5356,
+      "user_seconds": 0.0,
+      "system_seconds": 0.0
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/ref_greater/20261016-primary-native/qcp/stdout.log",
+    "stderr": "benchmark/results/ref_greater/20261016-primary-native/qcp/stderr.log"
+  },
+  "failure": {
+    "Main Error Message": "fatal error: Cannot execute function refUnsignedInt for spec (null)",
+    "fileName": "/home/yangfp/teSpec/benchmark/programs/ref_greater/variants/qcp_existing_d7065cd453df9d6d7f62/qcp/slf11_basic_ref_greater.qcp.c",
+    "line": 23,
+    "column": 24,
+    "additional_info": [
+      "Function call failed because the caller assertion does not entail the callee Require assertion after substituting actual arguments.\n",
+      "Function call argument bindings:\n  argument 1: v <- unsigned_last_nbits((n0_398_free + 1), 32)\n",
+      "Callee precondition after substituting actual arguments:\nPROP[\n  0 <= unsigned_last_nbits((n0_398_free + 1), 32);\n  unsigned_last_nbits((n0_398_free + 1), 32) <= UINT_MAX ]\nLOCAL[]\nSEP[]\n\n",
+      "Caller current assertion:\nEX m_410_addr n_407_addr \nPROP[\n  0 <= n0_398_free;\n  n0_398_free <= UINT_MAX ]\nLOCAL[\n  Temp m m_410_addr;\n  Temp n n_407_addr;\n  Temp p p_397_addr ]\nSEP[\n  store(m_410_addr, unsigned_last_nbits((n0_398_free + 1), 32), unsigned int);\n  store(n_407_addr, n0_398_free, unsigned int);\n  store(p_397_addr, p_396_pre, unsigned int*);\n  store(p_396_pre, n0_398_free, unsigned int) ]\n\n"
+    ]
+  },
+  "scope": "Independently attempted after original CN client rejection. Generation stops because caller cannot establish callee unsigned_last_nbits range; no full original VC module available for ITP. Valid modular range fact, not a demonstrated program counterexample."
+}

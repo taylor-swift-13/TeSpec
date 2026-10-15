@@ -1,0 +1,44 @@
+id : 101
+priority : core(0)
+right : CharArray::seg(?p, ?lo, ?hi, ?l) at 0
+check : infer(lo == hi);
+action : right_erase(0); right_add(l == nil{Z});
+
+id : 102
+priority : core(0)
+left : CharArray::undef_full(?p, ?n) at 0
+right : CharArray::undef_full(p, ?m) at 1
+check : infer(n == m);
+action : left_erase(0); right_erase(1);
+
+id : 103
+priority : post(0)
+left : CharArray::undef_missing_i(?p, ?i, ?lo, ?hi) at 0
+check : infer(i == hi - 1); infer(lo <= i);
+action : left_erase(0); left_add(CharArray::undef_seg(p, lo, i));
+
+id : 104
+priority : post(0)
+left : CharArray::seg(?p, ?lo, ?hi, ?l) at 0
+       store(p + (?i * sizeof(I8)), I8, ?v) at 1
+check : infer(i == lo - 1);
+action : left_erase(0); left_erase(1); left_add(CharArray::seg(p, i, hi, cons{Z}(v,l)));
+
+id : 105
+priority : core(0)
+left : CharArray::seg(?p, ?lo, ?hi, ?l1) at 0
+right : CharArray::seg(p, ?lo2, ?hi2, ?l2) at 1
+check : infer(lo == lo2); infer(hi == hi2);
+action : left_erase(0); right_erase(1); right_add(l1 == l2);
+
+id : 106
+priority : post(0)
+left : CharArray::undef_seg(?p, ?lo, ?hi) at 0
+check : infer(lo == hi);
+action : left_erase(0);
+
+id : 107
+priority : post(0)
+left : CharArray::seg(?p, ?lo, ?hi, ?l) at 0
+check : infer(lo == 0);
+action : left_erase(0); left_add(CharArray::full(p, hi, l));

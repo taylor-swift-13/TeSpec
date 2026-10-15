@@ -5,7 +5,7 @@ from test_read_variants import ROOT,save,sha
 from publish_abs_tool_results import stage
 from evidence_paths import same_bindings_allow_explicit_empty_values
 from evaluation_expectations import expected as expected_status,matches as matches_expected,summary as evaluation_summary
-from attach_cell_leak_itp import validate_receipt,mode_costs,statistics_for_off
+from execution_itp_receipts import validate_receipt,mode_costs,statistics_for_off
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--group',required=True);a=p.parse_args();name=a.group
@@ -17,6 +17,7 @@ def main():
     variants={json.loads(p.read_text())['id']:(p,json.loads(p.read_text())) for p in (group/'variants').glob('*/manifest.json')}
     for r in runs:
         for key in ['harness','binds']:assert sha(ROOT/r[key])==r[key+'_sha256']
+        for dep in r.get('runtime_dependency_fixtures',[])+([r['qcp_execution_wrapper']] if r.get('qcp_execution_wrapper') else []):assert (ROOT/dep['path']).resolve().is_relative_to(ROOT) and sha(ROOT/dep['path'])==dep['sha256']
         for lang,vid in [('cn',r['variant']),('qcp',r['paired_qcp_variant'])]:assert sha(ROOT/variants[vid][1]['files'][lang]['path'])==r[lang+'_source_sha256']
         for tool in ['fulminate_pipeline','fulminate_test','tespec_off','tespec_on']:
             m=r[tool];assert m['resources'] and m['wall_seconds']>=0
@@ -24,7 +25,7 @@ def main():
         for mode in ['off','on']:
             m=r['tespec_'+mode];report=json.loads((ROOT/m['report']).read_text());assert len(report['results'])==1 and report['results'][0]['status']==m['status'];m['report_sha256']=sha(ROOT/m['report'])
             if m['status']=='UNKNOWN':
-                assert m.get('itp') and m.get('final_status')=='FAIL','Independently checked per-execution ITP required'
+                assert m.get('itp') and m.get('final_status')==expected_status(r,'tespec_'+mode),'Independently checked per-execution ITP required'
                 assert sha(ROOT/m['itp']['receipt'])==m['itp']['receipt_sha256'];validate_receipt(ROOT/m['itp']['receipt'],r,mode)
             elif m['status']=='ERROR':assert matches_expected(r,'tespec_'+mode), 'Unexpected ERROR cannot be published as complete'
             else:assert m['status'] in ['PASS','FAIL']

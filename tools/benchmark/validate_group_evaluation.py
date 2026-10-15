@@ -3,7 +3,7 @@
 import argparse,json,re
 from test_read_variants import ROOT,sha
 from evaluation_expectations import matches as matches_expected
-from attach_cell_leak_itp import validate_receipt
+from execution_itp_receipts import validate_receipt
 
 def load(p):return json.loads(p.read_text())
 def main():
@@ -12,6 +12,7 @@ def main():
     for r in runs:
         covered.update([r['variant'],r['paired_qcp_variant']]);assert r['precondition_valid'] and r['expected'] in ['PASS','FAIL','ERROR']
         for k in ['harness','binds']:assert sha(ROOT/r[k])==r[k+'_sha256']
+        for dep in r.get('runtime_dependency_fixtures',[])+([r['qcp_execution_wrapper']] if r.get('qcp_execution_wrapper') else []):assert (ROOT/dep['path']).resolve().is_relative_to(ROOT) and sha(ROOT/dep['path'])==dep['sha256']
         for lang,vid in [('cn',r['variant']),('qcp',r['paired_qcp_variant'])]:assert sha(ROOT/variants[vid]['files'][lang]['path'])==r[lang+'_source_sha256']==variants[vid]['files'][lang]['sha256']
         for k in ['fulminate_pipeline','fulminate_test','tespec_off','tespec_on']:
             m=r[k];assert m['resources']['max_process_rss_kib']>0 and m['wall_seconds']>0

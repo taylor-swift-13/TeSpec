@@ -5,7 +5,7 @@ from pathlib import Path
 from test_read_variants import ROOT,CN,measure,sha,save
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--group',required=True);p.add_argument('--task-dir',type=Path,required=True);a=p.parse_args();g=ROOT/'benchmark/programs'/a.group;plan=json.loads((g/'evaluation-plan.json').read_text());variants={json.loads(p.read_text())['id']:json.loads(p.read_text()) for p in (g/'variants').glob('*/manifest.json')};out=ROOT/'benchmark/results'/a.group/'20261016-primary-native';rp=out/'receipt.json'
+    p=argparse.ArgumentParser();p.add_argument('--group',required=True);p.add_argument('--task-dir',type=Path,required=True);p.add_argument('--continue-after-cn-failure',action='store_true',help='Preserve failed original CN measurement and independently measure QCP; never marks the group complete.');a=p.parse_args();g=ROOT/'benchmark/programs'/a.group;plan=json.loads((g/'evaluation-plan.json').read_text());variants={json.loads(p.read_text())['id']:json.loads(p.read_text()) for p in (g/'variants').glob('*/manifest.json')};out=ROOT/'benchmark/results'/a.group/'20261016-primary-native';rp=out/'receipt.json'
     cn=ROOT/variants[plan['primary_cn_variant']]['files']['cn']['path'];qcp=ROOT/variants[plan['primary_qcp_variant']]['files']['qcp']['path']
     # Materialize only explicitly requested proof-strategy dependencies, never engine code.
     dependency_path=g/'dependencies.json';dependencies=json.loads(dependency_path.read_text()) if dependency_path.exists() else {'dependencies':[]}
@@ -38,7 +38,17 @@ def main():
                 receipt={'schema':'tespec-group-primary-native/v1','program_group':a.group,'mode':'REUSED_EXACT_SOURCE_NATIVE_MEASUREMENTS','cn':cm,'qcp':qm,'cn_source':str(cn.relative_to(ROOT)),'cn_source_sha256':sha(cn),'qcp_source':str(qcp.relative_to(ROOT)),'qcp_source_sha256':sha(qcp),'goal':str(goal.relative_to(ROOT)),'goal_sha256':sha(goal),'historical_report':str(performance.relative_to(ROOT)),'historical_report_sha256':sha(performance),'cn_pointer':f'/runs/{index}/cn','qcp_pointer':f'/runs/{index}/qcp_auto','measurement_reason':'Both immutable primary language inputs and archived stdout/stderr hashes match. Reuse one primary native measurement; complete unbound QCP certificate separately.'}
                 save(rp,receipt);print('Reused native primary measurements',row['source'],flush=True);break
     if not rp.exists():
-        cm=measure([CN,'verify',*['-I'+str(ROOT/inc) for inc in variants[plan['primary_cn_variant']]['files']['cn'].get('include_dirs',[])],cn],out/'cn');save(out/'pending-receipt.json',{'cn':cm});assert cm['exit_code']==0,(ROOT/cm['stderr']).read_text()
+        cn_command=[CN,'verify',*['-I'+str(ROOT/inc) for inc in variants[plan['primary_cn_variant']]['files']['cn'].get('include_dirs',[])],cn]
+        pending=out/'pending-receipt.json'
+        if a.continue_after_cn_failure and pending.exists():
+            saved=json.loads(pending.read_text());cm=saved['cn']
+            assert cm['exit_code']!=0 and list(map(str,cn_command))==cm['command']
+            assert sha(cn)==variants[plan['primary_cn_variant']]['files']['cn']['sha256']
+            assert (ROOT/cm['stdout']).is_file() and (ROOT/cm['stderr']).is_file()
+            print('Preserved original failed CN measurement; measuring QCP independently.',flush=True)
+        else:cm=measure(cn_command,out/'cn')
+        save(pending,{'cn':cm,'cn_source_sha256':sha(cn)})
+        assert cm['exit_code']==0 or a.continue_after_cn_failure,(ROOT/cm['stderr']).read_text()
         vc=out/'qcp/vc';qm=measure([ROOT/'bin/tespec-symexec','--input-file='+str(qcp),'--Json-output','--no-strategy-gen','--gen-and-backup','--coq-output-dir='+str(vc),'--no-logic-path','--disable-solver-info','--no-exec-info','-I'+str(ROOT/'runtime/qcip/QCP_examples/QCP_demos_human'),*['-I'+str(ROOT/inc) for inc in variants[plan['primary_qcp_variant']]['files']['qcp'].get('include_dirs',[])]],out/'qcp');save(out/'pending-receipt.json',{'cn':cm,'qcp':qm});assert qm['exit_code']==0,(ROOT/qm['stderr']).read_text();goals=list(vc.glob('*_goal.v'));assert len(goals)==1,goals;goal=goals[0]
         receipt={'schema':'tespec-group-primary-native/v1','program_group':a.group,'cn':cm,'qcp':qm,'cn_source':str(cn.relative_to(ROOT)),'cn_source_sha256':sha(cn),'qcp_source':str(qcp.relative_to(ROOT)),'qcp_source_sha256':sha(qcp),'goal':str(goal.relative_to(ROOT)),'goal_sha256':sha(goal),'native_binary_sha256':sha(ROOT/'bin/tespec-symexec'),'measurement_reason':'Historical exact-source records lack complete measured time/RSS and checked proof costs; preserve historical records and measure missing stages.'};save(rp,receipt);(out/'pending-receipt.json').unlink()
     else:receipt=json.loads(rp.read_text());goal=ROOT/receipt['goal'];assert sha(cn)==receipt['cn_source_sha256'] and sha(qcp)==receipt['qcp_source_sha256'] and sha(goal)==receipt['goal_sha256']

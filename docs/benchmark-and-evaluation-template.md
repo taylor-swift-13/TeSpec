@@ -365,3 +365,17 @@ cell_leak_itp.py 为一个拥有 4096 处 4 字节单元但出口要求 emp 的�
 后续逐次 Coq 编译默认设置 90 秒、独立 coqchk 设置 300 秒、两者地址空间上限 4 GiB，使用 GNU timeout/prlimit，外层 GNU time 继续记录真实执行时间和最大单进程 RSS。超时/内存限制失败不能算证明通过，全部实际模型与失败编译成本保留；executed_wrapper_command 和 limits 随回执保存。地址空间限制与 RSS 是不同量，不把 4 GiB 上限当作已用 RSS。该限制不追溯改写已有测量。
 
 无写入实现若入口为 Block/undef 存储而出口要求已初始化零值，可按执行建立真正 Noninit 四字节堆作为反例。prepare_zero_noop_itp.py 只生成该堆定义与五个未填定理，所有新证明由逐次计量的模型完成；入口 undef、否定已初始化出口、两个原始残余 VC 反证、入口 SAT 一起编译审计和内核检查。不能用物理字节碰巧等于零来替代初始化证据，也不能把 Fulminate 的原生误报改成正确。
+
+
+### 外部接口缺失与主验证阶段独立运行
+
+原 CN 模块因外部函数没有规约或 client main 遗留资源而拒绝时，不能解释为目标函数反例。保留原失败测量后，可显式使用 prepare_group_primary.py --continue-after-cn-failure 独立尝试 QCP；复用原失败 CN 命令须核对原输入和冻结来源哈希。QCP 完整证明单独报告，CN 的失败不得改成通过，整组仍不完整。publish_group_partial.py 保留这种 CN 拒绝与 QCP 已检查证书的组合。
+
+all-boundaries 在声明为外部函数的 malloc/free/rand 处停下、入口 SAT 但执行未完成且没有原始残余 VC 时，测试 ITP 缺少可绑定的完整执行目标；不能用通用函数验证冒充实际执行。相反，执行已完成而留下数组/循环 VC 时，应记录正向证明待完成，不能误归类为无目标或把 UNKNOWN 当作 FAIL。
+
+历史同源证书可按源码、原 VC、证明和原回执 SHA256 绑定保留。当前生成器失败不会推翻历史内核证书；未重放的证书必须明确标为历史证据，缺失的历史阶段成本继续 PENDING，不据此声称当前测量齐全。
+
+冻结来源里的旧绝对策略路径可通过 with_legacy_strategy_locator.py 临时解析到逐字节相同的归档策略；保存实际包装命令、包装器/依赖哈希和来源，成功或失败后清理本次创建的旧路径。禁止改写原 C/spec 或把不同内容放到旧路径；兼容文件是逻辑证明依赖，不能混入执行器源码。
+
+
+正例 UNKNOWN 可用 positive_execution_itp.py 按执行冻结全部原始残余目标，实际模型只填 Candidate.v。编译后对照原始语句与证明的 Print Assumptions；仅原始类型参数可保留，不增加证明公理。attach_positive_execution_itp.py 核对逐例 report/binds/source/goal/model/prompt/证明/日志哈希和完整内核回执后追加 PASS，原 UNKNOWN 不改；失败尝试、额外审计调用和每次执行所有目标都计入同一任务。残余目标不等同于所有已自动判定的原生 VC，原生结果不冒称重新内核认证。
