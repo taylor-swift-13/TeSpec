@@ -1,0 +1,163 @@
+{
+  "schema": "tespec-group-evaluation-plan/v1",
+  "program_group": "slf_quadruple_mem",
+  "function": "quadruple_mem",
+  "primary_cn_variant": "cn_original:slf_quadruple_mem",
+  "primary_qcp_variant": "qcp_existing:a576b2f94c86edf59bb7",
+  "run_id": "20261016-evaluation",
+  "pairings": [
+    {
+      "cn_variant": "cn_original:slf_quadruple_mem",
+      "qcp_variant": "qcp_existing:a576b2f94c86edf59bb7",
+      "cases": [
+        {
+          "id": "value_0",
+          "value": -536870912,
+          "expected": "PASS",
+          "cn_body": "int cell = -536870912; quadruple_mem(&cell);",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "v": -536870912
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "return": -2147483648,
+            "preserved_cell": -536870912,
+            "basis": "Both additions stay within int32 since 4*v is in int32. No writes occur."
+          }
+        },
+        {
+          "id": "value_1",
+          "value": -1,
+          "expected": "PASS",
+          "cn_body": "int cell = -1; quadruple_mem(&cell);",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "v": -1
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "return": -4,
+            "preserved_cell": -1,
+            "basis": "Both additions stay within int32 since 4*v is in int32. No writes occur."
+          }
+        },
+        {
+          "id": "value_2",
+          "value": 0,
+          "expected": "PASS",
+          "cn_body": "int cell = 0; quadruple_mem(&cell);",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "v": 0
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "return": 0,
+            "preserved_cell": 0,
+            "basis": "Both additions stay within int32 since 4*v is in int32. No writes occur."
+          }
+        },
+        {
+          "id": "value_3",
+          "value": 1,
+          "expected": "PASS",
+          "cn_body": "int cell = 1; quadruple_mem(&cell);",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "v": 1
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "return": 4,
+            "preserved_cell": 1,
+            "basis": "Both additions stay within int32 since 4*v is in int32. No writes occur."
+          }
+        },
+        {
+          "id": "value_4",
+          "value": 20,
+          "expected": "PASS",
+          "cn_body": "int cell = 20; quadruple_mem(&cell);",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "v": 20
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "return": 80,
+            "preserved_cell": 20,
+            "basis": "Both additions stay within int32 since 4*v is in int32. No writes occur."
+          }
+        },
+        {
+          "id": "value_5",
+          "value": 536870910,
+          "expected": "PASS",
+          "cn_body": "int cell = 536870910; quadruple_mem(&cell);",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "v": 536870910
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "return": 2147483640,
+            "preserved_cell": 536870910,
+            "basis": "Both additions stay within int32 since 4*v is in int32. No writes occur."
+          }
+        },
+        {
+          "id": "value_6",
+          "value": 536870911,
+          "expected": "PASS",
+          "cn_body": "int cell = 536870911; quadruple_mem(&cell);",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "v": 536870911
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "return": 2147483644,
+            "preserved_cell": 536870911,
+            "basis": "Both additions stay within int32 since 4*v is in int32. No writes occur."
+          }
+        }
+      ]
+    }
+  ],
+  "expectation_basis": "Return quadruple of the owned signed cell, preserving it. Both entry bounds are equivalent to -536870912<=v<=536870911; all intermediate 2*v and 4*v arithmetic is defined. Source trusted main excluded from universal verification.",
+  "excluded_inputs": [
+    {
+      "condition": "v outside [-536870912,536870911]",
+      "reason": "Invalid entry arithmetic bounds, not a negative test."
+    }
+  ]
+}

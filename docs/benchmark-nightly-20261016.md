@@ -103,3 +103,5 @@ transfer 完整收尾：16 对输入，Fulminate、teSpec OFF/ON 均逐例匹配
 
 
 transpose 完整收尾：24 对输入，Fulminate、teSpec OFF/ON 均逐例匹配独立预期；主程序 CN 与 QCP 1 个原始全称 VC 已编译、假设审计并独立内核检查。gpt-6.1-sol 实际 1 次调用，54,786 token；四工具分阶段时间与 RSS 已保存。完整进度 14/45，下一组 slf_quadruple_mem。
+
+slf_quadruple_mem 当前进程会话 93520：原生 7 对有限输入三工具全部匹配，CN 主程序原文件已验证，QCP 原始 3 VC 已冻结。Windows 实际 gpt-6.1-sol 填写任务 /mnt/c/Users/50635/Documents/Codex/2026-10-14/jin/work/slf_quadruple_mem-qcp-metered 正在运行；先检查该会话/attempt-1/model-receipt.json，完成后调用 measure_group_qcp_complete.py --group slf_quadruple_mem --task-dir 同目录 --attempt 1，勿重复模型调用。init_point 六个合法未初始化区域位置输入计划已经准备但未执行。
