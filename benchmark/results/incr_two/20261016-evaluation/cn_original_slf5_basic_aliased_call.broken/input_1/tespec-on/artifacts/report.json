@@ -1,0 +1,275 @@
+{
+  "schema": "qcp-spectest-report/v1",
+  "job": "/home/yangfp/teSpec/benchmark/results/incr_two/20261016-evaluation/cn_original_slf5_basic_aliased_call.broken/input_1/tespec-on/artifacts/artifacts/job.json",
+  "source": "/home/yangfp/teSpec/benchmark/programs/incr_two/variants/qcp_existing_45ae21373cffd7a2d466/qcp/aliased_call_bad.qcp.c",
+  "spec_file": null,
+  "function": "aliased_call",
+  "qcp_binary": "/home/yangfp/teSpec/bin/tespec-symexec",
+  "provenance": {
+    "source_sha256": "45ae21373cffd7a2d466f8f96fcf81d54e1d29a28b33b3c538d5c40e437d952e",
+    "job_sha256": "393d2b23e32ed29d866b0003f0c3af5b49a293a7ac567d434fdd46b0465368aa",
+    "binary_sha256": "f50c532f32192803ab6bbdf8620c883579debfb75c291b1ed8a3f1e0fdf2691e",
+    "runtime_source_sha256": "08b41c971d404d9fe6ae40dce420752af8eb023179017c55737dc5a7df89f56a",
+    "runtime_digest_scope": "SeparationLogic and QCP_examples: .v, .h, .strategies, _CoqProject",
+    "included_source_sha256": "b2aadc636eeb6ca7cf9a7b8180b2afbdf4587b06b8d9aa009275efcae792aa78",
+    "spec_sha256": null
+  },
+  "vc_policy": {
+    "mode": "all-boundaries",
+    "execution_semantics": "inline-preserve/v1",
+    "loops": "execute_iterations",
+    "defined_function_calls": "execute_bodies",
+    "intermediate_boundaries": true,
+    "declaration_calls": "unknown_missing_body",
+    "call_depth_limit": 64,
+    "loop_unroll_limit": 64,
+    "spatial_smt": {
+      "enabled": true,
+      "timeout_ms_per_query": 2000,
+      "backend": "finite-spatial-smt/v1",
+      "certificate": "NOT_CHECKED",
+      "fallback": "original_itp_vcs",
+      "stage": "after_executor"
+    }
+  },
+  "results": [
+    {
+      "id": "input_1",
+      "arguments": {
+        "p": 4096
+      },
+      "bindings": {
+        "v": 4294967295
+      },
+      "type_bindings": {},
+      "spec": null,
+      "generated_source": "/home/yangfp/teSpec/benchmark/results/incr_two/20261016-evaluation/cn_original_slf5_basic_aliased_call.broken/input_1/tespec-on/artifacts/artifacts/input_1/input.c",
+      "status": "UNKNOWN",
+      "overall": "UNKNOWN",
+      "precondition_result": "SAT",
+      "test_result": "UNKNOWN",
+      "result_semantics": "three-valued-conjunction/v1",
+      "executor_reported_status": "UNKNOWN",
+      "satisfied": null,
+      "reason": "contract_binding_unknown",
+      "phases": {
+        "precondition": "SAT",
+        "safety": "PASS",
+        "postcondition": "PASS",
+        "annotations": "UNKNOWN",
+        "execution": "PASS"
+      },
+      "scope": "execution",
+      "mode": "all-boundaries",
+      "execution_semantics": "inline-preserve/v1",
+      "execution_completed": true,
+      "annotation_policy": "check-preserve",
+      "preconditions": [
+        {
+          "goal": "aliased_call_precondition_wit_1",
+          "status": "SAT",
+          "proof": "auto"
+        }
+      ],
+      "abstraction_events": [
+        {
+          "kind": "inline-call",
+          "function": "incr",
+          "count": 2
+        },
+        {
+          "kind": "contract-check",
+          "function": "incr",
+          "count": 2
+        },
+        {
+          "kind": "inline-call",
+          "function": "incr_two",
+          "count": 1
+        },
+        {
+          "kind": "contract-check",
+          "function": "incr_two",
+          "count": 1
+        }
+      ],
+      "architecture_bits": 32,
+      "target_layout": {
+        "schema": "sac-target-layout/v1",
+        "architecture_bits": 32,
+        "byte_order": "big",
+        "pointer_size": 4,
+        "memory_rules": "naive_C_Rules",
+        "field_address_semantics": "base-plus-byte-offset/v1",
+        "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+        "aggregates": [],
+        "aliases": []
+      },
+      "executor_error": null,
+      "residual_vcs": [],
+      "vc_results": [
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 6,
+          "status": "VALID",
+          "path": "EX m_412_addr n_409_addr p_406_addr q_403_addr p_402_addr \nPROP[]\nLOCAL[\n  Temp m m_412_addr;\n  Temp n n_409_addr;\n  Temp p p_406_addr;\n  Temp q q_403_addr;\n  Temp p p_402_addr;\n  Temp p p_391_addr ]\nSEP[\n  has_permission(m_412_addr, unsigned int);\n  store(n_409_addr, UINT_MAX, unsigned int);\n  store(p_406_addr, 4096, unsigned int*);\n  store(q_403_addr, 4096, unsigned int*);\n  store(p_402_addr, 4096, unsigned int*);\n  store(p_391_addr, 4096, unsigned int*);\n  store(4096, UINT_MAX, unsigned int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "entailment",
+          "name": null,
+          "line": 2,
+          "status": "VALID",
+          "path": "PROP[]\nLOCAL[\n  Temp q q_403_addr;\n  Temp p p_402_addr;\n  Temp p p_391_addr ]\nSEP[\n  store(4096, 0, unsigned int) ]\n",
+          "goal": "PROP[]\nLOCAL[\n  Temp p p_391_addr;\n  Temp p p_402_addr;\n  Temp q q_403_addr ]\nSEP[\n  store(4096, 0, unsigned int) ]\n"
+        },
+        {
+          "kind": "partial_solve",
+          "name": null,
+          "line": 12,
+          "status": "VALID",
+          "path": "PROP[]\nLOCAL[\n  Temp q q_403_addr;\n  Temp p p_402_addr;\n  Temp p p_391_addr ]\nSEP[\n  store(q_403_addr, 4096, unsigned int*);\n  store(p_402_addr, 4096, unsigned int*);\n  store(p_391_addr, 4096, unsigned int*);\n  store(4096, UINT_MAX, unsigned int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 6,
+          "status": "VALID",
+          "path": "EX m_421_addr n_418_addr p_415_addr q_403_addr p_402_addr \nPROP[]\nLOCAL[\n  Temp m m_421_addr;\n  Temp n n_418_addr;\n  Temp p p_415_addr;\n  Temp q q_403_addr;\n  Temp p p_402_addr;\n  Temp p p_391_addr ]\nSEP[\n  has_permission(m_421_addr, unsigned int);\n  store(n_418_addr, 0, unsigned int);\n  store(p_415_addr, 4096, unsigned int*);\n  store(q_403_addr, 4096, unsigned int*);\n  store(p_402_addr, 4096, unsigned int*);\n  store(p_391_addr, 4096, unsigned int*);\n  store(4096, 0, unsigned int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "entailment",
+          "name": null,
+          "line": 2,
+          "status": "VALID",
+          "path": "PROP[]\nLOCAL[\n  Temp q q_403_addr;\n  Temp p p_402_addr;\n  Temp p p_391_addr ]\nSEP[\n  store(4096, 1, unsigned int) ]\n",
+          "goal": "PROP[]\nLOCAL[\n  Temp p p_391_addr;\n  Temp p p_402_addr;\n  Temp q q_403_addr ]\nSEP[\n  store(4096, 1, unsigned int) ]\n"
+        },
+        {
+          "kind": "partial_solve",
+          "name": null,
+          "line": 13,
+          "status": "VALID",
+          "path": "PROP[]\nLOCAL[\n  Temp q q_403_addr;\n  Temp p p_402_addr;\n  Temp p p_391_addr ]\nSEP[\n  store(q_403_addr, 4096, unsigned int*);\n  store(p_402_addr, 4096, unsigned int*);\n  store(p_391_addr, 4096, unsigned int*);\n  store(4096, 0, unsigned int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "return",
+          "name": null,
+          "line": 13,
+          "status": "VALID",
+          "path": "PROP[]\nLOCAL[]\nSEP[\n  store(4096, 1, unsigned int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[\n  store(4096, 1, unsigned int) ]\n"
+        }
+      ],
+      "evidence": {
+        "decision_backend": "qcp-smt",
+        "certificate": "NOT_CHECKED"
+      },
+      "returncode": 0,
+      "generated_source_sha256": "944049a16e55ed857bd1ebf540377f0b775406123910c2be36a3b5a8ba9a3ec5",
+      "duration_seconds": 0.009089,
+      "peak_rss_kb": 5828,
+      "cpu_seconds": 0.0,
+      "command": [
+        "/home/yangfp/teSpec/bin/tespec-symexec",
+        "--arch=32",
+        "--input-file=/home/yangfp/teSpec/benchmark/results/incr_two/20261016-evaluation/cn_original_slf5_basic_aliased_call.broken/input_1/tespec-on/artifacts/artifacts/input_1/input.c",
+        "--full-auto",
+        "--Json-output",
+        "--emit-residual-vc",
+        "--no-strategy-gen",
+        "--gen-and-backup",
+        "--coq-output-dir",
+        "/home/yangfp/teSpec/benchmark/results/incr_two/20261016-evaluation/cn_original_slf5_basic_aliased_call.broken/input_1/tespec-on/artifacts/artifacts/input_1/vc",
+        "--no-logic-path",
+        "--disable-solver-info",
+        "--no-exec-info",
+        "--function",
+        "aliased_call",
+        "--spec-test-no-expand",
+        "--spec",
+        "__tespec_entry",
+        "-I/home/yangfp/teSpec/benchmark/programs/incr_two/variants/qcp_existing_45ae21373cffd7a2d466/qcp",
+        "-I/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/supplemental/aliased_call_bad",
+        "--loop-unroll-limit",
+        "64",
+        "--call-depth-limit",
+        "64"
+      ],
+      "stdout": "/home/yangfp/teSpec/benchmark/results/incr_two/20261016-evaluation/cn_original_slf5_basic_aliased_call.broken/input_1/tespec-on/artifacts/artifacts/input_1/executor.json",
+      "stderr": "/home/yangfp/teSpec/benchmark/results/incr_two/20261016-evaluation/cn_original_slf5_basic_aliased_call.broken/input_1/tespec-on/artifacts/artifacts/input_1/stderr.log",
+      "vc": {
+        "schema": "qcp-spectest-vc-manifest/v1",
+        "case_id": "input_1",
+        "function": "aliased_call",
+        "source": "/home/yangfp/teSpec/benchmark/results/incr_two/20261016-evaluation/cn_original_slf5_basic_aliased_call.broken/input_1/tespec-on/artifacts/artifacts/input_1/input.c",
+        "qcip_root": "/home/yangfp/teSpec/runtime/qcip",
+        "status": "auto_proved",
+        "residual_goals": [],
+        "counterexample_goals": [],
+        "files": {
+          "goal": "/home/yangfp/teSpec/benchmark/results/incr_two/20261016-evaluation/cn_original_slf5_basic_aliased_call.broken/input_1/tespec-on/artifacts/artifacts/input_1/vc/input_goal.v",
+          "proof_auto": "/home/yangfp/teSpec/benchmark/results/incr_two/20261016-evaluation/cn_original_slf5_basic_aliased_call.broken/input_1/tespec-on/artifacts/artifacts/input_1/vc/input_proof_auto.v",
+          "proof_manual": "/home/yangfp/teSpec/benchmark/results/incr_two/20261016-evaluation/cn_original_slf5_basic_aliased_call.broken/input_1/tespec-on/artifacts/artifacts/input_1/vc/input_proof_manual.v",
+          "goal_check": "/home/yangfp/teSpec/benchmark/results/incr_two/20261016-evaluation/cn_original_slf5_basic_aliased_call.broken/input_1/tespec-on/artifacts/artifacts/input_1/vc/input_goal_check.v"
+        },
+        "missing_files": [],
+        "immutable_sha256": {
+          "goal": "d890566c39332b256178e4aa25db6a2cc387f729ded2ad74e05eae79088f3c73",
+          "proof_auto": "2869f20ba4198cb0dc3690477d5b1a49d141d7cd9566b2551287774a32b2eeb2",
+          "goal_check": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e"
+        },
+        "coq_dependencies": [],
+        "runtime_dependencies": [],
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [],
+          "aliases": []
+        },
+        "manifest": "/home/yangfp/teSpec/benchmark/results/incr_two/20261016-evaluation/cn_original_slf5_basic_aliased_call.broken/input_1/tespec-on/artifacts/artifacts/input_1/vc/manifest.json"
+      },
+      "resources": {
+        "wall_seconds": 0.009089,
+        "cpu_seconds": 0.0,
+        "measurement": "GNU time; executor and children; maximum process RSS",
+        "peak_rss_kib": 5828
+      },
+      "spatial_smt": {
+        "backend": "finite-spatial-smt/v1",
+        "enabled": true,
+        "certificate": "NOT_CHECKED",
+        "stage": "after_executor",
+        "timeout_ms_per_query": 2000,
+        "attempted": 0,
+        "itp_required": false,
+        "results": [],
+        "original_status": "UNKNOWN",
+        "original_reason": "contract_binding_unknown",
+        "reason": "original_execution_not_eligible"
+      }
+    }
+  ],
+  "itp_vcs": [],
+  "summary": {
+    "total": 1,
+    "PASS": 0,
+    "FAIL": 0,
+    "UNKNOWN": 1,
+    "ERROR": 0,
+    "INVALID": 0,
+    "specification_only": 0,
+    "duration_seconds": 0.085102,
+    "executor_cpu_seconds": 0.0,
+    "peak_rss_kb": 5828
+  }
+}

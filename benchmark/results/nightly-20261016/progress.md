@@ -2,9 +2,9 @@
 
 完整组 18/45；待补齐 27。截止北京时间 2026-10-16 08:00。
 
-当前组：incr_two；阶段：READY_FOR_NEXT_GROUP。
+当前组：zero；阶段：READY_FOR_NEXT_GROUP。
 
-teSpec 最终不匹配 0 条，已解决自动阶段缺口 27 条。详情见 ../tespec-unexpected/README.md；未评测组不算零异常。
+teSpec 最终不匹配 4 条，已解决自动阶段缺口 27 条。详情见 ../tespec-unexpected/README.md；未评测组不算零异常。
 
 | 程序组 | 状态 | 结果成本表 |
 |---|---|---|

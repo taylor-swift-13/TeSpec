@@ -1,0 +1,171 @@
+{
+  "variant": "cn_original:slf5_basic_aliased_call.broken",
+  "paired_qcp_variant": "qcp_existing:45ae21373cffd7a2d466",
+  "case": "input_0",
+  "initial": {
+    "v": 0,
+    "w": null,
+    "entry_regions": 1
+  },
+  "expected": "FAIL",
+  "plan_case": {
+    "id": "input_0",
+    "value": {
+      "v": 0,
+      "w": null,
+      "entry_regions": 1
+    },
+    "expected": "FAIL",
+    "cn_body": "unsigned int a=0u; aliased_call(&a);",
+    "binds": {
+      "args": {
+        "p": 4096
+      },
+      "values": {
+        "v": 0
+      }
+    },
+    "precondition_valid": true,
+    "oracle": {
+      "body_p_final": 2,
+      "body_q_final": null,
+      "callee_contract_valid": false,
+      "reason": "aliased_call enters with one owned cell but calls incr_two requiring two disjoint owned cells at the same address; modular call contract is invalid even though unfolded C computes the stated result."
+    }
+  },
+  "cn_source_sha256": "fc9fcbb245381493b8e3d34c2a8be1be21298de6a6a994c1589c1df5444d61ab",
+  "qcp_source_sha256": "45ae21373cffd7a2d466f8f96fcf81d54e1d29a28b33b3c538d5c40e437d952e",
+  "harness": "benchmark/programs/incr_two/variants/cn_original_slf5_basic_aliased_call.broken/tests/20261016-evaluation/input_0/fulminate.cn.c",
+  "harness_sha256": "80c5848e6b28cab6b02b15e4d5628103da3d1c401a1edc72c2a6f8aba873dbc3",
+  "binds": "benchmark/programs/incr_two/variants/cn_original_slf5_basic_aliased_call.broken/tests/20261016-evaluation/input_0/binds.json",
+  "binds_sha256": "b6b6ec821a3715ad5fc6bd9050898999378a79783ded985277d69d93d3a7ff24",
+  "precondition_valid": true,
+  "fulminate_pipeline": {
+    "command": [
+      "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+      "instrument",
+      "--run",
+      "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+      "--output-dir=/tmp/tespec-group-xgfp7rij",
+      "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples",
+      "/home/yangfp/teSpec/benchmark/programs/incr_two/variants/cn_original_slf5_basic_aliased_call.broken/tests/20261016-evaluation/input_0/fulminate.cn.c"
+    ],
+    "exit_code": 5,
+    "wall_seconds": 0.11472936200152617,
+    "resources": {
+      "max_process_rss_kib": 44380,
+      "user_seconds": 0.04,
+      "system_seconds": 0.02
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/incr_two/20261016-evaluation/cn_original_slf5_basic_aliased_call.broken/input_0/fulminate-pipeline/stdout.log",
+    "stderr": "benchmark/results/incr_two/20261016-evaluation/cn_original_slf5_basic_aliased_call.broken/input_0/fulminate-pipeline/stderr.log"
+  },
+  "instrumented_sources": [
+    {
+      "path": "benchmark/results/incr_two/20261016-evaluation/cn_original_slf5_basic_aliased_call.broken/input_0/fulminate.cn.exec.c",
+      "sha256": "82feb9bfc8350e0b0eeb8fa8fd12b793eed4eec4e67b64d133ef22e62697fd4d"
+    }
+  ],
+  "instrumented_binary_sha256": "b4fad056bd0143c66290c2f034b239031aede74564213809225e7029ec6da59c",
+  "fulminate_test": {
+    "command": [
+      "/tmp/tespec-group-xgfp7rij/fulminate.cn.exec.out"
+    ],
+    "exit_code": 5,
+    "wall_seconds": 0.003905535995727405,
+    "resources": {
+      "max_process_rss_kib": 1404,
+      "user_seconds": 0.0,
+      "system_seconds": 0.0
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/incr_two/20261016-evaluation/cn_original_slf5_basic_aliased_call.broken/input_0/fulminate-test/stdout.log",
+    "stderr": "benchmark/results/incr_two/20261016-evaluation/cn_original_slf5_basic_aliased_call.broken/input_0/fulminate-test/stderr.log",
+    "status": "FAIL"
+  },
+  "tespec_off": {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "spectest",
+      "run",
+      "/home/yangfp/teSpec/benchmark/programs/incr_two/variants/qcp_existing_45ae21373cffd7a2d466/qcp/aliased_call_bad.qcp.c",
+      "--function",
+      "aliased_call",
+      "--binds",
+      "/home/yangfp/teSpec/benchmark/programs/incr_two/variants/cn_original_slf5_basic_aliased_call.broken/tests/20261016-evaluation/input_0/binds.json",
+      "--execution-mode",
+      "all-boundaries",
+      "--output-dir",
+      "/home/yangfp/teSpec/benchmark/results/incr_two/20261016-evaluation/cn_original_slf5_basic_aliased_call.broken/input_0/tespec-off/artifacts",
+      "--timeout",
+      "30",
+      "--compact",
+      "--no-spatial-smt",
+      "--spatial-smt-timeout-ms",
+      "2000",
+      "-I",
+      "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/supplemental/aliased_call_bad"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 0.16461436900135595,
+    "resources": {
+      "max_process_rss_kib": 19744,
+      "user_seconds": 0.06,
+      "system_seconds": 0.06
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/incr_two/20261016-evaluation/cn_original_slf5_basic_aliased_call.broken/input_0/tespec-off/stdout.log",
+    "stderr": "benchmark/results/incr_two/20261016-evaluation/cn_original_slf5_basic_aliased_call.broken/input_0/tespec-off/stderr.log",
+    "report": "benchmark/results/incr_two/20261016-evaluation/cn_original_slf5_basic_aliased_call.broken/input_0/tespec-off/artifacts/report.json",
+    "statuses": [
+      "UNKNOWN"
+    ],
+    "status": "UNKNOWN"
+  },
+  "tespec_on": {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "spectest",
+      "run",
+      "/home/yangfp/teSpec/benchmark/programs/incr_two/variants/qcp_existing_45ae21373cffd7a2d466/qcp/aliased_call_bad.qcp.c",
+      "--function",
+      "aliased_call",
+      "--binds",
+      "/home/yangfp/teSpec/benchmark/programs/incr_two/variants/cn_original_slf5_basic_aliased_call.broken/tests/20261016-evaluation/input_0/binds.json",
+      "--execution-mode",
+      "all-boundaries",
+      "--output-dir",
+      "/home/yangfp/teSpec/benchmark/results/incr_two/20261016-evaluation/cn_original_slf5_basic_aliased_call.broken/input_0/tespec-on/artifacts",
+      "--timeout",
+      "30",
+      "--compact",
+      "--spatial-smt",
+      "--spatial-smt-timeout-ms",
+      "2000",
+      "-I",
+      "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/supplemental/aliased_call_bad"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 0.16479149399674498,
+    "resources": {
+      "max_process_rss_kib": 19884,
+      "user_seconds": 0.08,
+      "system_seconds": 0.04
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/incr_two/20261016-evaluation/cn_original_slf5_basic_aliased_call.broken/input_0/tespec-on/stdout.log",
+    "stderr": "benchmark/results/incr_two/20261016-evaluation/cn_original_slf5_basic_aliased_call.broken/input_0/tespec-on/stderr.log",
+    "report": "benchmark/results/incr_two/20261016-evaluation/cn_original_slf5_basic_aliased_call.broken/input_0/tespec-on/artifacts/report.json",
+    "statuses": [
+      "UNKNOWN"
+    ],
+    "status": "UNKNOWN"
+  }
+}

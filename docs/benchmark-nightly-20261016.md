@@ -129,3 +129,5 @@ slf3_basic_inplace_double：2 次原始 UNKNOWN 现已分别完成全部残余 V
 
 
 slf3_basic_inplace_double 完整收尾：52 对输入，Fulminate、teSpec OFF/ON 均逐例匹配独立预期；主程序 CN 与 QCP 2 个原始全称 VC 已编译、假设审计并独立内核检查。gpt-6.1-sol 实际 1 次调用，55,440 token；四工具分阶段时间与 RSS 已保存。完整进度 18/45，下一组 incr_two。
+
+incr_two 已覆盖全部 12 个变体记录和 40 对输入，主程序 CN 验证及 QCP 7 个原始全称 VC、审计、独立内核均完成；实际 1 次模型、110,316 token。Fulminate 40/40，teSpec OFF/ON 各 38/40。错误别名调用的 2 输入 × 2 模式均为 contract_binding_unknown，执行安全/出口 PASS，但 annotations UNKNOWN；residual_vcs=[]、raw manual_obligation_count=0。它是未导出检查目标的契约绑定缺口，不能通过仅证明现有 body VC 来补成成功。4 条原始状态、两模式、日志/源/VC 哈希与 ITP 未执行原因已存 triage.json / coverage-gap.json。整组仍不完整，主程序证明成本齐备而测试 ITP 为 PENDING；按照夜间难例策略先继续 zero。完整进度保持 18/45。

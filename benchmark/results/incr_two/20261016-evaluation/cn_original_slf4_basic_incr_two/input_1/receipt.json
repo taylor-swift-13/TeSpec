@@ -1,0 +1,173 @@
+{
+  "variant": "cn_original:slf4_basic_incr_two",
+  "paired_qcp_variant": "qcp_existing:e07decbe6f29957f038b",
+  "case": "input_1",
+  "initial": {
+    "v": 0,
+    "w": 1,
+    "entry_regions": 2
+  },
+  "expected": "PASS",
+  "plan_case": {
+    "id": "input_1",
+    "value": {
+      "v": 0,
+      "w": 1,
+      "entry_regions": 2
+    },
+    "expected": "PASS",
+    "cn_body": "unsigned int a=0u; unsigned int b=1u; incr_two(&a,&b);",
+    "binds": {
+      "args": {
+        "p": 4096,
+        "q": 8192
+      },
+      "values": {
+        "v": 0,
+        "w": 1
+      }
+    },
+    "precondition_valid": true,
+    "oracle": {
+      "body_p_final": 1,
+      "body_q_final": 2,
+      "callee_contract_valid": true,
+      "reason": "Unsigned arithmetic modulo 2^32; disjoint and aliased call contracts selected as declared."
+    }
+  },
+  "cn_source_sha256": "d07440a8bf0fb471d2b5236b0edb20c4c60ea37df489a55c8da01a49c4124881",
+  "qcp_source_sha256": "e07decbe6f29957f038b2dd0f985275f1bfe59a1cc77f0a469ae72dd1537ffa5",
+  "harness": "benchmark/programs/incr_two/variants/cn_original_slf4_basic_incr_two/tests/20261016-evaluation/input_1/fulminate.cn.c",
+  "harness_sha256": "c2bf80e6b153d2a6a9b89000344e9073063840a370e6c4f0c42af56a34ad111a",
+  "binds": "benchmark/programs/incr_two/variants/cn_original_slf4_basic_incr_two/tests/20261016-evaluation/input_1/binds.json",
+  "binds_sha256": "59c47416742a9f2041212e44fdf91d89c7e9591443d1a888660d2ea4a0d9273a",
+  "precondition_valid": true,
+  "fulminate_pipeline": {
+    "command": [
+      "/home/yangfp/.opam/tespec-cn-20260416/bin/cn",
+      "instrument",
+      "--run",
+      "--cc=/home/yangfp/teSpec/tools/benchmark/gcc-no-builtins.sh",
+      "--output-dir=/tmp/tespec-group-0363lo31",
+      "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples",
+      "/home/yangfp/teSpec/benchmark/programs/incr_two/variants/cn_original_slf4_basic_incr_two/tests/20261016-evaluation/input_1/fulminate.cn.c"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 0.11465406499337405,
+    "resources": {
+      "max_process_rss_kib": 43500,
+      "user_seconds": 0.05,
+      "system_seconds": 0.02
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/incr_two/20261016-evaluation/cn_original_slf4_basic_incr_two/input_1/fulminate-pipeline/stdout.log",
+    "stderr": "benchmark/results/incr_two/20261016-evaluation/cn_original_slf4_basic_incr_two/input_1/fulminate-pipeline/stderr.log"
+  },
+  "instrumented_sources": [
+    {
+      "path": "benchmark/results/incr_two/20261016-evaluation/cn_original_slf4_basic_incr_two/input_1/fulminate.cn.exec.c",
+      "sha256": "2bc2f0e4fd7b5befba9979322fa0774ca853afd84bbb2de0460e35d8e878eea1"
+    }
+  ],
+  "instrumented_binary_sha256": "fd4b1b142a88144065b2546a3b263ea251575a9a97016346b88b2b02d76879a7",
+  "fulminate_test": {
+    "command": [
+      "/tmp/tespec-group-0363lo31/fulminate.cn.exec.out"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 0.004144263992202468,
+    "resources": {
+      "max_process_rss_kib": 1132,
+      "user_seconds": 0.0,
+      "system_seconds": 0.0
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/incr_two/20261016-evaluation/cn_original_slf4_basic_incr_two/input_1/fulminate-test/stdout.log",
+    "stderr": "benchmark/results/incr_two/20261016-evaluation/cn_original_slf4_basic_incr_two/input_1/fulminate-test/stderr.log",
+    "status": "PASS"
+  },
+  "tespec_off": {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "spectest",
+      "run",
+      "/home/yangfp/teSpec/benchmark/programs/incr_two/variants/qcp_existing_e07decbe6f29957f038b/qcp/slf4_basic_incr_two.qcp.c",
+      "--function",
+      "incr_two",
+      "--binds",
+      "/home/yangfp/teSpec/benchmark/programs/incr_two/variants/cn_original_slf4_basic_incr_two/tests/20261016-evaluation/input_1/binds.json",
+      "--execution-mode",
+      "all-boundaries",
+      "--output-dir",
+      "/home/yangfp/teSpec/benchmark/results/incr_two/20261016-evaluation/cn_original_slf4_basic_incr_two/input_1/tespec-off/artifacts",
+      "--timeout",
+      "30",
+      "--compact",
+      "--no-spatial-smt",
+      "--spatial-smt-timeout-ms",
+      "2000",
+      "-I",
+      "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 0.16467402801208664,
+    "resources": {
+      "max_process_rss_kib": 20116,
+      "user_seconds": 0.07,
+      "system_seconds": 0.04
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/incr_two/20261016-evaluation/cn_original_slf4_basic_incr_two/input_1/tespec-off/stdout.log",
+    "stderr": "benchmark/results/incr_two/20261016-evaluation/cn_original_slf4_basic_incr_two/input_1/tespec-off/stderr.log",
+    "report": "benchmark/results/incr_two/20261016-evaluation/cn_original_slf4_basic_incr_two/input_1/tespec-off/artifacts/report.json",
+    "statuses": [
+      "PASS"
+    ],
+    "status": "PASS"
+  },
+  "tespec_on": {
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "spectest",
+      "run",
+      "/home/yangfp/teSpec/benchmark/programs/incr_two/variants/qcp_existing_e07decbe6f29957f038b/qcp/slf4_basic_incr_two.qcp.c",
+      "--function",
+      "incr_two",
+      "--binds",
+      "/home/yangfp/teSpec/benchmark/programs/incr_two/variants/cn_original_slf4_basic_incr_two/tests/20261016-evaluation/input_1/binds.json",
+      "--execution-mode",
+      "all-boundaries",
+      "--output-dir",
+      "/home/yangfp/teSpec/benchmark/results/incr_two/20261016-evaluation/cn_original_slf4_basic_incr_two/input_1/tespec-on/artifacts",
+      "--timeout",
+      "30",
+      "--compact",
+      "--spatial-smt",
+      "--spatial-smt-timeout-ms",
+      "2000",
+      "-I",
+      "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/simple"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 0.16485624299093615,
+    "resources": {
+      "max_process_rss_kib": 19872,
+      "user_seconds": 0.06,
+      "system_seconds": 0.06
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/incr_two/20261016-evaluation/cn_original_slf4_basic_incr_two/input_1/tespec-on/stdout.log",
+    "stderr": "benchmark/results/incr_two/20261016-evaluation/cn_original_slf4_basic_incr_two/input_1/tespec-on/stderr.log",
+    "report": "benchmark/results/incr_two/20261016-evaluation/cn_original_slf4_basic_incr_two/input_1/tespec-on/artifacts/report.json",
+    "statuses": [
+      "PASS"
+    ],
+    "status": "PASS"
+  }
+}
