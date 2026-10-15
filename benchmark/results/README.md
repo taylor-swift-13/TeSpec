@@ -23,3 +23,9 @@ python3 tools/benchmark/validate_read_results.py
 python3 tools/benchmark/build_program_groups.py --check
 python3 tools/benchmark/audit_archive.py
 ```
+
+## Read UNKNOWN results adjudicated by Coq
+
+`read/20261015-itp-refutations/receipt.json` records independent kernel-checked refutations of all 12 actual UNKNOWN VCs and their spatial splits, plus 12 proved satisfiable entries. All 36 theorem assumption audits are closed. No executor or solver code was changed.
+
+`resolved-results.json` in that directory gives the separate adjudicated view (22 PASS, 32 FAIL, 7 expected ERROR). The original automatic results are unchanged. Authoritative evidence consists of the exact goal copies, refutation sources, compilation/audit logs and kernel receipt. Replay with `python3 tools/benchmark/refute_read_unknowns.py`; audit saved source hashes and receipts with `python3 tools/benchmark/validate_read_itp.py`.
