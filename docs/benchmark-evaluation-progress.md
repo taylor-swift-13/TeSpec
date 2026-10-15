@@ -32,3 +32,11 @@ add 已覆盖 10 个 CN/QCP 配置、12 条语言记录、122 对输入。Fulmin
 目前 5/45 组完整，40 组待补齐。teSpec 专项台账位于 benchmark/results/tespec-unexpected/，原始状态和最终 ITP 状态分列，不能将 UNKNOWN 或非预期 ERROR 算成成功。下一组 add_read 的有限测试已完成 8 对（含无符号回绕边界），两种模式和 Fulminate 均匹配，正补齐主程序证明。
 
 add_read 现已完整：8 对有限输入（含 2^32 回绕边界）在 Fulminate、teSpec OFF/ON 均匹配；原始完整堆见证的单个全称 VC 经模型修复、Coq 编译审计与独立内核检查通过，假设审计 Closed under the global context。共两次模型调用 149618 token，首次编译失败与修复成本均计入。错误原因是 Coq 运行时 `%` 定义为 Z.rem，而 unsigned_last_nbits 使用 Z.modulo；证明借助非负条件建立二者等价，没有更改程序或规约。当前 **6/45 组完整，39 组待补齐**；下一组 add_two_array，以 nightly 状态文件为准。
+
+## 夜间续跑：add_two_array 已完成
+
+完整进度 **7/45 组，38 组待补齐**。add_two_array 覆盖 1 个 CN/QCP 配对配置、2 条语言记录、8 对合法数组输入，包含交换读取下标和无符号回绕边界。Fulminate 8/8；teSpec OFF/ON 最终均为 8/8，均无需 ITP。初次驱动漏传策略目录导致 16 条 ERROR，修正后同源码/spec/binds 全部通过。原始 ERROR、复现条件、修复证据和原因分类留在专项台账，分类为驱动配置错误，不作为已证实的执行器缺陷；所有失败尝试成本计入，Fulminate 只复用计量一次。
+
+主程序 3 条原始通用 VC 已完成模型填写、Coq 编译审计及独立内核检查，总模型调用 2 次、168378 token，首轮未填写候选也计费。QCP 原生生成含最初策略解析失败的实际成本，Coq 审计也包含控制器命名空间导入修复的成本。此组的原始 VC 类型带 sizeof_* 解释参数，两条数组拆分证明引用 UIntArray.full_split_to_missing_i，额外依赖 Coq 标准 FunctionalExtensionality.functional_extensionality_dep。已独立编译原始目标类型及该运行时引理的假设审计，确认来源后明确标为 VERIFIED_KERNEL_CHECKED_WITH_RUNTIME_LIBRARY_ASSUMPTIONS；不是 Closed under the global context，也没有新增公理声明。
+
+目前已扫描 7 组共 270 对输入，teSpec 最终未解决不匹配为 0；另有 12 条历史自动缺口经 ITP 解决，16 条初次配置错误经输入/源码不变的重测解决。下一组 array_load。

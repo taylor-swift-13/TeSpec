@@ -4,7 +4,7 @@
 
 唯一仓库 `/home/yangfp/teSpec`、唯一 main 分支、禁止新工作树。并行论文修改不混入本任务提交。SSH push main，sac 不 push。执行器和 SMT 引擎实现源码不得提交到此仓库。每次只测一组，正式计量期间避免同时跑其他组的负载。
 
-先读 `benchmark/results/group-result-cost-index.json` 决定哪些组已经完整。查看 `benchmark/results/nightly-20261016/status.json` 当前在做哪一步；若进程仍运行，接续进程而非重复启动。续跑开始后 add 已完成全部 122 对测试、主程序两条通用 VC 的内核检查及完整成本表。add_read 也已完成 8 对测试和原始全称 VC 的内核检查；下一组 add_two_array，实时步骤以 status.json 和组内回执为准。难例保留完整缺项与 teSpec 异常后继续其他组；不能将失败、UNKNOWN 或欠缺成本的组标为完整。
+先读 `benchmark/results/group-result-cost-index.json` 决定哪些组已经完整。查看 `benchmark/results/nightly-20261016/status.json` 当前在做哪一步；若进程仍运行，接续进程而非重复启动。续跑开始后 add 已完成全部 122 对测试、主程序两条通用 VC 的内核检查及完整成本表。add_read 和 add_two_array 均已完成；当前 7/45 组完整，下一组 array_load，实时步骤以 status.json 和组内回执为准。难例保留完整缺项与 teSpec 异常后继续其他组；不能将失败、UNKNOWN 或欠缺成本的组标为完整。
 
 ## 工具入口
 
@@ -20,3 +20,7 @@ ITP 按一次执行的全部待处理 VC 独立调用和计量；均值只在实
 teSpec 专项台账入口 `benchmark/results/tespec-unexpected/README.md`、index.json、index.csv。每条记录包含组/变体/输入/模式/预期/自动与最终状态/源码与 VC 哈希/日志/复现命令/ITP。人工判断写 triage.json，不覆写原始分类。UNKNOWN 与非预期 ERROR 不算成功；read 12 条旧 UNKNOWN 经逐执行内核反证后最终符合预期，单列已解决自动缺口。
 
 每完成一组，更新 manifest、四工具结果、result-cost.md/json/csv、统一索引、docs/benchmark-evaluation-progress.md 和 nightly 状态。审计后仅暂存本任务明确路径，用 git commit --only 避免混入其他线程暂存内容，再 SSH push main。正式证据留在 benchmark/results，工作临时文件放 Windows work/ 或 /tmp。不要清理其他线程文件。
+
+数组组若出现策略解析错误，先确认已传变体 manifest 的 include_dirs；通用主程序准备器现会把显式 include strategies 所需的同字节策略依赖放到组内源码旁，并记录 dependencies.json，适配旧通用验证解析器。有限输入重试不能覆盖旧 run：新建同组新的 run_id，保留每轮实际计划快照。publish_group_evaluation 现支持 prior_tespec_attempt_reports 的实际失败成本，以及完全同源码/harness 的 Fulminate 单次复用。异常台账会把同程序/spec/binds 的后续修正结果关联到原始 ERROR，原始分类不改写。
+
+对于确实依赖运行时数组提取引理的证明，可以按模板第 14 节显式设置 assumption_audit_policy，运行 finalize_group_qcp_runtime_audit.py 复核原始目标类型、既有库引理的假设来源并独立内核检查，输出带依赖限定的证书。只允许已审计 Coq 标准库 functional_extensionality_dep，不能接受任意公理。此脚本适配 IntArray/UIntArray.full_split_to_missing_i。

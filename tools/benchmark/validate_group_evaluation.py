@@ -30,6 +30,11 @@ def main():
         assert sha(folder/'agent.stdout.jsonl')==attempt_model['raw_event_log_sha256']
         assert sha(folder/'prompt.txt')==attempt_model['prompt_sha256']
         if folder.name.startswith('attempt-'):assert sha(folder/'Candidate.v')==attempt_model['candidate_sha256']
+    if q.get('verdict')=='VERIFIED_KERNEL_CHECKED_WITH_RUNTIME_LIBRARY_ASSUMPTIONS':
+        audit=q['assumptions'];assert audit['standard_library_axioms']==['FunctionalExtensionality.functional_extensionality_dep']
+        assert sha(ROOT/audit['policy'])==audit['policy_sha256']
+        baseline=(ROOT/audit['statement_and_runtime_helper_audit']).read_text();assert 'RUNTIME_HELPER' in baseline and 'FunctionalExtensionality.functional_extensionality_dep' in baseline
+        assert audit['new_proof_axiom_declarations']==[]
     stat=load(b/'qcp/statistics.json');assert abs(sum(x['wall_seconds'] for x in stat['stages'])-stat['wall_seconds'])<1e-7;assert stat['tokens']==sum(u['input_tokens']+u['output_tokens'] for m in q.get('models',[model]) for u in m['token_usage'])
     modes=load(ROOT/manifest['test_modes_statistics']);assert modes['results_sha256']==sha(ROOT/idx['evaluation']);assert modes['case_pairs']==len(runs)
     for mode in ['off','on']:

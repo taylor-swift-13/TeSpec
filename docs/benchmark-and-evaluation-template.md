@@ -331,3 +331,9 @@ SMT 的 certificate 保持 NOT_CHECKED，不能标为新 Coq 内核证书。20 �
 有标准库同名函数时，使用 `tools/benchmark/gcc-no-builtins.sh` 的 `-fno-builtin`，防止编译器消除被测调用。保存插桩 C 和二进制哈希，工具无误报告不等于目标函数实际执行。`abs` 的错误优化诊断批次明确排除，正式重新计量。
 
 必须逐条记录 Print Assumptions 的真实输出。原始 VC 的类型本身若含运行时参数，例如 `eval_addr_expr : rvalue_expr -> addr`，独立内核可检查相对于该参数的证明，但这不等于 Closed under the global context；保留原始 VC 和参数定义位置，禁止改写目标来隐藏该依赖。
+
+## 14. 运行时库假设与配置重试
+
+Coq 内核通过表示相对于实际审计出的环境假设检查通过，不自动等于 Closed under the global context。若原始 VC 类型依赖抽象 C 类型参数，须保留原始参数和类型审计。若空间库已有引理依赖 Coq 标准函数外延性，只能在组计划明确列出该标准库依赖、独立编译原始 VC 与运行时引理的 Print Assumptions、证明新增依赖确来自该引理后，报告 VERIFIED_KERNEL_CHECKED_WITH_RUNTIME_LIBRARY_ASSUMPTIONS。记录所有依赖名称、原始审计文本、来源位置及作用范围；不得新增公理声明或用任意公理消掉失败 VC。普通无此依赖的组继续按原先更严格的审计处理，不能把这类证书写成无全局假设。
+
+测试配置修正要保留原始 ERROR 和重测记录。只有同一程序/spec/binds 哈希的重测才可关联为已修复配置问题；原始分类不改，最终结果另列。重试时间全部计入，逻辑测试输入数与实际尝试数分开；每个逻辑测试的峰值取其实际各尝试峰值最大值，再对测试取算术平均。匹配的 Fulminate 测量可复用一次，不能重复计费。每轮必须保存实际执行的 evaluation-plan.executed.json；后续成本／假设元数据补注可追加，但不能改变已执行函数、输入配对或逐例预期。

@@ -1,0 +1,111 @@
+{
+  "id": "f7b2be4069ba8be00606",
+  "evaluation_report": "benchmark/results/add_two_array/20261016-evaluation/results.json",
+  "resolution": {
+    "scope": "Same program/spec/binds hashes, corrected harness configuration",
+    "report": "benchmark/results/add_two_array/20261016-evaluation-includes/cn_original_add_two_array/array_5/tespec-on/artifacts/report.json",
+    "report_sha256": "a301752af01c7ed27f1c0abf2e7bc60efb2703c4db9a37f110fccdde6f731bdc",
+    "status": "PASS",
+    "source_unchanged": true,
+    "expected_unchanged": true
+  },
+  "group": "add_two_array",
+  "variant": "cn_original:add_two_array",
+  "paired_qcp_variant": "qcp_existing:5736a18fda591af6509c",
+  "case": "array_5",
+  "input": {
+    "array": [
+      2,
+      3,
+      5,
+      7,
+      11
+    ],
+    "i": 3,
+    "j": 2
+  },
+  "mode": "on",
+  "expected": "PASS",
+  "automatic_status": "ERROR",
+  "final_status": "PASS",
+  "final_matches_expected": true,
+  "classification": "RESOLVED_CONFIGURATION_ERROR",
+  "triage_status": "RESOLVED",
+  "reason": "qcp_execution_error",
+  "executor_error": {
+    "Main Error Message": "fatal error: No such file uint_array.strategies in search path",
+    "fileName": "/home/yangfp/teSpec/benchmark/results/add_two_array/20261016-evaluation/cn_original_add_two_array/array_5/tespec-on/artifacts/artifacts/array_5/input.c",
+    "line": 4,
+    "column": 0,
+    "additional_info": [
+      "Include lookup checked the current file directory and configured include directories. Verify the header path or add the correct -I entry.\n"
+    ]
+  },
+  "source": "/home/yangfp/teSpec/benchmark/programs/add_two_array/variants/qcp_existing_5736a18fda591af6509c/qcp/add_two_array.qcp.c",
+  "source_sha256": "5736a18fda591af6509ccb5d5b636d01b3dcb1e16fcc251d24eb04365a436f20",
+  "binds": "benchmark/programs/add_two_array/variants/cn_original_add_two_array/tests/20261016-evaluation/array_5/binds.json",
+  "binds_sha256": "5bebe6f9b046927724acf1f2a41bc7894b761801931f3e017ea338c2c6cc2d9d",
+  "report": "benchmark/results/add_two_array/20261016-evaluation/cn_original_add_two_array/array_5/tespec-on/artifacts/report.json",
+  "report_sha256": "004c289a1d5b227d6b8ddda69e3f336b28d56050d94193f935c5f93ddfc8e0a4",
+  "stdout": "benchmark/results/add_two_array/20261016-evaluation/cn_original_add_two_array/array_5/tespec-on/stdout.log",
+  "stderr": "benchmark/results/add_two_array/20261016-evaluation/cn_original_add_two_array/array_5/tespec-on/stderr.log",
+  "original_command": [
+    "/usr/bin/python3",
+    "-m",
+    "spectest",
+    "run",
+    "/home/yangfp/teSpec/benchmark/programs/add_two_array/variants/qcp_existing_5736a18fda591af6509c/qcp/add_two_array.qcp.c",
+    "--function",
+    "array_read_two",
+    "--binds",
+    "/home/yangfp/teSpec/benchmark/programs/add_two_array/variants/cn_original_add_two_array/tests/20261016-evaluation/array_5/binds.json",
+    "--execution-mode",
+    "all-boundaries",
+    "--output-dir",
+    "/home/yangfp/teSpec/benchmark/results/add_two_array/20261016-evaluation/cn_original_add_two_array/array_5/tespec-on/artifacts",
+    "--timeout",
+    "30",
+    "--compact",
+    "--spatial-smt",
+    "--spatial-smt-timeout-ms",
+    "2000"
+  ],
+  "reproduction_command": [
+    "/usr/bin/python3",
+    "-m",
+    "spectest",
+    "run",
+    "/home/yangfp/teSpec/benchmark/programs/add_two_array/variants/qcp_existing_5736a18fda591af6509c/qcp/add_two_array.qcp.c",
+    "--function",
+    "array_read_two",
+    "--binds",
+    "/home/yangfp/teSpec/benchmark/programs/add_two_array/variants/cn_original_add_two_array/tests/20261016-evaluation/array_5/binds.json",
+    "--execution-mode",
+    "all-boundaries",
+    "--output-dir",
+    "/tmp/tespec-reproduce-f7b2be4069ba8be00606",
+    "--timeout",
+    "30",
+    "--compact",
+    "--spatial-smt",
+    "--spatial-smt-timeout-ms",
+    "2000"
+  ],
+  "vc_artifacts": [],
+  "vc_artifacts_status": "NOT_GENERATED_OR_UNAVAILABLE",
+  "residual_vcs": [],
+  "itp": {
+    "status": "NOT_PERFORMED"
+  },
+  "mode_comparison_statistics": "benchmark/results/add_two_array/20261016-evaluation-includes/statistics.json",
+  "policy": "Expected result is independently reviewed; preserve original automatic classification. UNKNOWN and unexpected ERROR are not successful detection. Final ITP verdict recorded separately.",
+  "review": {
+    "category": "HARNESS_CONFIGURATION_MISSING_STRATEGY_DEPENDENCY",
+    "tool_defect_demonstrated": false,
+    "cause": "Initial finite driver omitted manifest include_dirs; legacy universal mode also required its explicit strategy dependency next to source. Original C/spec/input bytes unchanged.",
+    "resolution": "Finite rerun passes with manifest -I; universal primary source gets byte-identical uint_array.strategies dependency, declared in group dependencies.json.",
+    "original_status_preserved": "ERROR",
+    "reproduction_notes": "To reproduce the historical missing-file error, use an isolated source/input copy with no adjacent uint_array.strategies and omit its manifest -I directory. Current canonical tree has the corrected dependency; do not remove it from the shared repository.",
+    "retry_cost_policy": "Preserve initial and corrected attempts. Reuse one matching Fulminate run. Sum actual teSpec and QCP generation retry costs."
+  }
+}

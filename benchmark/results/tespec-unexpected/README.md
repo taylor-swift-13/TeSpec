@@ -1,9 +1,25 @@
 # teSpec 不符合预期的专项台账
 
-已扫描 6 组、262 对变体与输入。最终不匹配 **0** 条；自动阶段缺口经独立 ITP 解决 **12** 条。未评测组不计为零异常。原始分类不改写，人工分析追加到 triage.json，重建不覆盖人工结论。
+已扫描 7 组、270 对变体与输入。最终不匹配 **0** 条；自动阶段缺口经独立 ITP 解决 **12** 条；另有配置错误修正 **16** 条。未评测组不计为零异常。原始分类不改写，人工分析追加到 triage.json，重建不覆盖人工结论。
 
 | 组 | 变体 | 输入 | 模式 | 预期 | 自动 | 最终 | 分类 | 证据 |
 |---|---|---|---|---|---|---|---|---|
+| add_two_array | cn_original:add_two_array | array_0 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/cee06f0904f3c2d5f9a6.json) |
+| add_two_array | cn_original:add_two_array | array_0 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/99bff782ad3cb241bda6.json) |
+| add_two_array | cn_original:add_two_array | array_1 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/00842adffecd4184a0f6.json) |
+| add_two_array | cn_original:add_two_array | array_1 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/49b8e7d27c6562c979f1.json) |
+| add_two_array | cn_original:add_two_array | array_2 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/c4fcbacfc01a2571484e.json) |
+| add_two_array | cn_original:add_two_array | array_2 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/ead4b650400ba1c65b1a.json) |
+| add_two_array | cn_original:add_two_array | array_3 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/1cf9a2973fe7d2c1934a.json) |
+| add_two_array | cn_original:add_two_array | array_3 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/63a8750bba0c2b1037f1.json) |
+| add_two_array | cn_original:add_two_array | array_4 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/bac1f3370e6d0edeeed6.json) |
+| add_two_array | cn_original:add_two_array | array_4 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/97cd5896464ea5b63087.json) |
+| add_two_array | cn_original:add_two_array | array_5 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/7eb250e42869760b9cac.json) |
+| add_two_array | cn_original:add_two_array | array_5 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/f7b2be4069ba8be00606.json) |
+| add_two_array | cn_original:add_two_array | array_6 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/2740f8c4dd00d14c3421.json) |
+| add_two_array | cn_original:add_two_array | array_6 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/e0ebb5de161fe217b4fa.json) |
+| add_two_array | cn_original:add_two_array | array_7 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/d54cdd902a4bdeff45f6.json) |
+| add_two_array | cn_original:add_two_array | array_7 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/672bd983514ce780dd7a.json) |
 | read | cn_original:read.broken | value_0 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/cf79950128cc8d076c10.json) |
 | read | cn_original:read.broken | value_1 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/b37d0c5293630ebe71d3.json) |
 | read | cn_original:read.broken | value_2 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/d3f538f8a8f84fc3417d.json) |
