@@ -6,7 +6,9 @@ import argparse, collections, hashlib, json, re, shutil
 ROOT = Path(__file__).resolve().parents[2]
 ARCHIVE = ROOT / 'arxiv/benchmark-support/selection'
 GROUPS = ROOT / 'benchmark/programs'
-REGISTRY = ARCHIVE / 'paired-mutations/grouping/existing-variants-and-results.json'
+RESULTS = ROOT / 'benchmark/results'
+MOVES = {r['old']: r['new'] for r in json.loads((RESULTS / 'relocation-map.json').read_text())['files']}
+REGISTRY = ROOT / MOVES['arxiv/benchmark-support/selection/paired-mutations/grouping/existing-variants-and-results.json']
 PREFIXES = {
     'third_party/fulminate-cn/': 'arxiv/fulminate-cn/',
     'benchmark-support/': 'arxiv/benchmark-support/',
@@ -17,8 +19,9 @@ PREFIXES = {
 def relocated(path):
     for old, new in PREFIXES.items():
         if path.startswith(old):
-            return new + path[len(old):]
-    return path
+            path = new + path[len(old):]
+            break
+    return MOVES.get(path, path)
 
 def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -35,6 +38,23 @@ def pointer_value(data, pointer):
         part = part.replace('~1', '/').replace('~0', '~')
         data = data[int(part)] if isinstance(data, list) else data[part]
     return data
+
+
+def input_payload(row, artifacts):
+    files = []
+    bindings = None
+    for aid in row.get('files', []):
+        a = artifacts[aid]
+        path = ROOT / relocated(a['path'])
+        files.append({'path': path.relative_to(ROOT).as_posix(), 'sha256': a['sha256']})
+        if path.name == 'binds.json':
+            bindings = json.loads(path.read_text())
+    if bindings is None and '/binds' in row['record_pointer']:
+        report = ROOT / relocated(artifacts[row['report']]['path'])
+        bindings = pointer_value(json.loads(report.read_text()), row['record_pointer'])
+    return {'input_set_id': row['id'], 'input_files': files, 'bindings': bindings,
+            'source_record': {'artifact': row['report'], 'pointer': row['record_pointer']},
+            'note': 'Only input data and provenance; outcomes and measurements are under benchmark/results.'}
 
 def build():
     data = load()
@@ -74,13 +94,19 @@ def build():
                 row = dict(inputs[key])
                 if row.get('locator_kind') != 'embedded_c_function':
                     report = ROOT / relocated(artifacts[row['report']]['path'])
-                    extracted = pointer_value(json.loads(report.read_text()), row['record_pointer'])
+                    extracted = input_payload(row, artifacts)
                     testcase = folder / 'tests/cases' / (key + '.json')
                     save(testcase, extracted)
                     row['materialized_input_record'] = testcase.relative_to(ROOT).as_posix()
                 test_entries.append(row)
             save(folder / 'tests/inputs.json', test_entries)
-            save(folder / 'tests/results.json', [results[k] for k in v['result_ids']])
+            result_path = RESULTS / 'historical/grouped' / family['family'] / 'variants' / slug / 'tests/results.json'
+            save(result_path, [results[k] for k in v['result_ids']])
+            entry['results_file'] = result_path.relative_to(ROOT).as_posix()
+            live_index = RESULTS / family['family'] / 'index.json'
+            if live_index.exists():
+                entry['current_tests_index'] = live_index.relative_to(ROOT).as_posix()
+            save(folder / 'manifest.json', entry)
             entries.append({'id': vid, 'manifest': (folder / 'manifest.json').relative_to(ROOT).as_posix()})
         existing_manifest = group / 'manifest.json'
         previous = json.loads(existing_manifest.read_text()) if existing_manifest.is_file() else {}
@@ -90,7 +116,7 @@ def build():
             'primary_selection_status': previous.get('primary_selection_status', 'PENDING_EXPLICIT_BINDING_TO_REUSABLE_VERIFICATION'),
             'verification_policy': 'Only designated primary requires CN/QCP formal verification; reuse matching archived proofs. Other variants require testing only.',
             'variants': entries,
-            'evidence_catalog': 'benchmark/programs/evidence.json',
+            'evidence_catalog': 'benchmark/results/evidence.json',
             'archive_registry': REGISTRY.relative_to(ROOT).as_posix(),
         }
         if 'primary_verification' in previous:
@@ -101,14 +127,14 @@ def build():
     # proof receipts are preserved. Archived path strings resolve via this map.
     evidence = dict(data)
     evidence['artifacts'] = [dict(a, archived_path=a['path'], path=relocated(a['path'])) for a in data['artifacts']]
-    save(GROUPS / 'evidence.json', evidence)
+    save(RESULTS / 'evidence.json', evidence)
     save(GROUPS / 'index.json', {'schema': 'tespec-program-groups/v1', 'groups': index, 'source_snapshot': 'arxiv/fulminate-cn', 'path_map': PREFIXES, 'policy': data['policy']})
     save(ROOT / 'arxiv/benchmark-support/path-map.json', PREFIXES)
     validate()
 
 def validate():
     original = load()
-    current = json.loads((GROUPS / 'evidence.json').read_text())
+    current = json.loads((RESULTS / 'evidence.json').read_text())
     assert len(original['families']) == 45
     original_variants = {v['id']: v for v in original['variants']}
     original_inputs = {v['id']: v for v in original['input_sets']}
@@ -130,7 +156,7 @@ def validate():
         for entry in manifest['variants']:
             path = ROOT / entry['manifest']
             v = json.loads(path.read_text())
-            assert {k: x for k, x in v.items() if k != 'files'} == {k: x for k, x in original_variants[v['id']].items() if k != 'files'}
+            assert {k: x for k, x in v.items() if k not in {'files', 'results_file', 'current_tests_index'}} == {k: x for k, x in original_variants[v['id']].items() if k not in {'files', 'results_file', 'current_tests_index'}}
             for ref in v['files'].values():
                 assert digest(ROOT / ref['path']) == ref['sha256']
                 assert digest(ROOT / ref['provenance_path']) == ref['sha256']
@@ -141,8 +167,8 @@ def validate():
                 assert {k: x for k, x in row.items() if k != 'materialized_input_record'} == original_inputs[row['id']]
                 if 'materialized_input_record' in row:
                     report = ROOT / relocated(original_artifacts[row['report']]['path'])
-                    assert json.loads((ROOT / row['materialized_input_record']).read_text()) == pointer_value(json.loads(report.read_text()), row['record_pointer'])
-            assert json.loads((path.parent / 'tests/results.json').read_text()) == [original_results[k] for k in v['result_ids']]
+                    assert json.loads((ROOT / row['materialized_input_record']).read_text()) == input_payload(row, original_artifacts)
+            assert json.loads((ROOT / v['results_file']).read_text()) == [original_results[k] for k in v['result_ids']]
             count += 1
     # Audit all archived JSON pointers, including historical UNKNOWN results.
     artifacts = {a['id']: a for a in current['artifacts']}

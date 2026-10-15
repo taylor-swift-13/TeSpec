@@ -1,0 +1,135 @@
+{
+  "spec_test": {
+    "schema": "sac-spec-test/v1",
+    "execution_semantics": "inline-preserve/v1",
+    "query_semantics": "copy-only/v1",
+    "mode": "no-expand",
+    "scope": "execution",
+    "annotation_policy": "check-preserve",
+    "completed": true,
+    "overall": "FAIL",
+    "precondition_result": "SAT",
+    "test_result": "FAIL",
+    "result_semantics": "three-valued-conjunction/v1",
+    "vc_semantics": "path-vc/v1",
+    "vc_results": [
+      {
+        "kind": "safety",
+        "name": null,
+        "line": 7,
+        "status": "VALID",
+        "path": "PROP[]\nLOCAL[\n  Temp p p_371_addr ]\nSEP[\n  store(p_371_addr, 4096, signed int*);\n  store(4096, 1, signed int) ]\n",
+        "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+      },
+      {
+        "kind": "return",
+        "name": null,
+        "line": 7,
+        "status": "INVALID",
+        "path": "PROP[]\nLOCAL[]\nSEP[\n  store(4096, 0, signed int) ]\n",
+        "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[\n  store(4096, 1, signed int) ]\n"
+      }
+    ],
+    "phases": {
+      "precondition": "SAT",
+      "safety": "PASS",
+      "postcondition": "UNKNOWN",
+      "annotations": "PASS"
+    },
+    "abstraction_events": [],
+    "limit_reason": null,
+    "architecture_bits": 32,
+    "target_layout": {
+      "schema": "sac-target-layout/v1",
+      "architecture_bits": 32,
+      "byte_order": "big",
+      "pointer_size": 4,
+      "memory_rules": "naive_C_Rules",
+      "field_address_semantics": "base-plus-byte-offset/v1",
+      "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+      "aggregates": [],
+      "aliases": []
+    },
+    "certificate": "NOT_CHECKED"
+  },
+  "preconditions": [
+    {
+      "goal": "read_precondition_wit_1",
+      "status": "SAT",
+      "proof": "auto"
+    }
+  ],
+  "fileName": "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-variants/constructed_case_c5b611b7525792d3/value_3/tespec/artifacts/artifacts/value_3/input.c",
+  "functionName": "read",
+  "loaded_strategies": [
+    "common",
+    "string_literal"
+  ],
+  "result": "success",
+  "verificationStatus": "unproved",
+  "has_manual_obligations": true,
+  "manual_obligation_count": 1,
+  "manual_obligations": [
+    {
+      "kind": "return_checker_wit",
+      "functionName": "read",
+      "fileName": "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-variants/constructed_case_c5b611b7525792d3/value_3/tespec/artifacts/artifacts/value_3/input.c",
+      "line": 7,
+      "column": 17,
+      "summary": "Cannot automatically prove that a return path satisfies the postcondition.",
+      "goal": "p@pre == 4096 &&\nold == 1 &&\n__return == 0 &&\n*p@pre == 0\n\n|--\n0 == old &&\n__return == 0 &&\n*p@pre == old\n"
+    }
+  ],
+  "errormessage": null,
+  "warningmessage": null,
+  "current_assertions": null,
+  "FunctionDerivation": null,
+  "WitnessList": [
+    {
+      "functionName": "read",
+      "Witness": {
+        "safety_checker_wit": {
+          "total": 1,
+          "auto_solved": 1,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "entailment_checker_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "return_checker_wit": {
+          "total": 1,
+          "auto_solved": 0,
+          "manual": 1,
+          "manual_witness": [
+            {
+              "line": 7,
+              "column": 17,
+              "fileName": "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-variants/constructed_case_c5b611b7525792d3/value_3/tespec/artifacts/artifacts/value_3/input.c",
+              "goal": "p@pre == 4096 &&\nold == 1 &&\n__return == 0 &&\n*p@pre == 0\n\n|--\n0 == old &&\n__return == 0 &&\n*p@pre == old\n"
+            }
+          ]
+        },
+        "partial_solve_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "which_implies_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "total_witness_count": {
+          "auto_solved": 1,
+          "manual": 1
+        }
+      }
+    }
+  ]
+}
