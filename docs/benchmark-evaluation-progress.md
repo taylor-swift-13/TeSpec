@@ -91,3 +91,5 @@ init_point 完整收尾：6 对输入，Fulminate、teSpec OFF/ON 均逐例匹�
 
 
 swap 完整收尾：10 对输入，Fulminate、teSpec OFF/ON 均逐例匹配独立预期；主程序 CN 与 QCP 1 个原始全称 VC 已编译、假设审计并独立内核检查。gpt-6.1-sol 实际 1 次调用，53,655 token；四工具分阶段时间与 RSS 已保存。完整进度 17/45，下一组 slf3_basic_inplace_double。
+
+slf3_basic_inplace_double 进行中：9 个变体记录、16 个语言文件、52 对输入；Fulminate 52/52、teSpec ON 52/52、OFF 原生 50/52，2 次独立 ITP 在既有串行控制器 32952 / 会话 51150 运行。主程序 CN/QCP 完整验证已保存，ITP 进行中成本为 PENDING。完整组数仍 17/45。

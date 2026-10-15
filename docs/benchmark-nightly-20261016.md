@@ -120,3 +120,7 @@ init_point 完整收尾：6 对输入，Fulminate、teSpec OFF/ON 均逐例匹�
 
 
 swap 完整收尾：10 对输入，Fulminate、teSpec OFF/ON 均逐例匹配独立预期；主程序 CN 与 QCP 1 个原始全称 VC 已编译、假设审计并独立内核检查。gpt-6.1-sol 实际 1 次调用，53,655 token；四工具分阶段时间与 RSS 已保存。完整进度 17/45，下一组 slf3_basic_inplace_double。
+
+slf3_basic_inplace_double 原生全部 52 对输入已执行：Fulminate 52/52、teSpec ON 52/52、OFF 50/52，2 个缺失出口 ownership 的 UNKNOWN 已保留原始状态并写入异常台账；所有已有 9 个变体记录、16 个语言文件均覆盖。主程序 CN 通过，QCP 2 原始 VC 已编译审计，独立内核检查会话 36556。实际模型 1 次、55,440 token。两次独立 ITP 已准备，串行控制器 PID 32952 / 会话 51150 已启动并等待主程序内核成功，不能重复启动；状态 work/slf3_basic_inplace_double-itp-per-execution/controller-status.json。后续先接续这两个现有会话，controller DONE 后 attach_cell_leak_itp.py --group slf3_basic_inplace_double，再 publish_group_evaluation.py / validate_group_evaluation.py 并归档 controller-invocations。全部修复成本和各执行峰值均单独保留。该组尚未完整，当前 17/45。
+
+slf3_basic_inplace_double 主程序 QCP 已独立内核通过，完整全称证明 162.712244425 秒、55,440 token、1979.03125 MiB 单进程峰值。串行 ITP 控制器已解除等待，实际开始 execution-00 的模型调用。原生报告已冻结为 results.native-before-itp.json 并锁定 SHA 后再更新汇总；2 个 UNKNOWN 仍为待处理，不能算成功。当前活跃会话为 51150，PID 32952；不要接续已结束的 primary 会话 36556 或重复启动模型。
