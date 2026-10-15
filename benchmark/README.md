@@ -1,5 +1,7 @@
 # Benchmarks
 
+程序组结构、四工具流程、ITP 和完整资源统计的约定见 [以 read 为基准的 benchmark 与评测产物模板](../docs/benchmark-and-evaluation-template.md)。
+
 CN/Fulminate benchmark 按程序组组织，入口为 [programs/index.json](programs/index.json)，共 45 组。原始 76 个 CN 文件保存在仓库的 [arxiv/fulminate-cn](../arxiv/fulminate-cn/README.md)，不在 benchmark 下存放来源快照。
 
 ```text
