@@ -1,5 +1,7 @@
 # 18 个正例的 CN / QCP / Fulminate / teSpec 实测结果
 
+> 计数更正：下表 18 项是来源变体记录，归入 8 个程序组、11 个不同正确配置。数值保留原始实测；去重视图见 [独立配置表](../../grouping/performance-distinct-positive-cases.csv)，完整别名表见 [分组性能表](../../grouping/performance-all-source-aliases.csv)。
+
 共 18 个正例、85 组冻结输入。自动阶段逐程序串行运行 3 次，以下时间为中位数；模型补证及其检查记录实际全部尝试成本。四项 QCP 模型补证均完成，假设审计均为 Closed under the global context，且逐项通过独立 coqchk。
 
 配置模型为 **gpt-6.1-sol**，共实际调用 8 次（每项 2 次，含失败和修复）。输入 475,350 token，输出 3,549 token，总计 **478,899 token**；输入中的 322,048 token 为缓存命中，已包含在输入总数中。teSpec 本批全部由自动阶段 PASS，模型 token 为 **0**。

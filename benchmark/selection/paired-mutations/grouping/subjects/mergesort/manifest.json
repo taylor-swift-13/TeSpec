@@ -1,0 +1,145 @@
+{
+  "schema": "tespec-cn-family-implementation-spec-variants/v1",
+  "family": {
+    "id": "mergesort",
+    "original_sources": [
+      "benchmark/selection/sources/fulminate-cn/src/examples/mergesort.c"
+    ],
+    "original_implementation_ids": [
+      "impl_fc8fe89e5c64e668"
+    ],
+    "constructed_case_ids": [],
+    "counts": {
+      "original_source_variants": 1,
+      "original_implementations": 1,
+      "all_original_and_constructed_implementations": 1,
+      "unique_constructed_paired_cases": 0,
+      "paired_positive_cases": 0,
+      "constructed_spec_negatives": 0,
+      "constructed_impl_negatives": 0
+    },
+    "minimum_constructed_seven_covered": false
+  },
+  "original_cn_variants": [
+    {
+      "id": "mergesort",
+      "family": "mergesort",
+      "source": "benchmark/selection/sources/fulminate-cn/src/examples/mergesort.c",
+      "sha256": "8c5d2e198f722b12a1dacc76e09955f58d25cc1ee068294b48896dd20d659018",
+      "implementation_id": "impl_fc8fe89e5c64e668",
+      "specification_id": "spec_b437b6372712024d",
+      "implementation_scope": "non-main function module; client main retained separately",
+      "functions": [
+        "mallocIntList",
+        "freeIntList",
+        "IntList_nil",
+        "IntList_cons",
+        "IntList_split",
+        "IntList_merge",
+        "IntList_mergesort"
+      ],
+      "trusted_functions": [
+        "mallocIntList",
+        "freeIntList",
+        "main"
+      ],
+      "client_main_fingerprint": "825aaad4994a4407476e3467282e06fbedc5f3635edc2c9f57f2fbe099ba292c",
+      "original_static_expected": "PASS",
+      "original_runtime_expected": "PASS",
+      "original_cn_verification": "NOT_RERUN_FOR_THIS_INDEX",
+      "qcp_original_contract_alignment": "PENDING_REVIEW",
+      "qcp_original_contract": null,
+      "constructed_aliases": [],
+      "qcp_existing_candidates": [
+        {
+          "id": "mergesort",
+          "qcp": "benchmark/selection/qcp-migration/simple/merge-sort/mergesort.qcp.c",
+          "sha256": "480d4273c94f321477a8db14aeec507b9b2f3a167e20bbbd0a49698f11bd4bd1",
+          "alignment": "RELATED_TRANSLATION_NOT_ASSUMED_ORIGINAL_CONTRACT_EQUIVALENT"
+        }
+      ]
+    }
+  ],
+  "implementations": [
+    {
+      "id": "impl_fc8fe89e5c64e668",
+      "family": "mergesort",
+      "fingerprint": "fc8fe89e5c64e668533e1858633bdf8bfd366f3f8ba15d683b547ab882c840c2",
+      "functions": [
+        "mallocIntList",
+        "freeIntList",
+        "IntList_nil",
+        "IntList_cons",
+        "IntList_split",
+        "IntList_merge",
+        "IntList_mergesort"
+      ],
+      "signatures": [
+        "struct int_list * mallocIntList ( )",
+        "void freeIntList ( struct int_list * p )",
+        "struct int_list * IntList_nil ( )",
+        "struct int_list * IntList_cons ( int h , struct int_list * t )",
+        "struct int_list_pair IntList_split ( struct int_list * xs )",
+        "struct int_list * IntList_merge ( struct int_list * xs , struct int_list * ys )",
+        "struct int_list * IntList_mergesort ( struct int_list * xs )"
+      ],
+      "scope": "non-main function module; client main retained separately",
+      "origins": [
+        {
+          "kind": "original_cn",
+          "source": "benchmark/selection/sources/fulminate-cn/src/examples/mergesort.c"
+        }
+      ],
+      "specification_ids": [
+        "spec_b437b6372712024d"
+      ]
+    }
+  ],
+  "specifications": [
+    {
+      "id": "spec_b437b6372712024d",
+      "family": "mergesort",
+      "fingerprint": "b437b6372712024daacfcf075c30602a26a87b3d84dbc100dd0f1579b42f7c1e",
+      "annotation_blocks": [
+        "trusted; requires true; ensures take u = Block<struct int_list>(return); !ptr_eq(return, NULL); @",
+        "trusted; requires take u = Block<struct int_list>(p); ensures true; @",
+        "datatype seq { Seq_Nil {}, Seq_Cons {i32 head, datatype seq tail} } predicate (datatype seq) IntList(pointer p) { if (is_null(p)) { return Seq_Nil{}; } else { take H = Owned<struct int_list>(p); take tl = IntList(H.tail); return (Seq_Cons { head: H.head, tail: tl }); } } @",
+        "function (i32) hd (datatype seq xs) { match xs { Seq_Nil {} => { 0i32 } Seq_Cons {head : h, tail : _} => { h } } } function (datatype seq) tl (datatype seq xs) { match xs { Seq_Nil {} => { Seq_Nil {} } Seq_Cons {head : _, tail : tail} => { tail } } } @",
+        "ensures take ret = IntList(return); ret == Seq_Nil{}; @",
+        "requires take l = IntList(t); ensures take ret = IntList(return); ret == Seq_Cons{ head: h, tail: l}; @",
+        "function [rec] ({datatype seq fst, datatype seq snd}) cn_split(datatype seq xs) { match xs { Seq_Nil {} => { {fst: Seq_Nil{}, snd: Seq_Nil{}} } Seq_Cons {head: h1, tail: Seq_Nil{}} => { {fst: Seq_Nil{}, snd: xs} } Seq_Cons {head: h1, tail: Seq_Cons {head : h2, tail : tl2 }} => { let P = cn_split(tl2); {fst: Seq_Cons { head: h1, tail: P.fst}, snd: Seq_Cons { head: h2, tail: P.snd}} } } } function [rec] (datatype seq) merge(datatype seq xs, datatype seq ys) { match xs { Seq_Nil {} => { ys } Seq_Cons {head: x, tail: xs1} => { match ys { Seq_Nil {} => { xs } Seq_Cons{ head: y, tail: ys1} => { (x < y) ? (Seq_Cons{ head: x, tail: merge(xs1, ys) }) : (Seq_Cons{ head: y, tail: merge(xs, ys1) }) } } } } } function [rec] (datatype seq) cn_mergesort(datatype seq xs) { match xs { Seq_Nil{} => { xs } Seq_Cons{head: x, tail: Seq_Nil{}} => { xs } Seq_Cons{head: x, tail: Seq_Cons{head: y, tail: zs}} => { let P = cn_split(xs); let L1 = cn_mergesort(P.fst); let L2 = cn_mergesort(P.snd); merge(L1, L2) } } } @",
+        "requires take Xs = IntList(xs); @",
+        "ensures take Ys = IntList(return.fst); @",
+        "ensures take Zs = IntList(return.snd); @",
+        "ensures {fst: Ys, snd: Zs} == cn_split(Xs); @",
+        "unfold cn_split(Xs); @",
+        "unfold cn_split(Xs); @",
+        "unfold cn_split(Xs); @",
+        "requires take Xs = IntList(xs); @",
+        "requires take Ys = IntList(ys); @",
+        "ensures take Zs = IntList(return); @",
+        "ensures Zs == merge(Xs, Ys); @",
+        "unfold merge(Xs, Ys); @",
+        "unfold merge(Xs, Ys); @",
+        "unfold merge(Xs, Ys); @",
+        "unfold merge(Xs, Ys); @",
+        "requires take Xs = IntList(xs); @",
+        "ensures take Ys = IntList(return); @",
+        "ensures Ys == cn_mergesort(Xs); @",
+        "unfold cn_mergesort(Xs); @",
+        "unfold cn_mergesort(Xs); @",
+        "unfold cn_mergesort(Xs); @"
+      ],
+      "origins": [
+        {
+          "kind": "original_cn",
+          "source": "benchmark/selection/sources/fulminate-cn/src/examples/mergesort.c"
+        }
+      ],
+      "implementation_ids": [
+        "impl_fc8fe89e5c64e668"
+      ]
+    }
+  ],
+  "constructed_paired_cases": []
+}

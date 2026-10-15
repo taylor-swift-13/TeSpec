@@ -1,0 +1,100 @@
+{
+  "schema": "tespec-cn-family-implementation-spec-variants/v1",
+  "family": {
+    "id": "add_two_array",
+    "original_sources": [
+      "benchmark/selection/sources/fulminate-cn/src/examples/add_two_array.c"
+    ],
+    "original_implementation_ids": [
+      "impl_09b79af7c4b715bc"
+    ],
+    "constructed_case_ids": [],
+    "counts": {
+      "original_source_variants": 1,
+      "original_implementations": 1,
+      "all_original_and_constructed_implementations": 1,
+      "unique_constructed_paired_cases": 0,
+      "paired_positive_cases": 0,
+      "constructed_spec_negatives": 0,
+      "constructed_impl_negatives": 0
+    },
+    "minimum_constructed_seven_covered": false
+  },
+  "original_cn_variants": [
+    {
+      "id": "add_two_array",
+      "family": "add_two_array",
+      "source": "benchmark/selection/sources/fulminate-cn/src/examples/add_two_array.c",
+      "sha256": "97c6f93ce57c3642744bfbc0eb13794ed75b01ca612e611e91ff1d71b885927d",
+      "implementation_id": "impl_09b79af7c4b715bc",
+      "specification_id": "spec_4624d9381d8e6bc3",
+      "implementation_scope": "non-main function module; client main retained separately",
+      "functions": [
+        "array_read_two"
+      ],
+      "trusted_functions": [
+        "main"
+      ],
+      "client_main_fingerprint": "8f053ccaadcc4803689dac2ac310e84f7ef1a883f9ffba5b8f97843ae418de6e",
+      "original_static_expected": "PASS",
+      "original_runtime_expected": "PASS",
+      "original_cn_verification": "NOT_RERUN_FOR_THIS_INDEX",
+      "qcp_original_contract_alignment": "PENDING_REVIEW",
+      "qcp_original_contract": null,
+      "constructed_aliases": [],
+      "qcp_existing_candidates": [
+        {
+          "id": "add_two_array",
+          "qcp": "benchmark/selection/qcp-migration/simple/add_two_array.qcp.c",
+          "sha256": "5736a18fda591af6509ccb5d5b636d01b3dcb1e16fcc251d24eb04365a436f20",
+          "alignment": "RELATED_TRANSLATION_NOT_ASSUMED_ORIGINAL_CONTRACT_EQUIVALENT"
+        }
+      ]
+    }
+  ],
+  "implementations": [
+    {
+      "id": "impl_09b79af7c4b715bc",
+      "family": "add_two_array",
+      "fingerprint": "09b79af7c4b715bc421dd459691ecc58fa3cc431da88e602ea053600ad90e477",
+      "functions": [
+        "array_read_two"
+      ],
+      "signatures": [
+        "unsigned int array_read_two ( unsigned int * p , int n , int i , int j )"
+      ],
+      "scope": "non-main function module; client main retained separately",
+      "origins": [
+        {
+          "kind": "original_cn",
+          "source": "benchmark/selection/sources/fulminate-cn/src/examples/add_two_array.c"
+        }
+      ],
+      "specification_ids": [
+        "spec_4624d9381d8e6bc3"
+      ]
+    }
+  ],
+  "specifications": [
+    {
+      "id": "spec_4624d9381d8e6bc3",
+      "family": "add_two_array",
+      "fingerprint": "4624d9381d8e6bc31f8e3868301c15894b81ac59bd4d4df43c67636cab7e0852",
+      "annotation_blocks": [
+        "requires take a1 = each(i32 k; 0i32 <= k && k < n) { Owned<unsigned int>(array_shift<unsigned int>(p,k)) }; 0i32 <= i && i < n; 0i32 <= j && j < n; j != i; ensures take a2 = each(i32 k; 0i32 <= k && k < n) { Owned<unsigned int>(array_shift<unsigned int>(p,k)) }; a1 == a2; return == a1[i] + a1[j]; @",
+        "extract Owned<unsigned int>, i; @",
+        "extract Owned<unsigned int>, j; @"
+      ],
+      "origins": [
+        {
+          "kind": "original_cn",
+          "source": "benchmark/selection/sources/fulminate-cn/src/examples/add_two_array.c"
+        }
+      ],
+      "implementation_ids": [
+        "impl_09b79af7c4b715bc"
+      ]
+    }
+  ],
+  "constructed_paired_cases": []
+}

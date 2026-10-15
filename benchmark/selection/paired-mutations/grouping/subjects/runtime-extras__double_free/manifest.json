@@ -1,0 +1,105 @@
+{
+  "schema": "tespec-cn-family-implementation-spec-variants/v1",
+  "family": {
+    "id": "runtime-extras__double_free",
+    "original_sources": [
+      "benchmark/selection/sources/fulminate-cn/src/examples/runtime-extras/double_free.broken.c"
+    ],
+    "original_implementation_ids": [
+      "impl_7b60cd41b229693d"
+    ],
+    "constructed_case_ids": [],
+    "counts": {
+      "original_source_variants": 1,
+      "original_implementations": 1,
+      "all_original_and_constructed_implementations": 1,
+      "unique_constructed_paired_cases": 0,
+      "paired_positive_cases": 0,
+      "constructed_spec_negatives": 0,
+      "constructed_impl_negatives": 0
+    },
+    "minimum_constructed_seven_covered": false
+  },
+  "original_cn_variants": [
+    {
+      "id": "runtime-extras__double_free.broken",
+      "family": "runtime-extras__double_free",
+      "source": "benchmark/selection/sources/fulminate-cn/src/examples/runtime-extras/double_free.broken.c",
+      "sha256": "e24ff62d76debaed42c447058deaae866b97f1ef604957e0db6db592275e4feb",
+      "implementation_id": "impl_7b60cd41b229693d",
+      "specification_id": "spec_a7a104a3a1a2bdc8",
+      "implementation_scope": "whole translation unit including main",
+      "functions": [
+        "deref",
+        "main"
+      ],
+      "trusted_functions": [
+        "deref",
+        "main"
+      ],
+      "client_main_fingerprint": "729f59a6aec407563c2826d8904eac474b358538f6af09dbbcd88890ae6f1654",
+      "original_static_expected": "NOT_SELECTED_BY_CHECK_SH",
+      "original_runtime_expected": "FAIL",
+      "original_cn_verification": "NOT_RERUN_FOR_THIS_INDEX",
+      "qcp_original_contract_alignment": "PENDING_REVIEW",
+      "qcp_original_contract": null,
+      "constructed_aliases": [],
+      "qcp_existing_candidates": [
+        {
+          "id": "double_free",
+          "qcp": "benchmark/selection/qcp-migration/supplemental/double_free/double_free.qcp.c",
+          "sha256": "45f9f4ea9a2e0cbc50db674422f769c2a045fee240ba283d3642c2987e2de8b6",
+          "alignment": "RELATED_TRANSLATION_NOT_ASSUMED_ORIGINAL_CONTRACT_EQUIVALENT"
+        }
+      ]
+    }
+  ],
+  "implementations": [
+    {
+      "id": "impl_7b60cd41b229693d",
+      "family": "runtime-extras__double_free",
+      "fingerprint": "7b60cd41b229693d17f5437f0c7929611dbd5cd42aa88400bcaa5c722dccd1cc",
+      "functions": [
+        "deref",
+        "main"
+      ],
+      "signatures": [
+        "unsigned int deref ( unsigned int * p )",
+        "int main ( )"
+      ],
+      "scope": "whole translation unit including main",
+      "origins": [
+        {
+          "kind": "original_cn",
+          "source": "benchmark/selection/sources/fulminate-cn/src/examples/runtime-extras/double_free.broken.c"
+        }
+      ],
+      "specification_ids": [
+        "spec_a7a104a3a1a2bdc8"
+      ]
+    }
+  ],
+  "specifications": [
+    {
+      "id": "spec_a7a104a3a1a2bdc8",
+      "family": "runtime-extras__double_free",
+      "fingerprint": "a7a104a3a1a2bdc821e32c58c37a9f545b9b44f8fc678531df49e42ca1d59806",
+      "annotation_blocks": [
+        "trusted; requires take v1_ = Owned(p); ensures take v2 = Owned(p); v1_ == v2; return == v1_; @",
+        "trusted; @",
+        "assert (x == 5u32); @",
+        "assert (*p == 5u32); @"
+      ],
+      "origins": [
+        {
+          "kind": "original_cn",
+          "source": "benchmark/selection/sources/fulminate-cn/src/examples/runtime-extras/double_free.broken.c"
+        }
+      ],
+      "implementation_ids": [
+        "impl_7b60cd41b229693d"
+      ]
+    }
+  ],
+  "constructed_paired_cases": []
+}

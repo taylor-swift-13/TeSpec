@@ -1,0 +1,147 @@
+{
+  "schema": "tespec-cn-family-implementation-spec-variants/v1",
+  "family": {
+    "id": "dll_add",
+    "original_sources": [
+      "benchmark/selection/sources/fulminate-cn/src/examples/Dbl_Linked_List/add.c",
+      "benchmark/selection/sources/fulminate-cn/src/examples/Dbl_Linked_List/add_orig.broken.c"
+    ],
+    "original_implementation_ids": [
+      "impl_ecca3bfb9dccb7c9"
+    ],
+    "constructed_case_ids": [],
+    "counts": {
+      "original_source_variants": 2,
+      "original_implementations": 1,
+      "all_original_and_constructed_implementations": 1,
+      "unique_constructed_paired_cases": 0,
+      "paired_positive_cases": 0,
+      "constructed_spec_negatives": 0,
+      "constructed_impl_negatives": 0
+    },
+    "minimum_constructed_seven_covered": false
+  },
+  "original_cn_variants": [
+    {
+      "id": "Dbl_Linked_List__add",
+      "family": "dll_add",
+      "source": "benchmark/selection/sources/fulminate-cn/src/examples/Dbl_Linked_List/add.c",
+      "sha256": "4a8b77bfadf395786f3b97234465f101121618196b751a49428c909751682088",
+      "implementation_id": "impl_ecca3bfb9dccb7c9",
+      "specification_id": "spec_abf7313bdf559008",
+      "implementation_scope": "whole translation unit including main",
+      "functions": [
+        "add"
+      ],
+      "trusted_functions": [],
+      "client_main_fingerprint": null,
+      "original_static_expected": "NOT_SELECTED_BY_CHECK_SH",
+      "original_runtime_expected": "NOT_SELECTED",
+      "original_cn_verification": "NOT_RERUN_FOR_THIS_INDEX",
+      "qcp_original_contract_alignment": "PENDING_REVIEW",
+      "qcp_original_contract": null,
+      "constructed_aliases": [],
+      "qcp_existing_candidates": [
+        {
+          "id": "dll_add",
+          "qcp": "benchmark/selection/qcp-migration/supplemental/dll_add/dll_add.qcp.c",
+          "sha256": "ca69c364e8e3c06211efe51bdbaec81158a82713ce57e8715f1a024d9a708523",
+          "alignment": "RELATED_TRANSLATION_NOT_ASSUMED_ORIGINAL_CONTRACT_EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "id": "Dbl_Linked_List__add_orig.broken",
+      "family": "dll_add",
+      "source": "benchmark/selection/sources/fulminate-cn/src/examples/Dbl_Linked_List/add_orig.broken.c",
+      "sha256": "a1f8dd12ce9503fd109b1dcf37e18624483053b34a7158f0cad33631c7c04521",
+      "implementation_id": "impl_ecca3bfb9dccb7c9",
+      "specification_id": "spec_4f53cda18c2baa0c",
+      "implementation_scope": "whole translation unit including main",
+      "functions": [
+        "add"
+      ],
+      "trusted_functions": [],
+      "client_main_fingerprint": null,
+      "original_static_expected": "NOT_SELECTED_BY_CHECK_SH",
+      "original_runtime_expected": "NOT_SELECTED",
+      "original_cn_verification": "NOT_RERUN_FOR_THIS_INDEX",
+      "qcp_original_contract_alignment": "PENDING_REVIEW",
+      "qcp_original_contract": null,
+      "constructed_aliases": [],
+      "qcp_existing_candidates": [
+        {
+          "id": "dll_add_orig",
+          "qcp": "benchmark/selection/qcp-migration/supplemental/dll_add_orig/dll_add_orig.qcp.c",
+          "sha256": "ca69c364e8e3c06211efe51bdbaec81158a82713ce57e8715f1a024d9a708523",
+          "alignment": "RELATED_TRANSLATION_NOT_ASSUMED_ORIGINAL_CONTRACT_EQUIVALENT"
+        }
+      ]
+    }
+  ],
+  "implementations": [
+    {
+      "id": "impl_ecca3bfb9dccb7c9",
+      "family": "dll_add",
+      "fingerprint": "ecca3bfb9dccb7c984126f3c0b4ad28a0c2a1bb78ecdd0cb4ce601a007e8254e",
+      "functions": [
+        "add"
+      ],
+      "signatures": [
+        "struct node * add ( int element , struct node * n )"
+      ],
+      "scope": "whole translation unit including main",
+      "origins": [
+        {
+          "kind": "original_cn",
+          "source": "benchmark/selection/sources/fulminate-cn/src/examples/Dbl_Linked_List/add.c"
+        },
+        {
+          "kind": "original_cn",
+          "source": "benchmark/selection/sources/fulminate-cn/src/examples/Dbl_Linked_List/add_orig.broken.c"
+        }
+      ],
+      "specification_ids": [
+        "spec_4f53cda18c2baa0c",
+        "spec_abf7313bdf559008"
+      ]
+    }
+  ],
+  "specifications": [
+    {
+      "id": "spec_abf7313bdf559008",
+      "family": "dll_add",
+      "fingerprint": "abf7313bdf5590088045fa152598d94f2133cd7603491a0b9ffc13651fede3c9",
+      "annotation_blocks": [
+        "requires take Before = Dll_at(n); ensures take After = Dll_at(return); is_null(n) ? After == Dll { left: Seq_Nil{}, curr: Node(After), right: Seq_Nil{}} : After == Dll { left: Seq_Cons{head: Node(Before).data, tail: Left(Before)}, curr: Node(After), right: Right(Before)}; @",
+        "split_case(is_null(n->prev)); @",
+        "split_case(is_null(n->next->next)); @"
+      ],
+      "origins": [
+        {
+          "kind": "original_cn",
+          "source": "benchmark/selection/sources/fulminate-cn/src/examples/Dbl_Linked_List/add.c"
+        }
+      ],
+      "implementation_ids": [
+        "impl_ecca3bfb9dccb7c9"
+      ]
+    },
+    {
+      "id": "spec_4f53cda18c2baa0c",
+      "family": "dll_add",
+      "fingerprint": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "annotation_blocks": [],
+      "origins": [
+        {
+          "kind": "original_cn",
+          "source": "benchmark/selection/sources/fulminate-cn/src/examples/Dbl_Linked_List/add_orig.broken.c"
+        }
+      ],
+      "implementation_ids": [
+        "impl_ecca3bfb9dccb7c9"
+      ]
+    }
+  ],
+  "constructed_paired_cases": []
+}

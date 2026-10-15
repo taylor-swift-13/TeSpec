@@ -1,0 +1,116 @@
+{
+  "schema": "tespec-cn-family-implementation-spec-variants/v1",
+  "family": {
+    "id": "runway__funcs2",
+    "original_sources": [
+      "benchmark/selection/sources/fulminate-cn/src/examples/runway/funcs2.c"
+    ],
+    "original_implementation_ids": [
+      "impl_5ebbfd6e5d443638"
+    ],
+    "constructed_case_ids": [],
+    "counts": {
+      "original_source_variants": 1,
+      "original_implementations": 1,
+      "all_original_and_constructed_implementations": 1,
+      "unique_constructed_paired_cases": 0,
+      "paired_positive_cases": 0,
+      "constructed_spec_negatives": 0,
+      "constructed_impl_negatives": 0
+    },
+    "minimum_constructed_seven_covered": false
+  },
+  "original_cn_variants": [
+    {
+      "id": "runway__funcs2",
+      "family": "runway__funcs2",
+      "source": "benchmark/selection/sources/fulminate-cn/src/examples/runway/funcs2.c",
+      "sha256": "75db218e01f35e32d2b4a810255aacfed7dae8cfc2ded75f0f037433bdb3c532",
+      "implementation_id": "impl_5ebbfd6e5d443638",
+      "specification_id": "spec_edbe11f9df9b98ee",
+      "implementation_scope": "whole translation unit including main",
+      "functions": [
+        "increment_Runway_Time",
+        "reset_Runway_Time",
+        "arrive",
+        "depart",
+        "switch_modes",
+        "tick"
+      ],
+      "trusted_functions": [],
+      "client_main_fingerprint": null,
+      "original_static_expected": "NOT_SELECTED_BY_CHECK_SH",
+      "original_runtime_expected": "NOT_SELECTED",
+      "original_cn_verification": "NOT_RERUN_FOR_THIS_INDEX",
+      "qcp_original_contract_alignment": "PENDING_REVIEW",
+      "qcp_original_contract": null,
+      "constructed_aliases": [],
+      "qcp_existing_candidates": [
+        {
+          "id": "runway_snapshot",
+          "qcp": "benchmark/selection/qcp-migration/supplemental/runway_snapshot/runway_snapshot.qcp.c",
+          "sha256": "15ab9261f3b027c78fe627119011f6de5570c9ff04c51052dfbbd71e6bf3bee8",
+          "alignment": "RELATED_TRANSLATION_NOT_ASSUMED_ORIGINAL_CONTRACT_EQUIVALENT"
+        }
+      ]
+    }
+  ],
+  "implementations": [
+    {
+      "id": "impl_5ebbfd6e5d443638",
+      "family": "runway__funcs2",
+      "fingerprint": "5ebbfd6e5d443638d1d20d2d47aed73fb8c3c362a544dc2de62720d9627eb75c",
+      "functions": [
+        "increment_Runway_Time",
+        "reset_Runway_Time",
+        "arrive",
+        "depart",
+        "switch_modes",
+        "tick"
+      ],
+      "signatures": [
+        "struct State increment_Runway_Time ( struct State s )",
+        "struct State reset_Runway_Time ( struct State s )",
+        "struct State arrive ( struct State s )",
+        "struct State depart ( struct State s )",
+        "struct State switch_modes ( struct State s )",
+        "struct State tick ( struct State s )"
+      ],
+      "scope": "whole translation unit including main",
+      "origins": [
+        {
+          "kind": "original_cn",
+          "source": "benchmark/selection/sources/fulminate-cn/src/examples/runway/funcs2.c"
+        }
+      ],
+      "specification_ids": [
+        "spec_edbe11f9df9b98ee"
+      ]
+    }
+  ],
+  "specifications": [
+    {
+      "id": "spec_edbe11f9df9b98ee",
+      "family": "runway__funcs2",
+      "fingerprint": "edbe11f9df9b98eea13754f0c890198d12a423e58a42b69b7c71bb6c0b05a484",
+      "annotation_blocks": [
+        "requires valid_state(s); 0i32 <= s.Runway_Time; s.Runway_Time <= 4i32; s.ModeA == ACTIVE() || s.ModeD == ACTIVE(); ensures valid_state(return); s.Plane_Counter == return.Plane_Counter; s.ModeA == return.ModeA; s.ModeD == return.ModeD; @",
+        "requires valid_state(s); ensures valid_state(return); return.Runway_Time == 0i32; s.ModeA == return.ModeA; s.ModeD == return.ModeD; s.W_A == return.W_A; s.W_D == return.W_D; s.Plane_Counter == return.Plane_Counter; @",
+        "requires valid_state(s); s.ModeA == ACTIVE() && s.W_A >= 1i32; s.Plane_Counter <= 2i32; ensures valid_state(return); s.Runway_Time == return.Runway_Time; s.ModeA == return.ModeA; s.ModeD == return.ModeD; s.W_D == return.W_D; s.W_D == 0i32 implies s.Plane_Counter == return.Plane_Counter; s.W_D > 0i32 implies s.Plane_Counter == return.Plane_Counter - 1i32; @",
+        "requires valid_state(s); s.ModeD == ACTIVE() && s.W_D >=1i32; s.Plane_Counter <= 2i32; ensures valid_state(return); s.Runway_Time == return.Runway_Time; s.ModeA == return.ModeA; s.ModeD == return.ModeD; s.W_A == return.W_A; @",
+        "requires valid_state(s); s.ModeA == ACTIVE() || s.ModeD == ACTIVE(); s.Plane_Counter == 0i32; ensures valid_state(return); return.ModeA == ACTIVE() || return.ModeD == ACTIVE(); return.ModeA == s.ModeD; return.ModeD == s.ModeA; return.W_A == s.W_A; return.W_D == s.W_D; return.Runway_Time == s.Runway_Time; s.Plane_Counter == return.Plane_Counter; @",
+        "requires valid_state(s); (i64) s.Plane_Counter < 2147483647i64; (i64) s.W_A < 2147483647i64; (i64) s.W_D < 2147483647i64; ensures valid_state(return); (s.W_A > 0i32 && s.W_D == 0i32 && s.Runway_Time == 0i32 implies return.ModeA == ACTIVE()); (s.W_D > 0i32 && s.W_A == 0i32 && s.Runway_Time == 0i32 implies return.ModeD == ACTIVE()); @"
+      ],
+      "origins": [
+        {
+          "kind": "original_cn",
+          "source": "benchmark/selection/sources/fulminate-cn/src/examples/runway/funcs2.c"
+        }
+      ],
+      "implementation_ids": [
+        "impl_5ebbfd6e5d443638"
+      ]
+    }
+  ],
+  "constructed_paired_cases": []
+}

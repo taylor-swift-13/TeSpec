@@ -1,0 +1,178 @@
+{
+  "schema": "tespec-cn-family-implementation-spec-variants/v1",
+  "family": {
+    "id": "swap_array",
+    "original_sources": [
+      "benchmark/selection/sources/fulminate-cn/src/examples/runtime-extras/swap_array.c",
+      "benchmark/selection/sources/fulminate-cn/src/examples/swap_array.c"
+    ],
+    "original_implementation_ids": [
+      "impl_3ca541e9814c659e",
+      "impl_de4a8161c02b00ef"
+    ],
+    "constructed_case_ids": [],
+    "counts": {
+      "original_source_variants": 2,
+      "original_implementations": 2,
+      "all_original_and_constructed_implementations": 2,
+      "unique_constructed_paired_cases": 0,
+      "paired_positive_cases": 0,
+      "constructed_spec_negatives": 0,
+      "constructed_impl_negatives": 0
+    },
+    "minimum_constructed_seven_covered": false
+  },
+  "original_cn_variants": [
+    {
+      "id": "runtime-extras__swap_array",
+      "family": "swap_array",
+      "source": "benchmark/selection/sources/fulminate-cn/src/examples/runtime-extras/swap_array.c",
+      "sha256": "ab281b839c149a8e93ba314b862df2bfe71ca6a2a126756af784763531ab818c",
+      "implementation_id": "impl_3ca541e9814c659e",
+      "specification_id": "spec_6eaa9bd9ead9eb0b",
+      "implementation_scope": "whole translation unit including main",
+      "functions": [
+        "swap_array",
+        "main"
+      ],
+      "trusted_functions": [
+        "main"
+      ],
+      "client_main_fingerprint": "88f2678cc02edd058501afe57d00c3ef6934e48cb1c1276a5fa65208a47f98ba",
+      "original_static_expected": "NOT_SELECTED_BY_CHECK_SH",
+      "original_runtime_expected": "PASS",
+      "original_cn_verification": "NOT_RERUN_FOR_THIS_INDEX",
+      "qcp_original_contract_alignment": "PENDING_REVIEW",
+      "qcp_original_contract": null,
+      "constructed_aliases": [],
+      "qcp_existing_candidates": [
+        {
+          "id": "runtime_swap_array",
+          "qcp": "benchmark/selection/qcp-migration/supplemental/runtime_swap_array/runtime_swap_array.qcp.c",
+          "sha256": "aa74963c9ec54dd25e1abb8d7d35b3dfeb7243f104d30bf43ee6cf20f8c1d220",
+          "alignment": "RELATED_TRANSLATION_NOT_ASSUMED_ORIGINAL_CONTRACT_EQUIVALENT"
+        }
+      ]
+    },
+    {
+      "id": "swap_array",
+      "family": "swap_array",
+      "source": "benchmark/selection/sources/fulminate-cn/src/examples/swap_array.c",
+      "sha256": "ab281b839c149a8e93ba314b862df2bfe71ca6a2a126756af784763531ab818c",
+      "implementation_id": "impl_de4a8161c02b00ef",
+      "specification_id": "spec_f69c3e4dfa813a56",
+      "implementation_scope": "non-main function module; client main retained separately",
+      "functions": [
+        "swap_array"
+      ],
+      "trusted_functions": [
+        "main"
+      ],
+      "client_main_fingerprint": "88f2678cc02edd058501afe57d00c3ef6934e48cb1c1276a5fa65208a47f98ba",
+      "original_static_expected": "PASS",
+      "original_runtime_expected": "PASS",
+      "original_cn_verification": "NOT_RERUN_FOR_THIS_INDEX",
+      "qcp_original_contract_alignment": "PENDING_REVIEW",
+      "qcp_original_contract": null,
+      "constructed_aliases": [],
+      "qcp_existing_candidates": [
+        {
+          "id": "swap_array",
+          "qcp": "benchmark/selection/qcp-migration/simple/swap_array.qcp.c",
+          "sha256": "941a4773bf094e5039fce0f144890d7feaeb9f1923772b0562cd3710ae5acf20",
+          "alignment": "RELATED_TRANSLATION_NOT_ASSUMED_ORIGINAL_CONTRACT_EQUIVALENT"
+        }
+      ]
+    }
+  ],
+  "implementations": [
+    {
+      "id": "impl_3ca541e9814c659e",
+      "family": "swap_array",
+      "fingerprint": "3ca541e9814c659e53a32799bf97882846c8d60840acaf02c605aed5b507d18f",
+      "functions": [
+        "swap_array",
+        "main"
+      ],
+      "signatures": [
+        "void swap_array ( int * p , int n , int i , int j )",
+        "int main ( )"
+      ],
+      "scope": "whole translation unit including main",
+      "origins": [
+        {
+          "kind": "original_cn",
+          "source": "benchmark/selection/sources/fulminate-cn/src/examples/runtime-extras/swap_array.c"
+        }
+      ],
+      "specification_ids": [
+        "spec_6eaa9bd9ead9eb0b"
+      ]
+    },
+    {
+      "id": "impl_de4a8161c02b00ef",
+      "family": "swap_array",
+      "fingerprint": "de4a8161c02b00ef1e51fbc24979885f58954719e2bd7a61fe93dddd6f57eabf",
+      "functions": [
+        "swap_array"
+      ],
+      "signatures": [
+        "void swap_array ( int * p , int n , int i , int j )"
+      ],
+      "scope": "non-main function module; client main retained separately",
+      "origins": [
+        {
+          "kind": "original_cn",
+          "source": "benchmark/selection/sources/fulminate-cn/src/examples/swap_array.c"
+        }
+      ],
+      "specification_ids": [
+        "spec_f69c3e4dfa813a56"
+      ]
+    }
+  ],
+  "specifications": [
+    {
+      "id": "spec_6eaa9bd9ead9eb0b",
+      "family": "swap_array",
+      "fingerprint": "6eaa9bd9ead9eb0bb9753af9ea4d836825a1eb9924a7e2013bee942f3f69880b",
+      "annotation_blocks": [
+        "requires take a1 = each(i32 k; 0i32 <= k && k < n) { Owned<int>(array_shift<int>(p,k)) }; 0i32 <= i && i < n; 0i32 <= j && j < n; j != i; ensures take a2 = each(i32 k; 0i32 <= k && k < n) { Owned<int>(array_shift<int>(p,k)) }; a2 == a1[i: a1[j], j: a1[i]]; @",
+        "extract Owned<int>, i; @",
+        "extract Owned<int>, j; @",
+        "trusted; @",
+        "assert (*third == 0i32); @",
+        "assert (*first == 2i32); @"
+      ],
+      "origins": [
+        {
+          "kind": "original_cn",
+          "source": "benchmark/selection/sources/fulminate-cn/src/examples/runtime-extras/swap_array.c"
+        }
+      ],
+      "implementation_ids": [
+        "impl_3ca541e9814c659e"
+      ]
+    },
+    {
+      "id": "spec_f69c3e4dfa813a56",
+      "family": "swap_array",
+      "fingerprint": "f69c3e4dfa813a568f737fe3c8a7e324d23ed5252a161a0692698111e38cdea0",
+      "annotation_blocks": [
+        "requires take a1 = each(i32 k; 0i32 <= k && k < n) { Owned<int>(array_shift<int>(p,k)) }; 0i32 <= i && i < n; 0i32 <= j && j < n; j != i; ensures take a2 = each(i32 k; 0i32 <= k && k < n) { Owned<int>(array_shift<int>(p,k)) }; a2 == a1[i: a1[j], j: a1[i]]; @",
+        "extract Owned<int>, i; @",
+        "extract Owned<int>, j; @"
+      ],
+      "origins": [
+        {
+          "kind": "original_cn",
+          "source": "benchmark/selection/sources/fulminate-cn/src/examples/swap_array.c"
+        }
+      ],
+      "implementation_ids": [
+        "impl_de4a8161c02b00ef"
+      ]
+    }
+  ],
+  "constructed_paired_cases": []
+}

@@ -1,0 +1,172 @@
+{
+  "schema": "tespec-cn-family-implementation-spec-variants/v1",
+  "family": {
+    "id": "slf_sized_stack",
+    "original_sources": [
+      "benchmark/selection/sources/fulminate-cn/src/examples/slf_sized_stack.c"
+    ],
+    "original_implementation_ids": [
+      "impl_3de37f0f42b2163a"
+    ],
+    "constructed_case_ids": [],
+    "counts": {
+      "original_source_variants": 1,
+      "original_implementations": 1,
+      "all_original_and_constructed_implementations": 1,
+      "unique_constructed_paired_cases": 0,
+      "paired_positive_cases": 0,
+      "constructed_spec_negatives": 0,
+      "constructed_impl_negatives": 0
+    },
+    "minimum_constructed_seven_covered": false
+  },
+  "original_cn_variants": [
+    {
+      "id": "slf_sized_stack",
+      "family": "slf_sized_stack",
+      "source": "benchmark/selection/sources/fulminate-cn/src/examples/slf_sized_stack.c",
+      "sha256": "d193f045985a01baff34a8c0c835eba066f7d20fe41c272042fb468797b6ac31",
+      "implementation_id": "impl_3de37f0f42b2163a",
+      "specification_id": "spec_31228dca9357979d",
+      "implementation_scope": "non-main function module; client main retained separately",
+      "functions": [
+        "freeUnsignedInt",
+        "mallocIntList",
+        "freeIntList",
+        "IntList_nil",
+        "IntList_cons",
+        "IntList_length",
+        "malloc_sized_stack",
+        "free_sized_stack",
+        "create",
+        "sizeOf",
+        "push",
+        "pop",
+        "top",
+        "assert_stack_structure",
+        "assert_empty"
+      ],
+      "trusted_functions": [
+        "freeUnsignedInt",
+        "mallocIntList",
+        "freeIntList",
+        "malloc_sized_stack",
+        "free_sized_stack",
+        "assert_stack_structure",
+        "assert_empty",
+        "main"
+      ],
+      "client_main_fingerprint": "69368f2b21b61bcf160b26533d2de863e6dd46e0265c961612ed355b1b9bf010",
+      "original_static_expected": "PASS",
+      "original_runtime_expected": "PASS",
+      "original_cn_verification": "NOT_RERUN_FOR_THIS_INDEX",
+      "qcp_original_contract_alignment": "PENDING_REVIEW",
+      "qcp_original_contract": null,
+      "constructed_aliases": [],
+      "qcp_existing_candidates": [
+        {
+          "id": "slf_sized_stack",
+          "qcp": "benchmark/selection/qcp-migration/simple/advanced/slf_sized_stack.qcp.c",
+          "sha256": "a69204aa541c5d8fb3cdd073f3fbb813c77329339c8d5c1ce80eaa7035f96414",
+          "alignment": "RELATED_TRANSLATION_NOT_ASSUMED_ORIGINAL_CONTRACT_EQUIVALENT"
+        }
+      ]
+    }
+  ],
+  "implementations": [
+    {
+      "id": "impl_3de37f0f42b2163a",
+      "family": "slf_sized_stack",
+      "fingerprint": "3de37f0f42b2163ac17a2402dc3e474b8d1c93d865add79b5e396494315f7169",
+      "functions": [
+        "freeUnsignedInt",
+        "mallocIntList",
+        "freeIntList",
+        "IntList_nil",
+        "IntList_cons",
+        "IntList_length",
+        "malloc_sized_stack",
+        "free_sized_stack",
+        "create",
+        "sizeOf",
+        "push",
+        "pop",
+        "top",
+        "assert_stack_structure",
+        "assert_empty"
+      ],
+      "signatures": [
+        "void freeUnsignedInt ( unsigned int * p )",
+        "struct int_list * mallocIntList ( )",
+        "void freeIntList ( struct int_list * p )",
+        "struct int_list * IntList_nil ( )",
+        "struct int_list * IntList_cons ( int h , struct int_list * t )",
+        "unsigned int IntList_length ( struct int_list * xs )",
+        "struct sized_stack * malloc_sized_stack ( )",
+        "void * free_sized_stack ( struct sized_stack * p )",
+        "struct sized_stack * create ( )",
+        "unsigned int sizeOf ( struct sized_stack * p )",
+        "void push ( struct sized_stack * p , int x )",
+        "int pop ( struct sized_stack * p )",
+        "int top ( struct sized_stack * p )",
+        "void assert_stack_structure ( struct sized_stack * p , int num_elements )",
+        "void assert_empty ( struct sized_stack * p )"
+      ],
+      "scope": "non-main function module; client main retained separately",
+      "origins": [
+        {
+          "kind": "original_cn",
+          "source": "benchmark/selection/sources/fulminate-cn/src/examples/slf_sized_stack.c"
+        }
+      ],
+      "specification_ids": [
+        "spec_31228dca9357979d"
+      ]
+    }
+  ],
+  "specifications": [
+    {
+      "id": "spec_31228dca9357979d",
+      "family": "slf_sized_stack",
+      "fingerprint": "31228dca9357979dbaa40d4928c81eecfcb386844370ef27f86b81cf0c6777c4",
+      "annotation_blocks": [
+        "trusted; requires take v = Block<int>(p); ensures true; @",
+        "trusted; requires true; ensures take u = Block<struct int_list>(return); !ptr_eq(return, NULL); @",
+        "trusted; requires take u = Block<struct int_list>(p); ensures true; @",
+        "datatype seq { Seq_Nil {}, Seq_Cons {i32 head, datatype seq tail} } predicate (datatype seq) IntList(pointer p) { if (is_null(p)) { return Seq_Nil{}; } else { take H = Owned<struct int_list>(p); take tl = IntList(H.tail); return (Seq_Cons { head: H.head, tail: tl }); } } @",
+        "function (i32) hd (datatype seq xs) { match xs { Seq_Nil {} => { 0i32 } Seq_Cons {head : h, tail : _} => { h } } } function (datatype seq) tl (datatype seq xs) { match xs { Seq_Nil {} => { Seq_Nil {} } Seq_Cons {head : _, tail : tail} => { tail } } } @",
+        "ensures take ret = IntList(return); ret == Seq_Nil{}; @",
+        "requires take l = IntList(t); ensures take ret = IntList(return); ret == Seq_Cons{ head: h, tail: l}; @",
+        "function [rec] (u32) length(datatype seq xs) { match xs { Seq_Nil {} => { 0u32 } Seq_Cons {head : h, tail : zs} => { 1u32 + length(zs) } } } @",
+        "requires take L1 = IntList(xs); ensures take L1_ = IntList(xs); L1 == L1_; return == length(L1); @",
+        "unfold length(L1); @",
+        "unfold length(L1); @",
+        "datatype SizeAndData { SD { u32 s, datatype seq d } } function (u32) get_size(datatype SizeAndData sd) { match sd { SD { s: s, d: _} => { s } } } function (datatype seq) get_data(datatype SizeAndData sd) { match sd { SD { s: _, d: d} => { d } } } predicate (datatype SizeAndData) SizedStack(pointer p) { take S = Owned<struct sized_stack>(p); let s = S.size; take d = IntList(S.data); assert(s == length(d)); return SD { s: s, d: d }; } @",
+        "trusted; requires true; ensures take u = Block<struct sized_stack>(return); @",
+        "trusted; requires take u = Block<struct sized_stack>(p); ensures true; @",
+        "ensures take S = SizedStack(return); get_size(S) == 0u32; @",
+        "unfold length(Seq_Nil {}); @",
+        "requires take S = SizedStack(p); ensures take S_ = SizedStack(p); S_ == S; return == get_size(S); @",
+        "requires take S = SizedStack(p); ensures take S_ = SizedStack(p); get_data(S_) == Seq_Cons {head:x, tail:get_data(S)}; @",
+        "unfold length (Seq_Cons {head: x, tail: get_data(S)}); @",
+        "requires take S = SizedStack(p); get_size(S) > 0u32; ensures take S_ = SizedStack(p); get_data(S_) == tl(get_data(S)); @",
+        "unfold length(get_data(S)); @",
+        "requires take S = SizedStack(p); get_size(S) > 0u32; ensures take S_ = SizedStack(p); S_ == S; return == hd(get_data(S)); @",
+        "unfold length(get_data(S)); @",
+        "function [rec] (datatype seq) construct_stack(i32 num_elements) { if (num_elements == 0i32) { Seq_Nil{} } else { let rem_stack = construct_stack(num_elements - 1i32); (Seq_Cons { head: num_elements, tail: rem_stack }) } } @",
+        "trusted; requires take S = SizedStack(p); get_data(S) == construct_stack(num_elements); get_size(S) == (u32) num_elements; ensures take S2 = SizedStack(p); S == S2; @",
+        "trusted; requires take S = SizedStack(p); get_data(S) == Seq_Nil{}; get_size(S) == 0u32; ensures take S2 = SizedStack(p); S == S2; @"
+      ],
+      "origins": [
+        {
+          "kind": "original_cn",
+          "source": "benchmark/selection/sources/fulminate-cn/src/examples/slf_sized_stack.c"
+        }
+      ],
+      "implementation_ids": [
+        "impl_3de37f0f42b2163a"
+      ]
+    }
+  ],
+  "constructed_paired_cases": []
+}
