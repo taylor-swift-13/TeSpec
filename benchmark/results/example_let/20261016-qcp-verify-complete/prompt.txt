@@ -1,0 +1,119 @@
+Fill every universally quantified Coq 8.20 proof in Candidate.v. Preserve imports, original statements, VC_Correct module implementation and Print Assumptions. PrimaryQcpGoal.v is immutable actual unbound QCP verification output. No Admitted/admit, new axioms, parameters, changed definitions or proof escapes. Edit Candidate.v only; do not read prior benchmark proof solutions, call models, or delegate. External compiler and independent kernel check are controller-owned. WSL runtime access is unavailable inside this isolated task; do not waste a call trying it. The controller can supply actual runtime declarations on a diagnostic repair. Simple entailments can be introduced directly as predicates over heaps. Avoid untyped change (forall h, _ -> _) and avoid cbv on arithmetic comparisons before lia. If an original heap witness is disjoined with a pure reduction, prefer proving the original heap witness. Preserve unchanged spatial frames directly; entailer! and the generic sepcon commutation lemma can introduce functional extensionality. Runtime sets_unfold supports only the goal or one named hypothesis, not in *. Return briefly.
+
+Actual immutable goal:
+Require Import Coq.ZArith.ZArith.
+Require Import Coq.Bool.Bool.
+Require Import Coq.Strings.String.
+Require Import Coq.Strings.Ascii.
+Require Import Coq.Lists.List.
+Require Import Coq.Classes.RelationClasses.
+Require Import Coq.Classes.Morphisms.
+Require Import Coq.micromega.Psatz.
+Require Import Coq.Sorting.Permutation.
+From AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.
+Require Import SetsClass.SetsClass. Import SetsNotation.
+From SimpleC.SL Require Import Mem SeparationLogic.
+Require Import Logic.LogicGenerator.demo932.Interface.
+Local Open Scope Z_scope.
+Local Open Scope sets.
+Local Open Scope string_scope.
+Local Open Scope list.
+Import naive_C_Rules.
+Local Open Scope sac.
+Local Open Scope Z_scope.
+
+(*----- Function example_let -----*)
+
+Definition example_let_safety_wit_1 := 
+forall (n_pre: Z) (PreH1 : (0 <= n_pre)) (PreH2 : (n_pre <= UINT_MAX)) ,
+  ((( &( "a" ) )) # UInt  |->_)
+  **  ((( &( "n" ) )) # UInt  |-> n_pre)
+|--
+  “ (1 <= INT_MAX) ” 
+  &&  “ ((INT_MIN) <= 1) ”
+.
+
+Definition example_let_safety_wit_2 := 
+forall (n_pre: Z) (PreH1 : (0 <= n_pre)) (PreH2 : (n_pre <= UINT_MAX)) ,
+  ((( &( "b" ) )) # UInt  |->_)
+  **  ((( &( "a" ) )) # UInt  |-> (unsigned_last_nbits ((n_pre + 1 )) (32)))
+  **  ((( &( "n" ) )) # UInt  |-> n_pre)
+|--
+  “ (1 <= INT_MAX) ” 
+  &&  “ ((INT_MIN) <= 1) ”
+.
+
+Definition example_let_return_wit_1 := 
+(
+forall (n_pre: Z) (PreH1 : (0 <= n_pre)) (PreH2 : (n_pre <= UINT_MAX)) ,
+  TT && emp 
+|--
+  “ ((unsigned_last_nbits (((unsigned_last_nbits ((n_pre + 1 )) (32)) + (unsigned_last_nbits ((n_pre - 1 )) (32)) )) (32)) = ((2 * n_pre ) % ( 4294967296 ) )) ”
+  &&  emp
+) \/
+(
+forall (n_pre: Z) (PreH1 : (0 <= n_pre)) (PreH2 : (n_pre <= UINT_MAX)) ,
+  TT && emp 
+|--
+  “ ((unsigned_last_nbits (((unsigned_last_nbits ((n_pre + 1 )) (32)) + (unsigned_last_nbits ((n_pre - 1 )) (32)) )) (32)) = ((2 * n_pre ) % ( 4294967296 ) )) ”
+  &&  emp
+).
+
+Definition example_let_return_wit_1_split_goal_1 := 
+forall (n_pre: Z) (PreH1 : (0 <= n_pre)) (PreH2 : (n_pre <= UINT_MAX)) ,
+  ((unsigned_last_nbits (((unsigned_last_nbits ((n_pre + 1 )) (32)) + (unsigned_last_nbits ((n_pre - 1 )) (32)) )) (32)) = ((2 * n_pre ) % ( 4294967296 ) ))
+.
+
+Module Type VC_Correct.
+
+Axiom proof_of_example_let_safety_wit_1 : example_let_safety_wit_1.
+Axiom proof_of_example_let_safety_wit_2 : example_let_safety_wit_2.
+Axiom proof_of_example_let_return_wit_1 : example_let_return_wit_1.
+
+End VC_Correct.
+
+Candidate:
+Require Import PrimaryQcpGoal.
+Require Import Coq.ZArith.ZArith.
+Require Import Coq.Bool.Bool.
+Require Import Coq.Strings.String.
+Require Import Coq.Strings.Ascii.
+Require Import Coq.Lists.List.
+Require Import Coq.Classes.RelationClasses.
+Require Import Coq.Classes.Morphisms.
+Require Import Coq.micromega.Psatz.
+Require Import Coq.Sorting.Permutation.
+From AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.
+Require Import SetsClass.SetsClass. Import SetsNotation.
+From SimpleC.SL Require Import Mem SeparationLogic.
+Require Import Logic.LogicGenerator.demo932.Interface.
+Local Open Scope Z_scope.
+Local Open Scope sets.
+Local Open Scope string_scope.
+Local Open Scope list.
+Import naive_C_Rules.
+Local Open Scope sac.
+Local Open Scope Z_scope.
+
+
+Theorem primary_example_let_safety_wit_1 : PrimaryQcpGoal.example_let_safety_wit_1.
+Proof. Admitted.
+Theorem primary_example_let_safety_wit_2 : PrimaryQcpGoal.example_let_safety_wit_2.
+Proof. Admitted.
+Theorem primary_example_let_return_wit_1 : PrimaryQcpGoal.example_let_return_wit_1.
+Proof. Admitted.
+Module PrimaryCertificate : PrimaryQcpGoal.VC_Correct.
+Definition proof_of_example_let_safety_wit_1 := primary_example_let_safety_wit_1.
+Definition proof_of_example_let_safety_wit_2 := primary_example_let_safety_wit_2.
+Definition proof_of_example_let_return_wit_1 := primary_example_let_return_wit_1.
+End PrimaryCertificate.
+Print Assumptions primary_example_let_safety_wit_1.
+Print Assumptions primary_example_let_safety_wit_2.
+Print Assumptions primary_example_let_return_wit_1.
+
+Runtime arithmetic interface: IntLib notation x % y denotes Z.rem x y; unsigned_last_nbits x n is Z.modulo x (2^n). For nonnegative a and positive b, Z.rem_mod_nonneg relates rem and modulo.
+
+Controller compiler diagnostic for actual attempt 1:
+Candidate.v line 29: Error: reference INT_MAX was not found. Runtime IntLib declares INT_MAX, INT_MIN, UINT_MAX as Notations for integer literals, NOT unfoldable definitions. Remove unfold INT_MAX, INT_MIN; lia directly. unsigned_last_nbits is defined as Z.modulo x (2^n), may require unfold unsigned_last_nbits and change concrete literal modulus before exact Hmod. Fix Candidate only; preserve every theorem and assumptions query.
+
+Actual attempt 3 compiler diagnostic: split; lia fails because pure heap assertions remain wrapped. Measured Diagnostic.v at the first safety theorem after hnf; intros h H; split yields two goals: (“ 1 <= 2147483647 ”) h and (“ -2147483648 <= 1 ”) h, where h:model. Unfold/reduce the pure assertion wrapper before lia, e.g. change (1 <= 2147483647)%Z and corresponding second literal comparison if convertible, or cbn/hnf. No arithmetic variable problem. Fix both safety proofs and preserve remaining theorem.

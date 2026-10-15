@@ -40,3 +40,13 @@ add_read 现已完整：8 对有限输入（含 2^32 回绕边界）在 Fulminat
 主程序 3 条原始通用 VC 已完成模型填写、Coq 编译审计及独立内核检查，总模型调用 2 次、168378 token，首轮未填写候选也计费。QCP 原生生成含最初策略解析失败的实际成本，Coq 审计也包含控制器命名空间导入修复的成本。此组的原始 VC 类型带 sizeof_* 解释参数，两条数组拆分证明引用 UIntArray.full_split_to_missing_i，额外依赖 Coq 标准 FunctionalExtensionality.functional_extensionality_dep。已独立编译原始目标类型及该运行时引理的假设审计，确认来源后明确标为 VERIFIED_KERNEL_CHECKED_WITH_RUNTIME_LIBRARY_ASSUMPTIONS；不是 Closed under the global context，也没有新增公理声明。
 
 目前已扫描 7 组共 270 对输入，teSpec 最终未解决不匹配为 0；另有 12 条历史自动缺口经 ITP 解决，16 条初次配置错误经输入/源码不变的重测解决。下一组 array_load。
+
+
+## 2026-10-16 夜间：const_example
+
+当前完整 8/45；const_example 7 个输入三种测试均符合预期，CN 原始主函数 foo 验证通过；QCP 原始 2 VC 全称证明、假设审计和独立内核检查完成。原配置失败及修正成本保留，不作为 teSpec 工具缺陷。array_load 客户端覆盖与 const_example_lessgood trusted-only 主函数范围缺口单独登记，均未算完整。
+
+
+## example_let 完整（2026-10-16 02:06）
+
+当前完整 9/45；累计 413 对变体/合法输入。example_let 的 16 个配对、18 个变体记录（32 个 CN/QCP 文件）、136 对输入，预期 46 PASS、90 FAIL，Fulminate、teSpec OFF/ON 均逐例 136/136。主程序 CN 验证通过；QCP 3 个原始全称 VC 全部编译并独立内核检查成功，1 个全局封闭、2 个仅原运行时地址参数 eval_addr_expr，无新公理。实际 gpt-6.1-sol 4 次调用、264,704 token，包含控制器诊断注入失败造成的重复模型尝试；全部失败编译及诊断成本已计入。QCP 总时间 308.840423 秒、最大单进程 RSS 1767.289063 MiB；四阶段分别保存。当前 teSpec 最终未解决偏差 0，read 自动阶段 12 条经 ITP 解决，另有 30 条配置错误保留并正确关联重跑（16+14）。下一组 Dbl_Linked_List__singleton；array_load 和 const_example_lessgood 的覆盖/可信入口范围缺口不算完成。

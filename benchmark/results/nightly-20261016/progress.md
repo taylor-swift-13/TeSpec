@@ -1,8 +1,8 @@
 # 夜间评测进度
 
-完整组 7/45；待补齐 38。截止北京时间 2026-10-16 08:00。
+完整组 9/45；待补齐 36。截止北京时间 2026-10-16 08:00。
 
-当前组：array_load；阶段：READY_FOR_NEXT_GROUP。
+当前组：Dbl_Linked_List__singleton；阶段：READY_FOR_NEXT_GROUP。
 
 teSpec 最终不匹配 0 条，已解决自动阶段缺口 12 条。详情见 ../tespec-unexpected/README.md；未评测组不算零异常。
 
@@ -16,11 +16,11 @@ teSpec 最终不匹配 0 条，已解决自动阶段缺口 12 条。详情见 ..
 | add_read | 完整 | [表](../add_read/result-cost.md) |
 | add_two_array | 完整 | [表](../add_two_array/result-cost.md) |
 | array_load | 待补齐 | [表](../array_load/result-cost.md) |
-| const_example | 待补齐 | [表](../const_example/result-cost.md) |
+| const_example | 完整 | [表](../const_example/result-cost.md) |
 | const_example_lessgood | 待补齐 | [表](../const_example_lessgood/result-cost.md) |
 | dll_add | 待补齐 | [表](../dll_add/result-cost.md) |
 | dll_remove | 待补齐 | [表](../dll_remove/result-cost.md) |
-| example_let | 待补齐 | [表](../example_let/result-cost.md) |
+| example_let | 完整 | [表](../example_let/result-cost.md) |
 | incr | 待补齐 | [表](../incr/result-cost.md) |
 | incr_first | 待补齐 | [表](../incr_first/result-cost.md) |
 | incr_two | 待补齐 | [表](../incr_two/result-cost.md) |

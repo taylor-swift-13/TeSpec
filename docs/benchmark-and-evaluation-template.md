@@ -337,3 +337,10 @@ SMT 的 certificate 保持 NOT_CHECKED，不能标为新 Coq 内核证书。20 �
 Coq 内核通过表示相对于实际审计出的环境假设检查通过，不自动等于 Closed under the global context。若原始 VC 类型依赖抽象 C 类型参数，须保留原始参数和类型审计。若空间库已有引理依赖 Coq 标准函数外延性，只能在组计划明确列出该标准库依赖、独立编译原始 VC 与运行时引理的 Print Assumptions、证明新增依赖确来自该引理后，报告 VERIFIED_KERNEL_CHECKED_WITH_RUNTIME_LIBRARY_ASSUMPTIONS。记录所有依赖名称、原始审计文本、来源位置及作用范围；不得新增公理声明或用任意公理消掉失败 VC。普通无此依赖的组继续按原先更严格的审计处理，不能把这类证书写成无全局假设。
 
 测试配置修正要保留原始 ERROR 和重测记录。只有同一程序/spec/binds 哈希的重测才可关联为已修复配置问题；原始分类不改，最终结果另列。重试时间全部计入，逻辑测试输入数与实际尝试数分开；每个逻辑测试的峰值取其实际各尝试峰值最大值，再对测试取算术平均。匹配的 Fulminate 测量可复用一次，不能重复计费。每轮必须保存实际执行的 evaluation-plan.executed.json；后续成本／假设元数据补注可追加，但不能改变已执行函数、输入配对或逐例预期。
+
+
+### 同组不同入口与配置修正的证据约束
+
+组内来源可含不同函数名；每个配对可在 evaluation-plan.json 的 function 字段显式覆盖全组默认函数，测试命令必须使用该入口。含 main 或 verify_main 的客户端不得因仅测试 read 帮助函数就算覆盖。无参数入口不把相同执行复制成不同输入。
+
+每次模型调用应在启动时冻结实际 prompt，并按 receipt 的 prompt_sha256 审计；不得用调用结束后被编辑的 prompt 取代。空 ghost 绑定也必须写 values:{}。若首次配置漏写空对象，保留原 ERROR 和成本，只可在两个绑定 JSON 除缺失/显式空 values 外完全相同的条件下关联重跑；不允许忽略参数或实际 ghost 值变化。

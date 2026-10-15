@@ -10,16 +10,16 @@
     "add",
     "add_read",
     "add_two_array",
+    "const_example",
+    "example_let",
     "read"
   ],
   "pending_groups": [
     "array_load",
-    "const_example",
     "const_example_lessgood",
     "Dbl_Linked_List__singleton",
     "dll_add",
     "dll_remove",
-    "example_let",
     "incr",
     "incr_first",
     "incr_two",
@@ -52,9 +52,19 @@
     "transpose",
     "zero"
   ],
-  "current_group": "array_load",
+  "current_group": "Dbl_Linked_List__singleton",
   "current_stage": "READY_FOR_NEXT_GROUP",
   "current_process_session": null,
   "unexpected_ledger": "benchmark/results/tespec-unexpected/index.json",
-  "stop_policy": "Stop at deadline or all45 complete; report real gaps and disable heartbeat. Do not claim merely historical evidence as complete."
+  "stop_policy": "Stop at deadline or all45 complete; report real gaps and disable heartbeat. Do not claim merely historical evidence as complete.",
+  "deferred_groups": {
+    "array_load": {
+      "reason": "13 language records include read helpers, fixed-region verify_main, and argument-free local-array main clients. Generic runner currently strips CN main and targets only one function per group. Need per-target client adapters and honest single-input scope before claiming all variants covered. No executions or expected results fabricated.",
+      "next_action": "Extend per-pair target and CN client adapter support, preserve original assertions and record source translation scope."
+    },
+    "const_example_lessgood": {
+      "reason": "CN source contains only trusted main, so CN verify would skip its body. QCP main has no arguments; repeating it is not multiple distinct inputs. Need an explicitly scoped untrusted derived CN driver and no-input test policy; no universal verification claim made from trusted stub.",
+      "next_action": "Preserve original source and separately bind justified driver verification input, or report trusted-only scope gap."
+    }
+  }
 }

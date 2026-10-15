@@ -37,7 +37,7 @@ def main():
                 row['fulminate_reuse']={'report':str(reuse_path.relative_to(ROOT)),'variant':vid,'case':cid,'scope':'Exact CN source and harness byte hashes match; retain actual original measurements once.'}
             else:
                 with tempfile.TemporaryDirectory(prefix='tespec-group-') as tmp:
-                    row['fulminate_pipeline']=measure([CN,'instrument','--run','--cc='+str(ROOT/'tools/benchmark/gcc-no-builtins.sh'),'--output-dir='+tmp,harness],folder/'fulminate-pipeline')
+                    row['fulminate_pipeline']=measure([CN,'instrument','--run','--cc='+str(ROOT/'tools/benchmark/gcc-no-builtins.sh'),'--output-dir='+tmp,*['-I'+str(ROOT/inc) for inc in v['files']['cn'].get('include_dirs',[])],harness],folder/'fulminate-pipeline')
                     generated=list(Path(tmp).glob('*.exec.c'))
                     for g in generated:shutil.copyfile(g,folder/g.name)
                     row['instrumented_sources']=[{'path':str((folder/g.name).relative_to(ROOT)),'sha256':sha(g)} for g in generated]
@@ -46,7 +46,7 @@ def main():
                         row['instrumented_binary_sha256']=sha(binaries[0]);m=measure([binaries[0]],folder/'fulminate-test');m['status']='PASS' if m['exit_code']==0 else 'FAIL';row['fulminate_test']=m
                     else:row['fulminate_test']={'status':'NOT_BUILT','wall_seconds':None,'resources':None,'tokens':0,'model_calls':0}
             for mode in ['off','on']:
-                dest=folder/('tespec-'+mode);m=measure([sys.executable,'-m','spectest','run',qcp,'--function',plan['function'],'--binds',binds,'--execution-mode','all-boundaries','--output-dir',dest/'artifacts','--timeout','30','--compact','--spatial-smt' if mode=='on' else '--no-spatial-smt','--spatial-smt-timeout-ms','2000',*[flag for inc in qv['files']['qcp'].get('include_dirs',[]) for flag in ['-I',str(ROOT/inc)]]],dest,timeout=90)
+                dest=folder/('tespec-'+mode);m=measure([sys.executable,'-m','spectest','run',qcp,'--function',pair.get('function',plan['function']),'--binds',binds,'--execution-mode','all-boundaries','--output-dir',dest/'artifacts','--timeout','30','--compact','--spatial-smt' if mode=='on' else '--no-spatial-smt','--spatial-smt-timeout-ms','2000',*[flag for inc in qv['files']['qcp'].get('include_dirs',[]) for flag in ['-I',str(ROOT/inc)]]],dest,timeout=90)
                 p=dest/'artifacts/report.json';m['report']=str(p.relative_to(ROOT)) if p.exists() else None;data=json.loads(p.read_text()) if p.exists() else {};m['statuses']=[x.get('status') for x in data.get('results',[])];m['status']=m['statuses'][0] if len(m['statuses'])==1 else 'ERROR';row['tespec_'+mode]=m
             save(cached,row);report['runs'].append(row);save(out/'results.json',report);print(a.group,vid,cid,row['expected'],'fulminate',row['fulminate_test']['status'],'OFF',row['tespec_off']['status'],'ON',row['tespec_on']['status'],flush=True)
     runs=report['runs'];report['summary']={'configurations':len(plan['pairings']),'variant_language_records':len(variants),'case_pairs':len(runs),'expected':dict(collections.Counter(r['expected'] for r in runs))}

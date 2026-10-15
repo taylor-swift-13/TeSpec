@@ -24,3 +24,25 @@ teSpec 专项台账入口 `benchmark/results/tespec-unexpected/README.md`、inde
 数组组若出现策略解析错误，先确认已传变体 manifest 的 include_dirs；通用主程序准备器现会把显式 include strategies 所需的同字节策略依赖放到组内源码旁，并记录 dependencies.json，适配旧通用验证解析器。有限输入重试不能覆盖旧 run：新建同组新的 run_id，保留每轮实际计划快照。publish_group_evaluation 现支持 prior_tespec_attempt_reports 的实际失败成本，以及完全同源码/harness 的 Fulminate 单次复用。异常台账会把同程序/spec/binds 的后续修正结果关联到原始 ERROR，原始分类不改写。
 
 对于确实依赖运行时数组提取引理的证明，可以按模板第 14 节显式设置 assumption_audit_policy，运行 finalize_group_qcp_runtime_audit.py 复核原始目标类型、既有库引理的假设来源并独立内核检查，输出带依赖限定的证书。只允许已审计 Coq 标准库 functional_extensionality_dep，不能接受任意公理。此脚本适配 IntArray/UIntArray.full_split_to_missing_i。
+
+
+## array_load 覆盖缺口（01:55）
+
+本组 13 个语言记录包含 read、verify_main 和无参数 main 三类目标。现通用驱动会剥离 CN main，只按全组函数执行；直接套用会漏测客户端。先暂缓，不计完整组；后续需逐配对指定函数、保留客户端断言的 CN 适配器，并明确无参数 main 只有一种语义输入，不能将重复执行冒充多个输入。
+
+
+## const_example 完整（01:59）
+
+2 个语言记录、7 个合法输入，Fulminate 与 teSpec OFF/ON 全部 7/7 符合预期。QCP 2 个原始全称 VC 全部证明、严格假设审计、独立 coqchk 成功；gpt-6.1-sol 实际调用 1 次、53,629 token。首轮缺少 required values:{} 的 14 次配置 ERROR 和全部重跑成本均保留。只允许将缺少 values 与显式空对象作精确 JSON 规范化比较，不能忽略任何实参、ghost 值或其他字段的变化。
+
+const_example_lessgood 暂缓：原 CN 只有 trusted main，直接 CN verify 不能证明其函数体；且无参数 main 不能伪造多个不同输入。需要明确派生的未信任驱动验证范围，未计为完整。下一组 example_let，逐配对函数名显式记录。
+
+
+## example_let 有限测试（02:03）
+
+18 个变体记录（32 个 CN/QCP 源文件）、16 个配对配置、136 对变体/输入。逐输入预期 46 PASS、90 FAIL，Fulminate、teSpec OFF、teSpec ON 均 136/136 符合预期。signed 与 unsigned 分别以 doubled/example_let 为入口。主程序 QCP 3 VC，模型 4 次实际调用（第 2 次控制器未成功注入诊断，重复尝试也计入），前 3 次编译失败和一次独立诊断编译全部保留。当前最终证明已编译并通过严格假设审计，正在独立内核检查，尚不提前计完整。
+
+
+## example_let 完整（2026-10-16 02:06）
+
+当前完整 9/45；累计 413 对变体/合法输入。example_let 的 16 个配对、18 个变体记录（32 个 CN/QCP 文件）、136 对输入，预期 46 PASS、90 FAIL，Fulminate、teSpec OFF/ON 均逐例 136/136。主程序 CN 验证通过；QCP 3 个原始全称 VC 全部编译并独立内核检查成功，1 个全局封闭、2 个仅原运行时地址参数 eval_addr_expr，无新公理。实际 gpt-6.1-sol 4 次调用、264,704 token，包含控制器诊断注入失败造成的重复模型尝试；全部失败编译及诊断成本已计入。QCP 总时间 308.840423 秒、最大单进程 RSS 1767.289063 MiB；四阶段分别保存。当前 teSpec 最终未解决偏差 0，read 自动阶段 12 条经 ITP 解决，另有 30 条配置错误保留并正确关联重跑（16+14）。下一组 Dbl_Linked_List__singleton；array_load 和 const_example_lessgood 的覆盖/可信入口范围缺口不算完成。

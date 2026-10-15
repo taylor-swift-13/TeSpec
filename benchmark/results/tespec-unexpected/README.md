@@ -1,6 +1,6 @@
 # teSpec 不符合预期的专项台账
 
-已扫描 7 组、270 对变体与输入。最终不匹配 **0** 条；自动阶段缺口经独立 ITP 解决 **12** 条；另有配置错误修正 **16** 条。未评测组不计为零异常。原始分类不改写，人工分析追加到 triage.json，重建不覆盖人工结论。
+已扫描 9 组、413 对变体与输入。最终不匹配 **0** 条；自动阶段缺口经独立 ITP 解决 **12** 条；另有配置错误修正 **30** 条。未评测组不计为零异常。原始分类不改写，人工分析追加到 triage.json，重建不覆盖人工结论。
 
 | 组 | 变体 | 输入 | 模式 | 预期 | 自动 | 最终 | 分类 | 证据 |
 |---|---|---|---|---|---|---|---|---|
@@ -20,6 +20,20 @@
 | add_two_array | cn_original:add_two_array | array_6 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/e0ebb5de161fe217b4fa.json) |
 | add_two_array | cn_original:add_two_array | array_7 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/d54cdd902a4bdeff45f6.json) |
 | add_two_array | cn_original:add_two_array | array_7 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/672bd983514ce780dd7a.json) |
+| const_example | cn_original:const_example | x_0 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/447fd4e5cd4527f16364.json) |
+| const_example | cn_original:const_example | x_0 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/290951de2d0afd39cb61.json) |
+| const_example | cn_original:const_example | x_1 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/1645b43bd123bbdd53a6.json) |
+| const_example | cn_original:const_example | x_1 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/5df47d8e1809b122fc2d.json) |
+| const_example | cn_original:const_example | x_2 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/2d823e904283e21d9d58.json) |
+| const_example | cn_original:const_example | x_2 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/3ed782e00a5fbe8b9824.json) |
+| const_example | cn_original:const_example | x_3 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/e20a66b9df214dab248d.json) |
+| const_example | cn_original:const_example | x_3 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/49cbbcaaa9409d80ccf0.json) |
+| const_example | cn_original:const_example | x_4 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/986adcd32235e6d59696.json) |
+| const_example | cn_original:const_example | x_4 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/5248d7701eff3656cedf.json) |
+| const_example | cn_original:const_example | x_5 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/282359bf6ffd3dca06af.json) |
+| const_example | cn_original:const_example | x_5 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/83fa75b2da7384af200e.json) |
+| const_example | cn_original:const_example | x_6 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/ebb4acfcc7c07171fec4.json) |
+| const_example | cn_original:const_example | x_6 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/703e77dcd7e7514ec521.json) |
 | read | cn_original:read.broken | value_0 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/cf79950128cc8d076c10.json) |
 | read | cn_original:read.broken | value_1 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/b37d0c5293630ebe71d3.json) |
 | read | cn_original:read.broken | value_2 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/d3f538f8a8f84fc3417d.json) |

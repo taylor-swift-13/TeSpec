@@ -3,6 +3,7 @@
 import argparse,collections,csv,io,json,statistics
 from test_read_variants import ROOT,save,sha
 from publish_abs_tool_results import stage
+from evidence_paths import same_bindings_allow_explicit_empty_values
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--group',required=True);a=p.parse_args();name=a.group
@@ -38,7 +39,7 @@ def main():
         for previous in prior_attempts:
             for old in previous['runs']:
                 new=next(r for r in runs if r['variant']==old['variant'] and r['case']==old['case'])
-                assert all(new[k]==old[k] for k in ['qcp_source_sha256','binds_sha256'])
+                assert new['qcp_source_sha256']==old['qcp_source_sha256'] and same_bindings_allow_explicit_empty_values(old,new)
                 prior_by_case.setdefault((old['variant'],old['case']),[]).append(old['tespec_'+mode])
         logical_times=[];logical_peaks=[];old_ms=[]
         for row in runs:

@@ -8,6 +8,7 @@ def main():
     p=argparse.ArgumentParser();p.add_argument('--group',required=True);p.add_argument('--task-dir',type=Path,required=True);p.add_argument('--attempt',type=int,default=1);a=p.parse_args()
     out=ROOT/'benchmark/results'/a.group/'20261016-qcp-verify-complete';assert not(out/'receipt.json').exists(),'Never overwrite recorded verification'
     nativepath=ROOT/'benchmark/results'/a.group/'20261016-primary-native/receipt.json';native=json.loads(nativepath.read_text());native_attempts=[native['qcp']]+([native['initial_configuration_attempt']] if native.get('initial_configuration_attempt') else []);native_wall=sum(m['wall_seconds'] for m in native_attempts);native_rss=max(m['resources']['max_process_rss_kib'] for m in native_attempts);task=a.task_dir;model=json.loads((task/f'attempt-{a.attempt}/model-receipt.json').read_text());assert model['exit_code']==0 and model['requested_model']=='gpt-6.1-sol'
+    actual_prompt=task/f'attempt-{a.attempt}/prompt.txt';actual_prompt=actual_prompt if actual_prompt.exists() else task/'prompt.txt';assert sha(actual_prompt)==model['prompt_sha256'],'Model prompt changed after invocation; restore original metered prompt before publication'
     src=out/'proofs';src.mkdir(parents=True,exist_ok=True)
     previous=json.loads((out/'pending-receipt.json').read_text()) if (out/'pending-receipt.json').exists() else None
     if previous:
@@ -17,7 +18,7 @@ def main():
         shutil.copyfile(src/'Candidate.v',archive/'Candidate.v')
         save(archive/'controller-receipt.json',previous)
     for name in ['model-receipt.json','usage-events.json','agent.stdout.jsonl','agent.stderr.log']:shutil.copyfile(task/f'attempt-{a.attempt}'/name,out/name)
-    shutil.copyfile(task/'prompt.txt',out/'prompt.txt');shutil.copyfile(task/f'attempt-{a.attempt}/Candidate.v',src/'Candidate.v');shutil.copyfile(task/'PrimaryQcpGoal.v',src/'PrimaryQcpGoal.v')
+    shutil.copyfile(actual_prompt,out/'prompt.txt');shutil.copyfile(task/f'attempt-{a.attempt}/Candidate.v',src/'Candidate.v');shutil.copyfile(task/'PrimaryQcpGoal.v',src/'PrimaryQcpGoal.v')
     assert sha(src/'Candidate.v')==model['candidate_sha256'];assert sha(src/'PrimaryQcpGoal.v')==model['locked_goal_and_helper_sha256']['PrimaryQcpGoal.v']==native['goal_sha256']==sha(ROOT/native['goal'])
     text=(src/'Candidate.v').read_text()
     if re.search(r'\b(?:Admitted|admit|Axiom|Parameter)\b',text):
