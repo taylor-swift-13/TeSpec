@@ -1,0 +1,140 @@
+{
+  "schema": "tespec-group-evaluation-plan/v1",
+  "program_group": "abs_mem_struct",
+  "function": "abs_y",
+  "primary_cn_variant": "cn_original:abs_mem_struct",
+  "primary_qcp_variant": "qcp_existing:74fd4027b01ad1c4ed90",
+  "run_id": "20261016-evaluation",
+  "pairings": [
+    {
+      "cn_variant": "cn_original:abs_mem_struct",
+      "qcp_variant": "qcp_existing:74fd4027b01ad1c4ed90",
+      "cases": [
+        {
+          "id": "value_0",
+          "value": -2147483647,
+          "expected": "PASS",
+          "cn_body": "struct tuple cell = { .x = 0, .y = -2147483647 }; abs_y(&cell);",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "x": 0,
+              "y": -2147483647
+            }
+          },
+          "precondition_valid": true
+        },
+        {
+          "id": "value_1",
+          "value": -7,
+          "expected": "PASS",
+          "cn_body": "struct tuple cell = { .x = 7, .y = -7 }; abs_y(&cell);",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "x": 7,
+              "y": -7
+            }
+          },
+          "precondition_valid": true
+        },
+        {
+          "id": "value_2",
+          "value": -1,
+          "expected": "PASS",
+          "cn_body": "struct tuple cell = { .x = -2147483648, .y = -1 }; abs_y(&cell);",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "x": -2147483648,
+              "y": -1
+            }
+          },
+          "precondition_valid": true
+        },
+        {
+          "id": "value_3",
+          "value": 0,
+          "expected": "PASS",
+          "cn_body": "struct tuple cell = { .x = -1, .y = 0 }; abs_y(&cell);",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "x": -1,
+              "y": 0
+            }
+          },
+          "precondition_valid": true
+        },
+        {
+          "id": "value_4",
+          "value": 1,
+          "expected": "PASS",
+          "cn_body": "struct tuple cell = { .x = 2147483647, .y = 1 }; abs_y(&cell);",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "x": 2147483647,
+              "y": 1
+            }
+          },
+          "precondition_valid": true
+        },
+        {
+          "id": "value_5",
+          "value": 7,
+          "expected": "PASS",
+          "cn_body": "struct tuple cell = { .x = 0, .y = 7 }; abs_y(&cell);",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "x": 0,
+              "y": 7
+            }
+          },
+          "precondition_valid": true
+        },
+        {
+          "id": "value_6",
+          "value": 2147483647,
+          "expected": "PASS",
+          "cn_body": "struct tuple cell = { .x = -7, .y = 2147483647 }; abs_y(&cell);",
+          "binds": {
+            "args": {
+              "p": 4096
+            },
+            "values": {
+              "x": -7,
+              "y": 2147483647
+            }
+          },
+          "precondition_valid": true
+        }
+      ]
+    }
+  ],
+  "excluded_inputs": [
+    {
+      "field": "y",
+      "value": -2147483648,
+      "reason": "Both target contracts explicitly require INT_MIN < y."
+    },
+    {
+      "pointer": 0,
+      "reason": "Owned struct and both field points-to assertions require allocated memory."
+    }
+  ],
+  "expectation_basis": "abs_y calls abs_mem on the second field, returns its mathematical absolute value, and preserves both fields; every selected tuple is in the primary precondition."
+}

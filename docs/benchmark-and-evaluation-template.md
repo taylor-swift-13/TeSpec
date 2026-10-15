@@ -305,7 +305,7 @@ python3 tools/benchmark/complete_read_pipeline.py
 
 ITP 按一次执行的全部待处理 VC 合计，展示平均成本；read 已对 12 次需要 ITP 的执行分别调用 agent、编译和独立内核复查，展示实测算术平均值，不再使用共享批次均摊。内存峰值不除以次数。ITP 小计与分项不可重复相加，缺测字段记 null／待补齐，不能补 0。完整状态要求四工具结论及必要资源字段均已发布；历史证据存在但尚未绑定时仍标待补齐，后续核对后复用。
 
-运行 `python3 tools/benchmark/build_group_cost_tables.py` 可从各工具已发布回执重建所有组的表；read 发布器自动调用它，无需重跑模型或证明。当前 45 组均有表格入口，数据齐全 1 组（read），其余 44 组待补齐；文件存在不等于评测完成。
+运行 `python3 tools/benchmark/build_group_cost_tables.py` 可从各工具已发布回执重建所有组的表；read 发布器自动调用它，无需重跑模型或证明。当前 45 组均有表格入口，已完成的组和剩余缺项以 `benchmark/results/group-result-cost-index.json` 为准；文件存在不等于评测完成。
 
 read 的最终 ITP 平均表必须同时展示平均耗时、平均 token 和平均单次进程峰值内存。内存均值来自各次独立测量的峰值，不是把总峰值除以次数；原始各次峰值及最大峰值均保留供审计。
 
@@ -318,3 +318,16 @@ read 已完成 61 对相同用例的两模式对照，共 122 次新执行。关
 SMT 的 certificate 保持 NOT_CHECKED，不能标为新 Coq 内核证书。20 条本来已 FAIL 的数值错误用例保留 residual 清单，已有决定性 INVALID 足以判 FAIL；清单条数不能当作 UNKNOWN 测试数。关闭模式完整成本仍须包含复用的 12 次 ITP，而不是把本次新调用模型次数为 0 写成没有历史证明成本。
 
 产物为 `benchmark/results/<group>/<run>-spatial-smt/{results.json,statistics.json,cases.csv,comparison.md}`；组结果与成本表链接两模式数据。read 测试时功能实现尚未提交，结果保存精确工作区模块哈希并明确这个限制。组件实现的已有未提交工作不混入 benchmark 产物提交。
+
+
+## 13. 逐组执行入口与成本审计
+
+新组可用 `benchmark/programs/<group>/evaluation-plan.json` 明确 CN/QCP 配对、主程序身份、目标函数、逐输入期望、合法前条件与排除的输入。不能由工具实际输出反推预期。`test_group_variants.py --group <group>` 按计划保留 Fulminate 插桩编译／首次执行、单独运行，以及 teSpec 显式 OFF／ON 的独立计量；单次执行不得被跨用例共享 ITP 所替代。
+
+`prepare_group_primary.py --group <group> --task-dir <隔离目录>` 只用于缺少可复用完整计量的主程序阶段。已有匹配来源、计量和证明应继续复用。原始通用 VC 字节冻结，agent 只修改 Candidate.v，必须实现原始 VC_Correct 模块接口。`measure_group_qcp_complete.py` 计量证明编译、假设审计和独立内核检查；`--attempt N` 继续计入之前所有模型尝试及失败编译。模型调用通过 Windows 计量器实际请求 gpt-6.1-sol，保存 CLI usage 事件和本地进程峰值。
+
+`publish_group_evaluation.py --group <group>` 发布四工具入口，`build_group_cost_tables.py` 重建分组结果成本表，`validate_group_evaluation.py --group <group>` 检查全部语言版本覆盖、输入／源码／日志／VC／证明哈希、预期匹配及阶段加总，不重跑实验。未解决的 UNKNOWN、非预期 ERROR 或缺测不能被发布成完整。无需 ITP 时总成本为 0，但条件均值和内存峰值不适用，不填虚假实测 0。
+
+有标准库同名函数时，使用 `tools/benchmark/gcc-no-builtins.sh` 的 `-fno-builtin`，防止编译器消除被测调用。保存插桩 C 和二进制哈希，工具无误报告不等于目标函数实际执行。`abs` 的错误优化诊断批次明确排除，正式重新计量。
+
+必须逐条记录 Print Assumptions 的真实输出。原始 VC 的类型本身若含运行时参数，例如 `eval_addr_expr : rvalue_expr -> addr`，独立内核可检查相对于该参数的证明，但这不等于 Closed under the global context；保留原始 VC 和参数定义位置，禁止改写目标来隐藏该依赖。

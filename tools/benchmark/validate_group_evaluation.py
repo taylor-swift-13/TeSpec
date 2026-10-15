@@ -24,7 +24,13 @@ def main():
     assert sha(ROOT/q['proof'])==q['proof_sha256'];assert sha(ROOT/q['original_goal'])==q['original_goal_sha256'];assert sha(ROOT/q['goal'])==q['original_goal_sha256']
     candidate=(ROOT/q['proof']).read_text();assert not re.search(r'\b(?:Admitted|admit|Axiom|Parameter)\b',candidate)
     model=q['model'];assert model['requested_model']=='gpt-6.1-sol' and model['exit_code']==0;assert sha((ROOT/idx['qcp_receipt']).parent/'agent.stdout.jsonl')==model['raw_event_log_sha256']
-    stat=load(b/'qcp/statistics.json');assert abs(sum(x['wall_seconds'] for x in stat['stages'])-stat['wall_seconds'])<1e-7;assert stat['tokens']==sum(u['input_tokens']+u['output_tokens'] for u in model['token_usage'])
+    for attempt_model in q.get('models',[model]):
+        assert attempt_model['locked_goal_and_helper_sha256']['PrimaryQcpGoal.v']==q['original_goal_sha256']
+        folder=(ROOT/idx['qcp_receipt']).parent if attempt_model is model or attempt_model==model else (ROOT/idx['qcp_receipt']).parent/'model-attempts'/('attempt-'+str(attempt_model['attempt']))
+        assert sha(folder/'agent.stdout.jsonl')==attempt_model['raw_event_log_sha256']
+        assert sha(folder/'prompt.txt')==attempt_model['prompt_sha256']
+        if folder.name.startswith('attempt-'):assert sha(folder/'Candidate.v')==attempt_model['candidate_sha256']
+    stat=load(b/'qcp/statistics.json');assert abs(sum(x['wall_seconds'] for x in stat['stages'])-stat['wall_seconds'])<1e-7;assert stat['tokens']==sum(u['input_tokens']+u['output_tokens'] for m in q.get('models',[model]) for u in m['token_usage'])
     modes=load(ROOT/manifest['test_modes_statistics']);assert modes['results_sha256']==sha(ROOT/idx['evaluation']);assert modes['case_pairs']==len(runs)
     for mode in ['off','on']:
         assert modes['modes'][mode]['expected_matches']==sum(r['tespec_'+mode]['status']==r['expected'] for r in runs)

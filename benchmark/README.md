@@ -18,7 +18,7 @@ benchmark/programs/
         cases/<输入记录 ID>.json
 ```
 
-CN/QCP 文件仅在已有对应版本时出现；不伪造缺失的翻译。变体允许实现、规约或两者改变，不规定正负比例。每组仅主程序需要形式验证，优先复用匹配的 CN/QCP 历史验证和 Coq 证明；其他变体只要求多用例测试。目前主程序的显式绑定仍待整理，`primary_variant: null` 不代表旧证明失效，也不表示已完成绑定。
+CN/QCP 文件仅在已有对应版本时出现；不伪造缺失的翻译。变体允许实现、规约或两者改变，不规定正负比例。每组仅主程序需要形式验证，优先复用匹配的 CN/QCP 历史验证和 Coq 证明；其他变体只要求多用例测试。主程序按组逐一绑定并补齐计量，进度见 [评测进度](../docs/benchmark-evaluation-progress.md) 和 [每组结果与成本表](results/group-result-cost-index.md)。`primary_variant: null` 不代表旧证明失效，也不表示已完成绑定。
 
 测试输入按变体归入组内；所有原始结果、日志和统计数据统一保存在 `benchmark/results/`，组内清单仅引用结果路径。历史 main 的存在不代表已执行；输入集合可含多个用例，不能把集合数当用例数。已有测试未覆盖的变体仍保留缺口。
 
@@ -36,12 +36,11 @@ benchmark/results/
   read/20261015-variants/      read 组新补的多用例测试、日志和统计
 ```
 
-`read` 本轮覆盖 10 个配对配置、13 条版本记录、61 对变体与输入。Fulminate 运行 61 次，teSpec 运行 61 次；UNKNOWN、ERROR 与 FAIL 分开统计。其他程序组尚未补齐的测试仍保留为缺口。
+`read` 本轮覆盖 10 个配对配置、13 条版本记录、61 对变体与输入。Fulminate 运行 61 次，teSpec 运行 61 次；UNKNOWN、ERROR 与 FAIL 分开统计。新补齐的 abs、abs_mem 等组也各有四工具结果、空间 SMT OFF／ON 对照和完整成本表，具体完成范围以统一索引为准。其他程序组尚未补齐的测试仍保留为缺口。
 
 重建与审计：
 
 ```sh
-python3 tools/benchmark/build_program_groups.py
 python3 tools/benchmark/build_program_groups.py --check
 python3 tools/benchmark/audit_archive.py
 ```
