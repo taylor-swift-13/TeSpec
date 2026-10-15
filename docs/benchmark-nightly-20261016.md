@@ -162,3 +162,5 @@ slf17_get_and_free 已跑全部现有变体、12 组合法输入：Fulminate 12/
 slf18_two_dice 已跑全部现有变体、14 组合法输入：Fulminate 14/14，teSpec OFF/ON 各 14 UNKNOWN（入口 SAT，外部 rand 无函数体，执行未完成、无原始残余目标）。原 CN 因外部接口没有规约而拒绝，失败时间/RSS 单列。QCP 主程序独立完成 11 个原始全称 VC、编译与假设审计及完整 coqchk；所有 gpt-6.1-sol 尝试都计入成本，验证证书不替代测试执行。假设限定见 receipt；不声称全部全局闭合。该组仍不完整，完整进度保持 20/45。
 
 init_array 的首个正向逐执行 ITP 已实际完成：未初始化前向数组 n=0、OFF 的两个原始残余 VC 全部证明、编译、原始语句参数对照审计及独立 coqchk 通过。原始 UNKNOWN 保留，最终追加 PASS；没有新增证明公理，原 VC 内的 sizeof_* 类型参数如实披露。另 23 个模式执行的独立任务已冻结，由 PID19472/session16301 串行控制器继续实际 gpt-6.1-sol、所有修复、编译审计和内核计量；首个任务的三个审计诊断调用也计入真实时间/RSS。完整组仍20/45，当前已扫描26组，不能把已有同源历史证明或未执行完的外部调用算成完整组。
+
+init_array 空间 SMT 门控已逐例核实：12 个原生 UNKNOWN 的 ON 执行均入口 SAT、scope=execution、执行完成、返回码0、无执行器错误，但包含 loop-invariant 抽象事件；spectest/spatial_smt.py 的资格检查因此返回 original_execution_not_eligible，attempted=0。不是已经送进空间 SMT 后超时/无法编码/返回 UNKNOWN，不能宣称 ON 已尝试这些目标。门控避免把抽象路径误作具体反例，不能盲目删除；后续应先证明抽象义务并建立原始 VC ID 的完整覆盖，再决定可细化范围。本轮仅记录，没有修改执行器或空间 SMT 逻辑。已完成的正向 ITP 则证明本次全部原始残余目标后才追加 PASS。
