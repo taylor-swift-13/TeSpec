@@ -117,3 +117,6 @@ slf_quadruple_mem 完整收尾：7 对输入，Fulminate、teSpec OFF/ON 均逐�
 init_point 完整收尾：6 对输入，Fulminate、teSpec OFF/ON 均逐例匹配独立预期；主程序 CN 与 QCP 5 个原始全称 VC 已编译、假设审计并独立内核检查。gpt-6.1-sol 实际 3 次调用，289,725 token；四工具分阶段时间与 RSS 已保存。完整进度 16/45，下一组 swap。
 
 03:48 补充：只读取得内核日志，03:39:54 的 coqc OOM kill 已确认并保存 SHA，详见 init_point/20261016-qcp-verify-complete/kernel-coqc-oom.raw.log。最终 QCP 的 592.255846108 秒、10,692.5546875 MiB 峰值包含全部失败尝试，不用成功重试的较小成本覆盖它。新的 proof prompt 加入实际 ConAssertion 命名空间及逐点 join 定义，避免再次因缺上下文而搜索具体堆。
+
+
+swap 完整收尾：10 对输入，Fulminate、teSpec OFF/ON 均逐例匹配独立预期；主程序 CN 与 QCP 1 个原始全称 VC 已编译、假设审计并独立内核检查。gpt-6.1-sol 实际 1 次调用，53,655 token；四工具分阶段时间与 RSS 已保存。完整进度 17/45，下一组 slf3_basic_inplace_double。
