@@ -6,7 +6,8 @@ import collections, csv, hashlib, io, json, subprocess, sys
 ROOT = Path(__file__).resolve().parents[2]
 RESULTS = ROOT / 'benchmark/results'
 RAW = RESULTS / 'read/20261015-variants/results.json'
-ITP = RESULTS / 'read/20261015-itp-metered'
+INDEPENDENT_ITP = RESULTS / 'read/20261015-itp-per-execution'
+ITP = INDEPENDENT_ITP if (INDEPENDENT_ITP/'receipt.json').is_file() else RESULTS / 'read/20261015-itp-metered'
 OUT = RESULTS / 'read/complete'
 
 def sha(p):
@@ -19,7 +20,7 @@ def save(p, data):
 def main():
     # Audit existing observations and proof receipts; no execution or proof rerun.
     subprocess.run([sys.executable, str(ROOT/'tools/benchmark/validate_read_results.py')], check=True)
-    subprocess.run([sys.executable, str(ROOT/'tools/benchmark/validate_metered_read_itp.py')], check=True)
+    subprocess.run([sys.executable, str(ROOT/'tools/benchmark/read_itp_per_execution.py'), 'validate'] if ITP==INDEPENDENT_ITP else [sys.executable, str(ROOT/'tools/benchmark/validate_metered_read_itp.py')], check=True)
     raw = json.loads(RAW.read_text())
     receipt = json.loads((ITP/'receipt.json').read_text())
     adjudication = json.loads((ITP/'resolved-results.json').read_text())
@@ -37,7 +38,9 @@ def main():
             assert sha(ROOT/proof['original_goal']) == proof['original_goal_sha256']
             stage.update(status='REFUTED_KERNEL_CHECKED', receipt=(ITP/'receipt.json').relative_to(ROOT).as_posix(),
                          proof=proof['proof'], goal_compile=proof['goal_compile'], refutation_compile=proof['refutation_compile'],
-                         shared_stages='Shared helper compilation, failed authoring attempts and independent kernel replay are counted once in aggregate metrics.')
+                         shared_stages='Each execution has its own model task, helper/goal/proof compilation and independent kernel replay; all attempts counted.' if ITP==INDEPENDENT_ITP else 'Shared batch stages counted once.')
+            if ITP==INDEPENDENT_ITP:
+                stage.update(execution_receipt=proof['itp_receipt'],metrics=proof['itp_metrics'])
             final = 'FAIL'
         elif status == 'UNKNOWN':
             stage['status'] = 'PENDING'
@@ -70,7 +73,7 @@ def main():
         'itp_kernel_wall_seconds':measured['kernel_wall_seconds'],
         'itp_wall_seconds_total':measured_itp,
         'measured_complete_stage_wall_seconds_total':execution_time+measured_itp,
-        'timing_scope':'Execution measurements reused from unchanged source/input hashes plus a fresh fully metered gpt-6.1-sol ITP run. All model, compilation and independent kernel work in this run counted once. The older unmetered authoring run remains historical and is not retroactively assigned these costs.',
+        'timing_scope':'Execution measurements reused from unchanged source/input hashes; ITP independently measured per required test execution, all attempts included.' if ITP==INDEPENDENT_ITP else 'Historical execution plus shared metered batch ITP.',
         'execution_peak_process_rss_kib':execution_rss,
         'itp_coq_peak_process_rss_kib':measured['coq_peak_process_rss_kib'],
         'itp_model_client_peak_working_set_bytes':measured['model_client_peak_working_set_bytes'],
@@ -84,7 +87,8 @@ def main():
         'itp_token_usage':measured['token_usage'],
         'complete_tokens':measured['token_usage']['total_tokens'],
         'missing_metrics':[],
-        'sharing_policy':'One shared ITP model call, common helper compilation and kernel replay counted once for the batch; no multiplication or arbitrary per-case allocation.',
+        'itp_measurement_mode':measured.get('measurement_mode','SHARED_BATCH'),
+        'sharing_policy':'One independent ITP per required test execution; no cross-case model call or kernel replay sharing.' if ITP==INDEPENDENT_ITP else 'Shared batch counted once.',
         'reuse_scope':measured['reuse_definition']}
     summary = {'paired_configurations':10,'variant_records_covered':13,'case_pairs':61,
                'execution_stage_counts':dict(collections.Counter(c['execution_stage']['statuses'][0] for c in cases)),

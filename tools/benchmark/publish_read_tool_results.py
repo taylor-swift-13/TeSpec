@@ -5,6 +5,7 @@ import collections, csv, hashlib, io, json, subprocess, sys
 
 ROOT=Path(__file__).resolve().parents[2]
 OUT=ROOT/'benchmark/results/read'
+ITP=OUT/'20261015-itp-per-execution' if (OUT/'20261015-itp-per-execution/receipt.json').is_file() else OUT/'20261015-itp-metered'
 PRIMARY='constructed:case_6d90d7cd08323aa9'
 
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
@@ -13,8 +14,8 @@ def save(p,d):p.parent.mkdir(parents=True,exist_ok=True);p.write_text(json.dumps
 def split_proof_stages(tool, metrics, receipt):
     """Derive disjoint measured stages; never attribute agent/Coq cost to VC generation."""
     qcp=tool=='qcp'
-    compilation=receipt['compilation']
-    kernel=receipt['kernel_check']
+    compilation=receipt.get('compilation') or [s for a in receipt['attempts'] for s in a['compilation']]
+    kernels=[receipt['kernel_check']] if 'kernel_check' in receipt else [a['kernel_check'] for a in receipt['attempts'] if 'kernel_check' in a]
     usage=metrics['token_usage'] if qcp else metrics['itp_token_usage']
     rows=[]
     def add(stage, seconds, memory_bytes, tokens=0, model=None):
@@ -31,14 +32,14 @@ def split_proof_stages(tool, metrics, receipt):
         usage['total_tokens'],metrics['requested_model'])
     add('coq_compilation_and_assumption_audit',sum(r['wall_seconds'] for r in compilation),
         max(r['resources']['max_process_rss_kib'] for r in compilation)*1024)
-    add('independent_kernel_check',kernel['wall_seconds'],kernel['resources']['max_process_rss_kib']*1024)
+    add('independent_kernel_check',sum(k['wall_seconds'] for k in kernels),max(k['resources']['max_process_rss_kib'] for k in kernels)*1024)
     total=metrics['wall_seconds'] if qcp else metrics['measured_complete_stage_wall_seconds_total']
     assert abs(sum(r['wall_seconds'] for r in rows)-total)<1e-8
     assert sum(r['total_tokens'] for r in rows)==usage['total_tokens']
     peak=metrics['peak_process_resident_bytes'] if qcp else metrics['complete_peak_process_resident_bytes']
     assert max(r['peak_process_resident_bytes'] for r in rows)==peak
     metrics['stages']=rows
-    metrics['stage_accounting_note']='Disjoint measured stages: generation/execution, agent proof filling, Coq compilation/audit, independent kernel check. Generation includes native automatic processing; no finer timing was collected. Agent wall time is the measured CLI invocation, not remote inference alone. Shared batch work counted once.'
+    metrics['stage_accounting_note']='Disjoint measured stages: generation/execution, agent proof filling, Coq compilation/audit, independent kernel check. Generation includes native automatic processing; no finer timing was collected. Agent wall time is the measured CLI invocation, not remote inference alone. Independent per-execution work is summed once; legacy shared batch counted once.'
     return rows
 
 def main():
@@ -111,17 +112,20 @@ def main():
     # Publish the complete test (including ITP), not just the native execution stage.
     result={'schema':'tespec-read-tool-result/v1','tool':'tespec','scope':'Complete finite testing: execution plus required ITP generation, compilation/audit and independent kernel replay.',
             'complete_result':'benchmark/results/read/complete/results.json','summary':complete['summary'],'cases':complete['cases']}
-    split_proof_stages('tespec',complete['metrics'],json.loads((OUT/'20261015-itp-metered/attempt-1/coq-receipt.json').read_text()))
+    split_proof_stages('tespec',complete['metrics'],json.loads((ITP/'receipt.json' if ITP.name=='20261015-itp-per-execution' else ITP/'attempt-1/coq-receipt.json').read_text()))
     save(OUT/'complete/statistics.json',{'summary':complete['summary'],'metrics':complete['metrics']})
     save(OUT/'complete/results.json',complete)
     save(OUT/'tespec/results.json',result);save(OUT/'tespec/statistics.json',complete['metrics'])
     entries['tespec']={'results':(OUT/'tespec/results.json').relative_to(ROOT).as_posix(),'statistics':(OUT/'tespec/statistics.json').relative_to(ROOT).as_posix(),'correct':61,'total':61,'scope':'variant_finite_testing_plus_itp'}
     # User-requested read presentation: mean ITP cost per execution requiring ITP.
     m=complete['metrics'];n=complete['summary']['itp_required']
+    independent=m.get('itp_measurement_mode')=='INDEPENDENT_PER_TEST_EXECUTION'
     mean={'schema':'tespec-itp-per-execution-mean/v1','tool':'tespec','group':'read',
           'unit':'One test execution requiring ITP, including all its unresolved VCs and proof repairs/checks',
-          'estimation':'Shared batch measurement divided by 12 executions; estimated allocation, not independently measured per execution.',
-          'executions_requiring_itp':n,'display_policy':'Show mean ITP costs only; preserve raw batch totals in source receipts.',
+          'estimation':'NONE: arithmetic mean of independently measured execution ITP costs, including every attempt.' if independent else 'Shared batch measurement divided by 12 executions; estimated allocation, not independently measured per execution.',
+          'estimated':not independent,
+          'measurement_mode':m.get('itp_measurement_mode','SHARED_BATCH'),
+          'executions_requiring_itp':n,'display_policy':'Show mean ITP costs only; preserve raw per-execution records and aggregate totals in source receipts.',
           'mean_agent_proof_filling_seconds':m['itp_model_generation_wall_seconds']/n,
           'mean_coq_compile_audit_seconds':m['itp_compile_audit_wall_seconds']/n,
           'mean_independent_kernel_check_seconds':m['itp_kernel_wall_seconds']/n,
@@ -130,12 +134,12 @@ def main():
           'mean_output_tokens':m['itp_token_usage']['output_tokens']/n,
           'mean_total_tokens':m['complete_tokens']/n,
           'model':m['requested_model'],
-          'memory_note':'Batch process peak is not divided or described as mean per-execution memory.',
-          'source':'benchmark/results/read/20261015-itp-metered/receipt.json'}
+          'memory_note':'Maximum measured process peak across independent runs; never divide peak memory.' if independent else 'Batch process peak is not divided.',
+          'source':(ITP/'receipt.json').relative_to(ROOT).as_posix()}
     save(OUT/'tespec/itp-average.json',mean)
     (OUT/'tespec/itp-average.md').write_text(
-        '# read ITP 平均开销\n\n'
-        '以需要 ITP 的 12 次测试执行为分母；同次执行的所有待处理 VC 合计为一次 ITP。以下是共享批次均摊估算，不是逐次独立实测；不按定理数计数。\n\n'
+        '# read ITP 平均开销\n\n' +
+        ('12 次测试执行各自独立调用 agent、编译并做内核检查；同次执行的全部待处理 VC 合计为一次 ITP。以下展示逐次实测的算术平均值，含重试开销。\n\n' if independent else '共享批次按 12 次执行均摊估算。\n\n') +
         '| 项目 | 每次测试执行的平均值 |\n|---|---:|\n'
         f"| agent 填写证明 | {mean['mean_agent_proof_filling_seconds']:.4f} 秒 |\n"
         f"| Coq 编译与审计 | {mean['mean_coq_compile_audit_seconds']:.4f} 秒 |\n"
@@ -144,7 +148,7 @@ def main():
         f"| 输入 token | {mean['mean_input_tokens']:.2f} |\n"
         f"| 输出 token | {mean['mean_output_tokens']:.2f} |\n"
         f"| 总 token | {mean['mean_total_tokens']:.2f} |\n\n"
-        '模型 gpt-6.1-sol。峰值内存不能按次数相除，不展示为每次平均内存；原始峰值和批次总量仍保留在审计数据中。\n')
+        '模型 gpt-6.1-sol。内存不按次数相除；每次执行的原始资源和完整回执保留供审计，旧共享批次仅作为历史。\n')
     m=complete['metrics'];comparison.append({'tool':'tespec','scope':'variant_finite_testing_plus_itp','result':'61/61','test_cases':61,'correct':61,'accuracy':1.0,'wall_seconds':m['measured_complete_stage_wall_seconds_total'],'peak_process_memory_mib':m['complete_peak_process_resident_mib'],'input_tokens':m['itp_token_usage']['input_tokens'],'output_tokens':m['itp_token_usage']['output_tokens'],'total_tokens':m['complete_tokens'],'model':m['requested_model']})
     stage_rows=[]
     for row in comparison:

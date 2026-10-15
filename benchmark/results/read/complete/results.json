@@ -8,7 +8,7 @@
   ],
   "provenance": {
     "raw_report_sha256": "a9018f20f5df490ddf8c355f8bb4f986c55b78ee911382580629d295108589e1",
-    "itp_receipt_sha256": "9088ff41c8f371141cfc25bac28e5ca60ce6b6c8bfeff35361c749adb6640466"
+    "itp_receipt_sha256": "d32c5b35e8c5c22c1612b663c2ec13e2bd4bdb25f694bc8ef9f9c6ea515049f2"
   },
   "summary": {
     "paired_configurations": 10,
@@ -39,35 +39,36 @@
   },
   "metrics": {
     "execution_wall_seconds_total": 10.446567319027963,
-    "itp_model_generation_wall_seconds": 56.04700000000594,
-    "itp_compile_audit_wall_seconds": 16.013147936027963,
-    "itp_kernel_wall_seconds": 129.23703187299543,
-    "itp_wall_seconds_total": 201.29717980902933,
-    "measured_complete_stage_wall_seconds_total": 211.7437471280573,
-    "timing_scope": "Execution measurements reused from unchanged source/input hashes plus a fresh fully metered gpt-6.1-sol ITP run. All model, compilation and independent kernel work in this run counted once. The older unmetered authoring run remains historical and is not retroactively assigned these costs.",
+    "itp_model_generation_wall_seconds": 839.7790000000241,
+    "itp_compile_audit_wall_seconds": 50.067249220010126,
+    "itp_kernel_wall_seconds": 1524.593138778946,
+    "itp_wall_seconds_total": 2414.4393879989802,
+    "measured_complete_stage_wall_seconds_total": 2424.885955318008,
+    "timing_scope": "Execution measurements reused from unchanged source/input hashes; ITP independently measured per required test execution, all attempts included.",
     "execution_peak_process_rss_kib": 20204,
-    "itp_coq_peak_process_rss_kib": 2037252,
-    "itp_model_client_peak_working_set_bytes": 197382144,
-    "itp_peak_process_resident_bytes": 2086146048,
-    "complete_peak_process_resident_bytes": 2086146048,
-    "complete_peak_process_resident_mib": 1989.50390625,
-    "memory_scope": "Maximum process resident memory across sequential stages: Linux GNU time %M for Coq and observed Windows process PeakWorkingSet for model client. Remote service/GPU memory excluded; not aggregate simultaneous process-tree RSS.",
+    "itp_coq_peak_process_rss_kib": 2084372,
+    "itp_model_client_peak_working_set_bytes": 198868992,
+    "itp_peak_process_resident_bytes": 2134396928,
+    "complete_peak_process_resident_bytes": 2134396928,
+    "complete_peak_process_resident_mib": 2035.51953125,
+    "memory_scope": "Largest measured local process resident memory across independent execution ITP runs; not a sum or divided batch peak.",
     "requested_model": "gpt-6.1-sol",
     "execution_model_calls": 0,
     "execution_tokens": 0,
-    "itp_model_calls": 1,
+    "itp_model_calls": 17,
     "itp_token_usage": {
-      "input_tokens": 132469,
-      "cached_input_tokens": 109184,
+      "input_tokens": 1519776,
+      "cached_input_tokens": 1143552,
       "cache_write_input_tokens": 0,
-      "output_tokens": 1446,
-      "reasoning_output_tokens": 434,
-      "total_tokens": 133915
+      "output_tokens": 14776,
+      "reasoning_output_tokens": 3211,
+      "total_tokens": 1534552
     },
-    "complete_tokens": 133915,
+    "complete_tokens": 1534552,
     "missing_metrics": [],
-    "sharing_policy": "One shared ITP model call, common helper compilation and kernel replay counted once for the batch; no multiplication or arbitrary per-case allocation.",
-    "reuse_scope": "The checked concrete-heap helper is reused, recompiled and counted. All 36 refutation/entry statements were freshly completed by the metered model; previous refutation solutions were not supplied.",
+    "itp_measurement_mode": "INDEPENDENT_PER_TEST_EXECUTION",
+    "sharing_policy": "One independent ITP per required test execution; no cross-case model call or kernel replay sharing.",
+    "reuse_scope": "Only the checked concrete-heap helper is reused; separately recompiled within each execution. One isolated model proof task and independent kernel replay per execution; all attempts counted.",
     "stages": [
       {
         "tool": "tespec",
@@ -83,20 +84,20 @@
       {
         "tool": "tespec",
         "stage": "agent_proof_filling",
-        "wall_seconds": 56.04700000000594,
-        "peak_process_resident_bytes": 197382144,
-        "peak_process_memory_mib": 188.23828125,
-        "input_tokens": 132469,
-        "output_tokens": 1446,
-        "total_tokens": 133915,
+        "wall_seconds": 839.7790000000241,
+        "peak_process_resident_bytes": 198868992,
+        "peak_process_memory_mib": 189.65625,
+        "input_tokens": 1519776,
+        "output_tokens": 14776,
+        "total_tokens": 1534552,
         "model": "gpt-6.1-sol"
       },
       {
         "tool": "tespec",
         "stage": "coq_compilation_and_assumption_audit",
-        "wall_seconds": 16.013147936027963,
-        "peak_process_resident_bytes": 643649536,
-        "peak_process_memory_mib": 613.83203125,
+        "wall_seconds": 50.067249220010126,
+        "peak_process_resident_bytes": 597757952,
+        "peak_process_memory_mib": 570.06640625,
         "input_tokens": 0,
         "output_tokens": 0,
         "total_tokens": 0,
@@ -105,16 +106,16 @@
       {
         "tool": "tespec",
         "stage": "independent_kernel_check",
-        "wall_seconds": 129.23703187299543,
-        "peak_process_resident_bytes": 2086146048,
-        "peak_process_memory_mib": 1989.50390625,
+        "wall_seconds": 1524.593138778946,
+        "peak_process_resident_bytes": 2134396928,
+        "peak_process_memory_mib": 2035.51953125,
         "input_tokens": 0,
         "output_tokens": 0,
         "total_tokens": 0,
         "model": null
       }
     ],
-    "stage_accounting_note": "Disjoint measured stages: generation/execution, agent proof filling, Coq compilation/audit, independent kernel check. Generation includes native automatic processing; no finer timing was collected. Agent wall time is the measured CLI invocation, not remote inference alone. Shared batch work counted once."
+    "stage_accounting_note": "Disjoint measured stages: generation/execution, agent proof filling, Coq compilation/audit, independent kernel check. Generation includes native automatic processing; no finer timing was collected. Agent wall time is the measured CLI invocation, not remote inference alone. Independent per-execution work is summed once; legacy shared batch counted once."
   },
   "cases": [
     {
@@ -1455,8 +1456,8 @@
       "itp_stage": {
         "required": true,
         "status": "REFUTED_KERNEL_CHECKED",
-        "receipt": "benchmark/results/read/20261015-itp-metered/receipt.json",
-        "proof": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v",
+        "receipt": "benchmark/results/read/20261015-itp-per-execution/receipt.json",
+        "proof": "benchmark/results/read/20261015-itp-per-execution/execution-00/attempt-3/proofs/Candidate.v",
         "goal_compile": {
           "command": [
             "/home/yangfp/.opam/qcp-8.20/bin/coqc",
@@ -1518,23 +1519,23 @@
             "/home/yangfp/teSpec-benchmark-tespec/runtime/qcip/SeparationLogic/algorithms",
             "Algorithms",
             "-Q",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs",
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-00/attempt-3/proofs",
             "",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs/ReadUnknown00Goal.v"
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-00/attempt-3/proofs/ReadUnknown00Goal.v"
           ],
           "exit_code": 0,
-          "wall_seconds": 0.7001307659957092,
+          "wall_seconds": 0.6712562869943213,
           "resources": {
-            "max_process_rss_kib": 523784,
-            "user_seconds": 0.41,
-            "system_seconds": 0.28,
-            "wall_seconds_gnu": 0.69
+            "max_process_rss_kib": 523792,
+            "user_seconds": 0.44,
+            "system_seconds": 0.22,
+            "wall_seconds_gnu": 0.66
           },
-          "stdout": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/ReadUnknown00Goal/stdout.log",
+          "stdout": "benchmark/results/read/20261015-itp-per-execution/execution-00/attempt-3/compilation/ReadUnknown00Goal/stdout.log",
           "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "stderr": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/ReadUnknown00Goal/stderr.log",
+          "stderr": "benchmark/results/read/20261015-itp-per-execution/execution-00/attempt-3/compilation/ReadUnknown00Goal/stderr.log",
           "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "source": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/ReadUnknown00Goal.v",
+          "source": "benchmark/results/read/20261015-itp-per-execution/execution-00/attempt-3/proofs/ReadUnknown00Goal.v",
           "source_sha256": "28bdbb2945b33b8a69f8319ac87df3fc117c0f22954059c61f15be51fc103c61"
         },
         "refutation_compile": {
@@ -1598,26 +1599,45 @@
             "/home/yangfp/teSpec-benchmark-tespec/runtime/qcip/SeparationLogic/algorithms",
             "Algorithms",
             "-Q",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs",
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-00/attempt-3/proofs",
             "",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v"
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-00/attempt-3/proofs/Candidate.v"
           ],
           "exit_code": 0,
-          "wall_seconds": 6.2876402490073815,
+          "wall_seconds": 1.3527283709991025,
           "resources": {
-            "max_process_rss_kib": 628564,
-            "user_seconds": 5.93,
-            "system_seconds": 0.34,
-            "wall_seconds_gnu": 6.28
+            "max_process_rss_kib": 582508,
+            "user_seconds": 1.02,
+            "system_seconds": 0.32,
+            "wall_seconds_gnu": 1.35
           },
-          "stdout": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/Candidate/stdout.log",
-          "stdout_sha256": "fc446b26fbe56184e9f3f8d249de2aba2eae41ba67740f9025bd8d85b83c85b9",
-          "stderr": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/Candidate/stderr.log",
+          "stdout": "benchmark/results/read/20261015-itp-per-execution/execution-00/attempt-3/compilation/Candidate/stdout.log",
+          "stdout_sha256": "e70ed2b02bbb05140ba7ad843b0286e87e58d01206b3dd29392066a9b0b9e012",
+          "stderr": "benchmark/results/read/20261015-itp-per-execution/execution-00/attempt-3/compilation/Candidate/stderr.log",
           "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "source": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v",
-          "source_sha256": "af33179573413602d591043120ce5c5d369b5db490074bcf9dcf007e6abd2de0"
+          "source": "benchmark/results/read/20261015-itp-per-execution/execution-00/attempt-3/proofs/Candidate.v",
+          "source_sha256": "3ff1ddf8dd733c577777bf137f4c7bdf81287a562c03c7e328fc01f8bc9abd52"
         },
-        "shared_stages": "Shared helper compilation, failed authoring attempts and independent kernel replay are counted once in aggregate metrics."
+        "shared_stages": "Each execution has its own model task, helper/goal/proof compilation and independent kernel replay; all attempts counted.",
+        "execution_receipt": "benchmark/results/read/20261015-itp-per-execution/execution-00/receipt.json",
+        "metrics": {
+          "model_wall_seconds": 121.9210000000021,
+          "coq_compile_audit_wall_seconds": 8.844352469022851,
+          "kernel_wall_seconds": 126.28019225399476,
+          "total_itp_wall_seconds": 257.0455447230197,
+          "model_calls": 3,
+          "token_usage": {
+            "input_tokens": 230350,
+            "cached_input_tokens": 171008,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 1733,
+            "reasoning_output_tokens": 412,
+            "total_tokens": 232083
+          },
+          "coq_peak_process_rss_kib": 1810792,
+          "model_client_peak_working_set_bytes": 198189056,
+          "local_peak_process_resident_bytes": 1854251008
+        }
       },
       "expected_result": "FAIL",
       "final_result": "FAIL",
@@ -1689,8 +1709,8 @@
       "itp_stage": {
         "required": true,
         "status": "REFUTED_KERNEL_CHECKED",
-        "receipt": "benchmark/results/read/20261015-itp-metered/receipt.json",
-        "proof": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v",
+        "receipt": "benchmark/results/read/20261015-itp-per-execution/receipt.json",
+        "proof": "benchmark/results/read/20261015-itp-per-execution/execution-01/attempt-1/proofs/Candidate.v",
         "goal_compile": {
           "command": [
             "/home/yangfp/.opam/qcp-8.20/bin/coqc",
@@ -1752,23 +1772,23 @@
             "/home/yangfp/teSpec-benchmark-tespec/runtime/qcip/SeparationLogic/algorithms",
             "Algorithms",
             "-Q",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs",
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-01/attempt-1/proofs",
             "",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs/ReadUnknown01Goal.v"
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-01/attempt-1/proofs/ReadUnknown01Goal.v"
           ],
           "exit_code": 0,
-          "wall_seconds": 0.6874662100017304,
+          "wall_seconds": 0.6797049759916263,
           "resources": {
-            "max_process_rss_kib": 523848,
-            "user_seconds": 0.45,
-            "system_seconds": 0.22,
-            "wall_seconds_gnu": 0.68
+            "max_process_rss_kib": 524032,
+            "user_seconds": 0.44,
+            "system_seconds": 0.23,
+            "wall_seconds_gnu": 0.67
           },
-          "stdout": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/ReadUnknown01Goal/stdout.log",
+          "stdout": "benchmark/results/read/20261015-itp-per-execution/execution-01/attempt-1/compilation/ReadUnknown01Goal/stdout.log",
           "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "stderr": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/ReadUnknown01Goal/stderr.log",
+          "stderr": "benchmark/results/read/20261015-itp-per-execution/execution-01/attempt-1/compilation/ReadUnknown01Goal/stderr.log",
           "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "source": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/ReadUnknown01Goal.v",
+          "source": "benchmark/results/read/20261015-itp-per-execution/execution-01/attempt-1/proofs/ReadUnknown01Goal.v",
           "source_sha256": "2125e913113fc55a6548a5c4c245820a9b6c31155da065edeec7fa0119743759"
         },
         "refutation_compile": {
@@ -1832,26 +1852,45 @@
             "/home/yangfp/teSpec-benchmark-tespec/runtime/qcip/SeparationLogic/algorithms",
             "Algorithms",
             "-Q",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs",
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-01/attempt-1/proofs",
             "",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v"
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-01/attempt-1/proofs/Candidate.v"
           ],
           "exit_code": 0,
-          "wall_seconds": 6.2876402490073815,
+          "wall_seconds": 1.2505141169967828,
           "resources": {
-            "max_process_rss_kib": 628564,
-            "user_seconds": 5.93,
-            "system_seconds": 0.34,
-            "wall_seconds_gnu": 6.28
+            "max_process_rss_kib": 582812,
+            "user_seconds": 0.97,
+            "system_seconds": 0.26,
+            "wall_seconds_gnu": 1.24
           },
-          "stdout": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/Candidate/stdout.log",
-          "stdout_sha256": "fc446b26fbe56184e9f3f8d249de2aba2eae41ba67740f9025bd8d85b83c85b9",
-          "stderr": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/Candidate/stderr.log",
+          "stdout": "benchmark/results/read/20261015-itp-per-execution/execution-01/attempt-1/compilation/Candidate/stdout.log",
+          "stdout_sha256": "e70ed2b02bbb05140ba7ad843b0286e87e58d01206b3dd29392066a9b0b9e012",
+          "stderr": "benchmark/results/read/20261015-itp-per-execution/execution-01/attempt-1/compilation/Candidate/stderr.log",
           "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "source": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v",
-          "source_sha256": "af33179573413602d591043120ce5c5d369b5db490074bcf9dcf007e6abd2de0"
+          "source": "benchmark/results/read/20261015-itp-per-execution/execution-01/attempt-1/proofs/Candidate.v",
+          "source_sha256": "97ca0944f88da1bca721a2b24eae0b5d46b7f29cdcc364f6e9e3051a88211a1d"
         },
-        "shared_stages": "Shared helper compilation, failed authoring attempts and independent kernel replay are counted once in aggregate metrics."
+        "shared_stages": "Each execution has its own model task, helper/goal/proof compilation and independent kernel replay; all attempts counted.",
+        "execution_receipt": "benchmark/results/read/20261015-itp-per-execution/execution-01/receipt.json",
+        "metrics": {
+          "model_wall_seconds": 49.60899999999674,
+          "coq_compile_audit_wall_seconds": 2.9530548369803,
+          "kernel_wall_seconds": 126.34334177999699,
+          "total_itp_wall_seconds": 178.90539661697403,
+          "model_calls": 1,
+          "token_usage": {
+            "input_tokens": 78675,
+            "cached_input_tokens": 61824,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 986,
+            "reasoning_output_tokens": 234,
+            "total_tokens": 79661
+          },
+          "coq_peak_process_rss_kib": 2038420,
+          "model_client_peak_working_set_bytes": 198217728,
+          "local_peak_process_resident_bytes": 2087342080
+        }
       },
       "expected_result": "FAIL",
       "final_result": "FAIL",
@@ -1923,8 +1962,8 @@
       "itp_stage": {
         "required": true,
         "status": "REFUTED_KERNEL_CHECKED",
-        "receipt": "benchmark/results/read/20261015-itp-metered/receipt.json",
-        "proof": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v",
+        "receipt": "benchmark/results/read/20261015-itp-per-execution/receipt.json",
+        "proof": "benchmark/results/read/20261015-itp-per-execution/execution-02/attempt-1/proofs/Candidate.v",
         "goal_compile": {
           "command": [
             "/home/yangfp/.opam/qcp-8.20/bin/coqc",
@@ -1986,23 +2025,23 @@
             "/home/yangfp/teSpec-benchmark-tespec/runtime/qcip/SeparationLogic/algorithms",
             "Algorithms",
             "-Q",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs",
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-02/attempt-1/proofs",
             "",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs/ReadUnknown02Goal.v"
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-02/attempt-1/proofs/ReadUnknown02Goal.v"
           ],
           "exit_code": 0,
-          "wall_seconds": 0.6913800170004833,
+          "wall_seconds": 0.7109601789998123,
           "resources": {
-            "max_process_rss_kib": 523764,
-            "user_seconds": 0.4,
-            "system_seconds": 0.28,
-            "wall_seconds_gnu": 0.68
+            "max_process_rss_kib": 523848,
+            "user_seconds": 0.44,
+            "system_seconds": 0.25,
+            "wall_seconds_gnu": 0.7
           },
-          "stdout": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/ReadUnknown02Goal/stdout.log",
+          "stdout": "benchmark/results/read/20261015-itp-per-execution/execution-02/attempt-1/compilation/ReadUnknown02Goal/stdout.log",
           "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "stderr": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/ReadUnknown02Goal/stderr.log",
+          "stderr": "benchmark/results/read/20261015-itp-per-execution/execution-02/attempt-1/compilation/ReadUnknown02Goal/stderr.log",
           "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "source": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/ReadUnknown02Goal.v",
+          "source": "benchmark/results/read/20261015-itp-per-execution/execution-02/attempt-1/proofs/ReadUnknown02Goal.v",
           "source_sha256": "65efd574530f1ed67ef7c29f4e0ef81246926fbda848a6336f79d013e0ae301b"
         },
         "refutation_compile": {
@@ -2066,26 +2105,45 @@
             "/home/yangfp/teSpec-benchmark-tespec/runtime/qcip/SeparationLogic/algorithms",
             "Algorithms",
             "-Q",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs",
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-02/attempt-1/proofs",
             "",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v"
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-02/attempt-1/proofs/Candidate.v"
           ],
           "exit_code": 0,
-          "wall_seconds": 6.2876402490073815,
+          "wall_seconds": 1.272722302004695,
           "resources": {
-            "max_process_rss_kib": 628564,
-            "user_seconds": 5.93,
-            "system_seconds": 0.34,
-            "wall_seconds_gnu": 6.28
+            "max_process_rss_kib": 583444,
+            "user_seconds": 1.0,
+            "system_seconds": 0.26,
+            "wall_seconds_gnu": 1.27
           },
-          "stdout": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/Candidate/stdout.log",
-          "stdout_sha256": "fc446b26fbe56184e9f3f8d249de2aba2eae41ba67740f9025bd8d85b83c85b9",
-          "stderr": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/Candidate/stderr.log",
+          "stdout": "benchmark/results/read/20261015-itp-per-execution/execution-02/attempt-1/compilation/Candidate/stdout.log",
+          "stdout_sha256": "e70ed2b02bbb05140ba7ad843b0286e87e58d01206b3dd29392066a9b0b9e012",
+          "stderr": "benchmark/results/read/20261015-itp-per-execution/execution-02/attempt-1/compilation/Candidate/stderr.log",
           "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "source": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v",
-          "source_sha256": "af33179573413602d591043120ce5c5d369b5db490074bcf9dcf007e6abd2de0"
+          "source": "benchmark/results/read/20261015-itp-per-execution/execution-02/attempt-1/proofs/Candidate.v",
+          "source_sha256": "de0a8b35a0d27dc5a3a3e7aea2d2c75b1b22dce4b3d1a50dda72f2464cadc17c"
         },
-        "shared_stages": "Shared helper compilation, failed authoring attempts and independent kernel replay are counted once in aggregate metrics."
+        "shared_stages": "Each execution has its own model task, helper/goal/proof compilation and independent kernel replay; all attempts counted.",
+        "execution_receipt": "benchmark/results/read/20261015-itp-per-execution/execution-02/receipt.json",
+        "metrics": {
+          "model_wall_seconds": 53.437000000005355,
+          "coq_compile_audit_wall_seconds": 2.983826626004884,
+          "kernel_wall_seconds": 125.07435579699813,
+          "total_itp_wall_seconds": 181.49518242300837,
+          "model_calls": 1,
+          "token_usage": {
+            "input_tokens": 68958,
+            "cached_input_tokens": 45696,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 987,
+            "reasoning_output_tokens": 293,
+            "total_tokens": 69945
+          },
+          "coq_peak_process_rss_kib": 2022928,
+          "model_client_peak_working_set_bytes": 198553600,
+          "local_peak_process_resident_bytes": 2071478272
+        }
       },
       "expected_result": "FAIL",
       "final_result": "FAIL",
@@ -2157,8 +2215,8 @@
       "itp_stage": {
         "required": true,
         "status": "REFUTED_KERNEL_CHECKED",
-        "receipt": "benchmark/results/read/20261015-itp-metered/receipt.json",
-        "proof": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v",
+        "receipt": "benchmark/results/read/20261015-itp-per-execution/receipt.json",
+        "proof": "benchmark/results/read/20261015-itp-per-execution/execution-03/attempt-1/proofs/Candidate.v",
         "goal_compile": {
           "command": [
             "/home/yangfp/.opam/qcp-8.20/bin/coqc",
@@ -2220,23 +2278,23 @@
             "/home/yangfp/teSpec-benchmark-tespec/runtime/qcip/SeparationLogic/algorithms",
             "Algorithms",
             "-Q",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs",
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-03/attempt-1/proofs",
             "",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs/ReadUnknown03Goal.v"
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-03/attempt-1/proofs/ReadUnknown03Goal.v"
           ],
           "exit_code": 0,
-          "wall_seconds": 0.6882198849925771,
+          "wall_seconds": 0.665444303987897,
           "resources": {
-            "max_process_rss_kib": 523880,
+            "max_process_rss_kib": 523960,
             "user_seconds": 0.4,
-            "system_seconds": 0.28,
-            "wall_seconds_gnu": 0.68
+            "system_seconds": 0.25,
+            "wall_seconds_gnu": 0.66
           },
-          "stdout": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/ReadUnknown03Goal/stdout.log",
+          "stdout": "benchmark/results/read/20261015-itp-per-execution/execution-03/attempt-1/compilation/ReadUnknown03Goal/stdout.log",
           "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "stderr": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/ReadUnknown03Goal/stderr.log",
+          "stderr": "benchmark/results/read/20261015-itp-per-execution/execution-03/attempt-1/compilation/ReadUnknown03Goal/stderr.log",
           "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "source": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/ReadUnknown03Goal.v",
+          "source": "benchmark/results/read/20261015-itp-per-execution/execution-03/attempt-1/proofs/ReadUnknown03Goal.v",
           "source_sha256": "8603694dae4a74239bb4ac3d1a15b53e3d1ebec7b08ed4f6b07caeae32fa45c0"
         },
         "refutation_compile": {
@@ -2300,26 +2358,45 @@
             "/home/yangfp/teSpec-benchmark-tespec/runtime/qcip/SeparationLogic/algorithms",
             "Algorithms",
             "-Q",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs",
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-03/attempt-1/proofs",
             "",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v"
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-03/attempt-1/proofs/Candidate.v"
           ],
           "exit_code": 0,
-          "wall_seconds": 6.2876402490073815,
+          "wall_seconds": 1.331397122994531,
           "resources": {
-            "max_process_rss_kib": 628564,
-            "user_seconds": 5.93,
-            "system_seconds": 0.34,
-            "wall_seconds_gnu": 6.28
+            "max_process_rss_kib": 583580,
+            "user_seconds": 1.07,
+            "system_seconds": 0.25,
+            "wall_seconds_gnu": 1.32
           },
-          "stdout": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/Candidate/stdout.log",
-          "stdout_sha256": "fc446b26fbe56184e9f3f8d249de2aba2eae41ba67740f9025bd8d85b83c85b9",
-          "stderr": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/Candidate/stderr.log",
+          "stdout": "benchmark/results/read/20261015-itp-per-execution/execution-03/attempt-1/compilation/Candidate/stdout.log",
+          "stdout_sha256": "e70ed2b02bbb05140ba7ad843b0286e87e58d01206b3dd29392066a9b0b9e012",
+          "stderr": "benchmark/results/read/20261015-itp-per-execution/execution-03/attempt-1/compilation/Candidate/stderr.log",
           "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "source": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v",
-          "source_sha256": "af33179573413602d591043120ce5c5d369b5db490074bcf9dcf007e6abd2de0"
+          "source": "benchmark/results/read/20261015-itp-per-execution/execution-03/attempt-1/proofs/Candidate.v",
+          "source_sha256": "85c2012314d493e4f0e56f9a2e4404ba4931ba52d668821fe3803fce11ba3548"
         },
-        "shared_stages": "Shared helper compilation, failed authoring attempts and independent kernel replay are counted once in aggregate metrics."
+        "shared_stages": "Each execution has its own model task, helper/goal/proof compilation and independent kernel replay; all attempts counted.",
+        "execution_receipt": "benchmark/results/read/20261015-itp-per-execution/execution-03/receipt.json",
+        "metrics": {
+          "model_wall_seconds": 54.5,
+          "coq_compile_audit_wall_seconds": 3.0053079999779584,
+          "kernel_wall_seconds": 125.8189379129908,
+          "total_itp_wall_seconds": 183.32424591296876,
+          "model_calls": 1,
+          "token_usage": {
+            "input_tokens": 108463,
+            "cached_input_tokens": 86272,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 1010,
+            "reasoning_output_tokens": 154,
+            "total_tokens": 109473
+          },
+          "coq_peak_process_rss_kib": 2040512,
+          "model_client_peak_working_set_bytes": 198381568,
+          "local_peak_process_resident_bytes": 2089484288
+        }
       },
       "expected_result": "FAIL",
       "final_result": "FAIL",
@@ -2391,8 +2468,8 @@
       "itp_stage": {
         "required": true,
         "status": "REFUTED_KERNEL_CHECKED",
-        "receipt": "benchmark/results/read/20261015-itp-metered/receipt.json",
-        "proof": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v",
+        "receipt": "benchmark/results/read/20261015-itp-per-execution/receipt.json",
+        "proof": "benchmark/results/read/20261015-itp-per-execution/execution-04/attempt-1/proofs/Candidate.v",
         "goal_compile": {
           "command": [
             "/home/yangfp/.opam/qcp-8.20/bin/coqc",
@@ -2454,23 +2531,23 @@
             "/home/yangfp/teSpec-benchmark-tespec/runtime/qcip/SeparationLogic/algorithms",
             "Algorithms",
             "-Q",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs",
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-04/attempt-1/proofs",
             "",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs/ReadUnknown04Goal.v"
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-04/attempt-1/proofs/ReadUnknown04Goal.v"
           ],
           "exit_code": 0,
-          "wall_seconds": 0.6797993070067605,
+          "wall_seconds": 0.6764169409871101,
           "resources": {
-            "max_process_rss_kib": 524044,
-            "user_seconds": 0.42,
+            "max_process_rss_kib": 523692,
+            "user_seconds": 0.41,
             "system_seconds": 0.25,
             "wall_seconds_gnu": 0.67
           },
-          "stdout": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/ReadUnknown04Goal/stdout.log",
+          "stdout": "benchmark/results/read/20261015-itp-per-execution/execution-04/attempt-1/compilation/ReadUnknown04Goal/stdout.log",
           "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "stderr": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/ReadUnknown04Goal/stderr.log",
+          "stderr": "benchmark/results/read/20261015-itp-per-execution/execution-04/attempt-1/compilation/ReadUnknown04Goal/stderr.log",
           "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "source": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/ReadUnknown04Goal.v",
+          "source": "benchmark/results/read/20261015-itp-per-execution/execution-04/attempt-1/proofs/ReadUnknown04Goal.v",
           "source_sha256": "aab48577dbec1ed3ebba0ec75b5a4da442a87a1ccfc89abf296934b3d33789dc"
         },
         "refutation_compile": {
@@ -2534,26 +2611,45 @@
             "/home/yangfp/teSpec-benchmark-tespec/runtime/qcip/SeparationLogic/algorithms",
             "Algorithms",
             "-Q",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs",
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-04/attempt-1/proofs",
             "",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v"
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-04/attempt-1/proofs/Candidate.v"
           ],
           "exit_code": 0,
-          "wall_seconds": 6.2876402490073815,
+          "wall_seconds": 1.3154863100062357,
           "resources": {
-            "max_process_rss_kib": 628564,
-            "user_seconds": 5.93,
-            "system_seconds": 0.34,
-            "wall_seconds_gnu": 6.28
+            "max_process_rss_kib": 583712,
+            "user_seconds": 1.03,
+            "system_seconds": 0.27,
+            "wall_seconds_gnu": 1.31
           },
-          "stdout": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/Candidate/stdout.log",
-          "stdout_sha256": "fc446b26fbe56184e9f3f8d249de2aba2eae41ba67740f9025bd8d85b83c85b9",
-          "stderr": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/Candidate/stderr.log",
+          "stdout": "benchmark/results/read/20261015-itp-per-execution/execution-04/attempt-1/compilation/Candidate/stdout.log",
+          "stdout_sha256": "e70ed2b02bbb05140ba7ad843b0286e87e58d01206b3dd29392066a9b0b9e012",
+          "stderr": "benchmark/results/read/20261015-itp-per-execution/execution-04/attempt-1/compilation/Candidate/stderr.log",
           "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "source": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v",
-          "source_sha256": "af33179573413602d591043120ce5c5d369b5db490074bcf9dcf007e6abd2de0"
+          "source": "benchmark/results/read/20261015-itp-per-execution/execution-04/attempt-1/proofs/Candidate.v",
+          "source_sha256": "e154c3e1f740ca5d2bcc80f2d3cac31da5e810c475d92ed83a4213f2048e3a3a"
         },
-        "shared_stages": "Shared helper compilation, failed authoring attempts and independent kernel replay are counted once in aggregate metrics."
+        "shared_stages": "Each execution has its own model task, helper/goal/proof compilation and independent kernel replay; all attempts counted.",
+        "execution_receipt": "benchmark/results/read/20261015-itp-per-execution/execution-04/receipt.json",
+        "metrics": {
+          "model_wall_seconds": 63.95299999999406,
+          "coq_compile_audit_wall_seconds": 2.9947105969913537,
+          "kernel_wall_seconds": 128.88863428599143,
+          "total_itp_wall_seconds": 195.83634488297685,
+          "model_calls": 1,
+          "token_usage": {
+            "input_tokens": 108662,
+            "cached_input_tokens": 85376,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 1051,
+            "reasoning_output_tokens": 178,
+            "total_tokens": 109713
+          },
+          "coq_peak_process_rss_kib": 2084372,
+          "model_client_peak_working_set_bytes": 198868992,
+          "local_peak_process_resident_bytes": 2134396928
+        }
       },
       "expected_result": "FAIL",
       "final_result": "FAIL",
@@ -2625,8 +2721,8 @@
       "itp_stage": {
         "required": true,
         "status": "REFUTED_KERNEL_CHECKED",
-        "receipt": "benchmark/results/read/20261015-itp-metered/receipt.json",
-        "proof": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v",
+        "receipt": "benchmark/results/read/20261015-itp-per-execution/receipt.json",
+        "proof": "benchmark/results/read/20261015-itp-per-execution/execution-05/attempt-1/proofs/Candidate.v",
         "goal_compile": {
           "command": [
             "/home/yangfp/.opam/qcp-8.20/bin/coqc",
@@ -2688,23 +2784,23 @@
             "/home/yangfp/teSpec-benchmark-tespec/runtime/qcip/SeparationLogic/algorithms",
             "Algorithms",
             "-Q",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs",
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-05/attempt-1/proofs",
             "",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs/ReadUnknown05Goal.v"
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-05/attempt-1/proofs/ReadUnknown05Goal.v"
           ],
           "exit_code": 0,
-          "wall_seconds": 0.7243701420084108,
+          "wall_seconds": 0.6734278899966739,
           "resources": {
-            "max_process_rss_kib": 523896,
-            "user_seconds": 0.47,
-            "system_seconds": 0.24,
-            "wall_seconds_gnu": 0.72
+            "max_process_rss_kib": 523696,
+            "user_seconds": 0.37,
+            "system_seconds": 0.28,
+            "wall_seconds_gnu": 0.67
           },
-          "stdout": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/ReadUnknown05Goal/stdout.log",
+          "stdout": "benchmark/results/read/20261015-itp-per-execution/execution-05/attempt-1/compilation/ReadUnknown05Goal/stdout.log",
           "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "stderr": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/ReadUnknown05Goal/stderr.log",
+          "stderr": "benchmark/results/read/20261015-itp-per-execution/execution-05/attempt-1/compilation/ReadUnknown05Goal/stderr.log",
           "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "source": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/ReadUnknown05Goal.v",
+          "source": "benchmark/results/read/20261015-itp-per-execution/execution-05/attempt-1/proofs/ReadUnknown05Goal.v",
           "source_sha256": "5904e5e0f535a2faf1c4073240be9383028357b041a0387818d4a06b01f52961"
         },
         "refutation_compile": {
@@ -2768,26 +2864,45 @@
             "/home/yangfp/teSpec-benchmark-tespec/runtime/qcip/SeparationLogic/algorithms",
             "Algorithms",
             "-Q",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs",
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-05/attempt-1/proofs",
             "",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v"
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-05/attempt-1/proofs/Candidate.v"
           ],
           "exit_code": 0,
-          "wall_seconds": 6.2876402490073815,
+          "wall_seconds": 1.311695252006757,
           "resources": {
-            "max_process_rss_kib": 628564,
-            "user_seconds": 5.93,
-            "system_seconds": 0.34,
-            "wall_seconds_gnu": 6.28
+            "max_process_rss_kib": 581872,
+            "user_seconds": 1.0,
+            "system_seconds": 0.29,
+            "wall_seconds_gnu": 1.3
           },
-          "stdout": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/Candidate/stdout.log",
-          "stdout_sha256": "fc446b26fbe56184e9f3f8d249de2aba2eae41ba67740f9025bd8d85b83c85b9",
-          "stderr": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/Candidate/stderr.log",
+          "stdout": "benchmark/results/read/20261015-itp-per-execution/execution-05/attempt-1/compilation/Candidate/stdout.log",
+          "stdout_sha256": "e70ed2b02bbb05140ba7ad843b0286e87e58d01206b3dd29392066a9b0b9e012",
+          "stderr": "benchmark/results/read/20261015-itp-per-execution/execution-05/attempt-1/compilation/Candidate/stderr.log",
           "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "source": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v",
-          "source_sha256": "af33179573413602d591043120ce5c5d369b5db490074bcf9dcf007e6abd2de0"
+          "source": "benchmark/results/read/20261015-itp-per-execution/execution-05/attempt-1/proofs/Candidate.v",
+          "source_sha256": "033c0fa6c2fe79cf26be8693ee0cf11f413c0321dbc8594e9395d0f3a2b9d21c"
         },
-        "shared_stages": "Shared helper compilation, failed authoring attempts and independent kernel replay are counted once in aggregate metrics."
+        "shared_stages": "Each execution has its own model task, helper/goal/proof compilation and independent kernel replay; all attempts counted.",
+        "execution_receipt": "benchmark/results/read/20261015-itp-per-execution/execution-05/receipt.json",
+        "metrics": {
+          "model_wall_seconds": 52.86000000000058,
+          "coq_compile_audit_wall_seconds": 2.9818646820058348,
+          "kernel_wall_seconds": 127.2461001999909,
+          "total_itp_wall_seconds": 183.08796488199732,
+          "model_calls": 1,
+          "token_usage": {
+            "input_tokens": 108574,
+            "cached_input_tokens": 91392,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 1080,
+            "reasoning_output_tokens": 189,
+            "total_tokens": 109654
+          },
+          "coq_peak_process_rss_kib": 2029612,
+          "model_client_peak_working_set_bytes": 198160384,
+          "local_peak_process_resident_bytes": 2078322688
+        }
       },
       "expected_result": "FAIL",
       "final_result": "FAIL",
@@ -2858,8 +2973,8 @@
       "itp_stage": {
         "required": true,
         "status": "REFUTED_KERNEL_CHECKED",
-        "receipt": "benchmark/results/read/20261015-itp-metered/receipt.json",
-        "proof": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v",
+        "receipt": "benchmark/results/read/20261015-itp-per-execution/receipt.json",
+        "proof": "benchmark/results/read/20261015-itp-per-execution/execution-06/attempt-1/proofs/Candidate.v",
         "goal_compile": {
           "command": [
             "/home/yangfp/.opam/qcp-8.20/bin/coqc",
@@ -2921,23 +3036,23 @@
             "/home/yangfp/teSpec-benchmark-tespec/runtime/qcip/SeparationLogic/algorithms",
             "Algorithms",
             "-Q",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs",
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-06/attempt-1/proofs",
             "",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs/ReadUnknown06Goal.v"
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-06/attempt-1/proofs/ReadUnknown06Goal.v"
           ],
           "exit_code": 0,
-          "wall_seconds": 0.6877944320003735,
+          "wall_seconds": 0.788657045995933,
           "resources": {
-            "max_process_rss_kib": 523824,
-            "user_seconds": 0.39,
-            "system_seconds": 0.28,
-            "wall_seconds_gnu": 0.68
+            "max_process_rss_kib": 523572,
+            "user_seconds": 0.48,
+            "system_seconds": 0.29,
+            "wall_seconds_gnu": 0.78
           },
-          "stdout": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/ReadUnknown06Goal/stdout.log",
+          "stdout": "benchmark/results/read/20261015-itp-per-execution/execution-06/attempt-1/compilation/ReadUnknown06Goal/stdout.log",
           "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "stderr": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/ReadUnknown06Goal/stderr.log",
+          "stderr": "benchmark/results/read/20261015-itp-per-execution/execution-06/attempt-1/compilation/ReadUnknown06Goal/stderr.log",
           "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "source": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/ReadUnknown06Goal.v",
+          "source": "benchmark/results/read/20261015-itp-per-execution/execution-06/attempt-1/proofs/ReadUnknown06Goal.v",
           "source_sha256": "8765e60c50aec5986a0133564e6e66ea32bf097bf670a9917910e0824bb9dcdb"
         },
         "refutation_compile": {
@@ -3001,26 +3116,45 @@
             "/home/yangfp/teSpec-benchmark-tespec/runtime/qcip/SeparationLogic/algorithms",
             "Algorithms",
             "-Q",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs",
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-06/attempt-1/proofs",
             "",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v"
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-06/attempt-1/proofs/Candidate.v"
           ],
           "exit_code": 0,
-          "wall_seconds": 6.2876402490073815,
+          "wall_seconds": 1.3138397010043263,
           "resources": {
-            "max_process_rss_kib": 628564,
-            "user_seconds": 5.93,
-            "system_seconds": 0.34,
-            "wall_seconds_gnu": 6.28
+            "max_process_rss_kib": 581888,
+            "user_seconds": 1.04,
+            "system_seconds": 0.26,
+            "wall_seconds_gnu": 1.31
           },
-          "stdout": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/Candidate/stdout.log",
-          "stdout_sha256": "fc446b26fbe56184e9f3f8d249de2aba2eae41ba67740f9025bd8d85b83c85b9",
-          "stderr": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/Candidate/stderr.log",
+          "stdout": "benchmark/results/read/20261015-itp-per-execution/execution-06/attempt-1/compilation/Candidate/stdout.log",
+          "stdout_sha256": "e70ed2b02bbb05140ba7ad843b0286e87e58d01206b3dd29392066a9b0b9e012",
+          "stderr": "benchmark/results/read/20261015-itp-per-execution/execution-06/attempt-1/compilation/Candidate/stderr.log",
           "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "source": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v",
-          "source_sha256": "af33179573413602d591043120ce5c5d369b5db490074bcf9dcf007e6abd2de0"
+          "source": "benchmark/results/read/20261015-itp-per-execution/execution-06/attempt-1/proofs/Candidate.v",
+          "source_sha256": "9d59bbec4a1a03083f92a8e72ebdf75abb0288d92eecc10d430b8d98f72fe61e"
         },
-        "shared_stages": "Shared helper compilation, failed authoring attempts and independent kernel replay are counted once in aggregate metrics."
+        "shared_stages": "Each execution has its own model task, helper/goal/proof compilation and independent kernel replay; all attempts counted.",
+        "execution_receipt": "benchmark/results/read/20261015-itp-per-execution/execution-06/receipt.json",
+        "metrics": {
+          "model_wall_seconds": 64.28199999999197,
+          "coq_compile_audit_wall_seconds": 3.297926390005159,
+          "kernel_wall_seconds": 138.39972836599918,
+          "total_itp_wall_seconds": 205.9796547559963,
+          "model_calls": 1,
+          "token_usage": {
+            "input_tokens": 108672,
+            "cached_input_tokens": 86272,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 1103,
+            "reasoning_output_tokens": 206,
+            "total_tokens": 109775
+          },
+          "coq_peak_process_rss_kib": 2023616,
+          "model_client_peak_working_set_bytes": 197591040,
+          "local_peak_process_resident_bytes": 2072182784
+        }
       },
       "expected_result": "FAIL",
       "final_result": "FAIL",
@@ -3091,8 +3225,8 @@
       "itp_stage": {
         "required": true,
         "status": "REFUTED_KERNEL_CHECKED",
-        "receipt": "benchmark/results/read/20261015-itp-metered/receipt.json",
-        "proof": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v",
+        "receipt": "benchmark/results/read/20261015-itp-per-execution/receipt.json",
+        "proof": "benchmark/results/read/20261015-itp-per-execution/execution-07/attempt-3/proofs/Candidate.v",
         "goal_compile": {
           "command": [
             "/home/yangfp/.opam/qcp-8.20/bin/coqc",
@@ -3154,23 +3288,23 @@
             "/home/yangfp/teSpec-benchmark-tespec/runtime/qcip/SeparationLogic/algorithms",
             "Algorithms",
             "-Q",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs",
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-07/attempt-3/proofs",
             "",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs/ReadUnknown07Goal.v"
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-07/attempt-3/proofs/ReadUnknown07Goal.v"
           ],
           "exit_code": 0,
-          "wall_seconds": 0.6821436350001022,
+          "wall_seconds": 0.6914128070056904,
           "resources": {
-            "max_process_rss_kib": 523844,
-            "user_seconds": 0.44,
-            "system_seconds": 0.23,
+            "max_process_rss_kib": 523716,
+            "user_seconds": 0.46,
+            "system_seconds": 0.22,
             "wall_seconds_gnu": 0.68
           },
-          "stdout": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/ReadUnknown07Goal/stdout.log",
+          "stdout": "benchmark/results/read/20261015-itp-per-execution/execution-07/attempt-3/compilation/ReadUnknown07Goal/stdout.log",
           "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "stderr": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/ReadUnknown07Goal/stderr.log",
+          "stderr": "benchmark/results/read/20261015-itp-per-execution/execution-07/attempt-3/compilation/ReadUnknown07Goal/stderr.log",
           "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "source": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/ReadUnknown07Goal.v",
+          "source": "benchmark/results/read/20261015-itp-per-execution/execution-07/attempt-3/proofs/ReadUnknown07Goal.v",
           "source_sha256": "212cddfb4c0685990d8aee7fa6a86409b881d9940ae1fc94569eede0f7f3a97f"
         },
         "refutation_compile": {
@@ -3234,26 +3368,45 @@
             "/home/yangfp/teSpec-benchmark-tespec/runtime/qcip/SeparationLogic/algorithms",
             "Algorithms",
             "-Q",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs",
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-07/attempt-3/proofs",
             "",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v"
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-07/attempt-3/proofs/Candidate.v"
           ],
           "exit_code": 0,
-          "wall_seconds": 6.2876402490073815,
+          "wall_seconds": 1.4165430989960441,
           "resources": {
-            "max_process_rss_kib": 628564,
-            "user_seconds": 5.93,
-            "system_seconds": 0.34,
-            "wall_seconds_gnu": 6.28
+            "max_process_rss_kib": 583152,
+            "user_seconds": 1.11,
+            "system_seconds": 0.29,
+            "wall_seconds_gnu": 1.41
           },
-          "stdout": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/Candidate/stdout.log",
-          "stdout_sha256": "fc446b26fbe56184e9f3f8d249de2aba2eae41ba67740f9025bd8d85b83c85b9",
-          "stderr": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/Candidate/stderr.log",
+          "stdout": "benchmark/results/read/20261015-itp-per-execution/execution-07/attempt-3/compilation/Candidate/stdout.log",
+          "stdout_sha256": "e70ed2b02bbb05140ba7ad843b0286e87e58d01206b3dd29392066a9b0b9e012",
+          "stderr": "benchmark/results/read/20261015-itp-per-execution/execution-07/attempt-3/compilation/Candidate/stderr.log",
           "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "source": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v",
-          "source_sha256": "af33179573413602d591043120ce5c5d369b5db490074bcf9dcf007e6abd2de0"
+          "source": "benchmark/results/read/20261015-itp-per-execution/execution-07/attempt-3/proofs/Candidate.v",
+          "source_sha256": "4fb7a5152f890518166b7c198f8a0a02ec3c3b920a7025e1871656c1d342509d"
         },
-        "shared_stages": "Shared helper compilation, failed authoring attempts and independent kernel replay are counted once in aggregate metrics."
+        "shared_stages": "Each execution has its own model task, helper/goal/proof compilation and independent kernel replay; all attempts counted.",
+        "execution_receipt": "benchmark/results/read/20261015-itp-per-execution/execution-07/receipt.json",
+        "metrics": {
+          "model_wall_seconds": 118.68600000001607,
+          "coq_compile_audit_wall_seconds": 7.981727915030206,
+          "kernel_wall_seconds": 125.61262352998892,
+          "total_itp_wall_seconds": 252.2803514450352,
+          "model_calls": 3,
+          "token_usage": {
+            "input_tokens": 220705,
+            "cached_input_tokens": 129024,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 1906,
+            "reasoning_output_tokens": 551,
+            "total_tokens": 222611
+          },
+          "coq_peak_process_rss_kib": 1809888,
+          "model_client_peak_working_set_bytes": 198180864,
+          "local_peak_process_resident_bytes": 1853325312
+        }
       },
       "expected_result": "FAIL",
       "final_result": "FAIL",
@@ -3324,8 +3477,8 @@
       "itp_stage": {
         "required": true,
         "status": "REFUTED_KERNEL_CHECKED",
-        "receipt": "benchmark/results/read/20261015-itp-metered/receipt.json",
-        "proof": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v",
+        "receipt": "benchmark/results/read/20261015-itp-per-execution/receipt.json",
+        "proof": "benchmark/results/read/20261015-itp-per-execution/execution-08/attempt-1/proofs/Candidate.v",
         "goal_compile": {
           "command": [
             "/home/yangfp/.opam/qcp-8.20/bin/coqc",
@@ -3387,23 +3540,23 @@
             "/home/yangfp/teSpec-benchmark-tespec/runtime/qcip/SeparationLogic/algorithms",
             "Algorithms",
             "-Q",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs",
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-08/attempt-1/proofs",
             "",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs/ReadUnknown08Goal.v"
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-08/attempt-1/proofs/ReadUnknown08Goal.v"
           ],
           "exit_code": 0,
-          "wall_seconds": 0.7024714519939153,
+          "wall_seconds": 0.7026738209970063,
           "resources": {
-            "max_process_rss_kib": 523868,
-            "user_seconds": 0.47,
-            "system_seconds": 0.22,
+            "max_process_rss_kib": 523580,
+            "user_seconds": 0.4,
+            "system_seconds": 0.29,
             "wall_seconds_gnu": 0.7
           },
-          "stdout": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/ReadUnknown08Goal/stdout.log",
+          "stdout": "benchmark/results/read/20261015-itp-per-execution/execution-08/attempt-1/compilation/ReadUnknown08Goal/stdout.log",
           "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "stderr": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/ReadUnknown08Goal/stderr.log",
+          "stderr": "benchmark/results/read/20261015-itp-per-execution/execution-08/attempt-1/compilation/ReadUnknown08Goal/stderr.log",
           "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "source": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/ReadUnknown08Goal.v",
+          "source": "benchmark/results/read/20261015-itp-per-execution/execution-08/attempt-1/proofs/ReadUnknown08Goal.v",
           "source_sha256": "d57c8c016c312148bd02940be710521464f363acb431c4c09522bdbc8912397e"
         },
         "refutation_compile": {
@@ -3467,26 +3620,45 @@
             "/home/yangfp/teSpec-benchmark-tespec/runtime/qcip/SeparationLogic/algorithms",
             "Algorithms",
             "-Q",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs",
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-08/attempt-1/proofs",
             "",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v"
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-08/attempt-1/proofs/Candidate.v"
           ],
           "exit_code": 0,
-          "wall_seconds": 6.2876402490073815,
+          "wall_seconds": 1.3555166760052089,
           "resources": {
-            "max_process_rss_kib": 628564,
-            "user_seconds": 5.93,
-            "system_seconds": 0.34,
-            "wall_seconds_gnu": 6.28
+            "max_process_rss_kib": 583748,
+            "user_seconds": 1.02,
+            "system_seconds": 0.32,
+            "wall_seconds_gnu": 1.35
           },
-          "stdout": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/Candidate/stdout.log",
-          "stdout_sha256": "fc446b26fbe56184e9f3f8d249de2aba2eae41ba67740f9025bd8d85b83c85b9",
-          "stderr": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/Candidate/stderr.log",
+          "stdout": "benchmark/results/read/20261015-itp-per-execution/execution-08/attempt-1/compilation/Candidate/stdout.log",
+          "stdout_sha256": "e70ed2b02bbb05140ba7ad843b0286e87e58d01206b3dd29392066a9b0b9e012",
+          "stderr": "benchmark/results/read/20261015-itp-per-execution/execution-08/attempt-1/compilation/Candidate/stderr.log",
           "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "source": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v",
-          "source_sha256": "af33179573413602d591043120ce5c5d369b5db490074bcf9dcf007e6abd2de0"
+          "source": "benchmark/results/read/20261015-itp-per-execution/execution-08/attempt-1/proofs/Candidate.v",
+          "source_sha256": "1f701f377f292f25731e968e5be06c3df9aba95e753366e37b203853ea4f8051"
         },
-        "shared_stages": "Shared helper compilation, failed authoring attempts and independent kernel replay are counted once in aggregate metrics."
+        "shared_stages": "Each execution has its own model task, helper/goal/proof compilation and independent kernel replay; all attempts counted.",
+        "execution_receipt": "benchmark/results/read/20261015-itp-per-execution/execution-08/receipt.json",
+        "metrics": {
+          "model_wall_seconds": 59.5,
+          "coq_compile_audit_wall_seconds": 3.1325471330055734,
+          "kernel_wall_seconds": 124.76296753399947,
+          "total_itp_wall_seconds": 187.39551466700505,
+          "model_calls": 1,
+          "token_usage": {
+            "input_tokens": 95943,
+            "cached_input_tokens": 82944,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 1160,
+            "reasoning_output_tokens": 277,
+            "total_tokens": 97103
+          },
+          "coq_peak_process_rss_kib": 2039152,
+          "model_client_peak_working_set_bytes": 198471680,
+          "local_peak_process_resident_bytes": 2088091648
+        }
       },
       "expected_result": "FAIL",
       "final_result": "FAIL",
@@ -3557,8 +3729,8 @@
       "itp_stage": {
         "required": true,
         "status": "REFUTED_KERNEL_CHECKED",
-        "receipt": "benchmark/results/read/20261015-itp-metered/receipt.json",
-        "proof": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v",
+        "receipt": "benchmark/results/read/20261015-itp-per-execution/receipt.json",
+        "proof": "benchmark/results/read/20261015-itp-per-execution/execution-09/attempt-1/proofs/Candidate.v",
         "goal_compile": {
           "command": [
             "/home/yangfp/.opam/qcp-8.20/bin/coqc",
@@ -3620,23 +3792,23 @@
             "/home/yangfp/teSpec-benchmark-tespec/runtime/qcip/SeparationLogic/algorithms",
             "Algorithms",
             "-Q",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs",
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-09/attempt-1/proofs",
             "",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs/ReadUnknown09Goal.v"
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-09/attempt-1/proofs/ReadUnknown09Goal.v"
           ],
           "exit_code": 0,
-          "wall_seconds": 0.706265656001051,
+          "wall_seconds": 0.7951262440037681,
           "resources": {
-            "max_process_rss_kib": 523896,
-            "user_seconds": 0.41,
-            "system_seconds": 0.28,
-            "wall_seconds_gnu": 0.7
+            "max_process_rss_kib": 523776,
+            "user_seconds": 0.45,
+            "system_seconds": 0.33,
+            "wall_seconds_gnu": 0.79
           },
-          "stdout": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/ReadUnknown09Goal/stdout.log",
+          "stdout": "benchmark/results/read/20261015-itp-per-execution/execution-09/attempt-1/compilation/ReadUnknown09Goal/stdout.log",
           "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "stderr": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/ReadUnknown09Goal/stderr.log",
+          "stderr": "benchmark/results/read/20261015-itp-per-execution/execution-09/attempt-1/compilation/ReadUnknown09Goal/stderr.log",
           "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "source": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/ReadUnknown09Goal.v",
+          "source": "benchmark/results/read/20261015-itp-per-execution/execution-09/attempt-1/proofs/ReadUnknown09Goal.v",
           "source_sha256": "16433d5b8e74dfc5f15d49312fe0df395a8552ab84adec5a1cf23073d1e4c00f"
         },
         "refutation_compile": {
@@ -3700,26 +3872,45 @@
             "/home/yangfp/teSpec-benchmark-tespec/runtime/qcip/SeparationLogic/algorithms",
             "Algorithms",
             "-Q",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs",
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-09/attempt-1/proofs",
             "",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v"
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-09/attempt-1/proofs/Candidate.v"
           ],
           "exit_code": 0,
-          "wall_seconds": 6.2876402490073815,
+          "wall_seconds": 1.3602274019940523,
           "resources": {
-            "max_process_rss_kib": 628564,
-            "user_seconds": 5.93,
-            "system_seconds": 0.34,
-            "wall_seconds_gnu": 6.28
+            "max_process_rss_kib": 583024,
+            "user_seconds": 1.04,
+            "system_seconds": 0.31,
+            "wall_seconds_gnu": 1.35
           },
-          "stdout": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/Candidate/stdout.log",
-          "stdout_sha256": "fc446b26fbe56184e9f3f8d249de2aba2eae41ba67740f9025bd8d85b83c85b9",
-          "stderr": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/Candidate/stderr.log",
+          "stdout": "benchmark/results/read/20261015-itp-per-execution/execution-09/attempt-1/compilation/Candidate/stdout.log",
+          "stdout_sha256": "e70ed2b02bbb05140ba7ad843b0286e87e58d01206b3dd29392066a9b0b9e012",
+          "stderr": "benchmark/results/read/20261015-itp-per-execution/execution-09/attempt-1/compilation/Candidate/stderr.log",
           "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "source": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v",
-          "source_sha256": "af33179573413602d591043120ce5c5d369b5db490074bcf9dcf007e6abd2de0"
+          "source": "benchmark/results/read/20261015-itp-per-execution/execution-09/attempt-1/proofs/Candidate.v",
+          "source_sha256": "b4c10f0f8146eb70cf063cb73dea601e0ba7d3a3b615997a8ccaf5842f06d9c7"
         },
-        "shared_stages": "Shared helper compilation, failed authoring attempts and independent kernel replay are counted once in aggregate metrics."
+        "shared_stages": "Each execution has its own model task, helper/goal/proof compilation and independent kernel replay; all attempts counted.",
+        "execution_receipt": "benchmark/results/read/20261015-itp-per-execution/execution-09/receipt.json",
+        "metrics": {
+          "model_wall_seconds": 59.60900000001129,
+          "coq_compile_audit_wall_seconds": 3.2372543990059057,
+          "kernel_wall_seconds": 125.36984242699691,
+          "total_itp_wall_seconds": 188.2160968260141,
+          "model_calls": 1,
+          "token_usage": {
+            "input_tokens": 108708,
+            "cached_input_tokens": 91392,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 1142,
+            "reasoning_output_tokens": 263,
+            "total_tokens": 109850
+          },
+          "coq_peak_process_rss_kib": 2038164,
+          "model_client_peak_working_set_bytes": 198402048,
+          "local_peak_process_resident_bytes": 2087079936
+        }
       },
       "expected_result": "FAIL",
       "final_result": "FAIL",
@@ -3790,8 +3981,8 @@
       "itp_stage": {
         "required": true,
         "status": "REFUTED_KERNEL_CHECKED",
-        "receipt": "benchmark/results/read/20261015-itp-metered/receipt.json",
-        "proof": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v",
+        "receipt": "benchmark/results/read/20261015-itp-per-execution/receipt.json",
+        "proof": "benchmark/results/read/20261015-itp-per-execution/execution-10/attempt-2/proofs/Candidate.v",
         "goal_compile": {
           "command": [
             "/home/yangfp/.opam/qcp-8.20/bin/coqc",
@@ -3853,23 +4044,23 @@
             "/home/yangfp/teSpec-benchmark-tespec/runtime/qcip/SeparationLogic/algorithms",
             "Algorithms",
             "-Q",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs",
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-10/attempt-2/proofs",
             "",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs/ReadUnknown10Goal.v"
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-10/attempt-2/proofs/ReadUnknown10Goal.v"
           ],
           "exit_code": 0,
-          "wall_seconds": 0.6976416860125028,
+          "wall_seconds": 0.6568929880013457,
           "resources": {
-            "max_process_rss_kib": 524032,
-            "user_seconds": 0.42,
-            "system_seconds": 0.26,
-            "wall_seconds_gnu": 0.69
+            "max_process_rss_kib": 523844,
+            "user_seconds": 0.47,
+            "system_seconds": 0.18,
+            "wall_seconds_gnu": 0.65
           },
-          "stdout": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/ReadUnknown10Goal/stdout.log",
+          "stdout": "benchmark/results/read/20261015-itp-per-execution/execution-10/attempt-2/compilation/ReadUnknown10Goal/stdout.log",
           "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "stderr": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/ReadUnknown10Goal/stderr.log",
+          "stderr": "benchmark/results/read/20261015-itp-per-execution/execution-10/attempt-2/compilation/ReadUnknown10Goal/stderr.log",
           "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "source": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/ReadUnknown10Goal.v",
+          "source": "benchmark/results/read/20261015-itp-per-execution/execution-10/attempt-2/proofs/ReadUnknown10Goal.v",
           "source_sha256": "e63cb633afb38b4833a1278c242dc994b8b6965fd26d0ad0c435f691c6852e54"
         },
         "refutation_compile": {
@@ -3933,26 +4124,45 @@
             "/home/yangfp/teSpec-benchmark-tespec/runtime/qcip/SeparationLogic/algorithms",
             "Algorithms",
             "-Q",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs",
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-10/attempt-2/proofs",
             "",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v"
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-10/attempt-2/proofs/Candidate.v"
           ],
           "exit_code": 0,
-          "wall_seconds": 6.2876402490073815,
+          "wall_seconds": 1.3527063980000094,
           "resources": {
-            "max_process_rss_kib": 628564,
-            "user_seconds": 5.93,
-            "system_seconds": 0.34,
-            "wall_seconds_gnu": 6.28
+            "max_process_rss_kib": 582528,
+            "user_seconds": 1.06,
+            "system_seconds": 0.28,
+            "wall_seconds_gnu": 1.35
           },
-          "stdout": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/Candidate/stdout.log",
-          "stdout_sha256": "fc446b26fbe56184e9f3f8d249de2aba2eae41ba67740f9025bd8d85b83c85b9",
-          "stderr": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/Candidate/stderr.log",
+          "stdout": "benchmark/results/read/20261015-itp-per-execution/execution-10/attempt-2/compilation/Candidate/stdout.log",
+          "stdout_sha256": "e70ed2b02bbb05140ba7ad843b0286e87e58d01206b3dd29392066a9b0b9e012",
+          "stderr": "benchmark/results/read/20261015-itp-per-execution/execution-10/attempt-2/compilation/Candidate/stderr.log",
           "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "source": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v",
-          "source_sha256": "af33179573413602d591043120ce5c5d369b5db490074bcf9dcf007e6abd2de0"
+          "source": "benchmark/results/read/20261015-itp-per-execution/execution-10/attempt-2/proofs/Candidate.v",
+          "source_sha256": "5adb15e1001f237d9b47744356c6860da42439086bf534201056b8caf7dfbec9"
         },
-        "shared_stages": "Shared helper compilation, failed authoring attempts and independent kernel replay are counted once in aggregate metrics."
+        "shared_stages": "Each execution has its own model task, helper/goal/proof compilation and independent kernel replay; all attempts counted.",
+        "execution_receipt": "benchmark/results/read/20261015-itp-per-execution/execution-10/receipt.json",
+        "metrics": {
+          "model_wall_seconds": 85.28100000001723,
+          "coq_compile_audit_wall_seconds": 5.617219523992389,
+          "kernel_wall_seconds": 125.2508284929936,
+          "total_itp_wall_seconds": 216.14904801700322,
+          "model_calls": 2,
+          "token_usage": {
+            "input_tokens": 173424,
+            "cached_input_tokens": 134400,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 1523,
+            "reasoning_output_tokens": 232,
+            "total_tokens": 174947
+          },
+          "coq_peak_process_rss_kib": 1808840,
+          "model_client_peak_working_set_bytes": 198447104,
+          "local_peak_process_resident_bytes": 1852252160
+        }
       },
       "expected_result": "FAIL",
       "final_result": "FAIL",
@@ -4023,8 +4233,8 @@
       "itp_stage": {
         "required": true,
         "status": "REFUTED_KERNEL_CHECKED",
-        "receipt": "benchmark/results/read/20261015-itp-metered/receipt.json",
-        "proof": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v",
+        "receipt": "benchmark/results/read/20261015-itp-per-execution/receipt.json",
+        "proof": "benchmark/results/read/20261015-itp-per-execution/execution-11/attempt-1/proofs/Candidate.v",
         "goal_compile": {
           "command": [
             "/home/yangfp/.opam/qcp-8.20/bin/coqc",
@@ -4086,23 +4296,23 @@
             "/home/yangfp/teSpec-benchmark-tespec/runtime/qcip/SeparationLogic/algorithms",
             "Algorithms",
             "-Q",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs",
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-11/attempt-1/proofs",
             "",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs/ReadUnknown11Goal.v"
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-11/attempt-1/proofs/ReadUnknown11Goal.v"
           ],
           "exit_code": 0,
-          "wall_seconds": 0.7250535100029083,
+          "wall_seconds": 0.6668025899998611,
           "resources": {
-            "max_process_rss_kib": 523800,
-            "user_seconds": 0.49,
-            "system_seconds": 0.23,
-            "wall_seconds_gnu": 0.72
+            "max_process_rss_kib": 523708,
+            "user_seconds": 0.4,
+            "system_seconds": 0.25,
+            "wall_seconds_gnu": 0.66
           },
-          "stdout": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/ReadUnknown11Goal/stdout.log",
+          "stdout": "benchmark/results/read/20261015-itp-per-execution/execution-11/attempt-1/compilation/ReadUnknown11Goal/stdout.log",
           "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "stderr": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/ReadUnknown11Goal/stderr.log",
+          "stderr": "benchmark/results/read/20261015-itp-per-execution/execution-11/attempt-1/compilation/ReadUnknown11Goal/stderr.log",
           "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "source": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/ReadUnknown11Goal.v",
+          "source": "benchmark/results/read/20261015-itp-per-execution/execution-11/attempt-1/proofs/ReadUnknown11Goal.v",
           "source_sha256": "cd26ed1a284b3ec317658d923610690164dc243966baa598ae1e075620945888"
         },
         "refutation_compile": {
@@ -4166,26 +4376,45 @@
             "/home/yangfp/teSpec-benchmark-tespec/runtime/qcip/SeparationLogic/algorithms",
             "Algorithms",
             "-Q",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs",
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-11/attempt-1/proofs",
             "",
-            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v"
+            "/home/yangfp/teSpec-benchmark-tespec/benchmark/results/read/20261015-itp-per-execution/execution-11/attempt-1/proofs/Candidate.v"
           ],
           "exit_code": 0,
-          "wall_seconds": 6.2876402490073815,
+          "wall_seconds": 1.3044343919900712,
           "resources": {
-            "max_process_rss_kib": 628564,
-            "user_seconds": 5.93,
-            "system_seconds": 0.34,
-            "wall_seconds_gnu": 6.28
+            "max_process_rss_kib": 581648,
+            "user_seconds": 1.0,
+            "system_seconds": 0.29,
+            "wall_seconds_gnu": 1.3
           },
-          "stdout": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/Candidate/stdout.log",
-          "stdout_sha256": "fc446b26fbe56184e9f3f8d249de2aba2eae41ba67740f9025bd8d85b83c85b9",
-          "stderr": "benchmark/results/read/20261015-itp-metered/attempt-1/compilation/Candidate/stderr.log",
+          "stdout": "benchmark/results/read/20261015-itp-per-execution/execution-11/attempt-1/compilation/Candidate/stdout.log",
+          "stdout_sha256": "e70ed2b02bbb05140ba7ad843b0286e87e58d01206b3dd29392066a9b0b9e012",
+          "stderr": "benchmark/results/read/20261015-itp-per-execution/execution-11/attempt-1/compilation/Candidate/stderr.log",
           "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-          "source": "benchmark/results/read/20261015-itp-metered/attempt-1/proofs/Candidate.v",
-          "source_sha256": "af33179573413602d591043120ce5c5d369b5db490074bcf9dcf007e6abd2de0"
+          "source": "benchmark/results/read/20261015-itp-per-execution/execution-11/attempt-1/proofs/Candidate.v",
+          "source_sha256": "df25f673be8719d965041f3599e163523628fc9ee1ccffa610710dd39d58a77d"
         },
-        "shared_stages": "Shared helper compilation, failed authoring attempts and independent kernel replay are counted once in aggregate metrics."
+        "shared_stages": "Each execution has its own model task, helper/goal/proof compilation and independent kernel replay; all attempts counted.",
+        "execution_receipt": "benchmark/results/read/20261015-itp-per-execution/execution-11/receipt.json",
+        "metrics": {
+          "model_wall_seconds": 56.14099999998871,
+          "coq_compile_audit_wall_seconds": 3.0374566479877103,
+          "kernel_wall_seconds": 125.5455861990049,
+          "total_itp_wall_seconds": 184.72404284698132,
+          "model_calls": 1,
+          "token_usage": {
+            "input_tokens": 108642,
+            "cached_input_tokens": 77952,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 1095,
+            "reasoning_output_tokens": 222,
+            "total_tokens": 109737
+          },
+          "coq_peak_process_rss_kib": 2034004,
+          "model_client_peak_working_set_bytes": 197709824,
+          "local_peak_process_resident_bytes": 2082820096
+        }
       },
       "expected_result": "FAIL",
       "final_result": "FAIL",

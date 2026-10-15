@@ -1,6 +1,6 @@
 # read ITP 展示入口
 
-每次需要 ITP 的测试执行平均开销见 [tespec/itp-average.md](tespec/itp-average.md)。这是现有共享批次按 12 次执行均摊的估算；原始批次数据保留用于审计。
+每次需要 ITP 的测试执行平均开销见 [tespec/itp-average.md](tespec/itp-average.md)。这是 12 次独立 ITP 实测的平均值；每次执行独立调用 agent、编译与内核检查，同次执行的全部 VC 合计计量，含修复尝试。原先共享批次仅保留为历史。
 
 # Read benchmark results
 
@@ -24,7 +24,7 @@ CN and QCP verify only the designated primary function once. CN verification and
 
 Fulminate and complete teSpec cover 61 paired variant/input cases across 10 configurations, associated with all 13 language-version records. Fulminate matches expected outcomes on 60/61; teSpec with kernel-checked ITP matches 61/61. Only the approved no-readable-memory ERROR class counts as expected; other ERROR classes are not automatically credited.
 
-`20261015-variants/` retains raw executions. `20261015-itp-metered/` retains measured model/Coq proof evidence. `complete/` is the full staged teSpec result. `20261015-itp-refutations/` is the older unmetered authoring history.
+`20261015-variants/` retains raw executions. `20261015-itp-per-execution/` retains the active independent execution proof measurements; `20261015-itp-metered/` retains the superseded shared batch as history. `complete/` is the full staged teSpec result. `20261015-itp-refutations/` is the older unmetered authoring history.
 
 Run `python3 tools/benchmark/publish_read_tool_results.py` to rebuild these views. `complete_read_pipeline.py` also refreshes them. All result files are derived from actual saved measurements and immutable source/goal/log hashes; no performance value is synthesized or moved between incompatible variants.
 

@@ -45,20 +45,20 @@ def main():
                     stage=next((x for x in stages if x['stage']==sid),{})
                     seconds=avg[mkey] if avg else stage.get('wall_seconds')
                     tokens=avg['mean_total_tokens'] if avg and sid=='agent_proof_filling' else stage.get('total_tokens')
-                    add(label,seconds,stage.get('peak_process_memory_mib'),tokens,'每次需 ITP 的执行均值；内存为批次峰值' if avg else '一次主程序验证' if tool=='qcp' else 'PENDING_PER_EXECUTION_MEAN',bool(avg))
+                    add(label,seconds,stage.get('peak_process_memory_mib'),tokens,'每次需 ITP 的执行均值；内存为各次峰值最大值' if avg and not avg.get('estimated',True) else '每次需 ITP 的执行均值；内存为批次峰值' if avg else '一次主程序验证' if tool=='qcp' else 'PENDING_PER_EXECUTION_MEAN',bool(avg and avg.get('estimated',True)))
                     if avg:costs[-1]['source']=meanpath.relative_to(ROOT).as_posix()
                 itprows=costs[-3:]
                 measured=all(x['status']=='MEASURED' for x in itprows)
                 add('ITP 平均合计',sum(x['wall_seconds'] for x in itprows) if measured else None,
                     max(x['peak_process_memory_mib'] for x in itprows) if measured else None,
                     sum(x['tokens'] for x in itprows) if measured else None,
-                    '每次需 ITP 的执行均值；内存为批次峰值' if avg else '一次主程序验证' if tool=='qcp' else 'PENDING_PER_EXECUTION_MEAN',bool(avg))
+                    '每次需 ITP 的执行均值；内存为各次峰值最大值' if avg and not avg.get('estimated',True) else '每次需 ITP 的执行均值；内存为批次峰值' if avg else '一次主程序验证' if tool=='qcp' else 'PENDING_PER_EXECUTION_MEAN',bool(avg and avg.get('estimated',True)))
         complete=all(x['available'] and x['result']!='PENDING' for x in results) and all(x['status']=='MEASURED' for x in costs)
         report={'schema':'tespec-group-result-cost/v1','program_group':name,'primary_variant':group.get('primary_variant'),
             'variant_language_records':len(group['variants']),'complete':complete,
             'results':results,'costs':costs,'evidence_catalog':group['evidence_catalog'],
             'missing_policy':'PENDING/null means not published or not bound to matching evidence; never replace missing data with zero. Existing historical evidence must be reused after hash/scope checks.',
-            'itp_policy':'One test execution and all its unresolved VCs form one ITP unit; display mean costs only. read uses shared batch divided by 12 required executions. Memory is a measured process peak and is never divided. ITP subtotal overlaps its component rows and must not be added again.'}
+            'itp_policy':'One test execution and all its unresolved VCs form one ITP unit; display mean costs only. read uses 12 independently measured execution ITP tasks; legacy batch estimates are historical. Memory is a measured process peak and is never divided. ITP subtotal overlaps its component rows and must not be added again.'}
         save(folder/'result-cost.json',report)
         buf=io.StringIO();writer=csv.DictWriter(buf,fieldnames=list(costs[0]),lineterminator='\n');writer.writeheader();writer.writerows(costs);(folder/'result-cost.csv').write_text(buf.getvalue())
         text=f"# {name}：结果与成本表\n\n完整状态：{'已齐全' if complete else '待补齐'}。语言版本记录 {len(group['variants'])} 条；主程序：{group.get('primary_variant') or '待绑定已有验证证据'}。\n\n"
@@ -67,7 +67,7 @@ def main():
         text+='\n| 工具 | 阶段 | 时间（秒） | 峰值进程内存（MiB） | token | 口径 |\n|---|---|---:|---:|---:|---|\n'
         def fmt(v):return '待补齐' if v is None else f'{v:.4f}'
         for x in costs:text+=f"| {x['tool']} | {x['stage']} | {fmt(x['wall_seconds'])} | {fmt(x['peak_process_memory_mib'])} | {fmt(x['tokens'])} | {x['unit']}{'（均摊估算）' if x['estimated'] else ''} |\n"
-        text+='\nITP 以一次测试执行的所有待处理 VC 为单位，只展示平均开销；read 按 12 次需要 ITP 的执行均摊已有批次。峰值内存不取均摊。ITP 合计行与其三个分项重叠，不能再次相加。CN/QCP 与两种测试工具的对象和次数不同。\n\n缺测记为待补齐，不表示已有历史证据作废；须绑定匹配证据后发布。原始证据、计量来源与缺项见 [result-cost.json](result-cost.json)，成本 CSV 见 [result-cost.csv](result-cost.csv)。\n'
+        text+='\nITP 以一次测试执行的所有待处理 VC 为单位，只展示平均开销；read 的 12 次所需 ITP 各自独立测量后取平均。峰值内存不取均摊。ITP 合计行与其三个分项重叠，不能再次相加。CN/QCP 与两种测试工具的对象和次数不同。\n\n缺测记为待补齐，不表示已有历史证据作废；须绑定匹配证据后发布。原始证据、计量来源与缺项见 [result-cost.json](result-cost.json)，成本 CSV 见 [result-cost.csv](result-cost.csv)。\n'
         (folder/'result-cost.md').write_text(text)
         index.append({'program_group':name,'complete':complete,'report':(folder/'result-cost.md').relative_to(ROOT).as_posix(),'json':(folder/'result-cost.json').relative_to(ROOT).as_posix(),'csv':(folder/'result-cost.csv').relative_to(ROOT).as_posix()})
     save(OUT/'group-result-cost-index.json',{'groups':index,'groups_total':len(index),'complete_groups':sum(x['complete'] for x in index)})
