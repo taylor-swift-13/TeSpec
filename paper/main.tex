@@ -40,24 +40,24 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-Logical specifications for C describe both functional behavior and ownership
-of memory. Testing them presents two challenges: quantified properties can
-remain non-executable after inputs are fixed, and modular verification can
-abstract away the execution states needed to test an annotation. We present
-\tespec{}, a method for proof-based testing of separation-logic specifications.
-Typed input bindings select an instance domain. Symbolic execution follows
-function bodies and loop iterations, while annotations generate obligations
-on copies of the reached states. Automatic reasoning and proof-assistant
-completion check those obligations in the original specification logic.
-Joint heap/value normalization and exact local-storage frames preserve the
-information observed by subsequent checks. We formalize the instance semantics
-and mechanize reference trace preservation and nonvacuous acceptance under
-execution-coverage interfaces. Comparative case studies expose a signed-integer
-boundary violation missed by the recorded Fulminate configuration, demonstrate
-proof completion for quantified contracts rejected by runtime instrumentation,
-and examine automatic versus interactive discharge of spatial obligations.
-The method makes proof-oriented contracts usable as test oracles while
-retaining the program states and memory resources that those contracts describe.
+Fixing a program's input does not necessarily make its logical
+specification executable. A finite execution can leave quantified
+properties and spatial ownership conditions to establish.
+We present \tespec{}, a method for proof-based testing of separation-logic
+specifications for C. The method uses execution to determine program
+states and proof to check the specification at those states.
+Symbolic execution follows function bodies and loop iterations under
+selected input bindings. Annotations generate obligations on copies of
+the reached states, allowing execution to continue with the values and
+memory it produced. Automatic reasoning and proof-assistant completion
+check these obligations in the original specification logic.
+We formalize instance checking and mechanize trace-preservation and
+acceptance arguments for a reference model.
+Recorded case studies examine a signed-overflow violation missed by a
+Fulminate configuration, original quantified contracts with equivalent
+runtime controls, and spatial obligations resolved by automatic reasoning
+or checked refutation. \tespec{} supports execution-based feedback from
+proof-oriented contracts before full program verification is complete.
 \end{abstract}
 \begin{IEEEkeywords}
 Specification testing, symbolic execution, separation logic, proof checking
@@ -84,7 +84,7 @@ The accompanying artifact includes the implementation identities, original
 case-study sources and logs, proof certificates, and the Rocq reference
 semantics. The paper's case-study inventory pins evidence by file hash and
 separates recorded observations from the broader evaluation protocol.
-The build script regenerates the manuscript and its vector workflow figure.
+The build script regenerates the manuscript and its three vector method figures.
 \bibliographystyle{IEEEtran}
 \bibliography{references}
 \end{document}

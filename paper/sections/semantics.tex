@@ -1,171 +1,323 @@
 \section{Instance Semantics and Guarantees}
 \label{sec:semantics}
-An instance selects an input domain and checks its admitted executions.
-We formalize this meaning through interfaces for execution, observation,
-and obligation generation.
+We distinguish constructing an execution tree, establishing its obligations,
+and assigning a verdict. A failed proof does not change execution, and a
+refuted abstract obligation does not by itself establish an execution
+counterexample.
 
-\subsection{Instances and selected observations}
-A concrete configuration $\sigma$ contains the C environment, heap, control
-location, and call stack. A logical environment $\eta$ assigns values to
-typed logical variables. We write $z=(\sigma,\eta)$; root entry bindings in
-$\eta$ remain fixed during execution. The interpretation $\Gamma$ supplies
-logical definitions, memory predicates, and the target layout.
+\subsection{Semantic objects}
+A C configuration $\sigma=\langle\ell,\nu,h,\kappa\rangle$ contains its
+control location, variable environment, owned heap, and call stack.
+Frames retain their invocation's logical entry values.
+A semantic state $z=(\sigma,\rho,\bar v)$ additionally records immutable
+root bindings $\rho$ and labelled live logical values $\bar v$.
+Auxiliary proof witnesses are not components of $z$.
+The supplied transition relation $z\to_c z'$ preserves $\rho$ and updates
+the remaining components according to execution.
+
+Assertions use the interface syntax
+\[
+\begin{split}
+ A::={}&p(\bar t)\mid\mathsf{emp}\mid t\mapsto_T u
+       \mid A*A\mid A\land A\mid A\lor A\\
+      &\mid\exists x:T.\,A\mid\forall x:T.\,A .
+\end{split}
+\]
+A fixed interpretation $\Gamma$ supplies predicate definitions, typed
+resources, and layout. Write $A(z)$ for satisfaction.
+Ownership is exact: $\mathsf{emp}(h)$ means $h=\varnothing$, and
+$(A*B)(h)$ requires $h=h_1\uplus h_2$ with disjoint components satisfying
+$A$ and $B$~\cite{reynolds2002separation}.
 
 \begin{definition}[Specification instance]
-An instance is $I=\langle c,R,E,\theta,\mathcal B,\Gamma,b\rangle$, where
-$c$ is the body, $R$ and $E$ its entry and return assertions, $\theta$ a typed
-partial binding, $\mathcal B$ the selected observation boundaries, and $b$
-the execution and proof-search budgets. Its input domain is
+An instance is $I=\langle c,R,E,\theta,\mathcal B,\Gamma,b\rangle$:
+a body, entry and return assertions, typed partial binding, observation
+schedule, interpretation, and resource bounds. Its domain is
 \begin{equation}
-\dom=\{(\sigma,\eta)\mid
-       \eta\models\theta\land(\sigma,\eta)\models_\Gamma R\}.
-\end{equation}
-\end{definition}
-Checking an instance quantifies over all of $\dom$. Fixing a stored value
-can leave its address and other inputs symbolic. An entry witness establishes
-$\dom\ne\varnothing$; it does not replace the domain by that witness.
-Stronger bindings restrict the domain, but need not preserve nonemptiness.
-
-Heap assertions describe exact owned resources, with separating conjunction
-interpreted by disjoint composition~\cite{reynolds2002separation}.
-At auxiliary boundaries, the resolved check includes the exact local-storage
-frame of Section~\ref{sec:boundaries}. Let $\mathcal B_\Gamma(z)$ be the
-finite list of resolved checks selected at $z$, including these frames.
-For a finite trace $\tau=z_0\cdots z_m$, define
-\[
-\mathsf{Observe}_{\mathcal B}(\tau)
- =\mathop{\bigoplus}_{i=0}^{m}
-   [(z_i,A)\mid A\in\mathcal B_\Gamma(z_i)].
-\]
-Concatenation retains order and repeated visits. Resolving a call boundary
-uses that invocation's logical bindings while preserving the caller's entry
-values. A checked execution is safe, satisfies every selected observation,
-and satisfies $E$ on return.
-
-\subsection{Execution and observation interfaces}
-A symbolic configuration $\langle\ell,P,K,U,\Omega,b\rangle$ contains the
-control location, represented state assertion, call context, pending
-observations, accumulated obligations, and remaining budget.
-Write $\llbracket P\rrbracket_\Gamma$ for its represented states and
-$\to_c$ for the concrete program transition relation.
-
-At a nonterminal program step with successors $P_1,\ldots,P_k$, the executor
-must establish progress, safety, and coverage:
-\begin{equation}
-\label{eq:coverage}
 \begin{split}
-&\forall z\in\llbracket P\rrbracket_\Gamma.\;
-  \mathsf{Safe}(z)\land\exists z'.\,z\to_c z',\\
-&\forall z,z'.\;
-  z\in\llbracket P\rrbracket_\Gamma\land z\to_c z'
-  \Rightarrow z'\in\bigcup_j\llbracket P_j\rrbracket_\Gamma.
+\dom=\{z=(\sigma,\rho,\bar v)\mid {}&
+ \mathsf{Entry}_c(z)\land\rho\models\theta\\
+ &{}\land R(z)\}.
 \end{split}
 \end{equation}
-An unresolved guard retains each successor whose infeasibility has not been
-established. Coverage may overapproximate executions for acceptance;
-negative evidence additionally requires realizability.
+$\mathsf{Entry}_c$ fixes the entry location and initializes the program
+and live-value environments.
+\end{definition}
+An instance check quantifies over all of $\dom$. Establishing its
+nonemptiness does not replace this domain by the existence witness.
 
-An observation is an administrative transition:
+Each source check has an identity $\alpha$ and an independent meaning
+$\mathsf{Check}_\Gamma(\alpha,z)$: interpret its original annotation in the
+current invocation, including the exact eligible local-storage frame.
+Resolution must produce a predicate $Q_\alpha$ satisfying
+\begin{equation}
+\label{eq:resolution}
+ \forall z\in S_N.\quad
+ Q_\alpha(z)\ \Longleftrightarrow\ \mathsf{Check}_\Gamma(\alpha,z).
+\end{equation}
+Here $S_N$ is the represented state set defined below. This interface
+preserves invocation bindings, all existential witness choices and their
+frames, and user-owned resources. Acceptance uses the forward direction;
+refutation uses the reverse direction.
+
+\subsection{Candidate execution and observation rules}
+A symbolic node $N=\langle\chi;P,\bar t,U,\Omega\rangle$ contains its control and invocation context $\chi$, an assertion,
+live terms, pending check identities, and an append-only obligation inventory. Each record stores its check identity, source state predicate, and target predicate; its proposition is frozen when the record is created.
+Its represented states use the joint denotation defined in
+Section~\ref{sec:normalization}:
+\[
+\begin{split}
+ S_N=\{(\sigma,\rho,\bar v)\mid {}&\sigma\sim\chi\ \land\ {}\\
+             &\obs_\rho(P,\bar t)(\sigma,\bar v)\},
+\end{split}
+\]
+where $\sigma\sim\chi$ fixes the represented control location and call
+context. Thus normalization may change auxiliary witnesses while preserving
+that context, root bindings, and live values.
+
+The following rules construct a candidate tree; construction does not
+assume its obligations are valid. Program execution uses
+\[
+\frac{U=[]\qquad
+      \mathsf{Transfer}_c(N)=[N_1,\ldots,N_k]}
+     {N\overset{\mathrm{exec}}{\Longrightarrow}\{N_1,\ldots,N_k\}} .
+\]
+Children inherit the obligation inventory and receive the observations
+selected at their new boundaries.
+Certification requires safety, progress, and successor coverage:
+\begin{equation}
+\label{eq:coverage}
+\begin{gathered}
+ \forall z\in S_N.\;
+       \mathsf{Safe}(z)\land\neg\mathsf{Final}(z),\\
+ \forall z\in S_N.\;\exists z'.\,z\to_c z',\\
+ \mathsf{Post}_c(S_N)\subseteq\bigcup_i S_{N_i},
+\end{gathered}
+\end{equation}
+where $\mathsf{Post}_c(S)=\{z'\mid\exists z\in S.\,z\to_c z'\}$.
+Unresolved guards retain each successor not proved infeasible.
+Coverage permits overapproximation.
+
+At an observation, create the record
+$e=(\alpha,S_N,Q_\alpha)$, whose proposition is
+$\phi_e\equiv\forall z\in S_N.\,Q_\alpha(z)$.
+The rule records $e$ without changing the continuation:
 \begin{equation}
 \label{eq:observe}
-\frac{Q=\mathsf{Resolve}_{\Gamma,K}(A)*F_{P,A}}
- {\langle P,A::U,\Omega\rangle
-  \xrightarrow{\mathrm{observe}}
-  \langle P,U,\Omega\cup\{P\vdash Q\}\rangle}.
+\frac{U=\alpha::U'\qquad Q_\alpha=\mathsf{Resolve}_{\Gamma}(N,\alpha)}
+ {N\ \overset{\mathrm{obs}}{\Longrightarrow}\
+  N[U\gets U',\ \Omega\gets\Omega\mathbin{\cdot}[e]]}.
 \end{equation}
-The omitted program context remains unchanged. The continuation retains $P$,
-rather than replacing it with $Q$ or requiring the new obligation to hold
-before execution proceeds.
+The field update preserves $\chi$, $P$, and $\bar t$. Neither $\phi_e$
+nor its negation is a premise. Resolution faithfulness
+(Equation~\eqref{eq:resolution}) is required when certifying the tree.
 
-A finite execution tree contains program-step, observation, normalization,
-terminal, and unfinished nodes. Terminal nodes establish safety, the return
-assertion, and absence of further program transitions. Normalization preserves
-the joint state/value relation of Section~\ref{sec:normalization}.
-Reaching an execution bound produces an unfinished leaf.
-A tree is \emph{boundary-complete} when every selected boundary along each
-represented execution is paired with an observation node whose antecedent
-contains the reached state and whose consequent is the correctly resolved
-check. This connects the selected schedule to the obligation inventory.
+Write $N\equiv_JN'$ when only $(P,\bar t)$ changes and its joint
+denotation is preserved pointwise for every $\rho$. Normalization uses
+\[
+ \frac{N\equiv_JN'}{N\overset{\mathrm{norm}}{\Longrightarrow}N'} .
+\]
+Therefore $S_N=S_{N'}$, retaining both the heap and its live values.
 
-\subsection{Reference trace preservation}
-\label{sec:noninterference}
-The reference monitored semantics records observations without consulting
-their truth.
-\begin{theorem}[Erasure and lifting]
-\label{thm:erasure}
-For any resolved finite boundary schedule $\mathcal B$ and state trace
-$\tau$ from $z$ to $z'$, a monitored execution with state trace $\tau$
-exists if and only if $\tau$ is a program execution from $z$ to $z'$.
-Its observation list is exactly $\mathsf{Observe}_{\mathcal B}(\tau)$.
-\end{theorem}
-\begin{proof}
-Induct on the finite execution derivation. Each monitored step retains the
-program transition and appends the selected observations. Erasure removes
-that list; lifting reconstructs it. No rule requires an observation to hold.
-\end{proof}
-Changing an observed assertion therefore does not filter program executions
-in this reference semantics. Erasure, lifting, and the observation inventory
-are mechanized in \texttt{ObservationTrace.v}.
+Administrative progress requires a well-founded rank decreasing on
+every observation or normalization step between program transitions.
+This is a reference-construction condition, independent of the
+implementation's choice of resource bounds. Exhausting a bound creates an
+\textsc{Unfinished} leaf. A \textsc{Done} node has no pending observations
+and must establish safety, finality, $E$, and absence of outgoing
+program transitions.
 
-\subsection{Acceptance and negative evidence}
-\label{sec:verdicts}
-\begin{theorem}[Nonvacuous instance acceptance]
-\label{thm:acceptance}
-Suppose a finite, boundary-complete execution tree has root domain
-$\dom\ne\varnothing$, satisfies the execution and normalization interfaces,
-and has no unfinished leaf. If all generated obligations are valid, every
-execution from $\dom$ terminates safely, satisfies $E$, and satisfies every
-selected observation.
-\end{theorem}
-\begin{proof}
-Induction on the tree establishes safe termination. Program-step coverage
-places every concrete successor in a child subtree; normalization and
-observation nodes preserve the represented continuation. Terminal obligations
-establish the return assertion. Boundary completeness and valid observation
-obligations establish each selected check. Entry nonemptiness supplies
-nonvacuity independently.
-\end{proof}
-\texttt{InstanceChecking.v} mechanizes the finite-tree safety and termination
-argument; \texttt{ObservationTrace.v} establishes satisfaction of a discharged
-observation inventory. Their connection to C execution and the generated
-boundary inventory is an implementation obligation.
+\begin{definition}[Boundary completeness]
+Let $\mathsf{rec}_{\mathcal B}(z)$ list the selected pairs $(\alpha,z)$;
+$\mathsf{Observe}_{\mathcal B}(\tau)$ concatenates them along $\tau$.
+A concrete trace embeds in a tree branch by matching program steps to
+execution edges and retaining its state across administrative edges.
+Let $\Omega^{\rm obs}_\pi$ be that branch's ordered observation records,
+counting each once. The projection $\mathsf{inst}_{\tau}$ replaces a
+record $(\alpha,S,Q)$ by $(\alpha,z_i)$ at its matching observation edge.
+The tree is boundary-complete when every complete embedded branch satisfies
+\[
+ \mathsf{inst}_{\tau}(\Omega^{\rm obs}_\pi)
+       =\mathsf{Observe}_{\mathcal B}(\tau).
+\]
+\end{definition}
+The state at each matched edge belongs to its record's source set.
+List equality preserves check identity, order, and repeated loop visits.
+Together with faithful resolution, it connects valid recorded propositions
+to the original selected annotations.
 
-A confirmed execution violation has existential meaning:
+\subsection{Oracle evidence and verdicts}
+For an original obligation $j$, define
+\[
+\begin{aligned}
+ \phi_j&=\forall z.\,S_j(z)\Rightarrow A_j(z),\\
+ C_j&=\exists z.\,S_j(z)\land\neg A_j(z).
+\end{aligned}
+\]
+$C_j$ is its classical countermodel query. A supported SMT encoding
+$B_j$ and original-model validator must satisfy
 \begin{equation}
-\label{eq:violation}
-\exists z_0\in\dom,z.\;
-z_0\to_c^*z\land\mathsf{Bad}_{E,\mathcal B}(z),
+\label{eq:oracle-interface}
+\begin{aligned}
+ C_j&\Rightarrow\exists m.\,B_j(m),\\
+ \mathsf{Validate}_j(m,z)=\mathsf{true}
+   &\Rightarrow S_j(z)\land\neg A_j(z).
+\end{aligned}
 \end{equation}
-where badness is an unsafe state, a violated selected check, or a return
-state violating $E$. For a path obligation $P\vdash A$, a positive proof
-establishes validity for every represented state. A negative proof refutes
-that obligation. To obtain Equation~\eqref{eq:violation}, its violating state
-must also be realizable from $\dom$: an overapproximation may contain
-unreachable countermodels. A failed proof attempt establishes neither polarity.
+
+\begin{proposition}[Oracle soundness]
+\label{prop:oracle-soundness}
+Assuming sound solver answers and
+Equation~\eqref{eq:oracle-interface}, UNSAT establishes $\phi_j$;
+successful original-model validation establishes $\neg\phi_j$.
+A kernel-checked proof establishes its checked polarity when its
+statement denotes the original obligation and $\Gamma$ satisfies
+its admitted dependency theory.
+\end{proposition}
+\begin{proof}
+If $C_j$ held after UNSAT, the first interface condition would produce
+a model of $B_j$, a contradiction. Validation supplies a state
+satisfying $S_j$ and violating $A_j$, contradicting $\phi_j$.
+The proof-assistant case follows from kernel soundness under the stated
+interpretation of its dependencies.
+\end{proof}
+SAT without validated reconstruction, unsupported encodings, and
+unsuccessful proof attempts establish neither polarity.
+In particular, proving $\neg\phi_j$ need not construct a reachable model.
+
+Entry uses the separate proposition $\exists z.\,z\in\dom$:
+SAT means nonempty, and UNSAT means empty.
+The executor's negative-entailment entry encoding has this meaning
+under the explicit classical premise in \texttt{PreconditionOracle.v}.
+
+For a branch $\pi$, let $F_\pi$ mean actual feasibility from $\dom$,
+$K_\pi$ mean complete execution and selected checks, and $W_\pi$ mean
+that a refuted safety, observation, or return VC has a validated
+violating state reached at that check. With original VC results $v_j$,
+\[
+ V(\pi)=
+ \begin{cases}
+  \fail, & W_\pi,\\
+  \pass, & F_\pi\land K_\pi
+                  \land\forall j.\,v_j=\valid,\\
+  \unknown, & \text{otherwise}.
+ \end{cases}
+\]
+Rules have priority order: a reachable violation suffices despite other
+unresolved obligations. Vacuous validity on an infeasible branch does
+not establish a passing execution. Removing infeasible branches must
+preserve coverage.
 
 \begin{table}[t]
 \centering\small
-\caption{Evidence and instance results. Empty entries and execution violations retain distinct reasons.}
+\caption{Instance verdicts in priority order.}
 \label{tab:verdicts}
-\begin{tabular}{@{}>{\raggedright\arraybackslash}p{.30\columnwidth}>{\raggedright\arraybackslash}p{.65\columnwidth}@{}}
+\begin{tabular}{@{}p{.24\columnwidth}p{.71\columnwidth}@{}}
 \toprule
-Layer & Meaning\\
+Verdict & Evidence\\
 \midrule
-Entry & SAT: $\dom\ne\varnothing$. UNSAT: $\dom=\varnothing$. UNKNOWN: nonemptiness unresolved.\\
-VC & \raggedright \valid{}: established. \invalid{}: original VC refuted. \unknown{}: unresolved.\arraybackslash\\
-Test: \pass & Entry SAT, complete execution and boundary coverage, and all required obligations VALID.\\
-Test: \fail & An empty entry, or a confirmed execution violation; the report retains which reason applies.\\
-Test: \unknown & Neither complete acceptance nor a confirmed failed check.\\
+\fail{}: empty &
+Entry UNSAT: an invalid test instance.\\
+\fail{}: violation &
+Some branch has a reachable violating state.\\
+\pass &
+Entry SAT, a complete covering tree, and all retained branches PASS.\\
+\unknown &
+None of the preceding conditions is established.\\
 \bottomrule
 \end{tabular}
 \end{table}
-Table~\ref{tab:verdicts} summarizes the instance-level results.
-Figure~\ref{fig:result-flow} shows the intervening path aggregation: VC
-\invalid{} becomes path \fail{} only after reachability is established. An empty entry invalidates
-the test instance; it is not a counterexample to the postcondition.
-Entry, obligation, and whole-test results are recorded separately.
-The emitted initial VC uses a negative-entailment encoding.
-\texttt{PreconditionOracle.v} proves its equivalence to nonemptiness under
-an explicit classical-logic premise. A concrete entry witness suffices
-constructively. A Require-only check establishes entry feasibility;
-an execution check additionally requires the corresponding execution evidence.
+Execution errors retain separate diagnostics. Refuting a coverage or
+normalization side condition prevents acceptance; it is not itself a
+program violation.
+
+\subsection{Reference guarantees}
+\label{sec:noninterference}
+The monitored judgment
+$z\Longrightarrow_{\mathcal B}^{\tau,\omega}z'$
+records a finite trace and its observations:
+\[
+\frac{}{z\Longrightarrow_{\mathcal B}^{[z],\,
+                  \mathsf{rec}_{\mathcal B}(z)}z}.
+\]
+\[
+\frac{z\to_c u\qquad
+      u\Longrightarrow_{\mathcal B}^{\tau,\omega}z'}
+ {z\Longrightarrow_{\mathcal B}^{z::\tau,\,
+             \mathsf{rec}_{\mathcal B}(z)\cdot\omega}z'}.
+\]
+
+\begin{theorem}[Erasure and lifting]
+\label{thm:erasure}
+A state sequence $\tau$ admits a monitored derivation from $z$ to $z'$
+if and only if it is a finite $\to_c$ trace between those states.
+Every such derivation has
+$\omega=\mathsf{Observe}_{\mathcal B}(\tau)$.
+\end{theorem}
+\begin{proof}
+Induction on a program trace constructs a monitored derivation using
+the singleton and step rules. Conversely, induction on a monitored
+derivation retains exactly its program-step premises.
+The same induction establishes the observation-list equation.
+No rule tests an observation's truth.
+\end{proof}
+The theorem establishes reference trace preservation. Resource bounds
+add a separate completeness check to the implementation.
+
+\label{sec:verdicts}
+\begin{theorem}[Nonvacuous instance acceptance]
+\label{thm:acceptance}
+Assume sound oracle evidence, a root representing exactly $\dom$, and
+valid execution, normalization, and resolution interfaces.
+If a finite boundary-complete tree without unfinished leaves receives
+\pass, then $\dom\ne\varnothing$ and every maximal execution from $\dom$
+terminates safely, satisfies $E$, and satisfies every selected observation.
+\end{theorem}
+\begin{proof}
+Entry SAT supplies nonemptiness. Induct on tree height for a represented
+state. Terminal obligations establish the \textsc{Done} case.
+At an execution node, progress excludes stuck nonfinal states and
+coverage places every successor in a child subtree.
+Normalization preserves the joint state set; observation retains it
+and establishes the recorded predicate by oracle soundness. Faithful
+resolution transfers that result to the original annotation.
+Each program step descends the finite tree, so an execution cannot have
+more program steps than its height. Every maximal execution therefore
+terminates. Boundary completeness identifies the discharged inventory
+with every selected observation on that execution.
+\end{proof}
+
+A confirmed violation means
+\begin{equation}
+\label{eq:violation}
+ \exists z_0\in\dom,z.\;
+ z_0\to_c^*z\land\mathsf{Bad}_{E,\mathcal B}(z),
+\end{equation}
+where badness is unsafety, failure of a selected observation, or failure
+of $E$ at return.
+
+\begin{proposition}[Reachable-refutation soundness]
+\label{prop:reachable-refutation}
+Assume the resolution interface. A validated countermodel to a safety,
+observation, or return VC establishes Equation~\eqref{eq:violation}
+when an admitted trace reaches
+it at the corresponding check. Such evidence excludes acceptance of
+the same instance.
+\end{proposition}
+\begin{proof}
+Validation supplies the violated predicate. Faithful resolution and
+the matched check identity transfer this violation to the original check,
+establishing badness. The trace supplies the initial state and
+reachability. Acceptance would establish safety and the same selected
+predicate at that state by Theorem~\ref{thm:acceptance}, a contradiction.
+\end{proof}
+The reachability condition is essential: an abstract endpoint may admit
+$x=1$ and refute a requirement $x=0$ even when only $x=0$ is reachable.
+
+\paragraph{Mechanized scope.}
+The Rocq artifact proves parameterized finite-tree acceptance, trace
+erasure and lifting, exact local framing, and preservation under licensed
+normalization. It also formalizes entry polarity and scalar call/alias
+properties. The rules in this section compose these interfaces at paper
+level. Correct realization of transfer, resolution, the observation
+schedule, and solver adapters is a premise of the implementation guarantee.

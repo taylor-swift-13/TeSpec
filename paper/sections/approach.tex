@@ -1,141 +1,99 @@
 \section{Checking Stateful Instances}
 \label{sec:approach}
-Figure~\ref{fig:overview} presents the workflow. The execution path constructs
-states from the selected inputs and C bodies. The checking path turns those
-states into immutable obligations, applies automatic reasoning, and submits
-remaining goals to proof-assistant completion. Three interfaces connect the
-paths: the entry domain, copied observations, and verdict evidence.
+Figure~\ref{fig:overview} follows a test through three stages: select an
+instance, execute its bodies while recording observations, and discharge
+the resulting propositions. The execution supplies states; the oracle
+supplies evidence about those states.
 
-\subsection{Instantiate inputs and execute bodies}
-Typed bindings specialize the root precondition. A binding can fix a logical
-integer while leaving an address or part of a data structure symbolic. Entry
-values remain immutable as C variables and memory change. The entry checker
-establishes that the resulting domain contains at least one state, using
-automatic reasoning or an existential Rocq obligation. Execution retains the
-whole selected domain; an existence witness does not choose the sole test heap.
+\subsection{Select an instance and execute its bodies}
+Typed bindings specialize the root precondition. Binding $x$ to 13 can
+leave the address $p$ symbolic. The entry checker establishes that the
+selected domain contains a state, using automatic reasoning or an
+existential Rocq obligation. Execution retains the entire domain.
+An existence witness certifies nonemptiness without selecting the sole
+heap to execute.
 
-\tespec{} reuses \qcp{} to evaluate C expressions, generate arithmetic and
-memory-safety obligations, and update the symbolic heap. Known guards select
-a successor. Unresolved guards retain each successor whose infeasibility has
-not been established. A call evaluates arguments, allocates fresh parameter
-slots, and enters the available body. The callee receives fresh logical entry
-bindings, including in recursive calls. On return, shared writes and the actual
-return value survive; callee-local slots are retired. A loop repeatedly executes
-its condition and body, including \texttt{break}, \texttt{continue}, and early
-return. Resource exhaustion leaves the execution incomplete.
+\tespec{} reuses \qcp{} to evaluate expressions, update symbolic heaps,
+and generate arithmetic and memory-safety obligations.
+Known guards select a successor; unresolved guards retain each successor
+whose infeasibility has not been established.
+Calls execute available bodies with fresh parameter slots and logical
+entry bindings. Shared writes and the actual return value survive the
+call; callee-local slots are retired. Loops execute their conditions and
+bodies, including \texttt{break}, \texttt{continue}, and early return.
+An exhausted resource bound records an incomplete execution.
 
-For example, a helper that increments a cell from 3 to 4 leaves the caller with
-4 even if its contract promises only an existential integer greater than 3.
-The summary is checked against that execution. It does not replace the
-computed value. This is the distinction from simply strengthening the
-precondition of a modular verification run with an input equality.
+For example, a helper that increments a cell from 3 to 4 leaves the
+caller with 4 even if its contract promises only some integer greater
+than 3. The contract is checked against the computed state. The concrete
+value remains available to subsequent operations.
 
 \subsection{Observe states without changing them}
 \label{sec:boundaries}
-Figure~\ref{fig:observation} shows a copied observation. At a selected
-boundary, let $P$ describe the reached state and $A$ the resolved annotation. The checker emits
+At a selected boundary, let $P$ describe the reached state and $A$ the
+resolved annotation. The checker records
 \[
-             P\ \vdash\ A*F_{P,A}
+                 P\vdash A*F_{P,A}
 \]
-on a copy and continues execution with $P$. The frame $F_{P,A}$ contains
-exactly the eligible local storage omitted by the annotation. Callee contracts
-and visited loop invariants are observed in this way. A false assertion adds
-a failing obligation; it does not prune the following execution.
+on a logical copy and continues with $P$.
+Figure~\ref{fig:observation} shows the consequence: changing the least-root
+assertion changes its VC while the same write and return still follow.
+The copy is a logical snapshot, not a runtime duplication of the heap.
 
 \input{figures/observation}
 
-\paragraph{Preserve the checked footprint.}
-The memory model represents scalar C locals as owned cells. An auxiliary
-annotation can omit unrelated local slots, so the checker resolves its
-program variables and goal witnesses before selecting the local frame.
-It preserves the omitted slots' types and current values. If a local pointer
-holds $\&i$, resolution exposes the $i$ cell before framing and avoids counting
-it twice. User-owned heap cells are never added merely because the assertion
-omits them. In particular, a missing returned resource remains observable.
-
-Let $m$ identify eligible local addresses, and split $h$ into $h_m$ and
-$h_{\neg m}$. For extensional $A$, the scalar-cell model establishes
+\paragraph{Resolve the observed footprint.}
+Scalar C locals occupy owned cells. An auxiliary annotation may omit
+unrelated local slots, so $F_{P,A}$ contains exactly those eligible
+slots, with their types and current values.
+Resolution exposes local addresses before framing, including a local
+pointer that aliases another local, to avoid counting a cell twice.
+User-owned cells omitted by an assertion remain observable obligations.
+For a mask $m$ selecting local cells, exact heap decomposition gives
 \[
- (A*\mathit{exact}(h_m))(h)\quad\Longleftrightarrow\quad A(h_{\neg m}).
+ (A*\mathit{exact}(h_m))(h)\Longleftrightarrow A(h_{\neg m}).
 \]
-For an existential goal, the mask may depend on its witness. A successful
-witness closes the existential obligation; failure for one chosen witness
-does not refute all choices.
+The mask may depend on an existential witness. Resolution retains the
+witness choices; refuting one choice does not refute all of them.
 
-\paragraph{Select observation boundaries.}
-The controller records which function, loop, and intermediate boundaries the
-test checks. Both supported execution policies run available bodies and loops;
-the richer policy also checks selected internal annotations. Named contract
-alternatives are resolved by explicit routing, or retained as a disjunction
-when no alternative is selected. An unresolved boundary match leaves a coverage
-gap, which prevents complete acceptance.
+\paragraph{Record the selected boundaries.}
+The schedule identifies function, loop, and intermediate observations.
+Both supported execution policies run bodies and loops; the richer policy
+also checks selected internal annotations.
+Named contract alternatives are resolved by explicit routing or retained
+as a disjunction. An unresolved boundary match records incomplete coverage.
+The formal observation inventory in Section~\ref{sec:semantics} connects
+this schedule to the checks actually emitted.
 
 \input{sections/normalization-algorithm}
 
-\input{figures/result-flow}
-
-\subsection{Discharge immutable obligations}
+\subsection{Discharge and aggregate evidence}
 \label{sec:evidence}
-Figure~\ref{fig:result-flow} distinguishes three levels: the solver's answer,
-the validity of an original VC, and the verdict for the execution path.
-Let $\phi_{\pi,j}$ be the $j$th obligation on path $\pi$:
-\[
-\phi_{\pi,j}\equiv\forall z.\;P_{\pi,j}(z)\Rightarrow A_{\pi,j}(z).
-\]
-Automatic entailment first attempts the original obligation. For SMT,
-the checker searches for a counterexample by querying
-$C_{\pi,j}\equiv\exists z.\,P_{\pi,j}(z)\land\neg A_{\pi,j}(z)$.
-The optional \texttt{--spatial-smt} mode supplies encodings for supported
-memory predicates. For a countermodel-preserving encoding, \textsf{UNSAT}
-establishes VC \valid{}. A \textsf{SAT} answer establishes VC \invalid{}
-once its model is checked in the original memory interpretation.
-An unconfirmed model, \textsf{UNKNOWN}, or unavailable encoding leaves VC
-\unknown{}. Thus satisfiability and validity have opposite polarities here.
+Figure~\ref{fig:result-flow} separates evidence for a VC from evidence
+for an execution. Automatic entailment first attempts each frozen original
+obligation. SMT searches for a model of its negation; the optional
+\texttt{--spatial-smt} mode encodes supported memory predicates.
+UNSAT establishes validity under the encoding interface.
+SAT establishes invalidity after checking the model in the original
+interpretation. An unconfirmed model or unresolved query enters proof
+completion.
 
-Only unresolved VCs require ITP completion. The agent or developer receives
-the frozen original $\phi_{\pi,j}$ and can construct a proof of
-$\phi_{\pi,j}$ or of $\neg\phi_{\pi,j}$. A kernel-checked proof under the
-admitted assumptions establishes \valid{} or \invalid{}, respectively.
-If neither direction is established, the VC remains \unknown{}; a failed
-proof attempt supplies no negative evidence. All pending VCs from one test
-execution form one proof-completion job, with a separate result for each VC.
-Already decided automatic results are carried forward.
+The agent or developer receives the original proposition $\phi$ and can
+construct a proof of $\phi$ or $\neg\phi$. Rocq checks the candidate,
+and the dependency audit records its assumptions.
+All residual VCs from one test execution form one completion job, with
+an individual result for each VC.
+The manifest fixes source hashes, target interpretation, goal identity,
+and proof polarity. The optional complete-certificate route also replays
+automatically discharged goals and entry existence.
 
-The manifest fixes source hashes, logical dependencies, target interpretation,
-goal identities, and proof polarity. The optional complete-certificate route
-replays every original obligation, including entry existence and automatically
-discharged goals, audits transitive assumptions, and runs an independent
-kernel check. Automatic evidence and replayed certificates retain distinct
-labels.
+The evidence ledger then combines VC status with execution evidence.
+A reachable violating state establishes path \fail{}; a feasible,
+complete path whose required VCs are all valid establishes \pass{}.
+Other paths remain \unknown{}.
+At instance level, acceptance additionally requires a nonempty entry
+and coverage of its executions.
+An empty entry is reported with an invalid-instance reason.
+Section~\ref{sec:semantics} gives the rules and their correctness arguments.
 
-\subsection{Aggregate VC results into path and instance verdicts}
-A refuted VC does not alone prove that a program reached its countermodel.
-The path verdict therefore combines VC status with feasibility, execution
-coverage, and reachability. Let $v_{\pi,j}$ be the final VC status, $F_\pi$
-mean that the path is feasible from the entry domain, $K_\pi$ mean that its
-execution and selected checks are complete, and $W_\pi$ mean that an INVALID
-VC has an admitted reachable violating state. The path verdict is
-\[
-V(\pi)=
-\begin{cases}
-\fail, & W_\pi,\\
-\pass, & F_\pi\land K_\pi\land\forall j.\ v_{\pi,j}=\valid,\\
-\unknown, & \text{otherwise}.
-\end{cases}
-\]
-The rules are applied in this order: one confirmed violation suffices for
-\fail{} even if other obligations remain unresolved. A \pass{} requires all
-required obligations to be valid. In particular, vacuous VC validity from an
-infeasible antecedent does not establish a passing execution. Paths proved
-infeasible are excluded; unresolved feasibility prevents acceptance.
-
-At instance level, an empty entry yields \fail{} with an invalid-instance
-reason, and any failed path yields \fail{} with an execution-violation reason.
-A nonempty entry domain,
-complete coverage of its executions, and passing retained paths yield
-\pass{}. Remaining cases yield \unknown{}. Entry existence has its own query
-and polarity: SAT means nonempty, UNSAT means an invalid empty instance, and
-UNKNOWN requires further evidence before acceptance. The CLI retains a
-separate empty-entry reason when it reports that invalid instance as FAIL.
-Infrastructure and semantic execution errors keep their own diagnostics.
-These interfaces connect the workflow to the formal guarantees below.
+\input{figures/result-flow}

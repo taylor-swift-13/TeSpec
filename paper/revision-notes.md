@@ -84,3 +84,36 @@ nine pages including references. All pages and the three standalone figures
 were visually inspected, with no clipping or overlap. The final build has no
 overfull or underfull boxes and no unresolved references. No new experiments
 or theory replay were performed.
+
+
+## Follow-up: formal derivations and artifact-oriented figures
+
+The revision now starts from a concrete obstacle: fixing program inputs does
+not necessarily make the remaining assertion executable. Its central mechanism
+is stated once: execution supplies states; proof checks their specifications.
+The introduction and method follow this mechanism into its preservation and
+oracle obligations instead of repeating implementation safeguards.
+
+The formal section defines state/control context, assertion syntax, instance
+domains, candidate execution/observation/normalization rules, and evidence
+interfaces. Faithful resolution relates generated predicates to original
+annotations. Typed records preserve each check identity and its source/target
+predicates; their trace-instantiated inventory must match the selected schedule.
+Two theorems and two propositions establish reference trace preservation,
+nonvacuous acceptance, oracle soundness, and reachable-refutation soundness.
+The integrated derivations are distinguished from existing mechanized components
+in `formalization-map.md`. No Coq source or experimental result was changed.
+
+The figure redesign follows information-organization principles from the
+requested primary papers:
+
+- [Agentless, Figure 1, published PDF page 6](https://lingming.cs.illinois.edu/publications/fse2025.pdf): separate stages and show the artifacts transformed between them. TeSpec now shows the binding, state spine, logical snapshot, and frozen VC.
+- [Rango, Figure 1, PDF page 4](https://www.cs.cornell.edu/~lerner/papers/rango-final.pdf): make a component interface concrete and show how it contributes to the larger process. TeSpec now pairs one-obligation evidence with a schematic multi-path ledger. Rango is also cited for its actual proof-synthesis contribution in related work.
+- [MAE](https://arxiv.org/abs/2111.06377) and [ResNet](https://arxiv.org/abs/1512.03385): the writing review follows their progression from a precise obstacle to a compact mechanism and evidence that tests it. These are writing references, not technical dependencies of TeSpec.
+
+The figures were independently redrawn in TikZ. No source artwork, experimental
+results, retrieval component, or training claim was imported. Figures 1 and 2
+remain on page 3; Figure 3 is on page 5. The revised manuscript is ten pages
+including references. The visual review covers the full document and all three
+standalone figures. The final log has no overfull boxes or unresolved references;
+one underfull vertical box was visually checked.

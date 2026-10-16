@@ -1,23 +1,50 @@
-\begin{tikzpicture}[x=1cm,y=1cm,>=Latex,font=\small,
-box/.style={draw,rounded corners=2pt,align=center,text width=4.1cm,minimum height=1.2cm,inner sep=5pt},
-exec/.style={box,draw=blue!55!black,fill=blue!4},
-proof/.style={box,draw=teal!65!black,fill=teal!5},
-flow/.style={->,line width=.8pt}]
-\node[exec] (input) at (0,0)
- {\textbf{1. Instantiate inputs}\\C body, contract, bindings $\theta$\\check entry domain};
-\node[exec] (execute) at (5.3,0)
- {\textbf{2. Execute actual bodies}\\calls, loops, reads, and writes};
-\node[exec] (observe) at (10.6,0)
- {\textbf{3. Observe state copies}\\safety and assertion VCs};
-\draw[flow] (input)--(execute);
-\draw[flow] (execute)--(observe);
-\node[proof] (solve) at (10.6,-1.85)
- {\textbf{4. Check original obligations}\\automatic reasoning\\ITP for unresolved goals};
-\node[proof] (collect) at (5.3,-1.85)
- {\textbf{5. Collect VC evidence}\\VALID / INVALID / UNKNOWN};
-\node[proof] (report) at (0,-1.85)
- {\textbf{6. Report test results}\\path and instance verdicts};
-\draw[flow] (observe)--(solve);
-\draw[flow] (solve)--(collect);
-\draw[flow] (collect)--(report);
+\InputIfFileExists{figures/figure-style.tex}{}{\input{figure-style}}
+\begin{tikzpicture}[x=1cm,y=1cm,font=\footnotesize,text=tsInk]
+\path[tsPanel,fill=tsExec!3] (0,0) rectangle (3.65,-5.3);
+\path[tsPanel,fill=tsExec!3] (3.95,0) rectangle (10.3,-5.3);
+\path[tsPanel,fill=tsProof!3] (10.6,0) rectangle (17.35,-5.3);
+\node[tsHead] at (.18,-.35) {1\quad Select an instance};
+\node[tsHead] at (4.13,-.35) {2\quad Execute and observe};
+\node[tsHead] at (10.78,-.35) {3\quad Discharge and report};
+\node[tsCard,text width=2.9cm,minimum height=1.25cm] (code) at (1.83,-1.45)
+ {\textbf{C body + contract}\\[3pt]\texttt{*p=r; return r;}\\[3pt]$R,\ E,\ \mathcal B$};
+\node[tsCard,text width=2.75cm] (binding) at (1.83,-2.75)
+ {input binding\quad $\theta=\{x\mapsto13\}$};
+\node[draw=tsExec,fill=white,ellipse,minimum width=1.55cm,minimum height=.65cm] (domain) at (1.83,-4.05) {$D_\theta$};
+\draw[tsEvidence] (code.south)--(binding.north);
+\draw[tsFlow] (binding)--node[tsLabel,right]{entry check}(domain);
+\node[align=center,text width=3cm] at (1.83,-4.85) {values fixed; addresses may remain symbolic};
+\node[draw=tsExec,fill=white,circle,minimum size=.55cm,inner sep=0pt] (s0) at (4.65,-1.55) {$s_0$};
+\node[draw=tsExec,fill=white,circle,minimum size=.55cm,inner sep=0pt] (s1) at (6.9,-1.55) {$s_i$};
+\node[draw=tsExec,fill=white,circle,minimum size=.55cm,inner sep=0pt] (sn) at (9.35,-1.55) {$s_f$};
+\draw[tsFlow] (domain.east)--(3.8,-4.05)--(3.8,-1.55)--(s0.west);
+\draw[tsFlow] (s0)--node[above,font=\scriptsize]{bodies / loops}(s1);
+\draw[tsFlow] (s1)--node[above,font=\scriptsize]{write / return}(sn);
+\node[anchor=north] at (4.65,-1.97) {$x=13$};
+\node[anchor=north] at (9.35,-1.97) {$\mathit{ret}=4$};
+\node[tsCard,text width=2.45cm,minimum height=.75cm] (state) at (6.9,-2.9)
+ {$n=x=13,\ r=4$\\$p\longmapsto\boxed{13}$};
+\draw[draw=tsExec,line width=.5pt] (s1.south)--(state.north);
+\node[tsCard,dashed,draw=tsProof,text width=2.35cm,minimum height=.7cm] (snapshot) at (5.8,-4.35)
+ {logical snapshot\\$P_i$};
+\node[tsCard,draw=tsProof,text width=1.65cm,minimum height=.7cm] (vc) at (8.8,-4.35)
+ {frozen VC\\$\phi_i:P_i\vdash A_i$};
+\draw[tsCopy] (state.south)--(6.9,-3.5)-|node[tsLabel,pos=.7,above]{copy}(snapshot.north);
+\draw[tsEvidence] (snapshot)--(vc);
+\node[tsCard,text width=2.3cm,minimum height=.75cm] (auto) at (12.3,-1.6)
+ {\textbf{Automatic oracle}\\entailment / SMT};
+\node[tsCard,text width=2.1cm,minimum height=.75cm] (ledger) at (15.65,-1.6)
+ {\textbf{VC results}\\VALID\\INVALID\\UNKNOWN};
+\draw[tsEvidence] (vc.east)--(10.45,-4.35)--(10.45,-1.6)--(auto.west);
+\draw[tsEvidence] (auto)--(ledger);
+\node[tsCard,draw=tsProof,text width=2.25cm,minimum height=.75cm] (propose) at (12.3,-3.35)
+ {\textbf{Proof completion}\\agent / developer};
+\node[tsCard,draw=tsProof,text width=2.1cm,minimum height=.75cm] (kernel) at (15.65,-3.35)
+ {\textbf{Rocq check}\\kernel + audit};
+\draw[tsEvidence] (auto)--node[tsLabel,right]{unresolved}(propose);
+\draw[tsEvidence] (propose)--(kernel);
+\draw[tsEvidence] (kernel)--(ledger);
+\node[tsCard,text width=5.4cm,minimum height=.55cm] (result) at (13.98,-4.75)
+ {\textbf{Path / instance}\quad PASS\quad FAIL\quad UNKNOWN};
+\draw[tsEvidence] (ledger.east)--(17.12,-1.6)--(17.12,-4.75)--(result.east);
 \end{tikzpicture}

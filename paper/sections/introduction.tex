@@ -1,76 +1,77 @@
 \section{Introduction}
 \label{sec:introduction}
-A specification is useful during development only if programmers can obtain
-feedback from it. For C, that feedback must cover both functional results and
-the memory resources that make an execution safe. Separation-logic tools such
-as CN express these requirements in a single contract~\cite{pulte2023cn}.
-Fulminate makes such contracts executable by translating them into runtime
-checks~\cite{banerjee2025fulminate}. This enables testing before a complete
-verification proof is available.
+Fixing a program's input does not necessarily make its specification
+executable. Consider a routine that returns the least nonnegative integer
+whose square is at least 13. The result is 4, but its contract may
+characterize leastness by relating that result to \emph{every} nonnegative
+integer. The computation is finite; the resulting assertion still
+quantifies over an unbounded domain. For stateful C programs, the contract
+must also describe the memory that the routine reads, modifies, and owns.
 
-Two obstacles remain when testing proof-oriented specifications. First,
-fixing an input need not make its specification executable. A least-root
-contract can characterize a result by its relation to \emph{every} nonnegative
-integer. The program returns a concrete value, but checking that value still
-requires reasoning about an unbounded domain. Rewriting the contract into a
-finite monitor is possible for some properties; discovering and justifying
-that rewrite is additional specification work. Second, the execution used to
-test an annotation must retain the information produced by the program.
-A verifier can replace a loop by its invariant or a call by its summary.
-A test of those annotations needs the actual visited states, including any
-facts that the annotation omits.
+Separation logic expresses these functional and spatial requirements in
+a common language, as used by CN and other verification
+tools~\cite{pulte2023cn}. Fulminate brings executable CN contracts to
+runtime testing~\cite{banerjee2025fulminate}. Proof-oriented specifications
+also contain mathematical relations whose computational interpretation is
+less direct. Some admit a finite monitor, but discovering that monitor
+and establishing its equivalence requires additional specification work.
+A programmer can therefore write a precise contract and run a concrete
+example, yet still lack an oracle for checking it against the contract
+as written.
 
-We present \tespec{}, a method for \emph{proof-based testing of separation-logic
-specifications for C}. A test supplies bindings for selected logical inputs.
-\tespec{} executes the program symbolically under those bindings, observes its
-states at selected specification boundaries, and checks the resulting
-propositions in the verifier's logic. It executes available function bodies
-and loop iterations. Invariants and contracts generate obligations on copies
-of the reached states, while the execution retains the original states.
-Automatic reasoning handles routine obligations; residual propositions can be
-completed by an agent or developer and checked by the proof assistant.
+We present \tespec{}, a method for \emph{proof-based testing of
+separation-logic specifications for C}. Its central idea is to use
+execution to determine program states and proof to check the specification
+at those states. Input bindings restrict the initial domain. Symbolic
+execution follows available function bodies and loop iterations, retaining
+the values and memory resources they produce. Selected annotations become
+propositions in the original verification logic. Automatic reasoning
+discharges supported obligations; remaining propositions become
+proof-assistant tasks.
 
-This combination makes three kinds of information available to the test
-oracle: the program's computed values, its owned memory, and the mathematical
-meaning of the original assertion. A small example exposes why all three
-matter. Suppose a read function promises to return the value in an owned
-integer cell, but its implementation returns the negated value. On input
-\texttt{INT\_MIN}, the recorded Fulminate configuration exits successfully,
-whereas \tespec{} rejects the arithmetic safety obligation: the positive
-negation is outside the signed integer range. For quantified least-root and
-divisibility contracts, the recorded instrumenter cannot infer a finite
-quantifier bound, whereas proof completion checks the original obligations.
-Section~\ref{sec:case-studies} reconstructs these cases and their controls.
+Realizing this idea requires separating an observation from the execution
+it observes. A verifier may replace a loop by its invariant or a function
+body by its summary. When that annotation is itself under test, replacement
+can discard the information needed to check it.
+\tespec{} instead generates obligations on copies of the reached state.
+For a state assertion $P$ and a fully resolved check $Q_A$, it records
+$P\vdash Q_A$ while retaining $P$ for the continuation.
+Changing an intermediate assertion changes the question asked of the
+state; subsequent computation continues from the same state.
+Section~\ref{sec:example} illustrates this mechanism with the least-root
+routine.
 
-The central technical problem is preserving the meaning of a test while
-reusing verification infrastructure. Assertions must observe execution without
-restricting it. Heap simplification must retain the values later assertions
-will inspect. An auxiliary assertion may omit unrelated stack slots, but it
-must not silently discard user-owned memory. \tespec{} addresses these problems
-with copied-state observations, joint heap/value normalization, and exact
-local-storage frames. A nonempty entry domain and complete execution coverage
-then connect successful obligation checking to successful instance execution.
+The construction preserves the relation between heap cells and their live
+values during simplification and accounts explicitly for local storage
+at observation boundaries. The oracle combines VC evidence with entry
+feasibility and execution coverage. Acceptance concerns the domain selected
+by the bindings, which may retain symbolic addresses or other unbound
+inputs. Full \qcp{} verification addresses the original contract over all
+admissible inputs. These workflows share specifications and proof
+infrastructure while answering different development questions.
+
+Recorded case studies examine the mechanism from three directions.
+For a negating read at \texttt{INT\_MIN}, \tespec{} rejects an arithmetic
+safety obligation while the recorded Fulminate configuration exits
+successfully. For least-root and divisibility, proof completion checks
+original quantified contracts; proved finite reformulations provide
+runtime controls. Ownership examples examine how automatic spatial
+reasoning and checked refutations resolve residual obligations.
+Section~\ref{sec:case-studies} presents their sources, inputs, and evidence.
 
 Our contributions are:
 \begin{enumerate}
-\item \textbf{A stateful proof-based testing method.}
-Typed input bindings, actual body execution, and copied-state observations
-turn original separation-logic assertions into test obligations at function,
-loop, and intermediate boundaries (Section~\ref{sec:approach}).
+\item \textbf{Execution with copied observations.}
+We construct obligations at function, loop, and intermediate boundaries
+while retaining the program's evolving state
+(Section~\ref{sec:approach}).
 \item \textbf{A formal account of instance checking.}
-We define the tested domain and observation semantics, establish reference
-trace preservation, and mechanize nonvacuous acceptance under explicit
-execution-coverage interfaces. Exact frames and joint normalization state
-which memory and value information a checker must preserve
-(Section~\ref{sec:semantics}).
-\item \textbf{An implementation and comparative case studies.}
-The implementation reuses \qcp{}'s symbolic execution and Rocq obligations.
-Evidence-backed cases examine an integer-boundary miss, quantified properties,
-and spatial proof completion; a separate evaluation protocol specifies the
-broader comparisons and their cost units
+We give construction rules, oracle interfaces, and verdict judgments,
+with trace-preservation and acceptance arguments supported by a mechanized
+reference model (Section~\ref{sec:semantics}).
+\item \textbf{An implementation and comparative evidence.}
+We implement the method using \qcp{}'s symbolic execution and Rocq
+obligations, provide controlled case studies, and specify the broader
+evaluation and cost protocol
 (Sections~\ref{sec:case-studies} and~\ref{sec:evaluation}).
 \end{enumerate}
-The testing boundary is explicit: acceptance covers the domain selected by the
-input bindings. Full verification checks the original contract for all its
-admissible inputs. We compare these workflows directly, rather than treating
-a verifier with an added input equality as an execution-preserving test.

@@ -1,17 +1,18 @@
 # TeSpec ICSE manuscript
 
 **TeSpec: Proof-Based Testing of Separation-Logic Specifications for C** is the
-current manuscript in `main.tex` and `main.pdf`. The current revision is nine
+current manuscript in `main.tex` and `main.pdf`. The current revision is ten
 pages including references. It develops the method before its formal guarantees
 and uses three complementary method figures:
 
 | Figure | Purpose | Page | Standalone PDF |
 | --- | --- | --- | --- |
-| 1. Workflow | Inputs, actual execution, copied observations, checking, and verdicts | 3 | `figures/overview-standalone.pdf` |
-| 2. Copied observation | Original and mutated assertions produce different obligations while execution retains the same reached state | 3 | `figures/observation-standalone.pdf` |
-| 3. Verdict flow | SMT SAT/UNSAT/UNKNOWN, original-VC VALID/INVALID/UNKNOWN, ITP completion, and path/instance PASS/FAIL/UNKNOWN | 5 | `figures/result-flow-standalone.pdf` |
+| 1. Workflow | Three stages with a visible execution spine, logical snapshot, and proof branch | 3 | `figures/overview-standalone.pdf` |
+| 2. Copied observation | The shared write/return above two different functional obligations | 3 | `figures/observation-standalone.pdf` |
+| 3. Verdict flow | One-obligation evidence routes alongside a multi-path VC ledger and instance reduction | 5 | `figures/result-flow-standalone.pdf` |
 
-The overview directs readers to the mechanism and verdict diagrams. All three
+The overview directs readers to the mechanism and verdict diagrams. A shared
+`figures/figure-style.tex` fixes colors, line roles, and print-size typography. All three
 figures share their vector source between the manuscript and standalone PDF.
 
 ## Argument and structure
@@ -19,7 +20,8 @@ figures share their vector source between the manuscript and standalone PDF.
 1. Original logical assertions can require proof after inputs are fixed.
 2. Actual C execution supplies the states; copied observations preserve them.
 3. Exact local frames and joint heap/value normalization preserve what is checked.
-4. Instance semantics distinguishes covered acceptance from reachable violations.
+4. Formal construction rules connect execution, faithful resolution, typed
+   observation records, oracle evidence, and path/instance judgments.
 5. Four evidence-backed case studies explain arithmetic safety, quantified
    contracts, and spatial proof completion.
 6. The evaluation design distinguishes planned comparisons from recorded cases.
@@ -42,6 +44,8 @@ with pdfLaTeX and BibTeX. It writes only under `paper/`. Source benchmark paths 
 read-only dependencies of the paper evidence audit.
 
 `revision-validation.json` records the latest PDF build and visual inspection.
+`formalization-map.md` connects the two theorems and two propositions to the
+existing Rocq developments and identifies the paper-level interface arguments.
 `tmp/pdfs/` holds ignored preview images. The present revision does not rerun
 benchmarks, invoke proof agents, or recheck the Coq theory. Existing theorem
 receipts remain under `evidence/theory-review-20261012/` (11 modules, 88 principal

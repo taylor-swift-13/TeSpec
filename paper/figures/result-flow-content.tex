@@ -1,58 +1,55 @@
-\begin{tikzpicture}[x=1cm,y=.82cm,>=Latex,font=\small,
-box/.style={draw=black!55,rounded corners=2pt,align=center,inner sep=5pt},
-exec/.style={box,draw=blue!55!black,fill=blue!4,text width=4.05cm,minimum height=1.05cm},
-good/.style={box,draw=teal!65!black,fill=teal!5},
-bad/.style={box,draw=orange!75!black,fill=orange!7},
-open/.style={box,draw=black!55,fill=black!3},
-flow/.style={->,line width=.8pt},
-tag/.style={font=\footnotesize,fill=white,inner sep=2pt}]
-% Each incoming obligation is frozen before solving.
-\node[box,draw=blue!55!black,fill=blue!4,text width=14.3cm,minimum height=.85cm] (query) at (5,2.5)
- {\textbf{For each frozen VC $\phi_{\pi,j}:P_{\pi,j}\vdash A_{\pi,j}$, query SMT}\\
- $C_{\pi,j}\equiv\exists z.\;P_{\pi,j}(z)\land\neg A_{\pi,j}(z)$\quad (supported encoding)};
-% Separate raw solver answers from semantic VC status.
-\node[good,text width=4.05cm,minimum height=1.65cm] (unsat) at (0,.35)
- {\textbf{SMT: UNSAT}\\$\Downarrow$\\\textbf{VC: VALID}\\\footnotesize sound encoding};
-\node[bad,text width=4.05cm,minimum height=1.65cm] (sat) at (5,.35)
- {\textbf{SMT: SAT}\\validate original model\\checked: \textbf{VC INVALID}\\else: \textbf{VC UNKNOWN}};
-\node[open,text width=4.05cm,minimum height=1.65cm] (unknown) at (10,.35)
- {\textbf{SMT: UNKNOWN}\\or no encoding\\$\Downarrow$\\\textbf{VC: UNKNOWN}};
-\draw[flow] (query.south -| unsat.north)--(unsat.north);
-\draw[flow] (query.south)--(sat.north);
-\draw[flow] (query.south -| unknown.north)--(unknown.north);
-% Only unresolved VCs enter proof construction.
-\node[box,draw=blue!55!black,fill=blue!4,text width=6.9cm,minimum height=1.05cm] (itp) at (7.5,-2.1)
- {\textbf{ITP for unresolved original VCs}\\agent / developer constructs proofs\\Rocq kernel check + assumption audit};
-\draw[flow] (sat.south)--node[tag,right]{UNKNOWN}(5,-.95)-|(itp.north);
-\draw[flow] (unknown.south)--(10,-.95)-|(itp.north);
-\node[open,text width=3.9cm,minimum height=1.2cm] (decided) at (0,-4.45)
- {\textbf{Automatic VC results}\\VALID / INVALID\\carried forward};
-\draw[flow] (unsat.south)--(decided.north);
-\draw[flow] (sat.west)--(2.7,.35)--(2.7,-4.45)--(decided.east);
-\node[tag,anchor=east] at (2.65,-2.1) {INVALID};
-\node[good,text width=2.5cm,minimum height=1.05cm] (proved) at (4.5,-4.45)
- {prove $\phi_{\pi,j}$\\\textbf{VALID}};
-\node[bad,text width=2.5cm,minimum height=1.05cm] (refuted) at (7.5,-4.45)
- {prove $\neg\phi_{\pi,j}$\\\textbf{INVALID}};
-\node[open,text width=2.5cm,minimum height=1.05cm] (pending) at (10.5,-4.45)
- {no checked proof\\\textbf{UNKNOWN}};
-\draw[flow] (itp.south -| proved.north)--(proved.north);
-\draw[flow] (itp.south)--(refuted.north);
-\draw[flow] (itp.south -| pending.north)--(pending.north);
-% Every original VC contributes to a path decision, with negative priority.
-\node[box,text width=14.3cm,minimum height=1.65cm,fill=blue!4,draw=blue!55!black] (path) at (5,-6.8)
- {\textbf{Aggregate all required VCs for path $\pi$ (first applicable rule)}\\[3pt]
- \textbf{FAIL}: some VC is INVALID \emph{and its violating state is reachable from $D_\theta$}\\
- \textbf{PASS}: path is feasible, execution/checks are complete, and every VC is VALID\\
- \textbf{UNKNOWN}: otherwise (including unclosed proofs or missing reachability)};
-\foreach \n in {decided,proved,refuted,pending}{\draw[flow] (\n.south)--(path.north -| \n.south);}
-\node[box,text width=14.3cm,minimum height=1.2cm,fill=black!3] (whole) at (5,-8.9)
- {\textbf{Whole instance}: empty entry $\Rightarrow$ FAIL (invalid test); any path FAIL $\Rightarrow$ FAIL;\\
- nonempty entry + complete coverage + all retained paths PASS $\Rightarrow$ PASS; otherwise UNKNOWN.\\
- \footnotesize Proven-infeasible paths are excluded. Empty entries have no executed path.};
-\draw[flow] (path)--(whole);
-\node[align=center,text width=14.6cm,font=\footnotesize] at (5,-10.55)
- {\textbf{Entry uses a separate existence query:} SAT = nonempty; UNSAT = empty instance; UNKNOWN = unresolved.\\
- Entry UNKNOWN needs an existence proof before PASS.\\
- Empty-entry and execution-violation failures have distinct reasons.};
+\InputIfFileExists{figures/figure-style.tex}{}{\input{figure-style}}
+\begin{tikzpicture}[x=1cm,y=1cm,font=\footnotesize,text=tsInk]
+\path[tsPanel,fill=tsProof!3] (0,0) rectangle (8.05,-6.6);
+\path[tsPanel,fill=tsExec!3] (8.55,0) rectangle (17.35,-6.6);
+\node[tsHead] at (.18,-.35) {(a) Evidence for one obligation};
+\node[tsHead] at (8.73,-.35) {(b) Evidence for one instance};
+\node[align=center] at (4.02,-.97)
+ {$\phi_j\equiv\forall z.\,P_j(z)\Rightarrow A_j(z)$\\
+ SMT query:\ $\exists z.\,P_j(z)\land\neg A_j(z)$};
+\node[anchor=west] (unsat) at (.25,-1.8) {\textbf{UNSAT}};
+\node[anchor=west] (sat) at (.25,-2.65) {\textbf{SAT}};
+\node[anchor=west] (unknown) at (.25,-3.5) {\textbf{UNKNOWN}};
+\node[tsCard,text width=2.35cm,minimum height=.45cm] (model) at (3.4,-2.65) {validate\\original model};
+\node[tsGood,text width=1.4cm] (valid) at (6.85,-1.8) {VALID};
+\node[tsBad,text width=1.4cm] (invalid) at (6.85,-2.65) {INVALID};
+\node[tsOpen,text width=1.4cm] (open) at (6.85,-3.5) {unresolved};
+\draw[tsEvidence] (unsat.east)--node[tsLabel,above]{sound encoding}(valid.west);
+\draw[tsEvidence] (sat.east)--(model.west);
+\draw[tsEvidence] (model.east)--node[tsLabel,above]{checked}(invalid.west);
+\draw[tsEvidence] (unknown.east)--node[tsLabel,below]{or unsupported}(open.west);
+\draw[tsEvidence] (model.south)--(3.4,-3.12)-|node[tsLabel,near start,above]{unconfirmed}(open.north);
+\node[tsCard,draw=tsProof,text width=6.8cm,minimum height=.58cm] (itp) at (4.02,-4.65)
+ {\textbf{ITP}\quad construct candidate $p$\ $\longrightarrow$\ kernel + audit};
+\draw[tsEvidence] (open.south)--(6.85,-4.1)-|(itp.north);
+\node[align=center,text width=2.2cm] (pos) at (1.4,-5.65)
+ {$p:\phi_j$\\\textcolor{tsValid}{VALID}};
+\node[align=center,text width=2.2cm] (neg) at (4.02,-5.65)
+ {$p:\neg\phi_j$\\\textcolor{tsInvalid}{INVALID}};
+\node[align=center,text width=2.2cm] (none) at (6.65,-5.65)
+ {no checked proof\\\textcolor{tsUnknown}{UNKNOWN}};
+\foreach \n in {pos,neg,none}{\draw[tsEvidence] (itp.south -| \n.north)--(\n.north);}
+\node[font=\scriptsize,text=tsUnknown] at (4.02,-6.3) {A failed proof attempt supplies no refutation.};
+\node[align=center,font=\footnotesize] at (12.95,-1.0)
+ {\textbf{Schematic VC ledger}\quad $\checkmark$ valid\quad $\times$ invalid\quad ? unresolved};
+\node[inner sep=0pt] at (12.95,-2.45) {\renewcommand{\arraystretch}{1.3}
+ \begin{tabular}{@{}c|ccc|l@{}}
+ path & safety & assertion & return & path verdict\\\hline
+ $\pi_1$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & \textcolor{tsValid}{PASS}$^{a}$\\
+ $\pi_2$ & $\checkmark$ & $\times$ & ? & \textcolor{tsInvalid}{FAIL}$^{b}$\\
+ $\pi_3$ & $\checkmark$ & ? & $\checkmark$ & \textcolor{tsUnknown}{UNKNOWN}
+ \end{tabular}};
+\node[align=left,anchor=west,text width=7.8cm] at (8.95,-3.65)
+ {$^{a}$ Feasible path; execution and selected checks complete.\\
+ $^{b}$ The refuted check has a reachable violating state.};
+\draw[tsEvidence] (12.95,-4.05)--(12.95,-4.4);
+\node[tsCard,text width=7.5cm,minimum height=1.05cm,align=left] at (12.95,-5.05)
+ {\textbf{Instance verdict}\quad (first applicable rule)\\[3pt]
+ empty entry or some path FAIL $\Rightarrow$ \textbf{FAIL}\\
+ nonempty entry + coverage + all paths PASS $\Rightarrow$ \textbf{PASS}\\
+ otherwise $\Rightarrow$ \textbf{UNKNOWN}};
+\node[align=center,text width=7.85cm,font=\scriptsize] at (12.95,-6.15)
+ {Proven-infeasible paths are discarded. Empty entry is an invalid test,\\
+ reported separately from a reachable execution violation.};
+\draw[tsEvidence] (8.08,-2.45)--(8.52,-2.45);
 \end{tikzpicture}

@@ -1,27 +1,24 @@
-\begin{tikzpicture}[x=1cm,y=1cm,>=Latex,font=\footnotesize,
-box/.style={draw,rounded corners=2pt,align=center,text width=3.0cm,inner sep=4pt,minimum height=.8cm},
-exec/.style={box,draw=blue!55!black,fill=blue!4},
-check/.style={box,draw=teal!65!black,fill=teal!5},
-flow/.style={->,line width=.75pt},
-tag/.style={font=\scriptsize,fill=white,inner sep=1pt}]
-\node[exec] (state) at (0,0)
- {\textbf{Reached state}\\$n=13,\quad r=4$\\$p\mapsto_{\rm int}13$};
-\node[check] (copy) at (4.2,0)
- {\textbf{Checking copy}\\same values and owned cell};
-\draw[flow] (state)--node[tag,above]{copy}(copy);
-\node[exec] (step) at (0,-1.85)
- {\textbf{Execute write and return}\\\texttt{*p = r; return r;}};
-\draw[flow] (state)--node[tag,left]{continue}(step);
-\node[exec] (final) at (0,-3.7)
- {\textbf{Final state}\\$p\mapsto_{\rm int}4,\quad\mathit{ret}=4$};
-\draw[flow] (step)--(final);
-\node[check,text width=3.1cm,minimum height=1.7cm] (vc) at (4.2,-2.05)
- {\textbf{Copied obligations}\\[3pt]
- original: $\mathsf{LeastRoot}(13,4)$\\[3pt]
- mutated: $\mathsf{LeastRoot}(13,3)$};
-\draw[flow] (copy)--node[tag,right]{generate}(vc);
-\node[align=center,text width=3.1cm,font=\footnotesize] at (4.2,-3.65)
- {Changing the assertion changes the obligation.};
-\node[align=center,text width=7.4cm,font=\footnotesize] at (2.1,-4.65)
- {Both specifications retain the same continuing execution.};
+\InputIfFileExists{figures/figure-style.tex}{}{\input{figure-style}}
+\begin{tikzpicture}[x=1cm,y=1cm,font=\footnotesize,text=tsInk]
+\node[tsHead] at (0,0) {(a) Program execution};
+\node[tsCard,draw=tsExec,text width=2.0cm,minimum height=1cm] (state) at (1.15,-1)
+ {$n=13,\ r=4$\\$p\longmapsto\boxed{13}$};
+\node[align=center,font=\footnotesize\ttfamily] at (4.25,-.82) {*p = r;\\return r;};
+\node[tsCard,draw=tsExec,text width=1.8cm,minimum height=1cm] (final) at (7.35,-1)
+ {$p\longmapsto\boxed{4}$\\$\mathit{ret}=4$};
+\draw[tsFlow] (state.east)--(2.5,-1)--(2.5,-1.4)--(5.95,-1.4)--(5.95,-1)--(final.west);
+\node[tsHead] at (0,-2.05) {(b) Logical observations};
+\coordinate (fork) at (1.15,-2.55);
+\draw[tsCopy] (state.south)--(fork);
+\node[tsLabel,anchor=west,text=tsProof] at (1.35,-2.5) {same state, two assertions};
+\node[tsCard,dashed,draw=tsProof,text width=3.45cm,minimum height=1.55cm,align=left] (original) at (2.0,-4.05)
+ {\textbf{Original}\\[3pt]$\phi_4:\mathsf{LeastRoot}(13,\mathbf{4})$\\[3pt]
+ $\forall k\ge0.\ 4\le k\Leftrightarrow13\le k^2$\\[3pt]
+ \textcolor{tsValid}{VALID}\quad checked obligation};
+\node[tsCard,dashed,draw=tsProof,text width=3.45cm,minimum height=1.55cm,align=left] (mutant) at (6.35,-4.05)
+ {\textbf{Mutated}\\[3pt]$\phi_3:\mathsf{LeastRoot}(13,\mathbf{3})$\\[3pt]
+ $k=3:\quad 3\le3\ \land\ 13\not\le9$\\[3pt]
+ \textcolor{tsInvalid}{INVALID}\quad refuted obligation};
+\draw[tsCopy] (fork)--(1.15,-2.85)-|(original.north);
+\draw[tsCopy] (fork)--(1.15,-2.85)--(6.35,-2.85)--(mutant.north);
 \end{tikzpicture}
