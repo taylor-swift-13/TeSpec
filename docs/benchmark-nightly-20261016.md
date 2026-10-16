@@ -237,3 +237,8 @@ singleton 的全部4个原始全称 VC 已通过独立 Coq 内核检查：1个�
 本轮 list_all/queue_all 各61/25个配对的初始内部绑定ID以数字开头，是评测适配器配置错误。172次失败的模式执行日志与成本保留，仅给内部ID加 case_ 后重新执行；源、参数、With绑定值与冻结预期不变。最终 list_all 两模式各2 PASS/85 UNKNOWN/7 ERROR，queue_all 各31 UNKNOWN/3 ERROR。成本表包含全部失败与重试，配置修复清单在 tespec-unexpected/configuration-repairs-20261016-bind-ids.json。其余 ERROR 是实际执行器的结构体初始化等错误，不算成功检出。
 
 merge/list 原始 CN 的分离 magic comment 兼容问题、queue/DLL 前向资源谓词、外部无执行体、入口约束/残余原始VC均如实保留。queue 原始 assert_not_equal 无前提却声称任意指针不等的假设，单独记录 original-assumption-gap.md；本次实际首先发生解析失败，未把这条逻辑缺口编造成运行时反例。所有未执行的证明阶段仍为空值/PENDING；未构建的 Fulminate 独立测试时间和RSS为空值。
+
+
+## 夜间截止：08:00
+
+已按约定停止本次夜间续跑并停用心跳，没有仍在运行的 benchmark 证明或测试进程。最终45组已有实测报告，共1551个测试配对，完整20组、未完整25组。未完成原因和缺测阶段保留；不把 UNKNOWN、非预期 ERROR 或仅原生生成算作通过。单工作树 main，未修改/push sac，未混入论文。全部45组结果/成本表及异常台账已保存，收尾记录经SSH推送。
