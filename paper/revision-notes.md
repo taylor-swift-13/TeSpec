@@ -1,119 +1,63 @@
-# ICSE manuscript revision — 2026-10-16
+# ICSE manuscript revision - 2026-10-17
 
-This revision changes only paper files. It does not change the executor, solver,
-benchmark programs, expected outcomes, or raw experimental results.
+This revision improves the figures and literature positioning. The manuscript
+has 11 pages including references; the main text ends on page 9. Only paper
+files changed.
 
-## Main changes
+## Figures
 
-- Retitled the paper around proof-based testing of separation-logic specifications.
-- Rebuilt the introduction around non-executable logical assertions and preservation
-  of the execution state being tested.
-- Moved the checking method before the formal guarantees and replaced the main
-  graphic with one execution/proof workflow.
-- Clarified the instance domain, copied observation rule, fixed root bindings in
-  normalization, boundary coverage, relative acceptance, and reachable violations.
-- Replaced the mixed seven-case narrative with four completed evidence-backed
-  case studies, led by the read INT_MIN discrepancy.
-- Moved prospective COINS/Gillian comparisons and cost accounting into the evaluation
-  design, leaving full QCP verification of the original primary contract as its
-  own comparison. Repeated historical cost figures were removed from the abstract.
+All three figures use shared vector sources, explicit print-size typography,
+and a restrained palette. Light rules separate reading stages; the execution
+state and evidence are the main visual objects.
 
-## Case-selection result
+- Figure 1 (page 3) follows the least-root instance: binding, symbolic address,
+  cell value 13, executed updates, cell value 4, and a frozen observation.
+  Automatic decisions and kernel-checked completion have separate evidence routes.
+- Figure 2 (page 3) keeps one write/return line above two copied assertions.
+  The valid proof and the complete k = 3 counterexample are visible; proof terms
+  use d rather than the pointer name p.
+- Figure 3 (page 5) connects SAT/UNSAT/UNKNOWN to original-VC polarity, collects
+  all ITP outcomes into one VC set, and exposes the reachable-violation gate
+  before path FAIL. PASS requires feasible execution, complete steps/checks,
+  and valid obligations. Instance aggregation is defined by Table I.
 
-The evidence supports one observed false acceptance: the read negation mutant at
-INT_MIN in the recorded Fulminate configuration. Least-root and divisibility expose
-quantifier-instrumentation limitations; their finite equivalent controls pass.
-Read's missing-ownership variants are detected by both tools and explain how
-spatial SMT removes twelve unresolved TeSpec verdicts. No unsupported-instrumentation
-result or incomplete baseline run is labelled an incorrect runtime answer.
+The design follows stage/artifact organization in
+[Agentless, Figure 1](https://lingming.cs.illinois.edu/publications/fse2025.pdf)
+and explicit component interfaces in
+[Rango, Figure 1](https://www.cs.cornell.edu/~lerner/papers/rango-final.pdf).
+All artwork was independently drawn in TikZ.
 
-The old pKVM, COINS and VERINA investigations remain archived under paper evidence.
-Their incomplete matched tool results are no longer used as completed main-text
-case studies. They remain useful candidates for the broader study.
+## Literature
 
-## Writing model
+The compiled bibliography grew from 17 to 39 cited works: 16 newly added
+primary references and 6 relevant entries already in the library. The library
+contains 49 entries, of which 10 remain uncited research material.
+Counts come from the compiled main.aux, not the size of the BibTeX file.
 
-The argument follows a concrete example, the missing information, an explicit
-workflow, and a formal property before discussing broader comparisons. This
-organization is informed by the primary-paper reading already completed for
-[Towards Optimal Concolic Testing](https://zbchen.github.io/files/icse2018-2.pdf),
-[SymTuner](https://prl.korea.ac.kr/papers/SymTuner.pdf), and
-[Sibyl](https://leeson.prof/assets/pdf/Sibyl.pdf). Their empirical results are not
-used as evidence for TeSpec.
+Related work now distinguishes executable specification oracles, logical
+specification testing, proof-failure diagnosis, symbolic execution and input
+generation, verification interfaces, and proof completion. Citations also
+support claims in the introduction, method, semantics, and evaluation design.
+The citation audit records source links, claim scope, and section coverage.
 
-## Validation boundary
+Two distinctions were checked against the original papers:
 
-`revision-validation.json` records the final PDF and evidence checks. Historical
-Coq sources are hash-matched against their existing replay receipt; no new theory
-replay or benchmark run is claimed. The earlier review in `review-response.txt`
-is dated 2026-10-12 and describes that historical revision.
+- COINS seeks proofs of example admission; an unproved rejection does not
+  become a confirmed violation in the planned comparison.
+- StaDy requires complete exploration of the original domain to confirm prover
+  incapacity; incomplete exploration remains inconclusive.
 
-## Follow-up: solver, VC, proof, and path result flow
+The broader empirical comparison remains a study design. Citing an existing
+method does not claim that it has been integrated or benchmarked.
 
-The main workflow now distinguishes the negated SMT query from the original
-entailment. UNSAT establishes VALID under a sound encoding; SAT establishes
-INVALID only after original-model validation. Unresolved VCs enter ITP, where
-a checked proof of either polarity establishes VALID or INVALID and an
-uncompleted attempt remains UNKNOWN. Automatic decisions bypass proof search.
+## Validation
 
-Path aggregation separately checks reachable negative evidence. A reachable
-violation dominates unresolved VCs; PASS requires feasible, complete execution
-and every required VC to be VALID. The diagram also shows whole-instance
-aggregation and the distinct polarity of entry existence. The revised paper
-is nine pages including references. No implementation or experiment was changed.
+The build checks 99 pinned case-evidence files, six integer-boundary controls,
+twelve independent ITP groups, and the separate 221-file comparison archive.
+The PDF compiles with no errors, unresolved citations/references, bibliography
+warnings, or overfull boxes. Three underfull vertical boxes were visually
+checked. All 11 pages and the three standalone figures were reviewed.
 
-## Follow-up: three complementary method figures
-
-The method now separates three reading tasks. Figure 1 gives the complete
-execution/checking workflow without expanding solver branches. Figure 2 shows
-copied observation using `root_cell`: the reached values `n = 13, r = 4` and
-owned cell are copied for checking, while execution still writes and returns 4.
-The original `LeastRoot(13, 4)` and mutated `LeastRoot(13, 3)` assertions change
-the obligations, with no feedback edge into the continuing execution.
-
-Figure 3 expands SMT answers, original-VC status, ITP completion, and ordered
-path/instance aggregation. It retains model validation for SAT, reachability for
-path FAIL, and nonempty entry plus complete coverage for instance PASS. The
-separate entry-existence query has its own polarity. The overview checks entry
-before execution, and the result diagram records empty-entry FAIL separately
-from a reachable execution violation. Each figure has a shared
-TikZ source and a standalone PDF export, built by `build.sh`.
-
-Figures 1 and 2 appear on page 3 and Figure 3 on page 5. The manuscript remains
-nine pages including references. All pages and the three standalone figures
-were visually inspected, with no clipping or overlap. The final build has no
-overfull or underfull boxes and no unresolved references. No new experiments
-or theory replay were performed.
-
-
-## Follow-up: formal derivations and artifact-oriented figures
-
-The revision now starts from a concrete obstacle: fixing program inputs does
-not necessarily make the remaining assertion executable. Its central mechanism
-is stated once: execution supplies states; proof checks their specifications.
-The introduction and method follow this mechanism into its preservation and
-oracle obligations instead of repeating implementation safeguards.
-
-The formal section defines state/control context, assertion syntax, instance
-domains, candidate execution/observation/normalization rules, and evidence
-interfaces. Faithful resolution relates generated predicates to original
-annotations. Typed records preserve each check identity and its source/target
-predicates; their trace-instantiated inventory must match the selected schedule.
-Two theorems and two propositions establish reference trace preservation,
-nonvacuous acceptance, oracle soundness, and reachable-refutation soundness.
-The integrated derivations are distinguished from existing mechanized components
-in `formalization-map.md`. No Coq source or experimental result was changed.
-
-The figure redesign follows information-organization principles from the
-requested primary papers:
-
-- [Agentless, Figure 1, published PDF page 6](https://lingming.cs.illinois.edu/publications/fse2025.pdf): separate stages and show the artifacts transformed between them. TeSpec now shows the binding, state spine, logical snapshot, and frozen VC.
-- [Rango, Figure 1, PDF page 4](https://www.cs.cornell.edu/~lerner/papers/rango-final.pdf): make a component interface concrete and show how it contributes to the larger process. TeSpec now pairs one-obligation evidence with a schematic multi-path ledger. Rango is also cited for its actual proof-synthesis contribution in related work.
-- [MAE](https://arxiv.org/abs/2111.06377) and [ResNet](https://arxiv.org/abs/1512.03385): the writing review follows their progression from a precise obstacle to a compact mechanism and evidence that tests it. These are writing references, not technical dependencies of TeSpec.
-
-The figures were independently redrawn in TikZ. No source artwork, experimental
-results, retrieval component, or training claim was imported. Figures 1 and 2
-remain on page 3; Figure 3 is on page 5. The revised manuscript is ten pages
-including references. The visual review covers the full document and all three
-standalone figures. The final log has no overfull boxes or unresolved references;
-one underfull vertical box was visually checked.
+The two theorems, two propositions, formalization map, and historical Rocq
+receipts retain their existing scope. This revision runs no new experiment or
+theory replay and changes no implementation, solver, benchmark, or raw result.

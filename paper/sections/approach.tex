@@ -13,7 +13,7 @@ existential Rocq obligation. Execution retains the entire domain.
 An existence witness certifies nonemptiness without selecting the sole
 heap to execute.
 
-\tespec{} reuses \qcp{} to evaluate expressions, update symbolic heaps,
+\tespec{} reuses \qcp{}~\cite{wu2026qcp} to evaluate expressions, update symbolic heaps,
 and generate arithmetic and memory-safety obligations.
 Known guards select a successor; unresolved guards retain each successor
 whose infeasibility has not been established.
@@ -71,7 +71,9 @@ this schedule to the checks actually emitted.
 \label{sec:evidence}
 Figure~\ref{fig:result-flow} separates evidence for a VC from evidence
 for an execution. Automatic entailment first attempts each frozen original
-obligation. SMT searches for a model of its negation; the optional
+obligation. SMT procedures can combine separation constraints with
+background theories~\cite{piskac2013smt,reynolds2016sl}.
+Our SMT route searches for a model of the negated obligation; the optional
 \texttt{--spatial-smt} mode encodes supported memory predicates.
 UNSAT establishes validity under the encoding interface.
 SAT establishes invalidity after checking the model in the original
@@ -81,6 +83,9 @@ completion.
 The agent or developer receives the original proposition $\phi$ and can
 construct a proof of $\phi$ or $\neg\phi$. Rocq checks the candidate,
 and the dependency audit records its assumptions.
+Separating proof search from acceptance also underlies \mbox{CoqHammer}
+reconstruction and SMTCoq certificate
+checking~\cite{czajka2018coqhammer,ekici2017smtcoq}.
 All residual VCs from one test execution form one completion job, with
 an individual result for each VC.
 The manifest fixes source hashes, target interpretation, goal identity,

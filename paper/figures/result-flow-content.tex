@@ -1,55 +1,60 @@
 \InputIfFileExists{figures/figure-style.tex}{}{\input{figure-style}}
-\begin{tikzpicture}[x=1cm,y=1cm,font=\footnotesize,text=tsInk]
-\path[tsPanel,fill=tsProof!3] (0,0) rectangle (8.05,-6.6);
-\path[tsPanel,fill=tsExec!3] (8.55,0) rectangle (17.35,-6.6);
-\node[tsHead] at (.18,-.35) {(a) Evidence for one obligation};
-\node[tsHead] at (8.73,-.35) {(b) Evidence for one instance};
-\node[align=center] at (4.02,-.97)
- {$\phi_j\equiv\forall z.\,P_j(z)\Rightarrow A_j(z)$\\
- SMT query:\ $\exists z.\,P_j(z)\land\neg A_j(z)$};
-\node[anchor=west] (unsat) at (.25,-1.8) {\textbf{UNSAT}};
-\node[anchor=west] (sat) at (.25,-2.65) {\textbf{SAT}};
-\node[anchor=west] (unknown) at (.25,-3.5) {\textbf{UNKNOWN}};
-\node[tsCard,text width=2.35cm,minimum height=.45cm] (model) at (3.4,-2.65) {validate\\original model};
-\node[tsGood,text width=1.4cm] (valid) at (6.85,-1.8) {VALID};
-\node[tsBad,text width=1.4cm] (invalid) at (6.85,-2.65) {INVALID};
-\node[tsOpen,text width=1.4cm] (open) at (6.85,-3.5) {unresolved};
-\draw[tsEvidence] (unsat.east)--node[tsLabel,above]{sound encoding}(valid.west);
-\draw[tsEvidence] (sat.east)--(model.west);
+\begin{tikzpicture}[x=1cm,y=1cm,tsText]
+\node[tsHead] at (0,.3) {(a)\quad Establish VC evidence};
+\node[tsHead] at (10.25,.3) {(b)\quad Decide the execution path};
+\draw[tsRule] (0,-.05)--(9.5,-.05);
+\draw[tsRule] (10.25,-.05)--(17.35,-.05);
+\node[anchor=west] at (0,-.48) {$\phi_j:\forall z.\,P_j(z)\Rightarrow A_j(z)$};
+\node[anchor=west,text=tsUnknown] at (0,-.91) {SMT asks $\exists z.\,P_j(z)\land\neg A_j(z)$};
+\node[tsOp,fill=tsProof!5,minimum width=1.0cm,minimum height=.6cm] (smt) at (.65,-2.6) {SMT};
+\node[tsGood] (valid) at (6.15,-1.7) {VALID};
+\node[tsBad] (invalid) at (6.15,-2.6) {INVALID};
+\node[tsOp,text width=1.9cm,minimum height=.5cm] (model) at (3.35,-2.6) {validate model};
+\draw[tsEvidence] (smt.north)--(.65,-1.7)--node[tsLabel,above]{UNSAT: sound encoding}(valid.west);
+\draw[tsEvidence] (smt.east)--node[tsLabel,above]{SAT}(model.west);
 \draw[tsEvidence] (model.east)--node[tsLabel,above]{checked}(invalid.west);
-\draw[tsEvidence] (unknown.east)--node[tsLabel,below]{or unsupported}(open.west);
-\draw[tsEvidence] (model.south)--(3.4,-3.12)-|node[tsLabel,near start,above]{unconfirmed}(open.north);
-\node[tsCard,draw=tsProof,text width=6.8cm,minimum height=.58cm] (itp) at (4.02,-4.65)
- {\textbf{ITP}\quad construct candidate $p$\ $\longrightarrow$\ kernel + audit};
-\draw[tsEvidence] (open.south)--(6.85,-4.1)-|(itp.north);
-\node[align=center,text width=2.2cm] (pos) at (1.4,-5.65)
- {$p:\phi_j$\\\textcolor{tsValid}{VALID}};
-\node[align=center,text width=2.2cm] (neg) at (4.02,-5.65)
- {$p:\neg\phi_j$\\\textcolor{tsInvalid}{INVALID}};
-\node[align=center,text width=2.2cm] (none) at (6.65,-5.65)
- {no checked proof\\\textcolor{tsUnknown}{UNKNOWN}};
-\foreach \n in {pos,neg,none}{\draw[tsEvidence] (itp.south -| \n.north)--(\n.north);}
-\node[font=\scriptsize,text=tsUnknown] at (4.02,-6.3) {A failed proof attempt supplies no refutation.};
-\node[align=center,font=\footnotesize] at (12.95,-1.0)
- {\textbf{Schematic VC ledger}\quad $\checkmark$ valid\quad $\times$ invalid\quad ? unresolved};
-\node[inner sep=0pt] at (12.95,-2.45) {\renewcommand{\arraystretch}{1.3}
- \begin{tabular}{@{}c|ccc|l@{}}
- path & safety & assertion & return & path verdict\\\hline
- $\pi_1$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & \textcolor{tsValid}{PASS}$^{a}$\\
- $\pi_2$ & $\checkmark$ & $\times$ & ? & \textcolor{tsInvalid}{FAIL}$^{b}$\\
- $\pi_3$ & $\checkmark$ & ? & $\checkmark$ & \textcolor{tsUnknown}{UNKNOWN}
- \end{tabular}};
-\node[align=left,anchor=west,text width=7.8cm] at (8.95,-3.65)
- {$^{a}$ Feasible path; execution and selected checks complete.\\
- $^{b}$ The refuted check has a reachable violating state.};
-\draw[tsEvidence] (12.95,-4.05)--(12.95,-4.4);
-\node[tsCard,text width=7.5cm,minimum height=1.05cm,align=left] at (12.95,-5.05)
- {\textbf{Instance verdict}\quad (first applicable rule)\\[3pt]
- empty entry or some path FAIL $\Rightarrow$ \textbf{FAIL}\\
- nonempty entry + coverage + all paths PASS $\Rightarrow$ \textbf{PASS}\\
- otherwise $\Rightarrow$ \textbf{UNKNOWN}};
-\node[align=center,text width=7.85cm,font=\scriptsize] at (12.95,-6.15)
- {Proven-infeasible paths are discarded. Empty entry is an invalid test,\\
- reported separately from a reachable execution violation.};
-\draw[tsEvidence] (8.08,-2.45)--(8.52,-2.45);
+\node[tsOp,draw=tsProof,fill=tsProof!3,text width=4.65cm,minimum height=.6cm] (itp) at (3.35,-4.15)
+ {ITP candidate $\longrightarrow$ kernel + audit};
+\draw[tsEvidence] (smt.south)--(.65,-4.15)--(itp.west);
+\node[tsLabel,align=left,anchor=west] at (.72,-3.45) {UNKNOWN /\\unsupported};
+\draw[tsEvidence] (model.south)--node[tsLabel,right]{unconfirmed}(itp.north);
+% The bracket collects every checked polarity and the unresolved outcome.
+\node[align=center,text width=6.1cm] (proofout) at (3.35,-5.15)
+ {$d:\phi_j\Rightarrow\textcolor{tsValid}{\mathsf{VALID}}\qquad
+   d:\neg\phi_j\Rightarrow\textcolor{tsInvalid}{\mathsf{INVALID}}$\\[3pt]
+ no checked proof $\Rightarrow\textcolor{tsUnknown}{\mathsf{UNKNOWN}}$};
+\draw[tsEvidence] (itp.south)--(proofout.north);
+\draw[draw=tsUnknown,line width=.65pt] (6.5,-4.78)--(6.65,-4.78)--(6.65,-5.52)--(6.5,-5.52);
+% A set of VC results, independent of the backend that supplied them.
+\path[draw=tsLine,fill=tsProof!4] (8.03,-1.81) rectangle (9.55,-3.79);
+\path[draw=tsLine,fill=white] (7.92,-1.7) rectangle (9.44,-3.68);
+\node[font=\sffamily\fontsize{8.5}{10}\selectfont\bfseries] at (8.68,-1.3) {VC set};
+\node at (8.68,-2.08) {path $\pi$};
+\draw[tsRule] (8.08,-2.38)--(9.28,-2.38);
+\node at (8.68,-2.73) {$v_1,\ldots,v_m$};
+\node at (8.68,-3.29)
+ {\textcolor{tsValid}{V}\quad\textcolor{tsInvalid}{I}\quad\textcolor{tsUnknown}{?}};
+\draw[tsEvidence] (valid.east)--(7.35,-1.7)--(7.92,-2.08);
+\draw[tsEvidence] (invalid.east)--(7.92,-2.6);
+\draw[tsEvidence] (6.65,-5.15)--(8.68,-5.15)--(8.68,-3.79);
+% An abstract refutation becomes failure only with a reachable violation.
+\coordinate (split) at (10.05,-2.6);
+\draw[tsEvidence] (9.44,-2.6)--(split);
+\draw[tsEvidence] (split)--(10.05,-1.7)--(10.7,-1.7);
+\draw[tsEvidence] (split)--(10.05,-2.9)--(10.7,-2.9);
+\draw[tsEvidence] (split)--(10.05,-4.1)--(10.7,-4.1);
+\node[align=center,text width=4.35cm] (bad) at (12.95,-1.7)
+ {some VC INVALID\\\textbf{+ reachable violating state}};
+\node[align=center,text width=4.35cm] (good) at (12.95,-2.9)
+ {feasible execution\\all steps and checks complete\\\textbf{+ every VC VALID}};
+\node[align=center,text width=4.35cm] (open) at (12.95,-4.1) {otherwise};
+\node[tsBad,minimum width=1.35cm] (fail) at (16.6,-1.7) {FAIL};
+\node[tsGood,minimum width=1.35cm] (pass) at (16.6,-2.9) {PASS};
+\node[tsOpen,minimum width=1.35cm] (unk) at (16.6,-4.1) {UNKNOWN};
+\draw[tsEvidence] (bad.east)--(fail.west);
+\draw[tsEvidence] (good.east)--(pass.west);
+\draw[tsEvidence] (open.east)--(unk.west);
+\draw[tsRule] (10.25,-4.7)--(17.35,-4.7);
+\node[align=center] at (13.8,-5.2)
+ {path verdicts + entry + coverage\\[3pt]$\longrightarrow$ \textbf{instance verdict}};
 \end{tikzpicture}

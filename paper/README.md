@@ -1,7 +1,7 @@
 # TeSpec ICSE manuscript
 
 **TeSpec: Proof-Based Testing of Separation-Logic Specifications for C** is the
-current manuscript in `main.tex` and `main.pdf`. The current revision is ten
+current manuscript in `main.tex` and `main.pdf`. The current revision is eleven
 pages including references. It develops the method before its formal guarantees
 and uses three complementary method figures:
 
@@ -9,7 +9,7 @@ and uses three complementary method figures:
 | --- | --- | --- | --- |
 | 1. Workflow | Three stages with a visible execution spine, logical snapshot, and proof branch | 3 | `figures/overview-standalone.pdf` |
 | 2. Copied observation | The shared write/return above two different functional obligations | 3 | `figures/observation-standalone.pdf` |
-| 3. Verdict flow | One-obligation evidence routes alongside a multi-path VC ledger and instance reduction | 5 | `figures/result-flow-standalone.pdf` |
+| 3. Verdict flow | SMT/ITP evidence collected into VC sets, with explicit path verdict gates | 5 | `figures/result-flow-standalone.pdf` |
 
 The overview directs readers to the mechanism and verdict diagrams. A shared
 `figures/figure-style.tex` fixes colors, line roles, and print-size typography. All three
@@ -44,6 +44,8 @@ with pdfLaTeX and BibTeX. It writes only under `paper/`. Source benchmark paths 
 read-only dependencies of the paper evidence audit.
 
 `revision-validation.json` records the latest PDF build and visual inspection.
+`citation-audit.md` records the 17-to-39 expansion of actual manuscript citations,
+primary-source checks, and section coverage; the library contains 49 entries.
 `formalization-map.md` connects the two theorems and two propositions to the
 existing Rocq developments and identifies the paper-level interface arguments.
 `tmp/pdfs/` holds ignored preview images. The present revision does not rerun

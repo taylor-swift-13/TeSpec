@@ -9,15 +9,15 @@ quantifies over an unbounded domain. For stateful C programs, the contract
 must also describe the memory that the routine reads, modifies, and owns.
 
 Separation logic expresses these functional and spatial requirements in
-a common language, as used by CN and other verification
-tools~\cite{pulte2023cn}. Fulminate brings executable CN contracts to
+a common language~\cite{reynolds2002separation}, as used by CN and
+VeriFast~\cite{pulte2023cn,jacobs2011verifast}. Fulminate brings executable CN contracts to
 runtime testing~\cite{banerjee2025fulminate}. Proof-oriented specifications
 also contain mathematical relations whose computational interpretation is
 less direct. Some admit a finite monitor, but discovering that monitor
 and establishing its equivalence requires additional specification work.
 A programmer can therefore write a precise contract and run a concrete
 example, yet still lack an oracle for checking it against the contract
-as written.
+as written~\cite{barr2015oracle}.
 
 We present \tespec{}, a method for \emph{proof-based testing of
 separation-logic specifications for C}. Its central idea is to use
@@ -31,7 +31,7 @@ proof-assistant tasks.
 
 Realizing this idea requires separating an observation from the execution
 it observes. A verifier may replace a loop by its invariant or a function
-body by its summary. When that annotation is itself under test, replacement
+body by its summary~\cite{dardinier2023inlining}. When that annotation is itself under test, replacement
 can discard the information needed to check it.
 \tespec{} instead generates obligations on copies of the reached state.
 For a state assertion $P$ and a fully resolved check $Q_A$, it records

@@ -1,24 +1,33 @@
 \InputIfFileExists{figures/figure-style.tex}{}{\input{figure-style}}
-\begin{tikzpicture}[x=1cm,y=1cm,font=\footnotesize,text=tsInk]
-\node[tsHead] at (0,0) {(a) Program execution};
-\node[tsCard,draw=tsExec,text width=2.0cm,minimum height=1cm] (state) at (1.15,-1)
- {$n=13,\ r=4$\\$p\longmapsto\boxed{13}$};
-\node[align=center,font=\footnotesize\ttfamily] at (4.25,-.82) {*p = r;\\return r;};
-\node[tsCard,draw=tsExec,text width=1.8cm,minimum height=1cm] (final) at (7.35,-1)
- {$p\longmapsto\boxed{4}$\\$\mathit{ret}=4$};
-\draw[tsFlow] (state.east)--(2.5,-1)--(2.5,-1.4)--(5.95,-1.4)--(5.95,-1)--(final.west);
-\node[tsHead] at (0,-2.05) {(b) Logical observations};
-\coordinate (fork) at (1.15,-2.55);
-\draw[tsCopy] (state.south)--(fork);
-\node[tsLabel,anchor=west,text=tsProof] at (1.35,-2.5) {same state, two assertions};
-\node[tsCard,dashed,draw=tsProof,text width=3.45cm,minimum height=1.55cm,align=left] (original) at (2.0,-4.05)
- {\textbf{Original}\\[3pt]$\phi_4:\mathsf{LeastRoot}(13,\mathbf{4})$\\[3pt]
- $\forall k\ge0.\ 4\le k\Leftrightarrow13\le k^2$\\[3pt]
- \textcolor{tsValid}{VALID}\quad checked obligation};
-\node[tsCard,dashed,draw=tsProof,text width=3.45cm,minimum height=1.55cm,align=left] (mutant) at (6.35,-4.05)
- {\textbf{Mutated}\\[3pt]$\phi_3:\mathsf{LeastRoot}(13,\mathbf{3})$\\[3pt]
- $k=3:\quad 3\le3\ \land\ 13\not\le9$\\[3pt]
- \textcolor{tsInvalid}{INVALID}\quad refuted obligation};
-\draw[tsCopy] (fork)--(1.15,-2.85)-|(original.north);
-\draw[tsCopy] (fork)--(1.15,-2.85)--(6.35,-2.85)--(mutant.north);
+\begin{tikzpicture}[x=1cm,y=1cm,tsText]
+% A single uninterrupted execution line, with the same store on either side.
+\node at (.35,-.6) {$p$};
+\node[tsCell] (before) at (.98,-.6) {$13$};
+\draw[tsFlow] (.53,-.6)--(before.west);
+\node[anchor=north] at (1.05,-1.0) {$n=13,\ r=4$};
+\node[tsCell] (after) at (7.8,-.6) {$4$};
+\node[anchor=north] at (7.65,-1.0) {$\mathit{ret}=4$};
+\draw[tsFlow] (before.east)--(after.west);
+\node[tsLabel,font=\ttfamily\fontsize{8.5}{10}\selectfont] at (4.4,-.21) {*p=r; return r;};
+\coordinate (fork) at (2.2,-.6);
+\fill[tsExec] (fork) circle (2pt);
+\draw[tsCopy] (fork)--(2.2,-1.75);
+\node[tsLabel,text=tsProof,anchor=west] at (2.3,-1.35) {observe the same state};
+% Two light assertion artifacts; copying belongs to arrows, not borders.
+\path[fill=tsValid!4,draw=tsLine,line width=.5pt]
+ (.15,-2.0)--(3.65,-2.0)--(3.9,-2.25)--(3.9,-4.3)--(.15,-4.3)--cycle;
+\path[fill=tsInvalid!4,draw=tsLine,line width=.5pt]
+ (4.55,-2.0)--(8.05,-2.0)--(8.3,-2.25)--(8.3,-4.3)--(4.55,-4.3)--cycle;
+\draw[tsRule] (3.65,-2)--(3.65,-2.25)--(3.9,-2.25);
+\draw[tsRule] (8.05,-2)--(8.05,-2.25)--(8.3,-2.25);
+\draw[tsCopy] (2.2,-1.75)--(2.2,-2.0);
+\draw[tsCopy] (2.2,-1.75)--(6.55,-1.75)--(6.55,-2.0);
+\node[anchor=west,font=\sffamily\fontsize{8.5}{10}\selectfont\bfseries] at (.35,-2.28) {Original};
+\node[anchor=west,font=\sffamily\fontsize{8.5}{10}\selectfont\bfseries] at (4.75,-2.28) {Mutated};
+\node at (2.02,-2.78) {$\phi_4:\mathsf{LeastRoot}(13,\textcolor{tsValid}{\mathbf4})$};
+\node at (6.42,-2.78) {$\phi_3:\mathsf{LeastRoot}(13,\textcolor{tsInvalid}{\mathbf3})$};
+\node at (2.02,-3.32) {$d_4:\phi_4$};
+\node[tsGood] at (2.02,-3.95) {VALID};
+\node at (6.42,-3.32) {$k=3:\ 3\le3,\ 13\not\le9$};
+\node[tsBad] at (6.42,-3.95) {INVALID};
 \end{tikzpicture}

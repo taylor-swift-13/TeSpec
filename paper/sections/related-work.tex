@@ -1,63 +1,102 @@
 \section{Related Work}
 \label{sec:related-work}
-\paragraph{Runtime testing of separation-logic specifications.}
-CN uses separation-logic refinement types to verify ownership and functional
-properties of systems C code~\cite{pulte2023cn}. Fulminate gives CN specifications
-a computational interpretation, compiling them into C checks that track
-ownership transfer during execution~\cite{banerjee2025fulminate}. Bennet derives
-randomized generators for heaps satisfying CN preconditions~\cite{aamer2025bennet};
-Darcy combines randomized choices with SMT constraints in a broader
-code--specify--test--debug--prove workflow~\cite{aamer2026workflow}.
-\tespec{} pursues the same early-feedback objective through a proof-based
-oracle: it symbolically executes a selected input domain and retains
-assertions as logical obligations. Fulminate is the direct runtime comparator.
-Bennet and Darcy address input generation and use Fulminate to check the
-resulting executions, rather than providing independent fixed-input oracles.
+\paragraph{Executable specification oracles.}
+The oracle problem separates generating inputs from deciding whether their
+behaviors are correct~\cite{barr2015oracle}. E-ACSL instruments C programs
+to check an executable subset of ACSL annotations~\cite{signoles2017eacsl}.
+SLICK checks separation-logic specifications at runtime, addressing implicit
+footprints and existential witnesses~\cite{nguyen2008slick}.
+For concrete stack--heap states, Brotherston et al.\ study model checking
+of symbolic-heap assertions with user-defined inductive
+predicates~\cite{brotherston2016model}.
+CN expresses ownership and functional requirements in separation-logic
+refinement types~\cite{pulte2023cn}; Fulminate compiles its specifications
+into C checks that track ownership transfer~\cite{banerjee2025fulminate}.
+\tespec{} checks original assertions as logical obligations over reached
+symbolic states. Fulminate is the direct runtime comparator because it
+checks matched ownership contracts on the same C examples.
 
-\paragraph{Testing declarative specifications.}
-QuickChick integrates property-based testing with Rocq and provides foundations
-for relating executable testing components to logical
-specifications~\cite{paraskevopoulou2015quickchick,paraskevopoulou2022computing}.
-COINS instantiates relational specifications on supplied input/output examples
-and uses Rocq proofs to establish that those examples are
-admitted~\cite{yang2026coins}. This is particularly close to \tespec{}'s treatment
-of assertions without convenient executable checkers. COINS evaluates a relation
-on supplied behaviors, while \tespec{} executes a C implementation and generates
-obligations for safety, internal observations, and postconditions. A direct
-instance proof oracle on the shared pure fragment therefore isolates the
-benefit of execution-derived observations. QuickChick is complementary when
-an executable checker is available.
+\paragraph{Testing with logical specifications.}
+QuickCheck evaluates executable properties on generated
+inputs~\cite{claessen2000quickcheck}. QuickChick connects property-based
+testing in Rocq to logical
+specifications~\cite{paraskevopoulou2015quickchick,paraskevopoulou2022computing};
+FuzzChick adds coverage-guided, type-aware
+mutations~\cite{lampropoulos2019fuzzchick}.
+HOL-TestGen derives test theorems and concrete data in Isabelle/HOL, retaining
+the hypotheses needed to generalize successful tests~\cite{brucker2009holtestgen}.
+COINS seeks Rocq proofs that supplied input/output examples are admitted
+by relational specifications~\cite{yang2026coins}. Its negative-case
+evaluation searches for unwanted acceptance; absence of that proof does
+not establish a checked rejection.
+\tespec{} obtains the behavior by executing C and checks safety, internal
+observations, and postconditions. Comparing a direct instance proof oracle
+on the shared pure fragment isolates the value of these execution-derived
+observations.
 
-\paragraph{Symbolic testing and complete verification.}
-Gillian provides a memory-model-parametric symbolic execution framework, with
-C instances supporting symbolic testing and separation-logic
-verification~\cite{santos2020gillian,maksimovic2021gillian}. It is an independent
-symbolic-execution comparator for separating the contribution of \tespec{}'s
-observation and proof workflow from symbolic execution itself.
-\qcp{}~\cite{wu2026qcp} and CN provide the full-verification comparison.
-That comparison checks each primary program's original, uninstantiated
-contract. It measures the cost of establishing the original contract alongside
-the cost of checking selected instances, without reinterpreting modular
-verification under a fixed input as a test execution.
+\paragraph{Diagnosing failed verification.}
+StaDy combines specification instrumentation and dynamic symbolic execution
+to distinguish program/specification noncompliance, weak subcontracts, and
+prover incapacity~\cite{petiot2018stady}. Confirming prover incapacity
+requires complete exploration of the original input domain; incomplete
+exploration remains inconclusive. This distinction is central to
+interpreting a failed proof: it need not identify a program defect.
+StaDy seeks counterexamples through executable checks and controlled
+subcontract substitution. \tespec{} retains the original assertion as a
+proposition at an executed state, allowing either a proof or a refutation
+to complete the oracle. Its verdict rules additionally require a reachable
+violating state before an abstract refutation becomes a test failure.
 
-\paragraph{Semantic foundations and obligation solving.}
-Exact separation logic distinguishes coverage of program behavior from
-establishing that a reported behavior is reachable~\cite{maksimovic2023exact}.
-Verification-preserving inlining studies conditions under which expanding
-calls and loops preserves verification in automatic separation-logic
-tools~\cite{dardinier2023inlining}. These results motivate explicit treatment
-of coverage and realizability. Foundations for translational separation-logic
-verifiers formalize interfaces between source reasoning, intermediate semantics,
-and verification backends~\cite{dardinier2025foundations}. \tespec{}'s reference
-interfaces similarly separate generation from discharge, while specializing
-the checked domain and retaining observed states. Finally, separation-logic
-SMT procedures already decide substantial logical
-fragments~\cite{reynolds2016sl}. Spatial SMT applies this direction to supported
-finite-heap obligations; proof-assistant completion handles additional reasoning.
+\paragraph{Symbolic execution and input generation.}
+Symbolic execution characterizes paths by constraints~\cite{king1976symbolic}.
+DART and CUTE combine concrete execution with symbolic constraints to
+generate new tests~\cite{godefroid2005dart,sen2005cute}; KLEE scales symbolic
+test generation to systems code~\cite{cadar2008klee}.
+For heap-manipulating programs, CSF combines separation-logic-based
+generation of valid inputs with concolic
+execution~\cite{pham2019csf}. Bennet generates heaps satisfying CN
+preconditions~\cite{aamer2025bennet}, and Darcy combines randomized choices
+with SMT constraints in a code--specify--test--debug--prove
+workflow~\cite{aamer2026workflow}. These methods improve the inputs and paths
+available to an oracle. \tespec{} focuses on deciding the original logical
+assertions on a selected domain.
+Gillian offers a memory-model-parametric symbolic execution framework and
+C instances for symbolic testing and separation-logic
+verification~\cite{santos2020gillian,maksimovic2021gillian}. Its independent
+execution infrastructure makes Gillian-C a comparator for the observation
+and proof workflow.
 
+\paragraph{Verification and semantic interfaces.}
+VeriFast checks C and Java programs with separation-logic
+contracts~\cite{jacobs2011verifast}; Dafny integrates specifications and
+automatic functional verification~\cite{leino2010dafny}.
+CN and \qcp{}~\cite{wu2026qcp} supply the full-verification comparison on
+our paired contracts: each primary program is checked against its original,
+uninstantiated contract. Exact separation logic separates coverage of
+behavior from the reachability of reported
+behaviors~\cite{maksimovic2023exact}. Verification-preserving inlining
+identifies conditions under which expanding calls and loops preserves
+verification in separation-logic tools~\cite{dardinier2023inlining}.
+The Verified Software Toolchain~\cite{app2011vst} and foundations for
+translational separation-logic verifiers~\cite{dardinier2025foundations}
+make semantic interfaces explicit across verification components.
+Our reference interfaces specialize this concern to copied observations:
+execution coverage, faithful assertion resolution, and oracle evidence
+must describe the same selected states.
 
-Rango adapts Coq proof synthesis by retrieving relevant project proofs and
-premises as the proof state evolves~\cite{thompson2025rango}.
-Such proof automation can improve residual-goal completion. The instance
-construction determines the proposition to discharge and preserves its
-connection to program execution independently of the proof-search backend.
+\paragraph{Obligation solving and proof completion.}
+SMT-based separation-logic procedures discharge substantial supported
+fragments~\cite{piskac2013smt,reynolds2016sl}. Spatial SMT serves this role
+in \tespec{}, with residual obligations passed to proof completion.
+CoqHammer reconstructs proofs suggested by external
+provers~\cite{czajka2018coqhammer}; SMTCoq checks solver certificates with
+a verified Coq checker~\cite{ekici2017smtcoq}.
+Tactician and Proverbot9001 guide tactic-level
+search~\cite{blaauwbroek2020tactician,sanchezstern2020proverbot}.
+CoqPilot combines proof candidates with checking and
+repair~\cite{kozyrev2024coqpilot}, while Rango retrieves relevant proofs
+and premises as the proof state evolves~\cite{thompson2025rango}.
+These systems improve how a stated goal is discharged. \tespec{} determines
+which goal checks an observed behavior and connects its checked polarity
+to an execution verdict. Proof-search improvements can therefore be used
+without redefining the instance or its acceptance criterion.

@@ -1,50 +1,62 @@
 \InputIfFileExists{figures/figure-style.tex}{}{\input{figure-style}}
-\begin{tikzpicture}[x=1cm,y=1cm,font=\footnotesize,text=tsInk]
-\path[tsPanel,fill=tsExec!3] (0,0) rectangle (3.65,-5.3);
-\path[tsPanel,fill=tsExec!3] (3.95,0) rectangle (10.3,-5.3);
-\path[tsPanel,fill=tsProof!3] (10.6,0) rectangle (17.35,-5.3);
-\node[tsHead] at (.18,-.35) {1\quad Select an instance};
-\node[tsHead] at (4.13,-.35) {2\quad Execute and observe};
-\node[tsHead] at (10.78,-.35) {3\quad Discharge and report};
-\node[tsCard,text width=2.9cm,minimum height=1.25cm] (code) at (1.83,-1.45)
- {\textbf{C body + contract}\\[3pt]\texttt{*p=r; return r;}\\[3pt]$R,\ E,\ \mathcal B$};
-\node[tsCard,text width=2.75cm] (binding) at (1.83,-2.75)
- {input binding\quad $\theta=\{x\mapsto13\}$};
-\node[draw=tsExec,fill=white,ellipse,minimum width=1.55cm,minimum height=.65cm] (domain) at (1.83,-4.05) {$D_\theta$};
-\draw[tsEvidence] (code.south)--(binding.north);
-\draw[tsFlow] (binding)--node[tsLabel,right]{entry check}(domain);
-\node[align=center,text width=3cm] at (1.83,-4.85) {values fixed; addresses may remain symbolic};
-\node[draw=tsExec,fill=white,circle,minimum size=.55cm,inner sep=0pt] (s0) at (4.65,-1.55) {$s_0$};
-\node[draw=tsExec,fill=white,circle,minimum size=.55cm,inner sep=0pt] (s1) at (6.9,-1.55) {$s_i$};
-\node[draw=tsExec,fill=white,circle,minimum size=.55cm,inner sep=0pt] (sn) at (9.35,-1.55) {$s_f$};
-\draw[tsFlow] (domain.east)--(3.8,-4.05)--(3.8,-1.55)--(s0.west);
-\draw[tsFlow] (s0)--node[above,font=\scriptsize]{bodies / loops}(s1);
-\draw[tsFlow] (s1)--node[above,font=\scriptsize]{write / return}(sn);
-\node[anchor=north] at (4.65,-1.97) {$x=13$};
-\node[anchor=north] at (9.35,-1.97) {$\mathit{ret}=4$};
-\node[tsCard,text width=2.45cm,minimum height=.75cm] (state) at (6.9,-2.9)
- {$n=x=13,\ r=4$\\$p\longmapsto\boxed{13}$};
-\draw[draw=tsExec,line width=.5pt] (s1.south)--(state.north);
-\node[tsCard,dashed,draw=tsProof,text width=2.35cm,minimum height=.7cm] (snapshot) at (5.8,-4.35)
- {logical snapshot\\$P_i$};
-\node[tsCard,draw=tsProof,text width=1.65cm,minimum height=.7cm] (vc) at (8.8,-4.35)
- {frozen VC\\$\phi_i:P_i\vdash A_i$};
-\draw[tsCopy] (state.south)--(6.9,-3.5)-|node[tsLabel,pos=.7,above]{copy}(snapshot.north);
-\draw[tsEvidence] (snapshot)--(vc);
-\node[tsCard,text width=2.3cm,minimum height=.75cm] (auto) at (12.3,-1.6)
- {\textbf{Automatic oracle}\\entailment / SMT};
-\node[tsCard,text width=2.1cm,minimum height=.75cm] (ledger) at (15.65,-1.6)
- {\textbf{VC results}\\VALID\\INVALID\\UNKNOWN};
-\draw[tsEvidence] (vc.east)--(10.45,-4.35)--(10.45,-1.6)--(auto.west);
-\draw[tsEvidence] (auto)--(ledger);
-\node[tsCard,draw=tsProof,text width=2.25cm,minimum height=.75cm] (propose) at (12.3,-3.35)
- {\textbf{Proof completion}\\agent / developer};
-\node[tsCard,draw=tsProof,text width=2.1cm,minimum height=.75cm] (kernel) at (15.65,-3.35)
- {\textbf{Rocq check}\\kernel + audit};
-\draw[tsEvidence] (auto)--node[tsLabel,right]{unresolved}(propose);
-\draw[tsEvidence] (propose)--(kernel);
-\draw[tsEvidence] (kernel)--(ledger);
-\node[tsCard,text width=5.4cm,minimum height=.55cm] (result) at (13.98,-4.75)
- {\textbf{Path / instance}\quad PASS\quad FAIL\quad UNKNOWN};
-\draw[tsEvidence] (ledger.east)--(17.12,-1.6)--(17.12,-4.75)--(result.east);
+\begin{tikzpicture}[x=1cm,y=1cm,tsText]
+% Light stage guides leave the data, rather than containers, in the foreground.
+\node[tsHead] at (0,0) {\textcolor{tsExec}{01}\quad Instance};
+\node[tsHead] at (4.05,0) {\textcolor{tsExec}{02}\quad Execute and observe};
+\node[tsHead] at (11.3,0) {\textcolor{tsProof}{03}\quad Evidence};
+\draw[tsRule] (0,-.35)--(3.2,-.35);
+\draw[tsRule] (4.05,-.35)--(10.55,-.35);
+\draw[tsRule] (11.3,-.35)--(17.25,-.35);
+\draw[tsRule] (3.65,-.7)--(3.65,-4.25);
+\draw[tsRule] (10.9,-.7)--(10.9,-4.25);
+% Source document and its separate instance binding.
+\path[fill=tsExec!3,draw=tsLine,line width=.6pt]
+ (.2,-.85)--(2.78,-.85)--(3.08,-1.15)--(3.08,-2.55)--(.2,-2.55)--cycle;
+\draw[tsRule] (2.78,-.85)--(2.78,-1.15)--(3.08,-1.15);
+\node[align=left,font=\ttfamily\fontsize{8.5}{10}\selectfont,anchor=north west] at (.4,-1.04)
+ {root\_cell(p)\\...; *p = r;\\return r;};
+\draw[tsRule] (.4,-2.07)--(2.85,-2.07);
+\node[font=\sffamily\fontsize{8}{10}\selectfont] at (1.65,-2.3) {$R,E$;\ checks $\mathcal B$};
+\node[fill=tsExec!7,rounded corners=3pt,inner sep=5pt] (bind) at (1.65,-3.1) {$\theta:\ x=13$};
+\draw[tsEvidence] (1.65,-2.55)--(bind.north);
+\node (entry) at (1.65,-4.0) {$D_\theta\ne\varnothing$};
+\draw[tsEvidence] (bind)--node[tsLabel,right]{entry}(entry);
+% Concrete heap cells anchor the execution spine.
+\node (p0) at (4.22,-1.65) {$p$};
+\node[tsCell] (h0) at (4.85,-1.65) {$13$};
+\draw[tsFlow] (p0)--(h0);
+\node[tsCell] (hf) at (10.05,-1.65) {$4$};
+\node[anchor=north] at (10.05,-2.05) {$\mathit{ret}=4$};
+\coordinate (observe) at (7.85,-1.65);
+\draw[tsFlow] (h0.east)--(observe)--(hf.west);
+\fill[tsExec] (observe) circle (2pt);
+\node at (6.75,-1.22) {$r:0\rightarrow1\rightarrow\cdots\rightarrow4$};
+\node[tsLabel] at (8.92,-1.22) {write};
+\node[anchor=north,align=center] at (4.85,-2.05) {symbolic $p$};
+\draw[tsFlow] (entry.east)--(3.4,-4)--(3.4,-1.65)--(p0.west);
+% Frozen logical artifact; the program line continues independently above.
+\path[fill=tsProof!5,draw=tsLine] (6.14,-2.87) rectangle (9.66,-4.12);
+\path[fill=white,draw=tsProof,line width=.6pt]
+ (6.04,-2.77)--(9.26,-2.77)--(9.56,-3.07)--(9.56,-4.02)--(6.04,-4.02)--cycle;
+\draw[draw=tsProof,line width=.5pt] (9.26,-2.77)--(9.26,-3.07)--(9.56,-3.07);
+\node at (7.8,-3.14) {frozen obligation};
+\node at (7.8,-3.65) {$\phi_i:\ P_i\vdash Q_i$};
+\draw[tsCopy] (observe)--node[tsLabel,right,text=tsProof]{logical copy}(7.85,-2.77);
+% Keep detail in Figure 3: one automatic route and one completion branch.
+\node[tsOp,fill=tsProof!4,text width=1.75cm,minimum height=.7cm] (auto) at (12.5,-1.65) {automatic\\reasoning};
+\node[tsOp,fill=tsProof!4,text width=1.75cm,minimum height=.7cm] (itp) at (12.5,-3.3) {proof\\completion};
+\draw[tsEvidence] (9.56,-3.4)--(10.7,-3.4)--(10.7,-1.65)--(auto.west);
+\draw[tsEvidence] (auto)--node[tsLabel,right]{unresolved}(itp);
+% Certificate glyph instead of another process rectangle.
+\path[draw=tsLine,fill=white,line width=.6pt]
+ (15.04,-1.05)--(16.74,-1.05)--(17.04,-1.35)--(17.04,-2.25)--(15.04,-2.25)--cycle;
+\draw[tsRule] (16.74,-1.05)--(16.74,-1.35)--(17.04,-1.35);
+\node at (16.04,-1.48) {VC evidence};
+\node[font=\sffamily\fontsize{9}{10}\selectfont] at (16.04,-1.93)
+ {\textcolor{tsValid}{V}\quad\textcolor{tsInvalid}{I}\quad\textcolor{tsUnknown}{?}};
+\draw[tsEvidence] (auto.east)--(15.04,-1.65);
+\node[align=center] (kernel) at (16.04,-3.3) {Rocq kernel\\+ assumption audit};
+\draw[tsEvidence] (itp.east)--(kernel.west);
+\draw[tsEvidence] (kernel.north)--(16.04,-2.25);
+\node[align=center] at (14.6,-4.18) {VCs $\longrightarrow$ paths $\longrightarrow$ instance verdict};
 \end{tikzpicture}
