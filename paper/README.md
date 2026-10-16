@@ -15,6 +15,18 @@ The overview directs readers to the mechanism and verdict diagrams. A shared
 `figures/figure-style.tex` fixes colors, line roles, and print-size typography. All three
 figures share their vector source between the manuscript and standalone PDF.
 
+## Fulminate-centered literature review (2026-10-17)
+
+[The research report](literature/fulminate-review.md) compares 20 core primary
+sources and two supplementary works. It traces Fulminate's predecessors and
+2026 successors, identifies direct proof/testing precedents, and records
+concrete decisions for the next manuscript revision. The
+[source index](literature/fulminate-sources.json) records versions, reading
+locations, and artifact identities. This is a targeted literature study;
+third-party artifacts were not executed. The report does not change the
+current manuscript or PDF and supersedes the claim that baseline selection
+is complete in the earlier study protocol.
+
 ## Argument and structure
 
 1. Original logical assertions can require proof after inputs are fixed.
