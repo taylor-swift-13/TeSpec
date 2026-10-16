@@ -61,3 +61,26 @@ violation dominates unresolved VCs; PASS requires feasible, complete execution
 and every required VC to be VALID. The diagram also shows whole-instance
 aggregation and the distinct polarity of entry existence. The revised paper
 is nine pages including references. No implementation or experiment was changed.
+
+## Follow-up: three complementary method figures
+
+The method now separates three reading tasks. Figure 1 gives the complete
+execution/checking workflow without expanding solver branches. Figure 2 shows
+copied observation using `root_cell`: the reached values `n = 13, r = 4` and
+owned cell are copied for checking, while execution still writes and returns 4.
+The original `LeastRoot(13, 4)` and mutated `LeastRoot(13, 3)` assertions change
+the obligations, with no feedback edge into the continuing execution.
+
+Figure 3 expands SMT answers, original-VC status, ITP completion, and ordered
+path/instance aggregation. It retains model validation for SAT, reachability for
+path FAIL, and nonempty entry plus complete coverage for instance PASS. The
+separate entry-existence query has its own polarity. The overview checks entry
+before execution, and the result diagram records empty-entry FAIL separately
+from a reachable execution violation. Each figure has a shared
+TikZ source and a standalone PDF export, built by `build.sh`.
+
+Figures 1 and 2 appear on page 3 and Figure 3 on page 5. The manuscript remains
+nine pages including references. All pages and the three standalone figures
+were visually inspected, with no clipping or overlap. The final build has no
+overfull or underfull boxes and no unresolved references. No new experiments
+or theory replay were performed.

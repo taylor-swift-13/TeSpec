@@ -32,8 +32,8 @@ precondition of a modular verification run with an input equality.
 
 \subsection{Observe states without changing them}
 \label{sec:boundaries}
-At a selected boundary, let $P$ describe the reached state and $A$ the resolved
-annotation. The checker emits
+Figure~\ref{fig:observation} shows a copied observation. At a selected
+boundary, let $P$ describe the reached state and $A$ the resolved annotation. The checker emits
 \[
              P\ \vdash\ A*F_{P,A}
 \]
@@ -41,6 +41,8 @@ on a copy and continues execution with $P$. The frame $F_{P,A}$ contains
 exactly the eligible local storage omitted by the annotation. Callee contracts
 and visited loop invariants are observed in this way. A false assertion adds
 a failing obligation; it does not prune the following execution.
+
+\input{figures/observation}
 
 \paragraph{Preserve the checked footprint.}
 The memory model represents scalar C locals as owned cells. An auxiliary
@@ -70,9 +72,11 @@ gap, which prevents complete acceptance.
 
 \input{sections/normalization-algorithm}
 
+\input{figures/result-flow}
+
 \subsection{Discharge immutable obligations}
 \label{sec:evidence}
-Figure~\ref{fig:overview} distinguishes three levels: the solver's answer,
+Figure~\ref{fig:result-flow} distinguishes three levels: the solver's answer,
 the validity of an original VC, and the verdict for the execution path.
 Let $\phi_{\pi,j}$ be the $j$th obligation on path $\pi$:
 \[
@@ -125,7 +129,9 @@ required obligations to be valid. In particular, vacuous VC validity from an
 infeasible antecedent does not establish a passing execution. Paths proved
 infeasible are excluded; unresolved feasibility prevents acceptance.
 
-At instance level, any failed path yields \fail{}. A nonempty entry domain,
+At instance level, an empty entry yields \fail{} with an invalid-instance
+reason, and any failed path yields \fail{} with an execution-violation reason.
+A nonempty entry domain,
 complete coverage of its executions, and passing retained paths yield
 \pass{}. Remaining cases yield \unknown{}. Entry existence has its own query
 and polarity: SAT means nonempty, UNSAT means an invalid empty instance, and

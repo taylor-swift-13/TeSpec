@@ -3,9 +3,16 @@
 **TeSpec: Proof-Based Testing of Separation-Logic Specifications for C** is the
 current manuscript in `main.tex` and `main.pdf`. The current revision is nine
 pages including references. It develops the method before its formal guarantees
-and uses one main workflow figure, shared with `figures/overview-standalone.pdf`. The diagram explicitly connects
-SMT SAT/UNSAT/UNKNOWN, original-VC VALID/INVALID/UNKNOWN, ITP completion,
-and path/whole-instance PASS/FAIL/UNKNOWN.
+and uses three complementary method figures:
+
+| Figure | Purpose | Page | Standalone PDF |
+| --- | --- | --- | --- |
+| 1. Workflow | Inputs, actual execution, copied observations, checking, and verdicts | 3 | `figures/overview-standalone.pdf` |
+| 2. Copied observation | Original and mutated assertions produce different obligations while execution retains the same reached state | 3 | `figures/observation-standalone.pdf` |
+| 3. Verdict flow | SMT SAT/UNSAT/UNKNOWN, original-VC VALID/INVALID/UNKNOWN, ITP completion, and path/instance PASS/FAIL/UNKNOWN | 5 | `figures/result-flow-standalone.pdf` |
+
+The overview directs readers to the mechanism and verdict diagrams. All three
+figures share their vector source between the manuscript and standalone PDF.
 
 ## Argument and structure
 
@@ -30,7 +37,7 @@ bash paper/build.sh
 ```
 
 The build verifies the pinned case-study evidence, checks the existing archived
-comparison/proof evidence, builds the vector workflow, and compiles the manuscript
+comparison/proof evidence, builds all three vector figures, and compiles the manuscript
 with pdfLaTeX and BibTeX. It writes only under `paper/`. Source benchmark paths are
 read-only dependencies of the paper evidence audit.
 
@@ -59,6 +66,7 @@ separated in the formal section.
 
 The main manuscript uses `sections/{introduction,motivation,approach,semantics,
 case-studies,evaluation,discussion,related-work}.tex`. The normalization algorithm
-is included by `approach.tex`. Older standalone semantics, result-flow graphics,
-and development material are retained for provenance and are not included in
-the current manuscript. The IEEE template files retain their original licenses.
+is included by `approach.tex`, as are the copied-observation and verdict-flow
+figures. Older standalone semantics and development material are retained for
+provenance and are not included in the current manuscript. The IEEE template
+files retain their original licenses.
