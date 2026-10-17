@@ -44,5 +44,11 @@
       "results": "benchmark/results/dll_add/tespec/results.json",
       "statistics": "benchmark/results/dll_add/tespec/statistics.json"
     }
-  }
+  },
+  "latest_scope_recheck": "benchmark/results/dll_add/20261018-scope-recheck/summary.json",
+  "evaluation_notes": [
+    "2026-10-18 第24组复查：原依赖在当前CN仍因IntList递归声明失败；借用singleton兼容层后add与两个helper验证通过，Fulminate 14次执行均PASS。下表正式入口保留旧版本结果，本次探测结果及成本另列，不把不同依赖测量覆盖到旧证据。",
+    "14次执行中，7次检查原较弱CN规约，另7次源函数无规约，仅表示合法输入的程序运行通过；不能称14个规约都验证正确。CN只约束链表形状，QCP另要求新节点值等于element。所有输入均为空链表，非空分支未覆盖。",
+    "teSpec分配器支持按用户要求暂缓，本轮0次。QCP仍缺当前17个原始VC的完整证书；历史manual只有1个引理，不能替代完整验证。完整组仍21/45。详见20261018-scope-recheck/summary.md。"
+  ]
 }

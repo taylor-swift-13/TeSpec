@@ -244,11 +244,65 @@
       "estimated": false,
       "status": "PENDING",
       "source": null
+    },
+    {
+      "tool": "cn",
+      "stage": "第24组当前版本原依赖复查失败",
+      "unit": "1 次复查总量；不覆盖历史正式测量",
+      "wall_seconds": 0.11554564302787185,
+      "peak_process_memory_mib": 44.80078125,
+      "tokens": 0,
+      "estimated": false,
+      "status": "MEASURED",
+      "source": "benchmark/results/dll_add/20261018-scope-recheck/summary.json"
+    },
+    {
+      "tool": "cn",
+      "stage": "第24组共享兼容层验证探测成功",
+      "unit": "1 次复查总量；不覆盖历史正式测量",
+      "wall_seconds": 1.217709323973395,
+      "peak_process_memory_mib": 46.68359375,
+      "tokens": 0,
+      "estimated": false,
+      "status": "MEASURED",
+      "source": "benchmark/results/dll_add/20261018-scope-recheck/summary.json"
+    },
+    {
+      "tool": "fulminate",
+      "stage": "第24组共享运行时插桩、编译及首次执行",
+      "unit": "14 次复查总量；不覆盖历史正式测量",
+      "wall_seconds": 4.864062644017395,
+      "peak_process_memory_mib": 46.296875,
+      "tokens": 0,
+      "estimated": false,
+      "status": "MEASURED",
+      "source": "benchmark/results/dll_add/20261018-scope-recheck/summary.json"
+    },
+    {
+      "tool": "fulminate",
+      "stage": "第24组共享运行时独立执行",
+      "unit": "14 次复查总量；不覆盖历史正式测量",
+      "wall_seconds": 0.04866593319457024,
+      "peak_process_memory_mib": 1.1171875,
+      "tokens": 0,
+      "estimated": false,
+      "status": "MEASURED",
+      "source": "benchmark/results/dll_add/20261018-scope-recheck/summary.json"
     }
   ],
   "evidence_catalog": "benchmark/results/evidence.json",
   "missing_policy": "PENDING/null means not published or not bound to matching evidence; never replace missing data with zero. Existing historical evidence must be reused after hash/scope checks.",
   "itp_policy": "One test execution and all its unresolved VCs form one ITP unit; display mean costs only. read uses 12 independently measured execution ITP tasks; legacy batch estimates are historical. Memory is a measured process peak and is never divided. ITP subtotal overlaps its component rows and must not be added again.",
+  "evaluation_notes": [
+    "2026-10-18 第24组复查：原依赖在当前CN仍因IntList递归声明失败；借用singleton兼容层后add与两个helper验证通过，Fulminate 14次执行均PASS。下表正式入口保留旧版本结果，本次探测结果及成本另列，不把不同依赖测量覆盖到旧证据。",
+    "14次执行中，7次检查原较弱CN规约，另7次源函数无规约，仅表示合法输入的程序运行通过；不能称14个规约都验证正确。CN只约束链表形状，QCP另要求新节点值等于element。所有输入均为空链表，非空分支未覆盖。",
+    "teSpec分配器支持按用户要求暂缓，本轮0次。QCP仍缺当前17个原始VC的完整证书；历史manual只有1个引理，不能替代完整验证。完整组仍21/45。详见20261018-scope-recheck/summary.md。"
+  ],
+  "supplementary_costs": {
+    "source": "benchmark/results/dll_add/supplementary-costs.json",
+    "rows": 4,
+    "scope": "New scope inspection only; all 30 actual native stages counted separately. teSpec skipped, no proof-agent calls, no QCP compile or kernel checks."
+  },
   "coverage_gap": "benchmark/results/dll_add/coverage-gap.json",
   "test_modes": {
     "comparison": "benchmark/results/dll_add/20261016-evaluation/comparison.md",

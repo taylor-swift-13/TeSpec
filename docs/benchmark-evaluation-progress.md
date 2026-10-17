@@ -235,3 +235,7 @@ array_load 已完成全部 13 个语言版本记录、17 个入口配对、67 �
 原 singleton 程序和后置条件不变，依赖适配至锁定 CN 5.2；IntList_nil、IntList_cons、singleton 整模块均 pass，无 trusted/skip/only。外部分配器契约仍是验证前提。Fulminate 接入已有运行库分配/释放接口后，原有 7 个合法输入全部 PASS；另一个写错节点值的诊断副本由后置条件正确拒绝，不增加正式样本数。原失败、修复失败、先导运行、负控及正式两阶段时间/RSS均已保留并单列；原生 token 为0，无新增证明 agent 调用。
 
 teSpec 按用户要求暂缓，本轮未运行；历史两模式各7 UNKNOWN是缺 malloc_node 执行体，执行未完成且无残余VC，不能作为7个可直接填写的ITP任务。QCP旧4目标证书和成本原样复用。整组仍未完成，完整计数 **21/45**。见 [修复说明与复现](benchmark-singleton-cn-fulminate-repair-20261018.md) 和 [本组结果成本表](../benchmark/results/Dbl_Linked_List__singleton/result-cost.md)。
+
+## 2026-10-18：第 24 组 dll_add 复查
+
+当前工具链下原依赖仍IntList解析失败；借用singleton兼容层后CN的IntList_nil、IntList_cons、add均pass。Fulminate两个既有CN记录各7个空链表输入均实际PASS，pipeline与独立执行分别计量；其中7个无add规约的orig.broken只能计程序运行，不能当规约覆盖。原CN后置仅保证形状，QCP另保证插入值，两者不等价；不改原规约来伪造对齐。非空分支仍无覆盖。teSpec分配器按约定暂缓；QCP17原始VC完整证书仍缺，历史manual只有1个引理。保持21/45完整，正式旧入口不覆盖，本次全部30个阶段成本另列。见 [第24组复查](../benchmark/results/dll_add/20261018-scope-recheck/summary.md)。

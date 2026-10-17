@@ -1,0 +1,1248 @@
+{
+  "schema": "tespec-group-scope-recheck/v1",
+  "program_group": "dll_add",
+  "inspection_order": 24,
+  "toolchain": {
+    "source_revision": "b4a2f009234d9c80380dbf95a9b2325e36a4705d",
+    "cerberus_revision": "c8c085d4714ae17095b2e1202fa33c5545d98df1",
+    "cn_version": "git-b4a2f0092-dirty [2026-10-13 21:22:56 +0100]",
+    "cn_sha256": "bae893a3e360b4cfd07e41469f5dc9877a261fd1ed887ea6a8535a6b101b7700",
+    "runtime_tree_sha256": "0100e651f3e1669f42db5802aa997dcbbdf7af4efaffe891b12a8de4d0c80d59",
+    "opam_switch_state_sha256": "bb4f29ab022f33553ca2a8c06cee188c5826aaaf4978c18621ff375b6b6fd65b",
+    "executables": {
+      "gcc": {
+        "path": "/usr/bin/x86_64-linux-gnu-gcc-11",
+        "sha256": "821af3c74506283c179ca413bb33e6b528805a4dd8a5c09df125e5ad560a9e89"
+      },
+      "z3": {
+        "path": "/usr/bin/z3",
+        "sha256": "e555c27efbbbdd63b6cb6d54abb4a7aeabacba8184593bb917c4a7c16cb6056c"
+      }
+    }
+  },
+  "started_utc": "2026-10-17T19:50:47.673402+00:00",
+  "compatibility_manifest": "benchmark/programs/Dbl_Linked_List__singleton/compat/cn-5.2/manifest.json",
+  "compatibility_manifest_sha256": "f329f6e4cf4f73c7f0aff813ed3d093575db2d90969b2dea0cf941bbe3a39409",
+  "scope": "Diagnostic compatibility recheck; original sources/specifications/expectations unchanged; no nonempty-list coverage added. teSpec allocator execution deferred by user.",
+  "tespec": {
+    "status": "SKIPPED_ALLOCATOR_DEFERRED",
+    "new_execution_count": 0
+  },
+  "runs": [
+    {
+      "variant": "cn_original:Dbl_Linked_List__add",
+      "paired_qcp_variant": "qcp_existing:ca69c364e8e3c06211ef",
+      "case": "empty_element_0",
+      "plan_case": {
+        "id": "empty_element_0",
+        "value": {
+          "element": -2147483648,
+          "list": []
+        },
+        "expected": "PASS",
+        "cn_body": "struct node *n=add((-2147483647 - 1),0); free_node(n);",
+        "binds": {
+          "args": {
+            "element": -2147483648,
+            "n": 0
+          },
+          "values": {
+            "e": -2147483648,
+            "h": 0,
+            "p": 0,
+            "q": 0,
+            "ll": [],
+            "lr": []
+          }
+        },
+        "precondition_valid": true,
+        "oracle": {
+          "semantic_result": "allocate one node with inserted payload and null links; no arithmetic overflow",
+          "contract_scope": "Original annotated add postcondition preserves shape but does not constrain inserted payload. orig.broken has NO add contract; legal C implementation test, cannot count absent contract as checked. QCP supplied explicit correct contract.",
+          "coverage": "Empty-list path only; nonempty predecessor/successor cases pending; not complete group."
+        }
+      },
+      "source": "benchmark/programs/dll_add/variants/cn_original_Dbl_Linked_List__add/cn/add.c",
+      "source_sha256": "4a8b77bfadf395786f3b97234465f101121618196b751a49428c909751682088",
+      "harness": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_0/input.cn.c",
+      "harness_sha256": "fc21ccb0eae4ebb126459dfc5234a01a68a32fd68050073d28b9964a9a5a7278",
+      "pipeline": {
+        "command": [
+          "/home/yangfp/.opam/tespec-cn-5.2/bin/cn",
+          "instrument",
+          "--run",
+          "--cc=/home/yangfp/teSpec/benchmark/programs/Dbl_Linked_List__singleton/compat/cn-5.2/gcc-with-runtime.sh",
+          "--output-dir=/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_0/generated",
+          "-I/home/yangfp/teSpec/benchmark/programs/Dbl_Linked_List__singleton/compat/cn-5.2/Dbl_Linked_List",
+          "/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_0/input.cn.c"
+        ],
+        "exit_code": 0,
+        "wall_seconds": 0.365476636972744,
+        "resources": {
+          "max_process_rss_kib": 46996,
+          "user_seconds": 0.09,
+          "system_seconds": 0.05
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_0/pipeline/stdout.log",
+        "stderr": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_0/pipeline/stderr.log"
+      },
+      "test": {
+        "command": [
+          "/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_0/generated/input.cn.exec.out"
+        ],
+        "exit_code": 0,
+        "wall_seconds": 0.00397825101390481,
+        "resources": {
+          "max_process_rss_kib": 1144,
+          "user_seconds": 0.0,
+          "system_seconds": 0.0
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_0/test/stdout.log",
+        "stderr": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_0/test/stderr.log"
+      },
+      "generated_sources": [
+        {
+          "path": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_0/generated/input.cn.exec.c",
+          "sha256": "782be96d26402d6ea473c56dcc4efa99d3114fe75a8e253d71a7f1eabb2b485d"
+        }
+      ],
+      "binary_sha256": "27bae469a7fdb707a3cb30cc6f8ddf5d760230d6899fdab691ce95a68d2f4b12",
+      "status": "PASS"
+    },
+    {
+      "variant": "cn_original:Dbl_Linked_List__add",
+      "paired_qcp_variant": "qcp_existing:ca69c364e8e3c06211ef",
+      "case": "empty_element_1",
+      "plan_case": {
+        "id": "empty_element_1",
+        "value": {
+          "element": -100,
+          "list": []
+        },
+        "expected": "PASS",
+        "cn_body": "struct node *n=add(-100,0); free_node(n);",
+        "binds": {
+          "args": {
+            "element": -100,
+            "n": 0
+          },
+          "values": {
+            "e": -100,
+            "h": 0,
+            "p": 0,
+            "q": 0,
+            "ll": [],
+            "lr": []
+          }
+        },
+        "precondition_valid": true,
+        "oracle": {
+          "semantic_result": "allocate one node with inserted payload and null links; no arithmetic overflow",
+          "contract_scope": "Original annotated add postcondition preserves shape but does not constrain inserted payload. orig.broken has NO add contract; legal C implementation test, cannot count absent contract as checked. QCP supplied explicit correct contract.",
+          "coverage": "Empty-list path only; nonempty predecessor/successor cases pending; not complete group."
+        }
+      },
+      "source": "benchmark/programs/dll_add/variants/cn_original_Dbl_Linked_List__add/cn/add.c",
+      "source_sha256": "4a8b77bfadf395786f3b97234465f101121618196b751a49428c909751682088",
+      "harness": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_1/input.cn.c",
+      "harness_sha256": "cd809bb4de84d86091b94f0ef8cd71cc7281c1af733d457498bb18a5af8107fb",
+      "pipeline": {
+        "command": [
+          "/home/yangfp/.opam/tespec-cn-5.2/bin/cn",
+          "instrument",
+          "--run",
+          "--cc=/home/yangfp/teSpec/benchmark/programs/Dbl_Linked_List__singleton/compat/cn-5.2/gcc-with-runtime.sh",
+          "--output-dir=/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_1/generated",
+          "-I/home/yangfp/teSpec/benchmark/programs/Dbl_Linked_List__singleton/compat/cn-5.2/Dbl_Linked_List",
+          "/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_1/input.cn.c"
+        ],
+        "exit_code": 0,
+        "wall_seconds": 0.3151289240340702,
+        "resources": {
+          "max_process_rss_kib": 46780,
+          "user_seconds": 0.08,
+          "system_seconds": 0.05
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_1/pipeline/stdout.log",
+        "stderr": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_1/pipeline/stderr.log"
+      },
+      "test": {
+        "command": [
+          "/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_1/generated/input.cn.exec.out"
+        ],
+        "exit_code": 0,
+        "wall_seconds": 0.003945589007344097,
+        "resources": {
+          "max_process_rss_kib": 1144,
+          "user_seconds": 0.0,
+          "system_seconds": 0.0
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_1/test/stdout.log",
+        "stderr": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_1/test/stderr.log"
+      },
+      "generated_sources": [
+        {
+          "path": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_1/generated/input.cn.exec.c",
+          "sha256": "e1d0810c3192f9d6087a5d8853660a3395adc6cedccc9c33ed5a7748bb62113d"
+        }
+      ],
+      "binary_sha256": "0251976d2287ab7269494587c7a4db88d6515da30df9a5fd7256c0a14283d3cd",
+      "status": "PASS"
+    },
+    {
+      "variant": "cn_original:Dbl_Linked_List__add",
+      "paired_qcp_variant": "qcp_existing:ca69c364e8e3c06211ef",
+      "case": "empty_element_2",
+      "plan_case": {
+        "id": "empty_element_2",
+        "value": {
+          "element": -1,
+          "list": []
+        },
+        "expected": "PASS",
+        "cn_body": "struct node *n=add(-1,0); free_node(n);",
+        "binds": {
+          "args": {
+            "element": -1,
+            "n": 0
+          },
+          "values": {
+            "e": -1,
+            "h": 0,
+            "p": 0,
+            "q": 0,
+            "ll": [],
+            "lr": []
+          }
+        },
+        "precondition_valid": true,
+        "oracle": {
+          "semantic_result": "allocate one node with inserted payload and null links; no arithmetic overflow",
+          "contract_scope": "Original annotated add postcondition preserves shape but does not constrain inserted payload. orig.broken has NO add contract; legal C implementation test, cannot count absent contract as checked. QCP supplied explicit correct contract.",
+          "coverage": "Empty-list path only; nonempty predecessor/successor cases pending; not complete group."
+        }
+      },
+      "source": "benchmark/programs/dll_add/variants/cn_original_Dbl_Linked_List__add/cn/add.c",
+      "source_sha256": "4a8b77bfadf395786f3b97234465f101121618196b751a49428c909751682088",
+      "harness": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_2/input.cn.c",
+      "harness_sha256": "2ad83f7351b41454e57659971a9a5f587b0872f431f46e3d16f7b100cf82a385",
+      "pipeline": {
+        "command": [
+          "/home/yangfp/.opam/tespec-cn-5.2/bin/cn",
+          "instrument",
+          "--run",
+          "--cc=/home/yangfp/teSpec/benchmark/programs/Dbl_Linked_List__singleton/compat/cn-5.2/gcc-with-runtime.sh",
+          "--output-dir=/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_2/generated",
+          "-I/home/yangfp/teSpec/benchmark/programs/Dbl_Linked_List__singleton/compat/cn-5.2/Dbl_Linked_List",
+          "/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_2/input.cn.c"
+        ],
+        "exit_code": 0,
+        "wall_seconds": 0.31517040001926944,
+        "resources": {
+          "max_process_rss_kib": 45908,
+          "user_seconds": 0.09,
+          "system_seconds": 0.03
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_2/pipeline/stdout.log",
+        "stderr": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_2/pipeline/stderr.log"
+      },
+      "test": {
+        "command": [
+          "/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_2/generated/input.cn.exec.out"
+        ],
+        "exit_code": 0,
+        "wall_seconds": 0.0016996680060401559,
+        "resources": {
+          "max_process_rss_kib": 1144,
+          "user_seconds": 0.0,
+          "system_seconds": 0.0
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_2/test/stdout.log",
+        "stderr": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_2/test/stderr.log"
+      },
+      "generated_sources": [
+        {
+          "path": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_2/generated/input.cn.exec.c",
+          "sha256": "309f8697f04d411e1de23cd9c6aa1e19e8ab084657c746d352946f3146ead93e"
+        }
+      ],
+      "binary_sha256": "6ca5296df2a199d56a009dd85588d79c7a57d429d26d6373d65945919e69e5f3",
+      "status": "PASS"
+    },
+    {
+      "variant": "cn_original:Dbl_Linked_List__add",
+      "paired_qcp_variant": "qcp_existing:ca69c364e8e3c06211ef",
+      "case": "empty_element_3",
+      "plan_case": {
+        "id": "empty_element_3",
+        "value": {
+          "element": 0,
+          "list": []
+        },
+        "expected": "PASS",
+        "cn_body": "struct node *n=add(0,0); free_node(n);",
+        "binds": {
+          "args": {
+            "element": 0,
+            "n": 0
+          },
+          "values": {
+            "e": 0,
+            "h": 0,
+            "p": 0,
+            "q": 0,
+            "ll": [],
+            "lr": []
+          }
+        },
+        "precondition_valid": true,
+        "oracle": {
+          "semantic_result": "allocate one node with inserted payload and null links; no arithmetic overflow",
+          "contract_scope": "Original annotated add postcondition preserves shape but does not constrain inserted payload. orig.broken has NO add contract; legal C implementation test, cannot count absent contract as checked. QCP supplied explicit correct contract.",
+          "coverage": "Empty-list path only; nonempty predecessor/successor cases pending; not complete group."
+        }
+      },
+      "source": "benchmark/programs/dll_add/variants/cn_original_Dbl_Linked_List__add/cn/add.c",
+      "source_sha256": "4a8b77bfadf395786f3b97234465f101121618196b751a49428c909751682088",
+      "harness": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_3/input.cn.c",
+      "harness_sha256": "f265b071c1acc0ee4a3a91b93fcf0cccd5104d87fda5b18a48ce6959bd81d3ce",
+      "pipeline": {
+        "command": [
+          "/home/yangfp/.opam/tespec-cn-5.2/bin/cn",
+          "instrument",
+          "--run",
+          "--cc=/home/yangfp/teSpec/benchmark/programs/Dbl_Linked_List__singleton/compat/cn-5.2/gcc-with-runtime.sh",
+          "--output-dir=/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_3/generated",
+          "-I/home/yangfp/teSpec/benchmark/programs/Dbl_Linked_List__singleton/compat/cn-5.2/Dbl_Linked_List",
+          "/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_3/input.cn.c"
+        ],
+        "exit_code": 0,
+        "wall_seconds": 0.31499043898656964,
+        "resources": {
+          "max_process_rss_kib": 46412,
+          "user_seconds": 0.09,
+          "system_seconds": 0.04
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_3/pipeline/stdout.log",
+        "stderr": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_3/pipeline/stderr.log"
+      },
+      "test": {
+        "command": [
+          "/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_3/generated/input.cn.exec.out"
+        ],
+        "exit_code": 0,
+        "wall_seconds": 0.003872899047564715,
+        "resources": {
+          "max_process_rss_kib": 1144,
+          "user_seconds": 0.0,
+          "system_seconds": 0.0
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_3/test/stdout.log",
+        "stderr": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_3/test/stderr.log"
+      },
+      "generated_sources": [
+        {
+          "path": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_3/generated/input.cn.exec.c",
+          "sha256": "0ceb02657b48b59bf68a3982e190d7802e3c8b59dda342bd614c666a025da8d9"
+        }
+      ],
+      "binary_sha256": "7af2acb89ad16e172aad67af7776f6693589d13e4ac9d37d7f57448bc023b98d",
+      "status": "PASS"
+    },
+    {
+      "variant": "cn_original:Dbl_Linked_List__add",
+      "paired_qcp_variant": "qcp_existing:ca69c364e8e3c06211ef",
+      "case": "empty_element_4",
+      "plan_case": {
+        "id": "empty_element_4",
+        "value": {
+          "element": 1,
+          "list": []
+        },
+        "expected": "PASS",
+        "cn_body": "struct node *n=add(1,0); free_node(n);",
+        "binds": {
+          "args": {
+            "element": 1,
+            "n": 0
+          },
+          "values": {
+            "e": 1,
+            "h": 0,
+            "p": 0,
+            "q": 0,
+            "ll": [],
+            "lr": []
+          }
+        },
+        "precondition_valid": true,
+        "oracle": {
+          "semantic_result": "allocate one node with inserted payload and null links; no arithmetic overflow",
+          "contract_scope": "Original annotated add postcondition preserves shape but does not constrain inserted payload. orig.broken has NO add contract; legal C implementation test, cannot count absent contract as checked. QCP supplied explicit correct contract.",
+          "coverage": "Empty-list path only; nonempty predecessor/successor cases pending; not complete group."
+        }
+      },
+      "source": "benchmark/programs/dll_add/variants/cn_original_Dbl_Linked_List__add/cn/add.c",
+      "source_sha256": "4a8b77bfadf395786f3b97234465f101121618196b751a49428c909751682088",
+      "harness": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_4/input.cn.c",
+      "harness_sha256": "7d72b07826efae7253aa84fb87ec96b9e454fa626a765e67f7c1e09dd30bfdf4",
+      "pipeline": {
+        "command": [
+          "/home/yangfp/.opam/tespec-cn-5.2/bin/cn",
+          "instrument",
+          "--run",
+          "--cc=/home/yangfp/teSpec/benchmark/programs/Dbl_Linked_List__singleton/compat/cn-5.2/gcc-with-runtime.sh",
+          "--output-dir=/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_4/generated",
+          "-I/home/yangfp/teSpec/benchmark/programs/Dbl_Linked_List__singleton/compat/cn-5.2/Dbl_Linked_List",
+          "/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_4/input.cn.c"
+        ],
+        "exit_code": 0,
+        "wall_seconds": 0.315310659003444,
+        "resources": {
+          "max_process_rss_kib": 46528,
+          "user_seconds": 0.09,
+          "system_seconds": 0.03
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_4/pipeline/stdout.log",
+        "stderr": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_4/pipeline/stderr.log"
+      },
+      "test": {
+        "command": [
+          "/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_4/generated/input.cn.exec.out"
+        ],
+        "exit_code": 0,
+        "wall_seconds": 0.003931983024813235,
+        "resources": {
+          "max_process_rss_kib": 1144,
+          "user_seconds": 0.0,
+          "system_seconds": 0.0
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_4/test/stdout.log",
+        "stderr": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_4/test/stderr.log"
+      },
+      "generated_sources": [
+        {
+          "path": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_4/generated/input.cn.exec.c",
+          "sha256": "6ea065bc2465ea6ca4428afee7930559f99122883a4db64bbdc10099f798fd44"
+        }
+      ],
+      "binary_sha256": "1d91a9e301ade508392c683161d30261652a214fa386116e66b757353f01b3c9",
+      "status": "PASS"
+    },
+    {
+      "variant": "cn_original:Dbl_Linked_List__add",
+      "paired_qcp_variant": "qcp_existing:ca69c364e8e3c06211ef",
+      "case": "empty_element_5",
+      "plan_case": {
+        "id": "empty_element_5",
+        "value": {
+          "element": 5,
+          "list": []
+        },
+        "expected": "PASS",
+        "cn_body": "struct node *n=add(5,0); free_node(n);",
+        "binds": {
+          "args": {
+            "element": 5,
+            "n": 0
+          },
+          "values": {
+            "e": 5,
+            "h": 0,
+            "p": 0,
+            "q": 0,
+            "ll": [],
+            "lr": []
+          }
+        },
+        "precondition_valid": true,
+        "oracle": {
+          "semantic_result": "allocate one node with inserted payload and null links; no arithmetic overflow",
+          "contract_scope": "Original annotated add postcondition preserves shape but does not constrain inserted payload. orig.broken has NO add contract; legal C implementation test, cannot count absent contract as checked. QCP supplied explicit correct contract.",
+          "coverage": "Empty-list path only; nonempty predecessor/successor cases pending; not complete group."
+        }
+      },
+      "source": "benchmark/programs/dll_add/variants/cn_original_Dbl_Linked_List__add/cn/add.c",
+      "source_sha256": "4a8b77bfadf395786f3b97234465f101121618196b751a49428c909751682088",
+      "harness": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_5/input.cn.c",
+      "harness_sha256": "e7e488ff255b3fdd6eb8763c8265b2259041655c641301232c3a9397dd9ae1c8",
+      "pipeline": {
+        "command": [
+          "/home/yangfp/.opam/tespec-cn-5.2/bin/cn",
+          "instrument",
+          "--run",
+          "--cc=/home/yangfp/teSpec/benchmark/programs/Dbl_Linked_List__singleton/compat/cn-5.2/gcc-with-runtime.sh",
+          "--output-dir=/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_5/generated",
+          "-I/home/yangfp/teSpec/benchmark/programs/Dbl_Linked_List__singleton/compat/cn-5.2/Dbl_Linked_List",
+          "/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_5/input.cn.c"
+        ],
+        "exit_code": 0,
+        "wall_seconds": 0.31514086498646066,
+        "resources": {
+          "max_process_rss_kib": 45976,
+          "user_seconds": 0.08,
+          "system_seconds": 0.06
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_5/pipeline/stdout.log",
+        "stderr": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_5/pipeline/stderr.log"
+      },
+      "test": {
+        "command": [
+          "/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_5/generated/input.cn.exec.out"
+        ],
+        "exit_code": 0,
+        "wall_seconds": 0.003908438957296312,
+        "resources": {
+          "max_process_rss_kib": 1144,
+          "user_seconds": 0.0,
+          "system_seconds": 0.0
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_5/test/stdout.log",
+        "stderr": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_5/test/stderr.log"
+      },
+      "generated_sources": [
+        {
+          "path": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_5/generated/input.cn.exec.c",
+          "sha256": "6db0f9243dce67ad8a381ffac7c96dc0afb05b5ff322235cc07ab5fc10fd5bdf"
+        }
+      ],
+      "binary_sha256": "c2c6964aaaa8869c085399ae100b6a425834dc7797c466fc8bbc00921eae6815",
+      "status": "PASS"
+    },
+    {
+      "variant": "cn_original:Dbl_Linked_List__add",
+      "paired_qcp_variant": "qcp_existing:ca69c364e8e3c06211ef",
+      "case": "empty_element_6",
+      "plan_case": {
+        "id": "empty_element_6",
+        "value": {
+          "element": 2147483647,
+          "list": []
+        },
+        "expected": "PASS",
+        "cn_body": "struct node *n=add(2147483647,0); free_node(n);",
+        "binds": {
+          "args": {
+            "element": 2147483647,
+            "n": 0
+          },
+          "values": {
+            "e": 2147483647,
+            "h": 0,
+            "p": 0,
+            "q": 0,
+            "ll": [],
+            "lr": []
+          }
+        },
+        "precondition_valid": true,
+        "oracle": {
+          "semantic_result": "allocate one node with inserted payload and null links; no arithmetic overflow",
+          "contract_scope": "Original annotated add postcondition preserves shape but does not constrain inserted payload. orig.broken has NO add contract; legal C implementation test, cannot count absent contract as checked. QCP supplied explicit correct contract.",
+          "coverage": "Empty-list path only; nonempty predecessor/successor cases pending; not complete group."
+        }
+      },
+      "source": "benchmark/programs/dll_add/variants/cn_original_Dbl_Linked_List__add/cn/add.c",
+      "source_sha256": "4a8b77bfadf395786f3b97234465f101121618196b751a49428c909751682088",
+      "harness": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_6/input.cn.c",
+      "harness_sha256": "33255fde10d661eec706c19292d73d582208519db156f1ef84e61ea8a7e8ff43",
+      "pipeline": {
+        "command": [
+          "/home/yangfp/.opam/tespec-cn-5.2/bin/cn",
+          "instrument",
+          "--run",
+          "--cc=/home/yangfp/teSpec/benchmark/programs/Dbl_Linked_List__singleton/compat/cn-5.2/gcc-with-runtime.sh",
+          "--output-dir=/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_6/generated",
+          "-I/home/yangfp/teSpec/benchmark/programs/Dbl_Linked_List__singleton/compat/cn-5.2/Dbl_Linked_List",
+          "/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_6/input.cn.c"
+        ],
+        "exit_code": 0,
+        "wall_seconds": 0.4656699469778687,
+        "resources": {
+          "max_process_rss_kib": 47408,
+          "user_seconds": 0.08,
+          "system_seconds": 0.18
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_6/pipeline/stdout.log",
+        "stderr": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_6/pipeline/stderr.log"
+      },
+      "test": {
+        "command": [
+          "/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_6/generated/input.cn.exec.out"
+        ],
+        "exit_code": 0,
+        "wall_seconds": 0.0039725700044073164,
+        "resources": {
+          "max_process_rss_kib": 1144,
+          "user_seconds": 0.0,
+          "system_seconds": 0.0
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_6/test/stdout.log",
+        "stderr": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_6/test/stderr.log"
+      },
+      "generated_sources": [
+        {
+          "path": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add/empty_element_6/generated/input.cn.exec.c",
+          "sha256": "53a2028271d84045342b3f462af43014cf35f99d170254d78c48154fdb2f1ceb"
+        }
+      ],
+      "binary_sha256": "44a509d18f4c5cfdfcc777dc53169619573048ab88a364b3fe192aa55ff18482",
+      "status": "PASS"
+    },
+    {
+      "variant": "cn_original:Dbl_Linked_List__add_orig.broken",
+      "paired_qcp_variant": "qcp_existing:ca69c364e8e3c06211ef",
+      "case": "empty_element_0",
+      "plan_case": {
+        "id": "empty_element_0",
+        "value": {
+          "element": -2147483648,
+          "list": []
+        },
+        "expected": "PASS",
+        "cn_body": "struct node *n=add((-2147483647 - 1),0); free_node(n);",
+        "binds": {
+          "args": {
+            "element": -2147483648,
+            "n": 0
+          },
+          "values": {
+            "e": -2147483648,
+            "h": 0,
+            "p": 0,
+            "q": 0,
+            "ll": [],
+            "lr": []
+          }
+        },
+        "precondition_valid": true,
+        "oracle": {
+          "semantic_result": "allocate one node with inserted payload and null links; no arithmetic overflow",
+          "contract_scope": "Original annotated add postcondition preserves shape but does not constrain inserted payload. orig.broken has NO add contract; legal C implementation test, cannot count absent contract as checked. QCP supplied explicit correct contract.",
+          "coverage": "Empty-list path only; nonempty predecessor/successor cases pending; not complete group."
+        }
+      },
+      "source": "benchmark/programs/dll_add/variants/cn_original_Dbl_Linked_List__add_orig.broken/cn/add_orig.broken.c",
+      "source_sha256": "a1f8dd12ce9503fd109b1dcf37e18624483053b34a7158f0cad33631c7c04521",
+      "harness": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_0/input.cn.c",
+      "harness_sha256": "41c0d78314044c1442da20645010ca1bd2718515b6bd4ed807beabe2e056eeda",
+      "pipeline": {
+        "command": [
+          "/home/yangfp/.opam/tespec-cn-5.2/bin/cn",
+          "instrument",
+          "--run",
+          "--cc=/home/yangfp/teSpec/benchmark/programs/Dbl_Linked_List__singleton/compat/cn-5.2/gcc-with-runtime.sh",
+          "--output-dir=/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_0/generated",
+          "-I/home/yangfp/teSpec/benchmark/programs/Dbl_Linked_List__singleton/compat/cn-5.2/Dbl_Linked_List",
+          "/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_0/input.cn.c"
+        ],
+        "exit_code": 0,
+        "wall_seconds": 0.31511731998762116,
+        "resources": {
+          "max_process_rss_kib": 46732,
+          "user_seconds": 0.07,
+          "system_seconds": 0.06
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_0/pipeline/stdout.log",
+        "stderr": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_0/pipeline/stderr.log"
+      },
+      "test": {
+        "command": [
+          "/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_0/generated/input.cn.exec.out"
+        ],
+        "exit_code": 0,
+        "wall_seconds": 0.0038489660364575684,
+        "resources": {
+          "max_process_rss_kib": 1144,
+          "user_seconds": 0.0,
+          "system_seconds": 0.0
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_0/test/stdout.log",
+        "stderr": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_0/test/stderr.log"
+      },
+      "generated_sources": [
+        {
+          "path": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_0/generated/input.cn.exec.c",
+          "sha256": "1a6c8fac2c4c69d0e927cb84c95ccd4fa8cf80b111fb823d729e7057938625ac"
+        }
+      ],
+      "binary_sha256": "ac20e7fd0265eaa4fd475f259b88b29eb7223597e5665e1dbac606ba73670626",
+      "status": "PASS"
+    },
+    {
+      "variant": "cn_original:Dbl_Linked_List__add_orig.broken",
+      "paired_qcp_variant": "qcp_existing:ca69c364e8e3c06211ef",
+      "case": "empty_element_1",
+      "plan_case": {
+        "id": "empty_element_1",
+        "value": {
+          "element": -100,
+          "list": []
+        },
+        "expected": "PASS",
+        "cn_body": "struct node *n=add(-100,0); free_node(n);",
+        "binds": {
+          "args": {
+            "element": -100,
+            "n": 0
+          },
+          "values": {
+            "e": -100,
+            "h": 0,
+            "p": 0,
+            "q": 0,
+            "ll": [],
+            "lr": []
+          }
+        },
+        "precondition_valid": true,
+        "oracle": {
+          "semantic_result": "allocate one node with inserted payload and null links; no arithmetic overflow",
+          "contract_scope": "Original annotated add postcondition preserves shape but does not constrain inserted payload. orig.broken has NO add contract; legal C implementation test, cannot count absent contract as checked. QCP supplied explicit correct contract.",
+          "coverage": "Empty-list path only; nonempty predecessor/successor cases pending; not complete group."
+        }
+      },
+      "source": "benchmark/programs/dll_add/variants/cn_original_Dbl_Linked_List__add_orig.broken/cn/add_orig.broken.c",
+      "source_sha256": "a1f8dd12ce9503fd109b1dcf37e18624483053b34a7158f0cad33631c7c04521",
+      "harness": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_1/input.cn.c",
+      "harness_sha256": "5f6b3f3312f78674104a88ca73947de9a921cb167955cc911b279106c0469fd7",
+      "pipeline": {
+        "command": [
+          "/home/yangfp/.opam/tespec-cn-5.2/bin/cn",
+          "instrument",
+          "--run",
+          "--cc=/home/yangfp/teSpec/benchmark/programs/Dbl_Linked_List__singleton/compat/cn-5.2/gcc-with-runtime.sh",
+          "--output-dir=/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_1/generated",
+          "-I/home/yangfp/teSpec/benchmark/programs/Dbl_Linked_List__singleton/compat/cn-5.2/Dbl_Linked_List",
+          "/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_1/input.cn.c"
+        ],
+        "exit_code": 0,
+        "wall_seconds": 0.4155311739887111,
+        "resources": {
+          "max_process_rss_kib": 46232,
+          "user_seconds": 0.08,
+          "system_seconds": 0.14
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_1/pipeline/stdout.log",
+        "stderr": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_1/pipeline/stderr.log"
+      },
+      "test": {
+        "command": [
+          "/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_1/generated/input.cn.exec.out"
+        ],
+        "exit_code": 0,
+        "wall_seconds": 0.004052230040542781,
+        "resources": {
+          "max_process_rss_kib": 1144,
+          "user_seconds": 0.0,
+          "system_seconds": 0.0
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_1/test/stdout.log",
+        "stderr": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_1/test/stderr.log"
+      },
+      "generated_sources": [
+        {
+          "path": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_1/generated/input.cn.exec.c",
+          "sha256": "3cbc3d14cb3e9b0e4d4c66d4895fb3d739448a6fe97ea3595dce182e15637383"
+        }
+      ],
+      "binary_sha256": "3d3d3a92050bbef6bb06f8672d3d27fdd7bcaf21e8d0b9e1a39bd17a2529ce36",
+      "status": "PASS"
+    },
+    {
+      "variant": "cn_original:Dbl_Linked_List__add_orig.broken",
+      "paired_qcp_variant": "qcp_existing:ca69c364e8e3c06211ef",
+      "case": "empty_element_2",
+      "plan_case": {
+        "id": "empty_element_2",
+        "value": {
+          "element": -1,
+          "list": []
+        },
+        "expected": "PASS",
+        "cn_body": "struct node *n=add(-1,0); free_node(n);",
+        "binds": {
+          "args": {
+            "element": -1,
+            "n": 0
+          },
+          "values": {
+            "e": -1,
+            "h": 0,
+            "p": 0,
+            "q": 0,
+            "ll": [],
+            "lr": []
+          }
+        },
+        "precondition_valid": true,
+        "oracle": {
+          "semantic_result": "allocate one node with inserted payload and null links; no arithmetic overflow",
+          "contract_scope": "Original annotated add postcondition preserves shape but does not constrain inserted payload. orig.broken has NO add contract; legal C implementation test, cannot count absent contract as checked. QCP supplied explicit correct contract.",
+          "coverage": "Empty-list path only; nonempty predecessor/successor cases pending; not complete group."
+        }
+      },
+      "source": "benchmark/programs/dll_add/variants/cn_original_Dbl_Linked_List__add_orig.broken/cn/add_orig.broken.c",
+      "source_sha256": "a1f8dd12ce9503fd109b1dcf37e18624483053b34a7158f0cad33631c7c04521",
+      "harness": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_2/input.cn.c",
+      "harness_sha256": "a59c5bc1f732e743ad20736dd96d6361554bcbd0e0d46795fecc17db437248ed",
+      "pipeline": {
+        "command": [
+          "/home/yangfp/.opam/tespec-cn-5.2/bin/cn",
+          "instrument",
+          "--run",
+          "--cc=/home/yangfp/teSpec/benchmark/programs/Dbl_Linked_List__singleton/compat/cn-5.2/gcc-with-runtime.sh",
+          "--output-dir=/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_2/generated",
+          "-I/home/yangfp/teSpec/benchmark/programs/Dbl_Linked_List__singleton/compat/cn-5.2/Dbl_Linked_List",
+          "/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_2/input.cn.c"
+        ],
+        "exit_code": 0,
+        "wall_seconds": 0.365228291018866,
+        "resources": {
+          "max_process_rss_kib": 47112,
+          "user_seconds": 0.07,
+          "system_seconds": 0.11
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_2/pipeline/stdout.log",
+        "stderr": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_2/pipeline/stderr.log"
+      },
+      "test": {
+        "command": [
+          "/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_2/generated/input.cn.exec.out"
+        ],
+        "exit_code": 0,
+        "wall_seconds": 0.00196418899577111,
+        "resources": {
+          "max_process_rss_kib": 1144,
+          "user_seconds": 0.0,
+          "system_seconds": 0.0
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_2/test/stdout.log",
+        "stderr": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_2/test/stderr.log"
+      },
+      "generated_sources": [
+        {
+          "path": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_2/generated/input.cn.exec.c",
+          "sha256": "6254eb4fba4e251c0100a8fa2d92dc71a2f69e909cc749cd50d408e357e7f04c"
+        }
+      ],
+      "binary_sha256": "87d4d74258dfda014f521cf70c1bacba4dc8f145ef80761614d805100de04627",
+      "status": "PASS"
+    },
+    {
+      "variant": "cn_original:Dbl_Linked_List__add_orig.broken",
+      "paired_qcp_variant": "qcp_existing:ca69c364e8e3c06211ef",
+      "case": "empty_element_3",
+      "plan_case": {
+        "id": "empty_element_3",
+        "value": {
+          "element": 0,
+          "list": []
+        },
+        "expected": "PASS",
+        "cn_body": "struct node *n=add(0,0); free_node(n);",
+        "binds": {
+          "args": {
+            "element": 0,
+            "n": 0
+          },
+          "values": {
+            "e": 0,
+            "h": 0,
+            "p": 0,
+            "q": 0,
+            "ll": [],
+            "lr": []
+          }
+        },
+        "precondition_valid": true,
+        "oracle": {
+          "semantic_result": "allocate one node with inserted payload and null links; no arithmetic overflow",
+          "contract_scope": "Original annotated add postcondition preserves shape but does not constrain inserted payload. orig.broken has NO add contract; legal C implementation test, cannot count absent contract as checked. QCP supplied explicit correct contract.",
+          "coverage": "Empty-list path only; nonempty predecessor/successor cases pending; not complete group."
+        }
+      },
+      "source": "benchmark/programs/dll_add/variants/cn_original_Dbl_Linked_List__add_orig.broken/cn/add_orig.broken.c",
+      "source_sha256": "a1f8dd12ce9503fd109b1dcf37e18624483053b34a7158f0cad33631c7c04521",
+      "harness": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_3/input.cn.c",
+      "harness_sha256": "0991cdcfb80023422aecc97c2f4cce0d3fd49e927c0aab3dd848a433042c793c",
+      "pipeline": {
+        "command": [
+          "/home/yangfp/.opam/tespec-cn-5.2/bin/cn",
+          "instrument",
+          "--run",
+          "--cc=/home/yangfp/teSpec/benchmark/programs/Dbl_Linked_List__singleton/compat/cn-5.2/gcc-with-runtime.sh",
+          "--output-dir=/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_3/generated",
+          "-I/home/yangfp/teSpec/benchmark/programs/Dbl_Linked_List__singleton/compat/cn-5.2/Dbl_Linked_List",
+          "/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_3/input.cn.c"
+        ],
+        "exit_code": 0,
+        "wall_seconds": 0.3653616519877687,
+        "resources": {
+          "max_process_rss_kib": 46384,
+          "user_seconds": 0.1,
+          "system_seconds": 0.06
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_3/pipeline/stdout.log",
+        "stderr": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_3/pipeline/stderr.log"
+      },
+      "test": {
+        "command": [
+          "/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_3/generated/input.cn.exec.out"
+        ],
+        "exit_code": 0,
+        "wall_seconds": 0.0038618300459347665,
+        "resources": {
+          "max_process_rss_kib": 1144,
+          "user_seconds": 0.0,
+          "system_seconds": 0.0
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_3/test/stdout.log",
+        "stderr": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_3/test/stderr.log"
+      },
+      "generated_sources": [
+        {
+          "path": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_3/generated/input.cn.exec.c",
+          "sha256": "1de1b957916bc9d76c670984a2033a10f2a03a1d9695ea86b499f3b9f20bc348"
+        }
+      ],
+      "binary_sha256": "affbbddfe062c8f29d5309842e3384b1728e1144fb4056a8ac6dfe4b0adada6a",
+      "status": "PASS"
+    },
+    {
+      "variant": "cn_original:Dbl_Linked_List__add_orig.broken",
+      "paired_qcp_variant": "qcp_existing:ca69c364e8e3c06211ef",
+      "case": "empty_element_4",
+      "plan_case": {
+        "id": "empty_element_4",
+        "value": {
+          "element": 1,
+          "list": []
+        },
+        "expected": "PASS",
+        "cn_body": "struct node *n=add(1,0); free_node(n);",
+        "binds": {
+          "args": {
+            "element": 1,
+            "n": 0
+          },
+          "values": {
+            "e": 1,
+            "h": 0,
+            "p": 0,
+            "q": 0,
+            "ll": [],
+            "lr": []
+          }
+        },
+        "precondition_valid": true,
+        "oracle": {
+          "semantic_result": "allocate one node with inserted payload and null links; no arithmetic overflow",
+          "contract_scope": "Original annotated add postcondition preserves shape but does not constrain inserted payload. orig.broken has NO add contract; legal C implementation test, cannot count absent contract as checked. QCP supplied explicit correct contract.",
+          "coverage": "Empty-list path only; nonempty predecessor/successor cases pending; not complete group."
+        }
+      },
+      "source": "benchmark/programs/dll_add/variants/cn_original_Dbl_Linked_List__add_orig.broken/cn/add_orig.broken.c",
+      "source_sha256": "a1f8dd12ce9503fd109b1dcf37e18624483053b34a7158f0cad33631c7c04521",
+      "harness": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_4/input.cn.c",
+      "harness_sha256": "538760a8849098cfd63cc49912ee90a16613c15ffb094f23788ae70f7255e3b0",
+      "pipeline": {
+        "command": [
+          "/home/yangfp/.opam/tespec-cn-5.2/bin/cn",
+          "instrument",
+          "--run",
+          "--cc=/home/yangfp/teSpec/benchmark/programs/Dbl_Linked_List__singleton/compat/cn-5.2/gcc-with-runtime.sh",
+          "--output-dir=/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_4/generated",
+          "-I/home/yangfp/teSpec/benchmark/programs/Dbl_Linked_List__singleton/compat/cn-5.2/Dbl_Linked_List",
+          "/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_4/input.cn.c"
+        ],
+        "exit_code": 0,
+        "wall_seconds": 0.31525270600104704,
+        "resources": {
+          "max_process_rss_kib": 46368,
+          "user_seconds": 0.07,
+          "system_seconds": 0.05
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_4/pipeline/stdout.log",
+        "stderr": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_4/pipeline/stderr.log"
+      },
+      "test": {
+        "command": [
+          "/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_4/generated/input.cn.exec.out"
+        ],
+        "exit_code": 0,
+        "wall_seconds": 0.004172488988842815,
+        "resources": {
+          "max_process_rss_kib": 1144,
+          "user_seconds": 0.0,
+          "system_seconds": 0.0
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_4/test/stdout.log",
+        "stderr": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_4/test/stderr.log"
+      },
+      "generated_sources": [
+        {
+          "path": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_4/generated/input.cn.exec.c",
+          "sha256": "1c509562a53e4401390846b8907b0e499e1934f7532f0bd30254e034dec2d6df"
+        }
+      ],
+      "binary_sha256": "fe562c97ae0559dedf8ecf425dc1314192e196c7ef0705cf1b9cfcf11f414075",
+      "status": "PASS"
+    },
+    {
+      "variant": "cn_original:Dbl_Linked_List__add_orig.broken",
+      "paired_qcp_variant": "qcp_existing:ca69c364e8e3c06211ef",
+      "case": "empty_element_5",
+      "plan_case": {
+        "id": "empty_element_5",
+        "value": {
+          "element": 5,
+          "list": []
+        },
+        "expected": "PASS",
+        "cn_body": "struct node *n=add(5,0); free_node(n);",
+        "binds": {
+          "args": {
+            "element": 5,
+            "n": 0
+          },
+          "values": {
+            "e": 5,
+            "h": 0,
+            "p": 0,
+            "q": 0,
+            "ll": [],
+            "lr": []
+          }
+        },
+        "precondition_valid": true,
+        "oracle": {
+          "semantic_result": "allocate one node with inserted payload and null links; no arithmetic overflow",
+          "contract_scope": "Original annotated add postcondition preserves shape but does not constrain inserted payload. orig.broken has NO add contract; legal C implementation test, cannot count absent contract as checked. QCP supplied explicit correct contract.",
+          "coverage": "Empty-list path only; nonempty predecessor/successor cases pending; not complete group."
+        }
+      },
+      "source": "benchmark/programs/dll_add/variants/cn_original_Dbl_Linked_List__add_orig.broken/cn/add_orig.broken.c",
+      "source_sha256": "a1f8dd12ce9503fd109b1dcf37e18624483053b34a7158f0cad33631c7c04521",
+      "harness": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_5/input.cn.c",
+      "harness_sha256": "e16f7cd8410b59ad85696f5686e6483b01803532c4d449426dcdb5d70bd89099",
+      "pipeline": {
+        "command": [
+          "/home/yangfp/.opam/tespec-cn-5.2/bin/cn",
+          "instrument",
+          "--run",
+          "--cc=/home/yangfp/teSpec/benchmark/programs/Dbl_Linked_List__singleton/compat/cn-5.2/gcc-with-runtime.sh",
+          "--output-dir=/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_5/generated",
+          "-I/home/yangfp/teSpec/benchmark/programs/Dbl_Linked_List__singleton/compat/cn-5.2/Dbl_Linked_List",
+          "/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_5/input.cn.c"
+        ],
+        "exit_code": 0,
+        "wall_seconds": 0.3150907590170391,
+        "resources": {
+          "max_process_rss_kib": 46024,
+          "user_seconds": 0.07,
+          "system_seconds": 0.05
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_5/pipeline/stdout.log",
+        "stderr": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_5/pipeline/stderr.log"
+      },
+      "test": {
+        "command": [
+          "/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_5/generated/input.cn.exec.out"
+        ],
+        "exit_code": 0,
+        "wall_seconds": 0.0037282879929989576,
+        "resources": {
+          "max_process_rss_kib": 1144,
+          "user_seconds": 0.0,
+          "system_seconds": 0.0
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_5/test/stdout.log",
+        "stderr": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_5/test/stderr.log"
+      },
+      "generated_sources": [
+        {
+          "path": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_5/generated/input.cn.exec.c",
+          "sha256": "80c38cc2e82d60d77b3acf1e2779154a8e51782400fabb82e2dd28f6016fbad1"
+        }
+      ],
+      "binary_sha256": "ca11e497b65f8dea38c1cb9ed86da5c1471e5d87e4d492a234182513cb286238",
+      "status": "PASS"
+    },
+    {
+      "variant": "cn_original:Dbl_Linked_List__add_orig.broken",
+      "paired_qcp_variant": "qcp_existing:ca69c364e8e3c06211ef",
+      "case": "empty_element_6",
+      "plan_case": {
+        "id": "empty_element_6",
+        "value": {
+          "element": 2147483647,
+          "list": []
+        },
+        "expected": "PASS",
+        "cn_body": "struct node *n=add(2147483647,0); free_node(n);",
+        "binds": {
+          "args": {
+            "element": 2147483647,
+            "n": 0
+          },
+          "values": {
+            "e": 2147483647,
+            "h": 0,
+            "p": 0,
+            "q": 0,
+            "ll": [],
+            "lr": []
+          }
+        },
+        "precondition_valid": true,
+        "oracle": {
+          "semantic_result": "allocate one node with inserted payload and null links; no arithmetic overflow",
+          "contract_scope": "Original annotated add postcondition preserves shape but does not constrain inserted payload. orig.broken has NO add contract; legal C implementation test, cannot count absent contract as checked. QCP supplied explicit correct contract.",
+          "coverage": "Empty-list path only; nonempty predecessor/successor cases pending; not complete group."
+        }
+      },
+      "source": "benchmark/programs/dll_add/variants/cn_original_Dbl_Linked_List__add_orig.broken/cn/add_orig.broken.c",
+      "source_sha256": "a1f8dd12ce9503fd109b1dcf37e18624483053b34a7158f0cad33631c7c04521",
+      "harness": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_6/input.cn.c",
+      "harness_sha256": "4f8648472626d7dac7bde2378515c40f85eb55b324a5c7585c1689842e4af4af",
+      "pipeline": {
+        "command": [
+          "/home/yangfp/.opam/tespec-cn-5.2/bin/cn",
+          "instrument",
+          "--run",
+          "--cc=/home/yangfp/teSpec/benchmark/programs/Dbl_Linked_List__singleton/compat/cn-5.2/gcc-with-runtime.sh",
+          "--output-dir=/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_6/generated",
+          "-I/home/yangfp/teSpec/benchmark/programs/Dbl_Linked_List__singleton/compat/cn-5.2/Dbl_Linked_List",
+          "/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_6/input.cn.c"
+        ],
+        "exit_code": 0,
+        "wall_seconds": 0.36559287103591487,
+        "resources": {
+          "max_process_rss_kib": 46368,
+          "user_seconds": 0.05,
+          "system_seconds": 0.13
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_6/pipeline/stdout.log",
+        "stderr": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_6/pipeline/stderr.log"
+      },
+      "test": {
+        "command": [
+          "/home/yangfp/teSpec/benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_6/generated/input.cn.exec.out"
+        ],
+        "exit_code": 0,
+        "wall_seconds": 0.0017285420326516032,
+        "resources": {
+          "max_process_rss_kib": 1144,
+          "user_seconds": 0.0,
+          "system_seconds": 0.0
+        },
+        "tokens": 0,
+        "model_calls": 0,
+        "stdout": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_6/test/stdout.log",
+        "stderr": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_6/test/stderr.log"
+      },
+      "generated_sources": [
+        {
+          "path": "benchmark/results/dll_add/20261018-scope-recheck/cn_original_Dbl_Linked_List__add_orig.broken/empty_element_6/generated/input.cn.exec.c",
+          "sha256": "086ea962faf643311ab80043b3388cb326523d622493c4bdbdb97363177c43b5"
+        }
+      ],
+      "binary_sha256": "b8443506a3980aa440f8f0ef0633ee6079e412bb29eeea571a133ef7d9783044",
+      "status": "PASS"
+    }
+  ],
+  "cn_original_dependencies": {
+    "command": [
+      "/home/yangfp/.opam/tespec-cn-5.2/bin/cn",
+      "verify",
+      "-I/home/yangfp/teSpec/arxiv/fulminate-cn/src/examples/Dbl_Linked_List",
+      "/home/yangfp/teSpec/benchmark/programs/dll_add/variants/cn_original_Dbl_Linked_List__add/cn/add.c"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 0.11554564302787185,
+    "resources": {
+      "max_process_rss_kib": 45876,
+      "user_seconds": 0.01,
+      "system_seconds": 0.02
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/dll_add/20261018-scope-recheck/cn-original/stdout.log",
+    "stderr": "benchmark/results/dll_add/20261018-scope-recheck/cn-original/stderr.log"
+  },
+  "cn_compatible_dependencies": {
+    "command": [
+      "/home/yangfp/.opam/tespec-cn-5.2/bin/cn",
+      "verify",
+      "-I/home/yangfp/teSpec/benchmark/programs/Dbl_Linked_List__singleton/compat/cn-5.2/Dbl_Linked_List",
+      "/home/yangfp/teSpec/benchmark/programs/dll_add/variants/cn_original_Dbl_Linked_List__add/cn/add.c"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 1.217709323973395,
+    "resources": {
+      "max_process_rss_kib": 47804,
+      "user_seconds": 0.1,
+      "system_seconds": 0.11
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/dll_add/20261018-scope-recheck/cn-compatible/stdout.log",
+    "stderr": "benchmark/results/dll_add/20261018-scope-recheck/cn-compatible/stderr.log"
+  },
+  "finished_utc": "2026-10-17T19:50:53.971769+00:00"
+}
