@@ -11,10 +11,17 @@ def expected(vid,x):
     if '64bc0d58cbb360cd' in vid or 'd36d895752e7a406' in vid: return 'PASS' if x<=0 else 'FAIL'
     return 'FAIL' if x==-2147483648 else 'PASS'
 def main():
+    import argparse
+    from cn_toolchain import installed_identity
+    global OUT
+    parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,default=OUT);OUT=parser.parse_args().output.resolve()
+    if not OUT.is_relative_to((ROOT/'benchmark/results').resolve()):parser.error('output must stay under benchmark/results')
+    if OUT.exists() and any(OUT.iterdir()):parser.error('Use a fresh --output; historical measurements cannot be relabelled with the current toolchain')
+    cn_build=installed_identity()
     variants={}
     for p in sorted((GROUP/'variants').glob('*/manifest.json')):
         v=json.loads(p.read_text()); variants[v['id']]=(p,v)
-    report={'schema':'tespec-group-finite-evaluation/v1','program_group':'abs','started_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'scope':'Finite target-function tests; original trusted main excluded. No universal verification in these measurements.','toolchain':{'cn_sha256':sha(CN),'executor_sha256':sha(ROOT/'bin/tespec-symexec'),'build':json.loads((ROOT/'bin/tespec-symexec.build.json').read_text()),'driver_sha256':sha(Path(__file__))},'runs':[]}
+    report={'schema':'tespec-group-finite-evaluation/v1','program_group':'abs','started_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'scope':'Finite target-function tests; original trusted main excluded. No universal verification in these measurements.','toolchain':{'cn_build':cn_build,'cn_sha256':sha(CN),'executor_sha256':sha(ROOT/'bin/tespec-symexec'),'build':json.loads((ROOT/'bin/tespec-symexec.build.json').read_text()),'driver_sha256':sha(Path(__file__))},'runs':[]}
     for vid,(vp,v) in variants.items():
         if 'cn' not in v['files']: continue
         qid='qcp_existing:c6e1d6f95af325bd17c0' if vid=='cn_original:abs' else vid

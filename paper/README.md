@@ -70,8 +70,9 @@ separated in the formal section.
 
 All subsequent CN verification and Fulminate tests use the same latest official
 CN build, resolved at the start of each batch and frozen for that batch.
-The upstream head checked on 2026-10-17 is `b4a2f00923`; installation and new
-measurements are pending. Existing read evidence uses the April 2026 build;
+The upstream head checked on 2026-10-17 is `b4a2f00923`; its shared build is now
+installed and passes the CN/Fulminate positive/negative installation checks.
+Full benchmark measurements on that build remain pending. Existing read evidence uses the April 2026 build;
 least-root and divisibility use the October 7 build. The manuscript labels
 these historical versions. See `research-protocol.md` and
 `evidence/cn-fulminate-version-policy-20261017.json` for provenance and rerun rules.

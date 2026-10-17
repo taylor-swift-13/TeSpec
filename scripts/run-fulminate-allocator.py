@@ -37,7 +37,7 @@ def main():
     )
     parser.add_argument("--catalog", choices=("partial", "buggy"), default="partial")
     parser.add_argument("--cases", type=int, nargs="+")
-    parser.add_argument("--switch", default="tespec-cn-20260416")
+    parser.add_argument("--switch", default="tespec-cn-5.2")
     parser.add_argument("--cc", default="/usr/bin/clang-18")
     parser.add_argument("--timeout", type=float, default=180)
     args = parser.parse_args()

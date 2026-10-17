@@ -6,9 +6,7 @@ import collections, datetime, hashlib, json, os, re, signal, subprocess, sys, te
 ROOT = Path(__file__).resolve().parents[2]
 GROUP = ROOT / 'benchmark/programs/read'
 OUT = ROOT / 'benchmark/results/read/20261015-variants'
-SWITCH = Path('/home/yangfp/.opam/tespec-cn-20260416')
-CN = SWITCH / 'bin/cn'
-ENV = dict(os.environ, OPAM_SWITCH_PREFIX=str(SWITCH), PATH=str(SWITCH / 'bin') + ':/usr/local/bin:/usr/bin:/bin')
+from cn_toolchain import SWITCH, CN, ENV, installed_identity
 PAIRS = {
     'cn_original:read': 'qcp_existing:da492a72f5083bc517fc',
     'cn_original:read.broken': 'qcp_existing:5f0745ae2e1e60380a4b',
@@ -47,7 +45,15 @@ def measure(command, folder, timeout=60):
             'stderr': (folder / 'stderr.log').relative_to(ROOT).as_posix()}
 
 def main():
-    if (OUT / 'results.json').exists():
+    import argparse
+    global OUT
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--output', type=Path, default=OUT, help='Fresh results directory under benchmark/results; old measurements are never overwritten.')
+    OUT = parser.parse_args().output.resolve()
+    if not OUT.is_relative_to((ROOT / 'benchmark/results').resolve()):
+        parser.error('output must stay under benchmark/results')
+    cn_build = installed_identity()
+    if OUT.exists() and any(OUT.iterdir()):
         raise SystemExit('Results already exist; do not overwrite a measured run.')
     manifests = {}
     for path in (GROUP / 'variants').glob('*/manifest.json'):
@@ -63,7 +69,7 @@ def main():
     report = {'schema': 'tespec-read-variant-tests/v1', 'started_utc': datetime.datetime.now(datetime.timezone.utc).isoformat(),
               'scope': 'Finite testing only. No CN verify, no QCP universal verification, no model calls. Original main excluded; only read is exercised.',
               'metric': 'Wall clock per case/stage; GNU time %M is peak RSS of the largest measured process, not aggregate simultaneous tree memory.',
-              'toolchain': {'cn_sha256': sha(CN), 'tespec_executor_sha256': sha(ROOT / 'bin/tespec-symexec'), 'driver_sha256': sha(Path(__file__))}, 'runs': []}
+              'toolchain': {'cn_build': cn_build, 'cn_sha256': sha(CN), 'tespec_executor_sha256': sha(ROOT / 'bin/tespec-symexec'), 'driver_sha256': sha(Path(__file__))}, 'runs': []}
     values = [-2147483648, -1, 0, 1, 7, 2147483647]
     for vid, path, v, qvid, qv in configs:
         cn_source = ROOT / v['files']['cn']['path']

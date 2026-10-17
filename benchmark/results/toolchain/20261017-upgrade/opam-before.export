@@ -1,0 +1,166 @@
+opam-version: "2.0"
+compiler: ["ocaml-base-compiler.5.2.0"]
+roots: ["cn.~dev" "ocaml-base-compiler.5.2.0"]
+installed: [
+  "base.v0.17.3"
+  "base-bigarray.base"
+  "base-domains.base"
+  "base-nnp.base"
+  "base-threads.base"
+  "base-unix.base"
+  "cerberus-lib.dev"
+  "cmdliner.2.1.1"
+  "cn.~dev"
+  "conf-findutils.1"
+  "conf-gmp.5"
+  "conf-pkg-config.5"
+  "cppo.1.8.0"
+  "csexp.1.5.2"
+  "dune.3.23.1"
+  "dune-configurator.3.23.1"
+  "lem.2026-05-01"
+  "menhir.20260209"
+  "menhirCST.20260209"
+  "menhirGLR.20260209"
+  "menhirLib.20260209"
+  "menhirSdk.20260209"
+  "monomorphic.2.1.0"
+  "num.1.6"
+  "ocaml.5.2.0"
+  "ocaml-base-compiler.5.2.0"
+  "ocaml-compiler-libs.v0.17.0"
+  "ocaml-config.3"
+  "ocaml-options-vanilla.1"
+  "ocaml_intrinsics_kernel.v0.17.2"
+  "ocamlbuild.0.16.1"
+  "ocamlfind.1.9.8"
+  "ocamlgraph.2.2.0"
+  "parsexp.v0.17.0"
+  "pprint.20230830"
+  "ppx_derivers.1.2.1"
+  "ppx_deriving.6.0.3"
+  "ppx_deriving_yojson.3.9.1"
+  "ppx_sexp_conv.v0.17.0"
+  "ppxlib.0.35.0"
+  "ppxlib_jane.v0.17.0"
+  "result.1.5"
+  "seq.base"
+  "sexplib.v0.17.0"
+  "sexplib0.v0.17.0"
+  "sha.1.15.4"
+  "stdlib-shims.0.3.0"
+  "yojson.2.2.2"
+  "zarith.1.14"
+]
+pinned: ["cerberus-lib.dev" "cn.~dev"]
+package "cerberus-lib" {
+  opam-version: "2.0"
+  version: "dev"
+  synopsis: "Frontend and pipeline of Cerberus as a library"
+  description: "Frontend and pipeline of Cerberus as a library"
+  maintainer: "Kayvan Memarian <kayvan.memarian@cl.cam.ac.uk>"
+  authors: [
+    "Kayvan Memarian"
+    "Victor Gomes"
+    "Justus Matthiesen"
+    "Peter Sewell"
+    "Kyndylan Nienhuis"
+    "Stella Lau"
+    "Jean Pichon-Pharabod"
+    "Christopher Pulte"
+    "Rodolphe Lepigre"
+    "James Lingard"
+  ]
+  license: "BSD-2-Clause"
+  homepage: "https://www.cl.cam.ac.uk/~pes20/cerberus/"
+  bug-reports: "https://github.com/rems-project/cerberus/issues"
+  depends: [
+    "ocaml" {>= "4.12.0"}
+    "dune" {(>= "3.21.0" & < "3.24.0")}
+    "sha" {>= "1.12"}
+    "pprint" {>= "20180528"}
+    "ppx_sexp_conv" {>= "v0.14.3"}
+    "sexplib" {>= "v0.14.0"}
+    "cmdliner" {>= "1.1.0"}
+    "yojson" {>= "2.0.0"}
+    "lem" {>= "2020-06-03"}
+    "menhir" {>= "20211230"}
+    "result" {>= "1.5"}
+    "ppx_deriving"
+    "zarith"
+  ]
+  build: [
+    ["dune" "subst"] {pinned}
+    [make "prelude-src"]
+    [
+      "dune"
+      "build"
+      "-p"
+      name
+      "-j"
+      jobs
+      "@install"
+      "@runtest" {with-test}
+      "@doc" {with-doc}
+    ]
+  ]
+  dev-repo: "git+https://github.com/rems-project/cerberus.git"
+  url {
+    src: "git+https://github.com/rems-project/cerberus.git#c8c085d"
+  }
+}
+package "cn" {
+  opam-version: "2.0"
+  version: "~dev"
+  synopsis: "The CN type system"
+  description: "The CN type system"
+  maintainer: "Christopher Pulte <cp526@cl.cam.ac.uk>"
+  authors: [
+    "Christopher Pulte"
+    "Thomas Sewell"
+    "Dhruv Makwana"
+    "Rini Banerjee"
+    "Zain K Aamer"
+    "Hiroyuki Katsura"
+    "Amy Yin"
+  ]
+  license: "BSD-2-Clause"
+  homepage: "https://rems-project.github.io/cn-tutorial"
+  bug-reports: "https://github.com/rems-project/cn/issues"
+  depends: [
+    "cerberus-lib"
+    "monomorphic"
+    "ocaml" {>= "4.14.0"}
+    "yojson" {< "3.0.0"}
+    "ppx_deriving"
+    "ppx_deriving_yojson" {>= "3.8.0"}
+    "cmdliner"
+    "ocamlgraph"
+    "zarith" {>= "1.13"}
+    "ounit2" {with-test}
+    "qcheck" {with-test}
+    "qcheck-ounit" {with-test}
+  ]
+  build: [
+    ["dune" "subst"] {pinned}
+    [
+      "dune"
+      "build"
+      "-p"
+      name
+      "--profile=release"
+      "-j"
+      jobs
+      "@install"
+      "@runtest" {with-test}
+      "@doc" {with-doc}
+    ]
+  ]
+  pin-depends: [
+    "cerberus-lib.dev"
+    "git+https://github.com/rems-project/cerberus.git#c8c085d"
+  ]
+  url {
+    src: "git+file:///home/yangfp/tespec-baselines/cn#main"
+  }
+}

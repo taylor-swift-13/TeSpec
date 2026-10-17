@@ -394,3 +394,14 @@ all-boundaries 在声明为外部函数的 malloc/free/rand 处停下、入口 S
 当输入序列化器不能直接表达按值结构体时，允许组内测试fixture在所选原函数的 Require 中增加各已用字段的具体整数等式；原函数体、后置规约和其他函数字节必须保持不变。qcp_input_fixture 保存原始源码与派生文件SHA256、Require字节位置、唯一插入前缀、参数/结构体类型、全部字段值。runner独立重建整个派生文件，检查前缀仅为这些字段等式且落在正确函数的原规约内。args里的symbolic标记只是序列化兼容方式，不能据此声称输入未绑定；也不能把未绑定的结构体称作具体测试。具体值来自已审计的字段约束或原With快照，仍须如实检查入口SAT、执行完成和全部原始目标。
 
 额外配置/诊断调用全部保存并计入成本，但不得计作额外独立输入。错误的诊断设置明确标记，不作为工具缺陷证据；修正后的调用另外计量。相同临时include定位在不同尝试中的头文件内容发生变化时，各次保存独立、按hash冻结的include上下文和替代定位的复现命令，原实际测量命令不改写。缺少生成的结构体谓词定义等原始Coq上下文时，先计量原目标编译诊断，不使用带Admitted的自动证明占位，不把历史单个手工目标或native自动状态当作当前全部原始VC的内核证书。
+
+## Current CN/Fulminate build policy (2026-10-17)
+
+Subsequent measurements use a shared CN/Fulminate build from the latest official
+default-branch commit at batch start, frozen within the batch. The installed
+2026-10-17 build is `b4a2f009234d9c80380dbf95a9b2325e36a4705d` in
+`tespec-cn-5.2`. See [the toolchain record](experiment-toolchain.md) for the active
+lock, installation checks, generator limitations and fresh-batch commands.
+Old-source equality alone never authorizes reuse across tool versions. Keep
+historical results under their original version; retain new measurements under
+`benchmark/results`, with CN/runtime/compiler identities and stage diagnostics.

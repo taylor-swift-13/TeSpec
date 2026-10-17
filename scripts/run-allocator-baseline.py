@@ -70,7 +70,7 @@ def main():
         "--revision", default="4a2f776eaac34488531253c04a6eb42bbc08ed9f"
     )
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--switch", default="tespec-cn-20260416")
+    parser.add_argument("--switch", default="tespec-cn-5.2")
     parser.add_argument("--cases", type=int, nargs="+")
     parser.add_argument(
         "--engines", choices=("bennet", "darcy"), nargs="+", default=["bennet", "darcy"]

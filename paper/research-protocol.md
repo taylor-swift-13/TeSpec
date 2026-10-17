@@ -163,8 +163,11 @@ April or October build is not automatically the latest build for a future run.
   `b4a2f009234d9c80380dbf95a9b2325e36a4705d`, committed 2026-10-13 UTC,
   on `rems-project/cn` `main`. The live `git ls-remote --symref` query and
   official commit API agreed. Its `cn.opam` pins Cerberus `c8c085d`, expanded to
-  `c8c085d4714ae17095b2e1202fa33c5545d98df1`. This is a verified source selection;
-  it has not been installed, smoke-tested, or used for new measurements here.
+  `c8c085d4714ae17095b2e1202fa33c5545d98df1`. This build is now installed in `tespec-cn-5.2`; the CN/Fulminate
+  positive/negative installation checks pass. The full benchmark is not rerun.
+  Installation evidence and generator support failures are recorded in
+  `benchmark/results/toolchain/20261017-upgrade/`; the active lock is
+  `tools/benchmark/cn-toolchain.json`.
   The machine-readable record is
   [the version-policy receipt](evidence/cn-fulminate-version-policy-20261017.json).
 - **Build acceptance before measurements:** archive the full CN and dependency
@@ -312,7 +315,7 @@ controller theorem does not prove the QCP executor implementation.
 
 | Deliverable | Completion evidence | Current state |
 |---|---|---|
-| CN environment | Latest upstream revision, shared CN/Fulminate build, full provenance and valid/invalid smoke tests | Upstream b4a2f00923 identified on 2026-10-17; build, smoke tests and new measurements pending; older build checks are historical |
+| CN environment | Latest upstream revision, shared CN/Fulminate build, full provenance and valid/invalid smoke tests | Upstream b4a2f00923 installed on 2026-10-17; core CN/Fulminate positive/negative checks pass; generator integer-support failures recorded; full new measurements pending |
 | Fulminate baseline | Original and paired experiments with raw data | Pending |
 | QCP/CN comparison | Reviewed feature matrix, same-task executions | Five paired heap cases exercised; unmodified QCP baseline and loop annotation refinement recorded; full coverage and matched timing pending |
 | TeSpec proof workflow | Actual residual proofs, external replay, assumption audit, usage reports | Complete four-VC cell, three-VC imported-relation and 44-VC intermediate-boundary groups replayed; paired negative return VC refuted with other obligations proved. Reachable-counterexample certificates, controlled proof trials and usage instrumentation pending |

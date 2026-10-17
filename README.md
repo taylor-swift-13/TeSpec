@@ -303,3 +303,11 @@ Assert、Inv、Require、Ensure 只在副本上生成检查义务，不替换 P�
 
 分类端到端测试见 [测试说明](benchmark/executor_e2e/README.md)：18 类、1,322 次运行，
 含原生 C/Python oracle、错误后条件和程序变异；[结果](paper/executor-e2e-results.json)。
+
+## Experimental baseline environment
+
+CN verification and Fulminate now share the latest upstream build checked on
+2026-10-17 (`b4a2f00923`, opam switch `tespec-cn-5.2`). The benchmark drivers lock
+the actual binary/runtime identities and reject incompatible old caches. See
+[the installed toolchain and checks](docs/experiment-toolchain.md) before starting
+a new batch; historical results retain their original build identities.

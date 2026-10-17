@@ -4,10 +4,12 @@ import argparse,collections,datetime,json,re,shutil,sys,tempfile
 from pathlib import Path
 from test_read_variants import ROOT,CN,measure,sha,save
 from evaluation_provenance import snapshot
+from cn_toolchain import installed_identity
+from cn_result_reuse import assert_resume_compatible, assert_fulminate_reuse_compatible, input_files_identity
 from evaluation_expectations import matches as matches_expected
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--group',required=True);a=parser.parse_args()
+    parser=argparse.ArgumentParser();parser.add_argument('--group',required=True);parser.add_argument('--run-id',help='Fresh result batch identifier; defaults to the reviewed plan run_id');a=parser.parse_args()
     group=ROOT/'benchmark/programs'/a.group;planpath=group/'evaluation-plan.json';plan=json.loads(planpath.read_text());assert plan['program_group']==a.group
     keys=[(pair['cn_variant'],case['id']) for pair in plan['pairings'] for case in pair['cases']]
     assert len(keys)==len(set(keys)), 'Each (CN variant, case id) must identify one target/pairing; use distinct case IDs for different clients'
@@ -16,15 +18,27 @@ def main():
         for case in pair['cases']:
             assert isinstance(case['binds'].get('args',{}),dict) and isinstance(case['binds'].get('values'),dict), 'Every case needs valid args and an explicit values object'
             assert case['expected'] in ['PASS','FAIL','ERROR'] and case['precondition_valid']
-    out=ROOT/'benchmark/results'/a.group/plan['run_id'];variants={}
+    run_id=a.run_id or plan['run_id']
+    assert re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]*',run_id),'run_id must be a single directory name'
+    out=ROOT/'benchmark/results'/a.group/run_id;variants={}
+    current_toolchain={'input_files_sha256':input_files_identity(ROOT,group),'cn_build':installed_identity(),'cn_sha256':sha(CN),'executor_sha256':sha(ROOT/'bin/tespec-symexec'),'build':json.loads((ROOT/'bin/tespec-symexec.build.json').read_text()),'driver_sha256':sha(Path(__file__)),'compiler_wrapper_sha256':sha(ROOT/'tools/benchmark/gcc-no-builtins.sh'),'evaluation_source_snapshot':snapshot()}
+    guard=out/'toolchain.json'
+    old_report=out/'results.json'
+    if guard.exists():assert_resume_compatible({'toolchain':json.loads(guard.read_text())},current_toolchain)
+    elif old_report.exists():assert_resume_compatible(json.loads(old_report.read_text()),current_toolchain)
+    elif out.exists() and any(out.iterdir()):raise RuntimeError('Unidentified partial run; choose a new --run-id without overwriting it')
+    reuse_path=ROOT/plan['reuse_fulminate_from'] if plan.get('reuse_fulminate_from') else None
+    reuse_report=json.loads(reuse_path.read_text()) if reuse_path else None
+    if reuse_report:assert_fulminate_reuse_compatible(reuse_report,current_toolchain)
     snapshot_path=out/'evaluation-plan.executed.json'
     if snapshot_path.exists():assert sha(snapshot_path)==sha(planpath),'Do not overwrite a measured run with a changed plan'
     else:save(snapshot_path,plan)
+    if not guard.exists():save(guard,current_toolchain)
     for p in (group/'variants').glob('*/manifest.json'):
         v=json.loads(p.read_text());variants[v['id']]=(p,v)
-    report={'schema':'tespec-group-finite-evaluation/v1','program_group':a.group,'started_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'evaluation_plan':str(planpath.relative_to(ROOT)),'plan_sha256':sha(planpath),'evaluation_plan_snapshot':str(snapshot_path.relative_to(ROOT)),'toolchain':{'cn_sha256':sha(CN),'executor_sha256':sha(ROOT/'bin/tespec-symexec'),'build':json.loads((ROOT/'bin/tespec-symexec.build.json').read_text()),'driver_sha256':sha(Path(__file__)),'compiler_wrapper_sha256':sha(ROOT/'tools/benchmark/gcc-no-builtins.sh'),'evaluation_source_snapshot':snapshot()},'runs':[]}
+    report={'schema':'tespec-group-finite-evaluation/v1','program_group':a.group,'started_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'evaluation_plan':str(planpath.relative_to(ROOT)),'plan_sha256':sha(planpath),'evaluation_plan_snapshot':str(snapshot_path.relative_to(ROOT)),'toolchain':current_toolchain,'runs':[]}
     reuse_path=ROOT/plan['reuse_fulminate_from'] if plan.get('reuse_fulminate_from') else None
-    reuse_rows={(r['variant'],r['case']):r for r in json.loads(reuse_path.read_text())['runs']} if reuse_path else {}
+    reuse_rows={(r['variant'],r['case']):r for r in reuse_report['runs']} if reuse_report else {}
     for pair in plan['pairings']:
         vid,qid=pair['cn_variant'],pair['qcp_variant'];vp,v=variants[vid];qv=variants[qid][1];cn=ROOT/v['files']['cn']['path'];qcp=ROOT/qv['files']['qcp']['path']
         assert sha(cn)==v['files']['cn']['sha256'] and sha(qcp)==qv['files']['qcp']['sha256']
@@ -33,8 +47,9 @@ def main():
             assert case['precondition_valid']
             cid=case['id'];folder=out/vp.parent.name/cid;cached=folder/'receipt.json'
             if cached.exists():
-                row=json.loads(cached.read_text());assert row['plan_case']==case;report['runs'].append(row);continue
-            inp=vp.parent/'tests'/plan['run_id']/cid;inp.mkdir(parents=True,exist_ok=True)
+                row=json.loads(cached.read_text());assert row['plan_case']==case;assert row['cn_source_sha256']==sha(cn) and row['qcp_source_sha256']==sha(qcp),'Cached inputs changed; choose a new --run-id';report['runs'].append(row);continue
+            if folder.exists() and any(folder.iterdir()):raise RuntimeError('Partial execution directory has no receipt; choose a fresh --run-id to preserve failed artifacts: '+str(folder))
+            inp=vp.parent/'tests'/run_id/cid;inp.mkdir(parents=True,exist_ok=True)
             harness=inp/'fulminate.cn.c';harness.write_text(source+'\nint main(void) /*@ ensures return == 0i32; @*/ { '+case['cn_body']+' return 0; }\n')
             binds=inp/'binds.json';save(binds,[dict(case['binds'],id=cid if re.fullmatch(r'[A-Za-z_]\w*',cid) else 'case_'+re.sub(r'\W','_',cid))])
             row={'variant':vid,'paired_qcp_variant':qid,'case':cid,'initial':case.get('value'),'expected':case['expected'],'plan_case':case,'cn_source_sha256':sha(cn),'qcp_source_sha256':sha(qcp),'harness':str(harness.relative_to(ROOT)),'harness_sha256':sha(harness),'binds':str(binds.relative_to(ROOT)),'binds_sha256':sha(binds),'precondition_valid':True}
