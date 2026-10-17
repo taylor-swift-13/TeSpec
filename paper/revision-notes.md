@@ -61,3 +61,17 @@ checked. All 11 pages and the three standalone figures were reviewed.
 The two theorems, two propositions, formalization map, and historical Rocq
 receipts retain their existing scope. This revision runs no new experiment or
 theory replay and changes no implementation, solver, benchmark, or raw result.
+
+## 2026-10-17: CN/Fulminate version policy
+
+- Resolve the official default-branch head at each new batch start and freeze a
+  shared CN verification/Fulminate instrumentation build for the whole batch.
+- Live upstream observation: `b4a2f009234d9c80380dbf95a9b2325e36a4705d`;
+  record its Cerberus dependency and distinguish source selection from installation.
+- Label April read and October 7 quantified-case builds explicitly in the paper.
+  Preserve old measurements and require matching case/control reruns for new claims.
+- Update Evaluation, case provenance, the research protocol and its source receipt.
+- Build and existing evidence audits passed: 99 pinned case files and 221 paired
+  archive files. No new experiments, tool builds or implementation edits.
+- Final PDF remains 11 pages; zero overfull boxes, unresolved references or
+  bibliography warnings; changed pages 6 and 8 visually inspected.

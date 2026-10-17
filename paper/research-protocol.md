@@ -1,6 +1,7 @@
 # Proof-backed specification instance testing: study protocol
 
-Status: ICSE comparison design revised on 2026-10-16. The current task is
+Status: ICSE comparison design revised on 2026-10-16; mandatory CN/Fulminate
+version policy updated on 2026-10-17. The current task is
 paper development; new comparative runs are not claimed here. Existing probes
 and proof replays remain historical evidence. The design below selects the
 comparisons needed to test the method's contribution.
@@ -39,8 +40,9 @@ baseline adds evidence beyond the QCP family.
 
 ### Fulminate: separate runtime configurations and failure classes
 
-Use the recorded Fulminate setup and a separately labelled configuration with
-undefined-behavior sanitization for safety-sensitive cases. Capture the actual
+Use the same latest-version build selected for CN verification, plus a
+separately labelled configuration with undefined-behavior sanitization for
+safety-sensitive cases. Retain recorded older builds only as historical evidence. Capture the actual
 compiler invocation, optimization level, integer widths, sanitizer flags and
 runtime diagnostics. Do not infer sanitizer coverage from the outer CN command.
 The current read INT_MIN case establishes a missed signed-negation violation in
@@ -149,20 +151,47 @@ central empirical claim; it is not needed merely to increase baseline count.
 
 ## Baselines and version policy
 
-- **Fulminate POPL 2025:** paper and archived artifact define the original method.
-- **CN/Fulminate/Darcy PLDI 2026:** use the released artifact at
-  https://zenodo.org/records/19577402 to reproduce its original experiments.
-- **Current CN:** pin `181d04773807012bcb937aa28d7e67de4cd5c488`
-  (2026-10-07), including its pinned Cerberus dependency. Run `cn verify`,
-  `cn instrument`, and applicable `cn test` engines separately. This prevents
-  attributing an old implementation limitation to the current baseline.
+**Mandatory for all subsequent experiments:** at the start of each experimental
+batch, resolve the latest commit of the official CN default branch. Build CN
+verification (`cn verify`) and Fulminate instrumentation (`cn instrument`) from
+the same source revision and dependency environment. Freeze that build throughout
+the batch. Resolve upstream again for a later batch; if the revision changes,
+rerun the affected comparisons and controls before combining results. A saved
+April or October build is not automatically the latest build for a future run.
+
+- **Latest upstream observed on 2026-10-17:**
+  `b4a2f009234d9c80380dbf95a9b2325e36a4705d`, committed 2026-10-13 UTC,
+  on `rems-project/cn` `main`. The live `git ls-remote --symref` query and
+  official commit API agreed. Its `cn.opam` pins Cerberus `c8c085d`, expanded to
+  `c8c085d4714ae17095b2e1202fa33c5545d98df1`. This is a verified source selection;
+  it has not been installed, smoke-tested, or used for new measurements here.
+  The machine-readable record is
+  [the version-policy receipt](evidence/cn-fulminate-version-policy-20261017.json).
+- **Build acceptance before measurements:** archive the full CN and dependency
+  commits, exported opam lock, clean-source status or complete explained build
+  diff, version output, executable SHA-256, build log, solver/compiler versions,
+  target layout, optimization/sanitizer flags, enabled ownership/leak checks,
+  exact commands, and valid/invalid smoke-test receipts. An unexplained `dirty`
+  suffix is insufficient provenance. A build or support failure is recorded;
+  do not silently substitute an old baseline.
+- **Historical results:** the read suite uses `39efc873fd3b1cd4cab1aecb401e88f61bc80b41`
+  (2026-04-16), binary `1911ca79378e335eb7d14b47856b3397c3cbe247761d13c4d1f084980767ac2b`.
+  Least-root and divisibility use `181d04773807012bcb937aa28d7e67de4cd5c488`
+  (2026-10-07), binary `5be860152aa68727c2749bef403fe65f19d50fdbd29a07472e37ea7819c2c5f3`.
+  Both recorded version strings carry `dirty`; raw receipts remain unchanged.
+  Rerun the complete claimed case sets, including correct and equivalent-form
+  controls, before reporting them as latest-version findings. In particular,
+  read INT_MIN has not yet been confirmed on the new baseline.
+- **Published Fulminate and PLDI artifacts:** retain them for historical
+  reproduction only, separately labelled by release and configuration. They
+  do not replace the latest upstream CN/Fulminate baseline in new experiments.
 - **QCP full verification:** record the upstream revision, SMT submodule,
   executable hash, strategy library, Coq version and options. Pin native QCP
   separately from the TeSpec executor. Reuse matching primary-verification
   evidence and measure any missing stages under the current cost protocol.
 - **COINS and Gillian-C:** pin repository revision, dependencies, adapter sources
-  and commands before new measurements. Baseline selection is complete; this
-  document does not claim either new comparison has been executed.
+  and commands before new measurements. The literature review informs the
+  final common-feature selection; neither new comparison has been executed.
 - **TeSpec:** record controller revision plus dirty diff, executable SHA-256,
   binary build manifest, runtime hashes, mode and all budgets.
 
@@ -283,7 +312,7 @@ controller theorem does not prove the QCP executor implementation.
 
 | Deliverable | Completion evidence | Current state |
 |---|---|---|
-| CN environment | Pinned build, version output, passing valid and rejecting invalid smoke tests | Current CN verify/Fulminate and April snapshot Bennet/Darcy smoke complete; exact archived environment pending |
+| CN environment | Latest upstream revision, shared CN/Fulminate build, full provenance and valid/invalid smoke tests | Upstream b4a2f00923 identified on 2026-10-17; build, smoke tests and new measurements pending; older build checks are historical |
 | Fulminate baseline | Original and paired experiments with raw data | Pending |
 | QCP/CN comparison | Reviewed feature matrix, same-task executions | Five paired heap cases exercised; unmodified QCP baseline and loop annotation refinement recorded; full coverage and matched timing pending |
 | TeSpec proof workflow | Actual residual proofs, external replay, assumption audit, usage reports | Complete four-VC cell, three-VC imported-relation and 44-VC intermediate-boundary groups replayed; paired negative return VC refuted with other obligations proved. Reachable-counterexample certificates, controlled proof trials and usage instrumentation pending |

@@ -4,6 +4,25 @@ This revision reads existing evidence and changes only the paper. No new benchma
 compiler, solver, or proof-agent run is reported. `case-study-audit.json` pins 99
 files; the build verifies those hashes and the declared controls.
 
+## Version provenance and subsequent measurements
+
+The read suite used `git-39efc873f-dirty` (2026-04-16), with CN binary SHA-256
+`1911ca79378e335eb7d14b47856b3397c3cbe247761d13c4d1f084980767ac2b`.
+Its raw results match the archived toolchain version in
+`arxiv/benchmark-support/selection/paired-mutations/toolchain.json`.
+Least-root and divisibility used `git-181d04773-dirty` (2026-10-07), with binary
+`5be860152aa68727c2749bef403fe65f19d50fdbd29a07472e37ea7819c2c5f3`;
+the archived CN reports identify the matching version-log hash.
+
+Subsequent CN and Fulminate experiments must use the same latest upstream build,
+resolved and frozen at the start of each batch as specified in
+`paper/research-protocol.md`. The 2026-10-17 upstream observation is
+`b4a2f009234d9c80380dbf95a9b2325e36a4705d`. No case in this inventory was rerun
+on that revision in this paper edit. Preserve these historical records and
+rerun all claimed cases and controls before attributing their outcomes to the
+new build. The version-policy receipt records selection separately from
+installation, smoke testing, and experimental execution.
+
 ## Read negation: recorded missed violation
 
 - Variant: `constructed:case_0b5de543ec816188`.

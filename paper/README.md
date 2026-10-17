@@ -66,6 +66,16 @@ receipts remain under `evidence/theory-review-20261012/` (11 modules, 88 princip
 statements). The reference guarantees and implementation obligations are
 separated in the formal section.
 
+## CN/Fulminate version policy
+
+All subsequent CN verification and Fulminate tests use the same latest official
+CN build, resolved at the start of each batch and frozen for that batch.
+The upstream head checked on 2026-10-17 is `b4a2f00923`; installation and new
+measurements are pending. Existing read evidence uses the April 2026 build;
+least-root and divisibility use the October 7 build. The manuscript labels
+these historical versions. See `research-protocol.md` and
+`evidence/cn-fulminate-version-policy-20261017.json` for provenance and rerun rules.
+
 ## Evidence and study protocol
 
 - `evidence/case-study-audit.json`: hashes of 99 existing evidence files, six

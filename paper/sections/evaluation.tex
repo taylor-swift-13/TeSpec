@@ -6,6 +6,17 @@ variants, input cases, expected outcomes, and resource accounting before
 aggregating results. Case studies in Section~\ref{sec:case-studies} are the
 current evidence; the following comparisons are the study design.
 
+\paragraph{Baseline versions and reproducibility.}
+For each new experimental batch, CN verification and Fulminate instrumentation
+will use the same build of the latest commit on the official CN default branch,
+frozen with its dependencies for the entire batch. On 2026-10-17, the upstream
+head was \href{https://github.com/rems-project/cn/commit/b4a2f009234d9c80380dbf95a9b2325e36a4705d}{\texttt{b4a2f00923}};
+this identifies the next baseline, not a completed measurement.
+We will archive full revision and dependency identifiers, executable hashes,
+build settings, compiler and runtime-check flags, and exact commands.
+Historical measurements retain their original versions; each claimed case and
+its controls will be rerun before contributing to the new comparison.
+
 \paragraph{Program groups and comparison units.}
 Each group has a primary program and several implementation or specification
 variants, with multiple inputs per variant. Existing source variants are
@@ -18,8 +29,9 @@ will report both group-level coverage and per-input outcomes.
 
 \paragraph{Comparators and research questions.}
 Fulminate~\cite{banerjee2025fulminate} is the direct runtime-checking baseline on matched CN contracts and
-inputs. The evaluation will distinguish its recorded configuration from a
-sanitizer-augmented configuration for arithmetic and memory-safety cases.
+inputs. On the shared latest-version build, we will compare the standard
+runtime-check configuration with a sanitizer-augmented configuration for
+arithmetic and memory-safety cases.
 Original quantified contracts and proved executable reformulations are
 reported separately. COINS~\cite{yang2026coins} is compared on the shared pure input/output relation under the same
 model and proof budget. A proved admission is positive evidence;
