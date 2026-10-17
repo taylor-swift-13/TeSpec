@@ -229,3 +229,9 @@ array_load 已完成全部 13 个语言版本记录、17 个入口配对、67 �
 ## 2026-10-18：第 23 个续做检查 Dbl_Linked_List__singleton
 
 7 个合法输入实际重跑 teSpec OFF/ON 各 7 次，入口 SAT，但在无函数体 malloc_node 调用处 UNKNOWN；无残余 VC，空间查询 0，不能由 ITP 补完尚未完成的测试执行。CN 主程序和 7 次 Fulminate 插桩均在旧 IntList 递归依赖处前端失败。QCP 四个原始全称 VC 的源、Goal、Candidate、原定义上下文及最终编译/内核日志哈希匹配，保持原分配器契约条件下的验证范围。未改源码、预期或工具实现，仍 21/45 完整。新成本、逐输入异常及修复边界见 [本组复查](../benchmark/results/Dbl_Linked_List__singleton/20261018-current-recheck/summary.md)。
+
+## 2026-10-18：第 23 组 singleton 的 CN/Fulminate 已修复
+
+原 singleton 程序和后置条件不变，依赖适配至锁定 CN 5.2；IntList_nil、IntList_cons、singleton 整模块均 pass，无 trusted/skip/only。外部分配器契约仍是验证前提。Fulminate 接入已有运行库分配/释放接口后，原有 7 个合法输入全部 PASS；另一个写错节点值的诊断副本由后置条件正确拒绝，不增加正式样本数。原失败、修复失败、先导运行、负控及正式两阶段时间/RSS均已保留并单列；原生 token 为0，无新增证明 agent 调用。
+
+teSpec 按用户要求暂缓，本轮未运行；历史两模式各7 UNKNOWN是缺 malloc_node 执行体，执行未完成且无残余VC，不能作为7个可直接填写的ITP任务。QCP旧4目标证书和成本原样复用。整组仍未完成，完整计数 **21/45**。见 [修复说明与复现](benchmark-singleton-cn-fulminate-repair-20261018.md) 和 [本组结果成本表](../benchmark/results/Dbl_Linked_List__singleton/result-cost.md)。

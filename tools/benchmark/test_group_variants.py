@@ -8,6 +8,18 @@ from cn_toolchain import installed_identity
 from cn_result_reuse import assert_resume_compatible, assert_fulminate_reuse_compatible, input_files_identity
 from evaluation_expectations import matches as matches_expected
 
+def compiler_wrapper(plan):
+    """Resolve an optional, hash-pinned execution-support compiler wrapper."""
+    config=plan.get('fulminate_compiler_wrapper')
+    if config is None:
+        return ROOT/'tools/benchmark/gcc-no-builtins.sh'
+    path=(ROOT/config['path']).resolve()
+    if not path.is_relative_to(ROOT.resolve()) or not path.is_file():
+        raise ValueError('Fulminate compiler wrapper must be a repository file')
+    if sha(path)!=config['sha256']:
+        raise ValueError('Fulminate compiler wrapper hash mismatch')
+    return path
+
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--group',required=True);parser.add_argument('--run-id',help='Fresh result batch identifier; defaults to the reviewed plan run_id');a=parser.parse_args()
     group=ROOT/'benchmark/programs'/a.group;planpath=group/'evaluation-plan.json';plan=json.loads(planpath.read_text());assert plan['program_group']==a.group
@@ -21,7 +33,8 @@ def main():
     run_id=a.run_id or plan['run_id']
     assert re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]*',run_id),'run_id must be a single directory name'
     out=ROOT/'benchmark/results'/a.group/run_id;variants={}
-    current_toolchain={'input_files_sha256':input_files_identity(ROOT,group),'cn_build':installed_identity(),'cn_sha256':sha(CN),'executor_sha256':sha(ROOT/'bin/tespec-symexec'),'build':json.loads((ROOT/'bin/tespec-symexec.build.json').read_text()),'driver_sha256':sha(Path(__file__)),'compiler_wrapper_sha256':sha(ROOT/'tools/benchmark/gcc-no-builtins.sh'),'evaluation_source_snapshot':snapshot()}
+    wrapper=compiler_wrapper(plan)
+    current_toolchain={'input_files_sha256':input_files_identity(ROOT,group),'cn_build':installed_identity(),'cn_sha256':sha(CN),'executor_sha256':sha(ROOT/'bin/tespec-symexec'),'build':json.loads((ROOT/'bin/tespec-symexec.build.json').read_text()),'driver_sha256':sha(Path(__file__)),'compiler_wrapper_sha256':sha(wrapper),'evaluation_source_snapshot':snapshot()}
     guard=out/'toolchain.json'
     old_report=out/'results.json'
     if guard.exists():assert_resume_compatible({'toolchain':json.loads(guard.read_text())},current_toolchain)
@@ -60,7 +73,7 @@ def main():
                 row['fulminate_reuse']={'report':str(reuse_path.relative_to(ROOT)),'variant':vid,'case':cid,'scope':'Exact CN source and harness byte hashes match; retain actual original measurements once.'}
             else:
                 with tempfile.TemporaryDirectory(prefix='tespec-group-') as tmp:
-                    row['fulminate_pipeline']=measure([CN,'instrument','--run','--cc='+str(ROOT/'tools/benchmark/gcc-no-builtins.sh'),'--output-dir='+tmp,*['-I'+str(ROOT/inc) for inc in v['files']['cn'].get('include_dirs',[])],harness],folder/'fulminate-pipeline')
+                    row['fulminate_pipeline']=measure([CN,'instrument','--run','--cc='+str(wrapper),'--output-dir='+tmp,*['-I'+str(ROOT/inc) for inc in v['files']['cn'].get('include_dirs',[])],harness],folder/'fulminate-pipeline')
                     generated=list(Path(tmp).glob('*.exec.c'))
                     for g in generated:shutil.copyfile(g,folder/g.name)
                     row['instrumented_sources']=[{'path':str((folder/g.name).relative_to(ROOT)),'sha256':sha(g)} for g in generated]
@@ -90,7 +103,7 @@ def main():
             for mode in ['off','on']:
                 dest=folder/('tespec-'+mode);command=[sys.executable,'-m','spectest','run',qcp_input,'--function',pair.get('function',plan['function']),'--binds',binds,'--execution-mode','all-boundaries','--output-dir',dest/'artifacts','--timeout','30','--compact','--spatial-smt' if mode=='on' else '--no-spatial-smt','--spatial-smt-timeout-ms','2000','-I',str(ROOT/'runtime/qcip/QCP_examples/QCP_demos_human'),*[flag for inc in qv['files']['qcp'].get('include_dirs',[]) for flag in ['-I',str(ROOT/inc)]]]
                 if re.search(r'include\s+strategies\s+"/home/yangfp/teSpec/benchmark/selection/',qcp.read_text()):
-                    wrapper=ROOT/'tools/benchmark/with_legacy_strategy_locator.py';row['qcp_execution_wrapper']={'path':str(wrapper.relative_to(ROOT)),'sha256':sha(wrapper),'policy':'Temporary byte-identical strategy locator compatibility, source unchanged.'};command=[sys.executable,wrapper,'--source',qcp,'--',*command]
+                    locator=ROOT/'tools/benchmark/with_legacy_strategy_locator.py';row['qcp_execution_wrapper']={'path':str(locator.relative_to(ROOT)),'sha256':sha(locator),'policy':'Temporary byte-identical strategy locator compatibility, source unchanged.'};command=[sys.executable,locator,'--source',qcp,'--',*command]
                 m=measure(command,dest,timeout=90)
                 p=dest/'artifacts/report.json';m['report']=str(p.relative_to(ROOT)) if p.exists() else None;data=json.loads(p.read_text()) if p.exists() else {};m['statuses']=[x.get('status') for x in data.get('results',[])];m['status']=m['statuses'][0] if len(m['statuses'])==1 else 'ERROR';row['tespec_'+mode]=m
             row['runtime_dependency_fixtures']=[{'path':str(p.relative_to(ROOT)),'sha256':sha(p)} for p in sorted((qcp.parent.parent/'dependencies').glob('*')) if p.is_file()]

@@ -1,11 +1,11 @@
 {
   "program_group": "Dbl_Linked_List__singleton",
-  "status": "INCOMPLETE_TRUST_SCOPE_AND_PENDING_CERTIFICATES",
+  "status": "INCOMPLETE_TESPEC_ALLOCATOR_DEFERRED_BY_USER",
   "case_pairs": 7,
-  "fulminate_matches": 0,
+  "fulminate_matches": 7,
   "tespec_off_matches": 0,
   "tespec_on_matches": 0,
-  "cn_trust_qualification": "Original singleton core untrusted; original malloc_node/free_node external contracts assumed. Complete original header context retained. Acceptance does not establish allocator implementation.",
+  "cn_trust_qualification": "Original singleton C body and postcondition unchanged. CN 5.2 compatibility dependencies; IntList_nil, IntList_cons and singleton all checked without trusted/skip/only. Original external allocator/free contracts remain assumptions; allocator-runtime.c is execution support, not formally verified.",
   "original_primary_native": "benchmark/results/Dbl_Linked_List__singleton/20261016-primary-native/receipt.json",
   "qcp_original_targets": [
     "proof_of_singleton_safety_wit_1",
@@ -127,10 +127,9 @@
       "itp_conclusion": "NOT_PERFORMED_NO_COMPLETE_EXECUTION_OR_ORIGINAL_RESIDUAL_TARGET"
     }
   ],
-  "single_entry_exception": "Each original no-argument main has exactly one distinct entry per existing translation; repeated runs are not invented additional inputs.",
-  "next_action": "Original QCP all4 targets done; CN/Fulminate fail original dependency IntList parser, teSpec both modes cannot execute malloc_node. Supply faithful frontend/runtime support and rerun, preserving existing source and expected positive oracle. No execution residual VC exists to fix with ITP.",
+  "next_action": "teSpec allocator execution deferred by user. CN/Fulminate repaired with pinned CN 5.2 compatibility dependencies and execution wrappers. Resume teSpec only when allocator execution is supported; existing failures have no residual VC to fill.",
   "source_coverage_qualification": "singleton allocates one non-null node and assigns data=element and both links null, for every signed int. Existing allocator contract is assumed by both universal verifiers; concrete Fulminate tests need a measured explicit malloc/free implementation.",
-  "concrete_scope_qualification": "Every translated core body tested; original CN-only client, trusted helpers and absent allocator/free implementation coverage remains explicitly pending.",
+  "concrete_scope_qualification": "All 7 original singleton inputs now execute through real Fulminate allocation/free runtime. teSpec execution remains blocked; external allocator contracts are still assumed by universal verification.",
   "qcp_universal_verification": {
     "status": "VERIFIED_KERNEL_CHECKED",
     "receipt": "benchmark/results/Dbl_Linked_List__singleton/20261016-qcp-verify-complete/receipt.json",
@@ -149,5 +148,28 @@
     "tokens": 591827,
     "diagnostic_attempts_counted": 2
   },
-  "latest_native_recheck": "benchmark/results/Dbl_Linked_List__singleton/20261018-current-recheck/summary.json"
+  "latest_native_recheck": "benchmark/results/Dbl_Linked_List__singleton/20261018-current-recheck/summary.json",
+  "cn_verification": {
+    "status": "VERIFIED_WITH_COMPAT_HEADERS",
+    "evidence": "benchmark/results/Dbl_Linked_List__singleton/20261018-cn-fulminate-repair/attempt-2-cn-receipt.json",
+    "compatibility_manifest": "benchmark/programs/Dbl_Linked_List__singleton/compat/cn-5.2/manifest.json"
+  },
+  "tespec_current_run": {
+    "status": "SKIPPED_BY_USER",
+    "new_execution_count": 0,
+    "reason": "teSpec allocator implementation deferred by user; do not introduce an allocator in this change.",
+    "historical_native_counts": {
+      "off": {
+        "UNKNOWN": 7
+      },
+      "on": {
+        "UNKNOWN": 7
+      }
+    },
+    "latest_execution_evidence": "benchmark/results/Dbl_Linked_List__singleton/20261018-current-recheck/results.json",
+    "completed_executions": 0,
+    "residual_vc_tasks_available": 0,
+    "itp_qualification": "Historical statistics label UNKNOWN executions as requiring ITP. These executions stopped at missing_function_body with no residual VC; they are execution-blocked, not proof-filling tasks. Missing capability is not a successful test or NOT_REQUIRED completion."
+  },
+  "latest_tool_repair": "benchmark/results/Dbl_Linked_List__singleton/20261018-cn-fulminate-repair/publication.json"
 }

@@ -2,7 +2,7 @@
   "schema": "tespec-grouped-benchmark/v1",
   "program_group": "Dbl_Linked_List__singleton",
   "primary_variant": "cn_original:Dbl_Linked_List__singleton",
-  "primary_selection_status": "QCP_ALL_ORIGINAL_TARGETS_KERNEL_CHECKED_CN_FRONTEND_AND_TEST_EXTERNAL_GAPS",
+  "primary_selection_status": "CN_COMPAT_VERIFIED_QCP_KERNEL_CHECKED_TESPEC_ALLOCATOR_DEFERRED",
   "verification_policy": "Only designated primary requires CN/QCP formal verification; reuse matching archived proofs. Other variants require testing only.",
   "variants": [
     {
@@ -36,9 +36,15 @@
     }
   },
   "primary_verification": {
-    "cn_status": "ORIGINAL_MODULE_REJECTED",
+    "cn_status": "VERIFIED_WITH_COMPAT_HEADERS",
     "qcp_status": "VERIFIED_KERNEL_CHECKED",
     "paired_qcp_variant": "qcp_existing:8f229e47d6649f2a2eb8"
   },
-  "test_modes_statistics": "benchmark/results/Dbl_Linked_List__singleton/20261016-evaluation/statistics.json"
+  "test_modes_statistics": "benchmark/results/Dbl_Linked_List__singleton/20261016-evaluation/statistics.json",
+  "latest_tool_repair": "benchmark/results/Dbl_Linked_List__singleton/20261018-cn-fulminate-repair/publication.json",
+  "evaluation_notes": [
+    "2026-10-18：CN 5.2 兼容头文件下，原 singleton 与 IntList_nil、IntList_cons 均验证通过；分配器契约仍是外部前提。Fulminate 原有 7 个输入全部 PASS。",
+    "teSpec 按用户要求暂缓分配器支持，本轮新增执行 0 次。下表 OFF/ON 各 7 UNKNOWN 为保留的历史结果，不能计为成功；旧统计“需 ITP 7 次”实际是执行在 malloc_node 处中止，没有可提交 ITP 的残余 VC。",
+    "QCP 既有 4 个原始全称 VC 证书及成本保持不变；该证书以分配器契约为前提。完整组计数仍为 21/45。修复范围与复现步骤见 docs/benchmark-singleton-cn-fulminate-repair-20261018.md。"
+  ]
 }

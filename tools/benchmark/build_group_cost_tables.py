@@ -1,15 +1,23 @@
 #!/usr/bin/env python3
 """Publish a result/cost table for every group, preserving explicit missing measurements."""
 from pathlib import Path
-import csv, io, json
+import argparse, csv, io, json
 ROOT=Path(__file__).resolve().parents[2]
 OUT=ROOT/'benchmark/results'
 TOOLS=['cn','qcp','fulminate','tespec']
 def read(p): return json.loads(p.read_text())
 def save(p,j): p.parent.mkdir(parents=True,exist_ok=True);p.write_text(json.dumps(j,ensure_ascii=False,indent=2)+'\n')
-def main():
-    index=[]
-    for manifest in sorted((ROOT/'benchmark/programs').glob('*/manifest.json')):
+def main(argv=()):
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--group', help='Refresh one group, preserving all other published tables and index entries')
+    args=parser.parse_args(argv)
+    manifests=sorted((ROOT/'benchmark/programs').glob('*/manifest.json'))
+    if args.group:
+        manifests=[p for p in manifests if p.parent.name==args.group]
+        if not manifests:parser.error('Unknown group: '+args.group)
+        index=[x for x in read(OUT/'group-result-cost-index.json')['groups'] if x['program_group']!=args.group]
+    else:index=[]
+    for manifest in manifests:
         group=read(manifest);name=group['program_group'];folder=OUT/name
         entries=group.get('tool_results',{});results=[];costs=[]
         for tool in TOOLS:
@@ -93,6 +101,7 @@ def main():
             'results':results,'costs':costs,'evidence_catalog':group['evidence_catalog'],
             'missing_policy':'PENDING/null means not published or not bound to matching evidence; never replace missing data with zero. Existing historical evidence must be reused after hash/scope checks.',
             'itp_policy':'One test execution and all its unresolved VCs form one ITP unit; display mean costs only. read uses 12 independently measured execution ITP tasks; legacy batch estimates are historical. Memory is a measured process peak and is never divided. ITP subtotal overlaps its component rows and must not be added again.'}
+        if group.get('evaluation_notes'):report['evaluation_notes']=group['evaluation_notes']
         if supplementary is not None:
             report['supplementary_costs']={'source':supplementary_path.relative_to(ROOT).as_posix(),'rows':len(supplementary['rows']),'scope':supplementary.get('scope','Additional source-revision or failed-attempt diagnostics, separate from primary successful measurements and already-counted ITP stages.')}
         if group.get('current_coverage_gap'):
@@ -106,6 +115,7 @@ def main():
         text=f"# {name}：结果与成本表\n\n完整状态：{'已齐全' if complete else '待补齐'}。语言版本记录 {len(group['variants'])} 条；主程序：{group.get('primary_variant') or '待绑定已有验证证据'}。\n\n"
         if group.get('current_coverage_gap'):
             text+='本组尚未完成；已测失败尝试和未运行阶段分别保留，见 [覆盖缺口](coverage-gap.json)。\n\n'
+        for note in group.get('evaluation_notes',[]):text+=note+'\n\n'
         text+='| 工具 | 范围 | 结果／预期匹配 | 测试对数 |\n|---|---|---|---:|\n'
         for x in results:text+=f"| {x['tool']} | {x['scope']} | {x['result']} | {x['test_pairs'] if x['test_pairs'] is not None else '—'} |\n"
         text+='\n| 工具 | 阶段 | 时间（秒） | 峰值进程内存（MiB） | token | 口径 |\n|---|---|---:|---:|---:|---|\n'
@@ -121,7 +131,8 @@ def main():
             text+=f"\n模式逐次结果、成本和证书范围见 [模式对照]({mode_stats_path.parent.name}/comparison.md)。无需 ITP 时成本记 0，均值和峰值不适用。SMT 决策不作为 Coq 证书。\n"
         (folder/'result-cost.md').write_text(text)
         index.append({'program_group':name,'complete':complete,'report':(folder/'result-cost.md').relative_to(ROOT).as_posix(),'json':(folder/'result-cost.json').relative_to(ROOT).as_posix(),'csv':(folder/'result-cost.csv').relative_to(ROOT).as_posix()})
+    index.sort(key=lambda x:x['program_group'])
     save(OUT/'group-result-cost-index.json',{'groups':index,'groups_total':len(index),'complete_groups':sum(x['complete'] for x in index)})
     (OUT/'group-result-cost-index.md').write_text('# 各程序组结果与成本表\n\n| 程序组 | 完整状态 |\n|---|---|\n'+''.join(f"| [{x['program_group']}]({x['program_group']}/result-cost.md) | {'已齐全' if x['complete'] else '待补齐'} |\n" for x in index))
     print(f"Published {len(index)} group result/cost tables; {sum(x['complete'] for x in index)} complete, {sum(not x['complete'] for x in index)} explicitly pending.")
-if __name__=='__main__':main()
+if __name__=='__main__':main(None)
