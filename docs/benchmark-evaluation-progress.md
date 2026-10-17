@@ -219,3 +219,8 @@ array_load 已完成全部 13 个语言版本记录、17 个入口配对、67 �
 ## 2026-10-18：有限数组中间断言空间 SMT 接入回归
 
 已对上述完整 21 组的 900 对输入实际重跑 teSpec OFF/ON，共 1800 次，源、预期及历史证据哈希未变，0 退化。OFF 为 496 PASS / 350 FAIL / 31 UNKNOWN / 23 预期 ERROR；ON 为 498 PASS / 379 FAIL / 0 UNKNOWN / 23 预期 ERROR。仅新增 array_load 两个客户端 ON 的 UNKNOWN→PASS，与旧 ITP 结论一致；ON 的 array_load 现为 67 个原生 PASS，无测试 ITP 待办。旧完整四工具成本不覆盖，完整组数仍 21/45。本次新计量、通用正反例、证据边界与复现位置见 [接入说明](spatial-smt-annotation-array-integration-20261018.md)。
+
+
+## 2026-10-18：检查下一待完整组 const_example_lessgood
+
+按 21 组完成后的续做顺序检查本组。当前版本 teSpec OFF/ON 对唯一合法入口均 PASS，实际空间查询 0、无测试 ITP。QCP 原始 3 VC 的源/目标/证明/日志哈希及封闭审计匹配。原 CN main 的 trusted 跳过正文；仅移除该指令的诊断副本实际输出 main -- pass，定义、断言和 C 主体均保留。本次只检查并保存诊断，未替换正式主程序或把原 trusted 接受改写成证明，完整计数保持 21/45。细节、初次控制器配置错误与全部重测成本见 [范围复查](../benchmark/results/const_example_lessgood/20261018-scope-recheck-v2/summary.md)。
