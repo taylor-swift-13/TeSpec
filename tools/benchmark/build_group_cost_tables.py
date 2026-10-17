@@ -65,12 +65,36 @@ def main():
             costs.append({'tool':'tespec --spatial-smt','stage':'测试执行、VC 生成与空间 SMT','unit':'每次测试执行均值；内存为逐次峰值均值','wall_seconds':on['mean_execution_wall_seconds'],'peak_process_memory_mib':on['mean_execution_peak_rss_mib'],'tokens':0,'estimated':False,'status':'MEASURED','source':mode_stats_path.relative_to(ROOT).as_posix()})
             if on['executions_requiring_itp_for_verdict']==0:
                 costs.append({'tool':'tespec --spatial-smt','stage':'ITP（无需）','unit':'本批无需额外 ITP，总成本为 0；均值不适用','wall_seconds':0,'peak_process_memory_mib':None,'tokens':0,'estimated':False,'status':'NOT_REQUIRED','source':mode_stats_path.relative_to(ROOT).as_posix()})
+            else:
+                meanpath=folder/'tespec/itp-average-on.json';avg=read(meanpath) if meanpath.is_file() else None
+                if avg and avg.get('execution_count')!=on['executions_requiring_itp_for_verdict']:avg=None
+                unit='每次需 ITP 的执行均值；内存为各次峰值均值' if avg and not avg.get('estimated',True) else '每次需 ITP 的执行均值；内存为批次峰值' if avg else 'PENDING_PER_EXECUTION_MEAN'
+                for sid,label,mkey in [('agent_proof_filling','agent 填写证明','mean_agent_proof_filling_seconds'),('coq_compilation_and_assumption_audit','Coq 编译与假设审计','mean_coq_compile_audit_seconds'),('independent_kernel_check','独立内核检查','mean_independent_kernel_check_seconds')]:
+                    seconds=avg.get(mkey) if avg else None
+                    memory=avg.get('process_memory',{}).get(sid,{}).get('mean_per_execution_peak_mib') if avg else None
+                    tokens=(avg.get('mean_total_tokens') if sid=='agent_proof_filling' else 0) if avg else None
+                    costs.append({'tool':'tespec --spatial-smt','stage':label,'unit':unit,'wall_seconds':seconds,'peak_process_memory_mib':memory,'tokens':tokens,'estimated':bool(avg and avg.get('estimated',True)),'status':'MEASURED' if all(x is not None for x in [seconds,memory,tokens]) else 'PENDING','source':meanpath.relative_to(ROOT).as_posix() if avg else None})
+                itprows=costs[-3:];measured=all(x['status']=='MEASURED' for x in itprows)
+                memory=avg.get('process_memory',{}).get('itp',{}).get('mean_per_execution_peak_mib') if avg else None
+                costs.append({'tool':'tespec --spatial-smt','stage':'ITP 平均合计','unit':unit,'wall_seconds':sum(x['wall_seconds'] for x in itprows) if measured else None,'peak_process_memory_mib':memory,'tokens':sum(x['tokens'] for x in itprows) if measured else None,'estimated':bool(avg and avg.get('estimated',True)),'status':'MEASURED' if measured and memory is not None else 'PENDING','source':meanpath.relative_to(ROOT).as_posix() if avg else None})
+        supplementary_path=folder/'supplementary-costs.json';supplementary=None
+        if supplementary_path.is_file():
+            supplementary=read(supplementary_path);fields=set(costs[0]);identities={(x['tool'],x['stage'],x['unit'],x['source']) for x in costs}
+            for row in supplementary['rows']:
+                assert set(row)==fields, 'Supplementary rows must use the result-cost fields'
+                assert row['status'] in ['MEASURED','PENDING','NOT_REQUIRED'] and isinstance(row['estimated'],bool)
+                if row['status']=='MEASURED':assert all(row[k] is not None and row[k]>=0 for k in ['wall_seconds','peak_process_memory_mib','tokens'])
+                identity=(row['tool'],row['stage'],row['unit'],row['source'])
+                assert identity not in identities, 'Duplicate supplementary cost row'
+                identities.add(identity);costs.append(dict(row))
         complete=all(x['available'] and x['result']!='PENDING' for x in results) and all(x['status'] in ['MEASURED','NOT_REQUIRED'] for x in costs) and next(x['result'] for x in results if x['tool']=='cn')=='VERIFIED' and next(x['result'] for x in results if x['tool']=='qcp').startswith('VERIFIED_KERNEL_CHECKED')
         report={'schema':'tespec-group-result-cost/v1','program_group':name,'primary_variant':group.get('primary_variant'),
             'variant_language_records':len(group['variants']),'complete':complete,
             'results':results,'costs':costs,'evidence_catalog':group['evidence_catalog'],
             'missing_policy':'PENDING/null means not published or not bound to matching evidence; never replace missing data with zero. Existing historical evidence must be reused after hash/scope checks.',
             'itp_policy':'One test execution and all its unresolved VCs form one ITP unit; display mean costs only. read uses 12 independently measured execution ITP tasks; legacy batch estimates are historical. Memory is a measured process peak and is never divided. ITP subtotal overlaps its component rows and must not be added again.'}
+        if supplementary is not None:
+            report['supplementary_costs']={'source':supplementary_path.relative_to(ROOT).as_posix(),'rows':len(supplementary['rows']),'scope':supplementary.get('scope','Additional source-revision or failed-attempt diagnostics, separate from primary successful measurements and already-counted ITP stages.')}
         if group.get('current_coverage_gap'):
             report['coverage_gap']=group['current_coverage_gap']
         observed_path=folder/'20261016-positive-itp-per-execution/observed-attempt-costs.json'
@@ -88,6 +112,8 @@ def main():
         def fmt(v):return '待补齐' if v is None else f'{v:.4f}'
         for x in costs:text+=f"| {x['tool']} | {x['stage']} | {fmt(x['wall_seconds'])} | {('—' if x['status']=='NOT_REQUIRED' else fmt(x['peak_process_memory_mib']))} | {fmt(x['tokens'])} | {x['unit']}{'（均摊估算）' if x['estimated'] else ''} |\n"
         text+='\nITP 以一次测试执行的所有待处理 VC 为单位，只展示平均开销；read 的 12 次所需 ITP 各自独立测量后取平均。内存不将总峰值除以次数；read ITP 展示逐次实测峰值的平均值。ITP 合计行与其三个分项重叠，不能再次相加。CN/QCP 与两种测试工具的对象和次数不同。\n\n缺测记为待补齐，不表示已有历史证据作废；须绑定匹配证据后发布。原始证据、计量来源与缺项见 [result-cost.json](result-cost.json)，成本 CSV 见 [result-cost.csv](result-cost.csv)。\n'
+        if supplementary is not None:
+            text+='\n补充的源修订／失败诊断成本单列，见 [补充成本来源](supplementary-costs.json)；不改变主成功测量均值，也不重复计入已统计的 ITP 阶段。\n'
         if test_modes:
             off=test_modes['modes']['off'];on=test_modes['modes']['on']
             text+='\n## teSpec 空间 SMT 模式\n\n| 项目 | 关闭 | 开启 |\n|---|---:|---:|\n'

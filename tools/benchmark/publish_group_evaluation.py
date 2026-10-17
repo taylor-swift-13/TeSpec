@@ -1,15 +1,68 @@
 #!/usr/bin/env python3
 """Publish reviewed group tests and complete primary verification receipts."""
-import argparse,collections,csv,io,json,statistics
+import argparse,collections,csv,io,json,re,statistics
 from test_read_variants import ROOT,save,sha
 from publish_abs_tool_results import stage
 from evidence_paths import same_bindings_allow_explicit_empty_values
 from evaluation_expectations import expected as expected_status,matches as matches_expected,summary as evaluation_summary
 from execution_itp_receipts import validate_receipt,mode_costs,statistics_for_off
 
+def repository_path(value):
+    path=(ROOT/value).resolve()
+    assert path.is_relative_to(ROOT.resolve()), 'Evidence must remain inside the repository'
+    return path
+
+def run_directory(base,run_id):
+    assert re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]*',run_id), 'run_id must be a single directory name'
+    return base/run_id
+
+def cn_attempt_costs(nativepath,native):
+    cn=native['cn'];assert cn['exit_code']==0, 'A successful measured CN verification is required'
+    refs=[{'receipt':str(nativepath.relative_to(ROOT)), 'receipt_sha256':sha(nativepath)}]+native.get('additional_cn_attempts',[])
+    attempts=[];seen=set();seen_logs=set()
+    for index,ref in enumerate(refs):
+        path=repository_path(ref['receipt']);assert path not in seen;seen.add(path)
+        assert sha(path)==ref['receipt_sha256'];record=json.loads(path.read_text());m=record['cn']
+        assert m['wall_seconds']>=0 and m['resources']['max_process_rss_kib']>0
+        logs={field:sha(repository_path(m[field])) for field in ['stdout','stderr']}
+        for field,digest in logs.items():
+            if field+'_sha256' in m:assert m[field+'_sha256']==digest
+        identity=tuple(str(repository_path(m[field])) for field in ['stdout','stderr'])
+        assert identity not in seen_logs, 'Do not count the same CN measurement twice'
+        seen_logs.add(identity)
+        changed=record['cn_source_sha256']!=native['cn_source_sha256']
+        source_snapshot=record.get('cn_source_snapshot')
+        if changed:assert source_snapshot, 'A changed-source diagnostic needs its original source snapshot'
+        if source_snapshot:assert sha(repository_path(source_snapshot))==record['cn_source_sha256']
+        attempts.append({'receipt':str(path.relative_to(ROOT)), 'receipt_sha256':ref['receipt_sha256'],
+                         'kind':'successful_verification' if index==0 else ('source_revision_diagnostic' if changed else ref.get('kind','additional_verification_attempt')),
+                         'source_sha256':record['cn_source_sha256'], 'source_snapshot':source_snapshot,
+                         'measurement':m, 'log_sha256':logs})
+    def cost(rows):
+        return {'wall_seconds':sum(x['measurement']['wall_seconds'] for x in rows),
+                'peak_process_resident_mib':max((x['measurement']['resources']['max_process_rss_kib']/1024 for x in rows),default=None),
+                'attempts_counted':len(rows), 'tokens':0, 'model_calls':0}
+    stat={'wall_seconds':cn['wall_seconds'],'peak_process_resident_mib':cn['resources']['max_process_rss_kib']/1024,
+          'tokens':0,'model_calls':0,'verification_runs_counted':1}
+    if len(attempts)>1:
+        stat.update(successful_verification=cost(attempts[:1]),additional_cn_attempts=attempts[1:],
+                    diagnostic_cost=cost(attempts[1:]),total_counted_cost=cost(attempts),
+                    cost_policy='Primary verification is one successful measurement; additional attempts are separate diagnostics, including source revisions. Total cost counts each measured attempt once.')
+    return attempts,stat
+
+def audit_reused_qcp_native(native):
+    if native.get('qcp_native_receipt'):
+        path=repository_path(native['qcp_native_receipt']);assert sha(path)==native['qcp_native_receipt_sha256']
+        original=json.loads(path.read_text())
+        for key in ['qcp_source_sha256','goal_sha256','qcp']:assert native[key]==original[key]
+        assert sha(repository_path(original['goal']))==original['goal_sha256']
+
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--group',required=True);a=p.parse_args();name=a.group
-    group=ROOT/'benchmark/programs'/name;planpath=group/'evaluation-plan.json';plan=json.loads(planpath.read_text());base=ROOT/'benchmark/results'/name;run=base/plan['run_id'];proof=base/'20261016-qcp-verify-complete';nativepath=base/'20261016-primary-native/receipt.json'
+    p=argparse.ArgumentParser();p.add_argument('--group',required=True);p.add_argument('--run-id');p.add_argument('--native-receipt');p.add_argument('--qcp-receipt');a=p.parse_args();name=a.group
+    group=ROOT/'benchmark/programs'/name;planpath=group/'evaluation-plan.json';plan=json.loads(planpath.read_text());base=ROOT/'benchmark/results'/name
+    run=run_directory(base,a.run_id or plan['run_id'])
+    nativepath=repository_path(a.native_receipt) if a.native_receipt else base/'20261016-primary-native/receipt.json'
+    proofpath=repository_path(a.qcp_receipt) if a.qcp_receipt else base/'20261016-qcp-verify-complete/receipt.json'
     data=json.loads((run/'results.json').read_text());runs=data['runs'];assert len(runs)==sum(len(x['cases']) for x in plan['pairings']);assert data['plan_sha256']==sha(planpath) or data.get('evaluation_plan_snapshot') and sha(ROOT/data['evaluation_plan_snapshot'])==data['plan_sha256']
     if data['plan_sha256']!=sha(planpath):
         frozen=json.loads((ROOT/data['evaluation_plan_snapshot']).read_text())
@@ -33,12 +86,14 @@ def main():
     rel=lambda p:str(p.relative_to(ROOT))
     native=json.loads(nativepath.read_text());cv=variants[plan['primary_cn_variant']][1];qv=variants[plan['primary_qcp_variant']][1];cn=native['cn']
     for lang,v in [('cn',cv),('qcp',qv)]:assert sha(ROOT/v['files'][lang]['path'])==native[lang+'_source_sha256']
-    assert cn['exit_code']==0
-    save(base/'cn/results.json',{'schema':'tespec-group-tool-result/v1','program_group':name,'tool':'cn','scope':'Universal verification of all non-trusted functions in the designated original CN translation unit, including main if not marked trusted. QCP source can omit original main; compare scopes explicitly.','primary_variant':plan['primary_cn_variant'],'source':cv['files']['cn'],'verdict':'VERIFIED','evidence':rel(nativepath),'original_measurement':cn})
-    save(base/'cn/statistics.json',{'wall_seconds':cn['wall_seconds'],'peak_process_resident_mib':cn['resources']['max_process_rss_kib']/1024,'tokens':0,'model_calls':0,'verification_runs_counted':1})
-    receipt=json.loads((proof/'receipt.json').read_text());assert receipt['kernel_check']['exit_code']==0 and receipt['original_goal_sha256']==native['goal_sha256'];qstat=dict(receipt['metrics'])
+    attempts,cnstat=cn_attempt_costs(nativepath,native);audit_reused_qcp_native(native)
+    scope=native.get('cn_scope','Universal verification of all non-trusted functions in the designated original CN translation unit, including main if not marked trusted. QCP source can omit original main; compare scopes explicitly.')
+    assert isinstance(scope,str) and scope.strip()
+    save(base/'cn/results.json',{'schema':'tespec-group-tool-result/v1','program_group':name,'tool':'cn','scope':scope,'primary_variant':plan['primary_cn_variant'],'source':cv['files']['cn'],'verdict':'VERIFIED','evidence':rel(nativepath),'evidence_sha256':sha(nativepath),'original_measurement':cn,'additional_cn_attempts':attempts[1:]})
+    save(base/'cn/statistics.json',cnstat)
+    receipt=json.loads(proofpath.read_text());assert receipt['status']=='VERIFIED_KERNEL_CHECKED' and receipt['kernel_check']['exit_code']==0 and receipt['original_goal_sha256']==native['goal_sha256'];qstat=dict(receipt['metrics'])
     qstat['stages']=[stage('vc_generation_and_automatic_processing',qstat['native_auto_wall_seconds'],qstat['native_peak_process_rss_kib']/1024),stage('agent_proof_filling',qstat['model_wall_seconds'],qstat['model_client_peak_working_set_bytes']/1048576,qstat['tokens']),stage('coq_compilation_and_assumption_audit',qstat['coq_compile_audit_wall_seconds'],max(r['resources']['max_process_rss_kib'] for r in receipt['compilation'])/1024),stage('independent_kernel_check',qstat['kernel_wall_seconds'],receipt['kernel_check']['resources']['max_process_rss_kib']/1024)];qstat['full_verification_complete']=True
-    save(base/'qcp/results.json',{'schema':'tespec-group-tool-result/v1','program_group':name,'tool':'qcp','primary_variant':plan['primary_qcp_variant'],'paired_cn_primary':plan['primary_cn_variant'],'source':qv['files']['qcp'],'verdict':receipt.get('verdict','VERIFIED_KERNEL_CHECKED'),'obligations':len(receipt['obligations']),'receipt':rel(proof/'receipt.json'),'assumptions':receipt['assumptions'],'scope':receipt['scope']});save(base/'qcp/statistics.json',qstat)
+    save(base/'qcp/results.json',{'schema':'tespec-group-tool-result/v1','program_group':name,'tool':'qcp','primary_variant':plan['primary_qcp_variant'],'paired_cn_primary':plan['primary_cn_variant'],'source':qv['files']['qcp'],'verdict':receipt.get('verdict','VERIFIED_KERNEL_CHECKED'),'obligations':len(receipt['obligations']),'receipt':rel(proofpath),'assumptions':receipt['assumptions'],'scope':receipt['scope']});save(base/'qcp/statistics.json',qstat)
     modes={}
     prior_attempts=[json.loads((ROOT/p).read_text()) for p in plan.get('prior_tespec_attempt_reports',[])]
     for mode in ['off','on']:
@@ -67,13 +122,14 @@ def main():
         save(base/tool/'results.json',{'schema':'tespec-group-tool-result/v1','tool':tool,'summary':{'case_pairs':len(runs),'correct':sum(matches_expected(r,key) for r in runs),'native_status_counts':dict(collections.Counter(r[key]['status'] for r in runs))},'evidence':rel(run/'results.json'),'cases':[{'variant':r['variant'],'paired_qcp_variant':r['paired_qcp_variant'],'case':r['case'],'initial':r['initial'],'expected':expected_status(r,key),'logical_case_expectation':r['expected'],'raw_actual':r[key]['status'],'actual':r[key].get('final_status',r[key]['status']),'itp':r[key].get('itp'),'matches_expected':matches_expected(r,key)} for r in runs]})
     save(base/'fulminate/statistics.json',fstat);off=modes['off'];save(base/'tespec/statistics.json',{'execution_wall_seconds_total':off['execution_wall_seconds_total'],'execution_peak_process_rss_kib':int(off['maximum_execution_peak_rss_mib']*1024),'tokens':0,'model_calls':0,'itp_required_executions':0,'stages':[stage('test_execution_and_vc_generation',off['execution_wall_seconds_total'],off['maximum_execution_peak_rss_mib'])]+[stage(n,0,None,required=False) for n in ['agent_proof_filling','coq_compilation_and_assumption_audit','independent_kernel_check']]})
     off_itp=statistics_for_off(runs,base/'tespec/itp-average.json')
+    statistics_for_off(runs,base/'tespec/itp-average-on.json',mode='on')
     if off_itp:
         ts=json.loads((base/'tespec/statistics.json').read_text());ts['tokens']=sum(m['tokens'] for m in off_itp);ts['model_calls']=sum(m['model_calls'] for m in off_itp);ts['itp_required_executions']=len(off_itp)
         ts['stages']=ts['stages'][:1]+[stage(n,sum(m[k] for m in off_itp),max(m['peak_process_memory_mib'][n] for m in off_itp),sum(m['tokens'] for m in off_itp) if n=='agent_proof_filling' else 0) for n,k in [('agent_proof_filling','agent_proof_filling_seconds'),('coq_compilation_and_assumption_audit','coq_compile_audit_seconds'),('independent_kernel_check','independent_kernel_check_seconds')]];save(base/'tespec/statistics.json',ts)
-    manifest=json.loads((group/'manifest.json').read_text());manifest.update(primary_variant=plan['primary_cn_variant'],primary_selection_status='BOUND_TO_PAIRED_VERIFICATION',primary_verification={'mode':native.get('mode','MEASURED_MISSING_NATIVE_AND_COMPLETED_QCP_PROOF'),'paired_qcp_variant':plan['primary_qcp_variant'],'cn_status':'VERIFIED','qcp_status':receipt.get('verdict','VERIFIED_KERNEL_CHECKED'),'qcp_complete_proof_receipt':rel(proof/'receipt.json'),'assumptions':receipt['assumptions']},test_modes_statistics=rel(run/'statistics.json'));manifest['tool_results']={t:{'results':rel(base/t/'results.json'),'statistics':rel(base/t/'statistics.json')} for t in ['cn','qcp','fulminate','tespec']};save(group/'manifest.json',manifest)
+    manifest=json.loads((group/'manifest.json').read_text());manifest.update(primary_variant=plan['primary_cn_variant'],primary_selection_status='BOUND_TO_PAIRED_VERIFICATION',primary_verification={'mode':native.get('mode','MEASURED_MISSING_NATIVE_AND_COMPLETED_QCP_PROOF'),'paired_qcp_variant':plan['primary_qcp_variant'],'cn_status':'VERIFIED','qcp_status':receipt.get('verdict','VERIFIED_KERNEL_CHECKED'),'qcp_complete_proof_receipt':rel(proofpath),'assumptions':receipt['assumptions']},test_modes_statistics=rel(run/'statistics.json'));manifest['tool_results']={t:{'results':rel(base/t/'results.json'),'statistics':rel(base/t/'statistics.json')} for t in ['cn','qcp','fulminate','tespec']};save(group/'manifest.json',manifest)
     for variant_manifest in (group/'variants').glob('*/manifest.json'):
         vv=json.loads(variant_manifest.read_text());vv['current_tests_index']=rel(base/'index.json');save(variant_manifest,vv)
-    save(base/'index.json',{'program_group':name,'primary_variant':plan['primary_cn_variant'],'paired_qcp_primary':plan['primary_qcp_variant'],'evaluation_plan':rel(planpath),'evaluation':rel(run/'results.json'),'qcp_receipt':rel(proof/'receipt.json'),'cost_table':rel(base/'result-cost.md'),'summary':data['summary']})
+    save(base/'index.json',{'program_group':name,'primary_variant':plan['primary_cn_variant'],'paired_qcp_primary':plan['primary_qcp_variant'],'evaluation_plan':rel(planpath),'evaluation':rel(run/'results.json'),'run_id':run.name,'native_receipt':rel(nativepath),'native_receipt_sha256':sha(nativepath),'qcp_receipt':rel(proofpath),'cost_table':rel(base/'result-cost.md'),'summary':data['summary']})
     buf=io.StringIO();fields=['variant','case','initial','expected','fulminate','tespec_off','tespec_on','fulminate_expected','tespec_expected','tespec_off_final','tespec_on_final'];w=csv.DictWriter(buf,fieldnames=fields);w.writeheader()
     for r in runs:w.writerow({**{k:r[k] for k in fields[:4]},**{k:r[k if k!='fulminate' else 'fulminate_test']['status'] for k in ['fulminate','tespec_off','tespec_on']},'fulminate_expected':expected_status(r,'fulminate_test'),'tespec_expected':expected_status(r,'tespec_off'),'tespec_off_final':r['tespec_off'].get('final_status',r['tespec_off']['status']),'tespec_on_final':r['tespec_on'].get('final_status',r['tespec_on']['status'])})
     (base/'cases.csv').write_text(buf.getvalue());print('Published',name,json.dumps(data['summary']),flush=True)

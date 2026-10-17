@@ -4,10 +4,19 @@ import argparse,json,re
 from test_read_variants import ROOT,sha
 from evaluation_expectations import matches as matches_expected
 from execution_itp_receipts import validate_receipt
+from publish_group_evaluation import repository_path,run_directory,cn_attempt_costs,audit_reused_qcp_native
 
 def load(p):return json.loads(p.read_text())
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--group',required=True);a=p.parse_args();g=ROOT/'benchmark/programs'/a.group;b=ROOT/'benchmark/results'/a.group;manifest=load(g/'manifest.json');idx=load(b/'index.json');data=load(ROOT/idx['evaluation']);runs=data['runs'];table=load(b/'result-cost.json');assert table['complete']
+    p=argparse.ArgumentParser();p.add_argument('--group',required=True);p.add_argument('--run-id');p.add_argument('--native-receipt');p.add_argument('--qcp-receipt');a=p.parse_args();g=ROOT/'benchmark/programs'/a.group;b=ROOT/'benchmark/results'/a.group;manifest=load(g/'manifest.json');idx=load(b/'index.json')
+    evaluation=repository_path(idx['evaluation'])
+    if a.run_id:assert evaluation==run_directory(b,a.run_id)/'results.json', 'Requested batch is not the published evaluation'
+    cn_publication=load(b/'cn/results.json')
+    nativepath=repository_path(idx.get('native_receipt',cn_publication['evidence']))
+    if a.native_receipt:assert nativepath==repository_path(a.native_receipt), 'Requested native receipt is not the published receipt'
+    proofpath=repository_path(idx['qcp_receipt'])
+    if a.qcp_receipt:assert proofpath==repository_path(a.qcp_receipt), 'Requested QCP receipt is not the published receipt'
+    data=load(evaluation);runs=data['runs'];table=load(b/'result-cost.json');assert table['complete']
     variants={load(ROOT/v['manifest'])['id']:load(ROOT/v['manifest']) for v in manifest['variants']};covered=set()
     for r in runs:
         covered.update([r['variant'],r['paired_qcp_variant']]);assert r['precondition_valid'] and r['expected'] in ['PASS','FAIL','ERROR']
@@ -26,13 +35,28 @@ def main():
     assert covered==set(variants),'Some existing variant records have not been tested'
     for tool,key in [('fulminate','fulminate_test'),('tespec','tespec_off')]:
         pub=load(b/tool/'results.json');assert pub['summary']['case_pairs']==len(runs);assert pub['summary']['correct']==sum(matches_expected(r,key) for r in runs)
-    q=load(ROOT/idx['qcp_receipt']);assert q['status']=='VERIFIED_KERNEL_CHECKED' and q['kernel_check']['exit_code']==0
+    native=load(nativepath)
+    if idx.get('native_receipt_sha256'):assert sha(nativepath)==idx['native_receipt_sha256']
+    if cn_publication.get('evidence_sha256'):assert sha(nativepath)==cn_publication['evidence_sha256']
+    assert repository_path(cn_publication['evidence'])==nativepath and cn_publication['verdict']=='VERIFIED'
+    assert cn_publication['original_measurement']==native['cn']
+    assert sha(repository_path(cn_publication['source']['path']))==native['cn_source_sha256']==cn_publication['source']['sha256']
+    attempts,cnstat=cn_attempt_costs(nativepath,native);audit_reused_qcp_native(native)
+    published_cnstat=load(b/'cn/statistics.json')
+    for key,value in cnstat.items():assert published_cnstat[key]==value, 'CN attempt accounting mismatch: '+key
+    if native.get('additional_cn_attempts'):assert cn_publication['additional_cn_attempts']==attempts[1:]
+    if native.get('cn_scope'):assert cn_publication['scope']==native['cn_scope']
+    qcp_publication=load(b/'qcp/results.json')
+    assert repository_path(qcp_publication['receipt'])==proofpath
+    assert sha(repository_path(qcp_publication['source']['path']))==native['qcp_source_sha256']==qcp_publication['source']['sha256']
+    q=load(proofpath);assert q['status']=='VERIFIED_KERNEL_CHECKED' and q['kernel_check']['exit_code']==0
+    assert q['original_goal_sha256']==native['goal_sha256']
     assert sha(ROOT/q['proof'])==q['proof_sha256'];assert sha(ROOT/q['original_goal'])==q['original_goal_sha256'];assert sha(ROOT/q['goal'])==q['original_goal_sha256']
     candidate=(ROOT/q['proof']).read_text();assert not re.search(r'\b(?:Admitted|admit|Axiom|Parameter)\b',candidate)
-    model=q['model'];assert model['requested_model']=='gpt-6.1-sol' and model['exit_code']==0;assert sha((ROOT/idx['qcp_receipt']).parent/'agent.stdout.jsonl')==model['raw_event_log_sha256']
+    model=q['model'];assert model['requested_model']=='gpt-6.1-sol' and model['exit_code']==0;assert sha(proofpath.parent/'agent.stdout.jsonl')==model['raw_event_log_sha256']
     for attempt_model in q.get('models',[model]):
         assert attempt_model['locked_goal_and_helper_sha256']['PrimaryQcpGoal.v']==q['original_goal_sha256']
-        folder=(ROOT/idx['qcp_receipt']).parent if attempt_model is model or attempt_model==model else (ROOT/idx['qcp_receipt']).parent/'model-attempts'/('attempt-'+str(attempt_model['attempt']))
+        folder=proofpath.parent if attempt_model is model or attempt_model==model else proofpath.parent/'model-attempts'/('attempt-'+str(attempt_model['attempt']))
         assert sha(folder/'agent.stdout.jsonl')==attempt_model['raw_event_log_sha256']
         assert sha(folder/'prompt.txt')==attempt_model['prompt_sha256']
         if folder.name.startswith('attempt-'):assert sha(folder/'Candidate.v')==attempt_model['candidate_sha256']

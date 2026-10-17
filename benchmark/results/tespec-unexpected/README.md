@@ -1,1175 +1,1181 @@
 # teSpec 不符合预期的专项台账
 
-已扫描 45 组、1551 对变体与输入。最终不匹配 **1056** 条；自动阶段缺口经独立 ITP 解决 **41** 条；另有配置错误修正 **70** 条。未评测组不计为零异常。原始分类不改写，人工分析追加到 triage.json，重建不覆盖人工结论。
+已扫描 45 组、1551 对变体与输入。当前有效批次最终不匹配 **1046** 条；历史批次仍保留不匹配 **10** 条。兼容字段 open_final_mismatches 为两者总计 **1056**，不能当作当前批次错误数。自动阶段缺口后续已解决 **45** 条；另有配置错误修正 **70** 条。未评测组不计为零异常。原始分类不改写，人工分析追加到 triage.json，重建不覆盖人工结论。
 
-| 组 | 变体 | 输入 | 模式 | 预期 | 自动 | 最终 | 分类 | 证据 |
-|---|---|---|---|---|---|---|---|---|
-| Dbl_Linked_List__singleton | cn_original:Dbl_Linked_List__singleton | element_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/df876f610dd52a9e0301.json) |
-| Dbl_Linked_List__singleton | cn_original:Dbl_Linked_List__singleton | element_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5a3ee954c2cab1d8348f.json) |
-| Dbl_Linked_List__singleton | cn_original:Dbl_Linked_List__singleton | element_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/debd05da8a33f4e1faad.json) |
-| Dbl_Linked_List__singleton | cn_original:Dbl_Linked_List__singleton | element_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/571deebe4d78a43c0df5.json) |
-| Dbl_Linked_List__singleton | cn_original:Dbl_Linked_List__singleton | element_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/463f1835dda946ccfe0f.json) |
-| Dbl_Linked_List__singleton | cn_original:Dbl_Linked_List__singleton | element_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8de21365366a50674956.json) |
-| Dbl_Linked_List__singleton | cn_original:Dbl_Linked_List__singleton | element_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c5bad417f07acbacec68.json) |
-| Dbl_Linked_List__singleton | cn_original:Dbl_Linked_List__singleton | element_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/46f5391aeda559f59b51.json) |
-| Dbl_Linked_List__singleton | cn_original:Dbl_Linked_List__singleton | element_4 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d2e2a606a9e773029473.json) |
-| Dbl_Linked_List__singleton | cn_original:Dbl_Linked_List__singleton | element_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/591167ba4556e3996b47.json) |
-| Dbl_Linked_List__singleton | cn_original:Dbl_Linked_List__singleton | element_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6de72e99c788a66507eb.json) |
-| Dbl_Linked_List__singleton | cn_original:Dbl_Linked_List__singleton | element_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/764d661823775c89275b.json) |
-| Dbl_Linked_List__singleton | cn_original:Dbl_Linked_List__singleton | element_6 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/095b34e4d922a76b4ba4.json) |
-| Dbl_Linked_List__singleton | cn_original:Dbl_Linked_List__singleton | element_6 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f6410b8798092343c839.json) |
-| add_two_array | cn_original:add_two_array | array_0 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/cee06f0904f3c2d5f9a6.json) |
-| add_two_array | cn_original:add_two_array | array_0 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/99bff782ad3cb241bda6.json) |
-| add_two_array | cn_original:add_two_array | array_1 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/00842adffecd4184a0f6.json) |
-| add_two_array | cn_original:add_two_array | array_1 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/49b8e7d27c6562c979f1.json) |
-| add_two_array | cn_original:add_two_array | array_2 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/c4fcbacfc01a2571484e.json) |
-| add_two_array | cn_original:add_two_array | array_2 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/ead4b650400ba1c65b1a.json) |
-| add_two_array | cn_original:add_two_array | array_3 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/1cf9a2973fe7d2c1934a.json) |
-| add_two_array | cn_original:add_two_array | array_3 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/63a8750bba0c2b1037f1.json) |
-| add_two_array | cn_original:add_two_array | array_4 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/bac1f3370e6d0edeeed6.json) |
-| add_two_array | cn_original:add_two_array | array_4 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/97cd5896464ea5b63087.json) |
-| add_two_array | cn_original:add_two_array | array_5 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/7eb250e42869760b9cac.json) |
-| add_two_array | cn_original:add_two_array | array_5 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/f7b2be4069ba8be00606.json) |
-| add_two_array | cn_original:add_two_array | array_6 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/2740f8c4dd00d14c3421.json) |
-| add_two_array | cn_original:add_two_array | array_6 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/e0ebb5de161fe217b4fa.json) |
-| add_two_array | cn_original:add_two_array | array_7 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/d54cdd902a4bdeff45f6.json) |
-| add_two_array | cn_original:add_two_array | array_7 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/672bd983514ce780dd7a.json) |
-| array_load | cn_original:array_load.broken | original_client_translation5_only_entry | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1b86a3b525ad3ee2a595.json) |
-| array_load | cn_original:array_load.broken | original_client_translation5_only_entry | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/425cfe32a386b4304f28.json) |
-| array_load | cn_original:array_load.broken | original_client_translation6_only_entry | off | PASS | FAIL | FAIL | UNEXPECTED_REJECTION | [详情](cases/4fb216eff6770801ed2f.json) |
-| array_load | cn_original:array_load.broken | original_client_translation6_only_entry | on | PASS | FAIL | FAIL | UNEXPECTED_REJECTION | [详情](cases/076aba494419708818a0.json) |
-| array_load | cn_original:array_load.broken | original_client_translation7_only_entry | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ca76b7529dae92e0fd3a.json) |
-| array_load | cn_original:array_load.broken | original_client_translation7_only_entry | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/dc3283ac2f545e36b479.json) |
-| array_load | cn_original:array_load.broken | original_client_translation9_only_entry | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7abb34da76912cd1e411.json) |
-| array_load | cn_original:array_load.broken | original_client_translation9_only_entry | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7e017d5ba570572fbfb2.json) |
-| array_load | cn_original:array_load.broken | original_client_translation12_only_entry | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b91e5a1d28a77d2bf801.json) |
-| array_load | cn_original:array_load.broken | original_client_translation12_only_entry | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a45c83e03457bb7da9d7.json) |
-| const_example | cn_original:const_example | x_0 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/447fd4e5cd4527f16364.json) |
-| const_example | cn_original:const_example | x_0 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/290951de2d0afd39cb61.json) |
-| const_example | cn_original:const_example | x_1 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/1645b43bd123bbdd53a6.json) |
-| const_example | cn_original:const_example | x_1 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/5df47d8e1809b122fc2d.json) |
-| const_example | cn_original:const_example | x_2 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/2d823e904283e21d9d58.json) |
-| const_example | cn_original:const_example | x_2 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/3ed782e00a5fbe8b9824.json) |
-| const_example | cn_original:const_example | x_3 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/e20a66b9df214dab248d.json) |
-| const_example | cn_original:const_example | x_3 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/49cbbcaaa9409d80ccf0.json) |
-| const_example | cn_original:const_example | x_4 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/986adcd32235e6d59696.json) |
-| const_example | cn_original:const_example | x_4 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/5248d7701eff3656cedf.json) |
-| const_example | cn_original:const_example | x_5 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/282359bf6ffd3dca06af.json) |
-| const_example | cn_original:const_example | x_5 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/83fa75b2da7384af200e.json) |
-| const_example | cn_original:const_example | x_6 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/ebb4acfcc7c07171fec4.json) |
-| const_example | cn_original:const_example | x_6 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/703e77dcd7e7514ec521.json) |
-| dll_add | cn_original:Dbl_Linked_List__add | empty_element_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/489f86588a2ca4ce06f5.json) |
-| dll_add | cn_original:Dbl_Linked_List__add | empty_element_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ab87e86e08a248b42025.json) |
-| dll_add | cn_original:Dbl_Linked_List__add | empty_element_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ec7357d06d932ecff879.json) |
-| dll_add | cn_original:Dbl_Linked_List__add | empty_element_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0d16f79deecbcd7da70d.json) |
-| dll_add | cn_original:Dbl_Linked_List__add | empty_element_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c4bc38e1679f431293b2.json) |
-| dll_add | cn_original:Dbl_Linked_List__add | empty_element_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/768c4cbd6ac08786ff99.json) |
-| dll_add | cn_original:Dbl_Linked_List__add | empty_element_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c74035fce0ab9a1de56e.json) |
-| dll_add | cn_original:Dbl_Linked_List__add | empty_element_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/275312674d657b6e558b.json) |
-| dll_add | cn_original:Dbl_Linked_List__add | empty_element_4 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1e7f71e7c718e838d3be.json) |
-| dll_add | cn_original:Dbl_Linked_List__add | empty_element_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2031e0c06c7cb13b02fc.json) |
-| dll_add | cn_original:Dbl_Linked_List__add | empty_element_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/66abc057c0bc716119ff.json) |
-| dll_add | cn_original:Dbl_Linked_List__add | empty_element_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/aa1b8f77b9acfbbdecbe.json) |
-| dll_add | cn_original:Dbl_Linked_List__add | empty_element_6 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e78a998abfc5d632d148.json) |
-| dll_add | cn_original:Dbl_Linked_List__add | empty_element_6 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/12ab9c7ad0f14f98a3f4.json) |
-| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/138a600f03c09c3a2efb.json) |
-| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d3a7eb4b3e160e0dfa23.json) |
-| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b059ca75f67281d10d7c.json) |
-| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/af785b111f5ab6df2971.json) |
-| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7f0384ff8683aa452137.json) |
-| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/54ae6ff36f2ebb3c93e8.json) |
-| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/92dbbe33f067bd450948.json) |
-| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9d04822f2239ac9bbaf1.json) |
-| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_4 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/18e06161f1bba5275b59.json) |
-| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/636ef2a07831ac23084e.json) |
-| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ae6d4a5c57c384fc1d45.json) |
-| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a4a8c366f807167efa06.json) |
-| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_6 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a3ca216ccbf9e4f3592f.json) |
-| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_6 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/feb6d43238a7ff7aa8aa.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e59e30ee375021bee823.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/80878e88a8cc638cea1c.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c75f4cc436862e8e829f.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6fd4f24b4e30a66265a4.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e2ea0f9ba51bae7a7e25.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c457f0172746bd6a243e.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a38b6d7c9a6b479b4924.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7ec9a8ac88e630066fbc.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_4 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5526e961ad09c146528e.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f33a2be9d870d14d8d8f.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/87700f84923c386e0212.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1f42aaf76d1d91ba2ef9.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_6 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ade524eb9393b9bbd42f.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_6 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/55ceda6e4f52597c3c60.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_7 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/74095d1b3ed5c877cee0.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_7 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3ca09992f9db66c35847.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_8 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/447fa6338e8a21437049.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_8 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/401c49d8eb4bc956230d.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1ff2700e344c79efade8.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/10c62173a17a70f4ef46.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1f0fdcec14fb1c9a28c2.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c05731c2f0fc7f897848.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/fca35152162272285b3b.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3751ca6d245c5922fd69.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b988cb0313155d29c7b7.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c8d86a9c6472f936ccb2.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_4 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d465d1960a9998a25e9d.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1068771fd9162b5fed0c.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b418ac1b2685fb55e39e.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/59cc4a54307c26e0ad00.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_6 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e735209e13db58a1ff75.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_6 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/00a155127769e3bda057.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_7 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ceeae2638406be4f4d08.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_7 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/fff1393e53a92fd22d6a.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_8 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4f3e253d5e9f35dacc81.json) |
-| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_8 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/abe4b060b5c4ec57bb56.json) |
-| incr | constructed:case_2e28b35274593024 | input_0 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/50bdd48c3a970a043324.json) |
-| incr | constructed:case_2e28b35274593024 | input_1 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/714118c7ffc6770d57b8.json) |
-| incr | constructed:case_2e28b35274593024 | input_2 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/4c9edea1b6fa710508fc.json) |
-| incr | constructed:case_2e28b35274593024 | input_3 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/3e82a968932b53020b5e.json) |
-| incr | constructed:case_2e28b35274593024 | input_4 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/3eb641d4c584e026e3b0.json) |
-| incr | constructed:case_2e28b35274593024 | input_5 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/a97f851557ee6164fa99.json) |
-| incr | constructed:case_48b6281ad8e51e2c | input_0 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/54b33da1979ead7766db.json) |
-| incr | constructed:case_48b6281ad8e51e2c | input_1 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/ff1cf56a576050d0bb83.json) |
-| incr | constructed:case_48b6281ad8e51e2c | input_2 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/f0930996e3c349db96be.json) |
-| incr | constructed:case_48b6281ad8e51e2c | input_3 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/4240dacb06eda29edf9d.json) |
-| incr | constructed:case_48b6281ad8e51e2c | input_4 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/a066396cf884861f2b5a.json) |
-| incr | constructed:case_48b6281ad8e51e2c | input_5 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/0cc8377f2e1dd7c41b52.json) |
-| incr | constructed:case_48b6281ad8e51e2c | input_6 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/2526edf36aa1798ae0fd.json) |
-| incr_two | cn_original:slf5_basic_aliased_call.broken | input_0 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/bc8887a413c264115a41.json) |
-| incr_two | cn_original:slf5_basic_aliased_call.broken | input_0 | on | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d23ac96c7ffd0a4279e7.json) |
-| incr_two | cn_original:slf5_basic_aliased_call.broken | input_1 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2ff7b1da499c18ae8c37.json) |
-| incr_two | cn_original:slf5_basic_aliased_call.broken | input_1 | on | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/97b9adb7a92fea912cf4.json) |
-| init_array | cn_original:init_array2 | length_0 | off | PASS | UNKNOWN | PASS | RESOLVED_AUTOMATIC_GAP | [详情](cases/2edf29d30c1b5164e0de.json) |
-| init_array | cn_original:init_array2 | length_0 | on | PASS | UNKNOWN | PASS | RESOLVED_AUTOMATIC_GAP | [详情](cases/c0ad7e9b9b2148ff01a1.json) |
-| init_array | cn_original:init_array2 | length_1 | off | PASS | UNKNOWN | PASS | RESOLVED_AUTOMATIC_GAP | [详情](cases/6af26b048893c81a2bae.json) |
-| init_array | cn_original:init_array2 | length_1 | on | PASS | UNKNOWN | PASS | RESOLVED_AUTOMATIC_GAP | [详情](cases/45a9d11caa3869101f32.json) |
-| init_array | cn_original:init_array2 | length_2 | off | PASS | UNKNOWN | PASS | RESOLVED_AUTOMATIC_GAP | [详情](cases/ad78bc810e52222abf17.json) |
-| init_array | cn_original:init_array2 | length_2 | on | PASS | UNKNOWN | PASS | RESOLVED_AUTOMATIC_GAP | [详情](cases/07cc1bf32c3a3c09098e.json) |
-| init_array | cn_original:init_array2 | length_3 | off | PASS | UNKNOWN | PASS | RESOLVED_AUTOMATIC_GAP | [详情](cases/94b9dcab864bfb279378.json) |
-| init_array | cn_original:init_array2 | length_3 | on | PASS | UNKNOWN | PASS | RESOLVED_AUTOMATIC_GAP | [详情](cases/dc6e886cda962ccf3129.json) |
-| init_array | cn_original:init_array2 | length_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/67f6851b87ea51584080.json) |
-| init_array | cn_original:init_array2 | length_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9c00b4e6e64f0e5f8b87.json) |
-| init_array | cn_original:init_array2 | length_8 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/bc7e8fcc756086093964.json) |
-| init_array | cn_original:init_array2 | length_8 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c8ad06aff893dd098809.json) |
-| init_array | cn_original:init_array_rev | length_1 | off | PASS | UNKNOWN | PASS | RESOLVED_AUTOMATIC_GAP | [详情](cases/b9148ba6cf62617ad47a.json) |
-| init_array | cn_original:init_array_rev | length_1 | on | PASS | UNKNOWN | PASS | RESOLVED_AUTOMATIC_GAP | [详情](cases/6c0a28d14e2d2230f329.json) |
-| init_array | cn_original:init_array_rev | length_2 | off | PASS | UNKNOWN | PASS | RESOLVED_AUTOMATIC_GAP | [详情](cases/087ec45509f9bec26821.json) |
-| init_array | cn_original:init_array_rev | length_2 | on | PASS | UNKNOWN | PASS | RESOLVED_AUTOMATIC_GAP | [详情](cases/f78e1060bc01e7a9152e.json) |
-| init_array | cn_original:init_array_rev | length_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c4b1afd35b4f75bf4435.json) |
-| init_array | cn_original:init_array_rev | length_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a4716ec42dfb53fc845f.json) |
-| init_array | cn_original:init_array_rev | length_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3530627a8387e8cab081.json) |
-| init_array | cn_original:init_array_rev | length_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b8e0ab982ffa41a890dd.json) |
-| init_array | cn_original:init_array_rev | length_8 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8e9438492fab2bc0c2a2.json) |
-| init_array | cn_original:init_array_rev | length_8 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8b06649300143e3d707e.json) |
-| init_array | cn_original:init_array_rev | length_13 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f8b33e58fa97346e293f.json) |
-| init_array | cn_original:init_array_rev | length_13 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/41932cb205ed3eec276a.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_cons_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/37739550bba1d5e31404.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_cons_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e639edcd3fdb51a84d42.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_cons_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d1f965a047ec1d657dd0.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_cons_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ea2bedfc064610d7347b.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_cons_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/af55cf42b06d043c12b6.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_cons_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6d251d3357cef37eb499.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_cons_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/26b9b6f9b3b450a63b45.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_cons_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/bc08d5cb73c92281c57c.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_copy_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3a53ae6b8ddfcace6309.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_copy_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0cd799ab39f43e49f52b.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_copy_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9db5ce96b5448330ab4a.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_copy_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a11d8811be6f2e923602.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_copy_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/570b466f4834f9a55441.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_copy_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e5eed43fcff9325fa8ec.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_copy_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4ed545a0c5d7d95cef0e.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_copy_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c6e725a159452d40cd1e.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_free_list_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/03c4f8b5f17c66ccfb6f.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_free_list_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2c48763a010fb724aa1d.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_free_list_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/556084e15b6db030768a.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_free_list_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/584f70cfb55d20625408.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_free_list_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6a6e129ec158cb43a4d0.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_free_list_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/68197e653ba216c69495.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_free_list_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/09fc0cfb0e49b29a11b4.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_free_list_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/315c67e179eded041f06.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_length_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a125fb2d0ef927c508f2.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_length_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/13fecaada0932120e49a.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_length_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/69b37dbf4ce9528f136b.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_length_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0fe9ade2bb5408d31871.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_length_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3e76a4242aa9aaffa554.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_length_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b3854f9703ec076c2edf.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_length_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8c4186a74ed0e0a552e0.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_length_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/845e5fbf00dd7da46729.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_rev_aux_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a36c038fe4476e814032.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_rev_aux_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/df81b1809db3cd2414c4.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_rev_aux_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3bec8a4ce9237543a14f.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_rev_aux_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3ef662baf430dbd2c7d0.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_rev_aux_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f654210f489b6eb533d4.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_rev_aux_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5084a2ed21302b81b49f.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_rev_aux_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/840406aa6a4d0dcb015e.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_rev_aux_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4100599548fab5aeb255.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_rev_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/bf154370d333b98a6747.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_rev_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ea748a8c5858378bbbc6.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_rev_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8c1173f64c7008bc333c.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_rev_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/22ac64833f45426f1fe2.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_rev_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/363f108718d7e38587ed.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_rev_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3da0ed77ec1a06bc7eab.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_rev_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9d8fc5e44ed3c874c709.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_rev_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e9fabdbaefb07fcf3f0c.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_append_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/61f09a7b9025a5e12bd6.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_append_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3a97d6e685a6c1a5df00.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_append_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b1e211322badd6bc9cf0.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_append_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2ea3cda5323e5943b0c5.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_append_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/43cbc37624382fb34142.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_append_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4ccfbc67b0d96e70da73.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_append_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f8e61680f9833d79ae08.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_append_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8dcbe7a9ee74e2c90a67.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_append2_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/09ec2e2552771ec1ca2f.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_append2_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6278650f79ccae618d54.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_append2_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/981394555ca708cc16b0.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_append2_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a5c5fc37762a90fee4f0.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_append2_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/449279445f2782d9ead2.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_append2_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1daf60ff6b03137d2122.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_append2_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/028feecb6f99b44285b8.json) |
-| list_all | cn_original:list_all | ab15e46b_IntList_append2_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/768e0047207901e2fe30.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_cons_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ade9533f67ad4a631844.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_cons_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c6b377621e580cb9b37e.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_cons_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b3e025e709f43070d672.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_cons_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/706211ddd41c570a1eab.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_cons_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9e08e95f96a9b6d9d18d.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_cons_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e3d190212faad4472d80.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_cons_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1424566411794f9c21d2.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_cons_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2dd1b88ed8120512cbc0.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_copy_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9a16bdd8319691978061.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_copy_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/63ff9013364b81859fdf.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_copy_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2ee9d3daf730e3c00c38.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_copy_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d30e3a20c88ab326eaf4.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_copy_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7fa32c1c570c6bde9cda.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_copy_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/224bf1885d03e3bcaf86.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_copy_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/83415a2db4855bedda89.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_copy_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4c18ae94ddafdb2d9532.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_free_list_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/be29d87a24ae21aedecf.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_free_list_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/752e75e3fe49093dd236.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_free_list_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/452fa3a9ea86c27f9854.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_free_list_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/fd6c78386562eb680d13.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_free_list_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/deb3505a012f73992539.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_free_list_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c733a6161dd0e5c0ccfb.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_free_list_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4d0aab45000ba9913d47.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_free_list_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5f55208d1ab065616f97.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_length_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/de86b0418d6d266d6e46.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_length_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8e63554b9552b68eacfc.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_length_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2d2cea03525cbff5535e.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_length_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ec1d8192e7312717fc04.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_length_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c6a8b32474013eac5ea2.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_length_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/13f0848824a3475f0811.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_length_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/916f2ad6401cbed356de.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_length_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8e82321826d835e14bd9.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_rev_aux_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/fb58d050d7b92071164e.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_rev_aux_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2ebb7c4a979dce9c64d6.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_rev_aux_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/cb042df9af0f6170e71c.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_rev_aux_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/60fbfcfd40d0688a6b37.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_rev_aux_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6c0b6abc2cf82df16e03.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_rev_aux_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5cf3975a8c5f413f60ac.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_rev_aux_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7ec0829b23be0d5ec37e.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_rev_aux_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ee0ab9e4687f8fcf1d1e.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_rev_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ebb1022196e411dd8951.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_rev_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/84931bd78644fcc406e6.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_rev_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a96aaa6380b85470ac3b.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_rev_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5a087b4389ca828cbbd3.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_rev_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/60a07cb271981beeff13.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_rev_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/431dcfedca16817b4fe6.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_rev_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f6f658c8de5e14a10ba0.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_rev_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/06b222e4068eec5921b0.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_append_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f27dd90fb0c0cb99790a.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_append_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5787b0a3e11e90bd74d0.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_append_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/553bfc507c46c5945973.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_append_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1d551bc635d4dfbc1c89.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_append_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b42626e4781b39e795f7.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_append_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1add9c8fefddf0d9d967.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_append_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ba022b4fd697d2cc69dd.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_append_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ce072fd650727fcdb38d.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_append2_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9945cfbc365e85f2e6da.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_append2_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f9e2bc31dfecbe7c0f9b.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_append2_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d7ee77ec96a6c5de1e2a.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_append2_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9e8eb5510f96cfc4f6fc.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_append2_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/86362e8895c9c6920efb.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_append2_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0b25f620dfd4add04d33.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_append2_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b7cca117a53d11ed9a96.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_append2_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/94996f0cbf668b2d7f5c.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_rev_loop_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9375a156eebc2b131eef.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_rev_loop_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e33efd3d3a4b5c8b16a0.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_rev_loop_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9ca3f7f5e923553e326d.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_rev_loop_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a19c1a5b2417fecc73ea.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_rev_loop_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/cc8b7c3199e6e73921ca.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_rev_loop_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0b70decab5dd3f28510f.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_rev_loop_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7c9eaea2d63675440227.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_rev_loop_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/54dda51c29d5abc1858a.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_split_0 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/d8af48fe90b80fe85506.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_split_0 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/f176b86ef9dced42bcbd.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_split_1 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/28530a4e7b1570576002.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_split_1 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/1dacaf7c831cd6b4be4d.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_split_2 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/f7c99cfcaccbdac260a7.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_split_2 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/76bf0056514b7f47f11b.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_split_3 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/12bcd9f39da72498d0ec.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_split_3 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/89b009ac7329ed6fa8d7.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_merge_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3abd9f850f53767a615e.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_merge_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c98a21ba3c9d9606853c.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_merge_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f9eb4d14deb2d52be1e3.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_merge_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/fd73fe00c09ade273cd7.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_merge_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4c01718ddddd259e110b.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_merge_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f3a9bdfd29514846936d.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_merge_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/268b81660b1bbeabe7c3.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_merge_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/16bc35b2f57205808b34.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_mergesort_0 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/cda5fead10a851ebafae.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_mergesort_0 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/77af0f5411a5337ec3ce.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_mergesort_1 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/3bdbffb398db12a1bb18.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_mergesort_1 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/9f06ba39ea1e50220626.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_mergesort_2 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/f701245aeafcb201abbe.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_mergesort_2 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/ab0dbc81d595fe552dba.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_mergesort_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/de29386f09b5aeb10bc7.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_mergesort_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/982c8f2f9059fa1b5130.json) |
-| list_all | cn_original:list_all | 11aff98e_refUnsignedInt_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/39e706031f386655dbd3.json) |
-| list_all | cn_original:list_all | 11aff98e_refUnsignedInt_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/42981f6c4cff7cb2bd3c.json) |
-| list_all | cn_original:list_all | 11aff98e_refUnsignedInt_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4e27fa07886007f77a4a.json) |
-| list_all | cn_original:list_all | 11aff98e_refUnsignedInt_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e401783984b42aa8e8ce.json) |
-| list_all | cn_original:list_all | 11aff98e_refUnsignedInt_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/db76cc3009e5e7a9eba2.json) |
-| list_all | cn_original:list_all | 11aff98e_refUnsignedInt_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0211a46f0fd8a3d3daca.json) |
-| list_all | cn_original:list_all | 11aff98e_refUnsignedInt_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/64a6ffc3df45b2efd3b2.json) |
-| list_all | cn_original:list_all | 11aff98e_refUnsignedInt_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/76cdad0752721117abc4.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_length_acc_aux_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/39d4fc7833a6ed2a92cf.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_length_acc_aux_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2bd7d77d04ef0e56c1c9.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_length_acc_aux_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/907130da895a8befda6b.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_length_acc_aux_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d261e9eb3fa82238dd4b.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_length_acc_aux_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/54d5ffa6901d8d0e6d30.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_length_acc_aux_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d8c3ab2f0b2599104e3b.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_length_acc_aux_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/101d227323cf777ba8e8.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_length_acc_aux_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f4325efabbbf1eaedbd1.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_length_acc_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/cfa84650b8f14a6b74ae.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_length_acc_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7357ffadaf6cf77561f2.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_length_acc_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/43aedcef495da809bf9c.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_length_acc_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f1b2396b17b7837184f3.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_length_acc_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/10cd20bafbcfff2b88a3.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_length_acc_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/24a4598a028cbfea9a81.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_length_acc_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/42503371c3f96afd32e5.json) |
-| list_all | cn_original:list_all | 11aff98e_IntList_length_acc_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8a273aa61e6a9f759556.json) |
-| mergesort | cn_original:mergesort | IntList_cons_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/213717eefaa3f785e7cd.json) |
-| mergesort | cn_original:mergesort | IntList_cons_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/18c513702e39f8665237.json) |
-| mergesort | cn_original:mergesort | IntList_cons_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1fedc48cd973402c8868.json) |
-| mergesort | cn_original:mergesort | IntList_cons_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/97d040f3491cc61ab074.json) |
-| mergesort | cn_original:mergesort | IntList_cons_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a4a277e029dc260c0ea5.json) |
-| mergesort | cn_original:mergesort | IntList_cons_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/53192fd1c0dd9d98608d.json) |
-| mergesort | cn_original:mergesort | IntList_cons_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5f69f97970095d8f584f.json) |
-| mergesort | cn_original:mergesort | IntList_cons_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2970b60178444fa43453.json) |
-| mergesort | cn_original:mergesort | IntList_split_0 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/6dbd83ee7963d1f27c1f.json) |
-| mergesort | cn_original:mergesort | IntList_split_0 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/128ef52450bc780bbbe0.json) |
-| mergesort | cn_original:mergesort | IntList_split_1 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/cc4d09599379a4ee798f.json) |
-| mergesort | cn_original:mergesort | IntList_split_1 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/951341f28490ba6c335f.json) |
-| mergesort | cn_original:mergesort | IntList_split_2 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/68d462891327054804be.json) |
-| mergesort | cn_original:mergesort | IntList_split_2 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/bf49ec25800b41518029.json) |
-| mergesort | cn_original:mergesort | IntList_split_3 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/aba0c2ccc4537c066877.json) |
-| mergesort | cn_original:mergesort | IntList_split_3 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/617686333a5ae47bca85.json) |
-| mergesort | cn_original:mergesort | IntList_merge_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b5427fd79ef0bca712ba.json) |
-| mergesort | cn_original:mergesort | IntList_merge_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/94a24035ce9ba5dbb00a.json) |
-| mergesort | cn_original:mergesort | IntList_merge_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a80b979be579775c5d95.json) |
-| mergesort | cn_original:mergesort | IntList_merge_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/07741a9d64b8d984e1dc.json) |
-| mergesort | cn_original:mergesort | IntList_merge_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a4f6e1fccba1682788ab.json) |
-| mergesort | cn_original:mergesort | IntList_merge_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/cb2db359bb2d17f04b42.json) |
-| mergesort | cn_original:mergesort | IntList_merge_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4d9ec27b29f17fd59c8d.json) |
-| mergesort | cn_original:mergesort | IntList_merge_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/96013213d4e8235c9e8c.json) |
-| mergesort | cn_original:mergesort | IntList_mergesort_0 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/c7841f545ba6075c496a.json) |
-| mergesort | cn_original:mergesort | IntList_mergesort_0 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/95dc4a355010b0e14dbe.json) |
-| mergesort | cn_original:mergesort | IntList_mergesort_1 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/1a8534efb208fa1a1960.json) |
-| mergesort | cn_original:mergesort | IntList_mergesort_1 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/802c8a091d2e50d83045.json) |
-| mergesort | cn_original:mergesort | IntList_mergesort_2 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/dbe296514e619dd87a5d.json) |
-| mergesort | cn_original:mergesort | IntList_mergesort_2 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/b646a7666371f8dee196.json) |
-| mergesort | cn_original:mergesort | IntList_mergesort_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b96b57fa377d299da2ef.json) |
-| mergesort | cn_original:mergesort | IntList_mergesort_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b964a8f9d965977cbca2.json) |
-| queue_all | cn_original:queue_all | 24820f92_push_induction_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4290604e1a303178ba63.json) |
-| queue_all | cn_original:queue_all | 24820f92_push_induction_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/79850eb019a9045f1073.json) |
-| queue_all | cn_original:queue_all | 24820f92_push_induction_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/801b6a62e3e6dafb4855.json) |
-| queue_all | cn_original:queue_all | 24820f92_push_induction_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/324966927e62414ff1e9.json) |
-| queue_all | cn_original:queue_all | 24820f92_push_induction_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0c61b2e66768c218c6cc.json) |
-| queue_all | cn_original:queue_all | 24820f92_push_induction_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/33bb7b2612e6bfeb19f5.json) |
-| queue_all | cn_original:queue_all | 24820f92_push_induction_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/fd9f6e0f6512adb32458.json) |
-| queue_all | cn_original:queue_all | 24820f92_push_induction_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/97abcf7ce2f488ccdc0d.json) |
-| queue_all | cn_original:queue_all | 24820f92_IntQueue_push_induction_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3b0d97c657c75a4ec702.json) |
-| queue_all | cn_original:queue_all | 24820f92_IntQueue_push_induction_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/854c789efc9a219c226d.json) |
-| queue_all | cn_original:queue_all | 24820f92_IntQueue_push_induction_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/150ffbd443cd57edddf6.json) |
-| queue_all | cn_original:queue_all | 24820f92_IntQueue_push_induction_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3fb8ffa2b0cf9eaa9461.json) |
-| queue_all | cn_original:queue_all | 24820f92_IntQueue_push_induction_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/86de553418f49b61f8b9.json) |
-| queue_all | cn_original:queue_all | 24820f92_IntQueue_push_induction_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7cb91c60b0a1c92543bd.json) |
-| queue_all | cn_original:queue_all | 24820f92_IntQueue_push_induction_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b5b46468bf3c24ce964a.json) |
-| queue_all | cn_original:queue_all | 24820f92_IntQueue_push_induction_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8d776d2a621fd04a7458.json) |
-| queue_all | cn_original:queue_all | e603e457_IntQueue_empty_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9d019034e5afebe05b5e.json) |
-| queue_all | cn_original:queue_all | e603e457_IntQueue_empty_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5beb3ae5ca805b957d06.json) |
-| queue_all | cn_original:queue_all | e603e457_IntQueue_pop_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d32d014b3004c4a3064e.json) |
-| queue_all | cn_original:queue_all | e603e457_IntQueue_pop_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/aec6dfbc3ff191aac250.json) |
-| queue_all | cn_original:queue_all | e603e457_IntQueue_pop_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/08cb8fe8a1e4fc01d0b2.json) |
-| queue_all | cn_original:queue_all | e603e457_IntQueue_pop_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3d5ed04b8b936c02e3dd.json) |
-| queue_all | cn_original:queue_all | e603e457_IntQueue_pop_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/40afe12b84eb91dfb92c.json) |
-| queue_all | cn_original:queue_all | e603e457_IntQueue_pop_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a57e546a40f0ec877470.json) |
-| queue_all | cn_original:queue_all | e603e457_IntQueue_pop_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a930fdcac2ff80233810.json) |
-| queue_all | cn_original:queue_all | e603e457_IntQueue_pop_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/088e13b36ab73859b6d8.json) |
-| queue_all | cn_original:queue_all | e603e457_IntQueue_push_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f5030dd9bfa46a704067.json) |
-| queue_all | cn_original:queue_all | e603e457_IntQueue_push_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b2df3e2d7aca52c43170.json) |
-| queue_all | cn_original:queue_all | e603e457_IntQueue_push_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ac8923ab5784edccc7bc.json) |
-| queue_all | cn_original:queue_all | e603e457_IntQueue_push_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d379e4f43705a652f035.json) |
-| queue_all | cn_original:queue_all | e603e457_IntQueue_push_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d94b252a61592ef1d21a.json) |
-| queue_all | cn_original:queue_all | e603e457_IntQueue_push_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/55e18d0606c38661beca.json) |
-| queue_all | cn_original:queue_all | e603e457_IntQueue_push_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0069c9094797cee4fb18.json) |
-| queue_all | cn_original:queue_all | e603e457_IntQueue_push_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/963259cb8c2306dcd8e8.json) |
-| queue_all | cn_original:queue_all | 774d9e08_push_induction_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1347404edc1e0a42b909.json) |
-| queue_all | cn_original:queue_all | 774d9e08_push_induction_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9d2f078773483b283340.json) |
-| queue_all | cn_original:queue_all | 774d9e08_push_induction_1 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/92ee9a3b9f555227307a.json) |
-| queue_all | cn_original:queue_all | 774d9e08_push_induction_1 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/d875fcc8002d4daa5d43.json) |
-| queue_all | cn_original:queue_all | 774d9e08_push_induction_2 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/43b24cb9663be2e1f336.json) |
-| queue_all | cn_original:queue_all | 774d9e08_push_induction_2 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/c0032801446b351576fb.json) |
-| queue_all | cn_original:queue_all | 774d9e08_push_induction_3 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/b5fe0ff31ee3191f5daa.json) |
-| queue_all | cn_original:queue_all | 774d9e08_push_induction_3 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/bd8b977a8ad323be15b6.json) |
-| queue_all | cn_original:queue_all | 774d9e08_IntQueue_empty_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/33006bfee1c66c4c5931.json) |
-| queue_all | cn_original:queue_all | 774d9e08_IntQueue_empty_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7dbad8ed245fc8f2c727.json) |
-| queue_all | cn_original:queue_all | 774d9e08_IntQueue_pop_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3b3271d1d0e05dd79538.json) |
-| queue_all | cn_original:queue_all | 774d9e08_IntQueue_pop_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/73cc3fc9af76fde41dd8.json) |
-| queue_all | cn_original:queue_all | 774d9e08_IntQueue_pop_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/81f9972205e20b3a1442.json) |
-| queue_all | cn_original:queue_all | 774d9e08_IntQueue_pop_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/93bebfb0354b200331d3.json) |
-| queue_all | cn_original:queue_all | 774d9e08_IntQueue_pop_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0299603f3a8f2538ade3.json) |
-| queue_all | cn_original:queue_all | 774d9e08_IntQueue_pop_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/12c7f45f0140fe21a275.json) |
-| queue_all | cn_original:queue_all | 774d9e08_IntQueue_pop_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ea9333e4191362b6b8fd.json) |
-| queue_all | cn_original:queue_all | 774d9e08_IntQueue_pop_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1aa61eea639ab624430a.json) |
-| queue_all | cn_original:queue_all | 774d9e08_IntQueue_push_induction_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/43e8511f1b1ae8d4f730.json) |
-| queue_all | cn_original:queue_all | 774d9e08_IntQueue_push_induction_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6fb2b982231828ce5139.json) |
-| queue_all | cn_original:queue_all | 774d9e08_IntQueue_push_induction_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/64f65c9b05bdaadc4bdb.json) |
-| queue_all | cn_original:queue_all | 774d9e08_IntQueue_push_induction_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/19659a8ad48e18f1226b.json) |
-| queue_all | cn_original:queue_all | 774d9e08_IntQueue_push_induction_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9b6c88841dee852734b9.json) |
-| queue_all | cn_original:queue_all | 774d9e08_IntQueue_push_induction_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/34aa19f3fe87f3c34643.json) |
-| queue_all | cn_original:queue_all | 774d9e08_IntQueue_push_induction_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/07cc50710a54a46f23c4.json) |
-| queue_all | cn_original:queue_all | 774d9e08_IntQueue_push_induction_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b7c814a279046a6a3eb8.json) |
-| queue_all | cn_original:queue_all | 1be32f3d_push_induction_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d8f9c5ff99a099fea93b.json) |
-| queue_all | cn_original:queue_all | 1be32f3d_push_induction_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/274e7aa4789e889dfc19.json) |
-| queue_all | cn_original:queue_all | 1be32f3d_push_induction_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1933154f3aee3138f0af.json) |
-| queue_all | cn_original:queue_all | 1be32f3d_push_induction_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b8f06c9e7afa082f5606.json) |
-| queue_all | cn_original:queue_all | 1be32f3d_push_induction_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1519c4f0884f22d10073.json) |
-| queue_all | cn_original:queue_all | 1be32f3d_push_induction_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/de7ad9512309e863b218.json) |
-| queue_all | cn_original:queue_all | 1be32f3d_push_induction_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b68edc53f53b5139092e.json) |
-| queue_all | cn_original:queue_all | 1be32f3d_push_induction_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e25b77efe743aab5c3d8.json) |
-| ref | cn_original:slf10_basic_ref | bounded_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/114e275fb591dc1af5fb.json) |
-| ref | cn_original:slf10_basic_ref | bounded_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d3ec87d75c67439ed038.json) |
-| ref | cn_original:slf10_basic_ref | bounded_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ed4237a5f1a95ac13c01.json) |
-| ref | cn_original:slf10_basic_ref | bounded_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/eaf3be4f06c7dc310b67.json) |
-| ref | cn_original:slf10_basic_ref | bounded_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f19120c8c6e211d437cb.json) |
-| ref | cn_original:slf10_basic_ref | bounded_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/64616648e2e81f9caaf0.json) |
-| ref | cn_original:slf10_basic_ref | bounded_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/605965343e44ecf43cdb.json) |
-| ref | cn_original:slf10_basic_ref | bounded_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d88a98e15003f0a2ca8a.json) |
-| ref | cn_original:slf10_basic_ref | bounded_4 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a01396b7f7510c00fa7d.json) |
-| ref | cn_original:slf10_basic_ref | bounded_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4f261f2d5e1d416cddd3.json) |
-| ref | cn_original:slf10_basic_ref | bounded_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b1fc59c73b29c849bf98.json) |
-| ref | cn_original:slf10_basic_ref | bounded_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6aeed905064051055d11.json) |
-| ref | cn_original:slf10_basic_ref | implicit_range_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d6854a372130cb2a8647.json) |
-| ref | cn_original:slf10_basic_ref | implicit_range_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/47f735ac3f33d3008e38.json) |
-| ref | cn_original:slf10_basic_ref | implicit_range_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f0ff532767d72aa46374.json) |
-| ref | cn_original:slf10_basic_ref | implicit_range_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9a32c186797231988ff2.json) |
-| ref | cn_original:slf10_basic_ref | implicit_range_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e5e255ea89d6bf467d00.json) |
-| ref | cn_original:slf10_basic_ref | implicit_range_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3c81cf3005a6ac99ad54.json) |
-| ref | cn_original:slf10_basic_ref | implicit_range_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ec595704cb0e697cfc9b.json) |
-| ref | cn_original:slf10_basic_ref | implicit_range_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7edc132d857a6d0f5435.json) |
-| ref | cn_original:slf10_basic_ref | implicit_range_4 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/57532b28294fcd9462c8.json) |
-| ref | cn_original:slf10_basic_ref | implicit_range_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/cad6f711dddf1eec779c.json) |
-| ref | cn_original:slf10_basic_ref | implicit_range_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a070555f172ae787f5e5.json) |
-| ref | cn_original:slf10_basic_ref | implicit_range_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a921b1805047251e6bfa.json) |
-| ref | cn_original:slf13_basic_ref_with_frame | bounded_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1e4622c6b68d43e126c0.json) |
-| ref | cn_original:slf13_basic_ref_with_frame | bounded_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e1a106a340681d11e76a.json) |
-| ref | cn_original:slf13_basic_ref_with_frame | bounded_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/84378528bb18fab7ddba.json) |
-| ref | cn_original:slf13_basic_ref_with_frame | bounded_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1b34fe3de0e945a5f118.json) |
-| ref | cn_original:slf13_basic_ref_with_frame | bounded_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/34d62847d6669e96cc84.json) |
-| ref | cn_original:slf13_basic_ref_with_frame | bounded_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c5cd96e4db04441f580a.json) |
-| ref | cn_original:slf13_basic_ref_with_frame | bounded_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4fdd48f9bef6f356cd70.json) |
-| ref | cn_original:slf13_basic_ref_with_frame | bounded_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d1bafb3501c3b0da7952.json) |
-| ref | cn_original:slf13_basic_ref_with_frame | bounded_4 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/084930906711c97bca66.json) |
-| ref | cn_original:slf13_basic_ref_with_frame | bounded_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/01237a6adb923637b33a.json) |
-| ref | cn_original:slf13_basic_ref_with_frame | bounded_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2c0f0b2dd163a1181d6f.json) |
-| ref | cn_original:slf13_basic_ref_with_frame | bounded_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0565dfef662bbb4f7805.json) |
-| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/21162653931d45ed197a.json) |
-| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/28bf82b670dab8aa4922.json) |
-| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/54cdccb3f8335bbf420a.json) |
-| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/fa8ba0cf04ef6854ec2f.json) |
-| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/91ac8e23cf5f4dff53dd.json) |
-| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e3819a37e8927a601a45.json) |
-| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c80e7a84171e30f8c0a5.json) |
-| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/703575be219920a08bc6.json) |
-| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_4 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2c094c8cbc0a92ee7a0e.json) |
-| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8277398f34c3115a7837.json) |
-| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e1c00bfc2f5d870e0ae4.json) |
-| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d0df57c590dc80b70f2c.json) |
-| ref_greater | cn_original:slf11_basic_ref_greater | exact_bounded_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/efb1975570704f541a2f.json) |
-| ref_greater | cn_original:slf11_basic_ref_greater | exact_bounded_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/20f270fc5b4820a18837.json) |
-| ref_greater | cn_original:slf11_basic_ref_greater | exact_bounded_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/864223a70ade1c245c27.json) |
-| ref_greater | cn_original:slf11_basic_ref_greater | exact_bounded_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/19cffb4ddeee94b8eb9b.json) |
-| ref_greater | cn_original:slf11_basic_ref_greater | exact_bounded_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a38d48a20f5c87ae6b64.json) |
-| ref_greater | cn_original:slf11_basic_ref_greater | exact_bounded_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8ee1d89c1f01db851639.json) |
-| ref_greater | cn_original:slf11_basic_ref_greater | exact_bounded_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/29b517043dd61f77588c.json) |
-| ref_greater | cn_original:slf11_basic_ref_greater | exact_bounded_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/da97b58994267e4088f5.json) |
-| ref_greater | cn_original:slf11_basic_ref_greater | exact_bounded_4 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d5cf65acfbb88a29382e.json) |
-| ref_greater | cn_original:slf11_basic_ref_greater | exact_bounded_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1d822f8d547facf8a928.json) |
-| ref_greater | cn_original:slf11_basic_ref_greater | exact_bounded_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/28a596c6ea1724fbab6d.json) |
-| ref_greater | cn_original:slf11_basic_ref_greater | exact_bounded_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/34a4974fa6ca3695adda.json) |
-| ref_greater | cn_original:slf11_basic_ref_greater | exact_implicit_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d6ab3d819e26f0f10a7c.json) |
-| ref_greater | cn_original:slf11_basic_ref_greater | exact_implicit_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/900be2fc3718bd4636e4.json) |
-| ref_greater | cn_original:slf11_basic_ref_greater | exact_implicit_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6d0856fb54c6d127417d.json) |
-| ref_greater | cn_original:slf11_basic_ref_greater | exact_implicit_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/99adce6faa462ffa342e.json) |
-| ref_greater | cn_original:slf11_basic_ref_greater | exact_implicit_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2425b5f3bb59c426b7ca.json) |
-| ref_greater | cn_original:slf11_basic_ref_greater | exact_implicit_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3630b0f31f0f5144425d.json) |
-| ref_greater | cn_original:slf11_basic_ref_greater | exact_implicit_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/55c5828a85477bb5496c.json) |
-| ref_greater | cn_original:slf11_basic_ref_greater | exact_implicit_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1083fc8a8fb2985ceab4.json) |
-| ref_greater | cn_original:slf11_basic_ref_greater | exact_implicit_4 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3626ae60ae910ca71a57.json) |
-| ref_greater | cn_original:slf11_basic_ref_greater | exact_implicit_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9ec6edb206763671cacc.json) |
-| ref_greater | cn_original:slf11_basic_ref_greater | exact_implicit_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0cf86d5a93ed44a4af3d.json) |
-| ref_greater | cn_original:slf11_basic_ref_greater | exact_implicit_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2880128ac18e24ad2bd9.json) |
-| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_bounded_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e24aac3e9478c2afceb4.json) |
-| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_bounded_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5db118e10582f2ba70a4.json) |
-| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_bounded_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/49dca9088a1b7c424836.json) |
-| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_bounded_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b7d4ae7ffded911f1f03.json) |
-| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_bounded_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5ff542ab1098ed9e04b9.json) |
-| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_bounded_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8b75cc2fce6709cb8827.json) |
-| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_bounded_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9aebc9e666a6b88a5132.json) |
-| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_bounded_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/57bb7dc7a351490b1b84.json) |
-| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_bounded_4 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/756d45aadf9bc2a0500f.json) |
-| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_bounded_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c1c839b335409fd04ca4.json) |
-| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_bounded_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b2ed698ac3a117ea8236.json) |
-| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_bounded_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/76affd65fb93a19c7bc6.json) |
-| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_implicit_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e6573513a1cc683e94ce.json) |
-| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_implicit_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f9f37cd0c7af6b5fca3b.json) |
-| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_implicit_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/876e4e381a8e132fb00c.json) |
-| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_implicit_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b73602c5feadda009f58.json) |
-| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_implicit_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/05e9b912d6a7fd69e56d.json) |
-| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_implicit_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/afeeed17147ec3ac35ec.json) |
-| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_implicit_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3f5b4a37332fc74a5284.json) |
-| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_implicit_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/91daeaface95e6e15a59.json) |
-| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_implicit_4 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/687ca70a0082669dd5bd.json) |
-| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_implicit_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/bd6d93274f0a8ba91003.json) |
-| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_implicit_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/40e5368068673e9348df.json) |
-| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_implicit_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a0c90d3e493f9fe18280.json) |
-| ref_greater | cn_original:slf_ref_greater | weak_ge_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/98ea74adf45cd69da2df.json) |
-| ref_greater | cn_original:slf_ref_greater | weak_ge_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/cb83bd89b16bb3c80227.json) |
-| ref_greater | cn_original:slf_ref_greater | weak_ge_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6fe1ab2423c5369a3f2c.json) |
-| ref_greater | cn_original:slf_ref_greater | weak_ge_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/62efb99586132516efb8.json) |
-| ref_greater | cn_original:slf_ref_greater | weak_ge_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4a376a1b5fc11f71447f.json) |
-| ref_greater | cn_original:slf_ref_greater | weak_ge_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b694ec55ea30db920e8e.json) |
-| ref_greater | cn_original:slf_ref_greater | weak_ge_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/21f4766268bd3c050e66.json) |
-| ref_greater | cn_original:slf_ref_greater | weak_ge_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/77b2afd2eede2444102b.json) |
-| ref_greater | cn_original:slf_ref_greater | weak_ge_4 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/345f23776a8eb273da1b.json) |
-| ref_greater | cn_original:slf_ref_greater | weak_ge_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ac7444e323c4abf698d0.json) |
-| ref_greater | cn_original:slf_ref_greater | weak_ge_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7576e150a8a682d7dc0e.json) |
-| ref_greater | cn_original:slf_ref_greater | weak_ge_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/bdebe8406f8b9bb0963b.json) |
-| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_0 | off | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/05b5ba05e3e7898b2b60.json) |
-| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_0 | on | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/cc224b3f61989aa02b1b.json) |
-| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_1 | off | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1584982beef48a347adb.json) |
-| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_1 | on | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f53f0dd06468c025fddf.json) |
-| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_2 | off | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ac498435030e44153fb7.json) |
-| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_2 | on | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/25006c3256bb8d9e0a06.json) |
-| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_3 | off | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/af3735e18a6b4bff6bf4.json) |
-| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_3 | on | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7098bce84d2bd07b6d54.json) |
-| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_4 | off | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1e68de2f5ccc37264f53.json) |
-| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_4 | on | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d2f4d0c06049e7057020.json) |
-| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_5 | off | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f852f80706c604e134f2.json) |
-| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_5 | on | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/98f92a709d8a515cb8d8.json) |
-| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | malloc_int_only_entry | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b06a1efe9da49f94a50e.json) |
-| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | malloc_int_only_entry | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/deb05472091dab25d62c.json) |
-| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | original_main_translation0_only_entry | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3d6dd9f89a2559d4d887.json) |
-| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | original_main_translation0_only_entry | on | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7de218df4dbbff44b5e5.json) |
-| runtime-extras__double_free | cn_original:runtime-extras__double_free.broken | original_main_translation0_only_entry | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/99af3e9a170734aa1bf7.json) |
-| runtime-extras__double_free | cn_original:runtime-extras__double_free.broken | original_main_translation0_only_entry | on | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b051a7306bb5cb8a9bf3.json) |
-| runtime-extras__double_free | cn_original:runtime-extras__double_free.broken | original_main_translation1_only_entry | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/69d0c52f7659b817de35.json) |
-| runtime-extras__double_free | cn_original:runtime-extras__double_free.broken | original_main_translation1_only_entry | on | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/78ba5ba7ab6e1bdb34b2.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation0_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ed5b686b2fa7ad2e30c5.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation0_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a54616671351dd70a91a.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation0_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/14ae12221ac87c7d55eb.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation0_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7ee97d874c53b2850a89.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation0_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f08724bf1432d664181a.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation0_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c919644fb78a47281d1c.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation0_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c467ce8cc8b34d9de1cc.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation0_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6b7cf0cf2bf8422e035b.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation0_4 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7c444df715ef64678ffe.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation0_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4dfe9f6958bc4af028fc.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation0_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9f89114c8639ca95da4d.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation0_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3b7e31ab5a2ddbeebeec.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | original_main_translation0_only_entry | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d6c00bc756770885fa5e.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | original_main_translation0_only_entry | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/73f028d37d45a5a31b2e.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation1_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a1a932da34cfb277ea12.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation1_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a54533cf6b94d290a7bb.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation1_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/469bdc9349aed609979d.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation1_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/58338b5bfada55e43fe3.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation1_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/17394d033eaaf19c1cfc.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation1_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3de93da658515bb196b1.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation1_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d463d3717dfca09092ee.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation1_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9b225441ec8274b97f00.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation1_4 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9825207e89fd19215f1a.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation1_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4c46de275c687415e514.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation1_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/335848f2575f03230800.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation1_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/94bf436c822e14d74d42.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | original_main_translation1_only_entry | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8629abf3289186ddb3cb.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | original_main_translation1_only_entry | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c380a98ba7d3a51c5187.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation2_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9ed6a35e41a9a236c67b.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation2_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/08b20430ded8769e624e.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation2_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/67f62131e510ab86badf.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation2_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3c3f2a0e22fdbb77746f.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation2_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5cf083997cb04c8d8968.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation2_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9e270d65991cc02550ad.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation2_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/80edb73ed9857354621f.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation2_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/74df501c362f93572458.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation2_4 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/549e148bd282505b6792.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation2_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d3d85476bf72a29d7104.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation2_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ac58afcf0177f1b9595f.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation2_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/81359d6b8ec695002f7a.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | original_main_translation2_only_entry | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f04a59f6a32151b8f038.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | original_main_translation2_only_entry | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f48bea82d5578284f544.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation3_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/be2ea9f855e9f2dc068b.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation3_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d352c0f8356005948e7c.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation3_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e6c196cd1775574543a3.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation3_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/59b1a705b1a44dfe2385.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation3_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5d1690bf5ee819fcbcd6.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation3_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d3727ea64891d05f4c71.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation3_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8fa6fbc0371a790da05d.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation3_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a597436a5285099f22ce.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation3_4 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/662d293e19c6146a632c.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation3_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1232e9197c38f5a913f3.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation3_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8fa8b03514b5f779357b.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation3_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7f634a42c2820db1924f.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | original_main_translation3_only_entry | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/09cdbcaf22f6f3c6be57.json) |
-| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | original_main_translation3_only_entry | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ac5641631f898c162837.json) |
-| runtime-extras__leaky | cn_original:runtime-extras__leaky.broken | leaky_get_translation0_0 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8cf8f6f2b3cad0edc44f.json) |
-| runtime-extras__leaky | cn_original:runtime-extras__leaky.broken | leaky_get_translation0_1 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d31ece05b82bce9735f1.json) |
-| runtime-extras__leaky | cn_original:runtime-extras__leaky.broken | leaky_get_translation0_2 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3f56629c9b58e8d450f0.json) |
-| runtime-extras__leaky | cn_original:runtime-extras__leaky.broken | leaky_get_translation0_3 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4e6b0fb42e060a86f6c7.json) |
-| runtime-extras__leaky | cn_original:runtime-extras__leaky.broken | leaky_get_translation0_4 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/62aee14c9d6c79ac3f82.json) |
-| runtime-extras__leaky | cn_original:runtime-extras__leaky.broken | leaky_get_translation0_5 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ebb6ffb273b49662b672.json) |
-| runtime-extras__leaky | cn_original:runtime-extras__leaky.broken | original_main_translation0_only_entry | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7a5f61b1945d87bd4bad.json) |
-| runtime-extras__leaky | cn_original:runtime-extras__leaky.broken | original_main_translation0_only_entry | on | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e64a4b9d48641b5b408a.json) |
-| runtime-extras__leaky_main | cn_original:runtime-extras__leaky_main | mkref_translation0_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/04579a6ee616374eb514.json) |
-| runtime-extras__leaky_main | cn_original:runtime-extras__leaky_main | mkref_translation0_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e2f3a848cff4a6a7ff41.json) |
-| runtime-extras__leaky_main | cn_original:runtime-extras__leaky_main | mkref_translation0_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2d191ed6d13b805a4ed6.json) |
-| runtime-extras__leaky_main | cn_original:runtime-extras__leaky_main | mkref_translation0_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0ba3b139ccee0d3daf68.json) |
-| runtime-extras__leaky_main | cn_original:runtime-extras__leaky_main | mkref_translation0_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/16517028a022c3b53b75.json) |
-| runtime-extras__leaky_main | cn_original:runtime-extras__leaky_main | mkref_translation0_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/29b07efb076b3308d892.json) |
-| runtime-extras__leaky_main | cn_original:runtime-extras__leaky_main | mkref_translation0_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/61a4ced12937c35901c0.json) |
-| runtime-extras__leaky_main | cn_original:runtime-extras__leaky_main | mkref_translation0_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/aae7a776375e5cc252e2.json) |
-| runtime-extras__leaky_main | cn_original:runtime-extras__leaky_main | mkref_translation0_4 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/35e92c5245bda24039b5.json) |
-| runtime-extras__leaky_main | cn_original:runtime-extras__leaky_main | mkref_translation0_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7c79edea6a7397b0015c.json) |
-| runtime-extras__leaky_main | cn_original:runtime-extras__leaky_main | mkref_translation0_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3217fc2fd301fcee8f85.json) |
-| runtime-extras__leaky_main | cn_original:runtime-extras__leaky_main | mkref_translation0_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c39e01fb2112eec45c26.json) |
-| runtime-extras__leaky_main | cn_original:runtime-extras__leaky_main | original_main_translation0_only_entry | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/27d3444a2dbd8f868663.json) |
-| runtime-extras__leaky_main | cn_original:runtime-extras__leaky_main | original_main_translation0_only_entry | on | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/bd72616b4c0531370ac1.json) |
-| runtime-extras__return_owned_local | cn_original:runtime-extras__return_owned_local.broken | bad_0 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c38d36536de2ad045bca.json) |
-| runtime-extras__return_owned_local | cn_original:runtime-extras__return_owned_local.broken | bad_1 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0ccb765a413390b856c4.json) |
-| runtime-extras__return_owned_local | cn_original:runtime-extras__return_owned_local.broken | bad_2 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1a5c48d3b74284917422.json) |
-| runtime-extras__return_owned_local | cn_original:runtime-extras__return_owned_local.broken | bad_3 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c3eb2c631f1cea58f7b7.json) |
-| runtime-extras__return_owned_local | cn_original:runtime-extras__return_owned_local.broken | bad_4 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/204481947b14ac56b5b5.json) |
-| runtime-extras__return_owned_local | cn_original:runtime-extras__return_owned_local.broken | bad_5 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/da884c2ebdfc0c1b0ee8.json) |
-| runtime-extras__return_owned_local | cn_original:runtime-extras__return_owned_local.broken | original_client_only_entry | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/bcfea82f0c60cbc003d6.json) |
-| runtime-extras__return_owned_local | cn_original:runtime-extras__return_owned_local.broken | original_client_only_entry | on | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/19210eebbb414a6f3dd1.json) |
-| runtime-extras__same_func_malloc_free | cn_original:runtime-extras__same_func_malloc_free | original_main_translation0_only_entry | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/29df8f2770a89010900f.json) |
-| runtime-extras__same_func_malloc_free | cn_original:runtime-extras__same_func_malloc_free | original_main_translation0_only_entry | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c118a8761c56b97866a8.json) |
-| runtime-extras__same_func_malloc_free | cn_original:runtime-extras__same_func_malloc_free | original_main_translation1_only_entry | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8aee2ee768b3b4741a46.json) |
-| runtime-extras__same_func_malloc_free | cn_original:runtime-extras__same_func_malloc_free | original_main_translation1_only_entry | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/dcd0ecec3d1507599cbe.json) |
-| runtime-extras__same_func_malloc_free | cn_original:runtime-extras__same_func_malloc_free | original_main_translation2_only_entry | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a6cfe30bd83d2daa80c3.json) |
-| runtime-extras__same_func_malloc_free | cn_original:runtime-extras__same_func_malloc_free | original_main_translation2_only_entry | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/29b08928955e063faee7.json) |
-| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/dc6f9f46150b0ba0b57f.json) |
-| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7b74f2d4cf0a13e6fc45.json) |
-| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e16ab5fac2876534eac2.json) |
-| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/41ef5bf6455b601098e8.json) |
-| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/bb16d152820cc245d4b5.json) |
-| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a234e1a24012a3843e85.json) |
-| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0ba9083a8b0d97e31cc7.json) |
-| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7eec7b074c20425a2d30.json) |
-| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_4 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/08ae055077e28b51d950.json) |
-| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0269b8bca30363d8919a.json) |
-| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e824116ca728eb43b682.json) |
-| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b996bbf8fa7bee925959.json) |
-| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | original_main_translation0_only_entry | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ba6759a4083a461b74f5.json) |
-| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | original_main_translation0_only_entry | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/58da61adb85b690b4b2a.json) |
-| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e7d26290ef64161b2c0c.json) |
-| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/58c4a01cba94088082dc.json) |
-| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1ccffb225af3604d3af1.json) |
-| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/86e6776f72567ddb37dd.json) |
-| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/272dbabdcc91ad0ad899.json) |
-| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/64fa6f36532a5a847294.json) |
-| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8cfa2cec3bfa0bc5c257.json) |
-| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/445f1ec6ec893bb5fe9c.json) |
-| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_4 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c4c242b658d110097978.json) |
-| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/088848d13180c288cf8a.json) |
-| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0a098a7b1de073adef44.json) |
-| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a01c838cb24371065447.json) |
-| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | original_main_translation1_only_entry | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/65ce25f528a8db627f29.json) |
-| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | original_main_translation1_only_entry | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e02819974a4b4c11e8f7.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation1_0 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/4d9743c6d70a75c60d57.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation1_0 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/3eea58dfb7f31cfbadd8.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation1_1 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/8f0f0e4c4797cf4fab80.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation1_1 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/d66021c61b223a31c6ae.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation1_2 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/2d6faba762c2147967a7.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation1_2 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/907acd79c120e2a516c6.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation1_0 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/dfdb1017c5f4fea849f1.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation1_0 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/2d6281edf6f5cd65e336.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation1_1 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/d64d52df74abf376407e.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation1_1 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/d088ec45d66ea3dbead9.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation1_2 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/9ccb78f83cbc2e29ed70.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation1_2 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/cf01bf1fae148ccb2d7f.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation1_0 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/ac4424dfb329543885b7.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation1_0 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/60f960c7c1d609f19f9d.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation1_1 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/f0e708e8a68488752e7a.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation1_1 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/038c3b67feec255f33b5.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation1_2 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/4626c1bed3fe7603fa7c.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation1_2 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/77df35ba053a2975463a.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation1_0 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/f67ceebd6cba28076ad1.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation1_0 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/7cefacd5a992abc4df23.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation1_1 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/330f013243735f796527.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation1_1 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/74983f72f8fa87341afc.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation1_2 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/df59629e7f7238b86228.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation1_2 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/01f2d98588377f266e75.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation1_0 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/8be6f0279b8ba15c7aab.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation1_0 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/7fa99857ba86638d756a.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation1_1 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/5d02dfa0948b956f6905.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation1_1 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/9daf49b7cf43b801eb6d.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation1_2 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/a1ea48f690493dab08fd.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation1_2 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/0f5e3799609d58a44a2e.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | depart_translation1_0 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/90aed97006652fd068fc.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | depart_translation1_0 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/fb0f6081a01e500bf987.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | depart_translation1_1 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/197b786eb1d113695902.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | depart_translation1_1 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/eb1559c3d2a4a0c7e8c8.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | depart_translation1_2 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/b54f3aa9cf90d48bb196.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | depart_translation1_2 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/abb5bcc253ca9e9e8979.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation1_0 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/6dce1a5f349f91388380.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation1_0 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/54e61a77d8e166e727d5.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation1_1 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/5b1ecbeb0f79e157cd30.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation1_1 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/ccb62f7f7065e7060d51.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation1_2 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/41fd8dcc710f6b563a29.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation1_2 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/6274ba09a9be20485b5a.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_0 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/0bcbdc62fc2a38dcd3c6.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_0 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/36b613e1455410527585.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_1 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/c2c1e653509c29d6d186.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_1 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/315f7a5696e209103e56.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_2 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/375f3c08a0999b0bc1a6.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_2 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/558d7a503880e166a2c6.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_3 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/c847c36b2bd355ef0565.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_3 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/547c8be86edf149d6f24.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_4 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/608eb36045079d9d1e84.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_4 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/75db279cad642b5a2a8c.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_5 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/6b8672d7fad1693f8fe6.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_5 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/a5c734f71111f10debd1.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_6 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/04eda558ec081b594ed8.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_6 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/ecfcb637f0579e07510c.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_7 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/9df0660af2f2aa336b73.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_7 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/220bf69acad7cbc12906.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_8 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/24d03b2e54314b7c776b.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_8 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/2bf223dae898851640ad.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation3_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b84b65074cee3a87ffae.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation3_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/140714e22453826eae08.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation3_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8e4ae24a88a44da8f873.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation3_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0867d605960b940a9a87.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation3_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5d3bdde397575147183d.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation3_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d3bbc519a099c0c7a3d7.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation3_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0519ad5dfec5177fba7c.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation3_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/faaf443553ec6e9c6c4e.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation3_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a4742f4e633a41704c3e.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation3_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/38955b0f79fc11a9d6d9.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation3_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9b16b71470b84f1faaaa.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation3_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4b9b601ac5c108bb56b1.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation3_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/907019e163e1181224e4.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation3_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9f5b37cf70792a8206a3.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation3_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6e1ada3806608dfe8a52.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation3_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a5dfd858635eb179d8e0.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation3_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5a9ec15dc3c2e5c252ba.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation3_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e8e2377103c3f14e0d54.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation3_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ea3792ea8caa9477c741.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation3_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/68c163ae64ee8d161673.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation3_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5c0a00faf3c538a82b50.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation3_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/fb33eaccea92a2755f9f.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation3_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/04f09ec9055f0a92d958.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation3_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/738712afbb22c005e03d.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation3_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/cc810eed95cd607b06c3.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation3_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f107d2c289ad1ca868c9.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation3_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0ca79331772de031f5c5.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation3_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/cc23102162d01da6265a.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation3_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/58792530a29f6cfaa76a.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation3_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4bedf4b4a927561fb4ff.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | depart_translation3_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d238f9db332f8c6fc345.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | depart_translation3_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/fdf030385eb848e6fe66.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | depart_translation3_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1f559dc1db28a21b2ab2.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | depart_translation3_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b1e1ff422f1252606ff4.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | depart_translation3_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e0bdd9de4904971fdfbc.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | depart_translation3_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3ee60ed852c84bc51648.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation3_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/39cc9e2f7379ac142faf.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation3_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7e830911494b056b71a7.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation3_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2434f6ecef83e98a85b8.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation3_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/08d42810b71edd0bda7a.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation3_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6d36bbed30b7ac735325.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation3_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/10ee834d9f92fac8726c.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/bfa588f4e84f9e2502be.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/19ba5ef2230c6d9e7aae.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/87c14a59ba7abef05e49.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/16bec027b20466f9e501.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b299ff097cf9878874a6.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/aa9a885ab077e044ba9d.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8665b333f256875a8eef.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a207d3ab656192df4fac.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_4 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4c9367e026081c0a1b41.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5e06ec21c69b48951c6f.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/064ee964a9a431e8b371.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/903d6755dc9576f491e0.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_6 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/127c28c39dc2b225ae83.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_6 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8609ffc3de2ee5ebe332.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_7 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/91821e7264eaab33cb81.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_7 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/75f5c4261c95f3491fe9.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_8 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/85458f7343cd2081ee59.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_8 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d56155ad471bfc81c9dc.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation4_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/afbac9af02d25b96b48e.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation4_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6c23bcfcc71a581ddc40.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation4_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/095bd3ae009c5e7a012e.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation4_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/95d1a3e71f7389736c9c.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation4_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9f8aa6a11882798b3237.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation4_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/dc68861fda94a65ad4a3.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation4_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1842c72f1c456dc73201.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation4_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/975d1cf097efeb022eea.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation4_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8c0d12ae131f6df2d07c.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation4_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e37e0eba664f1b469fbb.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation4_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0aaf6f4829b43ebe4a76.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation4_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/35884644f7521e974edc.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation4_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/68c37c4dbfd551d88465.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation4_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a217fddd83220dba3575.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation4_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/efa66b72434ed7b7e3e9.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation4_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e2db17f1f78a848dc814.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation4_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/48449a2b7cbeb19fd0c4.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation4_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/91b1945301caa8ca6ab8.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation4_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/de36bc1690be7c53344e.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation4_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4afafb5a6cb3d1a769bc.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation4_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/01da8658ebf1404f9f62.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation4_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d1fa3136dc41f18bb7cf.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation4_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ab637cf482d9c41e39ac.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation4_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a0e4d64ef67c820992d7.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation4_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2cd06ce48d4ab0f84521.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation4_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5bfbf03a6202ce7bea55.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation4_1 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/61c5f33fc8f475e62b48.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation4_1 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/a5eb5c9f281a7a7ad6f7.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation4_2 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/931d086869aceb7011ff.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation4_2 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/bd5c10ee7b6a99e1ab81.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | depart_translation4_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d9bb23668e69f3801189.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | depart_translation4_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/64eb1d56a922e1b39608.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | depart_translation4_1 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/4c5092e67534e4ee2407.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | depart_translation4_1 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/3d234ddb14f940b280ed.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | depart_translation4_2 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/39b032ca51588fc97532.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | depart_translation4_2 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/cc763d629933835ef209.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation4_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c042c8f93892ee3bb8b5.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation4_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/94d2a210630ba5c55153.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation4_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/882464b087b514abddd8.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation4_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7a99bc34686935b6da45.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation4_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8a789d7e95be8e9acdba.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation4_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f856faff028409ee1579.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d10546caf61aff9112ae.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7906661a35e919196222.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_1 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/a0f6b0c63b2cd133a586.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_1 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/d875b38a878eaba1c2fa.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_2 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/143a2ece08145d2c1dc9.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_2 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/becb050bc1cf6468363a.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_3 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/fe6d54b593a33c03b91c.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_3 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/da9850d1c43f4a069cd5.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_4 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/ac90ccc2efdd12efb95b.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_4 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/aa6f1beb70e91ab82a7a.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_5 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/34dbe16b25b730dc2181.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_5 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/2ebf31155cc15635e88b.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_6 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/5a6a6eff2d8c33fc72ff.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_6 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/7a4197a0e5793f896dff.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_7 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/be0780ff77fe3bb64351.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_7 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/7dd7b538389a9e3bbe98.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_8 | off | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/b411d367899e60b719d8.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_8 | on | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/29a0fbdf7bcc35f7bd68.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation5_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/bc425914892772820e3e.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation5_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ef2fc70ef77110ca1a06.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation5_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7d651b9504b779988218.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation5_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d6ad13b680aa92891576.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation5_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/14fa188973ba9e422845.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation5_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/10cd208f01c70aefbf30.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation5_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9d75cf54c203ef68c03f.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation5_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d04e73a74ca4df2f4c2e.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation5_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6da3d2e6d25adc9268fc.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation5_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2831d189a4932e2b76dd.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation5_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ab6608a9220238a6507a.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation5_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4b7acd153dda37a3c449.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation5_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/33a93f1041aa85ef7d69.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation5_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4d1b5c9b12e5a45e8e96.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation5_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3ff18f9435877f300717.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation5_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e7cb37f14b6d0e9d3764.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation5_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/02789a2137fa87ff5628.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation5_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b0a6d8e33e8723365d4d.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation5_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/cdf480f5bf01e12b5127.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation5_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/330c52ff9d6a380b10d3.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation5_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/21487ea9e591f7198392.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation5_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d39afbc81f24b87525d2.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation5_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2c9beef89d0db112a3ce.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation5_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f05b50a3efa2b8b93a5c.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation5_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7e4b881ba02b2fa470c5.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation5_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7e1a178e0b597c51f970.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation5_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/821607e4cb487d299497.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation5_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/21d24dc864b8004c0708.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation5_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f27bbb4a3fb588d702b2.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation5_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2b0d9b52c295c4060bea.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | depart_translation5_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ed97edb63def72c1582e.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | depart_translation5_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b297b045e14683d98baa.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | depart_translation5_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ab2fdf5514b8e7ea89a9.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | depart_translation5_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5b6625acef1b087ab174.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | depart_translation5_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/28a7f1191078abb56487.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | depart_translation5_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4e45bf766cb70aecb997.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation5_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ed56e572eff682d6f69f.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation5_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0a0cf6afddbe9839cf5b.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation5_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d58abb9388d8ca284b7d.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation5_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e95f9ec5642d21d8afa4.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation5_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1974bc76994e4ff93839.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation5_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/17cb3b0551a5712a7764.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/124693fd640d1672e013.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/aed8b52a405dd38c64f4.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/bf11a30844afd8481425.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e87c035300d7fce7f8f9.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/06bc647820fc7d13c699.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ee36845126201a6cf102.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a40bf0adede1368bc0fa.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a2aaa335f5ec3b996edc.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_4 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/58dc7e8e1a7aed6da86a.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f07389f702215524b95e.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d39bf8c882ffe3d4b34a.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/04fe84a4e2a1818c6e9a.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_6 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5c09a8a7c705eeea7a32.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_6 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1a4598234f3af8191037.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_7 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/faf4953cad552e75db91.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_7 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/187aaa0275a0c0bc52d8.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_8 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a3e739e3d35dd978cd5e.json) |
-| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_8 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/bd7ee596bc3b13e22ddb.json) |
-| slf17_get_and_free | cn_original:slf17_get_and_free | original_free_body_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/69d7e5f08e73cf521967.json) |
-| slf17_get_and_free | cn_original:slf17_get_and_free | original_free_body_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/92cfa442e4569b21dc97.json) |
-| slf17_get_and_free | cn_original:slf17_get_and_free | original_free_body_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6b135a4a3e53c84f9fff.json) |
-| slf17_get_and_free | cn_original:slf17_get_and_free | original_free_body_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/acc322698b496624dc26.json) |
-| slf17_get_and_free | cn_original:slf17_get_and_free | original_free_body_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/10136996bedd25689b7f.json) |
-| slf17_get_and_free | cn_original:slf17_get_and_free | original_free_body_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/11ab9ba05565f9917cc3.json) |
-| slf17_get_and_free | cn_original:slf17_get_and_free | original_free_body_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e035ce3edd2d483189d1.json) |
-| slf17_get_and_free | cn_original:slf17_get_and_free | original_free_body_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7bbb042c70986ef4d510.json) |
-| slf17_get_and_free | cn_original:slf17_get_and_free | original_free_body_4 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/741a4a0d1e78212eeabd.json) |
-| slf17_get_and_free | cn_original:slf17_get_and_free | original_free_body_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e9831f61412882e05cfb.json) |
-| slf17_get_and_free | cn_original:slf17_get_and_free | original_free_body_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f90cfcbbba2cd26b2c5f.json) |
-| slf17_get_and_free | cn_original:slf17_get_and_free | original_free_body_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/815d4030d1e72e0ee930.json) |
-| slf17_get_and_free | cn_original:slf17_get_and_free | trusted_free_interface_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5aa7400707328bcbf1c9.json) |
-| slf17_get_and_free | cn_original:slf17_get_and_free | trusted_free_interface_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f3d9022f4a1146273178.json) |
-| slf17_get_and_free | cn_original:slf17_get_and_free | trusted_free_interface_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6643a48a13c1ccd7b093.json) |
-| slf17_get_and_free | cn_original:slf17_get_and_free | trusted_free_interface_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/47e88abb4cb33bf1dd60.json) |
-| slf17_get_and_free | cn_original:slf17_get_and_free | trusted_free_interface_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/50af39a4b56e4945ce05.json) |
-| slf17_get_and_free | cn_original:slf17_get_and_free | trusted_free_interface_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/fff4aed14797b2e28728.json) |
-| slf17_get_and_free | cn_original:slf17_get_and_free | trusted_free_interface_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9cb63f46e0239a65bc8e.json) |
-| slf17_get_and_free | cn_original:slf17_get_and_free | trusted_free_interface_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d4b2884a67c3c245c835.json) |
-| slf17_get_and_free | cn_original:slf17_get_and_free | trusted_free_interface_4 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e27f0e7450405a06f570.json) |
-| slf17_get_and_free | cn_original:slf17_get_and_free | trusted_free_interface_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/476c63bd241344f10f41.json) |
-| slf17_get_and_free | cn_original:slf17_get_and_free | trusted_free_interface_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/595ad60d323cc95651b7.json) |
-| slf17_get_and_free | cn_original:slf17_get_and_free | trusted_free_interface_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3cebeeb7d50087350b40.json) |
-| slf18_two_dice | cn_original:slf18_two_dice | bounded_modulus_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d19439384c98f16d3859.json) |
-| slf18_two_dice | cn_original:slf18_two_dice | bounded_modulus_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/85e11b455b647a45779f.json) |
-| slf18_two_dice | cn_original:slf18_two_dice | bounded_modulus_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/426c07b4a0c6941a1e40.json) |
-| slf18_two_dice | cn_original:slf18_two_dice | bounded_modulus_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d250032cf17dd97a4fbe.json) |
-| slf18_two_dice | cn_original:slf18_two_dice | bounded_modulus_6 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d73daf21f8bb4c69666b.json) |
-| slf18_two_dice | cn_original:slf18_two_dice | bounded_modulus_6 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5126c86e3bd993a2e662.json) |
-| slf18_two_dice | cn_original:slf18_two_dice | bounded_modulus_7 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b465af348563c55a9ea5.json) |
-| slf18_two_dice | cn_original:slf18_two_dice | bounded_modulus_7 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f076671077a84a5261b7.json) |
-| slf18_two_dice | cn_original:slf18_two_dice | bounded_modulus_2147483648 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b7971ff77f9492cf678a.json) |
-| slf18_two_dice | cn_original:slf18_two_dice | bounded_modulus_2147483648 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/edb6217a7d73fb6a737d.json) |
-| slf18_two_dice | cn_original:slf18_two_dice | bounded_modulus_4294967295 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7261da306d426615cdef.json) |
-| slf18_two_dice | cn_original:slf18_two_dice | bounded_modulus_4294967295 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ad19b005b1e13f1f42fc.json) |
-| slf18_two_dice | cn_original:slf18_two_dice | bounded_two_dice_no_args | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e54f7e85abe4dabdab78.json) |
-| slf18_two_dice | cn_original:slf18_two_dice | bounded_two_dice_no_args | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/50b04505eb4a8218ae62.json) |
-| slf18_two_dice | cn_original:slf18_two_dice | implicit_range_modulus_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/48b90df5046ae2817c82.json) |
-| slf18_two_dice | cn_original:slf18_two_dice | implicit_range_modulus_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/230b079278ba16f8f287.json) |
-| slf18_two_dice | cn_original:slf18_two_dice | implicit_range_modulus_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8ffd58f0c60c19f5a5c2.json) |
-| slf18_two_dice | cn_original:slf18_two_dice | implicit_range_modulus_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/429ff17c0e7509b35a8b.json) |
-| slf18_two_dice | cn_original:slf18_two_dice | implicit_range_modulus_6 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c36affcc8f011174cb69.json) |
-| slf18_two_dice | cn_original:slf18_two_dice | implicit_range_modulus_6 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/cebd5450af042621c94f.json) |
-| slf18_two_dice | cn_original:slf18_two_dice | implicit_range_modulus_7 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1deeabf5102d2734e1e6.json) |
-| slf18_two_dice | cn_original:slf18_two_dice | implicit_range_modulus_7 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e1e0d10714f695879ac3.json) |
-| slf18_two_dice | cn_original:slf18_two_dice | implicit_range_modulus_2147483648 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5befcea7c2a77899ab9e.json) |
-| slf18_two_dice | cn_original:slf18_two_dice | implicit_range_modulus_2147483648 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/87e80157c33888436fd1.json) |
-| slf18_two_dice | cn_original:slf18_two_dice | implicit_range_modulus_4294967295 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/957431c7714a124bb724.json) |
-| slf18_two_dice | cn_original:slf18_two_dice | implicit_range_modulus_4294967295 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c832266e59efb7c0df21.json) |
-| slf18_two_dice | cn_original:slf18_two_dice | implicit_range_two_dice_no_args | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7ffa1ac451e0df0d89d4.json) |
-| slf18_two_dice | cn_original:slf18_two_dice | implicit_range_two_dice_no_args | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b8fb235fa08ed501f886.json) |
-| slf3_basic_inplace_double | constructed:case_cd64220fbef61c25 | value_0 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/8f0a71c1328250f32fac.json) |
-| slf3_basic_inplace_double | constructed:case_cd64220fbef61c25 | value_1 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/3c7d990f379c332bb9e9.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | IntList_cons_translation0_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/591dfd32a0b17dc83a0c.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | IntList_cons_translation0_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2a5ad7df30853ad15827.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | IntList_cons_translation0_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7544d2157948bc06b4aa.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | IntList_cons_translation0_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f9cc1e26870e830db01e.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | IntList_cons_translation0_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7ab43b3c6efa0e989e0b.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | IntList_cons_translation0_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a1cc0dae8f0c93d356fa.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | IntList_cons_translation0_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/56f96ef0b424e780fcfb.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | IntList_cons_translation0_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/88c95020147f67dbe799.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | create_translation0_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8fe5c0481526f58651c8.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | create_translation0_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8c0d642922e0e379c3b1.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | sizeOf_translation0_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/526ddeccbd778848e2d4.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | sizeOf_translation0_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0b3520d7dd688a1022ca.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | sizeOf_translation0_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b9e72eda1483bf5192ab.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | sizeOf_translation0_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/39c0ded6822630fb54a5.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | sizeOf_translation0_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/756494ce7e4b6dc62657.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | sizeOf_translation0_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1bd89f89ee750107aadc.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | sizeOf_translation0_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ac492c1bbb4ebba5cc68.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | sizeOf_translation0_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9b43c49de1bfa07efb9a.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | push_translation0_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/257198d9658588d03e14.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | push_translation0_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5a7c1a00cb49bef66ede.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | push_translation0_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/95248fb23cc12fd0a866.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | push_translation0_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c01371f8203806348aee.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | push_translation0_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1b00dd99d591254deed1.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | push_translation0_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/25c295390a0baf2ff359.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | push_translation0_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/62c36479f45016a49d49.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | push_translation0_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e96b03756ac5d0e5ceb1.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | top_translation0_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4b63f12625e8bc7234a1.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | top_translation0_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e444fbbbb96cdd12c165.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | top_translation0_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/165ebed3d661bb3afaf4.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | top_translation0_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f0dedb7a10db1f236738.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | top_translation0_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7e2d9381f4f00205848e.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | top_translation0_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/df1fb5f3a5e1327bfd61.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | top_translation0_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/effa96c060f99dd03e85.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | top_translation0_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/25eedac7f29afc188622.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | pop_translation0_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2c4bd2b87f8cb692a127.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | pop_translation0_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c6ec9648b82b2ba8a9d8.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | pop_translation0_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0b4bb24b22ed4c17868c.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | pop_translation0_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/27c8091aa0b91ecfda21.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | pop_translation0_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/cc168ac06d609d3ca2c5.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | pop_translation0_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/33bf77cb3e0aa7dffec3.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | pop_translation0_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/683731cdecbe3d442372.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | pop_translation0_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6488e4ed71ac4b7dc75f.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | IntList_length_translation0_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/09fbbfcc510451086348.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | IntList_length_translation0_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/fcd80bade19222b45c3e.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | IntList_length_translation0_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/fdf72a3c9113f9888a78.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | IntList_length_translation0_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1b100d00a81e8baa05b6.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | IntList_length_translation0_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/87882bab244ed0673a23.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | IntList_length_translation0_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c9e6f422afe902778a97.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | IntList_length_translation0_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8e600d02cacc8f9c8fa0.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | IntList_length_translation0_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f7c59aaea34a2d4d7c96.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | IntList_cons_translation1_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/16b7c48df8443f30d1d5.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | IntList_cons_translation1_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/26907fc16277e58ee9f4.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | IntList_cons_translation1_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4780ad8705e9fd64220a.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | IntList_cons_translation1_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5822e8b4826344c9222f.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | IntList_cons_translation1_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/caa3cf19f3a674a1ba06.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | IntList_cons_translation1_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/77c71b05accb2326a9c2.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | IntList_cons_translation1_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/415a54c21e284b86727b.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | IntList_cons_translation1_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/40131c13279ac8b1db71.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | create_translation1_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ab2eaf9cd23ae3fb0807.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | create_translation1_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0fd84b770ce389388603.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | sizeOf_translation1_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/68f50aee8824c3d6e147.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | sizeOf_translation1_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/63e4acedf7ecfed83328.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | sizeOf_translation1_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e7e3aa44b83b40b4ad1f.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | sizeOf_translation1_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4908a67acbf8b19636ef.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | sizeOf_translation1_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ea25d06f87be3b6e761a.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | sizeOf_translation1_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f0798c73de4fba5acdc1.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | sizeOf_translation1_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a198899fe7ee555941ce.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | sizeOf_translation1_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c9b3d81d4a58704d1dc9.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | push_translation1_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1220d5b121e6c7d7dadf.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | push_translation1_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/81e5a892ad6cb3398acd.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | push_translation1_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0d088f81436f0d2af408.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | push_translation1_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/42d3c3d0061835b7ae62.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | push_translation1_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/99f77aa42eda22b9f932.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | push_translation1_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a8bfe190641ae696e753.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | push_translation1_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5c47b9e3d4bf9690070d.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | push_translation1_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8e84b9a9ecb4c3e2e3b9.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | top_translation1_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0e869c973a53e5d9c903.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | top_translation1_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/04df775b4fde698e3af1.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | top_translation1_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6c52a34724b1bac37904.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | top_translation1_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5c40b8e42043fd673a77.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | top_translation1_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ce8b421d3a8750d2906d.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | top_translation1_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8d4311b919ae27aa3e92.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | top_translation1_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/564df17367783473a336.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | top_translation1_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/168f7ae221c37d12e9c6.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | pop_translation1_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/639490132b688b8bcbc7.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | pop_translation1_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7f6dc5cc821a6348c3ae.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | pop_translation1_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9aa8d6a4ef004c2936fe.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | pop_translation1_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d38a0688e61da83f6cab.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | pop_translation1_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/85fd0e2b0c611dc4d76d.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | pop_translation1_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f936d17a40bfb24c363a.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | pop_translation1_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/cdbb5ad7aac77368af05.json) |
-| slf_sized_stack | cn_original:slf_sized_stack | pop_translation1_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c832543110508ab0a2d2.json) |
-| succ_using_incr | cn_original:slf16_basic_succ_using_incr | bounded_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/737462be0f4b3bb950ac.json) |
-| succ_using_incr | cn_original:slf16_basic_succ_using_incr | bounded_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/09808816fcce4f4b1723.json) |
-| succ_using_incr | cn_original:slf16_basic_succ_using_incr | bounded_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/98ea4568bc88471d56ce.json) |
-| succ_using_incr | cn_original:slf16_basic_succ_using_incr | bounded_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e7042cfb3ace56ffdb88.json) |
-| succ_using_incr | cn_original:slf16_basic_succ_using_incr | bounded_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d313d2dd4ab9f9a198fc.json) |
-| succ_using_incr | cn_original:slf16_basic_succ_using_incr | bounded_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2cd538fc8a68ff059988.json) |
-| succ_using_incr | cn_original:slf16_basic_succ_using_incr | bounded_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/aa0d48d5d758d64bdb63.json) |
-| succ_using_incr | cn_original:slf16_basic_succ_using_incr | bounded_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4a6d7007b3c0d1efc797.json) |
-| succ_using_incr | cn_original:slf16_basic_succ_using_incr | bounded_4 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/085f15c42eccfb2d046c.json) |
-| succ_using_incr | cn_original:slf16_basic_succ_using_incr | bounded_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/99786b500761e225f2e4.json) |
-| succ_using_incr | cn_original:slf16_basic_succ_using_incr | bounded_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e06447db0492de8a64ce.json) |
-| succ_using_incr | cn_original:slf16_basic_succ_using_incr | bounded_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/fa9096405ab2abc531db.json) |
-| succ_using_incr | cn_original:slf16_basic_succ_using_incr | implicit_range_0 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/29165b68118c260c7b7e.json) |
-| succ_using_incr | cn_original:slf16_basic_succ_using_incr | implicit_range_0 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/05e3b74ab0c608620edc.json) |
-| succ_using_incr | cn_original:slf16_basic_succ_using_incr | implicit_range_1 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/094007848fcf229b6182.json) |
-| succ_using_incr | cn_original:slf16_basic_succ_using_incr | implicit_range_1 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b2c16d25cdd61d7474bc.json) |
-| succ_using_incr | cn_original:slf16_basic_succ_using_incr | implicit_range_2 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d66aaa6ace669b6c78e8.json) |
-| succ_using_incr | cn_original:slf16_basic_succ_using_incr | implicit_range_2 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/67545c90e7e4411d4ebd.json) |
-| succ_using_incr | cn_original:slf16_basic_succ_using_incr | implicit_range_3 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/fcd46b8d3ee88b63e712.json) |
-| succ_using_incr | cn_original:slf16_basic_succ_using_incr | implicit_range_3 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2bf46cbb186cf9fe723c.json) |
-| succ_using_incr | cn_original:slf16_basic_succ_using_incr | implicit_range_4 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ca5d64c5a0095677c45b.json) |
-| succ_using_incr | cn_original:slf16_basic_succ_using_incr | implicit_range_4 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d3154a6bb69c42531415.json) |
-| succ_using_incr | cn_original:slf16_basic_succ_using_incr | implicit_range_5 | off | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1a9b548f7da4010c597f.json) |
-| succ_using_incr | cn_original:slf16_basic_succ_using_incr | implicit_range_5 | on | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b5ebb0797e4951e94eeb.json) |
-| succ_using_incr | cn_original:slf14_basic_succ_using_incr_attempt.broken | leak_0 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/63e0aee3d0434b5ca353.json) |
-| succ_using_incr | cn_original:slf14_basic_succ_using_incr_attempt.broken | leak_0 | on | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5dd39ff98075615c5c0b.json) |
-| succ_using_incr | cn_original:slf14_basic_succ_using_incr_attempt.broken | leak_1 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e37ad5c53a1ab0640ce0.json) |
-| succ_using_incr | cn_original:slf14_basic_succ_using_incr_attempt.broken | leak_1 | on | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8f203c51e877f06648f0.json) |
-| succ_using_incr | cn_original:slf14_basic_succ_using_incr_attempt.broken | leak_2 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/00091e7131335b093fda.json) |
-| succ_using_incr | cn_original:slf14_basic_succ_using_incr_attempt.broken | leak_2 | on | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/116a99b704c1ad342499.json) |
-| succ_using_incr | cn_original:slf14_basic_succ_using_incr_attempt.broken | leak_3 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b6282b06c04d05563d31.json) |
-| succ_using_incr | cn_original:slf14_basic_succ_using_incr_attempt.broken | leak_3 | on | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6bfc76f906416c56564f.json) |
-| succ_using_incr | cn_original:slf14_basic_succ_using_incr_attempt.broken | leak_4 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/fc76fd1fe451e98e4cac.json) |
-| succ_using_incr | cn_original:slf14_basic_succ_using_incr_attempt.broken | leak_4 | on | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/56f91039a6b14749b42c.json) |
-| succ_using_incr | cn_original:slf14_basic_succ_using_incr_attempt.broken | leak_5 | off | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/babe7d67f8ce5e331e7c.json) |
-| succ_using_incr | cn_original:slf14_basic_succ_using_incr_attempt.broken | leak_5 | on | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b12797f996d3d9b7f7b9.json) |
-| swap_array | cn_original:swap_array | array_0 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/85cf7bb7aad6854a4633.json) |
-| swap_array | cn_original:swap_array | array_0 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/dbe3af1e7b2016d27aba.json) |
-| swap_array | cn_original:swap_array | array_1 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/de35959fc8fc291ab0b4.json) |
-| swap_array | cn_original:swap_array | array_1 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/36f7df9015bf0d9c852f.json) |
-| swap_array | cn_original:swap_array | array_2 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/c0484ce63f01bd1715de.json) |
-| swap_array | cn_original:swap_array | array_2 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/fd1f161f7c9473818b8d.json) |
-| swap_array | cn_original:swap_array | array_3 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/e8c0a21524d55ee14e82.json) |
-| swap_array | cn_original:swap_array | array_3 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/877b95efeb5b2f2282ed.json) |
-| swap_array | cn_original:swap_array | array_4 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/7f51348d2acae6d2be69.json) |
-| swap_array | cn_original:swap_array | array_4 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/139f8d3d385c50eb1823.json) |
-| swap_array | cn_original:swap_array | array_5 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/dde0be8bc906d6019f4b.json) |
-| swap_array | cn_original:swap_array | array_5 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/fa0dfa945ee3a8e1cbb3.json) |
-| swap_array | cn_original:swap_array | array_6 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/198f0cd92c84c235ae14.json) |
-| swap_array | cn_original:swap_array | array_6 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/03da18d0796ed63bda29.json) |
-| swap_array | cn_original:swap_array | array_7 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/6374147ee177cdbe5222.json) |
-| swap_array | cn_original:swap_array | array_7 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/1716ec387e4ac0aaddc2.json) |
-| swap_array | cn_original:swap_array | array_8 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/b9d4e4daa7cbf06c4a01.json) |
-| swap_array | cn_original:swap_array | array_8 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/bef36cdcc1d26fe82576.json) |
-| swap_array | cn_original:swap_array | array_9 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/811bfc4a4ba0e1e75c67.json) |
-| swap_array | cn_original:swap_array | array_9 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/4cfb7d198a07f0286e5d.json) |
-| swap_array | cn_original:runtime-extras__swap_array | array_0 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/e0e9e5a2c0a15b955e7d.json) |
-| swap_array | cn_original:runtime-extras__swap_array | array_0 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/e598e7101f0cf4e4a80f.json) |
-| swap_array | cn_original:runtime-extras__swap_array | array_1 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/5fd09bd940b81e3f018a.json) |
-| swap_array | cn_original:runtime-extras__swap_array | array_1 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/689c074f10ac8237ad40.json) |
-| swap_array | cn_original:runtime-extras__swap_array | array_2 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/31461cbb52cf0d731731.json) |
-| swap_array | cn_original:runtime-extras__swap_array | array_2 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/ae8b6190d7d774785bd3.json) |
-| swap_array | cn_original:runtime-extras__swap_array | array_3 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/979e0af7e647fac216ee.json) |
-| swap_array | cn_original:runtime-extras__swap_array | array_3 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/0feb3eb6dd3a1fca5706.json) |
-| swap_array | cn_original:runtime-extras__swap_array | array_4 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/e029bff0e5fdd80bf905.json) |
-| swap_array | cn_original:runtime-extras__swap_array | array_4 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/497dcc933bc9247486f3.json) |
-| swap_array | cn_original:runtime-extras__swap_array | array_5 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/72c7a297862e3ff634ff.json) |
-| swap_array | cn_original:runtime-extras__swap_array | array_5 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/a0074052816dc16b22fa.json) |
-| swap_array | cn_original:runtime-extras__swap_array | array_6 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/c9fdeabcf9fa9f5240db.json) |
-| swap_array | cn_original:runtime-extras__swap_array | array_6 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/b9736b536b6732c34914.json) |
-| swap_array | cn_original:runtime-extras__swap_array | array_7 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/1dbc4bf31660c091a277.json) |
-| swap_array | cn_original:runtime-extras__swap_array | array_7 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/7fcfec4a40b071612940.json) |
-| swap_array | cn_original:runtime-extras__swap_array | array_8 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/3fd29eba0094949e28e4.json) |
-| swap_array | cn_original:runtime-extras__swap_array | array_8 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/ace85a6d343a6be17f65.json) |
-| swap_array | cn_original:runtime-extras__swap_array | array_9 | off | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/8c1765e65986c2cb8222.json) |
-| swap_array | cn_original:runtime-extras__swap_array | array_9 | on | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/b6c81dbdf717c6639a7f.json) |
-| zero | constructed:case_66e065c71f01cce1 | region_0 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/cce54571e0783df4341a.json) |
-| zero | constructed:case_66e065c71f01cce1 | region_1 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/30cb2f0c4bed776bdbb5.json) |
-| read | cn_original:read.broken | value_0 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/cf79950128cc8d076c10.json) |
-| read | cn_original:read.broken | value_1 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/b37d0c5293630ebe71d3.json) |
-| read | cn_original:read.broken | value_2 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/d3f538f8a8f84fc3417d.json) |
-| read | cn_original:read.broken | value_3 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/ca31047eb5bdae126cdd.json) |
-| read | cn_original:read.broken | value_4 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/ed88948f6feb4d345a0b.json) |
-| read | cn_original:read.broken | value_5 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/927db8b1e76bdc23c59a.json) |
-| read | constructed:case_0c4f0994b9906bcc | value_0 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/95d1376126dcbde8ec04.json) |
-| read | constructed:case_0c4f0994b9906bcc | value_1 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/5974ac8acd8ff971ed86.json) |
-| read | constructed:case_0c4f0994b9906bcc | value_2 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/969d41711a98fa28b5bb.json) |
-| read | constructed:case_0c4f0994b9906bcc | value_3 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/fe40286a65aaaeda9d09.json) |
-| read | constructed:case_0c4f0994b9906bcc | value_4 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/8b3438168e96f374dbd6.json) |
-| read | constructed:case_0c4f0994b9906bcc | value_5 | off | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/58f71b96bb9e6cf7956c.json) |
+| 组 | 变体 | 输入 | 模式 | 批次 | 预期 | 自动 | 最终 | 分类 | 证据 |
+|---|---|---|---|---|---|---|---|---|---|
+| Dbl_Linked_List__singleton | cn_original:Dbl_Linked_List__singleton | element_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/df876f610dd52a9e0301.json) |
+| Dbl_Linked_List__singleton | cn_original:Dbl_Linked_List__singleton | element_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5a3ee954c2cab1d8348f.json) |
+| Dbl_Linked_List__singleton | cn_original:Dbl_Linked_List__singleton | element_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/debd05da8a33f4e1faad.json) |
+| Dbl_Linked_List__singleton | cn_original:Dbl_Linked_List__singleton | element_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/571deebe4d78a43c0df5.json) |
+| Dbl_Linked_List__singleton | cn_original:Dbl_Linked_List__singleton | element_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/463f1835dda946ccfe0f.json) |
+| Dbl_Linked_List__singleton | cn_original:Dbl_Linked_List__singleton | element_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8de21365366a50674956.json) |
+| Dbl_Linked_List__singleton | cn_original:Dbl_Linked_List__singleton | element_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c5bad417f07acbacec68.json) |
+| Dbl_Linked_List__singleton | cn_original:Dbl_Linked_List__singleton | element_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/46f5391aeda559f59b51.json) |
+| Dbl_Linked_List__singleton | cn_original:Dbl_Linked_List__singleton | element_4 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d2e2a606a9e773029473.json) |
+| Dbl_Linked_List__singleton | cn_original:Dbl_Linked_List__singleton | element_4 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/591167ba4556e3996b47.json) |
+| Dbl_Linked_List__singleton | cn_original:Dbl_Linked_List__singleton | element_5 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6de72e99c788a66507eb.json) |
+| Dbl_Linked_List__singleton | cn_original:Dbl_Linked_List__singleton | element_5 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/764d661823775c89275b.json) |
+| Dbl_Linked_List__singleton | cn_original:Dbl_Linked_List__singleton | element_6 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/095b34e4d922a76b4ba4.json) |
+| Dbl_Linked_List__singleton | cn_original:Dbl_Linked_List__singleton | element_6 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f6410b8798092343c839.json) |
+| add_two_array | cn_original:add_two_array | array_0 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/cee06f0904f3c2d5f9a6.json) |
+| add_two_array | cn_original:add_two_array | array_0 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/99bff782ad3cb241bda6.json) |
+| add_two_array | cn_original:add_two_array | array_1 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/00842adffecd4184a0f6.json) |
+| add_two_array | cn_original:add_two_array | array_1 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/49b8e7d27c6562c979f1.json) |
+| add_two_array | cn_original:add_two_array | array_2 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/c4fcbacfc01a2571484e.json) |
+| add_two_array | cn_original:add_two_array | array_2 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/ead4b650400ba1c65b1a.json) |
+| add_two_array | cn_original:add_two_array | array_3 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/1cf9a2973fe7d2c1934a.json) |
+| add_two_array | cn_original:add_two_array | array_3 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/63a8750bba0c2b1037f1.json) |
+| add_two_array | cn_original:add_two_array | array_4 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/bac1f3370e6d0edeeed6.json) |
+| add_two_array | cn_original:add_two_array | array_4 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/97cd5896464ea5b63087.json) |
+| add_two_array | cn_original:add_two_array | array_5 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/7eb250e42869760b9cac.json) |
+| add_two_array | cn_original:add_two_array | array_5 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/f7b2be4069ba8be00606.json) |
+| add_two_array | cn_original:add_two_array | array_6 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/2740f8c4dd00d14c3421.json) |
+| add_two_array | cn_original:add_two_array | array_6 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/e0ebb5de161fe217b4fa.json) |
+| add_two_array | cn_original:add_two_array | array_7 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/d54cdd902a4bdeff45f6.json) |
+| add_two_array | cn_original:add_two_array | array_7 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/672bd983514ce780dd7a.json) |
+| array_load | cn_original:array_load.broken | original_client_translation5_only_entry | off | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1b86a3b525ad3ee2a595.json) |
+| array_load | cn_original:array_load.broken | original_client_translation5_only_entry | on | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/425cfe32a386b4304f28.json) |
+| array_load | cn_original:array_load.broken | original_client_translation6_only_entry | off | 历史 | PASS | FAIL | FAIL | UNEXPECTED_REJECTION | [详情](cases/4fb216eff6770801ed2f.json) |
+| array_load | cn_original:array_load.broken | original_client_translation6_only_entry | on | 历史 | PASS | FAIL | FAIL | UNEXPECTED_REJECTION | [详情](cases/076aba494419708818a0.json) |
+| array_load | cn_original:array_load.broken | original_client_translation7_only_entry | off | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ca76b7529dae92e0fd3a.json) |
+| array_load | cn_original:array_load.broken | original_client_translation7_only_entry | on | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/dc3283ac2f545e36b479.json) |
+| array_load | cn_original:array_load.broken | original_client_translation9_only_entry | off | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7abb34da76912cd1e411.json) |
+| array_load | cn_original:array_load.broken | original_client_translation9_only_entry | on | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7e017d5ba570572fbfb2.json) |
+| array_load | cn_original:array_load.broken | original_client_translation12_only_entry | off | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b91e5a1d28a77d2bf801.json) |
+| array_load | cn_original:array_load.broken | original_client_translation12_only_entry | on | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a45c83e03457bb7da9d7.json) |
+| array_load | cn_original:array_load.broken | original_client_translation7_only_entry | off | 当前 | PASS | UNKNOWN | PASS | RESOLVED_AUTOMATIC_GAP | [详情](cases/5654ba92ac22050f6104.json) |
+| array_load | cn_original:array_load.broken | original_client_translation7_only_entry | on | 当前 | PASS | UNKNOWN | PASS | RESOLVED_AUTOMATIC_GAP | [详情](cases/bdc1f6bd8f0ce6b67dea.json) |
+| array_load | cn_original:array_load.broken | original_client_translation12_only_entry | off | 当前 | PASS | UNKNOWN | PASS | RESOLVED_AUTOMATIC_GAP | [详情](cases/0792693a03bab2b88671.json) |
+| array_load | cn_original:array_load.broken | original_client_translation12_only_entry | on | 当前 | PASS | UNKNOWN | PASS | RESOLVED_AUTOMATIC_GAP | [详情](cases/4c7a444e2d86af931424.json) |
+| const_example | cn_original:const_example | x_0 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/447fd4e5cd4527f16364.json) |
+| const_example | cn_original:const_example | x_0 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/290951de2d0afd39cb61.json) |
+| const_example | cn_original:const_example | x_1 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/1645b43bd123bbdd53a6.json) |
+| const_example | cn_original:const_example | x_1 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/5df47d8e1809b122fc2d.json) |
+| const_example | cn_original:const_example | x_2 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/2d823e904283e21d9d58.json) |
+| const_example | cn_original:const_example | x_2 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/3ed782e00a5fbe8b9824.json) |
+| const_example | cn_original:const_example | x_3 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/e20a66b9df214dab248d.json) |
+| const_example | cn_original:const_example | x_3 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/49cbbcaaa9409d80ccf0.json) |
+| const_example | cn_original:const_example | x_4 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/986adcd32235e6d59696.json) |
+| const_example | cn_original:const_example | x_4 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/5248d7701eff3656cedf.json) |
+| const_example | cn_original:const_example | x_5 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/282359bf6ffd3dca06af.json) |
+| const_example | cn_original:const_example | x_5 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/83fa75b2da7384af200e.json) |
+| const_example | cn_original:const_example | x_6 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/ebb4acfcc7c07171fec4.json) |
+| const_example | cn_original:const_example | x_6 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/703e77dcd7e7514ec521.json) |
+| dll_add | cn_original:Dbl_Linked_List__add | empty_element_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/489f86588a2ca4ce06f5.json) |
+| dll_add | cn_original:Dbl_Linked_List__add | empty_element_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ab87e86e08a248b42025.json) |
+| dll_add | cn_original:Dbl_Linked_List__add | empty_element_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ec7357d06d932ecff879.json) |
+| dll_add | cn_original:Dbl_Linked_List__add | empty_element_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0d16f79deecbcd7da70d.json) |
+| dll_add | cn_original:Dbl_Linked_List__add | empty_element_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c4bc38e1679f431293b2.json) |
+| dll_add | cn_original:Dbl_Linked_List__add | empty_element_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/768c4cbd6ac08786ff99.json) |
+| dll_add | cn_original:Dbl_Linked_List__add | empty_element_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c74035fce0ab9a1de56e.json) |
+| dll_add | cn_original:Dbl_Linked_List__add | empty_element_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/275312674d657b6e558b.json) |
+| dll_add | cn_original:Dbl_Linked_List__add | empty_element_4 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1e7f71e7c718e838d3be.json) |
+| dll_add | cn_original:Dbl_Linked_List__add | empty_element_4 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2031e0c06c7cb13b02fc.json) |
+| dll_add | cn_original:Dbl_Linked_List__add | empty_element_5 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/66abc057c0bc716119ff.json) |
+| dll_add | cn_original:Dbl_Linked_List__add | empty_element_5 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/aa1b8f77b9acfbbdecbe.json) |
+| dll_add | cn_original:Dbl_Linked_List__add | empty_element_6 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e78a998abfc5d632d148.json) |
+| dll_add | cn_original:Dbl_Linked_List__add | empty_element_6 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/12ab9c7ad0f14f98a3f4.json) |
+| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/138a600f03c09c3a2efb.json) |
+| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d3a7eb4b3e160e0dfa23.json) |
+| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b059ca75f67281d10d7c.json) |
+| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/af785b111f5ab6df2971.json) |
+| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7f0384ff8683aa452137.json) |
+| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/54ae6ff36f2ebb3c93e8.json) |
+| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/92dbbe33f067bd450948.json) |
+| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9d04822f2239ac9bbaf1.json) |
+| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_4 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/18e06161f1bba5275b59.json) |
+| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_4 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/636ef2a07831ac23084e.json) |
+| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_5 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ae6d4a5c57c384fc1d45.json) |
+| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_5 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a4a8c366f807167efa06.json) |
+| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_6 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a3ca216ccbf9e4f3592f.json) |
+| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_6 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/feb6d43238a7ff7aa8aa.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e59e30ee375021bee823.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/80878e88a8cc638cea1c.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c75f4cc436862e8e829f.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6fd4f24b4e30a66265a4.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e2ea0f9ba51bae7a7e25.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c457f0172746bd6a243e.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a38b6d7c9a6b479b4924.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7ec9a8ac88e630066fbc.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_4 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5526e961ad09c146528e.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_4 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f33a2be9d870d14d8d8f.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_5 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/87700f84923c386e0212.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_5 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1f42aaf76d1d91ba2ef9.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_6 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ade524eb9393b9bbd42f.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_6 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/55ceda6e4f52597c3c60.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_7 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/74095d1b3ed5c877cee0.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_7 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3ca09992f9db66c35847.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_8 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/447fa6338e8a21437049.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_8 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/401c49d8eb4bc956230d.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1ff2700e344c79efade8.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/10c62173a17a70f4ef46.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1f0fdcec14fb1c9a28c2.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c05731c2f0fc7f897848.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/fca35152162272285b3b.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3751ca6d245c5922fd69.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b988cb0313155d29c7b7.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c8d86a9c6472f936ccb2.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_4 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d465d1960a9998a25e9d.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_4 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1068771fd9162b5fed0c.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_5 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b418ac1b2685fb55e39e.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_5 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/59cc4a54307c26e0ad00.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_6 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e735209e13db58a1ff75.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_6 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/00a155127769e3bda057.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_7 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ceeae2638406be4f4d08.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_7 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/fff1393e53a92fd22d6a.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_8 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4f3e253d5e9f35dacc81.json) |
+| dll_remove | cn_original:Dbl_Linked_List__remove_orig.broken | shape_payload_8 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/abe4b060b5c4ec57bb56.json) |
+| incr | constructed:case_2e28b35274593024 | input_0 | off | 当前 | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/50bdd48c3a970a043324.json) |
+| incr | constructed:case_2e28b35274593024 | input_1 | off | 当前 | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/714118c7ffc6770d57b8.json) |
+| incr | constructed:case_2e28b35274593024 | input_2 | off | 当前 | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/4c9edea1b6fa710508fc.json) |
+| incr | constructed:case_2e28b35274593024 | input_3 | off | 当前 | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/3e82a968932b53020b5e.json) |
+| incr | constructed:case_2e28b35274593024 | input_4 | off | 当前 | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/3eb641d4c584e026e3b0.json) |
+| incr | constructed:case_2e28b35274593024 | input_5 | off | 当前 | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/a97f851557ee6164fa99.json) |
+| incr | constructed:case_48b6281ad8e51e2c | input_0 | off | 当前 | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/54b33da1979ead7766db.json) |
+| incr | constructed:case_48b6281ad8e51e2c | input_1 | off | 当前 | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/ff1cf56a576050d0bb83.json) |
+| incr | constructed:case_48b6281ad8e51e2c | input_2 | off | 当前 | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/f0930996e3c349db96be.json) |
+| incr | constructed:case_48b6281ad8e51e2c | input_3 | off | 当前 | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/4240dacb06eda29edf9d.json) |
+| incr | constructed:case_48b6281ad8e51e2c | input_4 | off | 当前 | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/a066396cf884861f2b5a.json) |
+| incr | constructed:case_48b6281ad8e51e2c | input_5 | off | 当前 | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/0cc8377f2e1dd7c41b52.json) |
+| incr | constructed:case_48b6281ad8e51e2c | input_6 | off | 当前 | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/2526edf36aa1798ae0fd.json) |
+| incr_two | cn_original:slf5_basic_aliased_call.broken | input_0 | off | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/bc8887a413c264115a41.json) |
+| incr_two | cn_original:slf5_basic_aliased_call.broken | input_0 | on | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d23ac96c7ffd0a4279e7.json) |
+| incr_two | cn_original:slf5_basic_aliased_call.broken | input_1 | off | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2ff7b1da499c18ae8c37.json) |
+| incr_two | cn_original:slf5_basic_aliased_call.broken | input_1 | on | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/97b9adb7a92fea912cf4.json) |
+| init_array | cn_original:init_array2 | length_0 | off | 当前 | PASS | UNKNOWN | PASS | RESOLVED_AUTOMATIC_GAP | [详情](cases/2edf29d30c1b5164e0de.json) |
+| init_array | cn_original:init_array2 | length_0 | on | 当前 | PASS | UNKNOWN | PASS | RESOLVED_AUTOMATIC_GAP | [详情](cases/c0ad7e9b9b2148ff01a1.json) |
+| init_array | cn_original:init_array2 | length_1 | off | 当前 | PASS | UNKNOWN | PASS | RESOLVED_AUTOMATIC_GAP | [详情](cases/6af26b048893c81a2bae.json) |
+| init_array | cn_original:init_array2 | length_1 | on | 当前 | PASS | UNKNOWN | PASS | RESOLVED_AUTOMATIC_GAP | [详情](cases/45a9d11caa3869101f32.json) |
+| init_array | cn_original:init_array2 | length_2 | off | 当前 | PASS | UNKNOWN | PASS | RESOLVED_AUTOMATIC_GAP | [详情](cases/ad78bc810e52222abf17.json) |
+| init_array | cn_original:init_array2 | length_2 | on | 当前 | PASS | UNKNOWN | PASS | RESOLVED_AUTOMATIC_GAP | [详情](cases/07cc1bf32c3a3c09098e.json) |
+| init_array | cn_original:init_array2 | length_3 | off | 当前 | PASS | UNKNOWN | PASS | RESOLVED_AUTOMATIC_GAP | [详情](cases/94b9dcab864bfb279378.json) |
+| init_array | cn_original:init_array2 | length_3 | on | 当前 | PASS | UNKNOWN | PASS | RESOLVED_AUTOMATIC_GAP | [详情](cases/dc6e886cda962ccf3129.json) |
+| init_array | cn_original:init_array2 | length_5 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/67f6851b87ea51584080.json) |
+| init_array | cn_original:init_array2 | length_5 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9c00b4e6e64f0e5f8b87.json) |
+| init_array | cn_original:init_array2 | length_8 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/bc7e8fcc756086093964.json) |
+| init_array | cn_original:init_array2 | length_8 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c8ad06aff893dd098809.json) |
+| init_array | cn_original:init_array_rev | length_1 | off | 当前 | PASS | UNKNOWN | PASS | RESOLVED_AUTOMATIC_GAP | [详情](cases/b9148ba6cf62617ad47a.json) |
+| init_array | cn_original:init_array_rev | length_1 | on | 当前 | PASS | UNKNOWN | PASS | RESOLVED_AUTOMATIC_GAP | [详情](cases/6c0a28d14e2d2230f329.json) |
+| init_array | cn_original:init_array_rev | length_2 | off | 当前 | PASS | UNKNOWN | PASS | RESOLVED_AUTOMATIC_GAP | [详情](cases/087ec45509f9bec26821.json) |
+| init_array | cn_original:init_array_rev | length_2 | on | 当前 | PASS | UNKNOWN | PASS | RESOLVED_AUTOMATIC_GAP | [详情](cases/f78e1060bc01e7a9152e.json) |
+| init_array | cn_original:init_array_rev | length_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c4b1afd35b4f75bf4435.json) |
+| init_array | cn_original:init_array_rev | length_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a4716ec42dfb53fc845f.json) |
+| init_array | cn_original:init_array_rev | length_5 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3530627a8387e8cab081.json) |
+| init_array | cn_original:init_array_rev | length_5 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b8e0ab982ffa41a890dd.json) |
+| init_array | cn_original:init_array_rev | length_8 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8e9438492fab2bc0c2a2.json) |
+| init_array | cn_original:init_array_rev | length_8 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8b06649300143e3d707e.json) |
+| init_array | cn_original:init_array_rev | length_13 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f8b33e58fa97346e293f.json) |
+| init_array | cn_original:init_array_rev | length_13 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/41932cb205ed3eec276a.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_cons_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/37739550bba1d5e31404.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_cons_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e639edcd3fdb51a84d42.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_cons_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d1f965a047ec1d657dd0.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_cons_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ea2bedfc064610d7347b.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_cons_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/af55cf42b06d043c12b6.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_cons_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6d251d3357cef37eb499.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_cons_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/26b9b6f9b3b450a63b45.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_cons_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/bc08d5cb73c92281c57c.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_copy_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3a53ae6b8ddfcace6309.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_copy_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0cd799ab39f43e49f52b.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_copy_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9db5ce96b5448330ab4a.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_copy_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a11d8811be6f2e923602.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_copy_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/570b466f4834f9a55441.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_copy_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e5eed43fcff9325fa8ec.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_copy_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4ed545a0c5d7d95cef0e.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_copy_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c6e725a159452d40cd1e.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_free_list_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/03c4f8b5f17c66ccfb6f.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_free_list_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2c48763a010fb724aa1d.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_free_list_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/556084e15b6db030768a.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_free_list_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/584f70cfb55d20625408.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_free_list_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6a6e129ec158cb43a4d0.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_free_list_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/68197e653ba216c69495.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_free_list_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/09fc0cfb0e49b29a11b4.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_free_list_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/315c67e179eded041f06.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_length_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a125fb2d0ef927c508f2.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_length_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/13fecaada0932120e49a.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_length_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/69b37dbf4ce9528f136b.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_length_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0fe9ade2bb5408d31871.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_length_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3e76a4242aa9aaffa554.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_length_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b3854f9703ec076c2edf.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_length_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8c4186a74ed0e0a552e0.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_length_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/845e5fbf00dd7da46729.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_rev_aux_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a36c038fe4476e814032.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_rev_aux_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/df81b1809db3cd2414c4.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_rev_aux_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3bec8a4ce9237543a14f.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_rev_aux_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3ef662baf430dbd2c7d0.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_rev_aux_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f654210f489b6eb533d4.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_rev_aux_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5084a2ed21302b81b49f.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_rev_aux_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/840406aa6a4d0dcb015e.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_rev_aux_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4100599548fab5aeb255.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_rev_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/bf154370d333b98a6747.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_rev_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ea748a8c5858378bbbc6.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_rev_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8c1173f64c7008bc333c.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_rev_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/22ac64833f45426f1fe2.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_rev_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/363f108718d7e38587ed.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_rev_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3da0ed77ec1a06bc7eab.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_rev_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9d8fc5e44ed3c874c709.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_rev_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e9fabdbaefb07fcf3f0c.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_append_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/61f09a7b9025a5e12bd6.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_append_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3a97d6e685a6c1a5df00.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_append_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b1e211322badd6bc9cf0.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_append_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2ea3cda5323e5943b0c5.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_append_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/43cbc37624382fb34142.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_append_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4ccfbc67b0d96e70da73.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_append_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f8e61680f9833d79ae08.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_append_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8dcbe7a9ee74e2c90a67.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_append2_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/09ec2e2552771ec1ca2f.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_append2_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6278650f79ccae618d54.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_append2_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/981394555ca708cc16b0.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_append2_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a5c5fc37762a90fee4f0.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_append2_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/449279445f2782d9ead2.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_append2_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1daf60ff6b03137d2122.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_append2_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/028feecb6f99b44285b8.json) |
+| list_all | cn_original:list_all | ab15e46b_IntList_append2_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/768e0047207901e2fe30.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_cons_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ade9533f67ad4a631844.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_cons_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c6b377621e580cb9b37e.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_cons_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b3e025e709f43070d672.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_cons_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/706211ddd41c570a1eab.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_cons_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9e08e95f96a9b6d9d18d.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_cons_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e3d190212faad4472d80.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_cons_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1424566411794f9c21d2.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_cons_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2dd1b88ed8120512cbc0.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_copy_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9a16bdd8319691978061.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_copy_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/63ff9013364b81859fdf.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_copy_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2ee9d3daf730e3c00c38.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_copy_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d30e3a20c88ab326eaf4.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_copy_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7fa32c1c570c6bde9cda.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_copy_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/224bf1885d03e3bcaf86.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_copy_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/83415a2db4855bedda89.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_copy_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4c18ae94ddafdb2d9532.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_free_list_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/be29d87a24ae21aedecf.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_free_list_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/752e75e3fe49093dd236.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_free_list_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/452fa3a9ea86c27f9854.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_free_list_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/fd6c78386562eb680d13.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_free_list_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/deb3505a012f73992539.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_free_list_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c733a6161dd0e5c0ccfb.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_free_list_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4d0aab45000ba9913d47.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_free_list_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5f55208d1ab065616f97.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_length_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/de86b0418d6d266d6e46.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_length_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8e63554b9552b68eacfc.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_length_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2d2cea03525cbff5535e.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_length_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ec1d8192e7312717fc04.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_length_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c6a8b32474013eac5ea2.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_length_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/13f0848824a3475f0811.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_length_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/916f2ad6401cbed356de.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_length_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8e82321826d835e14bd9.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_rev_aux_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/fb58d050d7b92071164e.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_rev_aux_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2ebb7c4a979dce9c64d6.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_rev_aux_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/cb042df9af0f6170e71c.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_rev_aux_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/60fbfcfd40d0688a6b37.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_rev_aux_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6c0b6abc2cf82df16e03.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_rev_aux_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5cf3975a8c5f413f60ac.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_rev_aux_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7ec0829b23be0d5ec37e.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_rev_aux_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ee0ab9e4687f8fcf1d1e.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_rev_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ebb1022196e411dd8951.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_rev_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/84931bd78644fcc406e6.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_rev_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a96aaa6380b85470ac3b.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_rev_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5a087b4389ca828cbbd3.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_rev_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/60a07cb271981beeff13.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_rev_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/431dcfedca16817b4fe6.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_rev_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f6f658c8de5e14a10ba0.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_rev_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/06b222e4068eec5921b0.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_append_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f27dd90fb0c0cb99790a.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_append_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5787b0a3e11e90bd74d0.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_append_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/553bfc507c46c5945973.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_append_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1d551bc635d4dfbc1c89.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_append_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b42626e4781b39e795f7.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_append_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1add9c8fefddf0d9d967.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_append_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ba022b4fd697d2cc69dd.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_append_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ce072fd650727fcdb38d.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_append2_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9945cfbc365e85f2e6da.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_append2_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f9e2bc31dfecbe7c0f9b.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_append2_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d7ee77ec96a6c5de1e2a.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_append2_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9e8eb5510f96cfc4f6fc.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_append2_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/86362e8895c9c6920efb.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_append2_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0b25f620dfd4add04d33.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_append2_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b7cca117a53d11ed9a96.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_append2_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/94996f0cbf668b2d7f5c.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_rev_loop_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9375a156eebc2b131eef.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_rev_loop_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e33efd3d3a4b5c8b16a0.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_rev_loop_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9ca3f7f5e923553e326d.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_rev_loop_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a19c1a5b2417fecc73ea.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_rev_loop_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/cc8b7c3199e6e73921ca.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_rev_loop_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0b70decab5dd3f28510f.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_rev_loop_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7c9eaea2d63675440227.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_rev_loop_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/54dda51c29d5abc1858a.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_split_0 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/d8af48fe90b80fe85506.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_split_0 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/f176b86ef9dced42bcbd.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_split_1 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/28530a4e7b1570576002.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_split_1 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/1dacaf7c831cd6b4be4d.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_split_2 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/f7c99cfcaccbdac260a7.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_split_2 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/76bf0056514b7f47f11b.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_split_3 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/12bcd9f39da72498d0ec.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_split_3 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/89b009ac7329ed6fa8d7.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_merge_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3abd9f850f53767a615e.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_merge_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c98a21ba3c9d9606853c.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_merge_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f9eb4d14deb2d52be1e3.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_merge_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/fd73fe00c09ade273cd7.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_merge_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4c01718ddddd259e110b.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_merge_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f3a9bdfd29514846936d.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_merge_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/268b81660b1bbeabe7c3.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_merge_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/16bc35b2f57205808b34.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_mergesort_0 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/cda5fead10a851ebafae.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_mergesort_0 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/77af0f5411a5337ec3ce.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_mergesort_1 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/3bdbffb398db12a1bb18.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_mergesort_1 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/9f06ba39ea1e50220626.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_mergesort_2 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/f701245aeafcb201abbe.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_mergesort_2 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/ab0dbc81d595fe552dba.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_mergesort_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/de29386f09b5aeb10bc7.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_mergesort_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/982c8f2f9059fa1b5130.json) |
+| list_all | cn_original:list_all | 11aff98e_refUnsignedInt_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/39e706031f386655dbd3.json) |
+| list_all | cn_original:list_all | 11aff98e_refUnsignedInt_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/42981f6c4cff7cb2bd3c.json) |
+| list_all | cn_original:list_all | 11aff98e_refUnsignedInt_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4e27fa07886007f77a4a.json) |
+| list_all | cn_original:list_all | 11aff98e_refUnsignedInt_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e401783984b42aa8e8ce.json) |
+| list_all | cn_original:list_all | 11aff98e_refUnsignedInt_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/db76cc3009e5e7a9eba2.json) |
+| list_all | cn_original:list_all | 11aff98e_refUnsignedInt_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0211a46f0fd8a3d3daca.json) |
+| list_all | cn_original:list_all | 11aff98e_refUnsignedInt_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/64a6ffc3df45b2efd3b2.json) |
+| list_all | cn_original:list_all | 11aff98e_refUnsignedInt_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/76cdad0752721117abc4.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_length_acc_aux_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/39d4fc7833a6ed2a92cf.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_length_acc_aux_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2bd7d77d04ef0e56c1c9.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_length_acc_aux_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/907130da895a8befda6b.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_length_acc_aux_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d261e9eb3fa82238dd4b.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_length_acc_aux_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/54d5ffa6901d8d0e6d30.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_length_acc_aux_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d8c3ab2f0b2599104e3b.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_length_acc_aux_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/101d227323cf777ba8e8.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_length_acc_aux_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f4325efabbbf1eaedbd1.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_length_acc_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/cfa84650b8f14a6b74ae.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_length_acc_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7357ffadaf6cf77561f2.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_length_acc_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/43aedcef495da809bf9c.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_length_acc_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f1b2396b17b7837184f3.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_length_acc_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/10cd20bafbcfff2b88a3.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_length_acc_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/24a4598a028cbfea9a81.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_length_acc_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/42503371c3f96afd32e5.json) |
+| list_all | cn_original:list_all | 11aff98e_IntList_length_acc_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8a273aa61e6a9f759556.json) |
+| mergesort | cn_original:mergesort | IntList_cons_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/213717eefaa3f785e7cd.json) |
+| mergesort | cn_original:mergesort | IntList_cons_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/18c513702e39f8665237.json) |
+| mergesort | cn_original:mergesort | IntList_cons_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1fedc48cd973402c8868.json) |
+| mergesort | cn_original:mergesort | IntList_cons_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/97d040f3491cc61ab074.json) |
+| mergesort | cn_original:mergesort | IntList_cons_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a4a277e029dc260c0ea5.json) |
+| mergesort | cn_original:mergesort | IntList_cons_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/53192fd1c0dd9d98608d.json) |
+| mergesort | cn_original:mergesort | IntList_cons_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5f69f97970095d8f584f.json) |
+| mergesort | cn_original:mergesort | IntList_cons_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2970b60178444fa43453.json) |
+| mergesort | cn_original:mergesort | IntList_split_0 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/6dbd83ee7963d1f27c1f.json) |
+| mergesort | cn_original:mergesort | IntList_split_0 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/128ef52450bc780bbbe0.json) |
+| mergesort | cn_original:mergesort | IntList_split_1 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/cc4d09599379a4ee798f.json) |
+| mergesort | cn_original:mergesort | IntList_split_1 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/951341f28490ba6c335f.json) |
+| mergesort | cn_original:mergesort | IntList_split_2 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/68d462891327054804be.json) |
+| mergesort | cn_original:mergesort | IntList_split_2 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/bf49ec25800b41518029.json) |
+| mergesort | cn_original:mergesort | IntList_split_3 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/aba0c2ccc4537c066877.json) |
+| mergesort | cn_original:mergesort | IntList_split_3 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/617686333a5ae47bca85.json) |
+| mergesort | cn_original:mergesort | IntList_merge_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b5427fd79ef0bca712ba.json) |
+| mergesort | cn_original:mergesort | IntList_merge_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/94a24035ce9ba5dbb00a.json) |
+| mergesort | cn_original:mergesort | IntList_merge_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a80b979be579775c5d95.json) |
+| mergesort | cn_original:mergesort | IntList_merge_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/07741a9d64b8d984e1dc.json) |
+| mergesort | cn_original:mergesort | IntList_merge_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a4f6e1fccba1682788ab.json) |
+| mergesort | cn_original:mergesort | IntList_merge_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/cb2db359bb2d17f04b42.json) |
+| mergesort | cn_original:mergesort | IntList_merge_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4d9ec27b29f17fd59c8d.json) |
+| mergesort | cn_original:mergesort | IntList_merge_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/96013213d4e8235c9e8c.json) |
+| mergesort | cn_original:mergesort | IntList_mergesort_0 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/c7841f545ba6075c496a.json) |
+| mergesort | cn_original:mergesort | IntList_mergesort_0 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/95dc4a355010b0e14dbe.json) |
+| mergesort | cn_original:mergesort | IntList_mergesort_1 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/1a8534efb208fa1a1960.json) |
+| mergesort | cn_original:mergesort | IntList_mergesort_1 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/802c8a091d2e50d83045.json) |
+| mergesort | cn_original:mergesort | IntList_mergesort_2 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/dbe296514e619dd87a5d.json) |
+| mergesort | cn_original:mergesort | IntList_mergesort_2 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/b646a7666371f8dee196.json) |
+| mergesort | cn_original:mergesort | IntList_mergesort_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b96b57fa377d299da2ef.json) |
+| mergesort | cn_original:mergesort | IntList_mergesort_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b964a8f9d965977cbca2.json) |
+| queue_all | cn_original:queue_all | 24820f92_push_induction_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4290604e1a303178ba63.json) |
+| queue_all | cn_original:queue_all | 24820f92_push_induction_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/79850eb019a9045f1073.json) |
+| queue_all | cn_original:queue_all | 24820f92_push_induction_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/801b6a62e3e6dafb4855.json) |
+| queue_all | cn_original:queue_all | 24820f92_push_induction_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/324966927e62414ff1e9.json) |
+| queue_all | cn_original:queue_all | 24820f92_push_induction_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0c61b2e66768c218c6cc.json) |
+| queue_all | cn_original:queue_all | 24820f92_push_induction_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/33bb7b2612e6bfeb19f5.json) |
+| queue_all | cn_original:queue_all | 24820f92_push_induction_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/fd9f6e0f6512adb32458.json) |
+| queue_all | cn_original:queue_all | 24820f92_push_induction_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/97abcf7ce2f488ccdc0d.json) |
+| queue_all | cn_original:queue_all | 24820f92_IntQueue_push_induction_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3b0d97c657c75a4ec702.json) |
+| queue_all | cn_original:queue_all | 24820f92_IntQueue_push_induction_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/854c789efc9a219c226d.json) |
+| queue_all | cn_original:queue_all | 24820f92_IntQueue_push_induction_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/150ffbd443cd57edddf6.json) |
+| queue_all | cn_original:queue_all | 24820f92_IntQueue_push_induction_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3fb8ffa2b0cf9eaa9461.json) |
+| queue_all | cn_original:queue_all | 24820f92_IntQueue_push_induction_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/86de553418f49b61f8b9.json) |
+| queue_all | cn_original:queue_all | 24820f92_IntQueue_push_induction_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7cb91c60b0a1c92543bd.json) |
+| queue_all | cn_original:queue_all | 24820f92_IntQueue_push_induction_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b5b46468bf3c24ce964a.json) |
+| queue_all | cn_original:queue_all | 24820f92_IntQueue_push_induction_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8d776d2a621fd04a7458.json) |
+| queue_all | cn_original:queue_all | e603e457_IntQueue_empty_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9d019034e5afebe05b5e.json) |
+| queue_all | cn_original:queue_all | e603e457_IntQueue_empty_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5beb3ae5ca805b957d06.json) |
+| queue_all | cn_original:queue_all | e603e457_IntQueue_pop_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d32d014b3004c4a3064e.json) |
+| queue_all | cn_original:queue_all | e603e457_IntQueue_pop_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/aec6dfbc3ff191aac250.json) |
+| queue_all | cn_original:queue_all | e603e457_IntQueue_pop_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/08cb8fe8a1e4fc01d0b2.json) |
+| queue_all | cn_original:queue_all | e603e457_IntQueue_pop_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3d5ed04b8b936c02e3dd.json) |
+| queue_all | cn_original:queue_all | e603e457_IntQueue_pop_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/40afe12b84eb91dfb92c.json) |
+| queue_all | cn_original:queue_all | e603e457_IntQueue_pop_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a57e546a40f0ec877470.json) |
+| queue_all | cn_original:queue_all | e603e457_IntQueue_pop_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a930fdcac2ff80233810.json) |
+| queue_all | cn_original:queue_all | e603e457_IntQueue_pop_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/088e13b36ab73859b6d8.json) |
+| queue_all | cn_original:queue_all | e603e457_IntQueue_push_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f5030dd9bfa46a704067.json) |
+| queue_all | cn_original:queue_all | e603e457_IntQueue_push_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b2df3e2d7aca52c43170.json) |
+| queue_all | cn_original:queue_all | e603e457_IntQueue_push_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ac8923ab5784edccc7bc.json) |
+| queue_all | cn_original:queue_all | e603e457_IntQueue_push_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d379e4f43705a652f035.json) |
+| queue_all | cn_original:queue_all | e603e457_IntQueue_push_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d94b252a61592ef1d21a.json) |
+| queue_all | cn_original:queue_all | e603e457_IntQueue_push_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/55e18d0606c38661beca.json) |
+| queue_all | cn_original:queue_all | e603e457_IntQueue_push_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0069c9094797cee4fb18.json) |
+| queue_all | cn_original:queue_all | e603e457_IntQueue_push_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/963259cb8c2306dcd8e8.json) |
+| queue_all | cn_original:queue_all | 774d9e08_push_induction_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1347404edc1e0a42b909.json) |
+| queue_all | cn_original:queue_all | 774d9e08_push_induction_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9d2f078773483b283340.json) |
+| queue_all | cn_original:queue_all | 774d9e08_push_induction_1 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/92ee9a3b9f555227307a.json) |
+| queue_all | cn_original:queue_all | 774d9e08_push_induction_1 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/d875fcc8002d4daa5d43.json) |
+| queue_all | cn_original:queue_all | 774d9e08_push_induction_2 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/43b24cb9663be2e1f336.json) |
+| queue_all | cn_original:queue_all | 774d9e08_push_induction_2 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/c0032801446b351576fb.json) |
+| queue_all | cn_original:queue_all | 774d9e08_push_induction_3 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/b5fe0ff31ee3191f5daa.json) |
+| queue_all | cn_original:queue_all | 774d9e08_push_induction_3 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/bd8b977a8ad323be15b6.json) |
+| queue_all | cn_original:queue_all | 774d9e08_IntQueue_empty_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/33006bfee1c66c4c5931.json) |
+| queue_all | cn_original:queue_all | 774d9e08_IntQueue_empty_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7dbad8ed245fc8f2c727.json) |
+| queue_all | cn_original:queue_all | 774d9e08_IntQueue_pop_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3b3271d1d0e05dd79538.json) |
+| queue_all | cn_original:queue_all | 774d9e08_IntQueue_pop_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/73cc3fc9af76fde41dd8.json) |
+| queue_all | cn_original:queue_all | 774d9e08_IntQueue_pop_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/81f9972205e20b3a1442.json) |
+| queue_all | cn_original:queue_all | 774d9e08_IntQueue_pop_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/93bebfb0354b200331d3.json) |
+| queue_all | cn_original:queue_all | 774d9e08_IntQueue_pop_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0299603f3a8f2538ade3.json) |
+| queue_all | cn_original:queue_all | 774d9e08_IntQueue_pop_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/12c7f45f0140fe21a275.json) |
+| queue_all | cn_original:queue_all | 774d9e08_IntQueue_pop_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ea9333e4191362b6b8fd.json) |
+| queue_all | cn_original:queue_all | 774d9e08_IntQueue_pop_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1aa61eea639ab624430a.json) |
+| queue_all | cn_original:queue_all | 774d9e08_IntQueue_push_induction_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/43e8511f1b1ae8d4f730.json) |
+| queue_all | cn_original:queue_all | 774d9e08_IntQueue_push_induction_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6fb2b982231828ce5139.json) |
+| queue_all | cn_original:queue_all | 774d9e08_IntQueue_push_induction_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/64f65c9b05bdaadc4bdb.json) |
+| queue_all | cn_original:queue_all | 774d9e08_IntQueue_push_induction_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/19659a8ad48e18f1226b.json) |
+| queue_all | cn_original:queue_all | 774d9e08_IntQueue_push_induction_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9b6c88841dee852734b9.json) |
+| queue_all | cn_original:queue_all | 774d9e08_IntQueue_push_induction_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/34aa19f3fe87f3c34643.json) |
+| queue_all | cn_original:queue_all | 774d9e08_IntQueue_push_induction_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/07cc50710a54a46f23c4.json) |
+| queue_all | cn_original:queue_all | 774d9e08_IntQueue_push_induction_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b7c814a279046a6a3eb8.json) |
+| queue_all | cn_original:queue_all | 1be32f3d_push_induction_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d8f9c5ff99a099fea93b.json) |
+| queue_all | cn_original:queue_all | 1be32f3d_push_induction_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/274e7aa4789e889dfc19.json) |
+| queue_all | cn_original:queue_all | 1be32f3d_push_induction_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1933154f3aee3138f0af.json) |
+| queue_all | cn_original:queue_all | 1be32f3d_push_induction_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b8f06c9e7afa082f5606.json) |
+| queue_all | cn_original:queue_all | 1be32f3d_push_induction_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1519c4f0884f22d10073.json) |
+| queue_all | cn_original:queue_all | 1be32f3d_push_induction_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/de7ad9512309e863b218.json) |
+| queue_all | cn_original:queue_all | 1be32f3d_push_induction_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b68edc53f53b5139092e.json) |
+| queue_all | cn_original:queue_all | 1be32f3d_push_induction_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e25b77efe743aab5c3d8.json) |
+| ref | cn_original:slf10_basic_ref | bounded_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/114e275fb591dc1af5fb.json) |
+| ref | cn_original:slf10_basic_ref | bounded_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d3ec87d75c67439ed038.json) |
+| ref | cn_original:slf10_basic_ref | bounded_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ed4237a5f1a95ac13c01.json) |
+| ref | cn_original:slf10_basic_ref | bounded_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/eaf3be4f06c7dc310b67.json) |
+| ref | cn_original:slf10_basic_ref | bounded_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f19120c8c6e211d437cb.json) |
+| ref | cn_original:slf10_basic_ref | bounded_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/64616648e2e81f9caaf0.json) |
+| ref | cn_original:slf10_basic_ref | bounded_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/605965343e44ecf43cdb.json) |
+| ref | cn_original:slf10_basic_ref | bounded_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d88a98e15003f0a2ca8a.json) |
+| ref | cn_original:slf10_basic_ref | bounded_4 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a01396b7f7510c00fa7d.json) |
+| ref | cn_original:slf10_basic_ref | bounded_4 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4f261f2d5e1d416cddd3.json) |
+| ref | cn_original:slf10_basic_ref | bounded_5 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b1fc59c73b29c849bf98.json) |
+| ref | cn_original:slf10_basic_ref | bounded_5 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6aeed905064051055d11.json) |
+| ref | cn_original:slf10_basic_ref | implicit_range_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d6854a372130cb2a8647.json) |
+| ref | cn_original:slf10_basic_ref | implicit_range_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/47f735ac3f33d3008e38.json) |
+| ref | cn_original:slf10_basic_ref | implicit_range_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f0ff532767d72aa46374.json) |
+| ref | cn_original:slf10_basic_ref | implicit_range_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9a32c186797231988ff2.json) |
+| ref | cn_original:slf10_basic_ref | implicit_range_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e5e255ea89d6bf467d00.json) |
+| ref | cn_original:slf10_basic_ref | implicit_range_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3c81cf3005a6ac99ad54.json) |
+| ref | cn_original:slf10_basic_ref | implicit_range_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ec595704cb0e697cfc9b.json) |
+| ref | cn_original:slf10_basic_ref | implicit_range_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7edc132d857a6d0f5435.json) |
+| ref | cn_original:slf10_basic_ref | implicit_range_4 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/57532b28294fcd9462c8.json) |
+| ref | cn_original:slf10_basic_ref | implicit_range_4 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/cad6f711dddf1eec779c.json) |
+| ref | cn_original:slf10_basic_ref | implicit_range_5 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a070555f172ae787f5e5.json) |
+| ref | cn_original:slf10_basic_ref | implicit_range_5 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a921b1805047251e6bfa.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | bounded_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1e4622c6b68d43e126c0.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | bounded_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e1a106a340681d11e76a.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | bounded_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/84378528bb18fab7ddba.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | bounded_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1b34fe3de0e945a5f118.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | bounded_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/34d62847d6669e96cc84.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | bounded_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c5cd96e4db04441f580a.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | bounded_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4fdd48f9bef6f356cd70.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | bounded_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d1bafb3501c3b0da7952.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | bounded_4 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/084930906711c97bca66.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | bounded_4 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/01237a6adb923637b33a.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | bounded_5 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2c0f0b2dd163a1181d6f.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | bounded_5 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0565dfef662bbb4f7805.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/21162653931d45ed197a.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/28bf82b670dab8aa4922.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/54cdccb3f8335bbf420a.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/fa8ba0cf04ef6854ec2f.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/91ac8e23cf5f4dff53dd.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e3819a37e8927a601a45.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c80e7a84171e30f8c0a5.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/703575be219920a08bc6.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_4 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2c094c8cbc0a92ee7a0e.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_4 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8277398f34c3115a7837.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_5 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e1c00bfc2f5d870e0ae4.json) |
+| ref | cn_original:slf13_basic_ref_with_frame | implicit_range_5 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d0df57c590dc80b70f2c.json) |
+| ref_greater | cn_original:slf11_basic_ref_greater | exact_bounded_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/efb1975570704f541a2f.json) |
+| ref_greater | cn_original:slf11_basic_ref_greater | exact_bounded_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/20f270fc5b4820a18837.json) |
+| ref_greater | cn_original:slf11_basic_ref_greater | exact_bounded_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/864223a70ade1c245c27.json) |
+| ref_greater | cn_original:slf11_basic_ref_greater | exact_bounded_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/19cffb4ddeee94b8eb9b.json) |
+| ref_greater | cn_original:slf11_basic_ref_greater | exact_bounded_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a38d48a20f5c87ae6b64.json) |
+| ref_greater | cn_original:slf11_basic_ref_greater | exact_bounded_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8ee1d89c1f01db851639.json) |
+| ref_greater | cn_original:slf11_basic_ref_greater | exact_bounded_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/29b517043dd61f77588c.json) |
+| ref_greater | cn_original:slf11_basic_ref_greater | exact_bounded_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/da97b58994267e4088f5.json) |
+| ref_greater | cn_original:slf11_basic_ref_greater | exact_bounded_4 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d5cf65acfbb88a29382e.json) |
+| ref_greater | cn_original:slf11_basic_ref_greater | exact_bounded_4 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1d822f8d547facf8a928.json) |
+| ref_greater | cn_original:slf11_basic_ref_greater | exact_bounded_5 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/28a596c6ea1724fbab6d.json) |
+| ref_greater | cn_original:slf11_basic_ref_greater | exact_bounded_5 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/34a4974fa6ca3695adda.json) |
+| ref_greater | cn_original:slf11_basic_ref_greater | exact_implicit_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d6ab3d819e26f0f10a7c.json) |
+| ref_greater | cn_original:slf11_basic_ref_greater | exact_implicit_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/900be2fc3718bd4636e4.json) |
+| ref_greater | cn_original:slf11_basic_ref_greater | exact_implicit_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6d0856fb54c6d127417d.json) |
+| ref_greater | cn_original:slf11_basic_ref_greater | exact_implicit_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/99adce6faa462ffa342e.json) |
+| ref_greater | cn_original:slf11_basic_ref_greater | exact_implicit_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2425b5f3bb59c426b7ca.json) |
+| ref_greater | cn_original:slf11_basic_ref_greater | exact_implicit_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3630b0f31f0f5144425d.json) |
+| ref_greater | cn_original:slf11_basic_ref_greater | exact_implicit_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/55c5828a85477bb5496c.json) |
+| ref_greater | cn_original:slf11_basic_ref_greater | exact_implicit_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1083fc8a8fb2985ceab4.json) |
+| ref_greater | cn_original:slf11_basic_ref_greater | exact_implicit_4 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3626ae60ae910ca71a57.json) |
+| ref_greater | cn_original:slf11_basic_ref_greater | exact_implicit_4 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9ec6edb206763671cacc.json) |
+| ref_greater | cn_original:slf11_basic_ref_greater | exact_implicit_5 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0cf86d5a93ed44a4af3d.json) |
+| ref_greater | cn_original:slf11_basic_ref_greater | exact_implicit_5 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2880128ac18e24ad2bd9.json) |
+| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_bounded_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e24aac3e9478c2afceb4.json) |
+| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_bounded_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5db118e10582f2ba70a4.json) |
+| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_bounded_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/49dca9088a1b7c424836.json) |
+| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_bounded_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b7d4ae7ffded911f1f03.json) |
+| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_bounded_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5ff542ab1098ed9e04b9.json) |
+| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_bounded_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8b75cc2fce6709cb8827.json) |
+| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_bounded_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9aebc9e666a6b88a5132.json) |
+| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_bounded_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/57bb7dc7a351490b1b84.json) |
+| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_bounded_4 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/756d45aadf9bc2a0500f.json) |
+| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_bounded_4 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c1c839b335409fd04ca4.json) |
+| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_bounded_5 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b2ed698ac3a117ea8236.json) |
+| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_bounded_5 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/76affd65fb93a19c7bc6.json) |
+| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_implicit_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e6573513a1cc683e94ce.json) |
+| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_implicit_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f9f37cd0c7af6b5fca3b.json) |
+| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_implicit_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/876e4e381a8e132fb00c.json) |
+| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_implicit_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b73602c5feadda009f58.json) |
+| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_implicit_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/05e9b912d6a7fd69e56d.json) |
+| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_implicit_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/afeeed17147ec3ac35ec.json) |
+| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_implicit_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3f5b4a37332fc74a5284.json) |
+| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_implicit_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/91daeaface95e6e15a59.json) |
+| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_implicit_4 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/687ca70a0082669dd5bd.json) |
+| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_implicit_4 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/bd6d93274f0a8ba91003.json) |
+| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_implicit_5 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/40e5368068673e9348df.json) |
+| ref_greater | cn_original:slf12_basic_ref_greater_abstract | strict_implicit_5 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a0c90d3e493f9fe18280.json) |
+| ref_greater | cn_original:slf_ref_greater | weak_ge_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/98ea74adf45cd69da2df.json) |
+| ref_greater | cn_original:slf_ref_greater | weak_ge_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/cb83bd89b16bb3c80227.json) |
+| ref_greater | cn_original:slf_ref_greater | weak_ge_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6fe1ab2423c5369a3f2c.json) |
+| ref_greater | cn_original:slf_ref_greater | weak_ge_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/62efb99586132516efb8.json) |
+| ref_greater | cn_original:slf_ref_greater | weak_ge_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4a376a1b5fc11f71447f.json) |
+| ref_greater | cn_original:slf_ref_greater | weak_ge_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b694ec55ea30db920e8e.json) |
+| ref_greater | cn_original:slf_ref_greater | weak_ge_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/21f4766268bd3c050e66.json) |
+| ref_greater | cn_original:slf_ref_greater | weak_ge_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/77b2afd2eede2444102b.json) |
+| ref_greater | cn_original:slf_ref_greater | weak_ge_4 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/345f23776a8eb273da1b.json) |
+| ref_greater | cn_original:slf_ref_greater | weak_ge_4 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ac7444e323c4abf698d0.json) |
+| ref_greater | cn_original:slf_ref_greater | weak_ge_5 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7576e150a8a682d7dc0e.json) |
+| ref_greater | cn_original:slf_ref_greater | weak_ge_5 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/bdebe8406f8b9bb0963b.json) |
+| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_0 | off | 当前 | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/05b5ba05e3e7898b2b60.json) |
+| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_0 | on | 当前 | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/cc224b3f61989aa02b1b.json) |
+| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_1 | off | 当前 | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1584982beef48a347adb.json) |
+| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_1 | on | 当前 | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f53f0dd06468c025fddf.json) |
+| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_2 | off | 当前 | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ac498435030e44153fb7.json) |
+| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_2 | on | 当前 | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/25006c3256bb8d9e0a06.json) |
+| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_3 | off | 当前 | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/af3735e18a6b4bff6bf4.json) |
+| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_3 | on | 当前 | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7098bce84d2bd07b6d54.json) |
+| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_4 | off | 当前 | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1e68de2f5ccc37264f53.json) |
+| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_4 | on | 当前 | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d2f4d0c06049e7057020.json) |
+| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_5 | off | 当前 | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f852f80706c604e134f2.json) |
+| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | bad_free_translation0_5 | on | 当前 | ERROR | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/98f92a709d8a515cb8d8.json) |
+| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | malloc_int_only_entry | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b06a1efe9da49f94a50e.json) |
+| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | malloc_int_only_entry | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/deb05472091dab25d62c.json) |
+| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | original_main_translation0_only_entry | off | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3d6dd9f89a2559d4d887.json) |
+| runtime-extras__bad_free | cn_original:runtime-extras__bad_free.broken | original_main_translation0_only_entry | on | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7de218df4dbbff44b5e5.json) |
+| runtime-extras__double_free | cn_original:runtime-extras__double_free.broken | original_main_translation0_only_entry | off | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/99af3e9a170734aa1bf7.json) |
+| runtime-extras__double_free | cn_original:runtime-extras__double_free.broken | original_main_translation0_only_entry | on | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b051a7306bb5cb8a9bf3.json) |
+| runtime-extras__double_free | cn_original:runtime-extras__double_free.broken | original_main_translation1_only_entry | off | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/69d0c52f7659b817de35.json) |
+| runtime-extras__double_free | cn_original:runtime-extras__double_free.broken | original_main_translation1_only_entry | on | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/78ba5ba7ab6e1bdb34b2.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation0_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ed5b686b2fa7ad2e30c5.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation0_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a54616671351dd70a91a.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation0_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/14ae12221ac87c7d55eb.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation0_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7ee97d874c53b2850a89.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation0_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f08724bf1432d664181a.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation0_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c919644fb78a47281d1c.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation0_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c467ce8cc8b34d9de1cc.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation0_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6b7cf0cf2bf8422e035b.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation0_4 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7c444df715ef64678ffe.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation0_4 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4dfe9f6958bc4af028fc.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation0_5 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9f89114c8639ca95da4d.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation0_5 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3b7e31ab5a2ddbeebeec.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | original_main_translation0_only_entry | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d6c00bc756770885fa5e.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | original_main_translation0_only_entry | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/73f028d37d45a5a31b2e.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation1_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a1a932da34cfb277ea12.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation1_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a54533cf6b94d290a7bb.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation1_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/469bdc9349aed609979d.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation1_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/58338b5bfada55e43fe3.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation1_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/17394d033eaaf19c1cfc.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation1_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3de93da658515bb196b1.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation1_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d463d3717dfca09092ee.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation1_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9b225441ec8274b97f00.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation1_4 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9825207e89fd19215f1a.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation1_4 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4c46de275c687415e514.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation1_5 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/335848f2575f03230800.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation1_5 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/94bf436c822e14d74d42.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | original_main_translation1_only_entry | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8629abf3289186ddb3cb.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | original_main_translation1_only_entry | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c380a98ba7d3a51c5187.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation2_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9ed6a35e41a9a236c67b.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation2_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/08b20430ded8769e624e.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation2_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/67f62131e510ab86badf.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation2_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3c3f2a0e22fdbb77746f.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation2_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5cf083997cb04c8d8968.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation2_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9e270d65991cc02550ad.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation2_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/80edb73ed9857354621f.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation2_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/74df501c362f93572458.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation2_4 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/549e148bd282505b6792.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation2_4 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d3d85476bf72a29d7104.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation2_5 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ac58afcf0177f1b9595f.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation2_5 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/81359d6b8ec695002f7a.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | original_main_translation2_only_entry | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f04a59f6a32151b8f038.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | original_main_translation2_only_entry | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f48bea82d5578284f544.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation3_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/be2ea9f855e9f2dc068b.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation3_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d352c0f8356005948e7c.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation3_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e6c196cd1775574543a3.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation3_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/59b1a705b1a44dfe2385.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation3_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5d1690bf5ee819fcbcd6.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation3_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d3727ea64891d05f4c71.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation3_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8fa6fbc0371a790da05d.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation3_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a597436a5285099f22ce.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation3_4 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/662d293e19c6146a632c.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation3_4 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1232e9197c38f5a913f3.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation3_5 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8fa8b03514b5f779357b.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | read_and_free_translation3_5 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7f634a42c2820db1924f.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | original_main_translation3_only_entry | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/09cdbcaf22f6f3c6be57.json) |
+| runtime-extras__down_malloc_up_free | cn_original:runtime-extras__down_malloc_up_free | original_main_translation3_only_entry | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ac5641631f898c162837.json) |
+| runtime-extras__leaky | cn_original:runtime-extras__leaky.broken | leaky_get_translation0_0 | off | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8cf8f6f2b3cad0edc44f.json) |
+| runtime-extras__leaky | cn_original:runtime-extras__leaky.broken | leaky_get_translation0_1 | off | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d31ece05b82bce9735f1.json) |
+| runtime-extras__leaky | cn_original:runtime-extras__leaky.broken | leaky_get_translation0_2 | off | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3f56629c9b58e8d450f0.json) |
+| runtime-extras__leaky | cn_original:runtime-extras__leaky.broken | leaky_get_translation0_3 | off | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4e6b0fb42e060a86f6c7.json) |
+| runtime-extras__leaky | cn_original:runtime-extras__leaky.broken | leaky_get_translation0_4 | off | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/62aee14c9d6c79ac3f82.json) |
+| runtime-extras__leaky | cn_original:runtime-extras__leaky.broken | leaky_get_translation0_5 | off | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ebb6ffb273b49662b672.json) |
+| runtime-extras__leaky | cn_original:runtime-extras__leaky.broken | original_main_translation0_only_entry | off | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7a5f61b1945d87bd4bad.json) |
+| runtime-extras__leaky | cn_original:runtime-extras__leaky.broken | original_main_translation0_only_entry | on | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e64a4b9d48641b5b408a.json) |
+| runtime-extras__leaky_main | cn_original:runtime-extras__leaky_main | mkref_translation0_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/04579a6ee616374eb514.json) |
+| runtime-extras__leaky_main | cn_original:runtime-extras__leaky_main | mkref_translation0_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e2f3a848cff4a6a7ff41.json) |
+| runtime-extras__leaky_main | cn_original:runtime-extras__leaky_main | mkref_translation0_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2d191ed6d13b805a4ed6.json) |
+| runtime-extras__leaky_main | cn_original:runtime-extras__leaky_main | mkref_translation0_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0ba3b139ccee0d3daf68.json) |
+| runtime-extras__leaky_main | cn_original:runtime-extras__leaky_main | mkref_translation0_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/16517028a022c3b53b75.json) |
+| runtime-extras__leaky_main | cn_original:runtime-extras__leaky_main | mkref_translation0_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/29b07efb076b3308d892.json) |
+| runtime-extras__leaky_main | cn_original:runtime-extras__leaky_main | mkref_translation0_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/61a4ced12937c35901c0.json) |
+| runtime-extras__leaky_main | cn_original:runtime-extras__leaky_main | mkref_translation0_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/aae7a776375e5cc252e2.json) |
+| runtime-extras__leaky_main | cn_original:runtime-extras__leaky_main | mkref_translation0_4 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/35e92c5245bda24039b5.json) |
+| runtime-extras__leaky_main | cn_original:runtime-extras__leaky_main | mkref_translation0_4 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7c79edea6a7397b0015c.json) |
+| runtime-extras__leaky_main | cn_original:runtime-extras__leaky_main | mkref_translation0_5 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3217fc2fd301fcee8f85.json) |
+| runtime-extras__leaky_main | cn_original:runtime-extras__leaky_main | mkref_translation0_5 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c39e01fb2112eec45c26.json) |
+| runtime-extras__leaky_main | cn_original:runtime-extras__leaky_main | original_main_translation0_only_entry | off | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/27d3444a2dbd8f868663.json) |
+| runtime-extras__leaky_main | cn_original:runtime-extras__leaky_main | original_main_translation0_only_entry | on | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/bd72616b4c0531370ac1.json) |
+| runtime-extras__return_owned_local | cn_original:runtime-extras__return_owned_local.broken | bad_0 | off | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c38d36536de2ad045bca.json) |
+| runtime-extras__return_owned_local | cn_original:runtime-extras__return_owned_local.broken | bad_1 | off | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0ccb765a413390b856c4.json) |
+| runtime-extras__return_owned_local | cn_original:runtime-extras__return_owned_local.broken | bad_2 | off | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1a5c48d3b74284917422.json) |
+| runtime-extras__return_owned_local | cn_original:runtime-extras__return_owned_local.broken | bad_3 | off | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c3eb2c631f1cea58f7b7.json) |
+| runtime-extras__return_owned_local | cn_original:runtime-extras__return_owned_local.broken | bad_4 | off | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/204481947b14ac56b5b5.json) |
+| runtime-extras__return_owned_local | cn_original:runtime-extras__return_owned_local.broken | bad_5 | off | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/da884c2ebdfc0c1b0ee8.json) |
+| runtime-extras__return_owned_local | cn_original:runtime-extras__return_owned_local.broken | original_client_only_entry | off | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/bcfea82f0c60cbc003d6.json) |
+| runtime-extras__return_owned_local | cn_original:runtime-extras__return_owned_local.broken | original_client_only_entry | on | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/19210eebbb414a6f3dd1.json) |
+| runtime-extras__same_func_malloc_free | cn_original:runtime-extras__same_func_malloc_free | original_main_translation0_only_entry | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/29df8f2770a89010900f.json) |
+| runtime-extras__same_func_malloc_free | cn_original:runtime-extras__same_func_malloc_free | original_main_translation0_only_entry | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c118a8761c56b97866a8.json) |
+| runtime-extras__same_func_malloc_free | cn_original:runtime-extras__same_func_malloc_free | original_main_translation1_only_entry | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8aee2ee768b3b4741a46.json) |
+| runtime-extras__same_func_malloc_free | cn_original:runtime-extras__same_func_malloc_free | original_main_translation1_only_entry | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/dcd0ecec3d1507599cbe.json) |
+| runtime-extras__same_func_malloc_free | cn_original:runtime-extras__same_func_malloc_free | original_main_translation2_only_entry | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a6cfe30bd83d2daa80c3.json) |
+| runtime-extras__same_func_malloc_free | cn_original:runtime-extras__same_func_malloc_free | original_main_translation2_only_entry | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/29b08928955e063faee7.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/dc6f9f46150b0ba0b57f.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7b74f2d4cf0a13e6fc45.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e16ab5fac2876534eac2.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/41ef5bf6455b601098e8.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/bb16d152820cc245d4b5.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a234e1a24012a3843e85.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0ba9083a8b0d97e31cc7.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7eec7b074c20425a2d30.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_4 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/08ae055077e28b51d950.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_4 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0269b8bca30363d8919a.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_5 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e824116ca728eb43b682.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation0_5 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b996bbf8fa7bee925959.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | original_main_translation0_only_entry | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ba6759a4083a461b74f5.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | original_main_translation0_only_entry | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/58da61adb85b690b4b2a.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e7d26290ef64161b2c0c.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/58c4a01cba94088082dc.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1ccffb225af3604d3af1.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/86e6776f72567ddb37dd.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/272dbabdcc91ad0ad899.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/64fa6f36532a5a847294.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8cfa2cec3bfa0bc5c257.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/445f1ec6ec893bb5fe9c.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_4 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c4c242b658d110097978.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_4 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/088848d13180c288cf8a.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_5 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0a098a7b1de073adef44.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | mkref_translation1_5 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a01c838cb24371065447.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | original_main_translation1_only_entry | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/65ce25f528a8db627f29.json) |
+| runtime-extras__up_malloc_down_free | cn_original:runtime-extras__up_malloc_down_free | original_main_translation1_only_entry | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e02819974a4b4c11e8f7.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation1_0 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/4d9743c6d70a75c60d57.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation1_0 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/3eea58dfb7f31cfbadd8.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation1_1 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/8f0f0e4c4797cf4fab80.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation1_1 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/d66021c61b223a31c6ae.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation1_2 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/2d6faba762c2147967a7.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation1_2 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/907acd79c120e2a516c6.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation1_0 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/dfdb1017c5f4fea849f1.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation1_0 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/2d6281edf6f5cd65e336.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation1_1 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/d64d52df74abf376407e.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation1_1 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/d088ec45d66ea3dbead9.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation1_2 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/9ccb78f83cbc2e29ed70.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation1_2 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/cf01bf1fae148ccb2d7f.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation1_0 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/ac4424dfb329543885b7.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation1_0 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/60f960c7c1d609f19f9d.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation1_1 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/f0e708e8a68488752e7a.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation1_1 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/038c3b67feec255f33b5.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation1_2 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/4626c1bed3fe7603fa7c.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation1_2 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/77df35ba053a2975463a.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation1_0 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/f67ceebd6cba28076ad1.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation1_0 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/7cefacd5a992abc4df23.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation1_1 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/330f013243735f796527.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation1_1 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/74983f72f8fa87341afc.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation1_2 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/df59629e7f7238b86228.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation1_2 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/01f2d98588377f266e75.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation1_0 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/8be6f0279b8ba15c7aab.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation1_0 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/7fa99857ba86638d756a.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation1_1 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/5d02dfa0948b956f6905.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation1_1 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/9daf49b7cf43b801eb6d.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation1_2 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/a1ea48f690493dab08fd.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation1_2 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/0f5e3799609d58a44a2e.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | depart_translation1_0 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/90aed97006652fd068fc.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | depart_translation1_0 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/fb0f6081a01e500bf987.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | depart_translation1_1 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/197b786eb1d113695902.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | depart_translation1_1 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/eb1559c3d2a4a0c7e8c8.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | depart_translation1_2 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/b54f3aa9cf90d48bb196.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | depart_translation1_2 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/abb5bcc253ca9e9e8979.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation1_0 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/6dce1a5f349f91388380.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation1_0 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/54e61a77d8e166e727d5.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation1_1 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/5b1ecbeb0f79e157cd30.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation1_1 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/ccb62f7f7065e7060d51.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation1_2 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/41fd8dcc710f6b563a29.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation1_2 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/6274ba09a9be20485b5a.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_0 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/0bcbdc62fc2a38dcd3c6.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_0 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/36b613e1455410527585.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_1 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/c2c1e653509c29d6d186.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_1 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/315f7a5696e209103e56.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_2 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/375f3c08a0999b0bc1a6.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_2 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/558d7a503880e166a2c6.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_3 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/c847c36b2bd355ef0565.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_3 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/547c8be86edf149d6f24.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_4 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/608eb36045079d9d1e84.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_4 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/75db279cad642b5a2a8c.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_5 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/6b8672d7fad1693f8fe6.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_5 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/a5c734f71111f10debd1.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_6 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/04eda558ec081b594ed8.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_6 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/ecfcb637f0579e07510c.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_7 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/9df0660af2f2aa336b73.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_7 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/220bf69acad7cbc12906.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_8 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/24d03b2e54314b7c776b.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation1_8 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/2bf223dae898851640ad.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation3_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b84b65074cee3a87ffae.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation3_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/140714e22453826eae08.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation3_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8e4ae24a88a44da8f873.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation3_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0867d605960b940a9a87.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation3_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5d3bdde397575147183d.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation3_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d3bbc519a099c0c7a3d7.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation3_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0519ad5dfec5177fba7c.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation3_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/faaf443553ec6e9c6c4e.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation3_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a4742f4e633a41704c3e.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation3_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/38955b0f79fc11a9d6d9.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation3_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9b16b71470b84f1faaaa.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation3_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4b9b601ac5c108bb56b1.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation3_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/907019e163e1181224e4.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation3_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9f5b37cf70792a8206a3.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation3_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6e1ada3806608dfe8a52.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation3_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a5dfd858635eb179d8e0.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation3_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5a9ec15dc3c2e5c252ba.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation3_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e8e2377103c3f14e0d54.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation3_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ea3792ea8caa9477c741.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation3_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/68c163ae64ee8d161673.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation3_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5c0a00faf3c538a82b50.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation3_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/fb33eaccea92a2755f9f.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation3_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/04f09ec9055f0a92d958.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation3_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/738712afbb22c005e03d.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation3_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/cc810eed95cd607b06c3.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation3_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f107d2c289ad1ca868c9.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation3_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0ca79331772de031f5c5.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation3_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/cc23102162d01da6265a.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation3_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/58792530a29f6cfaa76a.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation3_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4bedf4b4a927561fb4ff.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | depart_translation3_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d238f9db332f8c6fc345.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | depart_translation3_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/fdf030385eb848e6fe66.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | depart_translation3_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1f559dc1db28a21b2ab2.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | depart_translation3_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b1e1ff422f1252606ff4.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | depart_translation3_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e0bdd9de4904971fdfbc.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | depart_translation3_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3ee60ed852c84bc51648.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation3_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/39cc9e2f7379ac142faf.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation3_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7e830911494b056b71a7.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation3_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2434f6ecef83e98a85b8.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation3_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/08d42810b71edd0bda7a.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation3_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6d36bbed30b7ac735325.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation3_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/10ee834d9f92fac8726c.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/bfa588f4e84f9e2502be.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/19ba5ef2230c6d9e7aae.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/87c14a59ba7abef05e49.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/16bec027b20466f9e501.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b299ff097cf9878874a6.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/aa9a885ab077e044ba9d.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8665b333f256875a8eef.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a207d3ab656192df4fac.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_4 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4c9367e026081c0a1b41.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_4 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5e06ec21c69b48951c6f.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_5 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/064ee964a9a431e8b371.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_5 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/903d6755dc9576f491e0.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_6 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/127c28c39dc2b225ae83.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_6 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8609ffc3de2ee5ebe332.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_7 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/91821e7264eaab33cb81.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_7 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/75f5c4261c95f3491fe9.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_8 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/85458f7343cd2081ee59.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation3_8 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d56155ad471bfc81c9dc.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation4_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/afbac9af02d25b96b48e.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation4_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6c23bcfcc71a581ddc40.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation4_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/095bd3ae009c5e7a012e.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation4_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/95d1a3e71f7389736c9c.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation4_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9f8aa6a11882798b3237.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation4_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/dc68861fda94a65ad4a3.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation4_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1842c72f1c456dc73201.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation4_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/975d1cf097efeb022eea.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation4_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8c0d12ae131f6df2d07c.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation4_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e37e0eba664f1b469fbb.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation4_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0aaf6f4829b43ebe4a76.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation4_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/35884644f7521e974edc.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation4_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/68c37c4dbfd551d88465.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation4_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a217fddd83220dba3575.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation4_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/efa66b72434ed7b7e3e9.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation4_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e2db17f1f78a848dc814.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation4_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/48449a2b7cbeb19fd0c4.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation4_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/91b1945301caa8ca6ab8.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation4_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/de36bc1690be7c53344e.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation4_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4afafb5a6cb3d1a769bc.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation4_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/01da8658ebf1404f9f62.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation4_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d1fa3136dc41f18bb7cf.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation4_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ab637cf482d9c41e39ac.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation4_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a0e4d64ef67c820992d7.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation4_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2cd06ce48d4ab0f84521.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation4_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5bfbf03a6202ce7bea55.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation4_1 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/61c5f33fc8f475e62b48.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation4_1 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/a5eb5c9f281a7a7ad6f7.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation4_2 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/931d086869aceb7011ff.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation4_2 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/bd5c10ee7b6a99e1ab81.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | depart_translation4_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d9bb23668e69f3801189.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | depart_translation4_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/64eb1d56a922e1b39608.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | depart_translation4_1 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/4c5092e67534e4ee2407.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | depart_translation4_1 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/3d234ddb14f940b280ed.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | depart_translation4_2 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/39b032ca51588fc97532.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | depart_translation4_2 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/cc763d629933835ef209.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation4_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c042c8f93892ee3bb8b5.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation4_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/94d2a210630ba5c55153.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation4_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/882464b087b514abddd8.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation4_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7a99bc34686935b6da45.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation4_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8a789d7e95be8e9acdba.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation4_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f856faff028409ee1579.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d10546caf61aff9112ae.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7906661a35e919196222.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_1 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/a0f6b0c63b2cd133a586.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_1 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/d875b38a878eaba1c2fa.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_2 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/143a2ece08145d2c1dc9.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_2 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/becb050bc1cf6468363a.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_3 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/fe6d54b593a33c03b91c.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_3 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/da9850d1c43f4a069cd5.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_4 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/ac90ccc2efdd12efb95b.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_4 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/aa6f1beb70e91ab82a7a.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_5 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/34dbe16b25b730dc2181.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_5 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/2ebf31155cc15635e88b.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_6 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/5a6a6eff2d8c33fc72ff.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_6 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/7a4197a0e5793f896dff.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_7 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/be0780ff77fe3bb64351.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_7 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/7dd7b538389a9e3bbe98.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_8 | off | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/b411d367899e60b719d8.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation4_8 | on | 当前 | PASS | ERROR | ERROR | UNEXPECTED_EXECUTOR_ERROR | [详情](cases/29a0fbdf7bcc35f7bd68.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation5_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/bc425914892772820e3e.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation5_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ef2fc70ef77110ca1a06.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation5_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7d651b9504b779988218.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation5_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d6ad13b680aa92891576.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation5_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/14fa188973ba9e422845.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Plane_Counter_translation5_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/10cd208f01c70aefbf30.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation5_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9d75cf54c203ef68c03f.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation5_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d04e73a74ca4df2f4c2e.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation5_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6da3d2e6d25adc9268fc.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation5_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2831d189a4932e2b76dd.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation5_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ab6608a9220238a6507a.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Plane_Counter_translation5_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4b7acd153dda37a3c449.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation5_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/33a93f1041aa85ef7d69.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation5_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4d1b5c9b12e5a45e8e96.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation5_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3ff18f9435877f300717.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation5_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e7cb37f14b6d0e9d3764.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation5_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/02789a2137fa87ff5628.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | increment_Runway_Time_translation5_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b0a6d8e33e8723365d4d.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation5_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/cdf480f5bf01e12b5127.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation5_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/330c52ff9d6a380b10d3.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation5_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/21487ea9e591f7198392.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation5_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d39afbc81f24b87525d2.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation5_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2c9beef89d0db112a3ce.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | reset_Runway_Time_translation5_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f05b50a3efa2b8b93a5c.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation5_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7e4b881ba02b2fa470c5.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation5_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7e1a178e0b597c51f970.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation5_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/821607e4cb487d299497.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation5_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/21d24dc864b8004c0708.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation5_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f27bbb4a3fb588d702b2.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | arrive_translation5_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2b0d9b52c295c4060bea.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | depart_translation5_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ed97edb63def72c1582e.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | depart_translation5_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b297b045e14683d98baa.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | depart_translation5_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ab2fdf5514b8e7ea89a9.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | depart_translation5_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5b6625acef1b087ab174.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | depart_translation5_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/28a7f1191078abb56487.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | depart_translation5_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4e45bf766cb70aecb997.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation5_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ed56e572eff682d6f69f.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation5_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0a0cf6afddbe9839cf5b.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation5_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d58abb9388d8ca284b7d.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation5_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e95f9ec5642d21d8afa4.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation5_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1974bc76994e4ff93839.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | switch_modes_translation5_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/17cb3b0551a5712a7764.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/124693fd640d1672e013.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/aed8b52a405dd38c64f4.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/bf11a30844afd8481425.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e87c035300d7fce7f8f9.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/06bc647820fc7d13c699.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ee36845126201a6cf102.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a40bf0adede1368bc0fa.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a2aaa335f5ec3b996edc.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_4 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/58dc7e8e1a7aed6da86a.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_4 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f07389f702215524b95e.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_5 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d39bf8c882ffe3d4b34a.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_5 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/04fe84a4e2a1818c6e9a.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_6 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5c09a8a7c705eeea7a32.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_6 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1a4598234f3af8191037.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_7 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/faf4953cad552e75db91.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_7 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/187aaa0275a0c0bc52d8.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_8 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a3e739e3d35dd978cd5e.json) |
+| runway__funcs2 | cn_original:runway__funcs2 | tick_translation5_8 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/bd7ee596bc3b13e22ddb.json) |
+| slf17_get_and_free | cn_original:slf17_get_and_free | original_free_body_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/69d7e5f08e73cf521967.json) |
+| slf17_get_and_free | cn_original:slf17_get_and_free | original_free_body_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/92cfa442e4569b21dc97.json) |
+| slf17_get_and_free | cn_original:slf17_get_and_free | original_free_body_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6b135a4a3e53c84f9fff.json) |
+| slf17_get_and_free | cn_original:slf17_get_and_free | original_free_body_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/acc322698b496624dc26.json) |
+| slf17_get_and_free | cn_original:slf17_get_and_free | original_free_body_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/10136996bedd25689b7f.json) |
+| slf17_get_and_free | cn_original:slf17_get_and_free | original_free_body_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/11ab9ba05565f9917cc3.json) |
+| slf17_get_and_free | cn_original:slf17_get_and_free | original_free_body_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e035ce3edd2d483189d1.json) |
+| slf17_get_and_free | cn_original:slf17_get_and_free | original_free_body_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7bbb042c70986ef4d510.json) |
+| slf17_get_and_free | cn_original:slf17_get_and_free | original_free_body_4 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/741a4a0d1e78212eeabd.json) |
+| slf17_get_and_free | cn_original:slf17_get_and_free | original_free_body_4 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e9831f61412882e05cfb.json) |
+| slf17_get_and_free | cn_original:slf17_get_and_free | original_free_body_5 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f90cfcbbba2cd26b2c5f.json) |
+| slf17_get_and_free | cn_original:slf17_get_and_free | original_free_body_5 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/815d4030d1e72e0ee930.json) |
+| slf17_get_and_free | cn_original:slf17_get_and_free | trusted_free_interface_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5aa7400707328bcbf1c9.json) |
+| slf17_get_and_free | cn_original:slf17_get_and_free | trusted_free_interface_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f3d9022f4a1146273178.json) |
+| slf17_get_and_free | cn_original:slf17_get_and_free | trusted_free_interface_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6643a48a13c1ccd7b093.json) |
+| slf17_get_and_free | cn_original:slf17_get_and_free | trusted_free_interface_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/47e88abb4cb33bf1dd60.json) |
+| slf17_get_and_free | cn_original:slf17_get_and_free | trusted_free_interface_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/50af39a4b56e4945ce05.json) |
+| slf17_get_and_free | cn_original:slf17_get_and_free | trusted_free_interface_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/fff4aed14797b2e28728.json) |
+| slf17_get_and_free | cn_original:slf17_get_and_free | trusted_free_interface_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9cb63f46e0239a65bc8e.json) |
+| slf17_get_and_free | cn_original:slf17_get_and_free | trusted_free_interface_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d4b2884a67c3c245c835.json) |
+| slf17_get_and_free | cn_original:slf17_get_and_free | trusted_free_interface_4 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e27f0e7450405a06f570.json) |
+| slf17_get_and_free | cn_original:slf17_get_and_free | trusted_free_interface_4 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/476c63bd241344f10f41.json) |
+| slf17_get_and_free | cn_original:slf17_get_and_free | trusted_free_interface_5 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/595ad60d323cc95651b7.json) |
+| slf17_get_and_free | cn_original:slf17_get_and_free | trusted_free_interface_5 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/3cebeeb7d50087350b40.json) |
+| slf18_two_dice | cn_original:slf18_two_dice | bounded_modulus_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d19439384c98f16d3859.json) |
+| slf18_two_dice | cn_original:slf18_two_dice | bounded_modulus_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/85e11b455b647a45779f.json) |
+| slf18_two_dice | cn_original:slf18_two_dice | bounded_modulus_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/426c07b4a0c6941a1e40.json) |
+| slf18_two_dice | cn_original:slf18_two_dice | bounded_modulus_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d250032cf17dd97a4fbe.json) |
+| slf18_two_dice | cn_original:slf18_two_dice | bounded_modulus_6 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d73daf21f8bb4c69666b.json) |
+| slf18_two_dice | cn_original:slf18_two_dice | bounded_modulus_6 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5126c86e3bd993a2e662.json) |
+| slf18_two_dice | cn_original:slf18_two_dice | bounded_modulus_7 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b465af348563c55a9ea5.json) |
+| slf18_two_dice | cn_original:slf18_two_dice | bounded_modulus_7 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f076671077a84a5261b7.json) |
+| slf18_two_dice | cn_original:slf18_two_dice | bounded_modulus_2147483648 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b7971ff77f9492cf678a.json) |
+| slf18_two_dice | cn_original:slf18_two_dice | bounded_modulus_2147483648 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/edb6217a7d73fb6a737d.json) |
+| slf18_two_dice | cn_original:slf18_two_dice | bounded_modulus_4294967295 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7261da306d426615cdef.json) |
+| slf18_two_dice | cn_original:slf18_two_dice | bounded_modulus_4294967295 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ad19b005b1e13f1f42fc.json) |
+| slf18_two_dice | cn_original:slf18_two_dice | bounded_two_dice_no_args | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e54f7e85abe4dabdab78.json) |
+| slf18_two_dice | cn_original:slf18_two_dice | bounded_two_dice_no_args | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/50b04505eb4a8218ae62.json) |
+| slf18_two_dice | cn_original:slf18_two_dice | implicit_range_modulus_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/48b90df5046ae2817c82.json) |
+| slf18_two_dice | cn_original:slf18_two_dice | implicit_range_modulus_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/230b079278ba16f8f287.json) |
+| slf18_two_dice | cn_original:slf18_two_dice | implicit_range_modulus_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8ffd58f0c60c19f5a5c2.json) |
+| slf18_two_dice | cn_original:slf18_two_dice | implicit_range_modulus_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/429ff17c0e7509b35a8b.json) |
+| slf18_two_dice | cn_original:slf18_two_dice | implicit_range_modulus_6 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c36affcc8f011174cb69.json) |
+| slf18_two_dice | cn_original:slf18_two_dice | implicit_range_modulus_6 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/cebd5450af042621c94f.json) |
+| slf18_two_dice | cn_original:slf18_two_dice | implicit_range_modulus_7 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1deeabf5102d2734e1e6.json) |
+| slf18_two_dice | cn_original:slf18_two_dice | implicit_range_modulus_7 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e1e0d10714f695879ac3.json) |
+| slf18_two_dice | cn_original:slf18_two_dice | implicit_range_modulus_2147483648 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5befcea7c2a77899ab9e.json) |
+| slf18_two_dice | cn_original:slf18_two_dice | implicit_range_modulus_2147483648 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/87e80157c33888436fd1.json) |
+| slf18_two_dice | cn_original:slf18_two_dice | implicit_range_modulus_4294967295 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/957431c7714a124bb724.json) |
+| slf18_two_dice | cn_original:slf18_two_dice | implicit_range_modulus_4294967295 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c832266e59efb7c0df21.json) |
+| slf18_two_dice | cn_original:slf18_two_dice | implicit_range_two_dice_no_args | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7ffa1ac451e0df0d89d4.json) |
+| slf18_two_dice | cn_original:slf18_two_dice | implicit_range_two_dice_no_args | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b8fb235fa08ed501f886.json) |
+| slf3_basic_inplace_double | constructed:case_cd64220fbef61c25 | value_0 | off | 当前 | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/8f0a71c1328250f32fac.json) |
+| slf3_basic_inplace_double | constructed:case_cd64220fbef61c25 | value_1 | off | 当前 | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/3c7d990f379c332bb9e9.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | IntList_cons_translation0_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/591dfd32a0b17dc83a0c.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | IntList_cons_translation0_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2a5ad7df30853ad15827.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | IntList_cons_translation0_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7544d2157948bc06b4aa.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | IntList_cons_translation0_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f9cc1e26870e830db01e.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | IntList_cons_translation0_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7ab43b3c6efa0e989e0b.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | IntList_cons_translation0_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a1cc0dae8f0c93d356fa.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | IntList_cons_translation0_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/56f96ef0b424e780fcfb.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | IntList_cons_translation0_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/88c95020147f67dbe799.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | create_translation0_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8fe5c0481526f58651c8.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | create_translation0_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8c0d642922e0e379c3b1.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | sizeOf_translation0_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/526ddeccbd778848e2d4.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | sizeOf_translation0_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0b3520d7dd688a1022ca.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | sizeOf_translation0_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b9e72eda1483bf5192ab.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | sizeOf_translation0_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/39c0ded6822630fb54a5.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | sizeOf_translation0_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/756494ce7e4b6dc62657.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | sizeOf_translation0_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1bd89f89ee750107aadc.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | sizeOf_translation0_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ac492c1bbb4ebba5cc68.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | sizeOf_translation0_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9b43c49de1bfa07efb9a.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | push_translation0_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/257198d9658588d03e14.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | push_translation0_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5a7c1a00cb49bef66ede.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | push_translation0_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/95248fb23cc12fd0a866.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | push_translation0_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c01371f8203806348aee.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | push_translation0_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1b00dd99d591254deed1.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | push_translation0_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/25c295390a0baf2ff359.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | push_translation0_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/62c36479f45016a49d49.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | push_translation0_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e96b03756ac5d0e5ceb1.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | top_translation0_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4b63f12625e8bc7234a1.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | top_translation0_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e444fbbbb96cdd12c165.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | top_translation0_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/165ebed3d661bb3afaf4.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | top_translation0_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f0dedb7a10db1f236738.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | top_translation0_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7e2d9381f4f00205848e.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | top_translation0_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/df1fb5f3a5e1327bfd61.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | top_translation0_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/effa96c060f99dd03e85.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | top_translation0_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/25eedac7f29afc188622.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | pop_translation0_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2c4bd2b87f8cb692a127.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | pop_translation0_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c6ec9648b82b2ba8a9d8.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | pop_translation0_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0b4bb24b22ed4c17868c.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | pop_translation0_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/27c8091aa0b91ecfda21.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | pop_translation0_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/cc168ac06d609d3ca2c5.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | pop_translation0_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/33bf77cb3e0aa7dffec3.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | pop_translation0_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/683731cdecbe3d442372.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | pop_translation0_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6488e4ed71ac4b7dc75f.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | IntList_length_translation0_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/09fbbfcc510451086348.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | IntList_length_translation0_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/fcd80bade19222b45c3e.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | IntList_length_translation0_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/fdf72a3c9113f9888a78.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | IntList_length_translation0_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1b100d00a81e8baa05b6.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | IntList_length_translation0_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/87882bab244ed0673a23.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | IntList_length_translation0_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c9e6f422afe902778a97.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | IntList_length_translation0_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8e600d02cacc8f9c8fa0.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | IntList_length_translation0_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f7c59aaea34a2d4d7c96.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | IntList_cons_translation1_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/16b7c48df8443f30d1d5.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | IntList_cons_translation1_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/26907fc16277e58ee9f4.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | IntList_cons_translation1_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4780ad8705e9fd64220a.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | IntList_cons_translation1_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5822e8b4826344c9222f.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | IntList_cons_translation1_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/caa3cf19f3a674a1ba06.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | IntList_cons_translation1_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/77c71b05accb2326a9c2.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | IntList_cons_translation1_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/415a54c21e284b86727b.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | IntList_cons_translation1_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/40131c13279ac8b1db71.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | create_translation1_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ab2eaf9cd23ae3fb0807.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | create_translation1_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0fd84b770ce389388603.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | sizeOf_translation1_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/68f50aee8824c3d6e147.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | sizeOf_translation1_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/63e4acedf7ecfed83328.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | sizeOf_translation1_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e7e3aa44b83b40b4ad1f.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | sizeOf_translation1_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4908a67acbf8b19636ef.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | sizeOf_translation1_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ea25d06f87be3b6e761a.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | sizeOf_translation1_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f0798c73de4fba5acdc1.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | sizeOf_translation1_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a198899fe7ee555941ce.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | sizeOf_translation1_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c9b3d81d4a58704d1dc9.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | push_translation1_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1220d5b121e6c7d7dadf.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | push_translation1_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/81e5a892ad6cb3398acd.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | push_translation1_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0d088f81436f0d2af408.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | push_translation1_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/42d3c3d0061835b7ae62.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | push_translation1_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/99f77aa42eda22b9f932.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | push_translation1_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a8bfe190641ae696e753.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | push_translation1_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5c47b9e3d4bf9690070d.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | push_translation1_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8e84b9a9ecb4c3e2e3b9.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | top_translation1_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0e869c973a53e5d9c903.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | top_translation1_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/04df775b4fde698e3af1.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | top_translation1_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6c52a34724b1bac37904.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | top_translation1_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5c40b8e42043fd673a77.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | top_translation1_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ce8b421d3a8750d2906d.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | top_translation1_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8d4311b919ae27aa3e92.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | top_translation1_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/564df17367783473a336.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | top_translation1_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/168f7ae221c37d12e9c6.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | pop_translation1_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/639490132b688b8bcbc7.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | pop_translation1_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7f6dc5cc821a6348c3ae.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | pop_translation1_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9aa8d6a4ef004c2936fe.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | pop_translation1_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d38a0688e61da83f6cab.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | pop_translation1_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/85fd0e2b0c611dc4d76d.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | pop_translation1_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/f936d17a40bfb24c363a.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | pop_translation1_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/cdbb5ad7aac77368af05.json) |
+| slf_sized_stack | cn_original:slf_sized_stack | pop_translation1_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c832543110508ab0a2d2.json) |
+| succ_using_incr | cn_original:slf16_basic_succ_using_incr | bounded_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/737462be0f4b3bb950ac.json) |
+| succ_using_incr | cn_original:slf16_basic_succ_using_incr | bounded_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/09808816fcce4f4b1723.json) |
+| succ_using_incr | cn_original:slf16_basic_succ_using_incr | bounded_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/98ea4568bc88471d56ce.json) |
+| succ_using_incr | cn_original:slf16_basic_succ_using_incr | bounded_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e7042cfb3ace56ffdb88.json) |
+| succ_using_incr | cn_original:slf16_basic_succ_using_incr | bounded_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d313d2dd4ab9f9a198fc.json) |
+| succ_using_incr | cn_original:slf16_basic_succ_using_incr | bounded_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2cd538fc8a68ff059988.json) |
+| succ_using_incr | cn_original:slf16_basic_succ_using_incr | bounded_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/aa0d48d5d758d64bdb63.json) |
+| succ_using_incr | cn_original:slf16_basic_succ_using_incr | bounded_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/4a6d7007b3c0d1efc797.json) |
+| succ_using_incr | cn_original:slf16_basic_succ_using_incr | bounded_4 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/085f15c42eccfb2d046c.json) |
+| succ_using_incr | cn_original:slf16_basic_succ_using_incr | bounded_4 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/99786b500761e225f2e4.json) |
+| succ_using_incr | cn_original:slf16_basic_succ_using_incr | bounded_5 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e06447db0492de8a64ce.json) |
+| succ_using_incr | cn_original:slf16_basic_succ_using_incr | bounded_5 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/fa9096405ab2abc531db.json) |
+| succ_using_incr | cn_original:slf16_basic_succ_using_incr | implicit_range_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/29165b68118c260c7b7e.json) |
+| succ_using_incr | cn_original:slf16_basic_succ_using_incr | implicit_range_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/05e3b74ab0c608620edc.json) |
+| succ_using_incr | cn_original:slf16_basic_succ_using_incr | implicit_range_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/094007848fcf229b6182.json) |
+| succ_using_incr | cn_original:slf16_basic_succ_using_incr | implicit_range_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b2c16d25cdd61d7474bc.json) |
+| succ_using_incr | cn_original:slf16_basic_succ_using_incr | implicit_range_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d66aaa6ace669b6c78e8.json) |
+| succ_using_incr | cn_original:slf16_basic_succ_using_incr | implicit_range_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/67545c90e7e4411d4ebd.json) |
+| succ_using_incr | cn_original:slf16_basic_succ_using_incr | implicit_range_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/fcd46b8d3ee88b63e712.json) |
+| succ_using_incr | cn_original:slf16_basic_succ_using_incr | implicit_range_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2bf46cbb186cf9fe723c.json) |
+| succ_using_incr | cn_original:slf16_basic_succ_using_incr | implicit_range_4 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ca5d64c5a0095677c45b.json) |
+| succ_using_incr | cn_original:slf16_basic_succ_using_incr | implicit_range_4 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d3154a6bb69c42531415.json) |
+| succ_using_incr | cn_original:slf16_basic_succ_using_incr | implicit_range_5 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1a9b548f7da4010c597f.json) |
+| succ_using_incr | cn_original:slf16_basic_succ_using_incr | implicit_range_5 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b5ebb0797e4951e94eeb.json) |
+| succ_using_incr | cn_original:slf14_basic_succ_using_incr_attempt.broken | leak_0 | off | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/63e0aee3d0434b5ca353.json) |
+| succ_using_incr | cn_original:slf14_basic_succ_using_incr_attempt.broken | leak_0 | on | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/5dd39ff98075615c5c0b.json) |
+| succ_using_incr | cn_original:slf14_basic_succ_using_incr_attempt.broken | leak_1 | off | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e37ad5c53a1ab0640ce0.json) |
+| succ_using_incr | cn_original:slf14_basic_succ_using_incr_attempt.broken | leak_1 | on | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/8f203c51e877f06648f0.json) |
+| succ_using_incr | cn_original:slf14_basic_succ_using_incr_attempt.broken | leak_2 | off | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/00091e7131335b093fda.json) |
+| succ_using_incr | cn_original:slf14_basic_succ_using_incr_attempt.broken | leak_2 | on | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/116a99b704c1ad342499.json) |
+| succ_using_incr | cn_original:slf14_basic_succ_using_incr_attempt.broken | leak_3 | off | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b6282b06c04d05563d31.json) |
+| succ_using_incr | cn_original:slf14_basic_succ_using_incr_attempt.broken | leak_3 | on | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/6bfc76f906416c56564f.json) |
+| succ_using_incr | cn_original:slf14_basic_succ_using_incr_attempt.broken | leak_4 | off | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/fc76fd1fe451e98e4cac.json) |
+| succ_using_incr | cn_original:slf14_basic_succ_using_incr_attempt.broken | leak_4 | on | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/56f91039a6b14749b42c.json) |
+| succ_using_incr | cn_original:slf14_basic_succ_using_incr_attempt.broken | leak_5 | off | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/babe7d67f8ce5e331e7c.json) |
+| succ_using_incr | cn_original:slf14_basic_succ_using_incr_attempt.broken | leak_5 | on | 当前 | FAIL | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b12797f996d3d9b7f7b9.json) |
+| swap_array | cn_original:swap_array | array_0 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/85cf7bb7aad6854a4633.json) |
+| swap_array | cn_original:swap_array | array_0 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/dbe3af1e7b2016d27aba.json) |
+| swap_array | cn_original:swap_array | array_1 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/de35959fc8fc291ab0b4.json) |
+| swap_array | cn_original:swap_array | array_1 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/36f7df9015bf0d9c852f.json) |
+| swap_array | cn_original:swap_array | array_2 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/c0484ce63f01bd1715de.json) |
+| swap_array | cn_original:swap_array | array_2 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/fd1f161f7c9473818b8d.json) |
+| swap_array | cn_original:swap_array | array_3 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/e8c0a21524d55ee14e82.json) |
+| swap_array | cn_original:swap_array | array_3 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/877b95efeb5b2f2282ed.json) |
+| swap_array | cn_original:swap_array | array_4 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/7f51348d2acae6d2be69.json) |
+| swap_array | cn_original:swap_array | array_4 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/139f8d3d385c50eb1823.json) |
+| swap_array | cn_original:swap_array | array_5 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/dde0be8bc906d6019f4b.json) |
+| swap_array | cn_original:swap_array | array_5 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/fa0dfa945ee3a8e1cbb3.json) |
+| swap_array | cn_original:swap_array | array_6 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/198f0cd92c84c235ae14.json) |
+| swap_array | cn_original:swap_array | array_6 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/03da18d0796ed63bda29.json) |
+| swap_array | cn_original:swap_array | array_7 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/6374147ee177cdbe5222.json) |
+| swap_array | cn_original:swap_array | array_7 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/1716ec387e4ac0aaddc2.json) |
+| swap_array | cn_original:swap_array | array_8 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/b9d4e4daa7cbf06c4a01.json) |
+| swap_array | cn_original:swap_array | array_8 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/bef36cdcc1d26fe82576.json) |
+| swap_array | cn_original:swap_array | array_9 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/811bfc4a4ba0e1e75c67.json) |
+| swap_array | cn_original:swap_array | array_9 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/4cfb7d198a07f0286e5d.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_0 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/e0e9e5a2c0a15b955e7d.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_0 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/e598e7101f0cf4e4a80f.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_1 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/5fd09bd940b81e3f018a.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_1 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/689c074f10ac8237ad40.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_2 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/31461cbb52cf0d731731.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_2 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/ae8b6190d7d774785bd3.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_3 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/979e0af7e647fac216ee.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_3 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/0feb3eb6dd3a1fca5706.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_4 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/e029bff0e5fdd80bf905.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_4 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/497dcc933bc9247486f3.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_5 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/72c7a297862e3ff634ff.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_5 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/a0074052816dc16b22fa.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_6 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/c9fdeabcf9fa9f5240db.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_6 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/b9736b536b6732c34914.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_7 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/1dbc4bf31660c091a277.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_7 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/7fcfec4a40b071612940.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_8 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/3fd29eba0094949e28e4.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_8 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/ace85a6d343a6be17f65.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_9 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/8c1765e65986c2cb8222.json) |
+| swap_array | cn_original:runtime-extras__swap_array | array_9 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/b6c81dbdf717c6639a7f.json) |
+| zero | constructed:case_66e065c71f01cce1 | region_0 | off | 当前 | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/cce54571e0783df4341a.json) |
+| zero | constructed:case_66e065c71f01cce1 | region_1 | off | 当前 | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/30cb2f0c4bed776bdbb5.json) |
+| read | cn_original:read.broken | value_0 | off | 当前 | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/cf79950128cc8d076c10.json) |
+| read | cn_original:read.broken | value_1 | off | 当前 | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/b37d0c5293630ebe71d3.json) |
+| read | cn_original:read.broken | value_2 | off | 当前 | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/d3f538f8a8f84fc3417d.json) |
+| read | cn_original:read.broken | value_3 | off | 当前 | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/ca31047eb5bdae126cdd.json) |
+| read | cn_original:read.broken | value_4 | off | 当前 | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/ed88948f6feb4d345a0b.json) |
+| read | cn_original:read.broken | value_5 | off | 当前 | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/927db8b1e76bdc23c59a.json) |
+| read | constructed:case_0c4f0994b9906bcc | value_0 | off | 当前 | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/95d1376126dcbde8ec04.json) |
+| read | constructed:case_0c4f0994b9906bcc | value_1 | off | 当前 | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/5974ac8acd8ff971ed86.json) |
+| read | constructed:case_0c4f0994b9906bcc | value_2 | off | 当前 | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/969d41711a98fa28b5bb.json) |
+| read | constructed:case_0c4f0994b9906bcc | value_3 | off | 当前 | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/fe40286a65aaaeda9d09.json) |
+| read | constructed:case_0c4f0994b9906bcc | value_4 | off | 当前 | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/8b3438168e96f374dbd6.json) |
+| read | constructed:case_0c4f0994b9906bcc | value_5 | off | 当前 | FAIL | UNKNOWN | FAIL | RESOLVED_AUTOMATIC_GAP | [详情](cases/58f71b96bb9e6cf7956c.json) |
 
-每条详情包含原始／最终状态、模式对照引用、输入、复现命令（写入独立 /tmp 目录）、原始日志、源码与 VC 哈希、ITP 结论和分类。read 的 12 条为旧自动阶段 UNKNOWN，经逐执行 Coq 反证完成；不是 12 个尚未解决的最终错误。开启空间 SMT 的逐例证据另见 read 模式对照。
+每条详情的 active_evaluation 区分当前与历史批次；模式对照引用指向该问题自己的批次，后续解决证据另列。不同源码不能继承当前批次的 PASS。每条详情包含原始／最终状态、模式对照引用、输入、复现命令（写入独立 /tmp 目录）、原始日志、源码与 VC 哈希、ITP 结论和分类。read 的 12 条为旧自动阶段 UNKNOWN，经逐执行 Coq 反证完成；不是 12 个尚未解决的最终错误。开启空间 SMT 的逐例证据另见 read 模式对照。
+
+本轮 array_load 的历史10项问题与修订后证据见[来源修复专项记录](source-repairs-20261018-array-load.json)。不同源码的结果分别保留；当前两模式均67/67，不将旧源码VC算作已证明。

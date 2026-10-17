@@ -21,10 +21,10 @@ int main()
     int one = read((int*)&a, 3, 1);
 /*@ Assert one == 1 && zero == zero && first == first && one == one && IntArray::full(&a,3,cons(0,cons(1,cons(2,nil)))) */
     int *second = a + 1;
-/*@ Assert second == (&a + 4) && zero == zero && first == first && one == one && second == second && IntArray::full(&a,3,cons(0,cons(1,cons(2,nil)))) */
+/*@ Assert second == ((int*)&a + 1) && zero == zero && first == first && one == one && second == second && IntArray::full(&a,3,cons(0,cons(1,cons(2,nil)))) */
     int two = read((int*)&a, 3, 2);
 /*@ Assert two == 2 && zero == zero && first == first && one == one && second == second && two == two && IntArray::full(&a,3,cons(0,cons(1,cons(2,nil)))) */
     int *third = a + 2;
-/*@ Assert third == (&a + 8) && zero == zero && first == first && one == one && second == second && two == two && third == third && IntArray::full(&a,3,cons(0,cons(1,cons(2,nil)))) */
+/*@ Assert third == ((int*)&a + 2) && zero == zero && first == first && one == one && second == second && two == two && third == third && IntArray::full(&a,3,cons(0,cons(1,cons(2,nil)))) */
   return 0;
 }

@@ -1,0 +1,61 @@
+{
+  "schema": "tespec-array-load-cn-compatibility-final/v1",
+  "created_utc": "2026-10-17T17:56:47.355509+00:00",
+  "function_name_mapping": {
+    "CN": "array_load_read",
+    "QCP": "read"
+  },
+  "changes": "each i32 -> integer; numeric i32 literals -> mathematical integers; Owned -> RW; existing extract -> focus; consistent alpha rename read -> array_load_read. Strong primary additionally has instantiate i in read and focus/instantiate 0,1,2 before original pointer assertions. Weak/broken receive no extra proof hints.",
+  "strong_verification_receipt": "benchmark/results/array_load/20261018-cn-compatibility/attempt-04-array-load2-client-focus/receipt.json",
+  "variants": [
+    {
+      "variant": "cn_original_array_load2",
+      "original_source": "benchmark/programs/array_load/variants/cn_original_array_load2/cn/array_load2.c",
+      "original_sha256": "3310b1a763227607ffb1a5f14d3f5593ebd50dca06934cf98b2ddc49a4be1403",
+      "candidate": "benchmark/results/array_load/20261018-cn-compatibility/final-candidates/array_load2.c",
+      "candidate_sha256": "7c7f806fcf68ce9c6056b147beb3d975d7e8bfe77bcf12fde250e55172645696",
+      "derived_from": "benchmark/results/array_load/20261018-cn-compatibility/attempt-04-array-load2-client-focus/array_load2.cn.c",
+      "audit": {
+        "c_identical_modulo_read_alpha_and_comments": true,
+        "six_original_client_assertions_preserved": true,
+        "no_trusted": true,
+        "read_original_focus_count": 1,
+        "read_candidate_focus_count": 1,
+        "candidate_instantiate_count": 4
+      }
+    },
+    {
+      "variant": "cn_original_array_load",
+      "original_source": "benchmark/programs/array_load/variants/cn_original_array_load/cn/array_load.c",
+      "original_sha256": "acb061cf94c458bea82e348d6c246aaf57582f428d0beae2a7eb211964d84cb9",
+      "candidate": "benchmark/results/array_load/20261018-cn-compatibility/final-candidates/array_load.c",
+      "candidate_sha256": "ab38fdf957305d0109e94790351bebffabe9f41722b7e63d50a20104981ac9d1",
+      "derived_from": "benchmark/programs/array_load/variants/cn_original_array_load/cn/array_load.c",
+      "audit": {
+        "c_identical_modulo_read_alpha_and_comments": true,
+        "six_original_client_assertions_preserved": true,
+        "no_trusted": true,
+        "read_original_focus_count": 1,
+        "read_candidate_focus_count": 1,
+        "candidate_instantiate_count": 0
+      }
+    },
+    {
+      "variant": "cn_original_array_load.broken",
+      "original_source": "benchmark/programs/array_load/variants/cn_original_array_load.broken/cn/array_load.broken.c",
+      "original_sha256": "e85439414c2ce0adee242cc8d7b05abe7a29ab37a95cba6856bb96d7205132f1",
+      "candidate": "benchmark/results/array_load/20261018-cn-compatibility/final-candidates/array_load.broken.c",
+      "candidate_sha256": "9ed71c567bf8e715e961904ab7fb5013204764d018bb2a938c205ead5a08c6b5",
+      "derived_from": "benchmark/programs/array_load/variants/cn_original_array_load.broken/cn/array_load.broken.c",
+      "audit": {
+        "c_identical_modulo_read_alpha_and_comments": true,
+        "six_original_client_assertions_preserved": true,
+        "no_trusted": true,
+        "read_original_focus_count": 0,
+        "read_candidate_focus_count": 0,
+        "candidate_instantiate_count": 0
+      }
+    }
+  ],
+  "unresolved": "CN main with original read name collides with installed Cerberus read_proxy; alpha rename avoids it. Original each binder i32 is incompatible with current verifier integer semantics. Broken no-focus distinction retained; no verification success claimed for weak/broken modules."
+}

@@ -11,7 +11,7 @@ int read (int *p, int n, int i)
   return p[i];
 }
 int verify_main(int *a)
-/*@ With a0 Require a == a0 && IntArray::full(a0,3,cons(0,cons(1,cons(2,nil)))) Ensure __return == 0 && IntArray::full(a0,3,cons(0,cons(1,cons(2,nil)))) */
+/*@ With a0 Require a == a0 && IntArray::full(a,3,cons(0,cons(1,cons(2,nil)))) Ensure __return == 0 && IntArray::full(a0,3,cons(0,cons(1,cons(2,nil)))) */
 {
     
     int zero = read(a, 3, 0);

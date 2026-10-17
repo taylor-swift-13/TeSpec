@@ -9,7 +9,7 @@
 | [add](add/result-cost.md) | 已齐全 |
 | [add_read](add_read/result-cost.md) | 已齐全 |
 | [add_two_array](add_two_array/result-cost.md) | 已齐全 |
-| [array_load](array_load/result-cost.md) | 待补齐 |
+| [array_load](array_load/result-cost.md) | 已齐全 |
 | [const_example](const_example/result-cost.md) | 已齐全 |
 | [const_example_lessgood](const_example_lessgood/result-cost.md) | 待补齐 |
 | [dll_add](dll_add/result-cost.md) | 待补齐 |

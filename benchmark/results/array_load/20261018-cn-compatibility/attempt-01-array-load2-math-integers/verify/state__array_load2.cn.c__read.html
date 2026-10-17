@@ -1,0 +1,568 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CN state explorer</title>
+<style>
+html {
+  font-family: sans-serif;
+  font-size: 11pt
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+table {
+  width: 100%;
+  border: 1px solid;
+  border-collapse: collapse;
+}
+
+h1 {
+  font-size: 11pt;
+  margin-top: 16pt;
+}
+
+tr {
+  padding: 0;
+  margin: 0;
+}
+
+.hidden {
+  display: none;
+}
+
+th, td {
+  text-align: left;
+  vertical-align: top;
+  border-left: 1px solid;
+  border-right: 1px solid;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  white-space: pre;
+}
+
+th {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+th {
+  font-weight: normal;
+  font-style: italic;
+}
+
+#root {
+  display: flex;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+.menu {
+  font-size: 15px;
+  margin: 0px;
+  padding: 0px;
+  vertical-align: middle;
+}
+
+.menu ul {
+  list-style-type: none;
+  display: inline;
+  padding: 0;
+  margin: 0;
+}
+
+.menu li {
+  padding: 0px;
+  margin: 0px;
+  float: left;
+}
+
+.menu button {
+  all: unset;
+  padding: 7px;
+}
+
+.toggle {
+  border-radius: 2px;
+  display: inline-block;
+  font-size: small;
+  cursor: pointer;
+}
+
+#pageinfo {
+  padding: 7px;
+  display: inline-block;
+}
+
+#sectioninfo {
+  padding: 7px;
+  display: inline-block;
+}
+
+#cn_state {
+  width: 50%;
+  align-content: flex-start;
+  display: grid;
+}
+
+#pages {
+  padding: 10px;
+  overflow-y:scroll;
+}
+
+#cn_code_display {
+  width: 50%;
+  display: grid;
+  align-content: flex-start;
+}
+
+#cn_code {
+  overflow-y:scroll;
+  /* padding: 5px; */
+  font-family: monospace;
+  white-space-collapse: preserve;
+  /* text-wrap: nowrap; */
+  white-space: pre;
+}
+
+.nb {
+  padding-left: 5px;
+  /* TODO this will clip if there are more than 999 lines */
+  width: 35px;
+}
+
+.hl {
+    display: inline;
+}
+
+.line {
+  padding-left: 8px;
+  /* overflow:scroll; */
+}
+
+@media (prefers-color-scheme: dark) {
+
+  html {
+    background-color: black;
+    color: lightgray;
+  }
+
+  table, th, td {
+    border-color: #303030;
+  }
+
+  tr {
+    background-color: #181818;
+  }
+
+  tr:nth-child(even) {
+    background-color: #222222;
+  }
+
+  th {
+    background-color: #252525;
+    border-bottom: 1px solid #303030;
+  }
+
+  tr:hover {
+    background-color: #101044;
+  }
+
+  .hl {
+    background-color: #2727a6;
+  }
+
+  .menu {
+    background-color: #CCCCCC;
+    color: black;
+  }
+
+  .menu button:hover {
+    background-color: #AAAAAA;
+  }
+
+  #cn_code {
+    background-color: rgb(30, 30, 30);
+  }
+
+  .nb {
+    width: 35px;
+    color: rgb(150, 150, 150);
+    background-color: rgb(50, 50, 50);
+  }
+
+  .toggle {
+    background-color: #CCCCCC;
+    color: black;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+
+  html {
+    background-color: white;
+    color: black;
+  }
+
+  table, th, td {
+    border-color: #E9E9E9;
+  }
+
+  tr {
+    background-color: #F8F8F8;
+  }
+
+  th {
+    background-color: #F0F0F0;
+    border-bottom: 1px solid #E9E9E9;
+  }
+
+  tr:hover {
+    background-color: #E2F0FF;
+  }
+
+  .hl {
+    background-color: #b4d8fd;
+  }
+
+  .menu {
+    background-color: #333333;
+    color: white;
+  }
+
+  .menu button:hover {
+    background-color: #555555;
+  }
+
+  #cn_code {
+    background-color: rgb(245, 245, 245);
+  }
+
+  .nb {
+    width: 35px;
+    color: rgb(150, 150, 150);
+    background-color: rgb(230, 230, 230);
+  }
+
+  .toggle {
+    background-color: #333333;
+    color: white;
+  }
+}
+</style>
+</head>
+
+<div id="root">
+  <div id="cn_state">
+  <div class="menu" id="menu1">
+    <ul>
+    <li><button onclick="goto_page(1)"/>first</button></li>
+    <li><button onclick="goto_prev()"/>prev</button></li>
+    <li><button onclick="goto_next()"/>next</button></li>
+    <li><button onclick="goto_page(14)"/>last</button></li>
+    </ul>
+    <div id="pageinfo"></div>
+  </div>
+  <div id="pages"><div class="page"><div class="hidden"><table><thead><tr><th>function</th><th>section</th><th>location</th></tr></thead><tbody><tr><td><div class="loc_function"></div></td><td><div class="loc_section"></div></td><td><div class="loc"></div></td></tr></tbody></table></div><h1>Definitions and constraints not handled automatically</h1><table><tbody><tr><td>Alloc</td></tr></tbody></table><h1>Available resources</h1>(none)<h1>Terms</h1><table><thead><tr><th>term</th><th>value</th></tr></thead><tbody><tr><td>allocs</td><td>const({ .base = 4412, .size = 4 })[@21 = { .base = -21652, .size = 8590044700 }][@18 = { .base = 113096, .size = 8 }][@19 = { .base = 107716
+                                                                                                                            , .size = 4 }]</td></tr></tbody></table><details><summary>more</summary><table><thead><tr><th>term</th><th>value</th></tr></thead><tbody><tr><td>ffs_proxy</td><td>NULL</td></tr><tr><td>ffsl_proxy</td><td>{@32; 0x4b40}</td></tr><tr><td>ffsll_proxy</td><td>{@31; 0x91b}</td></tr><tr><td>ctz_proxy</td><td>NULL</td></tr><tr><td>bswap16_proxy</td><td>{@38; 0x1c08}</td></tr><tr><td>bswap32_proxy</td><td>{@36; 0x3029}</td></tr><tr><td>bswap64_proxy</td><td>{@35; 0x0}</td></tr><tr><td>unreachable_proxy</td><td>NULL</td></tr><tr><td>__builtin_ctzl</td><td>{@37; 0x2d81}</td></tr><tr><td>__builtin_ctzll</td><td>{@34; 0x5f44}</td></tr><tr><td>read</td><td>NULL</td></tr><tr><td>main</td><td>{@33; 0xffffffffffffffff}</td></tr></tbody></table></details><h1>Constraints</h1><details><summary>more</summary><table><tbody><tr><td>repr&lt;void*&gt;(ffs_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ffsl_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ffsll_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ctz_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap16_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap32_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap64_proxy)</td></tr><tr><td>repr&lt;void*&gt;(unreachable_proxy)</td></tr><tr><td>repr&lt;void*&gt;(__builtin_ctzl)</td></tr><tr><td>repr&lt;void*&gt;(__builtin_ctzll)</td></tr><tr><td>repr&lt;void*&gt;(read)</td></tr><tr><td>repr&lt;void*&gt;(main)</td></tr></tbody></table></details></div><div class="page"><div class="hidden"><table><thead><tr><th>function</th><th>section</th><th>location</th></tr></thead><tbody><tr><td><div class="loc_function">read</div></td><td><div class="loc_section"></div></td><td><div class="loc"></div></td></tr></tbody></table></div><h1>Definitions and constraints not handled automatically</h1><table><tbody><tr><td>Alloc</td></tr><tr><td>forall(j, integer). implies(0 &lt;= j && j &lt; n, repr&lt;signed int&gt;(a1[j]))</td></tr></tbody></table><h1>Available resources</h1><table><tbody><tr><td><div><div class="toggle"></div><div>each(integer j; 0 &lt;= j && j &lt; 2147483647)
+{RW&lt;signed int&gt;(p + j @ signed int)}(a1)</div><div>each(integer j; 0 &lt;= j && j &lt; n)
+{RW&lt;signed int&gt;(p + j @ signed int)}(a1)</div></div></td></tr></tbody></table><h1>Terms</h1><table><thead><tr><th>term</th><th>value</th></tr></thead><tbody><tr><td>allocs</td><td>const({ .base = 4412, .size = 4 })[@21 = { .base = -21652, .size = 8590044700 }][@18 = { .base = 113096, .size = 8 }][@19 = { .base = 107716
+                                                                                                                            , .size = 4 }]</td></tr><tr><td>i</td><td>2147483646</td></tr><tr><td>n</td><td>2147483647</td></tr><tr><td>a1</td><td>const(2147483648)</td></tr></tbody></table><details><summary>more</summary><table><thead><tr><th>term</th><th>value</th></tr></thead><tbody><tr><td>ffs_proxy</td><td>NULL</td></tr><tr><td>ffsl_proxy</td><td>{@32; 0x4b40}</td></tr><tr><td>ffsll_proxy</td><td>{@31; 0x91b}</td></tr><tr><td>ctz_proxy</td><td>NULL</td></tr><tr><td>bswap16_proxy</td><td>{@38; 0x1c08}</td></tr><tr><td>bswap32_proxy</td><td>{@36; 0x3029}</td></tr><tr><td>bswap64_proxy</td><td>{@35; 0x0}</td></tr><tr><td>unreachable_proxy</td><td>NULL</td></tr><tr><td>__builtin_ctzl</td><td>{@37; 0x2d81}</td></tr><tr><td>__builtin_ctzll</td><td>{@34; 0x5f44}</td></tr><tr><td>read</td><td>NULL</td></tr><tr><td>main</td><td>{@33; 0xffffffffffffffff}</td></tr><tr><td>p</td><td>{@21; 0x1598c}</td></tr></tbody></table></details><h1>Constraints</h1><table><tbody><tr><td><div><div class="toggle"></div><div>0 &lt;= i
+i &lt; n</div><div>0 &lt;= i && i &lt; n</div></div></td></tr><tr><td>forall(j, integer). implies(0 &lt;= j && j &lt; n, repr&lt;signed int&gt;(a1[j]))</td></tr></tbody></table><details><summary>more</summary><table><tbody><tr><td>repr&lt;signed int&gt;(i)</td></tr><tr><td>repr&lt;signed int&gt;(n)</td></tr><tr><td>repr&lt;void*&gt;(ffs_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ffsl_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ffsll_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ctz_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap16_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap32_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap64_proxy)</td></tr><tr><td>repr&lt;void*&gt;(unreachable_proxy)</td></tr><tr><td>repr&lt;void*&gt;(__builtin_ctzl)</td></tr><tr><td>repr&lt;void*&gt;(__builtin_ctzll)</td></tr><tr><td>repr&lt;void*&gt;(read)</td></tr><tr><td>repr&lt;void*&gt;(main)</td></tr><tr><td>repr&lt;signed int*&gt;(p)</td></tr><tr><td>good&lt;signed int*&gt;(p)</td></tr></tbody></table></details></div><div class="page"><div class="hidden"><table><thead><tr><th>function</th><th>section</th><th>location</th></tr></thead><tbody><tr><td><div class="loc_function">read</div></td><td><div class="loc_section">body</div></td><td><div class="loc"></div></td></tr></tbody></table></div><h1>Definitions and constraints not handled automatically</h1><table><tbody><tr><td>Alloc</td></tr><tr><td>forall(j, integer). implies(0 &lt;= j && j &lt; n, repr&lt;signed int&gt;(a1[j]))</td></tr></tbody></table><h1>Available resources</h1><table><tbody><tr><td>RW&lt;signed int&gt;(&amp;ARG2)(i)</td></tr><tr><td>RW&lt;signed int&gt;(&amp;ARG1)(n)</td></tr><tr><td>RW&lt;signed int*&gt;(&amp;ARG0)(p)</td></tr><tr><td><div><div class="toggle"></div><div>each(integer j; 0 &lt;= j && j &lt; 2147483647)
+{RW&lt;signed int&gt;(p + j @ signed int)}(a1)</div><div>each(integer j; 0 &lt;= j && j &lt; n)
+{RW&lt;signed int&gt;(p + j @ signed int)}(a1)</div></div></td></tr></tbody></table><details><summary>more</summary><table><tbody><tr><td>Alloc(&amp;ARG2)(allocs[(alloc_id)&amp;ARG2])</td></tr><tr><td>Alloc(&amp;ARG1)(allocs[(alloc_id)&amp;ARG1])</td></tr><tr><td>Alloc(&amp;ARG0)(allocs[(alloc_id)&amp;ARG0])</td></tr></tbody></table></details><h1>Terms</h1><table><thead><tr><th>term</th><th>value</th></tr></thead><tbody><tr><td>allocs</td><td>const({ .base = 4412, .size = 4 })[@21 = { .base = -21652, .size = 8590044700 }][@18 = { .base = 113096, .size = 8 }][@19 = { .base = 107716
+                                                                                                                            , .size = 4 }]</td></tr><tr><td>i</td><td>2147483646</td></tr><tr><td>n</td><td>2147483647</td></tr><tr><td>a1</td><td>const(2147483648)</td></tr></tbody></table><details><summary>more</summary><table><thead><tr><th>term</th><th>value</th></tr></thead><tbody><tr><td>ffs_proxy</td><td>NULL</td></tr><tr><td>ffsl_proxy</td><td>{@32; 0x4b40}</td></tr><tr><td>ffsll_proxy</td><td>{@31; 0x91b}</td></tr><tr><td>ctz_proxy</td><td>NULL</td></tr><tr><td>bswap16_proxy</td><td>{@38; 0x1c08}</td></tr><tr><td>bswap32_proxy</td><td>{@36; 0x3029}</td></tr><tr><td>bswap64_proxy</td><td>{@35; 0x0}</td></tr><tr><td>unreachable_proxy</td><td>NULL</td></tr><tr><td>__builtin_ctzl</td><td>{@37; 0x2d81}</td></tr><tr><td>__builtin_ctzll</td><td>{@34; 0x5f44}</td></tr><tr><td>read</td><td>NULL</td></tr><tr><td>main</td><td>{@33; 0xffffffffffffffff}</td></tr><tr><td>p</td><td>{@21; 0x1598c}</td></tr><tr><td>&amp;ARG0</td><td>{@18; 0x1b9c8}</td></tr><tr><td>&amp;ARG1</td><td>{@19; 0x1a4c4}</td></tr><tr><td>&amp;ARG2</td><td>{@20; 0x113c}</td></tr></tbody></table></details><h1>Constraints</h1><table><tbody><tr><td><div><div class="toggle"></div><div></div><div>true</div></div></td></tr><tr><td><div><div class="toggle"></div><div>0 &lt;= i
+i &lt; n</div><div>0 &lt;= i && i &lt; n</div></div></td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG0].size</td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG1].size</td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG2].size</td></tr><tr><td>(integer)&amp;ARG0 + 8 &lt;= allocs[(alloc_id)&amp;ARG0].base + allocs[(alloc_id)&amp;ARG0].size</td></tr><tr><td>(integer)&amp;ARG1 + 4 &lt;= allocs[(alloc_id)&amp;ARG1].base + allocs[(alloc_id)&amp;ARG1].size</td></tr><tr><td>(integer)&amp;ARG2 + 4 &lt;= allocs[(alloc_id)&amp;ARG2].base + allocs[(alloc_id)&amp;ARG2].size</td></tr><tr><td>allocs[(alloc_id)&amp;ARG0].base &lt;= (integer)&amp;ARG0</td></tr><tr><td>allocs[(alloc_id)&amp;ARG1].base &lt;= (integer)&amp;ARG1</td></tr><tr><td>allocs[(alloc_id)&amp;ARG2].base &lt;= (integer)&amp;ARG2</td></tr><tr><td>(integer)&amp;ARG0 &lt;= 18446744073709551607</td></tr><tr><td>(integer)&amp;ARG1 &lt;= 18446744073709551611</td></tr><tr><td>(integer)&amp;ARG2 &lt;= 18446744073709551611</td></tr><tr><td>allocs[(alloc_id)&amp;ARG0] == { .base = (integer)&amp;ARG0, .size = 8 }</td></tr><tr><td>allocs[(alloc_id)&amp;ARG1] == { .base = (integer)&amp;ARG1, .size = 4 }</td></tr><tr><td>allocs[(alloc_id)&amp;ARG2] == { .base = (integer)&amp;ARG2, .size = 4 }</td></tr><tr><td>has_alloc_id(&amp;ARG0)</td></tr><tr><td>has_alloc_id(&amp;ARG1)</td></tr><tr><td>has_alloc_id(&amp;ARG2)</td></tr><tr><td>aligned(&amp;ARG0, 8)</td></tr><tr><td>aligned(&amp;ARG1, 4)</td></tr><tr><td>aligned(&amp;ARG2, 4)</td></tr><tr><td>forall(j, integer). implies(0 &lt;= j && j &lt; n, repr&lt;signed int&gt;(a1[j]))</td></tr></tbody></table><details><summary>more</summary><table><tbody><tr><td>repr&lt;signed int&gt;(i)</td></tr><tr><td>repr&lt;signed int&gt;(n)</td></tr><tr><td>repr&lt;void*&gt;(ffs_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ffsl_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ffsll_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ctz_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap16_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap32_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap64_proxy)</td></tr><tr><td>repr&lt;void*&gt;(unreachable_proxy)</td></tr><tr><td>repr&lt;void*&gt;(__builtin_ctzl)</td></tr><tr><td>repr&lt;void*&gt;(__builtin_ctzll)</td></tr><tr><td>repr&lt;void*&gt;(read)</td></tr><tr><td>repr&lt;void*&gt;(main)</td></tr><tr><td>repr&lt;signed int*&gt;(p)</td></tr><tr><td>repr&lt;signed int*&gt;(&amp;ARG1)</td></tr><tr><td>repr&lt;signed int*&gt;(&amp;ARG2)</td></tr><tr><td>repr&lt;signed int**&gt;(&amp;ARG0)</td></tr><tr><td>good&lt;signed int*&gt;(p)</td></tr></tbody></table></details></div><div class="page"><div class="hidden"><table><thead><tr><th>function</th><th>section</th><th>location</th></tr></thead><tbody><tr><td><div class="loc_function">read</div></td><td><div class="loc_section">body</div></td><td><div class="loc">7:0-10:1</div></td></tr></tbody></table></div><h1>Definitions and constraints not handled automatically</h1><table><tbody><tr><td>Alloc</td></tr><tr><td>forall(j, integer). implies(0 &lt;= j && j &lt; n, repr&lt;signed int&gt;(a1[j]))</td></tr></tbody></table><h1>Available resources</h1><table><tbody><tr><td>RW&lt;signed int&gt;(&amp;ARG2)(i)</td></tr><tr><td>RW&lt;signed int&gt;(&amp;ARG1)(n)</td></tr><tr><td>RW&lt;signed int*&gt;(&amp;ARG0)(p)</td></tr><tr><td><div><div class="toggle"></div><div>each(integer j; 0 &lt;= j && j &lt; 2147483647)
+{RW&lt;signed int&gt;(p + j @ signed int)}(a1)</div><div>each(integer j; 0 &lt;= j && j &lt; n)
+{RW&lt;signed int&gt;(p + j @ signed int)}(a1)</div></div></td></tr></tbody></table><details><summary>more</summary><table><tbody><tr><td>Alloc(&amp;ARG2)(allocs[(alloc_id)&amp;ARG2])</td></tr><tr><td>Alloc(&amp;ARG1)(allocs[(alloc_id)&amp;ARG1])</td></tr><tr><td>Alloc(&amp;ARG0)(allocs[(alloc_id)&amp;ARG0])</td></tr></tbody></table></details><h1>Terms</h1><table><thead><tr><th>term</th><th>value</th></tr></thead><tbody><tr><td>allocs</td><td>const({ .base = 4412, .size = 4 })[@21 = { .base = -21652, .size = 8590044700 }][@18 = { .base = 113096, .size = 8 }][@19 = { .base = 107716
+                                                                                                                            , .size = 4 }]</td></tr><tr><td>i</td><td>2147483646</td></tr><tr><td>n</td><td>2147483647</td></tr><tr><td>a1</td><td>const(2147483648)</td></tr></tbody></table><details><summary>more</summary><table><thead><tr><th>term</th><th>value</th></tr></thead><tbody><tr><td>ffs_proxy</td><td>NULL</td></tr><tr><td>ffsl_proxy</td><td>{@32; 0x4b40}</td></tr><tr><td>ffsll_proxy</td><td>{@31; 0x91b}</td></tr><tr><td>ctz_proxy</td><td>NULL</td></tr><tr><td>bswap16_proxy</td><td>{@38; 0x1c08}</td></tr><tr><td>bswap32_proxy</td><td>{@36; 0x3029}</td></tr><tr><td>bswap64_proxy</td><td>{@35; 0x0}</td></tr><tr><td>unreachable_proxy</td><td>NULL</td></tr><tr><td>__builtin_ctzl</td><td>{@37; 0x2d81}</td></tr><tr><td>__builtin_ctzll</td><td>{@34; 0x5f44}</td></tr><tr><td>read</td><td>NULL</td></tr><tr><td>main</td><td>{@33; 0xffffffffffffffff}</td></tr><tr><td>p</td><td>{@21; 0x1598c}</td></tr><tr><td>&amp;ARG0</td><td>{@18; 0x1b9c8}</td></tr><tr><td>&amp;ARG1</td><td>{@19; 0x1a4c4}</td></tr><tr><td>&amp;ARG2</td><td>{@20; 0x113c}</td></tr></tbody></table></details><h1>Constraints</h1><table><tbody><tr><td><div><div class="toggle"></div><div></div><div>true</div></div></td></tr><tr><td><div><div class="toggle"></div><div>0 &lt;= i
+i &lt; n</div><div>0 &lt;= i && i &lt; n</div></div></td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG0].size</td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG1].size</td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG2].size</td></tr><tr><td>(integer)&amp;ARG0 + 8 &lt;= allocs[(alloc_id)&amp;ARG0].base + allocs[(alloc_id)&amp;ARG0].size</td></tr><tr><td>(integer)&amp;ARG1 + 4 &lt;= allocs[(alloc_id)&amp;ARG1].base + allocs[(alloc_id)&amp;ARG1].size</td></tr><tr><td>(integer)&amp;ARG2 + 4 &lt;= allocs[(alloc_id)&amp;ARG2].base + allocs[(alloc_id)&amp;ARG2].size</td></tr><tr><td>allocs[(alloc_id)&amp;ARG0].base &lt;= (integer)&amp;ARG0</td></tr><tr><td>allocs[(alloc_id)&amp;ARG1].base &lt;= (integer)&amp;ARG1</td></tr><tr><td>allocs[(alloc_id)&amp;ARG2].base &lt;= (integer)&amp;ARG2</td></tr><tr><td>(integer)&amp;ARG0 &lt;= 18446744073709551607</td></tr><tr><td>(integer)&amp;ARG1 &lt;= 18446744073709551611</td></tr><tr><td>(integer)&amp;ARG2 &lt;= 18446744073709551611</td></tr><tr><td>allocs[(alloc_id)&amp;ARG0] == { .base = (integer)&amp;ARG0, .size = 8 }</td></tr><tr><td>allocs[(alloc_id)&amp;ARG1] == { .base = (integer)&amp;ARG1, .size = 4 }</td></tr><tr><td>allocs[(alloc_id)&amp;ARG2] == { .base = (integer)&amp;ARG2, .size = 4 }</td></tr><tr><td>has_alloc_id(&amp;ARG0)</td></tr><tr><td>has_alloc_id(&amp;ARG1)</td></tr><tr><td>has_alloc_id(&amp;ARG2)</td></tr><tr><td>aligned(&amp;ARG0, 8)</td></tr><tr><td>aligned(&amp;ARG1, 4)</td></tr><tr><td>aligned(&amp;ARG2, 4)</td></tr><tr><td>forall(j, integer). implies(0 &lt;= j && j &lt; n, repr&lt;signed int&gt;(a1[j]))</td></tr></tbody></table><details><summary>more</summary><table><tbody><tr><td>repr&lt;signed int&gt;(i)</td></tr><tr><td>repr&lt;signed int&gt;(n)</td></tr><tr><td>repr&lt;void*&gt;(ffs_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ffsl_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ffsll_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ctz_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap16_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap32_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap64_proxy)</td></tr><tr><td>repr&lt;void*&gt;(unreachable_proxy)</td></tr><tr><td>repr&lt;void*&gt;(__builtin_ctzl)</td></tr><tr><td>repr&lt;void*&gt;(__builtin_ctzll)</td></tr><tr><td>repr&lt;void*&gt;(read)</td></tr><tr><td>repr&lt;void*&gt;(main)</td></tr><tr><td>repr&lt;signed int*&gt;(p)</td></tr><tr><td>repr&lt;signed int*&gt;(&amp;ARG1)</td></tr><tr><td>repr&lt;signed int*&gt;(&amp;ARG2)</td></tr><tr><td>repr&lt;signed int**&gt;(&amp;ARG0)</td></tr><tr><td>good&lt;signed int*&gt;(p)</td></tr></tbody></table></details></div><div class="page"><div class="hidden"><table><thead><tr><th>function</th><th>section</th><th>location</th></tr></thead><tbody><tr><td><div class="loc_function">read</div></td><td><div class="loc_section">body</div></td><td><div class="loc">8:5-8:25</div></td></tr></tbody></table></div><h1>Definitions and constraints not handled automatically</h1><table><tbody><tr><td>Alloc</td></tr><tr><td>forall(j, integer). implies(0 &lt;= j && j &lt; n, repr&lt;signed int&gt;(a1[j]))</td></tr></tbody></table><h1>Available resources</h1><table><tbody><tr><td>RW&lt;signed int&gt;(&p[i])(a1[i])</td></tr><tr><td>RW&lt;signed int&gt;(&amp;ARG2)(i)</td></tr><tr><td>RW&lt;signed int&gt;(&amp;ARG1)(n)</td></tr><tr><td>RW&lt;signed int*&gt;(&amp;ARG0)(p)</td></tr><tr><td><div><div class="toggle"></div><div>each(integer j; 0 &lt;= j && j &lt; 2147483646)
+{RW&lt;signed int&gt;(p + j @ signed int)}(a1)</div><div>each(integer j; 0 &lt;= j && j &lt; n && j != i)
+{RW&lt;signed int&gt;(p + j @ signed int)}(a1)</div></div></td></tr></tbody></table><details><summary>more</summary><table><tbody><tr><td>Alloc(&amp;ARG2)(allocs[(alloc_id)&amp;ARG2])</td></tr><tr><td>Alloc(&amp;ARG1)(allocs[(alloc_id)&amp;ARG1])</td></tr><tr><td>Alloc(&amp;ARG0)(allocs[(alloc_id)&amp;ARG0])</td></tr></tbody></table></details><h1>Terms</h1><table><thead><tr><th>term</th><th>value</th></tr></thead><tbody><tr><td>allocs</td><td>const({ .base = 4412, .size = 4 })[@21 = { .base = -21652, .size = 8590044700 }][@18 = { .base = 113096, .size = 8 }][@19 = { .base = 107716
+                                                                                                                            , .size = 4 }]</td></tr><tr><td>i</td><td>2147483646</td></tr><tr><td>n</td><td>2147483647</td></tr><tr><td>a1</td><td>const(2147483648)</td></tr></tbody></table><details><summary>more</summary><table><thead><tr><th>term</th><th>value</th></tr></thead><tbody><tr><td>ffs_proxy</td><td>NULL</td></tr><tr><td>ffsl_proxy</td><td>{@32; 0x4b40}</td></tr><tr><td>ffsll_proxy</td><td>{@31; 0x91b}</td></tr><tr><td>ctz_proxy</td><td>NULL</td></tr><tr><td>bswap16_proxy</td><td>{@38; 0x1c08}</td></tr><tr><td>bswap32_proxy</td><td>{@36; 0x3029}</td></tr><tr><td>bswap64_proxy</td><td>{@35; 0x0}</td></tr><tr><td>unreachable_proxy</td><td>NULL</td></tr><tr><td>__builtin_ctzl</td><td>{@37; 0x2d81}</td></tr><tr><td>__builtin_ctzll</td><td>{@34; 0x5f44}</td></tr><tr><td>read</td><td>NULL</td></tr><tr><td>main</td><td>{@33; 0xffffffffffffffff}</td></tr><tr><td>p</td><td>{@21; 0x1598c}</td></tr><tr><td>&amp;ARG0</td><td>{@18; 0x1b9c8}</td></tr><tr><td>&amp;ARG1</td><td>{@19; 0x1a4c4}</td></tr><tr><td>&amp;ARG2</td><td>{@20; 0x113c}</td></tr></tbody></table></details><h1>Constraints</h1><table><tbody><tr><td><div><div class="toggle"></div><div></div><div>true</div></div></td></tr><tr><td><div><div class="toggle"></div><div>0 &lt;= i
+i &lt; n</div><div>0 &lt;= i && i &lt; n</div></div></td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG0].size</td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG1].size</td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG2].size</td></tr><tr><td>(integer)&amp;ARG0 + 8 &lt;= allocs[(alloc_id)&amp;ARG0].base + allocs[(alloc_id)&amp;ARG0].size</td></tr><tr><td>(integer)&amp;ARG1 + 4 &lt;= allocs[(alloc_id)&amp;ARG1].base + allocs[(alloc_id)&amp;ARG1].size</td></tr><tr><td>(integer)&amp;ARG2 + 4 &lt;= allocs[(alloc_id)&amp;ARG2].base + allocs[(alloc_id)&amp;ARG2].size</td></tr><tr><td>(integer)&p[i] + 4 &lt;= allocs[(alloc_id)&p[i]].base + allocs[(alloc_id)&p[i]].size</td></tr><tr><td>allocs[(alloc_id)&amp;ARG0].base &lt;= (integer)&amp;ARG0</td></tr><tr><td>allocs[(alloc_id)&amp;ARG1].base &lt;= (integer)&amp;ARG1</td></tr><tr><td>allocs[(alloc_id)&amp;ARG2].base &lt;= (integer)&amp;ARG2</td></tr><tr><td>allocs[(alloc_id)&p[i]].base &lt;= (integer)&p[i]</td></tr><tr><td>(integer)&amp;ARG0 &lt;= 18446744073709551607</td></tr><tr><td>(integer)&amp;ARG1 &lt;= 18446744073709551611</td></tr><tr><td>(integer)&amp;ARG2 &lt;= 18446744073709551611</td></tr><tr><td>(integer)&p[i] &lt;= 18446744073709551611</td></tr><tr><td>allocs[(alloc_id)&amp;ARG0] == { .base = (integer)&amp;ARG0, .size = 8 }</td></tr><tr><td>allocs[(alloc_id)&amp;ARG1] == { .base = (integer)&amp;ARG1, .size = 4 }</td></tr><tr><td>allocs[(alloc_id)&amp;ARG2] == { .base = (integer)&amp;ARG2, .size = 4 }</td></tr><tr><td>has_alloc_id(p)</td></tr><tr><td>has_alloc_id(&amp;ARG0)</td></tr><tr><td>has_alloc_id(&amp;ARG1)</td></tr><tr><td>has_alloc_id(&amp;ARG2)</td></tr><tr><td>aligned(&amp;ARG0, 8)</td></tr><tr><td>aligned(&amp;ARG1, 4)</td></tr><tr><td>aligned(&amp;ARG2, 4)</td></tr><tr><td>forall(j, integer). implies(0 &lt;= j && j &lt; n, repr&lt;signed int&gt;(a1[j]))</td></tr></tbody></table><details><summary>more</summary><table><tbody><tr><td>repr&lt;signed int&gt;(i)</td></tr><tr><td>repr&lt;signed int&gt;(n)</td></tr><tr><td>repr&lt;void*&gt;(ffs_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ffsl_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ffsll_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ctz_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap16_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap32_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap64_proxy)</td></tr><tr><td>repr&lt;void*&gt;(unreachable_proxy)</td></tr><tr><td>repr&lt;void*&gt;(__builtin_ctzl)</td></tr><tr><td>repr&lt;void*&gt;(__builtin_ctzll)</td></tr><tr><td>repr&lt;void*&gt;(read)</td></tr><tr><td>repr&lt;void*&gt;(main)</td></tr><tr><td>repr&lt;signed int*&gt;(p)</td></tr><tr><td>repr&lt;signed int*&gt;(&amp;ARG1)</td></tr><tr><td>repr&lt;signed int*&gt;(&amp;ARG2)</td></tr><tr><td>repr&lt;signed int**&gt;(&amp;ARG0)</td></tr><tr><td>good&lt;signed int*&gt;(p)</td></tr></tbody></table></details></div><div class="page"><div class="hidden"><table><thead><tr><th>function</th><th>section</th><th>location</th></tr></thead><tbody><tr><td><div class="loc_function">read</div></td><td><div class="loc_section">body</div></td><td><div class="loc">8:5-8:25</div></td></tr></tbody></table></div><h1>Definitions and constraints not handled automatically</h1><table><tbody><tr><td>Alloc</td></tr><tr><td>forall(j, integer). implies(0 &lt;= j && j &lt; n, repr&lt;signed int&gt;(a1[j]))</td></tr></tbody></table><h1>Available resources</h1><table><tbody><tr><td>RW&lt;signed int&gt;(&p[i])(a1[i])</td></tr><tr><td>RW&lt;signed int&gt;(&amp;ARG2)(i)</td></tr><tr><td>RW&lt;signed int&gt;(&amp;ARG1)(n)</td></tr><tr><td>RW&lt;signed int*&gt;(&amp;ARG0)(p)</td></tr><tr><td><div><div class="toggle"></div><div>each(integer j; 0 &lt;= j && j &lt; 2147483646)
+{RW&lt;signed int&gt;(p + j @ signed int)}(a1)</div><div>each(integer j; 0 &lt;= j && j &lt; n && j != i)
+{RW&lt;signed int&gt;(p + j @ signed int)}(a1)</div></div></td></tr></tbody></table><details><summary>more</summary><table><tbody><tr><td>Alloc(&amp;ARG2)(allocs[(alloc_id)&amp;ARG2])</td></tr><tr><td>Alloc(&amp;ARG1)(allocs[(alloc_id)&amp;ARG1])</td></tr><tr><td>Alloc(&amp;ARG0)(allocs[(alloc_id)&amp;ARG0])</td></tr></tbody></table></details><h1>Terms</h1><table><thead><tr><th>term</th><th>value</th></tr></thead><tbody><tr><td>allocs</td><td>const({ .base = 4412, .size = 4 })[@21 = { .base = -21652, .size = 8590044700 }][@18 = { .base = 113096, .size = 8 }][@19 = { .base = 107716
+                                                                                                                            , .size = 4 }]</td></tr><tr><td>i</td><td>2147483646</td></tr><tr><td>n</td><td>2147483647</td></tr><tr><td>a1</td><td>const(2147483648)</td></tr></tbody></table><details><summary>more</summary><table><thead><tr><th>term</th><th>value</th></tr></thead><tbody><tr><td>ffs_proxy</td><td>NULL</td></tr><tr><td>ffsl_proxy</td><td>{@32; 0x4b40}</td></tr><tr><td>ffsll_proxy</td><td>{@31; 0x91b}</td></tr><tr><td>ctz_proxy</td><td>NULL</td></tr><tr><td>bswap16_proxy</td><td>{@38; 0x1c08}</td></tr><tr><td>bswap32_proxy</td><td>{@36; 0x3029}</td></tr><tr><td>bswap64_proxy</td><td>{@35; 0x0}</td></tr><tr><td>unreachable_proxy</td><td>NULL</td></tr><tr><td>__builtin_ctzl</td><td>{@37; 0x2d81}</td></tr><tr><td>__builtin_ctzll</td><td>{@34; 0x5f44}</td></tr><tr><td>read</td><td>NULL</td></tr><tr><td>main</td><td>{@33; 0xffffffffffffffff}</td></tr><tr><td>p</td><td>{@21; 0x1598c}</td></tr><tr><td>&amp;ARG0</td><td>{@18; 0x1b9c8}</td></tr><tr><td>&amp;ARG1</td><td>{@19; 0x1a4c4}</td></tr><tr><td>&amp;ARG2</td><td>{@20; 0x113c}</td></tr></tbody></table></details><h1>Constraints</h1><table><tbody><tr><td><div><div class="toggle"></div><div></div><div>true</div></div></td></tr><tr><td><div><div class="toggle"></div><div>0 &lt;= i
+i &lt; n</div><div>0 &lt;= i && i &lt; n</div></div></td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG0].size</td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG1].size</td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG2].size</td></tr><tr><td>(integer)&amp;ARG0 + 8 &lt;= allocs[(alloc_id)&amp;ARG0].base + allocs[(alloc_id)&amp;ARG0].size</td></tr><tr><td>(integer)&amp;ARG1 + 4 &lt;= allocs[(alloc_id)&amp;ARG1].base + allocs[(alloc_id)&amp;ARG1].size</td></tr><tr><td>(integer)&amp;ARG2 + 4 &lt;= allocs[(alloc_id)&amp;ARG2].base + allocs[(alloc_id)&amp;ARG2].size</td></tr><tr><td>(integer)&p[i] + 4 &lt;= allocs[(alloc_id)&p[i]].base + allocs[(alloc_id)&p[i]].size</td></tr><tr><td>allocs[(alloc_id)&amp;ARG0].base &lt;= (integer)&amp;ARG0</td></tr><tr><td>allocs[(alloc_id)&amp;ARG1].base &lt;= (integer)&amp;ARG1</td></tr><tr><td>allocs[(alloc_id)&amp;ARG2].base &lt;= (integer)&amp;ARG2</td></tr><tr><td>allocs[(alloc_id)&p[i]].base &lt;= (integer)&p[i]</td></tr><tr><td>(integer)&amp;ARG0 &lt;= 18446744073709551607</td></tr><tr><td>(integer)&amp;ARG1 &lt;= 18446744073709551611</td></tr><tr><td>(integer)&amp;ARG2 &lt;= 18446744073709551611</td></tr><tr><td>(integer)&p[i] &lt;= 18446744073709551611</td></tr><tr><td>allocs[(alloc_id)&amp;ARG0] == { .base = (integer)&amp;ARG0, .size = 8 }</td></tr><tr><td>allocs[(alloc_id)&amp;ARG1] == { .base = (integer)&amp;ARG1, .size = 4 }</td></tr><tr><td>allocs[(alloc_id)&amp;ARG2] == { .base = (integer)&amp;ARG2, .size = 4 }</td></tr><tr><td>has_alloc_id(p)</td></tr><tr><td>has_alloc_id(&amp;ARG0)</td></tr><tr><td>has_alloc_id(&amp;ARG1)</td></tr><tr><td>has_alloc_id(&amp;ARG2)</td></tr><tr><td>aligned(&amp;ARG0, 8)</td></tr><tr><td>aligned(&amp;ARG1, 4)</td></tr><tr><td>aligned(&amp;ARG2, 4)</td></tr><tr><td>forall(j, integer). implies(0 &lt;= j && j &lt; n, repr&lt;signed int&gt;(a1[j]))</td></tr></tbody></table><details><summary>more</summary><table><tbody><tr><td>repr&lt;signed int&gt;(i)</td></tr><tr><td>repr&lt;signed int&gt;(n)</td></tr><tr><td>repr&lt;void*&gt;(ffs_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ffsl_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ffsll_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ctz_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap16_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap32_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap64_proxy)</td></tr><tr><td>repr&lt;void*&gt;(unreachable_proxy)</td></tr><tr><td>repr&lt;void*&gt;(__builtin_ctzl)</td></tr><tr><td>repr&lt;void*&gt;(__builtin_ctzll)</td></tr><tr><td>repr&lt;void*&gt;(read)</td></tr><tr><td>repr&lt;void*&gt;(main)</td></tr><tr><td>repr&lt;signed int*&gt;(p)</td></tr><tr><td>repr&lt;signed int*&gt;(&amp;ARG1)</td></tr><tr><td>repr&lt;signed int*&gt;(&amp;ARG2)</td></tr><tr><td>repr&lt;signed int**&gt;(&amp;ARG0)</td></tr><tr><td>good&lt;signed int*&gt;(p)</td></tr></tbody></table></details></div><div class="page"><div class="hidden"><table><thead><tr><th>function</th><th>section</th><th>location</th></tr></thead><tbody><tr><td><div class="loc_function">read</div></td><td><div class="loc_section">body</div></td><td><div class="loc">9:2-9:14</div></td></tr></tbody></table></div><h1>Definitions and constraints not handled automatically</h1><table><tbody><tr><td>Alloc</td></tr><tr><td>forall(j, integer). implies(0 &lt;= j && j &lt; n, repr&lt;signed int&gt;(a1[j]))</td></tr></tbody></table><h1>Available resources</h1><table><tbody><tr><td>RW&lt;signed int&gt;(&p[i])(a1[i])</td></tr><tr><td>RW&lt;signed int&gt;(&amp;ARG2)(i)</td></tr><tr><td>RW&lt;signed int&gt;(&amp;ARG1)(n)</td></tr><tr><td>RW&lt;signed int*&gt;(&amp;ARG0)(p)</td></tr><tr><td><div><div class="toggle"></div><div>each(integer j; 0 &lt;= j && j &lt; 2147483646)
+{RW&lt;signed int&gt;(p + j @ signed int)}(a1)</div><div>each(integer j; 0 &lt;= j && j &lt; n && j != i)
+{RW&lt;signed int&gt;(p + j @ signed int)}(a1)</div></div></td></tr></tbody></table><details><summary>more</summary><table><tbody><tr><td>Alloc(&amp;ARG2)(allocs[(alloc_id)&amp;ARG2])</td></tr><tr><td>Alloc(&amp;ARG1)(allocs[(alloc_id)&amp;ARG1])</td></tr><tr><td>Alloc(&amp;ARG0)(allocs[(alloc_id)&amp;ARG0])</td></tr></tbody></table></details><h1>Terms</h1><table><thead><tr><th>term</th><th>value</th></tr></thead><tbody><tr><td>allocs</td><td>const({ .base = 4412, .size = 4 })[@21 = { .base = -21652, .size = 8590044700 }][@18 = { .base = 113096, .size = 8 }][@19 = { .base = 107716
+                                                                                                                            , .size = 4 }]</td></tr><tr><td>i</td><td>2147483646</td></tr><tr><td>n</td><td>2147483647</td></tr><tr><td>a1</td><td>const(2147483648)</td></tr></tbody></table><details><summary>more</summary><table><thead><tr><th>term</th><th>value</th></tr></thead><tbody><tr><td>ffs_proxy</td><td>NULL</td></tr><tr><td>ffsl_proxy</td><td>{@32; 0x4b40}</td></tr><tr><td>ffsll_proxy</td><td>{@31; 0x91b}</td></tr><tr><td>ctz_proxy</td><td>NULL</td></tr><tr><td>bswap16_proxy</td><td>{@38; 0x1c08}</td></tr><tr><td>bswap32_proxy</td><td>{@36; 0x3029}</td></tr><tr><td>bswap64_proxy</td><td>{@35; 0x0}</td></tr><tr><td>unreachable_proxy</td><td>NULL</td></tr><tr><td>__builtin_ctzl</td><td>{@37; 0x2d81}</td></tr><tr><td>__builtin_ctzll</td><td>{@34; 0x5f44}</td></tr><tr><td>read</td><td>NULL</td></tr><tr><td>main</td><td>{@33; 0xffffffffffffffff}</td></tr><tr><td>p</td><td>{@21; 0x1598c}</td></tr><tr><td>&amp;ARG0</td><td>{@18; 0x1b9c8}</td></tr><tr><td>&amp;ARG1</td><td>{@19; 0x1a4c4}</td></tr><tr><td>&amp;ARG2</td><td>{@20; 0x113c}</td></tr></tbody></table></details><h1>Constraints</h1><table><tbody><tr><td><div><div class="toggle"></div><div></div><div>true</div></div></td></tr><tr><td><div><div class="toggle"></div><div>0 &lt;= i
+i &lt; n</div><div>0 &lt;= i && i &lt; n</div></div></td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG0].size</td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG1].size</td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG2].size</td></tr><tr><td>(integer)&amp;ARG0 + 8 &lt;= allocs[(alloc_id)&amp;ARG0].base + allocs[(alloc_id)&amp;ARG0].size</td></tr><tr><td>(integer)&amp;ARG1 + 4 &lt;= allocs[(alloc_id)&amp;ARG1].base + allocs[(alloc_id)&amp;ARG1].size</td></tr><tr><td>(integer)&amp;ARG2 + 4 &lt;= allocs[(alloc_id)&amp;ARG2].base + allocs[(alloc_id)&amp;ARG2].size</td></tr><tr><td>(integer)&p[i] + 4 &lt;= allocs[(alloc_id)&p[i]].base + allocs[(alloc_id)&p[i]].size</td></tr><tr><td>allocs[(alloc_id)&amp;ARG0].base &lt;= (integer)&amp;ARG0</td></tr><tr><td>allocs[(alloc_id)&amp;ARG1].base &lt;= (integer)&amp;ARG1</td></tr><tr><td>allocs[(alloc_id)&amp;ARG2].base &lt;= (integer)&amp;ARG2</td></tr><tr><td>allocs[(alloc_id)&p[i]].base &lt;= (integer)&p[i]</td></tr><tr><td>(integer)&amp;ARG0 &lt;= 18446744073709551607</td></tr><tr><td>(integer)&amp;ARG1 &lt;= 18446744073709551611</td></tr><tr><td>(integer)&amp;ARG2 &lt;= 18446744073709551611</td></tr><tr><td>(integer)&p[i] &lt;= 18446744073709551611</td></tr><tr><td>allocs[(alloc_id)&amp;ARG0] == { .base = (integer)&amp;ARG0, .size = 8 }</td></tr><tr><td>allocs[(alloc_id)&amp;ARG1] == { .base = (integer)&amp;ARG1, .size = 4 }</td></tr><tr><td>allocs[(alloc_id)&amp;ARG2] == { .base = (integer)&amp;ARG2, .size = 4 }</td></tr><tr><td>has_alloc_id(p)</td></tr><tr><td>has_alloc_id(&amp;ARG0)</td></tr><tr><td>has_alloc_id(&amp;ARG1)</td></tr><tr><td>has_alloc_id(&amp;ARG2)</td></tr><tr><td>aligned(&amp;ARG0, 8)</td></tr><tr><td>aligned(&amp;ARG1, 4)</td></tr><tr><td>aligned(&amp;ARG2, 4)</td></tr><tr><td>forall(j, integer). implies(0 &lt;= j && j &lt; n, repr&lt;signed int&gt;(a1[j]))</td></tr></tbody></table><details><summary>more</summary><table><tbody><tr><td>repr&lt;signed int&gt;(i)</td></tr><tr><td>repr&lt;signed int&gt;(n)</td></tr><tr><td>repr&lt;void*&gt;(ffs_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ffsl_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ffsll_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ctz_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap16_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap32_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap64_proxy)</td></tr><tr><td>repr&lt;void*&gt;(unreachable_proxy)</td></tr><tr><td>repr&lt;void*&gt;(__builtin_ctzl)</td></tr><tr><td>repr&lt;void*&gt;(__builtin_ctzll)</td></tr><tr><td>repr&lt;void*&gt;(read)</td></tr><tr><td>repr&lt;void*&gt;(main)</td></tr><tr><td>repr&lt;signed int*&gt;(p)</td></tr><tr><td>repr&lt;signed int*&gt;(&amp;ARG1)</td></tr><tr><td>repr&lt;signed int*&gt;(&amp;ARG2)</td></tr><tr><td>repr&lt;signed int**&gt;(&amp;ARG0)</td></tr><tr><td>good&lt;signed int*&gt;(p)</td></tr></tbody></table></details></div><div class="page"><div class="hidden"><table><thead><tr><th>function</th><th>section</th><th>location</th></tr></thead><tbody><tr><td><div class="loc_function">read</div></td><td><div class="loc_section">body</div></td><td><div class="loc">9:9-9:13</div></td></tr></tbody></table></div><h1>Definitions and constraints not handled automatically</h1><table><tbody><tr><td>Alloc</td></tr><tr><td>forall(j, integer). implies(0 &lt;= j && j &lt; n, repr&lt;signed int&gt;(a1[j]))</td></tr></tbody></table><h1>Available resources</h1><table><tbody><tr><td>RW&lt;signed int&gt;(&p[i])(a1[i])</td></tr><tr><td>RW&lt;signed int&gt;(&amp;ARG2)(i)</td></tr><tr><td>RW&lt;signed int&gt;(&amp;ARG1)(n)</td></tr><tr><td>RW&lt;signed int*&gt;(&amp;ARG0)(p)</td></tr><tr><td><div><div class="toggle"></div><div>each(integer j; 0 &lt;= j && j &lt; 2147483646)
+{RW&lt;signed int&gt;(p + j @ signed int)}(a1)</div><div>each(integer j; 0 &lt;= j && j &lt; n && j != i)
+{RW&lt;signed int&gt;(p + j @ signed int)}(a1)</div></div></td></tr></tbody></table><details><summary>more</summary><table><tbody><tr><td>Alloc(&amp;ARG2)(allocs[(alloc_id)&amp;ARG2])</td></tr><tr><td>Alloc(&amp;ARG1)(allocs[(alloc_id)&amp;ARG1])</td></tr><tr><td>Alloc(&amp;ARG0)(allocs[(alloc_id)&amp;ARG0])</td></tr></tbody></table></details><h1>Terms</h1><table><thead><tr><th>term</th><th>value</th></tr></thead><tbody><tr><td>allocs</td><td>const({ .base = 4412, .size = 4 })[@21 = { .base = -21652, .size = 8590044700 }][@18 = { .base = 113096, .size = 8 }][@19 = { .base = 107716
+                                                                                                                            , .size = 4 }]</td></tr><tr><td>i</td><td>2147483646</td></tr><tr><td>n</td><td>2147483647</td></tr><tr><td>a1</td><td>const(2147483648)</td></tr></tbody></table><details><summary>more</summary><table><thead><tr><th>term</th><th>value</th></tr></thead><tbody><tr><td>ffs_proxy</td><td>NULL</td></tr><tr><td>ffsl_proxy</td><td>{@32; 0x4b40}</td></tr><tr><td>ffsll_proxy</td><td>{@31; 0x91b}</td></tr><tr><td>ctz_proxy</td><td>NULL</td></tr><tr><td>bswap16_proxy</td><td>{@38; 0x1c08}</td></tr><tr><td>bswap32_proxy</td><td>{@36; 0x3029}</td></tr><tr><td>bswap64_proxy</td><td>{@35; 0x0}</td></tr><tr><td>unreachable_proxy</td><td>NULL</td></tr><tr><td>__builtin_ctzl</td><td>{@37; 0x2d81}</td></tr><tr><td>__builtin_ctzll</td><td>{@34; 0x5f44}</td></tr><tr><td>read</td><td>NULL</td></tr><tr><td>main</td><td>{@33; 0xffffffffffffffff}</td></tr><tr><td>p</td><td>{@21; 0x1598c}</td></tr><tr><td>&amp;ARG0</td><td>{@18; 0x1b9c8}</td></tr><tr><td>&amp;ARG1</td><td>{@19; 0x1a4c4}</td></tr><tr><td>&amp;ARG2</td><td>{@20; 0x113c}</td></tr></tbody></table></details><h1>Constraints</h1><table><tbody><tr><td><div><div class="toggle"></div><div></div><div>true</div></div></td></tr><tr><td><div><div class="toggle"></div><div>0 &lt;= i
+i &lt; n</div><div>0 &lt;= i && i &lt; n</div></div></td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG0].size</td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG1].size</td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG2].size</td></tr><tr><td>(integer)&amp;ARG0 + 8 &lt;= allocs[(alloc_id)&amp;ARG0].base + allocs[(alloc_id)&amp;ARG0].size</td></tr><tr><td>(integer)&amp;ARG1 + 4 &lt;= allocs[(alloc_id)&amp;ARG1].base + allocs[(alloc_id)&amp;ARG1].size</td></tr><tr><td>(integer)&amp;ARG2 + 4 &lt;= allocs[(alloc_id)&amp;ARG2].base + allocs[(alloc_id)&amp;ARG2].size</td></tr><tr><td>(integer)&p[i] + 4 &lt;= allocs[(alloc_id)&p[i]].base + allocs[(alloc_id)&p[i]].size</td></tr><tr><td>allocs[(alloc_id)&amp;ARG0].base &lt;= (integer)&amp;ARG0</td></tr><tr><td>allocs[(alloc_id)&amp;ARG1].base &lt;= (integer)&amp;ARG1</td></tr><tr><td>allocs[(alloc_id)&amp;ARG2].base &lt;= (integer)&amp;ARG2</td></tr><tr><td>allocs[(alloc_id)&p[i]].base &lt;= (integer)&p[i]</td></tr><tr><td>(integer)&amp;ARG0 &lt;= 18446744073709551607</td></tr><tr><td>(integer)&amp;ARG1 &lt;= 18446744073709551611</td></tr><tr><td>(integer)&amp;ARG2 &lt;= 18446744073709551611</td></tr><tr><td>(integer)&p[i] &lt;= 18446744073709551611</td></tr><tr><td>allocs[(alloc_id)&amp;ARG0] == { .base = (integer)&amp;ARG0, .size = 8 }</td></tr><tr><td>allocs[(alloc_id)&amp;ARG1] == { .base = (integer)&amp;ARG1, .size = 4 }</td></tr><tr><td>allocs[(alloc_id)&amp;ARG2] == { .base = (integer)&amp;ARG2, .size = 4 }</td></tr><tr><td>has_alloc_id(p)</td></tr><tr><td>has_alloc_id(&amp;ARG0)</td></tr><tr><td>has_alloc_id(&amp;ARG1)</td></tr><tr><td>has_alloc_id(&amp;ARG2)</td></tr><tr><td>aligned(&amp;ARG0, 8)</td></tr><tr><td>aligned(&amp;ARG1, 4)</td></tr><tr><td>aligned(&amp;ARG2, 4)</td></tr><tr><td>forall(j, integer). implies(0 &lt;= j && j &lt; n, repr&lt;signed int&gt;(a1[j]))</td></tr></tbody></table><details><summary>more</summary><table><tbody><tr><td>repr&lt;signed int&gt;(i)</td></tr><tr><td>repr&lt;signed int&gt;(n)</td></tr><tr><td>repr&lt;void*&gt;(ffs_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ffsl_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ffsll_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ctz_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap16_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap32_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap64_proxy)</td></tr><tr><td>repr&lt;void*&gt;(unreachable_proxy)</td></tr><tr><td>repr&lt;void*&gt;(__builtin_ctzl)</td></tr><tr><td>repr&lt;void*&gt;(__builtin_ctzll)</td></tr><tr><td>repr&lt;void*&gt;(read)</td></tr><tr><td>repr&lt;void*&gt;(main)</td></tr><tr><td>repr&lt;signed int*&gt;(p)</td></tr><tr><td>repr&lt;signed int*&gt;(&amp;ARG1)</td></tr><tr><td>repr&lt;signed int*&gt;(&amp;ARG2)</td></tr><tr><td>repr&lt;signed int**&gt;(&amp;ARG0)</td></tr><tr><td>good&lt;signed int*&gt;(p)</td></tr></tbody></table></details></div><div class="page"><div class="hidden"><table><thead><tr><th>function</th><th>section</th><th>location</th></tr></thead><tbody><tr><td><div class="loc_function">read</div></td><td><div class="loc_section">body</div></td><td><div class="loc">9:9-9:13</div></td></tr></tbody></table></div><h1>Definitions and constraints not handled automatically</h1><table><tbody><tr><td>Alloc</td></tr><tr><td>forall(j, integer). implies(0 &lt;= j && j &lt; n, repr&lt;signed int&gt;(a1[j]))</td></tr></tbody></table><h1>Available resources</h1><table><tbody><tr><td>RW&lt;signed int&gt;(&p[i])(a1[i])</td></tr><tr><td>RW&lt;signed int&gt;(&amp;ARG2)(i)</td></tr><tr><td>RW&lt;signed int&gt;(&amp;ARG1)(n)</td></tr><tr><td>RW&lt;signed int*&gt;(&amp;ARG0)(p)</td></tr><tr><td><div><div class="toggle"></div><div>each(integer j; 0 &lt;= j && j &lt; 2147483646)
+{RW&lt;signed int&gt;(p + j @ signed int)}(a1)</div><div>each(integer j; 0 &lt;= j && j &lt; n && j != i)
+{RW&lt;signed int&gt;(p + j @ signed int)}(a1)</div></div></td></tr></tbody></table><details><summary>more</summary><table><tbody><tr><td>Alloc(&amp;ARG2)(allocs[(alloc_id)&amp;ARG2])</td></tr><tr><td>Alloc(&amp;ARG1)(allocs[(alloc_id)&amp;ARG1])</td></tr><tr><td>Alloc(&amp;ARG0)(allocs[(alloc_id)&amp;ARG0])</td></tr></tbody></table></details><h1>Terms</h1><table><thead><tr><th>term</th><th>value</th></tr></thead><tbody><tr><td>allocs</td><td>const({ .base = 4412, .size = 4 })[@21 = { .base = -21652, .size = 8590044700 }][@18 = { .base = 113096, .size = 8 }][@19 = { .base = 107716
+                                                                                                                            , .size = 4 }]</td></tr><tr><td>i</td><td>2147483646</td></tr><tr><td>n</td><td>2147483647</td></tr><tr><td>a1</td><td>const(2147483648)</td></tr></tbody></table><details><summary>more</summary><table><thead><tr><th>term</th><th>value</th></tr></thead><tbody><tr><td>ffs_proxy</td><td>NULL</td></tr><tr><td>ffsl_proxy</td><td>{@32; 0x4b40}</td></tr><tr><td>ffsll_proxy</td><td>{@31; 0x91b}</td></tr><tr><td>ctz_proxy</td><td>NULL</td></tr><tr><td>bswap16_proxy</td><td>{@38; 0x1c08}</td></tr><tr><td>bswap32_proxy</td><td>{@36; 0x3029}</td></tr><tr><td>bswap64_proxy</td><td>{@35; 0x0}</td></tr><tr><td>unreachable_proxy</td><td>NULL</td></tr><tr><td>__builtin_ctzl</td><td>{@37; 0x2d81}</td></tr><tr><td>__builtin_ctzll</td><td>{@34; 0x5f44}</td></tr><tr><td>read</td><td>NULL</td></tr><tr><td>main</td><td>{@33; 0xffffffffffffffff}</td></tr><tr><td>p</td><td>{@21; 0x1598c}</td></tr><tr><td>&amp;ARG0</td><td>{@18; 0x1b9c8}</td></tr><tr><td>&amp;ARG1</td><td>{@19; 0x1a4c4}</td></tr><tr><td>&amp;ARG2</td><td>{@20; 0x113c}</td></tr></tbody></table></details><h1>Constraints</h1><table><tbody><tr><td><div><div class="toggle"></div><div></div><div>true</div></div></td></tr><tr><td><div><div class="toggle"></div><div>0 &lt;= i
+i &lt; n</div><div>0 &lt;= i && i &lt; n</div></div></td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG0].size</td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG1].size</td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG2].size</td></tr><tr><td>(integer)&amp;ARG0 + 8 &lt;= allocs[(alloc_id)&amp;ARG0].base + allocs[(alloc_id)&amp;ARG0].size</td></tr><tr><td>(integer)&amp;ARG1 + 4 &lt;= allocs[(alloc_id)&amp;ARG1].base + allocs[(alloc_id)&amp;ARG1].size</td></tr><tr><td>(integer)&amp;ARG2 + 4 &lt;= allocs[(alloc_id)&amp;ARG2].base + allocs[(alloc_id)&amp;ARG2].size</td></tr><tr><td>(integer)&p[i] + 4 &lt;= allocs[(alloc_id)&p[i]].base + allocs[(alloc_id)&p[i]].size</td></tr><tr><td>allocs[(alloc_id)&amp;ARG0].base &lt;= (integer)&amp;ARG0</td></tr><tr><td>allocs[(alloc_id)&amp;ARG1].base &lt;= (integer)&amp;ARG1</td></tr><tr><td>allocs[(alloc_id)&amp;ARG2].base &lt;= (integer)&amp;ARG2</td></tr><tr><td>allocs[(alloc_id)&p[i]].base &lt;= (integer)&p[i]</td></tr><tr><td>(integer)&amp;ARG0 &lt;= 18446744073709551607</td></tr><tr><td>(integer)&amp;ARG1 &lt;= 18446744073709551611</td></tr><tr><td>(integer)&amp;ARG2 &lt;= 18446744073709551611</td></tr><tr><td>(integer)&p[i] &lt;= 18446744073709551611</td></tr><tr><td>allocs[(alloc_id)&amp;ARG0] == { .base = (integer)&amp;ARG0, .size = 8 }</td></tr><tr><td>allocs[(alloc_id)&amp;ARG1] == { .base = (integer)&amp;ARG1, .size = 4 }</td></tr><tr><td>allocs[(alloc_id)&amp;ARG2] == { .base = (integer)&amp;ARG2, .size = 4 }</td></tr><tr><td>has_alloc_id(p)</td></tr><tr><td>has_alloc_id(&amp;ARG0)</td></tr><tr><td>has_alloc_id(&amp;ARG1)</td></tr><tr><td>has_alloc_id(&amp;ARG2)</td></tr><tr><td>aligned(&amp;ARG0, 8)</td></tr><tr><td>aligned(&amp;ARG1, 4)</td></tr><tr><td>aligned(&amp;ARG2, 4)</td></tr><tr><td>forall(j, integer). implies(0 &lt;= j && j &lt; n, repr&lt;signed int&gt;(a1[j]))</td></tr></tbody></table><details><summary>more</summary><table><tbody><tr><td>repr&lt;signed int&gt;(i)</td></tr><tr><td>repr&lt;signed int&gt;(n)</td></tr><tr><td>repr&lt;void*&gt;(ffs_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ffsl_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ffsll_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ctz_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap16_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap32_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap64_proxy)</td></tr><tr><td>repr&lt;void*&gt;(unreachable_proxy)</td></tr><tr><td>repr&lt;void*&gt;(__builtin_ctzl)</td></tr><tr><td>repr&lt;void*&gt;(__builtin_ctzll)</td></tr><tr><td>repr&lt;void*&gt;(read)</td></tr><tr><td>repr&lt;void*&gt;(main)</td></tr><tr><td>repr&lt;signed int*&gt;(p)</td></tr><tr><td>repr&lt;signed int*&gt;(&amp;ARG1)</td></tr><tr><td>repr&lt;signed int*&gt;(&amp;ARG2)</td></tr><tr><td>repr&lt;signed int**&gt;(&amp;ARG0)</td></tr><tr><td>good&lt;signed int*&gt;(p)</td></tr></tbody></table></details></div><div class="page"><div class="hidden"><table><thead><tr><th>function</th><th>section</th><th>location</th></tr></thead><tbody><tr><td><div class="loc_function">read</div></td><td><div class="loc_section">body</div></td><td><div class="loc">9:9-9:13</div></td></tr></tbody></table></div><h1>Definitions and constraints not handled automatically</h1><table><tbody><tr><td>Alloc</td></tr><tr><td>forall(j, integer). implies(0 &lt;= j && j &lt; n, repr&lt;signed int&gt;(a1[j]))</td></tr></tbody></table><h1>Available resources</h1><table><tbody><tr><td>RW&lt;signed int&gt;(&p[i])(a1[i])</td></tr><tr><td>RW&lt;signed int&gt;(&amp;ARG2)(i)</td></tr><tr><td>RW&lt;signed int&gt;(&amp;ARG1)(n)</td></tr><tr><td>RW&lt;signed int*&gt;(&amp;ARG0)(p)</td></tr><tr><td><div><div class="toggle"></div><div>each(integer j; 0 &lt;= j && j &lt; 2147483646)
+{RW&lt;signed int&gt;(p + j @ signed int)}(a1)</div><div>each(integer j; 0 &lt;= j && j &lt; n && j != i)
+{RW&lt;signed int&gt;(p + j @ signed int)}(a1)</div></div></td></tr></tbody></table><details><summary>more</summary><table><tbody><tr><td>Alloc(&amp;ARG2)(allocs[(alloc_id)&amp;ARG2])</td></tr><tr><td>Alloc(&amp;ARG1)(allocs[(alloc_id)&amp;ARG1])</td></tr><tr><td>Alloc(&amp;ARG0)(allocs[(alloc_id)&amp;ARG0])</td></tr></tbody></table></details><h1>Terms</h1><table><thead><tr><th>term</th><th>value</th></tr></thead><tbody><tr><td>allocs</td><td>const({ .base = 4412, .size = 4 })[@21 = { .base = -21652, .size = 8590044700 }][@18 = { .base = 113096, .size = 8 }][@19 = { .base = 107716
+                                                                                                                            , .size = 4 }]</td></tr><tr><td>i</td><td>2147483646</td></tr><tr><td>n</td><td>2147483647</td></tr><tr><td>a1</td><td>const(2147483648)</td></tr></tbody></table><details><summary>more</summary><table><thead><tr><th>term</th><th>value</th></tr></thead><tbody><tr><td>ffs_proxy</td><td>NULL</td></tr><tr><td>ffsl_proxy</td><td>{@32; 0x4b40}</td></tr><tr><td>ffsll_proxy</td><td>{@31; 0x91b}</td></tr><tr><td>ctz_proxy</td><td>NULL</td></tr><tr><td>bswap16_proxy</td><td>{@38; 0x1c08}</td></tr><tr><td>bswap32_proxy</td><td>{@36; 0x3029}</td></tr><tr><td>bswap64_proxy</td><td>{@35; 0x0}</td></tr><tr><td>unreachable_proxy</td><td>NULL</td></tr><tr><td>__builtin_ctzl</td><td>{@37; 0x2d81}</td></tr><tr><td>__builtin_ctzll</td><td>{@34; 0x5f44}</td></tr><tr><td>read</td><td>NULL</td></tr><tr><td>main</td><td>{@33; 0xffffffffffffffff}</td></tr><tr><td>p</td><td>{@21; 0x1598c}</td></tr><tr><td>&amp;ARG0</td><td>{@18; 0x1b9c8}</td></tr><tr><td>&amp;ARG1</td><td>{@19; 0x1a4c4}</td></tr><tr><td>&amp;ARG2</td><td>{@20; 0x113c}</td></tr></tbody></table></details><h1>Constraints</h1><table><tbody><tr><td><div><div class="toggle"></div><div></div><div>true</div></div></td></tr><tr><td><div><div class="toggle"></div><div>0 &lt;= i
+i &lt; n</div><div>0 &lt;= i && i &lt; n</div></div></td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG0].size</td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG1].size</td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG2].size</td></tr><tr><td>(integer)&amp;ARG0 + 8 &lt;= allocs[(alloc_id)&amp;ARG0].base + allocs[(alloc_id)&amp;ARG0].size</td></tr><tr><td>(integer)&amp;ARG1 + 4 &lt;= allocs[(alloc_id)&amp;ARG1].base + allocs[(alloc_id)&amp;ARG1].size</td></tr><tr><td>(integer)&amp;ARG2 + 4 &lt;= allocs[(alloc_id)&amp;ARG2].base + allocs[(alloc_id)&amp;ARG2].size</td></tr><tr><td>(integer)&p[i] + 4 &lt;= allocs[(alloc_id)&p[i]].base + allocs[(alloc_id)&p[i]].size</td></tr><tr><td>allocs[(alloc_id)&amp;ARG0].base &lt;= (integer)&amp;ARG0</td></tr><tr><td>allocs[(alloc_id)&amp;ARG1].base &lt;= (integer)&amp;ARG1</td></tr><tr><td>allocs[(alloc_id)&amp;ARG2].base &lt;= (integer)&amp;ARG2</td></tr><tr><td>allocs[(alloc_id)&p[i]].base &lt;= (integer)&p[i]</td></tr><tr><td>(integer)&amp;ARG0 &lt;= 18446744073709551607</td></tr><tr><td>(integer)&amp;ARG1 &lt;= 18446744073709551611</td></tr><tr><td>(integer)&amp;ARG2 &lt;= 18446744073709551611</td></tr><tr><td>(integer)&p[i] &lt;= 18446744073709551611</td></tr><tr><td>allocs[(alloc_id)&amp;ARG0] == { .base = (integer)&amp;ARG0, .size = 8 }</td></tr><tr><td>allocs[(alloc_id)&amp;ARG1] == { .base = (integer)&amp;ARG1, .size = 4 }</td></tr><tr><td>allocs[(alloc_id)&amp;ARG2] == { .base = (integer)&amp;ARG2, .size = 4 }</td></tr><tr><td>has_alloc_id(p)</td></tr><tr><td>has_alloc_id(&amp;ARG0)</td></tr><tr><td>has_alloc_id(&amp;ARG1)</td></tr><tr><td>has_alloc_id(&amp;ARG2)</td></tr><tr><td>aligned(&amp;ARG0, 8)</td></tr><tr><td>aligned(&amp;ARG1, 4)</td></tr><tr><td>aligned(&amp;ARG2, 4)</td></tr><tr><td>forall(j, integer). implies(0 &lt;= j && j &lt; n, repr&lt;signed int&gt;(a1[j]))</td></tr></tbody></table><details><summary>more</summary><table><tbody><tr><td>repr&lt;signed int&gt;(i)</td></tr><tr><td>repr&lt;signed int&gt;(n)</td></tr><tr><td>repr&lt;void*&gt;(ffs_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ffsl_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ffsll_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ctz_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap16_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap32_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap64_proxy)</td></tr><tr><td>repr&lt;void*&gt;(unreachable_proxy)</td></tr><tr><td>repr&lt;void*&gt;(__builtin_ctzl)</td></tr><tr><td>repr&lt;void*&gt;(__builtin_ctzll)</td></tr><tr><td>repr&lt;void*&gt;(read)</td></tr><tr><td>repr&lt;void*&gt;(main)</td></tr><tr><td>repr&lt;signed int*&gt;(p)</td></tr><tr><td>repr&lt;signed int*&gt;(&amp;ARG1)</td></tr><tr><td>repr&lt;signed int*&gt;(&amp;ARG2)</td></tr><tr><td>repr&lt;signed int**&gt;(&amp;ARG0)</td></tr><tr><td>good&lt;signed int*&gt;(p)</td></tr></tbody></table></details></div><div class="page"><div class="hidden"><table><thead><tr><th>function</th><th>section</th><th>location</th></tr></thead><tbody><tr><td><div class="loc_function">read</div></td><td><div class="loc_section">body</div></td><td><div class="loc">9:9-9:10</div></td></tr></tbody></table></div><h1>Definitions and constraints not handled automatically</h1><table><tbody><tr><td>Alloc</td></tr><tr><td>forall(j, integer). implies(0 &lt;= j && j &lt; n, repr&lt;signed int&gt;(a1[j]))</td></tr></tbody></table><h1>Available resources</h1><table><tbody><tr><td>RW&lt;signed int&gt;(&p[i])(a1[i])</td></tr><tr><td>RW&lt;signed int&gt;(&amp;ARG2)(i)</td></tr><tr><td>RW&lt;signed int&gt;(&amp;ARG1)(n)</td></tr><tr><td>RW&lt;signed int*&gt;(&amp;ARG0)(p)</td></tr><tr><td><div><div class="toggle"></div><div>each(integer j; 0 &lt;= j && j &lt; 2147483646)
+{RW&lt;signed int&gt;(p + j @ signed int)}(a1)</div><div>each(integer j; 0 &lt;= j && j &lt; n && j != i)
+{RW&lt;signed int&gt;(p + j @ signed int)}(a1)</div></div></td></tr></tbody></table><details><summary>more</summary><table><tbody><tr><td>Alloc(&amp;ARG2)(allocs[(alloc_id)&amp;ARG2])</td></tr><tr><td>Alloc(&amp;ARG1)(allocs[(alloc_id)&amp;ARG1])</td></tr><tr><td>Alloc(&amp;ARG0)(allocs[(alloc_id)&amp;ARG0])</td></tr></tbody></table></details><h1>Terms</h1><table><thead><tr><th>term</th><th>value</th></tr></thead><tbody><tr><td>allocs</td><td>const({ .base = 4412, .size = 4 })[@21 = { .base = -21652, .size = 8590044700 }][@18 = { .base = 113096, .size = 8 }][@19 = { .base = 107716
+                                                                                                                            , .size = 4 }]</td></tr><tr><td>i</td><td>2147483646</td></tr><tr><td>n</td><td>2147483647</td></tr><tr><td>a1</td><td>const(2147483648)</td></tr></tbody></table><details><summary>more</summary><table><thead><tr><th>term</th><th>value</th></tr></thead><tbody><tr><td>ffs_proxy</td><td>NULL</td></tr><tr><td>ffsl_proxy</td><td>{@32; 0x4b40}</td></tr><tr><td>ffsll_proxy</td><td>{@31; 0x91b}</td></tr><tr><td>ctz_proxy</td><td>NULL</td></tr><tr><td>bswap16_proxy</td><td>{@38; 0x1c08}</td></tr><tr><td>bswap32_proxy</td><td>{@36; 0x3029}</td></tr><tr><td>bswap64_proxy</td><td>{@35; 0x0}</td></tr><tr><td>unreachable_proxy</td><td>NULL</td></tr><tr><td>__builtin_ctzl</td><td>{@37; 0x2d81}</td></tr><tr><td>__builtin_ctzll</td><td>{@34; 0x5f44}</td></tr><tr><td>read</td><td>NULL</td></tr><tr><td>main</td><td>{@33; 0xffffffffffffffff}</td></tr><tr><td>p</td><td>{@21; 0x1598c}</td></tr><tr><td>&amp;ARG0</td><td>{@18; 0x1b9c8}</td></tr><tr><td>&amp;ARG1</td><td>{@19; 0x1a4c4}</td></tr><tr><td>&amp;ARG2</td><td>{@20; 0x113c}</td></tr></tbody></table></details><h1>Constraints</h1><table><tbody><tr><td><div><div class="toggle"></div><div></div><div>true</div></div></td></tr><tr><td><div><div class="toggle"></div><div>0 &lt;= i
+i &lt; n</div><div>0 &lt;= i && i &lt; n</div></div></td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG0].size</td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG1].size</td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG2].size</td></tr><tr><td>(integer)&amp;ARG0 + 8 &lt;= allocs[(alloc_id)&amp;ARG0].base + allocs[(alloc_id)&amp;ARG0].size</td></tr><tr><td>(integer)&amp;ARG1 + 4 &lt;= allocs[(alloc_id)&amp;ARG1].base + allocs[(alloc_id)&amp;ARG1].size</td></tr><tr><td>(integer)&amp;ARG2 + 4 &lt;= allocs[(alloc_id)&amp;ARG2].base + allocs[(alloc_id)&amp;ARG2].size</td></tr><tr><td>(integer)&p[i] + 4 &lt;= allocs[(alloc_id)&p[i]].base + allocs[(alloc_id)&p[i]].size</td></tr><tr><td>allocs[(alloc_id)&amp;ARG0].base &lt;= (integer)&amp;ARG0</td></tr><tr><td>allocs[(alloc_id)&amp;ARG1].base &lt;= (integer)&amp;ARG1</td></tr><tr><td>allocs[(alloc_id)&amp;ARG2].base &lt;= (integer)&amp;ARG2</td></tr><tr><td>allocs[(alloc_id)&p[i]].base &lt;= (integer)&p[i]</td></tr><tr><td>(integer)&amp;ARG0 &lt;= 18446744073709551607</td></tr><tr><td>(integer)&amp;ARG1 &lt;= 18446744073709551611</td></tr><tr><td>(integer)&amp;ARG2 &lt;= 18446744073709551611</td></tr><tr><td>(integer)&p[i] &lt;= 18446744073709551611</td></tr><tr><td>allocs[(alloc_id)&amp;ARG0] == { .base = (integer)&amp;ARG0, .size = 8 }</td></tr><tr><td>allocs[(alloc_id)&amp;ARG1] == { .base = (integer)&amp;ARG1, .size = 4 }</td></tr><tr><td>allocs[(alloc_id)&amp;ARG2] == { .base = (integer)&amp;ARG2, .size = 4 }</td></tr><tr><td>has_alloc_id(p)</td></tr><tr><td>has_alloc_id(&amp;ARG0)</td></tr><tr><td>has_alloc_id(&amp;ARG1)</td></tr><tr><td>has_alloc_id(&amp;ARG2)</td></tr><tr><td>aligned(&amp;ARG0, 8)</td></tr><tr><td>aligned(&amp;ARG1, 4)</td></tr><tr><td>aligned(&amp;ARG2, 4)</td></tr><tr><td>forall(j, integer). implies(0 &lt;= j && j &lt; n, repr&lt;signed int&gt;(a1[j]))</td></tr></tbody></table><details><summary>more</summary><table><tbody><tr><td>repr&lt;signed int&gt;(i)</td></tr><tr><td>repr&lt;signed int&gt;(n)</td></tr><tr><td>repr&lt;void*&gt;(ffs_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ffsl_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ffsll_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ctz_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap16_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap32_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap64_proxy)</td></tr><tr><td>repr&lt;void*&gt;(unreachable_proxy)</td></tr><tr><td>repr&lt;void*&gt;(__builtin_ctzl)</td></tr><tr><td>repr&lt;void*&gt;(__builtin_ctzll)</td></tr><tr><td>repr&lt;void*&gt;(read)</td></tr><tr><td>repr&lt;void*&gt;(main)</td></tr><tr><td>repr&lt;signed int*&gt;(p)</td></tr><tr><td>repr&lt;signed int*&gt;(&amp;ARG1)</td></tr><tr><td>repr&lt;signed int*&gt;(&amp;ARG2)</td></tr><tr><td>repr&lt;signed int**&gt;(&amp;ARG0)</td></tr><tr><td>good&lt;signed int*&gt;(p)</td></tr></tbody></table></details></div><div class="page"><div class="hidden"><table><thead><tr><th>function</th><th>section</th><th>location</th></tr></thead><tbody><tr><td><div class="loc_function">read</div></td><td><div class="loc_section">body</div></td><td><div class="loc">9:9-9:10</div></td></tr></tbody></table></div><h1>Definitions and constraints not handled automatically</h1><table><tbody><tr><td>Alloc</td></tr><tr><td>forall(j, integer). implies(0 &lt;= j && j &lt; n, repr&lt;signed int&gt;(a1[j]))</td></tr></tbody></table><h1>Available resources</h1><table><tbody><tr><td>RW&lt;signed int*&gt;(&amp;ARG0)(p)</td></tr><tr><td>RW&lt;signed int&gt;(&p[i])(a1[i])</td></tr><tr><td>RW&lt;signed int&gt;(&amp;ARG2)(i)</td></tr><tr><td>RW&lt;signed int&gt;(&amp;ARG1)(n)</td></tr><tr><td><div><div class="toggle"></div><div>each(integer j; 0 &lt;= j && j &lt; 2147483646)
+{RW&lt;signed int&gt;(p + j @ signed int)}(a1)</div><div>each(integer j; 0 &lt;= j && j &lt; n && j != i)
+{RW&lt;signed int&gt;(p + j @ signed int)}(a1)</div></div></td></tr></tbody></table><details><summary>more</summary><table><tbody><tr><td>Alloc(&amp;ARG2)(allocs[(alloc_id)&amp;ARG2])</td></tr><tr><td>Alloc(&amp;ARG1)(allocs[(alloc_id)&amp;ARG1])</td></tr><tr><td>Alloc(&amp;ARG0)(allocs[(alloc_id)&amp;ARG0])</td></tr></tbody></table></details><h1>Terms</h1><table><thead><tr><th>term</th><th>value</th></tr></thead><tbody><tr><td>allocs</td><td>const({ .base = 4412, .size = 4 })[@21 = { .base = -21652, .size = 8590044700 }][@18 = { .base = 113096, .size = 8 }][@19 = { .base = 107716
+                                                                                                                            , .size = 4 }]</td></tr><tr><td>i</td><td>2147483646</td></tr><tr><td>n</td><td>2147483647</td></tr><tr><td>a1</td><td>const(2147483648)</td></tr></tbody></table><details><summary>more</summary><table><thead><tr><th>term</th><th>value</th></tr></thead><tbody><tr><td>ffs_proxy</td><td>NULL</td></tr><tr><td>ffsl_proxy</td><td>{@32; 0x4b40}</td></tr><tr><td>ffsll_proxy</td><td>{@31; 0x91b}</td></tr><tr><td>ctz_proxy</td><td>NULL</td></tr><tr><td>bswap16_proxy</td><td>{@38; 0x1c08}</td></tr><tr><td>bswap32_proxy</td><td>{@36; 0x3029}</td></tr><tr><td>bswap64_proxy</td><td>{@35; 0x0}</td></tr><tr><td>unreachable_proxy</td><td>NULL</td></tr><tr><td>__builtin_ctzl</td><td>{@37; 0x2d81}</td></tr><tr><td>__builtin_ctzll</td><td>{@34; 0x5f44}</td></tr><tr><td>read</td><td>NULL</td></tr><tr><td>main</td><td>{@33; 0xffffffffffffffff}</td></tr><tr><td>p</td><td>{@21; 0x1598c}</td></tr><tr><td>&amp;ARG0</td><td>{@18; 0x1b9c8}</td></tr><tr><td>&amp;ARG1</td><td>{@19; 0x1a4c4}</td></tr><tr><td>&amp;ARG2</td><td>{@20; 0x113c}</td></tr></tbody></table></details><h1>Constraints</h1><table><tbody><tr><td><div><div class="toggle"></div><div></div><div>true</div></div></td></tr><tr><td><div><div class="toggle"></div><div>0 &lt;= i
+i &lt; n</div><div>0 &lt;= i && i &lt; n</div></div></td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG0].size</td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG1].size</td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG2].size</td></tr><tr><td>(integer)&amp;ARG0 + 8 &lt;= allocs[(alloc_id)&amp;ARG0].base + allocs[(alloc_id)&amp;ARG0].size</td></tr><tr><td>(integer)&amp;ARG1 + 4 &lt;= allocs[(alloc_id)&amp;ARG1].base + allocs[(alloc_id)&amp;ARG1].size</td></tr><tr><td>(integer)&amp;ARG2 + 4 &lt;= allocs[(alloc_id)&amp;ARG2].base + allocs[(alloc_id)&amp;ARG2].size</td></tr><tr><td>(integer)&p[i] + 4 &lt;= allocs[(alloc_id)&p[i]].base + allocs[(alloc_id)&p[i]].size</td></tr><tr><td>allocs[(alloc_id)&amp;ARG0].base &lt;= (integer)&amp;ARG0</td></tr><tr><td>allocs[(alloc_id)&amp;ARG1].base &lt;= (integer)&amp;ARG1</td></tr><tr><td>allocs[(alloc_id)&amp;ARG2].base &lt;= (integer)&amp;ARG2</td></tr><tr><td>allocs[(alloc_id)&p[i]].base &lt;= (integer)&p[i]</td></tr><tr><td>(integer)&amp;ARG0 &lt;= 18446744073709551607</td></tr><tr><td>(integer)&amp;ARG1 &lt;= 18446744073709551611</td></tr><tr><td>(integer)&amp;ARG2 &lt;= 18446744073709551611</td></tr><tr><td>(integer)&p[i] &lt;= 18446744073709551611</td></tr><tr><td>allocs[(alloc_id)&amp;ARG0] == { .base = (integer)&amp;ARG0, .size = 8 }</td></tr><tr><td>allocs[(alloc_id)&amp;ARG1] == { .base = (integer)&amp;ARG1, .size = 4 }</td></tr><tr><td>allocs[(alloc_id)&amp;ARG2] == { .base = (integer)&amp;ARG2, .size = 4 }</td></tr><tr><td>has_alloc_id(p)</td></tr><tr><td>has_alloc_id(&amp;ARG0)</td></tr><tr><td>has_alloc_id(&amp;ARG1)</td></tr><tr><td>has_alloc_id(&amp;ARG2)</td></tr><tr><td>aligned(&amp;ARG0, 8)</td></tr><tr><td>aligned(&amp;ARG1, 4)</td></tr><tr><td>aligned(&amp;ARG2, 4)</td></tr><tr><td>forall(j, integer). implies(0 &lt;= j && j &lt; n, repr&lt;signed int&gt;(a1[j]))</td></tr></tbody></table><details><summary>more</summary><table><tbody><tr><td>repr&lt;signed int&gt;(i)</td></tr><tr><td>repr&lt;signed int&gt;(n)</td></tr><tr><td>repr&lt;void*&gt;(ffs_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ffsl_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ffsll_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ctz_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap16_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap32_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap64_proxy)</td></tr><tr><td>repr&lt;void*&gt;(unreachable_proxy)</td></tr><tr><td>repr&lt;void*&gt;(__builtin_ctzl)</td></tr><tr><td>repr&lt;void*&gt;(__builtin_ctzll)</td></tr><tr><td>repr&lt;void*&gt;(read)</td></tr><tr><td>repr&lt;void*&gt;(main)</td></tr><tr><td>repr&lt;signed int*&gt;(p)</td></tr><tr><td>repr&lt;signed int*&gt;(&amp;ARG1)</td></tr><tr><td>repr&lt;signed int*&gt;(&amp;ARG2)</td></tr><tr><td>repr&lt;signed int**&gt;(&amp;ARG0)</td></tr><tr><td>good&lt;signed int*&gt;(p)</td></tr></tbody></table></details></div><div class="page"><div class="hidden"><table><thead><tr><th>function</th><th>section</th><th>location</th></tr></thead><tbody><tr><td><div class="loc_function">read</div></td><td><div class="loc_section">body</div></td><td><div class="loc">9:11-9:12</div></td></tr></tbody></table></div><h1>Definitions and constraints not handled automatically</h1><table><tbody><tr><td>Alloc</td></tr><tr><td>forall(j, integer). implies(0 &lt;= j && j &lt; n, repr&lt;signed int&gt;(a1[j]))</td></tr></tbody></table><h1>Available resources</h1><table><tbody><tr><td>RW&lt;signed int*&gt;(&amp;ARG0)(p)</td></tr><tr><td>RW&lt;signed int&gt;(&p[i])(a1[i])</td></tr><tr><td>RW&lt;signed int&gt;(&amp;ARG2)(i)</td></tr><tr><td>RW&lt;signed int&gt;(&amp;ARG1)(n)</td></tr><tr><td><div><div class="toggle"></div><div>each(integer j; 0 &lt;= j && j &lt; 2147483646)
+{RW&lt;signed int&gt;(p + j @ signed int)}(a1)</div><div>each(integer j; 0 &lt;= j && j &lt; n && j != i)
+{RW&lt;signed int&gt;(p + j @ signed int)}(a1)</div></div></td></tr></tbody></table><details><summary>more</summary><table><tbody><tr><td>Alloc(&amp;ARG2)(allocs[(alloc_id)&amp;ARG2])</td></tr><tr><td>Alloc(&amp;ARG1)(allocs[(alloc_id)&amp;ARG1])</td></tr><tr><td>Alloc(&amp;ARG0)(allocs[(alloc_id)&amp;ARG0])</td></tr></tbody></table></details><h1>Terms</h1><table><thead><tr><th>term</th><th>value</th></tr></thead><tbody><tr><td>allocs</td><td>const({ .base = 4412, .size = 4 })[@21 = { .base = -21652, .size = 8590044700 }][@18 = { .base = 113096, .size = 8 }][@19 = { .base = 107716
+                                                                                                                            , .size = 4 }]</td></tr><tr><td>i</td><td>2147483646</td></tr><tr><td>n</td><td>2147483647</td></tr><tr><td>a1</td><td>const(2147483648)</td></tr></tbody></table><details><summary>more</summary><table><thead><tr><th>term</th><th>value</th></tr></thead><tbody><tr><td>ffs_proxy</td><td>NULL</td></tr><tr><td>ffsl_proxy</td><td>{@32; 0x4b40}</td></tr><tr><td>ffsll_proxy</td><td>{@31; 0x91b}</td></tr><tr><td>ctz_proxy</td><td>NULL</td></tr><tr><td>bswap16_proxy</td><td>{@38; 0x1c08}</td></tr><tr><td>bswap32_proxy</td><td>{@36; 0x3029}</td></tr><tr><td>bswap64_proxy</td><td>{@35; 0x0}</td></tr><tr><td>unreachable_proxy</td><td>NULL</td></tr><tr><td>__builtin_ctzl</td><td>{@37; 0x2d81}</td></tr><tr><td>__builtin_ctzll</td><td>{@34; 0x5f44}</td></tr><tr><td>read</td><td>NULL</td></tr><tr><td>main</td><td>{@33; 0xffffffffffffffff}</td></tr><tr><td>p</td><td>{@21; 0x1598c}</td></tr><tr><td>&amp;ARG0</td><td>{@18; 0x1b9c8}</td></tr><tr><td>&amp;ARG1</td><td>{@19; 0x1a4c4}</td></tr><tr><td>&amp;ARG2</td><td>{@20; 0x113c}</td></tr></tbody></table></details><h1>Constraints</h1><table><tbody><tr><td><div><div class="toggle"></div><div></div><div>true</div></div></td></tr><tr><td><div><div class="toggle"></div><div>0 &lt;= i
+i &lt; n</div><div>0 &lt;= i && i &lt; n</div></div></td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG0].size</td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG1].size</td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG2].size</td></tr><tr><td>(integer)&amp;ARG0 + 8 &lt;= allocs[(alloc_id)&amp;ARG0].base + allocs[(alloc_id)&amp;ARG0].size</td></tr><tr><td>(integer)&amp;ARG1 + 4 &lt;= allocs[(alloc_id)&amp;ARG1].base + allocs[(alloc_id)&amp;ARG1].size</td></tr><tr><td>(integer)&amp;ARG2 + 4 &lt;= allocs[(alloc_id)&amp;ARG2].base + allocs[(alloc_id)&amp;ARG2].size</td></tr><tr><td>(integer)&p[i] + 4 &lt;= allocs[(alloc_id)&p[i]].base + allocs[(alloc_id)&p[i]].size</td></tr><tr><td>allocs[(alloc_id)&amp;ARG0].base &lt;= (integer)&amp;ARG0</td></tr><tr><td>allocs[(alloc_id)&amp;ARG1].base &lt;= (integer)&amp;ARG1</td></tr><tr><td>allocs[(alloc_id)&amp;ARG2].base &lt;= (integer)&amp;ARG2</td></tr><tr><td>allocs[(alloc_id)&p[i]].base &lt;= (integer)&p[i]</td></tr><tr><td>(integer)&amp;ARG0 &lt;= 18446744073709551607</td></tr><tr><td>(integer)&amp;ARG1 &lt;= 18446744073709551611</td></tr><tr><td>(integer)&amp;ARG2 &lt;= 18446744073709551611</td></tr><tr><td>(integer)&p[i] &lt;= 18446744073709551611</td></tr><tr><td>allocs[(alloc_id)&amp;ARG0] == { .base = (integer)&amp;ARG0, .size = 8 }</td></tr><tr><td>allocs[(alloc_id)&amp;ARG1] == { .base = (integer)&amp;ARG1, .size = 4 }</td></tr><tr><td>allocs[(alloc_id)&amp;ARG2] == { .base = (integer)&amp;ARG2, .size = 4 }</td></tr><tr><td>has_alloc_id(p)</td></tr><tr><td>has_alloc_id(&amp;ARG0)</td></tr><tr><td>has_alloc_id(&amp;ARG1)</td></tr><tr><td>has_alloc_id(&amp;ARG2)</td></tr><tr><td>aligned(&amp;ARG0, 8)</td></tr><tr><td>aligned(&amp;ARG1, 4)</td></tr><tr><td>aligned(&amp;ARG2, 4)</td></tr><tr><td>forall(j, integer). implies(0 &lt;= j && j &lt; n, repr&lt;signed int&gt;(a1[j]))</td></tr></tbody></table><details><summary>more</summary><table><tbody><tr><td>repr&lt;signed int&gt;(i)</td></tr><tr><td>repr&lt;signed int&gt;(n)</td></tr><tr><td>repr&lt;void*&gt;(ffs_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ffsl_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ffsll_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ctz_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap16_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap32_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap64_proxy)</td></tr><tr><td>repr&lt;void*&gt;(unreachable_proxy)</td></tr><tr><td>repr&lt;void*&gt;(__builtin_ctzl)</td></tr><tr><td>repr&lt;void*&gt;(__builtin_ctzll)</td></tr><tr><td>repr&lt;void*&gt;(read)</td></tr><tr><td>repr&lt;void*&gt;(main)</td></tr><tr><td>repr&lt;signed int*&gt;(p)</td></tr><tr><td>repr&lt;signed int*&gt;(&amp;ARG1)</td></tr><tr><td>repr&lt;signed int*&gt;(&amp;ARG2)</td></tr><tr><td>repr&lt;signed int**&gt;(&amp;ARG0)</td></tr><tr><td>good&lt;signed int*&gt;(p)</td></tr></tbody></table></details></div><div class="page"><div class="hidden"><table><thead><tr><th>function</th><th>section</th><th>location</th></tr></thead><tbody><tr><td><div class="loc_function">read</div></td><td><div class="loc_section">body</div></td><td><div class="loc">9:11-9:12</div></td></tr></tbody></table></div><h1>Definitions and constraints not handled automatically</h1><table><tbody><tr><td>Alloc</td></tr><tr><td>forall(j, integer). implies(0 &lt;= j && j &lt; n, repr&lt;signed int&gt;(a1[j]))</td></tr></tbody></table><h1>Available resources</h1><table><tbody><tr><td>RW&lt;signed int&gt;(&p[i])(a1[i])</td></tr><tr><td><div><div class="toggle"></div><div>each(integer j; 0 &lt;= j && j &lt; 2147483646)
+{RW&lt;signed int&gt;(p + j @ signed int)}(a1)</div><div>each(integer j; 0 &lt;= j && j &lt; n && j != i)
+{RW&lt;signed int&gt;(p + j @ signed int)}(a1)</div></div></td></tr></tbody></table><h1>Terms</h1><table><thead><tr><th>term</th><th>value</th></tr></thead><tbody><tr><td>allocs</td><td>const({ .base = 4412, .size = 4 })[@21 = { .base = -21652, .size = 8590044700 }][@18 = { .base = 113096, .size = 8 }][@19 = { .base = 107716
+                                                                                                                            , .size = 4 }]</td></tr><tr><td>i</td><td>2147483646</td></tr><tr><td>n</td><td>2147483647</td></tr><tr><td>a1</td><td>const(2147483648)</td></tr></tbody></table><details><summary>more</summary><table><thead><tr><th>term</th><th>value</th></tr></thead><tbody><tr><td>ffs_proxy</td><td>NULL</td></tr><tr><td>ffsl_proxy</td><td>{@32; 0x4b40}</td></tr><tr><td>ffsll_proxy</td><td>{@31; 0x91b}</td></tr><tr><td>ctz_proxy</td><td>NULL</td></tr><tr><td>bswap16_proxy</td><td>{@38; 0x1c08}</td></tr><tr><td>bswap32_proxy</td><td>{@36; 0x3029}</td></tr><tr><td>bswap64_proxy</td><td>{@35; 0x0}</td></tr><tr><td>unreachable_proxy</td><td>NULL</td></tr><tr><td>__builtin_ctzl</td><td>{@37; 0x2d81}</td></tr><tr><td>__builtin_ctzll</td><td>{@34; 0x5f44}</td></tr><tr><td>read</td><td>NULL</td></tr><tr><td>main</td><td>{@33; 0xffffffffffffffff}</td></tr><tr><td>p</td><td>{@21; 0x1598c}</td></tr><tr><td>&amp;ARG0</td><td>{@18; 0x1b9c8}</td></tr><tr><td>&amp;ARG1</td><td>{@19; 0x1a4c4}</td></tr><tr><td>&amp;ARG2</td><td>{@20; 0x113c}</td></tr></tbody></table></details><h1>Constraints</h1><table><tbody><tr><td><div><div class="toggle"></div><div></div><div>true</div></div></td></tr><tr><td><div><div class="toggle"></div><div>0 &lt;= i
+i &lt; n</div><div>0 &lt;= i && i &lt; n</div></div></td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG0].size</td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG1].size</td></tr><tr><td>0 &lt;= allocs[(alloc_id)&amp;ARG2].size</td></tr><tr><td>(integer)&amp;ARG0 + 8 &lt;= allocs[(alloc_id)&amp;ARG0].base + allocs[(alloc_id)&amp;ARG0].size</td></tr><tr><td>(integer)&amp;ARG1 + 4 &lt;= allocs[(alloc_id)&amp;ARG1].base + allocs[(alloc_id)&amp;ARG1].size</td></tr><tr><td>(integer)&amp;ARG2 + 4 &lt;= allocs[(alloc_id)&amp;ARG2].base + allocs[(alloc_id)&amp;ARG2].size</td></tr><tr><td>(integer)&p[i] + 4 &lt;= allocs[(alloc_id)&p[i]].base + allocs[(alloc_id)&p[i]].size</td></tr><tr><td>allocs[(alloc_id)&amp;ARG0].base &lt;= (integer)&amp;ARG0</td></tr><tr><td>allocs[(alloc_id)&amp;ARG1].base &lt;= (integer)&amp;ARG1</td></tr><tr><td>allocs[(alloc_id)&amp;ARG2].base &lt;= (integer)&amp;ARG2</td></tr><tr><td>allocs[(alloc_id)&p[i]].base &lt;= (integer)&p[i]</td></tr><tr><td>(integer)&amp;ARG0 &lt;= 18446744073709551607</td></tr><tr><td>(integer)&amp;ARG1 &lt;= 18446744073709551611</td></tr><tr><td>(integer)&amp;ARG2 &lt;= 18446744073709551611</td></tr><tr><td>(integer)&p[i] &lt;= 18446744073709551611</td></tr><tr><td>allocs[(alloc_id)&amp;ARG0] == { .base = (integer)&amp;ARG0, .size = 8 }</td></tr><tr><td>allocs[(alloc_id)&amp;ARG1] == { .base = (integer)&amp;ARG1, .size = 4 }</td></tr><tr><td>allocs[(alloc_id)&amp;ARG2] == { .base = (integer)&amp;ARG2, .size = 4 }</td></tr><tr><td>has_alloc_id(p)</td></tr><tr><td>has_alloc_id(&amp;ARG0)</td></tr><tr><td>has_alloc_id(&amp;ARG1)</td></tr><tr><td>has_alloc_id(&amp;ARG2)</td></tr><tr><td>aligned(&amp;ARG0, 8)</td></tr><tr><td>aligned(&amp;ARG1, 4)</td></tr><tr><td>aligned(&amp;ARG2, 4)</td></tr><tr><td>forall(j, integer). implies(0 &lt;= j && j &lt; n, repr&lt;signed int&gt;(a1[j]))</td></tr></tbody></table><details><summary>more</summary><table><tbody><tr><td>repr&lt;signed int&gt;(i)</td></tr><tr><td>repr&lt;signed int&gt;(n)</td></tr><tr><td>repr&lt;void*&gt;(ffs_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ffsl_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ffsll_proxy)</td></tr><tr><td>repr&lt;void*&gt;(ctz_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap16_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap32_proxy)</td></tr><tr><td>repr&lt;void*&gt;(bswap64_proxy)</td></tr><tr><td>repr&lt;void*&gt;(unreachable_proxy)</td></tr><tr><td>repr&lt;void*&gt;(__builtin_ctzl)</td></tr><tr><td>repr&lt;void*&gt;(__builtin_ctzll)</td></tr><tr><td>repr&lt;void*&gt;(read)</td></tr><tr><td>repr&lt;void*&gt;(main)</td></tr><tr><td>repr&lt;signed int*&gt;(p)</td></tr><tr><td>repr&lt;signed int*&gt;(&amp;ARG1)</td></tr><tr><td>repr&lt;signed int*&gt;(&amp;ARG2)</td></tr><tr><td>repr&lt;signed int**&gt;(&amp;ARG0)</td></tr><tr><td>good&lt;signed int*&gt;(p)</td></tr></tbody></table></details></div></div>
+  </div>
+<div id="cn_code_display">
+<div class="menu" id="menu2">
+  <div id="sectioninfo"></div>
+</div>
+<div id="cn_code">int read (int *p, int n, int i)
+/*@ requires take a1 = each(integer j; 0 <= j && j < n) { RW<int>(array_shift<int>(p,j)) };
+             0 <= i && i < n;
+    ensures take a2 = each(integer j; 0 <= j && j < n) { RW<int>(array_shift<int>(p,j)) };
+            a1 == a2;
+            return == a1[i];
+@*/
+{
+  /*@ focus RW<int>, i; @*/
+  return p[i];
+}
+
+int main()
+{
+    int a[3] = { 0, 1, 2 };
+
+    int zero = read(a, 3, 0);
+    /*@ assert (zero == 0); @*/
+    int *first = a;
+    /*@ assert (*first == 0); @*/
+
+    int one = read(a, 3, 1);
+    /*@ assert (one == 1); @*/
+    int *second = a + 1;
+    /*@ assert (*second == 1); @*/
+
+    int two = read(a, 3, 2);
+    /*@ assert (two == 2); @*/
+    int *third = a + 2;
+    /*@ assert (*third == 2); @*/
+}
+</div>
+</div>
+</div>
+
+<script defer>
+var current_page = 1
+const menu = document.getElementById("menu1").getElementsByTagName("li")
+const pageinfo = document.getElementById("pageinfo")
+const pages = document.getElementById("pages").children
+const cn_code = document.getElementById("cn_code")
+const n_pages = pages.length
+
+
+function clear_highlight() {
+  Array.from(document.getElementById("cn_code").children).forEach((e) => {
+    div = e.children[1]
+    div.replaceChildren(div.textContent)
+  })
+}
+
+function highlight(line, start_col, end_col) {
+  // console.log(`HIGHLIGHT(${line}, ${start_col}, ${end_col})`)
+  if (end_col <= start_col) {
+    end_col = start_col+1
+  }
+  Array.from(cn_code.children).forEach((e, n) => {
+    div = e.children[1]
+    if (n != line-1) {
+      div.replaceChildren(div.textContent)
+    } else {
+      str = div.textContent
+      before = str.substring(0, start_col-1)
+      hl = document.createElement("span")
+      hl.classList.add("hl")
+      hl.textContent = str.substring(start_col-1,end_col-1)
+      after = str.substring(end_col-1)
+      div.replaceChildren(before,hl,after)
+      cn_code.scrollTop = div.offsetTop
+    }
+  })
+}
+
+function multiline_highlight(start_line, start_col, end_line, end_col) {
+  Array.from(cn_code.children).forEach((e, n) => {
+    div = e.children[1]
+    if (n < start_line || end_line < n) {
+      div.replaceChildren(div.textContent)
+    } else {
+      str = div.textContent
+      if (n == start_line) {
+        cn_code.scrollTop = div.offsetTop
+      }
+      hl = document.createElement("span")
+      hl.classList.add("hl")
+      // TODO: probably could be written nicer
+      if (start_line == end_line) {
+        before = str.substring(0, start_col)
+        hl.textContent = str.substring(start_col,end_col)
+        after = str.substring(end_col)
+        div.replaceChildren(before,hl,after)
+      } else if (n == start_line) {
+        before = str.substring(0, start_col)
+        hl.textContent = str.substring(start_col)
+        div.replaceChildren(before,hl)
+      } else if (n == end_line) {
+        hl.textContent = str.substring(0,end_col)
+        after = str.substring(end_col)
+        div.replaceChildren(hl,after)
+      } else {
+        hl.textContent = str
+        div.replaceChildren(hl)
+      }
+    }
+  })
+}
+
+// function decode_loc(n) {
+//   loc = pages[n-1].getElementsByClassName("loc")[0].textContent
+//   console.log("DECODING ==> ", loc)
+//   if (loc == "") {
+//     // console.log("NO LOC")
+//     clear_highlight()
+//   } else {
+//     xs = loc.split(" ")[1].split(":")
+//     line = xs[1]
+//     col = parseInt(xs[2])
+//     // console.log(`LOC ==> line: ${line} -- col: ${col}`)
+//     highlight(line, col, col+1)
+//   }
+// }
+
+function decode_loc(n) {
+  loc = pages[n-1].getElementsByClassName("loc")[0].textContent
+  fnction = pages[n-1].getElementsByClassName("loc_function")[0].textContent
+  section = pages[n-1].getElementsByClassName("loc_section")[0].textContent
+  if (loc == "") {
+    clear_highlight()
+  } else {
+    pair = loc.split("-")
+    start = pair[0].split(":")
+    end = pair[1].split(":")
+    multiline_highlight(start[0], start[1], end[0], end[1])
+  }
+  if (fnction == "") {
+    sectioninfo.textContent = "(none)"
+  }
+  else if (section == "") {
+    sectioninfo.textContent = fnction
+  }
+  else {
+    sectioninfo.textContent = `${fnction}  >  ${section}`
+  }
+}
+
+function goto_page(n) {
+  if (0 < n && n <= n_pages ) {
+    // console.log(`GOTO_PAGE(${n} ==> current: ${current_page})`)
+    decode_loc(n)
+    pages[current_page - 1].style.display = "none"
+    pages[n-1].style.display = "block"
+    current_page = n
+
+    pageinfo.textContent = `[${current_page} / ${n_pages}]`
+    menu[0].disabled = false
+    menu[1].disabled = false
+    menu[2].disabled = false
+    menu[3].disabled = false
+    if (current_page == 1) {
+      menu[0].disabled = true
+      menu[1].disabled = true
+    } else if (current_page == n_pages) {
+      menu[2].disabled = true
+      menu[3].disabled = true
+    }
+  }
+}
+
+function goto_prev() {
+  goto_page(current_page-1)
+}
+
+function goto_next() {
+  goto_page(current_page+1)
+}
+
+function create_line(n, str) {
+  nb_div = document.createElement("div")
+  str_div = document.createElement("div")
+  nb_div.textContent = n
+  nb_div.classList.add("nb")
+  str_div.textContent = str
+  str_div.classList.add("line")
+  ret = document.createElement("div")
+  ret.style.display = "flex"
+  ret.replaceChildren(nb_div, str_div)
+  return ret
+}
+
+function make_toggles(className, labels) {
+  for(const btn of document.getElementsByClassName(className)) {
+    const opts = []
+    for (let i = btn.nextSibling; i !== null; i = i.nextSibling) {
+      i.classList.add("hidden")
+      opts.push(i)
+    }
+    console.log(opts)
+    let cur = 0
+    function update() {
+      cur %= opts.length
+      const lab = labels && labels[cur] || ("Option " + (cur + 1))
+      btn.textContent = lab
+      opts[cur].classList.remove("hidden")
+    }
+    btn.addEventListener("click", () => {
+      opts[cur].classList.add("hidden")
+      ++cur
+      update()
+    })
+    update()
+  }
+}
+
+function init() {
+  make_toggles("toggle",["Simplified","Original"])
+  lines = cn_code.textContent.split("\n")
+  lines.forEach((e, n) => {
+    if (n == 0) {
+      cn_code.replaceChildren(create_line(1, e))
+    } else {
+      cn_code.appendChild(create_line(n+1, e))
+    }
+  })
+
+  goto_page(1)
+
+  Array.from(pages).forEach((e, i) => {
+    if (i != 0) {
+      e.style.display = "none"
+    }
+  })
+}
+
+init()
+</script>
+</html>

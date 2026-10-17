@@ -7,12 +7,12 @@
   "files": {
     "qcp": {
       "path": "benchmark/programs/array_load/variants/qcp_existing_601105f7c1b14876ab6b/qcp/array_load_strong_client.qcp.c",
-      "sha256": "601105f7c1b14876ab6b5fda767efcfbbc6d738cda3c95d04a13c87d0f0aabec",
+      "sha256": "4f5693bc26ea462e435f686538a8de757ca22ba41a0002ed9330e82593ca22bd",
       "provenance_path": "arxiv/benchmark-support/selection/qcp-migration/supplemental/array_load_strong_client/array_load_strong_client.qcp.c",
       "include_dirs": [
         "arxiv/benchmark-support/selection/qcp-migration/supplemental/array_load_strong_client"
       ],
-      "scope": "Byte-identical benchmark input; dependencies and archived proof context remain recorded separately."
+      "scope": "Revised benchmark input with explicit source hashes and revision history; provenance_path is the immutable historical source, not a byte-identical claim. Tests/certificates apply only to matching current hashes."
     }
   },
   "origins": [
@@ -26,7 +26,7 @@
       "path": "benchmark/selection/qcp-migration/supplemental/array_load_strong_client/array_load_strong_client.qcp.c",
       "original_cn_source": "benchmark/selection/sources/fulminate-cn/src/examples/array_load.broken.c",
       "declared_source_sha256": "601105f7c1b14876ab6b5fda767efcfbbc6d738cda3c95d04a13c87d0f0aabec",
-      "current_file_matches_declared_hash": true,
+      "current_file_matches_declared_hash": false,
       "notes": "Separate stronger QCP helper contract preserves contents and identifies return value; all original main assertions verified. Does not overwrite the weak historical contract."
     }
   ],
@@ -38,5 +38,26 @@
   "related_original_cn_variant_ids": [
     "cn_original:array_load.broken"
   ],
-  "results_file": "benchmark/results/historical/grouped/array_load/variants/qcp_existing_601105f7c1b14876ab6b/tests/results.json"
+  "results_file": "benchmark/results/historical/grouped/array_load/variants/qcp_existing_601105f7c1b14876ab6b/tests/results.json",
+  "revisions": [
+    {
+      "source_before_sha256": "601105f7c1b14876ab6b5fda767efcfbbc6d738cda3c95d04a13c87d0f0aabec",
+      "source_after_sha256": "e06a832e92133f5d19ff4181c0fc9aa3132b6022976547ab707e1bce2040c559",
+      "reason": "Retain original scalar and dereferenced-cell claims while explicitly preserving the rest of the array in QCP exact-heap assertion translation. Helper strong/weak contracts remain distinct.",
+      "evidence": "benchmark/results/array_load/20261018-source-repairs/601105f7c1b14876ab6b"
+    },
+    {
+      "source_before_sha256": "e06a832e92133f5d19ff4181c0fc9aa3132b6022976547ab707e1bce2040c559",
+      "source_after_sha256": "4fc0c6035f69cefd4ac5b018c29a7fd7d9388c1f18561f2640bbb323d56b8174",
+      "reason": "Explicit logical list instantiation at each call; actual pre/post contract checks remain enabled.",
+      "evidence": "benchmark/results/array_load/20261018-source-repairs/601105f7c1b14876ab6b"
+    },
+    {
+      "source_before_sha256": "4fc0c6035f69cefd4ac5b018c29a7fd7d9388c1f18561f2640bbb323d56b8174",
+      "source_after_sha256": "4f5693bc26ea462e435f686538a8de757ca22ba41a0002ed9330e82593ca22bd",
+      "reason": "Use equivalent explicit array-base cast in calls, preserving all executed reads and contracts; avoid unsupported decay expression in contract matching.",
+      "evidence": "benchmark/results/array_load/20261018-source-repairs/601105f7c1b14876ab6b"
+    }
+  ],
+  "current_tests_index": "benchmark/results/array_load/index.json"
 }

@@ -205,3 +205,12 @@ merge/list 原始 CN 的分离 magic comment 兼容问题、queue/DLL 前向资�
 ## 夜间截止：08:00
 
 已按约定停止本次夜间续跑并停用心跳，没有仍在运行的 benchmark 证明或测试进程。最终45组已有实测报告，共1551个测试配对，完整20组、未完整25组。未完成原因和缺测阶段保留；不把 UNKNOWN、非预期 ERROR 或仅原生生成算作通过。单工作树 main，未修改/push sac，未混入论文。全部45组结果/成本表及异常台账已保存，收尾记录经SSH推送。
+
+
+## 2026-10-18：array_load 补齐，完整 21/45
+
+array_load 已完成全部 13 个语言版本记录、17 个入口配对、67 对有限测试（60 个 helper 输入、7 个原始 client 的各一个不同入口）。固定预期未改变。Fulminate 67/67；teSpec 空间 SMT OFF/ON 各原生 65 PASS、2 UNKNOWN，分别完成 2 次独立逐执行 ITP 后最终均 67/67。4 次 ITP 覆盖 24 个原始残余 VC，实际 gpt-6.1-sol 共 6 次调用，两个失败的初次编译及所有修复均计入。编译、假设审计和 4 次独立 coqchk 全部通过；保留原运行时参数和标准函数外延性，没有新增证明公理，不宣称全局封闭。
+
+主 CN 使用当前锁定 CN 5.2 工具链对 strong read 与原 main 整模块无 trusted/skip/only 验证通过；兼容迁移与函数 alpha 重命名保留各原变体的区别。主 QCP 复用哈希匹配的原 2 个全称 VC 证书和原计量，作用域仍是 read；未冒称客户端全称证明。修复的 QCP 译本已按新哈希重测，旧失败/UNKNOWN 及诊断成本保留，不把新源码 PASS 倒填成旧 VC 已证明。
+
+完整结果、生成/执行、agent 证明、Coq 编译审计、独立内核阶段时间/token/RSS 和历史修复额外成本见 [array_load 结果成本表](../benchmark/results/array_load/result-cost.md)；来源修复见 [专项记录](benchmark-array-load-repair-20261018.md)。`validate_group_evaluation.py --group array_load` 已通过所有源/日志/原始 VC/证明哈希及成本核验。当前完整 **21/45**，尚缺 24 组。2026-10-16 夜间截止记录保持原样，本次是后续补齐。

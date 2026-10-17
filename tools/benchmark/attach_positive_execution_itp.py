@@ -3,6 +3,7 @@
 from pathlib import Path
 import json,re,statistics
 from test_read_variants import ROOT,save,sha
+from positive_execution_itp import DEFAULT_ITP_RUN_ID
 
 def validate_receipt(path,row,mode):
     r=json.loads(path.read_text());b=r['binding'];assert r['status']=='KERNEL_CHECKED' and r['final_status']=='PASS' and r['kernel_check']['exit_code']==0
@@ -29,10 +30,10 @@ def validate_receipt(path,row,mode):
     assert symbols(baseline)<=allowed and audit.count('Closed under the global context')+audit.count('Axioms:')==len(b['residual_vcs'])
     return r
 
-def attach(group,allow_partial=False):
-    plan=json.loads((ROOT/'benchmark/programs'/group/'evaluation-plan.json').read_text());base=ROOT/'benchmark/results'/group;path=base/plan['run_id']/'results.json';data=json.loads(path.read_text());itp=base/'20261016-positive-itp-per-execution';tasks=json.loads((itp/'tasks.json').read_text())['tasks'];done=[];pending=[]
+def attach(group,allow_partial=False,run_id=None,itp_run_id=DEFAULT_ITP_RUN_ID):
+    plan=json.loads((ROOT/'benchmark/programs'/group/'evaluation-plan.json').read_text());base=ROOT/'benchmark/results'/group;path=base/(run_id or plan['run_id'])/'results.json';data=json.loads(path.read_text());itp=base/itp_run_id;taskdata=json.loads((itp/'tasks.json').read_text());assert taskdata['evaluation_report']==str(path.relative_to(ROOT)), 'ITP tasks belong to a different evaluation batch';tasks=taskdata['tasks'];done=[];pending=[]
     for b in tasks:
-      row=next(x for x in data['runs'] if x['variant']==b['variant'] and x['case']==b['case']);mode=b['mode'];assert row['tespec_'+mode]['status']=='UNKNOWN'
+      row=next(x for x in data['runs'] if x['variant']==b['variant'] and x['case']==b['case']);mode=b['mode'];assert row['tespec_'+mode]['status']=='UNKNOWN';assert b['paired_qcp_variant']==row['paired_qcp_variant'] and b['report']==row['tespec_'+mode]['report'], 'ITP binding does not match this execution report'
       folder=itp/f'execution-{b["execution_index"]:02d}';receipts=[(p,json.loads(p.read_text())) for p in sorted(folder.glob('attempt-*/coq-receipt.json'))];accepted=[(p,r) for p,r in receipts if r['status']=='KERNEL_CHECKED'];
       if not accepted and allow_partial:pending.append(b['execution_index']);continue
       assert len(accepted)==1,'Pending separate ITP '+str(b['execution_index']);p,r=accepted[0];validate_receipt(p,row,mode)
@@ -64,4 +65,4 @@ def statistics_for_off(rows,statistics_path):
 
 if __name__=='__main__':
  import argparse
- p=argparse.ArgumentParser();p.add_argument('--group',required=True);p.add_argument('--allow-partial',action='store_true');a=p.parse_args();attach(a.group,a.allow_partial)
+ p=argparse.ArgumentParser();p.add_argument('--group',required=True);p.add_argument('--allow-partial',action='store_true');p.add_argument('--run-id',help='Evaluation batch directory below the group; defaults to evaluation-plan run_id');p.add_argument('--itp-run-id',default=DEFAULT_ITP_RUN_ID,help='Proof batch directory below the group');a=p.parse_args();attach(a.group,a.allow_partial,a.run_id,a.itp_run_id)

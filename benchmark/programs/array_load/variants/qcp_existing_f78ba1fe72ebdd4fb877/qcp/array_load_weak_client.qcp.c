@@ -13,17 +13,17 @@ int main()
 /*@ Require emp Ensure __return == 0 && emp */
 {
     int a[3] = { 0, 1, 2 };
-    int zero = read(a, 3, 0);
-/*@ Assert zero == 0 */
+    int zero = read((int*)&a, 3, 0) /*@ where l = cons(0,cons(1,cons(2,nil))) */;
+/*@ Assert zero == 0 && IntArray::full(a,3,cons(0,cons(1,cons(2,nil)))) */
     int *first = a;
-/*@ Assert data_at(first,int,0) */
-    int one = read(a, 3, 1);
-/*@ Assert one == 1 */
+/*@ Assert data_at(first,int,0) * IntArray::missing_i(a,0,0,3,cons(0,cons(1,cons(2,nil)))) */
+    int one = read((int*)&a, 3, 1) /*@ where l = cons(0,cons(1,cons(2,nil))) */;
+/*@ Assert one == 1 && IntArray::full(a,3,cons(0,cons(1,cons(2,nil)))) */
     int *second = a + 1;
-/*@ Assert data_at(second,int,1) */
-    int two = read(a, 3, 2);
-/*@ Assert two == 2 */
+/*@ Assert data_at(second,int,1) * IntArray::missing_i(a,1,0,3,cons(0,cons(1,cons(2,nil)))) */
+    int two = read((int*)&a, 3, 2) /*@ where l = cons(0,cons(1,cons(2,nil))) */;
+/*@ Assert two == 2 && IntArray::full(a,3,cons(0,cons(1,cons(2,nil)))) */
     int *third = a + 2;
-/*@ Assert data_at(third,int,2) */
+/*@ Assert data_at(third,int,2) * IntArray::missing_i(a,2,0,3,cons(0,cons(1,cons(2,nil)))) */
   return 0;
 }

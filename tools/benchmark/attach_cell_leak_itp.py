@@ -43,8 +43,9 @@ def mode_costs(rows,mode):
     if not ms:return {}
     return {'executions_requiring_itp_for_verdict':len(ms),'itp_wall_seconds_counted':sum(m['total_seconds'] for m in ms),'itp_tokens_counted':sum(m['tokens'] for m in ms),'mean_itp_seconds_when_required':statistics.mean(m['total_seconds'] for m in ms),'model_calls_newly_executed':sum(m['model_calls'] for m in ms),'tokens_newly_consumed':sum(m['tokens'] for m in ms)}
 
-def statistics_for_off(rows,statistics_path):
-    ms=[r['tespec_off']['itp']['metrics'] for r in rows if r['tespec_off'].get('itp')]
+def statistics_for_off(rows,statistics_path,mode='off'):
+    assert mode in ['off','on']
+    ms=[r['tespec_'+mode]['itp']['metrics'] for r in rows if r['tespec_'+mode].get('itp')]
     if not ms:return None
     avg={'schema':'tespec-group-itp-execution-average/v1','estimated':False,'execution_count':len(ms),'mean_agent_proof_filling_seconds':statistics.mean(m['agent_proof_filling_seconds'] for m in ms),'mean_coq_compile_audit_seconds':statistics.mean(m['coq_compile_audit_seconds'] for m in ms),'mean_independent_kernel_check_seconds':statistics.mean(m['independent_kernel_check_seconds'] for m in ms),'mean_total_tokens':statistics.mean(m['tokens'] for m in ms),'process_memory':{k:{'mean_per_execution_peak_mib':statistics.mean(m['peak_process_memory_mib'][k] for m in ms),'maximum_per_execution_peak_mib':max(m['peak_process_memory_mib'][k] for m in ms)} for k in ms[0]['peak_process_memory_mib']},'policy':'Measured separately for every required execution; each execution includes every actual repair model and compile attempt. RSS means are means of actual per-execution maxima, never a batch peak divided by count.'};save(statistics_path,avg);return ms
 

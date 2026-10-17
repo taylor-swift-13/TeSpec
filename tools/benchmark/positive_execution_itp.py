@@ -4,11 +4,13 @@ import argparse,json,re,shlex,shutil
 from pathlib import Path
 from meter_read_itp_coq import ROOT,COQ,RUNTIME,measure,save,sha
 
+DEFAULT_ITP_RUN_ID='20261016-positive-itp-per-execution'
+
 def statements(text):
  return [(m[1],re.sub(r"\s+"," ",m[2]).strip()) for m in re.finditer(r"Theorem\s+(\w+)\s*:\s*(.*?)\.\s*Proof\.",text,re.S)]
 
-def prepare(group,taskroot):
- plan=json.loads((ROOT/'benchmark/programs'/group/'evaluation-plan.json').read_text());rp=ROOT/'benchmark/results'/group/plan['run_id']/'results.json';data=json.loads(rp.read_text());tasks=[];out=ROOT/'benchmark/results'/group/'20261016-positive-itp-per-execution'
+def prepare(group,taskroot,run_id=None,itp_run_id=DEFAULT_ITP_RUN_ID):
+ plan=json.loads((ROOT/'benchmark/programs'/group/'evaluation-plan.json').read_text());rp=ROOT/'benchmark/results'/group/(run_id or plan['run_id'])/'results.json';data=json.loads(rp.read_text());tasks=[];out=ROOT/'benchmark/results'/group/itp_run_id
  for row in data['runs']:
   for mode in ['off','on']:
    m=row['tespec_'+mode]
@@ -26,8 +28,8 @@ def prepare(group,taskroot):
    (task/'prompt.txt').write_text('Fill Candidate.v for this ONE positive finite test execution. Prove ALL listed original residual VCs together, preserving every theorem statement/import and Print Assumptions. ExecutionGoal.v is immutable actual emitted finite output. Native entry was SAT and execution completed; do not refute a correct case, invent a heap, or substitute universal verification. No admit, new axioms/parameters, changed definitions, unchecked casts, models, delegation, prior solutions or compiler/shell calls. Edit Candidate.v only. Controller separately compiles and independently kernel-checks with 90-second/4-GiB compile guard. Pure list equalities may need unfolding repeat_Z and arithmetic reduction. In a disjunction, a valid pure reduction alternative can be used directly without proving an array predicate. Preserve heap witnesses; do not use unbounded firstorder on heaps or generic spatial lemmas that introduce functional extensionality. Every proof must introduce no assumptions beyond original statement type parameters.\n\nOriginal immutable finite goal:\n'+text+'\nCandidate:\n'+candidate)
  save(out/'tasks.json',{'schema':'tespec-positive-execution-itp-tasks/v1','group':group,'evaluation_report':str(rp.relative_to(ROOT)),'evaluation_report_sha256':sha(rp),'tasks':tasks});print('Prepared',len(tasks),'positive tasks: one execution and all its residual VCs each',flush=True)
 
-def compile_one(group,root,index,attempt):
- task=root/f'execution-{index:02d}';out=ROOT/'benchmark/results'/group/'20261016-positive-itp-per-execution'/f'execution-{index:02d}'/f'attempt-{attempt}';assert not(out/'coq-receipt.json').exists();src=out/'proofs';src.mkdir(parents=True,exist_ok=True);md=task/f'attempt-{attempt}';model=json.loads((md/'model-receipt.json').read_text());assert model['exit_code']==0 and model['requested_model']=='gpt-6.1-sol' and model['token_usage'];assert sha(md/'prompt.txt')==model['prompt_sha256'];binding=json.loads((task/'binding.json').read_text());assert sha(ROOT/binding['goal'])==binding['goal_sha256']==sha(task/'ExecutionGoal.v');assert sha(ROOT/binding['report'])==binding['report_sha256'] and sha(ROOT/binding['binds'])==binding['binds_sha256']
+def compile_one(group,root,index,attempt,itp_run_id=DEFAULT_ITP_RUN_ID):
+ task=root/f'execution-{index:02d}';out=ROOT/'benchmark/results'/group/itp_run_id/f'execution-{index:02d}'/f'attempt-{attempt}';assert not(out/'coq-receipt.json').exists();src=out/'proofs';src.mkdir(parents=True,exist_ok=True);md=task/f'attempt-{attempt}';model=json.loads((md/'model-receipt.json').read_text());assert model['exit_code']==0 and model['requested_model']=='gpt-6.1-sol' and model['token_usage'];assert sha(md/'prompt.txt')==model['prompt_sha256'];binding=json.loads((task/'binding.json').read_text());assert sha(ROOT/binding['goal'])==binding['goal_sha256']==sha(task/'ExecutionGoal.v');assert sha(ROOT/binding['report'])==binding['report_sha256'] and sha(ROOT/binding['binds'])==binding['binds_sha256']
  for name in ['model-receipt.json','usage-events.json','agent.stdout.jsonl','agent.stderr.log','prompt.txt']:shutil.copyfile(md/name,out/name)
  save(out/'binding.json',binding)
  for name,h in model['locked_goal_and_helper_sha256'].items():assert sha(task/name)==h;shutil.copyfile(task/name,src/name)
@@ -62,12 +64,13 @@ def finish_audit(out,src,receipt,flags):
   if p.suffix in ['.vo','.vos','.vok','.glob','.aux'] or p.name in ['.lia.cache','.nia.cache']:p.unlink()
  print(receipt['status'],receipt['group'],receipt['execution_index'],receipt['attempt'],flush=True);return int(receipt['status']!='KERNEL_CHECKED')
 
-def audit_existing(group,index,attempt):
- out=ROOT/'benchmark/results'/group/'20261016-positive-itp-per-execution'/f'execution-{index:02d}'/f'attempt-{attempt}';receipt=json.loads((out/'coq-receipt.json').read_text());assert receipt['status']=='ASSUMPTION_AUDIT_REJECTED';src=out/'proofs';assert sha(src/'Candidate.v')==receipt['candidate_sha256'];parts=shlex.split((RUNTIME/'_CoqProject').read_text());flags=[str(RUNTIME/t) if i%3==1 else t for i,t in enumerate(parts)]+['-Q',str(src),''];return finish_audit(out,src,receipt,flags)
+def audit_existing(group,index,attempt,itp_run_id=DEFAULT_ITP_RUN_ID):
+ out=ROOT/'benchmark/results'/group/itp_run_id/f'execution-{index:02d}'/f'attempt-{attempt}';receipt=json.loads((out/'coq-receipt.json').read_text());assert receipt['status']=='ASSUMPTION_AUDIT_REJECTED';src=out/'proofs';assert sha(src/'Candidate.v')==receipt['candidate_sha256'];parts=shlex.split((RUNTIME/'_CoqProject').read_text());flags=[str(RUNTIME/t) if i%3==1 else t for i,t in enumerate(parts)]+['-Q',str(src),''];return finish_audit(out,src,receipt,flags)
 
 def main():
- p=argparse.ArgumentParser();p.add_argument('action',choices=['prepare','compile','audit']);p.add_argument('--group',required=True);p.add_argument('--task-root',type=Path,required=True);p.add_argument('--execution',type=int);p.add_argument('--attempt',type=int,default=1);a=p.parse_args()
- if a.action=='prepare':prepare(a.group,a.task_root)
- elif a.action=='audit':raise SystemExit(audit_existing(a.group,a.execution,a.attempt))
- else:raise SystemExit(compile_one(a.group,a.task_root,a.execution,a.attempt))
+ p=argparse.ArgumentParser();p.add_argument('action',choices=['prepare','compile','audit']);p.add_argument('--group',required=True);p.add_argument('--task-root',type=Path,required=True);p.add_argument('--execution',type=int);p.add_argument('--attempt',type=int,default=1);p.add_argument('--run-id',help='Evaluation batch directory below the group; prepare only, defaults to evaluation-plan run_id');p.add_argument('--itp-run-id',default=DEFAULT_ITP_RUN_ID,help='Proof batch directory below the group for prepare/compile/audit');a=p.parse_args()
+ if a.run_id and a.action!='prepare':p.error('--run-id is only used by prepare; compile/audit use frozen bindings and --itp-run-id')
+ if a.action=='prepare':prepare(a.group,a.task_root,a.run_id,a.itp_run_id)
+ elif a.action=='audit':raise SystemExit(audit_existing(a.group,a.execution,a.attempt,a.itp_run_id))
+ else:raise SystemExit(compile_one(a.group,a.task_root,a.execution,a.attempt,a.itp_run_id))
 if __name__=='__main__':main()
