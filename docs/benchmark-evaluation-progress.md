@@ -214,3 +214,8 @@ array_load 已完成全部 13 个语言版本记录、17 个入口配对、67 �
 主 CN 使用当前锁定 CN 5.2 工具链对 strong read 与原 main 整模块无 trusted/skip/only 验证通过；兼容迁移与函数 alpha 重命名保留各原变体的区别。主 QCP 复用哈希匹配的原 2 个全称 VC 证书和原计量，作用域仍是 read；未冒称客户端全称证明。修复的 QCP 译本已按新哈希重测，旧失败/UNKNOWN 及诊断成本保留，不把新源码 PASS 倒填成旧 VC 已证明。
 
 完整结果、生成/执行、agent 证明、Coq 编译审计、独立内核阶段时间/token/RSS 和历史修复额外成本见 [array_load 结果成本表](../benchmark/results/array_load/result-cost.md)；来源修复见 [专项记录](benchmark-array-load-repair-20261018.md)。`validate_group_evaluation.py --group array_load` 已通过所有源/日志/原始 VC/证明哈希及成本核验。当前完整 **21/45**，尚缺 24 组。2026-10-16 夜间截止记录保持原样，本次是后续补齐。
+
+
+## 2026-10-18：有限数组中间断言空间 SMT 接入回归
+
+已对上述完整 21 组的 900 对输入实际重跑 teSpec OFF/ON，共 1800 次，源、预期及历史证据哈希未变，0 退化。OFF 为 496 PASS / 350 FAIL / 31 UNKNOWN / 23 预期 ERROR；ON 为 498 PASS / 379 FAIL / 0 UNKNOWN / 23 预期 ERROR。仅新增 array_load 两个客户端 ON 的 UNKNOWN→PASS，与旧 ITP 结论一致；ON 的 array_load 现为 67 个原生 PASS，无测试 ITP 待办。旧完整四工具成本不覆盖，完整组数仍 21/45。本次新计量、通用正反例、证据边界与复现位置见 [接入说明](spatial-smt-annotation-array-integration-20261018.md)。

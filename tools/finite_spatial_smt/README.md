@@ -97,10 +97,22 @@ separate work. Results retain `certificate: NOT_CHECKED`.
 
 ## Historical adapter
 
-`qcp_import.py` accepts the `PROP / LOCAL / SEP` diagnostic format. Nonempty LOCAL,
+`qcp_import.py` accepts the `PROP / LOCAL / SEP` diagnostic format. Unchecked LOCAL,
 unknown predicates/types, and ambiguous formats are rejected, never ignored.
-Only return VCs are automatically assigned exact mode; other VC kinds require a
-separately justified mode adapter. Source files and raw statuses are immutable.
+Return VCs retain the automatic exact mode. Entailment queries require explicit
+`check_mode="exact"` from the checked concrete-execution adapter. Nonempty LOCAL
+also requires `local_semantics="same-program-environment/v1"`; only unchanged,
+unambiguous global-expression bindings are admitted and all are encoded as pure
+environment equalities. New/changed target bindings and existential-local
+expressions remain unsupported. Source files and raw statuses are immutable.
+
+Builtin finite `missing_i(base,index,lo,hi,values)` is expanded into the two array
+segments excluding the selected cell, using the complete original value list.
+Its range and list length must agree and `lo <= index < hi`; out-of-range or
+symbolic-length/index forms are unsupported, never approximated as a full array.
+The current runtime PtrArray has a fixed four-byte stride, so importing pointer
+arrays for a 64-bit layout remains unsupported. Ordinary pointer cells retain
+their checked layout semantics.
 
 `finite_qcp_terms.py` reduces only documented builtin finite list constructors,
 `app`, `repeat_Z`, `Zlength`, and `Znth`. A goal list witness with an explicit
