@@ -224,3 +224,8 @@ array_load 已完成全部 13 个语言版本记录、17 个入口配对、67 �
 ## 2026-10-18：检查下一待完整组 const_example_lessgood
 
 按 21 组完成后的续做顺序检查本组。当前版本 teSpec OFF/ON 对唯一合法入口均 PASS，实际空间查询 0、无测试 ITP。QCP 原始 3 VC 的源/目标/证明/日志哈希及封闭审计匹配。原 CN main 的 trusted 跳过正文；仅移除该指令的诊断副本实际输出 main -- pass，定义、断言和 C 主体均保留。本次只检查并保存诊断，未替换正式主程序或把原 trusted 接受改写成证明，完整计数保持 21/45。细节、初次控制器配置错误与全部重测成本见 [范围复查](../benchmark/results/const_example_lessgood/20261018-scope-recheck-v2/summary.md)。
+
+
+## 2026-10-18：第 23 个续做检查 Dbl_Linked_List__singleton
+
+7 个合法输入实际重跑 teSpec OFF/ON 各 7 次，入口 SAT，但在无函数体 malloc_node 调用处 UNKNOWN；无残余 VC，空间查询 0，不能由 ITP 补完尚未完成的测试执行。CN 主程序和 7 次 Fulminate 插桩均在旧 IntList 递归依赖处前端失败。QCP 四个原始全称 VC 的源、Goal、Candidate、原定义上下文及最终编译/内核日志哈希匹配，保持原分配器契约条件下的验证范围。未改源码、预期或工具实现，仍 21/45 完整。新成本、逐输入异常及修复边界见 [本组复查](../benchmark/results/Dbl_Linked_List__singleton/20261018-current-recheck/summary.md)。
