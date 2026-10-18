@@ -6,7 +6,9 @@ import json
 from typing import Any
 
 from .errors import JobError
-from .modes import EXECUTION_MODES, MODE_ALIASES, normalize_execution_mode
+from .modes import (
+    EXECUTION_MODES, EXECUTION_SEMANTICS, MODE_ALIASES, normalize_execution_mode,
+)
 
 
 def aggregate_test_result(
@@ -51,7 +53,8 @@ def _executor_target_layout(output: str | None) -> dict[str, Any] | None:
 
 
 def _executor_result(
-    output: str, returncode: int, vc: dict[str, Any]
+    output: str, returncode: int, vc: dict[str, Any], *,
+    expected_strategy: str | None = None,
 ) -> dict[str, Any]:
     """Consume executor JSON. Missing fields are explicitly unknown, not success."""
     try:
@@ -102,6 +105,30 @@ def _executor_result(
             "reason": "incomplete_executor_schema",
         }
     result = dict(result, mode=normalize_execution_mode(result["mode"]))
+    # A legacy inline executor is usable by default; it must never silently
+    # satisfy a modular request. New executors must bind strategy and semantics.
+    strategy = result.get("execution_strategy", "inline")
+    if (
+        not isinstance(strategy, str)
+        or strategy not in EXECUTION_SEMANTICS
+        or (expected_strategy is not None and strategy != expected_strategy)
+        or ("execution_strategy" in result
+            and result.get("execution_semantics") != EXECUTION_SEMANTICS[strategy])
+        or ("execution_strategy" not in result
+            and result.get("execution_semantics") == "modular-sampled/v1")
+    ):
+        return {
+            "status": "ERROR", "overall": "ERROR", "satisfied": None,
+            "reason": "executor_execution_strategy_mismatch",
+            "requested_execution_strategy": expected_strategy,
+            "execution_strategy": result.get("execution_strategy"),
+            "execution_semantics": result.get("execution_semantics"),
+        }
+    sampling_events = result.get("sampling_events", [])
+    if not isinstance(sampling_events, list) or any(
+        not isinstance(event, dict) for event in sampling_events
+    ):
+        raise JobError("invalid executor sampling events")
     status = result.get("overall")
     if status not in {"PASS", "FAIL", "UNKNOWN", "ERROR", "INVALID"}:
         raise JobError("invalid structured executor verdict")
@@ -226,6 +253,11 @@ def _executor_result(
         "scope": result["scope"],
         "mode": result["mode"],
         "execution_semantics": result.get("execution_semantics"),
+        "execution_strategy": strategy,
+        "requested_execution_strategy": expected_strategy,
+        "declaration_call_policy": result.get("declaration_call_policy"),
+        "sampling_events": sampling_events,
+        "result_scope": result.get("result_scope"),
         "execution_completed": (
             False if phases["execution"] == "NOT_RUN" else result.get("completed")
         ),

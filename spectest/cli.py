@@ -6,7 +6,10 @@ import subprocess
 import sys
 from pathlib import Path
 
-from .modes import EXECUTION_MODES, normalize_execution_mode
+from .modes import (
+    EXECUTION_MODES, EXECUTION_STRATEGIES, normalize_execution_mode,
+    normalize_execution_strategy,
+)
 
 from .core import (
     attach_spec_to_source,
@@ -194,7 +197,16 @@ def _run_parser() -> argparse.ArgumentParser:
         default="entry-exit",
         help="entry-exit: entry contract, safety and final postcondition; "
         "all-boundaries: also check intermediate annotations and call contracts. "
-        "Both execute loops/calls. Legacy aliases: expand, no-expand",
+        "Independent of execution strategy. Legacy aliases: expand, no-expand",
+    )
+    parser.add_argument(
+        "--execution-strategy",
+        type=normalize_execution_strategy,
+        choices=EXECUTION_STRATEGIES,
+        default="inline",
+        help="inline: execute bodies and loop iterations; modular: sample states "
+        "at contract, invariant and assertion boundaries. Calls without bodies "
+        "use contract sampling in either strategy",
     )
     parser.add_argument(
         "--annotation-policy", choices=("ignore", "check-preserve", "qcp")
@@ -272,6 +284,7 @@ def _run_source(argv: list[str]) -> int:
                 "architecture_bits": args.architecture_bits,
                 "loop_unroll_limit": args.loop_unroll_limit,
                 "execution_mode": args.execution_mode,
+                "execution_strategy": args.execution_strategy,
                 "annotation_policy": args.annotation_policy,
                 "instance_trace": args.instance_trace,
                 "call_depth_limit": args.call_depth_limit,

@@ -405,3 +405,23 @@ lock, installation checks, generator limitations and fresh-batch commands.
 Old-source equality alone never authorizes reuse across tool versions. Keep
 historical results under their original version; retain new measurements under
 `benchmark/results`, with CN/runtime/compiler identities and stage diagnostics.
+
+## 执行策略与 VC 范围的独立评测（2026-10-18）
+
+新增 `execution_strategy=inline|modular`，默认 inline；既有
+`execution_mode=entry-exit|all-boundaries` 只决定 VC 范围。策略、VC 范围、
+空间 SMT OFF/ON 都必须写入结果标识，不能合并为同一种测试。无函数体的
+调用均使用规约实例化，因此 inline 结果也可能依赖外部函数契约。
+
+结果保存 `declaration_call_policy`、`result_scope` 和全部
+`sampling_events`。每次事件记录完整输入约束、选中约束、候选策略与尝试数。
+UNKNOWN 采样没有合法后继，不计为完成执行。只有已有证据证明不可能到达的
+输入分支可跳过；可达调用的矛盾后条件不能用空后继冒充 PASS。
+
+主程序代码与既有输入、逐输入预期保持不变。策略回归产物放在
+`benchmark/results/execution-strategy/`，包括各参数组合的原始日志、
+VC、报告、输入/源码/工具哈希及结果成本 CSV/JSON。CLI、执行器和空间 SMT
+时间为嵌套阶段，不能相加；无模型调用的原生测试 token=0。此项不替代
+主程序 CN/QCP 全称验证，也不自动复用不同原始 VC 的 ITP 证书。
+对于新留下的递归谓词 VC，必须保留 UNKNOWN 并记录具体原因，不能把
+“执行完成”记成“全部 VC 通过”。ITP 仍按每次执行的所有残余 VC 计量。

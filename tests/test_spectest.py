@@ -1366,13 +1366,15 @@ class ConcreteLoopEndToEndTests(unittest.TestCase):
             with self.subTest(case=result["id"]):
                 self._assert_manual_residual(result)
 
-    def test_concrete_callees_stop_at_bodyless_external_call(self) -> None:
+    def test_opaque_external_contract_remains_uninstantiated(self) -> None:
         report = self._run("cases/ip_jet_ctrl_send/job.json")
         self.assertEqual(report["summary"]["UNKNOWN"], 3)
         for result in report["results"]:
             with self.subTest(case=result["id"]):
-                self.assertEqual(result["reason"], "missing_function_body")
-                self.assertEqual(result["phases"]["execution"], "UNKNOWN")
+                self.assertEqual(result["reason"], "contract_instantiation_unknown")
+                self.assertTrue(any(event["status"] == "UNKNOWN"
+                                    for event in result["sampling_events"]), result)
+                self.assertIsNone(result["executor_error"])
 
     def test_binding_that_contradicts_require_is_rejected(self) -> None:
         report = self._run("cases/invalid_binding/job.json")

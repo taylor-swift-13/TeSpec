@@ -15,7 +15,9 @@ from pathlib import Path
 from typing import Any
 
 from .errors import JobError
-from .modes import normalize_execution_mode
+from .modes import (
+    EXECUTION_SEMANTICS, normalize_execution_mode, normalize_execution_strategy,
+)
 from .verdict import _executor_result, _executor_target_layout
 
 
@@ -159,6 +161,7 @@ class QcpConfig:
     architecture_bits: int
     spatial_smt: bool = False
     spatial_smt_timeout_ms: int = 2000
+    execution_strategy: str = "inline"
 
 
 @dataclass(frozen=True)
@@ -1323,6 +1326,7 @@ def _parse_qcp_config(job: dict[str, Any], base: Path, source_dir: Path) -> QcpC
         raise JobError("qcp.timeout_seconds must be positive")
     try:
         execution_mode = normalize_execution_mode(raw.get("execution_mode", "entry-exit"))
+        execution_strategy = normalize_execution_strategy(raw.get("execution_strategy", "inline"))
     except ValueError as error:
         raise JobError(f"qcp.{error}") from error
     architecture_bits = raw.get("architecture_bits", 32)
@@ -1367,6 +1371,7 @@ def _parse_qcp_config(job: dict[str, Any], base: Path, source_dir: Path) -> QcpC
         include_dirs=tuple(dict.fromkeys(includes)),
         timeout_seconds=float(timeout),
         execution_mode=execution_mode,
+        execution_strategy=execution_strategy,
         annotation_policy=raw.get("annotation_policy"),
         instance_trace=instance_trace,
         loop_unroll_limit=loop_unroll_limit,
@@ -1405,6 +1410,10 @@ def _qcp_command(
         command.append("--concrete-bindings")
     else:
         command.append("--spec-test-no-expand")
+    # Older binaries already default to inline. Only the opt-in strategy
+    # requires the new native flag; its response is checked before accepting it.
+    if config.execution_strategy != "inline":
+        command.extend(("--execution-strategy", config.execution_strategy))
     if config.instance_trace:
         command.append("--instance-trace")
     if config.annotation_policy is not None:
@@ -1953,7 +1962,10 @@ def run_job(
             )
             case_result.update(
                 {
-                    **_executor_result(completed.stdout, completed.returncode, vc),
+                    **_executor_result(
+                        completed.stdout, completed.returncode, vc,
+                        expected_strategy=config.execution_strategy,
+                    ),
                     "returncode": completed.returncode,
                     "generated_source_sha256": _sha256(generated_source),
                     "duration_seconds": round(duration, 6),
@@ -2040,6 +2052,7 @@ def run_job(
             else None,
         )
         case_result.setdefault("mode", config.execution_mode)
+        case_result.setdefault("requested_execution_strategy", config.execution_strategy)
         case_result.setdefault(
             "evidence", {"decision_backend": "qcp-smt", "certificate": "NOT_CHECKED"}
         )
@@ -2093,14 +2106,20 @@ def run_job(
         ),
         "vc_policy": {
             "mode": config.execution_mode,
-            "execution_semantics": "inline-preserve/v1",
-            "loops": "execute_iterations",
-            "defined_function_calls": "execute_bodies",
+            "execution_strategy": config.execution_strategy,
+            "execution_semantics": EXECUTION_SEMANTICS[config.execution_strategy],
+            "loops": "execute_iterations" if config.execution_strategy == "inline" else "sample_invariant_boundaries",
+            "defined_function_calls": "execute_bodies" if config.execution_strategy == "inline" else "sample_contract_postconditions",
             "intermediate_boundaries": (
                 config.annotation_policy not in (None, "ignore")
                 or config.execution_mode == "all-boundaries"
             ),
-            "declaration_calls": "unknown_missing_body",
+            "declaration_calls": (
+                "sample_contract_postconditions"
+                if any(result.get("declaration_call_policy") == "contract-sample/v1"
+                       for result in results)
+                else "not_reported_by_executor"
+            ),
             "call_depth_limit": config.call_depth_limit,
             "loop_unroll_limit": config.loop_unroll_limit or 1024,
         },

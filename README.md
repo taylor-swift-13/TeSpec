@@ -24,14 +24,22 @@ strategies** 和具体 **binds**，直接得到逐测试用例的
 
 TeSpec 先检查实例化的 Require 是否可满足，再检查安全性和 Ensure。指针地址默认符号化；通过逻辑变量绑定内存内容，允许部分实例化。
 
-两种模式都会实际执行循环和可用函数体，并检查入口 Require、程序安全性和最终 Ensure：
+执行策略与 VC 生成范围使用两个独立参数，四种组合均可使用：
 
-- `--execution-mode entry-exit`（默认）：入口/出口检查；中间证明注解默认忽略。`--annotation-policy check-preserve` 在状态副本上检查注解。
-- `--execution-mode all-boundaries`：所有边界检查；额外在每次经过 assert/inv、调用及返回边界时生成检查 VC；检查不修改执行状态。
+| 参数 | 选项 | 行为 |
+| --- | --- | --- |
+| `--execution-strategy` | `inline`（默认） | 执行可用函数体、逐次执行循环；检查注解时保留当前状态 |
+| `--execution-strategy` | `modular` | 使用函数契约、循环不变式和 assertion 作为边界，再从约束内选择合法状态继续 |
+| `--execution-mode` | `entry-exit`（默认） | 检查入口、运行安全性和最终出口，默认不生成中间边界 VC |
+| `--execution-mode` | `all-boundaries` | 另外生成调用、assertion 和不变式的检查 VC |
 
-旧名称 `expand` / `no-expand` 仍分别作为 `entry-exit` / `all-boundaries` 的输入别名；teSpec 报告统一使用新名称。原始 SAC 输出保留二进制协议名称。
+例如：`python3 -m spectest run input.c --function f --binds binds.json --execution-strategy modular --execution-mode all-boundaries --output-dir out`。
 
-只有声明且有规约的目标执行 Require 检查，安全性和 Ensure 为 `NOT_RUN`；执行中调用只有声明时报告 `UNKNOWN/missing_function_body`，没有契约时报错。前条件不满足为 `INVALID`，未关闭 VC 为 `UNKNOWN`。自动流程不启动证明 Agent。
+无函数体的被调用函数在两种策略中都使用契约并实例化后状态。没有契约或无法构造支持范围内的合法状态时返回 UNKNOWN。作为检查目标的只有声明的函数仍只检查 Require，安全性和 Ensure 为 NOT_RUN。旧模式名称 `expand` / `no-expand` 仍分别是 `entry-exit` / `all-boundaries` 的输入别名。
+
+模块化执行先检查边界前的状态，再抽象并实例化；重新采样不能消除此前发现的错误。实例化保留固定输入、旧值关系、未修改资源及地址分离；未初始化内存不会自动变为已初始化。循环分别采样满足守卫和退出条件的状态，检查一次保持性路径并使用退出摘要。
+
+`sampling_events` 保存采样前后约束、策略和尝试数。当前实现使用有界确定性候选搜索并完整校验候选，支持 32 位整数/指针及有限原始堆单元；未支持的谓词、类型或搜索耗尽为 UNKNOWN。一次合法样本不意味着覆盖契约的所有可能实现。使用过契约样本或模块化边界的结果标记 `result_scope=contract-and-invariant-model`，不能据此声称真实函数体的完整运行已被验证。入口不可满足为 INVALID；剩余 VC 为 UNKNOWN；自动流程不启动证明 Agent。
 
 新默认执行器为 `bin/tespec-symexec`，旧的 `bin/qcp-symexec` 保留给已冻结的历史实验。运行目录只保留 `report.json` 和 `artifacts/`；每例记录分阶段结果、VC、墙钟时间、CPU 时间和最大进程 RSS。
 

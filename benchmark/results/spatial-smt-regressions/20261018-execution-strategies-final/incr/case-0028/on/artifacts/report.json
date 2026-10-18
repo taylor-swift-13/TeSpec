@@ -1,0 +1,249 @@
+{
+  "schema": "qcp-spectest-report/v1",
+  "job": "/home/yangfp/teSpec/benchmark/results/spatial-smt-regressions/20261018-execution-strategies-final/incr/case-0028/on/artifacts/artifacts/job.json",
+  "source": "/home/yangfp/teSpec/benchmark/programs/incr/variants/constructed_case_2e28b35274593024/qcp/qcp.c",
+  "spec_file": null,
+  "function": "incr",
+  "qcp_binary": "/home/yangfp/teSpec/bin/tespec-symexec",
+  "provenance": {
+    "source_sha256": "edce1f5590af765172a38c98027521a97be14372e12e7846db68ed2d15eb4cbd",
+    "job_sha256": "68f6f1815703e4cad022583d063338410eaa13c5a0302bf4c46d3b82789f0471",
+    "binary_sha256": "886ba50b83339375d54a23b2301856068dcab5f19238125991f535e1a5b2e549",
+    "runtime_source_sha256": "08b41c971d404d9fe6ae40dce420752af8eb023179017c55737dc5a7df89f56a",
+    "runtime_digest_scope": "SeparationLogic and QCP_examples: .v, .h, .strategies, _CoqProject",
+    "included_source_sha256": "694a210cf68d6403113b824909ab122a4f5c61242850c69219af44d5f3b76ed4",
+    "spec_sha256": null
+  },
+  "vc_policy": {
+    "mode": "all-boundaries",
+    "execution_strategy": "inline",
+    "execution_semantics": "inline-preserve/v1",
+    "loops": "execute_iterations",
+    "defined_function_calls": "execute_bodies",
+    "intermediate_boundaries": true,
+    "declaration_calls": "sample_contract_postconditions",
+    "call_depth_limit": 64,
+    "loop_unroll_limit": 64,
+    "spatial_smt": {
+      "enabled": true,
+      "timeout_ms_per_query": 2000,
+      "backend": "finite-spatial-smt/v1",
+      "certificate": "NOT_CHECKED",
+      "fallback": "original_itp_vcs",
+      "stage": "after_executor"
+    }
+  },
+  "results": [
+    {
+      "id": "input_2",
+      "arguments": {
+        "p": 4096
+      },
+      "bindings": {
+        "old": 5
+      },
+      "type_bindings": {},
+      "spec": null,
+      "generated_source": "/home/yangfp/teSpec/benchmark/results/spatial-smt-regressions/20261018-execution-strategies-final/incr/case-0028/on/artifacts/artifacts/input_2/input.c",
+      "status": "FAIL",
+      "overall": "FAIL",
+      "precondition_result": "SAT",
+      "test_result": "FAIL",
+      "result_semantics": "three-valued-conjunction/v1",
+      "executor_reported_status": "UNKNOWN",
+      "satisfied": false,
+      "reason": "spatial_smt_invalid_path_vc",
+      "phases": {
+        "precondition": "SAT",
+        "safety": "PASS",
+        "postcondition": "FAIL",
+        "annotations": "PASS",
+        "execution": "PASS"
+      },
+      "scope": "execution",
+      "mode": "all-boundaries",
+      "execution_semantics": "inline-preserve/v1",
+      "execution_strategy": "inline",
+      "requested_execution_strategy": "inline",
+      "declaration_call_policy": "contract-sample/v1",
+      "sampling_events": [],
+      "result_scope": "concrete-execution",
+      "execution_completed": true,
+      "annotation_policy": "check-preserve",
+      "preconditions": [
+        {
+          "goal": "incr_precondition_wit_1",
+          "status": "SAT",
+          "proof": "auto"
+        }
+      ],
+      "abstraction_events": [],
+      "architecture_bits": 32,
+      "target_layout": {
+        "schema": "sac-target-layout/v1",
+        "architecture_bits": 32,
+        "byte_order": "big",
+        "pointer_size": 4,
+        "memory_rules": "naive_C_Rules",
+        "field_address_semantics": "base-plus-byte-offset/v1",
+        "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+        "aggregates": [],
+        "aliases": []
+      },
+      "executor_error": null,
+      "residual_vcs": [
+        "proof_of_incr_return_wit_1_split_goal_spatial",
+        "proof_of_incr_return_wit_1"
+      ],
+      "vc_results": [
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 7,
+          "status": "VALID",
+          "path": "EX m_383_addr n_380_addr \nPROP[]\nLOCAL[\n  Temp m m_383_addr;\n  Temp n n_380_addr;\n  Temp p p_371_addr ]\nSEP[\n  has_permission(m_383_addr, unsigned int);\n  store(n_380_addr, 5, unsigned int);\n  store(p_371_addr, 4096, unsigned int*);\n  store(4096, 5, unsigned int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "return",
+          "name": null,
+          "line": 7,
+          "status": "INVALID",
+          "path": "PROP[]\nLOCAL[]\nSEP[\n  store(4096, 6, unsigned int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n",
+          "original_status": "UNKNOWN",
+          "spatial_smt": {
+            "vc_index": 1,
+            "status": "INVALID",
+            "reason": "counterexample_query_sat",
+            "certificate": "NOT_CHECKED",
+            "artifact": "/home/yangfp/teSpec/benchmark/results/spatial-smt-regressions/20261018-execution-strategies-final/incr/case-0028/on/artifacts/artifacts/input_2/spatial-smt/vc-0001.json"
+          }
+        }
+      ],
+      "evidence": {
+        "decision_backend": "qcp-smt+finite-spatial-smt",
+        "certificate": "NOT_CHECKED"
+      },
+      "returncode": 0,
+      "generated_source_sha256": "b4c440c518d690d508a2501f6af304e0f888290a103e41225e212b9799b7b9ad",
+      "duration_seconds": 0.007099,
+      "peak_rss_kb": 5000,
+      "cpu_seconds": 0.0,
+      "command": [
+        "/home/yangfp/teSpec/bin/tespec-symexec",
+        "--arch=32",
+        "--input-file=/home/yangfp/teSpec/benchmark/results/spatial-smt-regressions/20261018-execution-strategies-final/incr/case-0028/on/artifacts/artifacts/input_2/input.c",
+        "--full-auto",
+        "--Json-output",
+        "--emit-residual-vc",
+        "--no-strategy-gen",
+        "--gen-and-backup",
+        "--coq-output-dir",
+        "/home/yangfp/teSpec/benchmark/results/spatial-smt-regressions/20261018-execution-strategies-final/incr/case-0028/on/artifacts/artifacts/input_2/vc",
+        "--no-logic-path",
+        "--disable-solver-info",
+        "--no-exec-info",
+        "--function",
+        "incr",
+        "--spec-test-no-expand",
+        "--spec",
+        "__tespec_entry",
+        "-I/home/yangfp/teSpec/benchmark/programs/incr/variants/constructed_case_2e28b35274593024/qcp",
+        "-I/home/yangfp/teSpec/arxiv/benchmark-support/selection/paired-mutations/cases/slf0_basic_incr/spec_3",
+        "--loop-unroll-limit",
+        "64",
+        "--call-depth-limit",
+        "64"
+      ],
+      "stdout": "/home/yangfp/teSpec/benchmark/results/spatial-smt-regressions/20261018-execution-strategies-final/incr/case-0028/on/artifacts/artifacts/input_2/executor.json",
+      "stderr": "/home/yangfp/teSpec/benchmark/results/spatial-smt-regressions/20261018-execution-strategies-final/incr/case-0028/on/artifacts/artifacts/input_2/stderr.log",
+      "vc": {
+        "schema": "qcp-spectest-vc-manifest/v1",
+        "case_id": "input_2",
+        "function": "incr",
+        "source": "/home/yangfp/teSpec/benchmark/results/spatial-smt-regressions/20261018-execution-strategies-final/incr/case-0028/on/artifacts/artifacts/input_2/input.c",
+        "qcip_root": "/home/yangfp/teSpec/runtime/qcip",
+        "status": "residual",
+        "residual_goals": [
+          "proof_of_incr_return_wit_1_split_goal_spatial",
+          "proof_of_incr_return_wit_1"
+        ],
+        "counterexample_goals": [],
+        "files": {
+          "goal": "/home/yangfp/teSpec/benchmark/results/spatial-smt-regressions/20261018-execution-strategies-final/incr/case-0028/on/artifacts/artifacts/input_2/vc/input_goal.v",
+          "proof_auto": "/home/yangfp/teSpec/benchmark/results/spatial-smt-regressions/20261018-execution-strategies-final/incr/case-0028/on/artifacts/artifacts/input_2/vc/input_proof_auto.v",
+          "proof_manual": "/home/yangfp/teSpec/benchmark/results/spatial-smt-regressions/20261018-execution-strategies-final/incr/case-0028/on/artifacts/artifacts/input_2/vc/input_proof_manual.v",
+          "goal_check": "/home/yangfp/teSpec/benchmark/results/spatial-smt-regressions/20261018-execution-strategies-final/incr/case-0028/on/artifacts/artifacts/input_2/vc/input_goal_check.v"
+        },
+        "missing_files": [],
+        "immutable_sha256": {
+          "goal": "2040ddbd52cf6a4e66d2ae557c1972fbf98994a50547775f2f369ce8c7ee2be2",
+          "proof_auto": "a49c9ff692a4677d690427c564690540e6d8d3d58773a7175f4d3ba555672d71",
+          "goal_check": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e"
+        },
+        "coq_dependencies": [],
+        "runtime_dependencies": [],
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [],
+          "aliases": []
+        },
+        "manifest": "/home/yangfp/teSpec/benchmark/results/spatial-smt-regressions/20261018-execution-strategies-final/incr/case-0028/on/artifacts/artifacts/input_2/vc/manifest.json"
+      },
+      "resources": {
+        "wall_seconds": 0.007099,
+        "cpu_seconds": 0.0,
+        "measurement": "GNU time; executor and children; maximum process RSS",
+        "peak_rss_kib": 5000
+      },
+      "spatial_smt": {
+        "backend": "finite-spatial-smt/v1",
+        "enabled": true,
+        "certificate": "NOT_CHECKED",
+        "stage": "after_executor",
+        "timeout_ms_per_query": 2000,
+        "attempted": 1,
+        "itp_required": false,
+        "results": [
+          {
+            "vc_index": 1,
+            "status": "INVALID",
+            "reason": "counterexample_query_sat",
+            "certificate": "NOT_CHECKED",
+            "artifact": "/home/yangfp/teSpec/benchmark/results/spatial-smt-regressions/20261018-execution-strategies-final/incr/case-0028/on/artifacts/artifacts/input_2/spatial-smt/vc-0001.json"
+          }
+        ],
+        "original_status": "UNKNOWN",
+        "original_reason": "residual_vc_requires_proof",
+        "result_scope": "concrete-execution",
+        "annotation_coverage_reason": "unsupported_or_ambiguous_obligation_group",
+        "annotation_residual_coverage": false,
+        "executor_sha256": "1c1b13000164bb570cba38bca162014bfd4ee6575ad046da8713aae01d6808a8",
+        "wall_seconds": 0.044366480000462616,
+        "return_residual_coverage": true,
+        "residual_coverage": true,
+        "summary": "/home/yangfp/teSpec/benchmark/results/spatial-smt-regressions/20261018-execution-strategies-final/incr/case-0028/on/artifacts/artifacts/input_2/spatial-smt/summary.json"
+      }
+    }
+  ],
+  "itp_vcs": [],
+  "summary": {
+    "total": 1,
+    "PASS": 0,
+    "FAIL": 1,
+    "UNKNOWN": 0,
+    "ERROR": 0,
+    "INVALID": 0,
+    "specification_only": 0,
+    "duration_seconds": 0.139422,
+    "executor_cpu_seconds": 0.0,
+    "peak_rss_kb": 5000
+  }
+}

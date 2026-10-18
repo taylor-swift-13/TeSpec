@@ -1179,3 +1179,9 @@
 每条详情的 active_evaluation 区分当前与历史批次；模式对照引用指向该问题自己的批次，后续解决证据另列。不同源码不能继承当前批次的 PASS。每条详情包含原始／最终状态、模式对照引用、输入、复现命令（写入独立 /tmp 目录）、原始日志、源码与 VC 哈希、ITP 结论和分类。read 的 12 条为旧自动阶段 UNKNOWN，经逐执行 Coq 反证完成；不是 12 个尚未解决的最终错误。开启空间 SMT 的逐例证据另见 read 模式对照。
 
 本轮 array_load 的历史10项问题与修订后证据见[来源修复专项记录](source-repairs-20261018-array-load.json)。不同源码的结果分别保留；当前两模式均67/67，不将旧源码VC算作已证明。
+
+## 2026-10-18 contract / modular recheck
+
+[168 executed strategy combinations](recheck-20261018-contract-modular.json) complete the two allocation programs but retain UNKNOWN Dll return obligations. Both strategies, both VC policies and SMT OFF/ON are recorded. This does not close the historical group incompleteness or count UNKNOWN as success.
+
+[Resolved conditional-post sampling issue](recheck-20261018-conditional-post.json): abs_mem_struct negative input, OFF/ON UNKNOWN → PASS; original input and expectation unchanged.

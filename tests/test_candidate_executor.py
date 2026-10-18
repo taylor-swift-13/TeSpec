@@ -1151,7 +1151,7 @@ end."""
             self.assertEqual(result["status"], "PASS", result)
             self.assertIn("--instance-trace", result["command"])
 
-    def test_bodyless_call_is_incomplete_in_both_modes(self):
+    def test_bodyless_call_uses_contract_and_missing_contract_is_unknown(self):
         for mode in ("entry-exit", "all-boundaries"):
             result = self.run_source(
                 "int external(int x) /*@ Require x == 2 && emp "
@@ -1160,15 +1160,18 @@ end."""
                 "{ return external(2); }",
                 mode,
             )
-            self.assertEqual(result["status"], "UNKNOWN")
-            self.assertEqual(result["reason"], "missing_function_body")
+            self.assertEqual(result["status"], "PASS", result)
+            self.assertEqual(result["declaration_call_policy"], "contract-sample/v1")
+            self.assertTrue(any(event["status"] == "SAMPLED"
+                                for event in result["sampling_events"]), result)
             result = self.run_source(
                 "int external(int x);\n"
                 "int sample(void) /*@ Require emp Ensure __return == 3 && emp */ "
                 "{ return external(2); }",
                 mode,
             )
-            self.assertEqual(result["status"], "ERROR")
+            self.assertEqual(result["status"], "UNKNOWN", result)
+            self.assertEqual(result["reason"], "missing_function_contract")
 
     def run_source(self, source, mode, spec=None, values=None, **options):
         with tempfile.TemporaryDirectory() as directory:

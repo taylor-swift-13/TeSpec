@@ -89,3 +89,44 @@ python3 scripts/run-qcp-corpus.py \
 4. 自动内存模型主要覆盖 QCP 32 位整数/指针资源。未覆盖的架构、浮点存储和复杂抽象空间模型保持 UNKNOWN。
 5. 本地递归定义超出有限展开预算后的完整 Coq 残余导出尚未覆盖所有形式；源文件会保留，不能据此声称残余证明包总能直接编译。
 6. 尚未实现通用的可达反例验证、可靠 Coq 定义导入、独立可重放自动证明证书及论文消融实验。规则的健全性论证和独立复现包仍需完成；本次回归通过不等于论文级验收已经完成。
+
+## 2026-10-18：独立执行策略与规约实例化
+
+新增 `--execution-strategy inline|modular`，与 `--execution-mode entry-exit|all-boundaries`
+正交。无函数体的调用在两种策略下使用相同规约实例化路径；有函数体时 inline 执行代码，
+modular 使用契约。modular 的 assertion 与循环使用 QCP 资源转移，先保留原始检查
+再选择合法后继。未修改的局部变量和空间 frame 保留；调用前固定地址以防释放资源后
+重新选择地址破坏此前分离约束。
+
+采样使用有界候选搜索及完整具体状态校验，不把搜索失败当 UNSAT。当前支持 32 位
+整数/指针原始空间单元；有限定义可展开，未支持的谓词、浮点/聚合返回保持 UNKNOWN。
+入口前置条件、原有 VC、工具错误分类不重定义。`result_scope` 区分实际代码执行和
+契约/不变式模型；后者的结果不自动声称可由真实函数体到达。
+
+`singleton` 7 个输入、`dll_add` 14 个来源配对输入，各运行 8 种参数组合，共 **168 次**
+原生调用全部执行完成。它们都保留 `Dll` 返回 VC，所以最终是 **168 UNKNOWN、0 PASS**，
+不能将本次接通说成两组全通过。SMT ON 的 84 次均尝试该返回 VC，报告未支持的 Dll。
+[完整结果和成本](../../benchmark/results/execution-strategy/20261018-contract-modular-final/summary.md)
+及[逐输入异常](../../benchmark/results/tespec-unexpected/recheck-20261018-contract-modular.json)
+保留所有源码/输入/VC 哈希。第一批计量器配置错误单独保留为 NOT_RUN，原生执行数为 0。
+
+原始 Coq VC 的左侧使用目标布局字段偏移 0/4/8，而历史 DLLSupplement 使用未解释的
+`eval_addr_expr`，目前没有等价桥梁。已有 `prepare-layout-libraries.py` 可生成显式目标布局
+解释，但这会改变依赖语义上下文，须另行固定布局/依赖哈希并证明实际返回蕴含。
+不能利用生成目标的备用平凡析取，或复用旧证书，声称原上下文的实际返回 VC 已证明。
+
+新模式逐组抽查另外发现条件后置规约的分支处理问题：合法分支已经选中，
+另一个由当前输入排除的分支不应使整体 UNKNOWN。已修正为只在有其他可能
+分支时删除已证明不可满足的候选；整个契约都不可满足仍返回 UNKNOWN。
+新增“条件分支”和“全部分支矛盾”回归保护。最终版的
+[21 组正例抽查](../../benchmark/results/spatial-smt-regressions/20261018-modular-positive-final/summary.md)
+在 modular 下 SMT OFF/ON 共 42 次均为 PASS。这是逐组代表输入检查，并非所有输入的 modular 穷尽回归。
+[定向测试](../../benchmark/results/execution-strategy/20261018-unit-regression-final/receipt.json)
+共 219 项，3 项跳过，无失败。
+
+最终二进制（SHA-256 `886ba50b83339375d54a23b2301856068dcab5f19238125991f535e1a5b2e549`）
+完成 [21 组、900 对输入、1800 次默认 inline 回归](../../benchmark/results/spatial-smt-regressions/20261018-execution-strategies-final/summary.md)，
+**零退化**，原始输入/证据哈希未变。OFF 为 496 PASS / 350 FAIL / 31 UNKNOWN / 23 预期 ERROR；
+ON 为 498 PASS / 379 FAIL / 0 UNKNOWN / 23 预期 ERROR。保留的 UNKNOWN 不计作成功判定。
+该最终正确性回归使用 4 个独立 worker，时间是并发负载下的实际观察值，不用于受控性能对比。
+执行器源码仍位于外部既有工作树，teSpec 只保存二进制、构建身份及相关测试/接口代码。

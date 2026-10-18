@@ -664,3 +664,111 @@ class NativeAnnotationIntegrationTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def contract_sample(strategy="inline", mode="entry-exit", goal=PRE):
+    case, raw = sample(goal)
+    semantics = "inline-preserve/v1" if strategy == "inline" else "modular-sampled/v1"
+    shared = {
+        "execution_strategy": strategy,
+        "execution_semantics": semantics,
+        "result_scope": "contract-and-invariant-model",
+        "declaration_call_policy": "contract-sample/v1",
+        "annotation_policy": "ignore" if mode == "entry-exit" else "check-preserve",
+        "sampling_events": [
+            {
+                "kind": kind, "status": "SAMPLED", "attempt": 1,
+                "policy": "deterministic-bounds-v1",
+                "constraint_state": PRE, "selected_state": PRE,
+            } for kind in ("contract-prestate", "contract")
+        ],
+        "abstraction_events": [
+            {"kind": "contract-sample", "function": "external", "count": 1},
+            {"kind": "contract_state_sampled", "function": "contract-prestate", "count": 1},
+            {"kind": "contract_state_sampled", "function": "contract", "count": 1},
+        ],
+    }
+    case.update(deepcopy(shared), mode=mode)
+    case["phases"]["annotations"] = "NOT_RUN" if mode == "entry-exit" else "PASS"
+    raw["spec_test"].update(
+        deepcopy(shared), completed=True, scope="execution",
+        mode="expand" if mode == "entry-exit" else "no-expand",
+    )
+    return case, raw
+
+
+class ContractSampleSpatialAdapterTests(unittest.TestCase):
+    apply = SpatialAdapterTests.apply
+
+    def test_checked_contract_samples_refine_return_vcs_in_all_four_modes(self):
+        for strategy in ("inline", "modular"):
+            for mode in ("entry-exit", "all-boundaries"):
+                with self.subTest(strategy=strategy, mode=mode):
+                    case, raw = contract_sample(strategy, mode)
+                    self.apply(case, raw)
+                    self.assertEqual(case["status"], "PASS", case)
+                    self.assertEqual(case["result_scope"], "contract-and-invariant-model")
+                    self.assertEqual(case["spatial_smt"]["result_scope"],
+                                     "contract-and-invariant-model")
+                    self.assertIn("sampling_events_sha256", case["spatial_smt"])
+                    self.assertFalse(case["spatial_smt"]["itp_required"])
+
+    def test_invalid_sampled_return_remains_a_model_counterexample(self):
+        case, raw = contract_sample("modular", goal=EMPTY)
+        self.apply(case, raw)
+        self.assertEqual(case["status"], "FAIL", case)
+        self.assertEqual(case["result_scope"], "contract-and-invariant-model")
+        self.assertEqual(case["reason"], "spatial_smt_invalid_path_vc")
+
+    def test_incomplete_or_mismatched_sample_evidence_never_refines(self):
+        mutations = [
+            lambda c, n: n["sampling_events"][0].update(status="UNKNOWN"),
+            lambda c, n: n["sampling_events"][0].update(selected_state=""),
+            lambda c, n: n["sampling_events"][0].update(policy="unvalidated"),
+            lambda c, n: n["sampling_events"][0].update(attempt=0),
+            lambda c, n: n["sampling_events"][0].update(kind="loop-preservation-input"),
+            lambda c, n: n["abstraction_events"][0].update(count=2),
+            lambda c, n: n["abstraction_events"].append(
+                {"kind": "modular-assertion", "function": "read", "count": 1}),
+            lambda c, n: n.update(declaration_call_policy=None),
+            lambda c, n: n.update(result_scope="concrete-execution"),
+            lambda c, n: n.update(completed=False),
+            lambda c, n: n.update(execution_strategy="inline"),
+        ]
+        for mutation in mutations:
+            with self.subTest(mutation=mutation):
+                case, raw = contract_sample("modular", goal=EMPTY)
+                mutation(case, raw["spec_test"])
+                # Align both copies so eligibility must inspect semantics,
+                # not just reject unequal JSON mirrors.
+                for field in ("sampling_events", "abstraction_events",
+                              "declaration_call_policy", "result_scope",
+                              "execution_strategy"):
+                    case[field] = deepcopy(raw["spec_test"][field])
+                self.apply(case, raw)
+                self.assertEqual(case["status"], "UNKNOWN", case)
+                self.assertEqual(case["spatial_smt"]["attempted"], 0)
+
+        case, raw = contract_sample()
+        case["sampling_events"][0]["selected_state"] = EMPTY
+        self.apply(case, raw)
+        self.assertEqual(case["status"], "UNKNOWN")
+        self.assertEqual(case["spatial_smt"]["attempted"], 0)
+
+    def test_modular_without_checked_contract_events_is_not_admitted(self):
+        case, raw = contract_sample("modular", goal=EMPTY)
+        for obj in (case, raw["spec_test"]):
+            obj["sampling_events"] = []
+            obj["abstraction_events"] = []
+        self.apply(case, raw)
+        self.assertEqual(case["status"], "UNKNOWN")
+        self.assertEqual(case["spatial_smt"]["attempted"], 0)
+
+    def test_proved_infeasible_incoming_call_does_not_count_as_a_sample(self):
+        case, raw = contract_sample("modular", goal=PRE)
+        event = {"kind": "infeasible-call-input", "function": "external", "count": 1}
+        case["abstraction_events"].append(deepcopy(event))
+        raw["spec_test"]["abstraction_events"].append(deepcopy(event))
+        self.apply(case, raw)
+        self.assertEqual(case["status"], "PASS", case)
+        self.assertEqual(case["result_scope"], "contract-and-invariant-model")

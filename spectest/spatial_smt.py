@@ -14,6 +14,8 @@ from pathlib import Path
 import re
 import time
 
+from .modes import EXECUTION_SEMANTICS, normalize_execution_mode
+
 
 def _solve_record(record: dict, timeout_ms: int) -> dict:
     # Do not import Z3 when this feature is disabled (or for existing decisions).
@@ -78,8 +80,94 @@ def _return_coverage(executor: dict, original: list, residual: list) -> bool:
 
 
 
+def _checked_contract_samples(case: dict, native: dict) -> bool:
+    """Admit completed contract samples, with the native validation provenance.
+
+    This does not certify the external implementation or generate new samples.
+    Loop/assertion sampling has separate obligation coverage and remains outside
+    this adapter. Every accepted finite VC retains its contract-model scope.
+    """
+    strategy = native.get("execution_strategy")
+    if (
+        not isinstance(strategy, str) or strategy not in EXECUTION_SEMANTICS
+        or case.get("execution_strategy") != strategy
+        or native.get("execution_semantics") != EXECUTION_SEMANTICS[strategy]
+        or case.get("execution_semantics") != EXECUTION_SEMANTICS[strategy]
+        or native.get("result_scope") != "contract-and-invariant-model"
+        or case.get("result_scope") != "contract-and-invariant-model"
+        or native.get("declaration_call_policy") != "contract-sample/v1"
+        or case.get("declaration_call_policy") != "contract-sample/v1"
+        or native.get("completed") is not True
+        or native.get("scope") != "execution"
+        or native.get("annotation_policy") != case.get("annotation_policy")
+    ):
+        return False
+    try:
+        if normalize_execution_mode(native.get("mode")) != case.get("mode"):
+            return False
+    except ValueError:
+        return False
+    samples = native.get("sampling_events")
+    events = native.get("abstraction_events")
+    if (
+        not isinstance(samples, list) or not samples
+        or samples != case.get("sampling_events")
+        or not isinstance(events, list) or not events
+        or events != case.get("abstraction_events")
+    ):
+        return False
+    sampled_counts = Counter()
+    for sample in samples:
+        if (
+            not isinstance(sample, dict)
+            or not isinstance(sample.get("kind"), str)
+            or sample["kind"] not in {"contract-prestate", "contract"}
+            or sample.get("status") != "SAMPLED"
+            or sample.get("policy") != "deterministic-bounds-v1"
+            or type(sample.get("attempt")) is not int or sample["attempt"] <= 0
+            or any(not isinstance(sample.get(key), str) or not sample[key].strip()
+                   for key in ("constraint_state", "selected_state"))
+        ):
+            return False
+        sampled_counts[sample["kind"]] += 1
+    if sampled_counts["contract"] == 0:
+        return False
+    counts = Counter()
+    calls = 0
+    seen = set()
+    for event in events:
+        if not isinstance(event, dict) or set(event) != {"kind", "function", "count"}:
+            return False
+        kind, function, count = event["kind"], event["function"], event["count"]
+        if (
+            not isinstance(kind, str) or not isinstance(function, str) or not function
+            or type(count) is not int or count <= 0
+            or (kind, function) in seen
+        ):
+            return False
+        seen.add((kind, function))
+        if kind == "contract-sample":
+            calls += count
+        elif kind == "contract_state_sampled" and function in {"contract-prestate", "contract"}:
+            counts[function] += count
+        elif kind == "infeasible-call-input":
+            # Native emits this only when AssertionSatisfiability proves the
+            # incoming state UNSAT, before applying the callee's contract.
+            # This branch has no sampled successor and contributes no VC.
+            continue
+        else:
+            return False
+    return counts == sampled_counts and calls == sampled_counts["contract"]
+
+
 def _checked_events(case: dict, native: dict, function: str) -> bool:
-    """Admit only concrete check-preserve events, never a summary/havoc event."""
+    """Admit unchanged concrete traces or validated contract-only samples."""
+    if (
+        native.get("execution_semantics") == "modular-sampled/v1"
+        or native.get("sampling_events") or case.get("sampling_events")
+        or native.get("result_scope") == "contract-and-invariant-model"
+    ):
+        return _checked_contract_samples(case, native)
     events = case.get("abstraction_events", [])
     if not events:
         return not native.get("abstraction_events")
@@ -296,10 +384,11 @@ def refine_case(
         "results": [],
         "original_status": case.get("status"),
         "original_reason": case.get("reason"),
+        "result_scope": case.get("result_scope"),
     }
     case["spatial_smt"] = info
-    # Never turn executor errors, incomplete/abstract executions, or entry
-    # uncertainty into a counterexample to a concrete test.
+    # Never turn executor errors, incomplete executions or entry uncertainty
+    # into a counterexample. Contract samples retain their explicit model scope.
     if (
         case.get("status") != "UNKNOWN"
         or case.get("scope") != "execution"
@@ -318,7 +407,7 @@ def refine_case(
             native.get("schema") != "sac-spec-test/v1"
             or native.get("vc_semantics") != "path-vc/v1"
             or native.get("query_semantics") != "copy-only/v1"
-            or native.get("execution_semantics") != "inline-preserve/v1"
+            or native.get("execution_semantics") not in EXECUTION_SEMANTICS.values()
             or native.get("result_semantics") != "three-valued-conjunction/v1"
             or native.get("limit_reason")
             or native.get("vc_results") != case.get("vc_results")
@@ -332,8 +421,15 @@ def refine_case(
         info["reason"] = "unsupported_execution_events"
         return
     original = case["vc_results"]
+    contract_samples = bool(native.get("sampling_events"))
+    if contract_samples:
+        info["sampling_events_sha256"] = hashlib.sha256(
+            json.dumps(native["sampling_events"], sort_keys=True).encode()
+        ).hexdigest()
+        info["execution_strategy"] = native["execution_strategy"]
     try:
-        annotation_coverage = _annotation_coverage(executor, case, original)
+        annotation_coverage = (not contract_samples
+                               and _annotation_coverage(executor, case, original))
     except (TypeError, AttributeError, KeyError, ValueError):
         annotation_coverage = False
     if annotation_coverage:
