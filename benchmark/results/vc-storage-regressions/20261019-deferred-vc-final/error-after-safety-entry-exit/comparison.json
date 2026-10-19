@@ -1,0 +1,352 @@
+{
+  "id": "error-after-safety-entry-exit",
+  "fixture": {
+    "id": "error-after-safety-entry-exit",
+    "n": 3,
+    "strategy": "inline",
+    "mode": "entry-exit",
+    "expected": "ERROR",
+    "source": "int sample(int n) /*@ Require 0 <= n && n <= 4096 && emp Ensure __return == n && emp */ { int x=n+1; int *p=0; return *p; }\n"
+  },
+  "source_sha256": "5a2bcf07f75d6d285cc87d42c096e6e218546026ae3875b42ed7d5758bb7dac0",
+  "binds_sha256": "1b0da99ab914ef949fd1e0912ad9e3e19dcc77d4e55af6bfd347bd6664828c8d",
+  "trace_enabled": true,
+  "baseline": {
+    "report": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-final/error-after-safety-entry-exit/baseline/artifacts/report.json",
+    "report_sha256": "0ee2955634dd9607ec41c5be60d28de77ac0e9bcc6ee47fb6c33281718b297a9",
+    "raw": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-final/error-after-safety-entry-exit/baseline/artifacts/artifacts/one/executor.json",
+    "raw_sha256": "28fa5cc19cf8d03cd355769758ff92b5fb3af95d8f9bb338c7b78cf841f11a00",
+    "legacy_raw_sha256": "97ee58cd0d07d7627f4242bb31c0222d928e1e9913c43dfadbe9bff590b44cb3",
+    "decisions": {
+      "status": "ERROR",
+      "overall": "ERROR",
+      "precondition_result": "SAT",
+      "execution_completed": false,
+      "executor_error": {
+        "Main Error Message": "fatal error: Symbolic execution failed: cannot read memory through this pointer because the current assertion does not prove readable memory at the target address. Add a Require/Assert memory predicate such as data_at(pointer, value), or prove that the pointer aliases an owned memory cell.",
+        "fileName": null,
+        "line": 4,
+        "column": 100,
+        "additional_info": [
+          "Read address: 0\n",
+          "Current assertion:\nn@pre == 3 &&\n0 <= n@pre &&\nn@pre <= 4096 &&\n(p == 0) *\n(x == n@pre + 1) *\n(n == n@pre)\n\n"
+        ]
+      },
+      "executor_reported_status": "ERROR",
+      "residual_vcs": [],
+      "vc_results": [
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX x_380_addr \nPROP[]\nLOCAL[\n  Temp x x_380_addr;\n  Temp n n_371_addr ]\nSEP[\n  has_permission(x_380_addr, signed int);\n  store(n_371_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX p_383_addr x_380_addr \nPROP[]\nLOCAL[\n  Temp p p_383_addr;\n  Temp x x_380_addr;\n  Temp n n_371_addr ]\nSEP[\n  has_permission(p_383_addr, signed int*);\n  store(x_380_addr, 4, signed int);\n  store(n_371_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        }
+      ],
+      "phases": {
+        "precondition": "SAT",
+        "safety": "UNKNOWN",
+        "postcondition": "UNKNOWN",
+        "annotations": "NOT_RUN",
+        "execution": "UNKNOWN"
+      },
+      "result_scope": "concrete-execution",
+      "sampling_events": [],
+      "abstraction_events": []
+    },
+    "coq": {},
+    "storage_metrics": {},
+    "runtime_metrics": {
+      "branch_evaluation": {
+        "schema": "instance-first-branch-query/v1",
+        "pure_queries": 0,
+        "evaluated_true": 0,
+        "evaluated_false": 0,
+        "smt_fallback": 0
+      }
+    },
+    "executor_resources": {
+      "wall_seconds": 0.005308,
+      "cpu_seconds": 0.0,
+      "measurement": "GNU time; executor and children; maximum process RSS",
+      "peak_rss_kib": 5280
+    },
+    "vc_count": 2,
+    "witness_counts": [
+      {
+        "functionName": "sample",
+        "Witness": null
+      }
+    ],
+    "generated_source_sha256": "26cc15594aa9119c768fbe90d9746a6f82e29c78f5fa6f7c16dc5de77254cc10",
+    "measurement": {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "spectest",
+        "run",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-final/error-after-safety-entry-exit/input.c",
+        "--function",
+        "sample",
+        "--binds",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-final/error-after-safety-entry-exit/binds.json",
+        "--qcp-binary",
+        "/tmp/tespec-deferred-vc-baseline/tespec-symexec",
+        "--execution-strategy",
+        "inline",
+        "--execution-mode",
+        "entry-exit",
+        "--loop-unroll-limit",
+        "16",
+        "--output-dir",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-final/error-after-safety-entry-exit/baseline/artifacts",
+        "--timeout",
+        "60",
+        "--no-spatial-smt",
+        "--instance-trace"
+      ],
+      "executed_wrapper_command": [
+        "/usr/bin/time",
+        "--quiet",
+        "-f",
+        "{\"max_process_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"wall_seconds_gnu\":%e}",
+        "-o",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-final/error-after-safety-entry-exit/baseline/resources.json",
+        "/usr/bin/timeout",
+        "--signal=TERM",
+        "--kill-after=5",
+        "75",
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "spectest",
+        "run",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-final/error-after-safety-entry-exit/input.c",
+        "--function",
+        "sample",
+        "--binds",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-final/error-after-safety-entry-exit/binds.json",
+        "--qcp-binary",
+        "/tmp/tespec-deferred-vc-baseline/tespec-symexec",
+        "--execution-strategy",
+        "inline",
+        "--execution-mode",
+        "entry-exit",
+        "--loop-unroll-limit",
+        "16",
+        "--output-dir",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-final/error-after-safety-entry-exit/baseline/artifacts",
+        "--timeout",
+        "60",
+        "--no-spatial-smt",
+        "--instance-trace"
+      ],
+      "exit_code": 1,
+      "wall_seconds": 0.16467047100013588,
+      "resources": {
+        "max_process_rss_kib": 19872,
+        "user_seconds": 0.07,
+        "system_seconds": 0.04,
+        "wall_seconds_gnu": 0.11
+      },
+      "tokens": 0,
+      "model_calls": 0,
+      "stdout": "benchmark/results/vc-storage-regressions/20261019-deferred-vc-final/error-after-safety-entry-exit/baseline/stdout.log",
+      "stderr": "benchmark/results/vc-storage-regressions/20261019-deferred-vc-final/error-after-safety-entry-exit/baseline/stderr.log",
+      "memory_definition": "GNU time %M: largest measured process peak RSS, not aggregate tree memory."
+    },
+    "matches_expected": true
+  },
+  "candidate": {
+    "report": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-final/error-after-safety-entry-exit/candidate/artifacts/report.json",
+    "report_sha256": "0e816a3a77d6f7852f997711a5dde54a9b1d06750b6f38d9080880ab64eb7e7b",
+    "raw": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-final/error-after-safety-entry-exit/candidate/artifacts/artifacts/one/executor.json",
+    "raw_sha256": "570ae9e733643ec04bac6117b409df1e4edc8015f62f0588455f428be929116e",
+    "legacy_raw_sha256": "97ee58cd0d07d7627f4242bb31c0222d928e1e9913c43dfadbe9bff590b44cb3",
+    "decisions": {
+      "status": "ERROR",
+      "overall": "ERROR",
+      "precondition_result": "SAT",
+      "execution_completed": false,
+      "executor_error": {
+        "Main Error Message": "fatal error: Symbolic execution failed: cannot read memory through this pointer because the current assertion does not prove readable memory at the target address. Add a Require/Assert memory predicate such as data_at(pointer, value), or prove that the pointer aliases an owned memory cell.",
+        "fileName": null,
+        "line": 4,
+        "column": 100,
+        "additional_info": [
+          "Read address: 0\n",
+          "Current assertion:\nn@pre == 3 &&\n0 <= n@pre &&\nn@pre <= 4096 &&\n(p == 0) *\n(x == n@pre + 1) *\n(n == n@pre)\n\n"
+        ]
+      },
+      "executor_reported_status": "ERROR",
+      "residual_vcs": [],
+      "vc_results": [
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX x_380_addr \nPROP[]\nLOCAL[\n  Temp x x_380_addr;\n  Temp n n_371_addr ]\nSEP[\n  has_permission(x_380_addr, signed int);\n  store(n_371_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX p_383_addr x_380_addr \nPROP[]\nLOCAL[\n  Temp p p_383_addr;\n  Temp x x_380_addr;\n  Temp n n_371_addr ]\nSEP[\n  has_permission(p_383_addr, signed int*);\n  store(x_380_addr, 4, signed int);\n  store(n_371_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        }
+      ],
+      "phases": {
+        "precondition": "SAT",
+        "safety": "UNKNOWN",
+        "postcondition": "UNKNOWN",
+        "annotations": "NOT_RUN",
+        "execution": "UNKNOWN"
+      },
+      "result_scope": "concrete-execution",
+      "sampling_events": [],
+      "abstraction_events": []
+    },
+    "coq": {},
+    "storage_metrics": {
+      "vc_scheduling": {
+        "schema": "post-execution-witness-smt/v1",
+        "enabled": true,
+        "collecting": false,
+        "requests": 3,
+        "queued_witnesses": 3,
+        "solved_witnesses": 3,
+        "retained_on_release": 0,
+        "pending_witnesses": 0
+      }
+    },
+    "runtime_metrics": {
+      "branch_evaluation": {
+        "schema": "instance-first-branch-query/v1",
+        "pure_queries": 0,
+        "evaluated_true": 0,
+        "evaluated_false": 0,
+        "smt_fallback": 0
+      }
+    },
+    "executor_resources": {
+      "wall_seconds": 0.005157,
+      "cpu_seconds": 0.0,
+      "measurement": "GNU time; executor and children; maximum process RSS",
+      "peak_rss_kib": 5224
+    },
+    "vc_count": 2,
+    "witness_counts": [
+      {
+        "functionName": "sample",
+        "Witness": null
+      }
+    ],
+    "generated_source_sha256": "26cc15594aa9119c768fbe90d9746a6f82e29c78f5fa6f7c16dc5de77254cc10",
+    "measurement": {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "spectest",
+        "run",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-final/error-after-safety-entry-exit/input.c",
+        "--function",
+        "sample",
+        "--binds",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-final/error-after-safety-entry-exit/binds.json",
+        "--qcp-binary",
+        "/home/yangfp/teSpec/bin/tespec-symexec",
+        "--execution-strategy",
+        "inline",
+        "--execution-mode",
+        "entry-exit",
+        "--loop-unroll-limit",
+        "16",
+        "--output-dir",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-final/error-after-safety-entry-exit/candidate/artifacts",
+        "--timeout",
+        "60",
+        "--no-spatial-smt",
+        "--instance-trace"
+      ],
+      "executed_wrapper_command": [
+        "/usr/bin/time",
+        "--quiet",
+        "-f",
+        "{\"max_process_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"wall_seconds_gnu\":%e}",
+        "-o",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-final/error-after-safety-entry-exit/candidate/resources.json",
+        "/usr/bin/timeout",
+        "--signal=TERM",
+        "--kill-after=5",
+        "75",
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "spectest",
+        "run",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-final/error-after-safety-entry-exit/input.c",
+        "--function",
+        "sample",
+        "--binds",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-final/error-after-safety-entry-exit/binds.json",
+        "--qcp-binary",
+        "/home/yangfp/teSpec/bin/tespec-symexec",
+        "--execution-strategy",
+        "inline",
+        "--execution-mode",
+        "entry-exit",
+        "--loop-unroll-limit",
+        "16",
+        "--output-dir",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-final/error-after-safety-entry-exit/candidate/artifacts",
+        "--timeout",
+        "60",
+        "--no-spatial-smt",
+        "--instance-trace"
+      ],
+      "exit_code": 1,
+      "wall_seconds": 0.16492664600082207,
+      "resources": {
+        "max_process_rss_kib": 19796,
+        "user_seconds": 0.08,
+        "system_seconds": 0.03,
+        "wall_seconds_gnu": 0.11
+      },
+      "tokens": 0,
+      "model_calls": 0,
+      "stdout": "benchmark/results/vc-storage-regressions/20261019-deferred-vc-final/error-after-safety-entry-exit/candidate/stdout.log",
+      "stderr": "benchmark/results/vc-storage-regressions/20261019-deferred-vc-final/error-after-safety-entry-exit/candidate/stderr.log",
+      "memory_definition": "GNU time %M: largest measured process peak RSS, not aggregate tree memory."
+    },
+    "matches_expected": true
+  },
+  "comparison": {
+    "passed": true,
+    "ignored_metrics_are_new_only": true,
+    "runtime_metric_keys_match": true,
+    "raw_differences": [],
+    "decision_differences": [],
+    "coq_byte_differences": [],
+    "source_bytes_equal": true,
+    "baseline_vc_count": 2,
+    "candidate_vc_count": 2,
+    "original_coq_files_byte_equal": true,
+    "legacy_raw_equal": true,
+    "both_match_expected": true,
+    "transport_ok": true
+  }
+}

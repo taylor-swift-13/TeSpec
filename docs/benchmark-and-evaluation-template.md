@@ -440,3 +440,12 @@ VC、报告、输入/源码/工具哈希及结果成本 CSV/JSON。CLI、执行�
 原生输出可附带 `spec_test.branch_evaluation`（`instance-first-branch-query/v1`）。`pure_queries` 是分支可达性纯查询次数，等于 `evaluated_true + evaluated_false + smt_fallback`。前两项是在已有实例代入后的查询副本上直接算出的结果，第三项才进入残余纯公式 SMT 查询；未知不能用于剪枝。空间策略检查仍保留。
 
 这些计数不代表所有 SMT 调用或 C 分支次数，也不能替代原始 VC 数量、证明文件和逐阶段成本。新旧版本比较仅可明确排除该新增诊断字段；仍需比较原有决策、公式、轨迹及完整生成的 Coq 文件，不能据此省略义务或将 UNKNOWN 计成功。
+
+
+### 证明型 VC 的求解时序（2026-10-19）
+
+正常具体 teSpec 测试将 safety、entailment、return、which-implies、partial-solve 的自动证明请求排队，执行结束后复用原 QCP 策略和 SMT，空间 SMT 继续随后处理残余 VC。在线保留必要的条件判定、实例采样和资源匹配 SMT，不调用 ITP；SMT 未判定仍为 UNKNOWN。离线 ITP 如另行运行，继续按每次执行的所有残余目标独立计量。全称验证及旧日志/全自动兼容路径保留原求解时序。
+
+求解请求按原节点去重，所有原始义务、源位置、作用域、公式和出现次数保留，提前错误也须保留已产生的义务。spec_test.vc_scheduling 的 solved_witnesses 是已尝试自动求解数量，不是 VALID 数；pending=0 也不等于全部证明成功。策略 inline/modular 与 VC 范围 entry-exit/all-boundaries 仍独立。
+
+精确回归可显式使用 --ignore-runtime-metric branch_evaluation，前提是比较器验证原 schema、完整字段集合、非负整数和 pure_queries=evaluated_true+evaluated_false+smt_fallback，并保存两侧原计数。该共享查询入口也被自动证明调用；减少重复求解会改变计数，不能据此更改逻辑字段。其他旧字段不允许作为运行指标排除；新增诊断仍须证明基线不存在。原始 VC/判定/位置、实例轨迹及 Goal/auto/check 完整字节必须比较。详见 [本次调度审计](../benchmark/results/vc-storage-regressions/20261019-deferred-vc-audit/summary.md)。

@@ -55,7 +55,7 @@ def replace_strings(value, replacements):
     return value
 
 
-def capture(path, ignored_metrics=()):
+def capture(path, ignored_metrics=(), runtime_metrics=()):
     case, report_path = checked_report(path)
     raw_path = resolve(case["stdout"])
     raw = json.loads(raw_path.read_text())
@@ -68,6 +68,21 @@ def capture(path, ignored_metrics=()):
     for key in ignored_metrics:
         if key in spec:
             metrics[key] = spec.pop(key)
+    runtime = {}
+    for key in runtime_metrics:
+        if key != "branch_evaluation":
+            raise ValueError("Not an allowed execution diagnostic: " + key)
+        if key not in spec:
+            continue
+        value = spec.pop(key)
+        fields = ("pure_queries", "evaluated_true", "evaluated_false", "smt_fallback")
+        if set(value) != {"schema", *fields} or value["schema"] != "instance-first-branch-query/v1":
+            raise ValueError("Unexpected branch diagnostic schema")
+        if any(type(value[f]) is not int or value[f] < 0 for f in fields):
+            raise ValueError("Invalid branch diagnostic counts")
+        if value["pure_queries"] != sum(value[f] for f in fields[1:]):
+            raise ValueError("Inconsistent branch diagnostic counts")
+        runtime[key] = value
     coq = {}
     for kind in COQ_KINDS:
         value = (case.get("vc") or {}).get("files", {}).get(kind)
@@ -87,7 +102,7 @@ def capture(path, ignored_metrics=()):
         "raw": str(raw_path), "raw_sha256": sha(raw_path),
         "legacy_raw_sha256": hashlib.sha256(canonical(normalized).encode()).hexdigest(),
         "legacy_raw": normalized, "decisions": decisions, "coq": coq,
-        "storage_metrics": metrics, "executor_resources": case.get("resources"),
+        "storage_metrics": metrics, "runtime_metrics": runtime, "executor_resources": case.get("resources"),
         "vc_count": len(raw.get("spec_test", {}).get("vc_results", [])),
         "witness_counts": raw.get("WitnessList"),
         "generated_source_sha256": case.get("generated_source_sha256"),
@@ -127,9 +142,11 @@ def compare(old, new):
                 != (new["coq"].get(kind) or {}).get("exists")]
     source_equal = old["generated_source_sha256"] == new["generated_source_sha256"]
     additive_only = not old["storage_metrics"]
+    runtime_keys_match = old.get("runtime_metrics", {}).keys() == new.get("runtime_metrics", {}).keys()
     return {
-        "passed": not raw_diff and not decision_diff and not coq_diff and source_equal and additive_only,
+        "passed": not raw_diff and not decision_diff and not coq_diff and source_equal and additive_only and runtime_keys_match,
         "ignored_metrics_are_new_only": additive_only,
+        "runtime_metric_keys_match": runtime_keys_match,
         "raw_differences": raw_diff, "decision_differences": decision_diff,
         "coq_byte_differences": sorted(coq_diff), "source_bytes_equal": source_equal,
         "baseline_vc_count": old["vc_count"], "candidate_vc_count": new["vc_count"],
@@ -177,7 +194,7 @@ def write_summary(out, rows, provenance):
     save(out / "summary.json", summary)
     lines = ["# Inline VC storage differential regression", "",
              "Original Coq goal/auto/check bytes, raw native decisions, witness counts and enabled instance traces are compared.",
-             "Only generated output directory prefixes and explicitly named additive storage metrics are normalized.",
+             "Only generated output directory prefixes, explicitly named additive metrics, and validated branch query counters are normalized.",
              "Runs execute serially. Times/RSS are observations; a single pair does not establish a general speedup.",
              "No ITP or Coq certificate is inferred. Native model tokens: 0.", "",
              "| Case | Exact gate | Old/new VC count | Old/new executor seconds | Old/new peak KiB |",
@@ -205,6 +222,7 @@ def run_pairs(args, out):
         "started_utc": now(), "binaries": {k: {"path": str(v), "sha256": sha(v)}
                                            for k, v in binaries.items()},
         "driver_sha256": sha(__file__), "ignored_additive_storage_metrics": args.ignore_storage_metric,
+        "validated_runtime_metrics": args.ignore_runtime_metric,
         "execution_order": "baseline then candidate, serial, for each case",
         "trace_max_iterations": args.trace_max_iterations, "iterations": args.iterations,
         "expected_cases": len(list(fixtures(args.iterations))),
@@ -234,7 +252,7 @@ def run_pairs(args, out):
             measurement = measure(cli, run, args.timeout + 15)
             report = run / "artifacts/report.json"
             try:
-                snap = capture(report, args.ignore_storage_metric)
+                snap = capture(report, args.ignore_storage_metric, args.ignore_runtime_metric)
                 snapshots[label] = snap
                 row[label] = {**compact(snap), "measurement": measurement,
                               "matches_expected": snap["decisions"]["status"] == fixture["expected"]}
@@ -270,14 +288,15 @@ def compare_suites(args, out):
     provenance = {"started_utc": now(), "before": {"path": str(before_path), "sha256": sha(before_path)},
                   "after": {"path": str(after_path), "sha256": sha(after_path)},
                   "driver_sha256": sha(__file__), "ignored_additive_storage_metrics": args.ignore_storage_metric,
+        "validated_runtime_metrics": args.ignore_runtime_metric,
                   "expected_cases": len(old)}
     rows = []
     for identity in sorted(old):
         a, b = old[identity], new[identity]
         row = {"id": "/".join(identity)}
         try:
-            x = capture(a["report"]["path"], args.ignore_storage_metric)
-            y = capture(b["report"]["path"], args.ignore_storage_metric)
+            x = capture(a["report"]["path"], args.ignore_storage_metric, args.ignore_runtime_metric)
+            y = capture(b["report"]["path"], args.ignore_storage_metric, args.ignore_runtime_metric)
             row.update(baseline=compact(x), candidate=compact(y), comparison=compare(x, y))
             row["comparison"]["source_input_identity_equal"] = (a["source"] == b["source"] and a["binds"] == b["binds"])
             row["comparison"]["passed"] &= row["comparison"]["source_input_identity_equal"]
@@ -299,6 +318,9 @@ def main():
     p.add_argument("--trace-max-iterations", type=int, default=64)
     p.add_argument("--ignore-storage-metric", action="append", default=[],
                    help="Explicit new additive spec_test key excluded from legacy equality; retained in receipts")
+    p.add_argument("--ignore-runtime-metric", action="append", default=[],
+                   choices=("branch_evaluation",),
+                   help="Validate and preserve execution counters separately; never excludes proof or verdict fields")
     args = p.parse_args()
     if not 1 <= args.timeout <= 600 or any(n < 5 or n > 4096 for n in args.iterations):
         p.error("timeout must be 1..600, iterations must be 5..4096")

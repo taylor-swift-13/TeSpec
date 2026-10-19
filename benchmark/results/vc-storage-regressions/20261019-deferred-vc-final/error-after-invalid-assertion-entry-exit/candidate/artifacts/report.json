@@ -1,0 +1,199 @@
+{
+  "schema": "qcp-spectest-report/v1",
+  "job": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-final/error-after-invalid-assertion-entry-exit/candidate/artifacts/artifacts/job.json",
+  "source": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-final/error-after-invalid-assertion-entry-exit/input.c",
+  "spec_file": null,
+  "function": "sample",
+  "qcp_binary": "/home/yangfp/teSpec/bin/tespec-symexec",
+  "provenance": {
+    "source_sha256": "58d8f6ccd5df08d271fdf2df777d1f3da73009fd5d9d8e0c4263ebcca90f993b",
+    "job_sha256": "661a159be20a656e63e28e198dce09b9bbb4462249a6d464f418225d49abcb01",
+    "binary_sha256": "4e551edce5c3733671b6118dd689cd0e30d12e04416a2046a29bfd9361f55ace",
+    "runtime_source_sha256": "08b41c971d404d9fe6ae40dce420752af8eb023179017c55737dc5a7df89f56a",
+    "runtime_digest_scope": "SeparationLogic and QCP_examples: .v, .h, .strategies, _CoqProject",
+    "included_source_sha256": "c90e3708bdf272c1c42bc71dc99b9c9cf2f5e0bb84916919024c3fa33b736577",
+    "spec_sha256": null
+  },
+  "vc_policy": {
+    "mode": "entry-exit",
+    "execution_strategy": "inline",
+    "execution_semantics": "inline-preserve/v1",
+    "loops": "execute_iterations",
+    "defined_function_calls": "execute_bodies",
+    "intermediate_boundaries": false,
+    "declaration_calls": "sample_contract_postconditions",
+    "call_depth_limit": 64,
+    "loop_unroll_limit": 16
+  },
+  "results": [
+    {
+      "id": "one",
+      "arguments": {
+        "n": 3
+      },
+      "bindings": {},
+      "type_bindings": {},
+      "spec": null,
+      "generated_source": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-final/error-after-invalid-assertion-entry-exit/candidate/artifacts/artifacts/one/input.c",
+      "status": "ERROR",
+      "overall": "ERROR",
+      "precondition_result": "SAT",
+      "test_result": "UNKNOWN",
+      "result_semantics": "three-valued-conjunction/v1",
+      "executor_reported_status": "ERROR",
+      "satisfied": null,
+      "reason": "qcp_execution_error",
+      "phases": {
+        "precondition": "SAT",
+        "safety": "UNKNOWN",
+        "postcondition": "UNKNOWN",
+        "annotations": "NOT_RUN",
+        "execution": "UNKNOWN"
+      },
+      "scope": "execution",
+      "mode": "entry-exit",
+      "execution_semantics": "inline-preserve/v1",
+      "execution_strategy": "inline",
+      "requested_execution_strategy": "inline",
+      "declaration_call_policy": "contract-sample/v1",
+      "sampling_events": [],
+      "result_scope": "concrete-execution",
+      "execution_completed": false,
+      "annotation_policy": "ignore",
+      "preconditions": [
+        {
+          "goal": "sample_precondition_wit_1",
+          "status": "SAT",
+          "proof": "auto"
+        }
+      ],
+      "abstraction_events": [],
+      "architecture_bits": 32,
+      "target_layout": {
+        "schema": "sac-target-layout/v1",
+        "architecture_bits": 32,
+        "byte_order": "big",
+        "pointer_size": 4,
+        "memory_rules": "naive_C_Rules",
+        "field_address_semantics": "base-plus-byte-offset/v1",
+        "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+        "aggregates": [],
+        "aliases": []
+      },
+      "executor_error": {
+        "Main Error Message": "fatal error: Symbolic execution failed: cannot read memory through this pointer because the current assertion does not prove readable memory at the target address. Add a Require/Assert memory predicate such as data_at(pointer, value), or prove that the pointer aliases an owned memory cell.",
+        "fileName": null,
+        "line": 4,
+        "column": 118,
+        "additional_info": [
+          "Read address: 0\n",
+          "Current assertion:\nn@pre == 3 &&\n0 <= n@pre &&\nn@pre <= 4096 &&\n(p == 0) *\n(n == n@pre)\n\n"
+        ]
+      },
+      "residual_vcs": [],
+      "vc_results": [
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX p_380_addr \nPROP[]\nLOCAL[\n  Temp p p_380_addr;\n  Temp n n_371_addr ]\nSEP[\n  has_permission(p_380_addr, signed int*);\n  store(n_371_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        }
+      ],
+      "evidence": {
+        "decision_backend": "qcp-smt",
+        "certificate": "NOT_CHECKED"
+      },
+      "returncode": 1,
+      "generated_source_sha256": "014f8b744148f540d68a8cc3930e927df6c13587e05318c4c1c892e123950120",
+      "duration_seconds": 0.005445,
+      "peak_rss_kb": 4784,
+      "cpu_seconds": 0.0,
+      "command": [
+        "/home/yangfp/teSpec/bin/tespec-symexec",
+        "--arch=32",
+        "--input-file=/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-final/error-after-invalid-assertion-entry-exit/candidate/artifacts/artifacts/one/input.c",
+        "--full-auto",
+        "--Json-output",
+        "--emit-residual-vc",
+        "--no-strategy-gen",
+        "--gen-and-backup",
+        "--coq-output-dir",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-final/error-after-invalid-assertion-entry-exit/candidate/artifacts/artifacts/one/vc",
+        "--no-logic-path",
+        "--disable-solver-info",
+        "--no-exec-info",
+        "--function",
+        "sample",
+        "--concrete-bindings",
+        "--instance-trace",
+        "--spec",
+        "__tespec_entry",
+        "-I/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-final/error-after-invalid-assertion-entry-exit",
+        "--loop-unroll-limit",
+        "16",
+        "--call-depth-limit",
+        "64"
+      ],
+      "stdout": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-final/error-after-invalid-assertion-entry-exit/candidate/artifacts/artifacts/one/executor.json",
+      "stderr": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-final/error-after-invalid-assertion-entry-exit/candidate/artifacts/artifacts/one/stderr.log",
+      "vc": {
+        "schema": "qcp-spectest-vc-manifest/v1",
+        "case_id": "one",
+        "function": "sample",
+        "source": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-final/error-after-invalid-assertion-entry-exit/candidate/artifacts/artifacts/one/input.c",
+        "qcip_root": "/home/yangfp/teSpec/runtime/qcip",
+        "status": "not_generated",
+        "residual_goals": [],
+        "counterexample_goals": [],
+        "files": {
+          "goal": null,
+          "proof_auto": null,
+          "proof_manual": null,
+          "goal_check": null
+        },
+        "missing_files": [
+          "goal",
+          "proof_auto",
+          "proof_manual",
+          "goal_check"
+        ],
+        "immutable_sha256": {},
+        "coq_dependencies": [],
+        "runtime_dependencies": [],
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [],
+          "aliases": []
+        },
+        "manifest": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-final/error-after-invalid-assertion-entry-exit/candidate/artifacts/artifacts/one/vc/manifest.json"
+      },
+      "resources": {
+        "wall_seconds": 0.005445,
+        "cpu_seconds": 0.0,
+        "measurement": "GNU time; executor and children; maximum process RSS",
+        "peak_rss_kib": 4784
+      }
+    }
+  ],
+  "itp_vcs": [],
+  "summary": {
+    "total": 1,
+    "PASS": 0,
+    "FAIL": 0,
+    "UNKNOWN": 0,
+    "ERROR": 1,
+    "INVALID": 0,
+    "specification_only": 0,
+    "duration_seconds": 0.079719,
+    "executor_cpu_seconds": 0.0,
+    "peak_rss_kb": 4784
+  }
+}

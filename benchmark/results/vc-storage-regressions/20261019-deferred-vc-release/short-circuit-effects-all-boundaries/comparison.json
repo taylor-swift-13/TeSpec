@@ -1,0 +1,784 @@
+{
+  "id": "short-circuit-effects-all-boundaries",
+  "fixture": {
+    "id": "short-circuit-effects-all-boundaries",
+    "n": 3,
+    "strategy": "inline",
+    "mode": "all-boundaries",
+    "expected": "PASS",
+    "source": "int bump(int *p) /*@ With v Require 0 <= v && v < 10 && data_at(p, int, v) Ensure __return == v+1 && data_at(p, int, v+1) */ { *p=*p+1; return *p; } int sample(int n) /*@ Require 0 <= n && n <= 4096 && emp Ensure __return == n && emp */ { int i=0; int j=0; while(i<n && bump(&j)<4) i++; return j; }\n"
+  },
+  "source_sha256": "334ba89318d3e7d69f385bf0672cb1d2fbeada496ac6f567580503eb23825172",
+  "binds_sha256": "1b0da99ab914ef949fd1e0912ad9e3e19dcc77d4e55af6bfd347bd6664828c8d",
+  "trace_enabled": true,
+  "baseline": {
+    "report": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/short-circuit-effects-all-boundaries/baseline/artifacts/report.json",
+    "report_sha256": "6a543d2c230818ae955761862a60a00954e2b3199ac785388c20b8723a1f1fff",
+    "raw": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/short-circuit-effects-all-boundaries/baseline/artifacts/artifacts/one/executor.json",
+    "raw_sha256": "b925d5de9ed6c513d94f416cda778b66c2b9a6002cc9694eca0d5e0b3a85b3c1",
+    "legacy_raw_sha256": "c3924e84dbe1b3255a8dbbfb6c952004c0257c032a36428c3c38a25f82c3237f",
+    "decisions": {
+      "status": "PASS",
+      "overall": "PASS",
+      "precondition_result": "SAT",
+      "execution_completed": true,
+      "executor_error": null,
+      "executor_reported_status": "PASS",
+      "residual_vcs": [],
+      "vc_results": [
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX i_389_addr \nPROP[]\nLOCAL[\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  has_permission(i_389_addr, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX j_392_addr i_389_addr \nPROP[]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  has_permission(j_392_addr, signed int);\n  store(i_389_addr, 0, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 1,
+          "status": "VALID",
+          "path": "EX p_397_addr j_392_addr i_389_addr \nPROP[]\nLOCAL[\n  Temp p p_397_addr;\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  store(p_397_addr, j_392_addr, signed int*);\n  store(j_392_addr, 0, signed int);\n  store(i_389_addr, 0, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "entailment",
+          "name": null,
+          "line": 1,
+          "status": "VALID",
+          "path": "PROP[]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[]\n",
+          "goal": "EX retval_396 \nPROP[\n  retval_396 == 1 ]\nLOCAL[\n  Temp n n_380_addr;\n  Temp i i_389_addr;\n  Temp j j_392_addr ]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX j_392_addr i_389_addr \nPROP[\n  prop_false ]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  store(j_392_addr, 1, signed int);\n  store(i_389_addr, 0, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX j_392_addr i_389_addr \nPROP[]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  store(j_392_addr, 1, signed int);\n  store(i_389_addr, 0, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX j_392_addr i_389_addr \nPROP[\n  prop_false ]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  store(j_392_addr, 0, signed int);\n  store(i_389_addr, 0, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "partial_solve",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "PROP[]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  store(j_392_addr, 0, signed int);\n  store(i_389_addr, 0, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 1,
+          "status": "VALID",
+          "path": "EX p_402_addr j_392_addr i_389_addr \nPROP[]\nLOCAL[\n  Temp p p_402_addr;\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  store(p_402_addr, j_392_addr, signed int*);\n  store(j_392_addr, 1, signed int);\n  store(i_389_addr, 1, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "entailment",
+          "name": null,
+          "line": 1,
+          "status": "VALID",
+          "path": "PROP[]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[]\n",
+          "goal": "EX retval_401 \nPROP[\n  retval_401 == 2 ]\nLOCAL[\n  Temp n n_380_addr;\n  Temp i i_389_addr;\n  Temp j j_392_addr ]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX j_392_addr i_389_addr \nPROP[\n  prop_false ]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  store(j_392_addr, 2, signed int);\n  store(i_389_addr, 1, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX j_392_addr i_389_addr \nPROP[]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  store(j_392_addr, 2, signed int);\n  store(i_389_addr, 1, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX j_392_addr i_389_addr \nPROP[\n  prop_false ]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  store(j_392_addr, 1, signed int);\n  store(i_389_addr, 1, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "partial_solve",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "PROP[]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  store(j_392_addr, 1, signed int);\n  store(i_389_addr, 1, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 1,
+          "status": "VALID",
+          "path": "EX p_407_addr j_392_addr i_389_addr \nPROP[]\nLOCAL[\n  Temp p p_407_addr;\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  store(p_407_addr, j_392_addr, signed int*);\n  store(j_392_addr, 2, signed int);\n  store(i_389_addr, 2, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "entailment",
+          "name": null,
+          "line": 1,
+          "status": "VALID",
+          "path": "PROP[]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[]\n",
+          "goal": "EX retval_406 \nPROP[\n  retval_406 == 3 ]\nLOCAL[\n  Temp n n_380_addr;\n  Temp i i_389_addr;\n  Temp j j_392_addr ]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX j_392_addr i_389_addr \nPROP[\n  prop_false ]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  store(j_392_addr, 3, signed int);\n  store(i_389_addr, 2, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX j_392_addr i_389_addr \nPROP[]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  store(j_392_addr, 3, signed int);\n  store(i_389_addr, 2, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX j_392_addr i_389_addr \nPROP[\n  prop_false ]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  store(j_392_addr, 2, signed int);\n  store(i_389_addr, 2, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "partial_solve",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "PROP[]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  store(j_392_addr, 2, signed int);\n  store(i_389_addr, 2, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX j_392_addr i_389_addr \nPROP[\n  prop_false ]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  store(j_392_addr, 3, signed int);\n  store(i_389_addr, 3, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "return",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "PROP[]\nLOCAL[]\nSEP[]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        }
+      ],
+      "phases": {
+        "precondition": "SAT",
+        "safety": "PASS",
+        "postcondition": "PASS",
+        "annotations": "PASS",
+        "execution": "PASS"
+      },
+      "result_scope": "concrete-execution",
+      "sampling_events": [],
+      "abstraction_events": [
+        {
+          "kind": "inline-call",
+          "function": "bump",
+          "count": 3
+        },
+        {
+          "kind": "contract-check",
+          "function": "bump",
+          "count": 3
+        }
+      ]
+    },
+    "coq": {
+      "goal": {
+        "path": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/short-circuit-effects-all-boundaries/baseline/artifacts/artifacts/one/vc/input_goal.v",
+        "exists": true,
+        "sha256": "8c292a858e1a5bef87e4672f98626769178bb9fd02aeb345ac2b092a0e85ada7",
+        "bytes": 12500
+      },
+      "proof_auto": {
+        "path": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/short-circuit-effects-all-boundaries/baseline/artifacts/artifacts/one/vc/input_proof_auto.v",
+        "exists": true,
+        "sha256": "60d138957be7ccb7d913e5a3fd1edf8288a823d56ea1b05ca5f3918864227b87",
+        "bytes": 3369
+      },
+      "goal_check": {
+        "path": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/short-circuit-effects-all-boundaries/baseline/artifacts/artifacts/one/vc/input_goal_check.v",
+        "exists": true,
+        "sha256": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e",
+        "bytes": 178
+      }
+    },
+    "storage_metrics": {},
+    "runtime_metrics": {
+      "branch_evaluation": {
+        "schema": "instance-first-branch-query/v1",
+        "pure_queries": 75,
+        "evaluated_true": 68,
+        "evaluated_false": 7,
+        "smt_fallback": 0
+      }
+    },
+    "executor_resources": {
+      "wall_seconds": 0.011438,
+      "cpu_seconds": 0.0,
+      "measurement": "GNU time; executor and children; maximum process RSS",
+      "peak_rss_kib": 6560
+    },
+    "vc_count": 22,
+    "witness_counts": [
+      {
+        "functionName": "sample",
+        "Witness": {
+          "safety_checker_wit": {
+            "total": 21,
+            "auto_solved": 21,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "entailment_checker_wit": {
+            "total": 3,
+            "auto_solved": 3,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "return_checker_wit": {
+            "total": 1,
+            "auto_solved": 1,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "partial_solve_wit": {
+            "total": 3,
+            "auto_solved": 3,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "which_implies_wit": {
+            "total": 0,
+            "auto_solved": 0,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "total_witness_count": {
+            "auto_solved": 28,
+            "manual": 0
+          }
+        }
+      }
+    ],
+    "generated_source_sha256": "966ef1225732d4b6f7ee84e3934779c836c962e4b981f2a9c4a7c6b354d98bb0",
+    "measurement": {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "spectest",
+        "run",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/short-circuit-effects-all-boundaries/input.c",
+        "--function",
+        "sample",
+        "--binds",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/short-circuit-effects-all-boundaries/binds.json",
+        "--qcp-binary",
+        "/tmp/tespec-deferred-vc-baseline/tespec-symexec",
+        "--execution-strategy",
+        "inline",
+        "--execution-mode",
+        "all-boundaries",
+        "--loop-unroll-limit",
+        "16",
+        "--output-dir",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/short-circuit-effects-all-boundaries/baseline/artifacts",
+        "--timeout",
+        "60",
+        "--no-spatial-smt",
+        "--instance-trace"
+      ],
+      "executed_wrapper_command": [
+        "/usr/bin/time",
+        "--quiet",
+        "-f",
+        "{\"max_process_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"wall_seconds_gnu\":%e}",
+        "-o",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/short-circuit-effects-all-boundaries/baseline/resources.json",
+        "/usr/bin/timeout",
+        "--signal=TERM",
+        "--kill-after=5",
+        "75",
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "spectest",
+        "run",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/short-circuit-effects-all-boundaries/input.c",
+        "--function",
+        "sample",
+        "--binds",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/short-circuit-effects-all-boundaries/binds.json",
+        "--qcp-binary",
+        "/tmp/tespec-deferred-vc-baseline/tespec-symexec",
+        "--execution-strategy",
+        "inline",
+        "--execution-mode",
+        "all-boundaries",
+        "--loop-unroll-limit",
+        "16",
+        "--output-dir",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/short-circuit-effects-all-boundaries/baseline/artifacts",
+        "--timeout",
+        "60",
+        "--no-spatial-smt",
+        "--instance-trace"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.16495715999917593,
+      "resources": {
+        "max_process_rss_kib": 20180,
+        "user_seconds": 0.07,
+        "system_seconds": 0.04,
+        "wall_seconds_gnu": 0.12
+      },
+      "tokens": 0,
+      "model_calls": 0,
+      "stdout": "benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/short-circuit-effects-all-boundaries/baseline/stdout.log",
+      "stderr": "benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/short-circuit-effects-all-boundaries/baseline/stderr.log",
+      "memory_definition": "GNU time %M: largest measured process peak RSS, not aggregate tree memory."
+    },
+    "matches_expected": true
+  },
+  "candidate": {
+    "report": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/short-circuit-effects-all-boundaries/candidate/artifacts/report.json",
+    "report_sha256": "8a72bfca0a360270b739585452314de66d9a615d15e09f63e2bb060ee4681a2d",
+    "raw": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/short-circuit-effects-all-boundaries/candidate/artifacts/artifacts/one/executor.json",
+    "raw_sha256": "06233e53269e9cf88bea06d4da782fee38909d81486c8c2a640214d885d8371d",
+    "legacy_raw_sha256": "c3924e84dbe1b3255a8dbbfb6c952004c0257c032a36428c3c38a25f82c3237f",
+    "decisions": {
+      "status": "PASS",
+      "overall": "PASS",
+      "precondition_result": "SAT",
+      "execution_completed": true,
+      "executor_error": null,
+      "executor_reported_status": "PASS",
+      "residual_vcs": [],
+      "vc_results": [
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX i_389_addr \nPROP[]\nLOCAL[\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  has_permission(i_389_addr, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX j_392_addr i_389_addr \nPROP[]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  has_permission(j_392_addr, signed int);\n  store(i_389_addr, 0, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 1,
+          "status": "VALID",
+          "path": "EX p_397_addr j_392_addr i_389_addr \nPROP[]\nLOCAL[\n  Temp p p_397_addr;\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  store(p_397_addr, j_392_addr, signed int*);\n  store(j_392_addr, 0, signed int);\n  store(i_389_addr, 0, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "entailment",
+          "name": null,
+          "line": 1,
+          "status": "VALID",
+          "path": "PROP[]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[]\n",
+          "goal": "EX retval_396 \nPROP[\n  retval_396 == 1 ]\nLOCAL[\n  Temp n n_380_addr;\n  Temp i i_389_addr;\n  Temp j j_392_addr ]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX j_392_addr i_389_addr \nPROP[\n  prop_false ]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  store(j_392_addr, 1, signed int);\n  store(i_389_addr, 0, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX j_392_addr i_389_addr \nPROP[]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  store(j_392_addr, 1, signed int);\n  store(i_389_addr, 0, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX j_392_addr i_389_addr \nPROP[\n  prop_false ]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  store(j_392_addr, 0, signed int);\n  store(i_389_addr, 0, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "partial_solve",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "PROP[]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  store(j_392_addr, 0, signed int);\n  store(i_389_addr, 0, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 1,
+          "status": "VALID",
+          "path": "EX p_402_addr j_392_addr i_389_addr \nPROP[]\nLOCAL[\n  Temp p p_402_addr;\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  store(p_402_addr, j_392_addr, signed int*);\n  store(j_392_addr, 1, signed int);\n  store(i_389_addr, 1, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "entailment",
+          "name": null,
+          "line": 1,
+          "status": "VALID",
+          "path": "PROP[]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[]\n",
+          "goal": "EX retval_401 \nPROP[\n  retval_401 == 2 ]\nLOCAL[\n  Temp n n_380_addr;\n  Temp i i_389_addr;\n  Temp j j_392_addr ]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX j_392_addr i_389_addr \nPROP[\n  prop_false ]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  store(j_392_addr, 2, signed int);\n  store(i_389_addr, 1, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX j_392_addr i_389_addr \nPROP[]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  store(j_392_addr, 2, signed int);\n  store(i_389_addr, 1, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX j_392_addr i_389_addr \nPROP[\n  prop_false ]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  store(j_392_addr, 1, signed int);\n  store(i_389_addr, 1, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "partial_solve",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "PROP[]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  store(j_392_addr, 1, signed int);\n  store(i_389_addr, 1, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 1,
+          "status": "VALID",
+          "path": "EX p_407_addr j_392_addr i_389_addr \nPROP[]\nLOCAL[\n  Temp p p_407_addr;\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  store(p_407_addr, j_392_addr, signed int*);\n  store(j_392_addr, 2, signed int);\n  store(i_389_addr, 2, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "entailment",
+          "name": null,
+          "line": 1,
+          "status": "VALID",
+          "path": "PROP[]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[]\n",
+          "goal": "EX retval_406 \nPROP[\n  retval_406 == 3 ]\nLOCAL[\n  Temp n n_380_addr;\n  Temp i i_389_addr;\n  Temp j j_392_addr ]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX j_392_addr i_389_addr \nPROP[\n  prop_false ]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  store(j_392_addr, 3, signed int);\n  store(i_389_addr, 2, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX j_392_addr i_389_addr \nPROP[]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  store(j_392_addr, 3, signed int);\n  store(i_389_addr, 2, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX j_392_addr i_389_addr \nPROP[\n  prop_false ]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  store(j_392_addr, 2, signed int);\n  store(i_389_addr, 2, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "partial_solve",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "PROP[]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  store(j_392_addr, 2, signed int);\n  store(i_389_addr, 2, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX j_392_addr i_389_addr \nPROP[\n  prop_false ]\nLOCAL[\n  Temp j j_392_addr;\n  Temp i i_389_addr;\n  Temp n n_380_addr ]\nSEP[\n  store(j_392_addr, 3, signed int);\n  store(i_389_addr, 3, signed int);\n  store(n_380_addr, 3, signed int) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "return",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "PROP[]\nLOCAL[]\nSEP[]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        }
+      ],
+      "phases": {
+        "precondition": "SAT",
+        "safety": "PASS",
+        "postcondition": "PASS",
+        "annotations": "PASS",
+        "execution": "PASS"
+      },
+      "result_scope": "concrete-execution",
+      "sampling_events": [],
+      "abstraction_events": [
+        {
+          "kind": "inline-call",
+          "function": "bump",
+          "count": 3
+        },
+        {
+          "kind": "contract-check",
+          "function": "bump",
+          "count": 3
+        }
+      ]
+    },
+    "coq": {
+      "goal": {
+        "path": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/short-circuit-effects-all-boundaries/candidate/artifacts/artifacts/one/vc/input_goal.v",
+        "exists": true,
+        "sha256": "8c292a858e1a5bef87e4672f98626769178bb9fd02aeb345ac2b092a0e85ada7",
+        "bytes": 12500
+      },
+      "proof_auto": {
+        "path": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/short-circuit-effects-all-boundaries/candidate/artifacts/artifacts/one/vc/input_proof_auto.v",
+        "exists": true,
+        "sha256": "60d138957be7ccb7d913e5a3fd1edf8288a823d56ea1b05ca5f3918864227b87",
+        "bytes": 3369
+      },
+      "goal_check": {
+        "path": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/short-circuit-effects-all-boundaries/candidate/artifacts/artifacts/one/vc/input_goal_check.v",
+        "exists": true,
+        "sha256": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e",
+        "bytes": 178
+      }
+    },
+    "storage_metrics": {
+      "vc_scheduling": {
+        "schema": "post-execution-witness-smt/v1",
+        "enabled": true,
+        "collecting": false,
+        "requests": 89,
+        "queued_witnesses": 28,
+        "solved_witnesses": 28,
+        "retained_on_release": 0,
+        "pending_witnesses": 0
+      }
+    },
+    "runtime_metrics": {
+      "branch_evaluation": {
+        "schema": "instance-first-branch-query/v1",
+        "pure_queries": 49,
+        "evaluated_true": 42,
+        "evaluated_false": 7,
+        "smt_fallback": 0
+      }
+    },
+    "executor_resources": {
+      "wall_seconds": 0.009899,
+      "cpu_seconds": 0.0,
+      "measurement": "GNU time; executor and children; maximum process RSS",
+      "peak_rss_kib": 6576
+    },
+    "vc_count": 22,
+    "witness_counts": [
+      {
+        "functionName": "sample",
+        "Witness": {
+          "safety_checker_wit": {
+            "total": 21,
+            "auto_solved": 21,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "entailment_checker_wit": {
+            "total": 3,
+            "auto_solved": 3,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "return_checker_wit": {
+            "total": 1,
+            "auto_solved": 1,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "partial_solve_wit": {
+            "total": 3,
+            "auto_solved": 3,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "which_implies_wit": {
+            "total": 0,
+            "auto_solved": 0,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "total_witness_count": {
+            "auto_solved": 28,
+            "manual": 0
+          }
+        }
+      }
+    ],
+    "generated_source_sha256": "966ef1225732d4b6f7ee84e3934779c836c962e4b981f2a9c4a7c6b354d98bb0",
+    "measurement": {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "spectest",
+        "run",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/short-circuit-effects-all-boundaries/input.c",
+        "--function",
+        "sample",
+        "--binds",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/short-circuit-effects-all-boundaries/binds.json",
+        "--qcp-binary",
+        "/home/yangfp/teSpec/bin/tespec-symexec",
+        "--execution-strategy",
+        "inline",
+        "--execution-mode",
+        "all-boundaries",
+        "--loop-unroll-limit",
+        "16",
+        "--output-dir",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/short-circuit-effects-all-boundaries/candidate/artifacts",
+        "--timeout",
+        "60",
+        "--no-spatial-smt",
+        "--instance-trace"
+      ],
+      "executed_wrapper_command": [
+        "/usr/bin/time",
+        "--quiet",
+        "-f",
+        "{\"max_process_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"wall_seconds_gnu\":%e}",
+        "-o",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/short-circuit-effects-all-boundaries/candidate/resources.json",
+        "/usr/bin/timeout",
+        "--signal=TERM",
+        "--kill-after=5",
+        "75",
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "spectest",
+        "run",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/short-circuit-effects-all-boundaries/input.c",
+        "--function",
+        "sample",
+        "--binds",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/short-circuit-effects-all-boundaries/binds.json",
+        "--qcp-binary",
+        "/home/yangfp/teSpec/bin/tespec-symexec",
+        "--execution-strategy",
+        "inline",
+        "--execution-mode",
+        "all-boundaries",
+        "--loop-unroll-limit",
+        "16",
+        "--output-dir",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/short-circuit-effects-all-boundaries/candidate/artifacts",
+        "--timeout",
+        "60",
+        "--no-spatial-smt",
+        "--instance-trace"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.16482301699579693,
+      "resources": {
+        "max_process_rss_kib": 20024,
+        "user_seconds": 0.07,
+        "system_seconds": 0.03,
+        "wall_seconds_gnu": 0.12
+      },
+      "tokens": 0,
+      "model_calls": 0,
+      "stdout": "benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/short-circuit-effects-all-boundaries/candidate/stdout.log",
+      "stderr": "benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/short-circuit-effects-all-boundaries/candidate/stderr.log",
+      "memory_definition": "GNU time %M: largest measured process peak RSS, not aggregate tree memory."
+    },
+    "matches_expected": true
+  },
+  "comparison": {
+    "passed": true,
+    "ignored_metrics_are_new_only": true,
+    "runtime_metric_keys_match": true,
+    "raw_differences": [],
+    "decision_differences": [],
+    "coq_byte_differences": [],
+    "source_bytes_equal": true,
+    "baseline_vc_count": 22,
+    "candidate_vc_count": 22,
+    "original_coq_files_byte_equal": true,
+    "legacy_raw_equal": true,
+    "both_match_expected": true,
+    "transport_ok": true
+  }
+}

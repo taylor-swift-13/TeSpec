@@ -256,3 +256,10 @@ teSpec 按用户要求暂缓，本轮未运行；历史两模式各7 UNKNOWN是�
 已复用 QCP 实例代入/常量化简，在分支纯可达性查询中优先直接求值；剩余符号公式回退原 SMT，空间策略检查保持。live state、原始见证和 VC 生成不变。21 组 1800 次 OFF/ON 完整回归结果一致，5262 份 Coq 文件逐字节一致；42 次 modular 对照、11 个既有循环对照和24个控制流边界对照通过。现有105项 Python 测试通过，query子集重跑含新增2项，共107项不同测试。
 
 完整组数保持21/45；无新增 CN/Fulminate/ITP 测量。审计：[实例值优先分支判定](../benchmark/results/vc-storage-regressions/20261019-direct-branch-audit/summary.md)。
+
+
+## 2026-10-19：证明型 VC 延后自动求解
+
+正常具体测试中，原生证明型 witness 请求保留原节点后排队，目标执行完成后统一复用 QCP 策略/SMT；在线必要 SMT、实例更新、分支剪枝仍保留，没有在线 ITP。两个执行策略和 VC 范围参数独立，原始义务不删；提前 ERROR 也处理已有义务。旧日志/全自动及全称验证路径保留原时序。
+
+已完整 21 组的 900 对输入 OFF/ON 共 1800 次零退化，5262 个原 Goal/auto/check 文件字节一致；modular 42 次代表执行、39 对专项也精确一致，113 项 Python 测试及队列/共享存储 ASan/UBSan 通过。最终所有队列 pending=0。OFF 仍 31 UNKNOWN，ON 0 UNKNOWN，两个模式各 23 预期 ERROR；没有把这些状态变造为 PASS。开发中边界抑制与源位置两项回归已修复，失败尝试和最终复测全部保存。未新增 ITP/全称证书，完整组仍 **21/45**，历史四工具成本不覆盖。见 [实现、证据与复现](../benchmark/results/vc-storage-regressions/20261019-deferred-vc-audit/summary.md)。

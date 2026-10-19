@@ -97,6 +97,23 @@ class QueryIsolationTests(unittest.TestCase):
                 self.assertIn("store(4096, 0,", goals)
                 self.assertIn("store(4096, 1,", goals)
 
+    def test_proof_witnesses_finish_in_post_execution_stage(self):
+        for case in ("bound_loop", "bound_loop_bad_return", "field_call_alias",
+                     "two_feasible_branches"):
+            for mode in REPLAY.MODES:
+                with self.subTest(case=case, mode=mode):
+                    payload = self.payload(case, mode)
+                    scheduling = payload["vc_scheduling"]
+                    self.assertEqual(scheduling["schema"], "post-execution-witness-smt/v1")
+                    self.assertTrue(scheduling["enabled"])
+                    self.assertFalse(scheduling["collecting"])
+                    self.assertGreater(scheduling["queued_witnesses"], 0)
+                    self.assertEqual(scheduling["queued_witnesses"],
+                                     scheduling["solved_witnesses"])
+                    self.assertEqual(scheduling["pending_witnesses"], 0)
+                    self.assertGreaterEqual(scheduling["requests"],
+                                            scheduling["queued_witnesses"])
+
     def test_fixed_loop_feasibility_avoids_smt(self):
         for mode in REPLAY.MODES:
             with self.subTest(mode=mode):

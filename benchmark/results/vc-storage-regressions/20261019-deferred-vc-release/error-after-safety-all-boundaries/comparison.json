@@ -1,0 +1,352 @@
+{
+  "id": "error-after-safety-all-boundaries",
+  "fixture": {
+    "id": "error-after-safety-all-boundaries",
+    "n": 3,
+    "strategy": "inline",
+    "mode": "all-boundaries",
+    "expected": "ERROR",
+    "source": "int sample(int n) /*@ Require 0 <= n && n <= 4096 && emp Ensure __return == n && emp */ { int x=n+1; int *p=0; return *p; }\n"
+  },
+  "source_sha256": "5a2bcf07f75d6d285cc87d42c096e6e218546026ae3875b42ed7d5758bb7dac0",
+  "binds_sha256": "1b0da99ab914ef949fd1e0912ad9e3e19dcc77d4e55af6bfd347bd6664828c8d",
+  "trace_enabled": true,
+  "baseline": {
+    "report": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/error-after-safety-all-boundaries/baseline/artifacts/report.json",
+    "report_sha256": "79aae3563eb49125946cd7cde9ccac8409d4a9f15daf60653464ee4706a367ba",
+    "raw": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/error-after-safety-all-boundaries/baseline/artifacts/artifacts/one/executor.json",
+    "raw_sha256": "8dc15a2c5f7bc77eecab4ff964a6b8398b80314b2d218a98c4faf1ad3841d9d0",
+    "legacy_raw_sha256": "18027c5b40cbb3ecae65aa76eac0e2275a32607bce7ccfb16294cd7f4c5b0f6d",
+    "decisions": {
+      "status": "ERROR",
+      "overall": "ERROR",
+      "precondition_result": "SAT",
+      "execution_completed": false,
+      "executor_error": {
+        "Main Error Message": "fatal error: Symbolic execution failed: cannot read memory through this pointer because the current assertion does not prove readable memory at the target address. Add a Require/Assert memory predicate such as data_at(pointer, value), or prove that the pointer aliases an owned memory cell.",
+        "fileName": null,
+        "line": 4,
+        "column": 100,
+        "additional_info": [
+          "Read address: 0\n",
+          "Current assertion:\nn@pre == 3 &&\n0 <= n@pre &&\nn@pre <= 4096 &&\n(p == 0) *\n(x == n@pre + 1) *\n(n == n@pre)\n\n"
+        ]
+      },
+      "executor_reported_status": "ERROR",
+      "residual_vcs": [],
+      "vc_results": [
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX x_380_addr \nPROP[]\nLOCAL[\n  Temp x x_380_addr;\n  Temp n n_371_addr ]\nSEP[\n  has_permission(x_380_addr, signed int);\n  store(n_371_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX p_383_addr x_380_addr \nPROP[]\nLOCAL[\n  Temp p p_383_addr;\n  Temp x x_380_addr;\n  Temp n n_371_addr ]\nSEP[\n  has_permission(p_383_addr, signed int*);\n  store(x_380_addr, 4, signed int);\n  store(n_371_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        }
+      ],
+      "phases": {
+        "precondition": "SAT",
+        "safety": "UNKNOWN",
+        "postcondition": "UNKNOWN",
+        "annotations": "UNKNOWN",
+        "execution": "UNKNOWN"
+      },
+      "result_scope": "concrete-execution",
+      "sampling_events": [],
+      "abstraction_events": []
+    },
+    "coq": {},
+    "storage_metrics": {},
+    "runtime_metrics": {
+      "branch_evaluation": {
+        "schema": "instance-first-branch-query/v1",
+        "pure_queries": 0,
+        "evaluated_true": 0,
+        "evaluated_false": 0,
+        "smt_fallback": 0
+      }
+    },
+    "executor_resources": {
+      "wall_seconds": 0.00479,
+      "cpu_seconds": 0.0,
+      "measurement": "GNU time; executor and children; maximum process RSS",
+      "peak_rss_kib": 5208
+    },
+    "vc_count": 2,
+    "witness_counts": [
+      {
+        "functionName": "sample",
+        "Witness": null
+      }
+    ],
+    "generated_source_sha256": "26cc15594aa9119c768fbe90d9746a6f82e29c78f5fa6f7c16dc5de77254cc10",
+    "measurement": {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "spectest",
+        "run",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/error-after-safety-all-boundaries/input.c",
+        "--function",
+        "sample",
+        "--binds",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/error-after-safety-all-boundaries/binds.json",
+        "--qcp-binary",
+        "/tmp/tespec-deferred-vc-baseline/tespec-symexec",
+        "--execution-strategy",
+        "inline",
+        "--execution-mode",
+        "all-boundaries",
+        "--loop-unroll-limit",
+        "16",
+        "--output-dir",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/error-after-safety-all-boundaries/baseline/artifacts",
+        "--timeout",
+        "60",
+        "--no-spatial-smt",
+        "--instance-trace"
+      ],
+      "executed_wrapper_command": [
+        "/usr/bin/time",
+        "--quiet",
+        "-f",
+        "{\"max_process_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"wall_seconds_gnu\":%e}",
+        "-o",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/error-after-safety-all-boundaries/baseline/resources.json",
+        "/usr/bin/timeout",
+        "--signal=TERM",
+        "--kill-after=5",
+        "75",
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "spectest",
+        "run",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/error-after-safety-all-boundaries/input.c",
+        "--function",
+        "sample",
+        "--binds",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/error-after-safety-all-boundaries/binds.json",
+        "--qcp-binary",
+        "/tmp/tespec-deferred-vc-baseline/tespec-symexec",
+        "--execution-strategy",
+        "inline",
+        "--execution-mode",
+        "all-boundaries",
+        "--loop-unroll-limit",
+        "16",
+        "--output-dir",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/error-after-safety-all-boundaries/baseline/artifacts",
+        "--timeout",
+        "60",
+        "--no-spatial-smt",
+        "--instance-trace"
+      ],
+      "exit_code": 1,
+      "wall_seconds": 0.11450369299564045,
+      "resources": {
+        "max_process_rss_kib": 20088,
+        "user_seconds": 0.08,
+        "system_seconds": 0.02,
+        "wall_seconds_gnu": 0.11
+      },
+      "tokens": 0,
+      "model_calls": 0,
+      "stdout": "benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/error-after-safety-all-boundaries/baseline/stdout.log",
+      "stderr": "benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/error-after-safety-all-boundaries/baseline/stderr.log",
+      "memory_definition": "GNU time %M: largest measured process peak RSS, not aggregate tree memory."
+    },
+    "matches_expected": true
+  },
+  "candidate": {
+    "report": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/error-after-safety-all-boundaries/candidate/artifacts/report.json",
+    "report_sha256": "3e54e2ef646332c4aaa504a6ac4a90e1ca76e30d057dceb8bd2f177aca8737da",
+    "raw": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/error-after-safety-all-boundaries/candidate/artifacts/artifacts/one/executor.json",
+    "raw_sha256": "e5f4b62207addbedf480f156392e41991c2f53bfb83e9a8c24e16d09d267ee26",
+    "legacy_raw_sha256": "18027c5b40cbb3ecae65aa76eac0e2275a32607bce7ccfb16294cd7f4c5b0f6d",
+    "decisions": {
+      "status": "ERROR",
+      "overall": "ERROR",
+      "precondition_result": "SAT",
+      "execution_completed": false,
+      "executor_error": {
+        "Main Error Message": "fatal error: Symbolic execution failed: cannot read memory through this pointer because the current assertion does not prove readable memory at the target address. Add a Require/Assert memory predicate such as data_at(pointer, value), or prove that the pointer aliases an owned memory cell.",
+        "fileName": null,
+        "line": 4,
+        "column": 100,
+        "additional_info": [
+          "Read address: 0\n",
+          "Current assertion:\nn@pre == 3 &&\n0 <= n@pre &&\nn@pre <= 4096 &&\n(p == 0) *\n(x == n@pre + 1) *\n(n == n@pre)\n\n"
+        ]
+      },
+      "executor_reported_status": "ERROR",
+      "residual_vcs": [],
+      "vc_results": [
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX x_380_addr \nPROP[]\nLOCAL[\n  Temp x x_380_addr;\n  Temp n n_371_addr ]\nSEP[\n  has_permission(x_380_addr, signed int);\n  store(n_371_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX p_383_addr x_380_addr \nPROP[]\nLOCAL[\n  Temp p p_383_addr;\n  Temp x x_380_addr;\n  Temp n n_371_addr ]\nSEP[\n  has_permission(p_383_addr, signed int*);\n  store(x_380_addr, 4, signed int);\n  store(n_371_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        }
+      ],
+      "phases": {
+        "precondition": "SAT",
+        "safety": "UNKNOWN",
+        "postcondition": "UNKNOWN",
+        "annotations": "UNKNOWN",
+        "execution": "UNKNOWN"
+      },
+      "result_scope": "concrete-execution",
+      "sampling_events": [],
+      "abstraction_events": []
+    },
+    "coq": {},
+    "storage_metrics": {
+      "vc_scheduling": {
+        "schema": "post-execution-witness-smt/v1",
+        "enabled": true,
+        "collecting": false,
+        "requests": 3,
+        "queued_witnesses": 3,
+        "solved_witnesses": 3,
+        "retained_on_release": 0,
+        "pending_witnesses": 0
+      }
+    },
+    "runtime_metrics": {
+      "branch_evaluation": {
+        "schema": "instance-first-branch-query/v1",
+        "pure_queries": 0,
+        "evaluated_true": 0,
+        "evaluated_false": 0,
+        "smt_fallback": 0
+      }
+    },
+    "executor_resources": {
+      "wall_seconds": 0.00558,
+      "cpu_seconds": 0.0,
+      "measurement": "GNU time; executor and children; maximum process RSS",
+      "peak_rss_kib": 5056
+    },
+    "vc_count": 2,
+    "witness_counts": [
+      {
+        "functionName": "sample",
+        "Witness": null
+      }
+    ],
+    "generated_source_sha256": "26cc15594aa9119c768fbe90d9746a6f82e29c78f5fa6f7c16dc5de77254cc10",
+    "measurement": {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "spectest",
+        "run",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/error-after-safety-all-boundaries/input.c",
+        "--function",
+        "sample",
+        "--binds",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/error-after-safety-all-boundaries/binds.json",
+        "--qcp-binary",
+        "/home/yangfp/teSpec/bin/tespec-symexec",
+        "--execution-strategy",
+        "inline",
+        "--execution-mode",
+        "all-boundaries",
+        "--loop-unroll-limit",
+        "16",
+        "--output-dir",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/error-after-safety-all-boundaries/candidate/artifacts",
+        "--timeout",
+        "60",
+        "--no-spatial-smt",
+        "--instance-trace"
+      ],
+      "executed_wrapper_command": [
+        "/usr/bin/time",
+        "--quiet",
+        "-f",
+        "{\"max_process_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"wall_seconds_gnu\":%e}",
+        "-o",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/error-after-safety-all-boundaries/candidate/resources.json",
+        "/usr/bin/timeout",
+        "--signal=TERM",
+        "--kill-after=5",
+        "75",
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "spectest",
+        "run",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/error-after-safety-all-boundaries/input.c",
+        "--function",
+        "sample",
+        "--binds",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/error-after-safety-all-boundaries/binds.json",
+        "--qcp-binary",
+        "/home/yangfp/teSpec/bin/tespec-symexec",
+        "--execution-strategy",
+        "inline",
+        "--execution-mode",
+        "all-boundaries",
+        "--loop-unroll-limit",
+        "16",
+        "--output-dir",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/error-after-safety-all-boundaries/candidate/artifacts",
+        "--timeout",
+        "60",
+        "--no-spatial-smt",
+        "--instance-trace"
+      ],
+      "exit_code": 1,
+      "wall_seconds": 0.16495233699970413,
+      "resources": {
+        "max_process_rss_kib": 19948,
+        "user_seconds": 0.08,
+        "system_seconds": 0.03,
+        "wall_seconds_gnu": 0.12
+      },
+      "tokens": 0,
+      "model_calls": 0,
+      "stdout": "benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/error-after-safety-all-boundaries/candidate/stdout.log",
+      "stderr": "benchmark/results/vc-storage-regressions/20261019-deferred-vc-release/error-after-safety-all-boundaries/candidate/stderr.log",
+      "memory_definition": "GNU time %M: largest measured process peak RSS, not aggregate tree memory."
+    },
+    "matches_expected": true
+  },
+  "comparison": {
+    "passed": true,
+    "ignored_metrics_are_new_only": true,
+    "runtime_metric_keys_match": true,
+    "raw_differences": [],
+    "decision_differences": [],
+    "coq_byte_differences": [],
+    "source_bytes_equal": true,
+    "baseline_vc_count": 2,
+    "candidate_vc_count": 2,
+    "original_coq_files_byte_equal": true,
+    "legacy_raw_equal": true,
+    "both_match_expected": true,
+    "transport_ok": true
+  }
+}

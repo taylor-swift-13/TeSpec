@@ -1,0 +1,474 @@
+{
+  "id": "conditional-null-all-boundaries",
+  "fixture": {
+    "id": "conditional-null-all-boundaries",
+    "n": 3,
+    "strategy": "inline",
+    "mode": "all-boundaries",
+    "expected": "PASS",
+    "source": "int sample(int n) /*@ Require 0 <= n && n <= 4096 && emp Ensure __return == n && emp */ { int *p=0; return n>0 ? n : *p; }\n"
+  },
+  "source_sha256": "75724340fd2b62ef4a13464c4bffa12161fa723369e8734c721b8b81ee8d9cba",
+  "binds_sha256": "1b0da99ab914ef949fd1e0912ad9e3e19dcc77d4e55af6bfd347bd6664828c8d",
+  "trace_enabled": true,
+  "baseline": {
+    "report": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-boundaries/conditional-null-all-boundaries/baseline/artifacts/report.json",
+    "report_sha256": "21f31a6f91d9311e7b841cc6328ee38d9e47406d6b01d1582b644cc271cf5fcf",
+    "raw": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-boundaries/conditional-null-all-boundaries/baseline/artifacts/artifacts/one/executor.json",
+    "raw_sha256": "e07ecd603e5c92d67955b47f3f4c001316565d1ac69aad1d13e987add0f1a493",
+    "legacy_raw_sha256": "e9dc6d9be64889705b9f82bfd0b950e8513263618fb7826ceca134cefdd4aa60",
+    "decisions": {
+      "status": "PASS",
+      "overall": "PASS",
+      "precondition_result": "SAT",
+      "execution_completed": true,
+      "executor_error": null,
+      "executor_reported_status": "PASS",
+      "residual_vcs": [],
+      "vc_results": [
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX p_380_addr \nPROP[]\nLOCAL[\n  Temp p p_380_addr;\n  Temp n n_371_addr ]\nSEP[\n  has_permission(p_380_addr, signed int*);\n  store(n_371_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX p_380_addr \nPROP[\n  prop_false ]\nLOCAL[\n  Temp p p_380_addr;\n  Temp n n_371_addr ]\nSEP[\n  store(p_380_addr, 0, signed int*);\n  store(n_371_addr, 3, signed int) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX p_380_addr \nPROP[]\nLOCAL[\n  Temp p p_380_addr;\n  Temp n n_371_addr ]\nSEP[\n  store(p_380_addr, 0, signed int*);\n  store(n_371_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "return",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "PROP[]\nLOCAL[]\nSEP[]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        }
+      ],
+      "phases": {
+        "precondition": "SAT",
+        "safety": "PASS",
+        "postcondition": "PASS",
+        "annotations": "PASS",
+        "execution": "PASS"
+      },
+      "result_scope": "concrete-execution",
+      "sampling_events": [],
+      "abstraction_events": []
+    },
+    "coq": {
+      "goal": {
+        "path": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-boundaries/conditional-null-all-boundaries/baseline/artifacts/artifacts/one/vc/input_goal.v",
+        "exists": true,
+        "sha256": "eca00fbac6c3f08b7bbee78f44426b1c786ddf4731633541bba2c1bf0bedaccb",
+        "bytes": 1936
+      },
+      "proof_auto": {
+        "path": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-boundaries/conditional-null-all-boundaries/baseline/artifacts/artifacts/one/vc/input_proof_auto.v",
+        "exists": true,
+        "sha256": "da66b04bed2d6a313810d22ad496ef9ed8c9b69f3d39360bd84cbcaa971f85d4",
+        "bytes": 1152
+      },
+      "goal_check": {
+        "path": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-boundaries/conditional-null-all-boundaries/baseline/artifacts/artifacts/one/vc/input_goal_check.v",
+        "exists": true,
+        "sha256": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e",
+        "bytes": 178
+      }
+    },
+    "storage_metrics": {},
+    "runtime_metrics": {
+      "branch_evaluation": {
+        "schema": "instance-first-branch-query/v1",
+        "pure_queries": 9,
+        "evaluated_true": 8,
+        "evaluated_false": 1,
+        "smt_fallback": 0
+      }
+    },
+    "executor_resources": {
+      "wall_seconds": 0.005141,
+      "cpu_seconds": 0.0,
+      "measurement": "GNU time; executor and children; maximum process RSS",
+      "peak_rss_kib": 5024
+    },
+    "vc_count": 4,
+    "witness_counts": [
+      {
+        "functionName": "sample",
+        "Witness": {
+          "safety_checker_wit": {
+            "total": 3,
+            "auto_solved": 3,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "entailment_checker_wit": {
+            "total": 0,
+            "auto_solved": 0,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "return_checker_wit": {
+            "total": 1,
+            "auto_solved": 1,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "partial_solve_wit": {
+            "total": 0,
+            "auto_solved": 0,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "which_implies_wit": {
+            "total": 0,
+            "auto_solved": 0,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "total_witness_count": {
+            "auto_solved": 4,
+            "manual": 0
+          }
+        }
+      }
+    ],
+    "generated_source_sha256": "276f1229f0d8a104a2a756948c0b4c02d6a14c9d7b666bce540540dfeb484efa",
+    "measurement": {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "spectest",
+        "run",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-boundaries/conditional-null-all-boundaries/input.c",
+        "--function",
+        "sample",
+        "--binds",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-boundaries/conditional-null-all-boundaries/binds.json",
+        "--qcp-binary",
+        "/tmp/tespec-deferred-vc-baseline/tespec-symexec",
+        "--execution-strategy",
+        "inline",
+        "--execution-mode",
+        "all-boundaries",
+        "--loop-unroll-limit",
+        "16",
+        "--output-dir",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-boundaries/conditional-null-all-boundaries/baseline/artifacts",
+        "--timeout",
+        "60",
+        "--no-spatial-smt",
+        "--instance-trace"
+      ],
+      "executed_wrapper_command": [
+        "/usr/bin/time",
+        "--quiet",
+        "-f",
+        "{\"max_process_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"wall_seconds_gnu\":%e}",
+        "-o",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-boundaries/conditional-null-all-boundaries/baseline/resources.json",
+        "/usr/bin/timeout",
+        "--signal=TERM",
+        "--kill-after=5",
+        "75",
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "spectest",
+        "run",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-boundaries/conditional-null-all-boundaries/input.c",
+        "--function",
+        "sample",
+        "--binds",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-boundaries/conditional-null-all-boundaries/binds.json",
+        "--qcp-binary",
+        "/tmp/tespec-deferred-vc-baseline/tespec-symexec",
+        "--execution-strategy",
+        "inline",
+        "--execution-mode",
+        "all-boundaries",
+        "--loop-unroll-limit",
+        "16",
+        "--output-dir",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-boundaries/conditional-null-all-boundaries/baseline/artifacts",
+        "--timeout",
+        "60",
+        "--no-spatial-smt",
+        "--instance-trace"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.16516488199704327,
+      "resources": {
+        "max_process_rss_kib": 19828,
+        "user_seconds": 0.07,
+        "system_seconds": 0.03,
+        "wall_seconds_gnu": 0.11
+      },
+      "tokens": 0,
+      "model_calls": 0,
+      "stdout": "benchmark/results/vc-storage-regressions/20261019-deferred-vc-boundaries/conditional-null-all-boundaries/baseline/stdout.log",
+      "stderr": "benchmark/results/vc-storage-regressions/20261019-deferred-vc-boundaries/conditional-null-all-boundaries/baseline/stderr.log",
+      "memory_definition": "GNU time %M: largest measured process peak RSS, not aggregate tree memory."
+    },
+    "matches_expected": true
+  },
+  "candidate": {
+    "report": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-boundaries/conditional-null-all-boundaries/candidate/artifacts/report.json",
+    "report_sha256": "3247a1cd85d0ea970f9397122e7d01f7b907f15620db63693cdb476e419e2511",
+    "raw": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-boundaries/conditional-null-all-boundaries/candidate/artifacts/artifacts/one/executor.json",
+    "raw_sha256": "153c2b6f03db7579f532fb0a9b3bb96756d12219566829cf1fcdf4ef533a076c",
+    "legacy_raw_sha256": "e9dc6d9be64889705b9f82bfd0b950e8513263618fb7826ceca134cefdd4aa60",
+    "decisions": {
+      "status": "PASS",
+      "overall": "PASS",
+      "precondition_result": "SAT",
+      "execution_completed": true,
+      "executor_error": null,
+      "executor_reported_status": "PASS",
+      "residual_vcs": [],
+      "vc_results": [
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX p_380_addr \nPROP[]\nLOCAL[\n  Temp p p_380_addr;\n  Temp n n_371_addr ]\nSEP[\n  has_permission(p_380_addr, signed int*);\n  store(n_371_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX p_380_addr \nPROP[\n  prop_false ]\nLOCAL[\n  Temp p p_380_addr;\n  Temp n n_371_addr ]\nSEP[\n  store(p_380_addr, 0, signed int*);\n  store(n_371_addr, 3, signed int) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX p_380_addr \nPROP[]\nLOCAL[\n  Temp p p_380_addr;\n  Temp n n_371_addr ]\nSEP[\n  store(p_380_addr, 0, signed int*);\n  store(n_371_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "return",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "PROP[]\nLOCAL[]\nSEP[]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        }
+      ],
+      "phases": {
+        "precondition": "SAT",
+        "safety": "PASS",
+        "postcondition": "PASS",
+        "annotations": "PASS",
+        "execution": "PASS"
+      },
+      "result_scope": "concrete-execution",
+      "sampling_events": [],
+      "abstraction_events": []
+    },
+    "coq": {
+      "goal": {
+        "path": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-boundaries/conditional-null-all-boundaries/candidate/artifacts/artifacts/one/vc/input_goal.v",
+        "exists": true,
+        "sha256": "eca00fbac6c3f08b7bbee78f44426b1c786ddf4731633541bba2c1bf0bedaccb",
+        "bytes": 1936
+      },
+      "proof_auto": {
+        "path": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-boundaries/conditional-null-all-boundaries/candidate/artifacts/artifacts/one/vc/input_proof_auto.v",
+        "exists": true,
+        "sha256": "da66b04bed2d6a313810d22ad496ef9ed8c9b69f3d39360bd84cbcaa971f85d4",
+        "bytes": 1152
+      },
+      "goal_check": {
+        "path": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-boundaries/conditional-null-all-boundaries/candidate/artifacts/artifacts/one/vc/input_goal_check.v",
+        "exists": true,
+        "sha256": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e",
+        "bytes": 178
+      }
+    },
+    "storage_metrics": {
+      "vc_scheduling": {
+        "schema": "post-execution-witness-smt/v1",
+        "enabled": true,
+        "collecting": false,
+        "requests": 11,
+        "queued_witnesses": 4,
+        "solved_witnesses": 4,
+        "retained_on_release": 0,
+        "pending_witnesses": 0
+      }
+    },
+    "runtime_metrics": {
+      "branch_evaluation": {
+        "schema": "instance-first-branch-query/v1",
+        "pure_queries": 7,
+        "evaluated_true": 6,
+        "evaluated_false": 1,
+        "smt_fallback": 0
+      }
+    },
+    "executor_resources": {
+      "wall_seconds": 0.005131,
+      "cpu_seconds": 0.0,
+      "measurement": "GNU time; executor and children; maximum process RSS",
+      "peak_rss_kib": 5128
+    },
+    "vc_count": 4,
+    "witness_counts": [
+      {
+        "functionName": "sample",
+        "Witness": {
+          "safety_checker_wit": {
+            "total": 3,
+            "auto_solved": 3,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "entailment_checker_wit": {
+            "total": 0,
+            "auto_solved": 0,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "return_checker_wit": {
+            "total": 1,
+            "auto_solved": 1,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "partial_solve_wit": {
+            "total": 0,
+            "auto_solved": 0,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "which_implies_wit": {
+            "total": 0,
+            "auto_solved": 0,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "total_witness_count": {
+            "auto_solved": 4,
+            "manual": 0
+          }
+        }
+      }
+    ],
+    "generated_source_sha256": "276f1229f0d8a104a2a756948c0b4c02d6a14c9d7b666bce540540dfeb484efa",
+    "measurement": {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "spectest",
+        "run",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-boundaries/conditional-null-all-boundaries/input.c",
+        "--function",
+        "sample",
+        "--binds",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-boundaries/conditional-null-all-boundaries/binds.json",
+        "--qcp-binary",
+        "/home/yangfp/sac-query-simplification/build/query-simplification/symexec",
+        "--execution-strategy",
+        "inline",
+        "--execution-mode",
+        "all-boundaries",
+        "--loop-unroll-limit",
+        "16",
+        "--output-dir",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-boundaries/conditional-null-all-boundaries/candidate/artifacts",
+        "--timeout",
+        "60",
+        "--no-spatial-smt",
+        "--instance-trace"
+      ],
+      "executed_wrapper_command": [
+        "/usr/bin/time",
+        "--quiet",
+        "-f",
+        "{\"max_process_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"wall_seconds_gnu\":%e}",
+        "-o",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-boundaries/conditional-null-all-boundaries/candidate/resources.json",
+        "/usr/bin/timeout",
+        "--signal=TERM",
+        "--kill-after=5",
+        "75",
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "spectest",
+        "run",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-boundaries/conditional-null-all-boundaries/input.c",
+        "--function",
+        "sample",
+        "--binds",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-boundaries/conditional-null-all-boundaries/binds.json",
+        "--qcp-binary",
+        "/home/yangfp/sac-query-simplification/build/query-simplification/symexec",
+        "--execution-strategy",
+        "inline",
+        "--execution-mode",
+        "all-boundaries",
+        "--loop-unroll-limit",
+        "16",
+        "--output-dir",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-deferred-vc-boundaries/conditional-null-all-boundaries/candidate/artifacts",
+        "--timeout",
+        "60",
+        "--no-spatial-smt",
+        "--instance-trace"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.16488225699868053,
+      "resources": {
+        "max_process_rss_kib": 19924,
+        "user_seconds": 0.07,
+        "system_seconds": 0.04,
+        "wall_seconds_gnu": 0.11
+      },
+      "tokens": 0,
+      "model_calls": 0,
+      "stdout": "benchmark/results/vc-storage-regressions/20261019-deferred-vc-boundaries/conditional-null-all-boundaries/candidate/stdout.log",
+      "stderr": "benchmark/results/vc-storage-regressions/20261019-deferred-vc-boundaries/conditional-null-all-boundaries/candidate/stderr.log",
+      "memory_definition": "GNU time %M: largest measured process peak RSS, not aggregate tree memory."
+    },
+    "matches_expected": true
+  },
+  "comparison": {
+    "passed": true,
+    "ignored_metrics_are_new_only": true,
+    "runtime_metric_keys_match": true,
+    "raw_differences": [],
+    "decision_differences": [],
+    "coq_byte_differences": [],
+    "source_bytes_equal": true,
+    "baseline_vc_count": 4,
+    "candidate_vc_count": 4,
+    "original_coq_files_byte_equal": true,
+    "legacy_raw_equal": true,
+    "both_match_expected": true,
+    "transport_ok": true
+  }
+}
