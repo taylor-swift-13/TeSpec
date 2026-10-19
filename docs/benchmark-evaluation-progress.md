@@ -270,3 +270,10 @@ teSpec 按用户要求暂缓，本轮未运行；历史两模式各7 UNKNOWN是�
 已实际补测21组/900对输入、modular空间SMT OFF/ON共1800次，旧源/输入/预期及证明证据在执行期间哈希不变。两模式各491 PASS、350 FAIL、36 UNKNOWN、23预期ERROR，原生预期匹配各864/900。16组两模式全部匹配；array_load/incr/read/slf3_basic_inplace_double/zero有72次UNKNOWN，其中58次残余VC待ITP、14次modular断言边界采样未完成、不能用ITP替代执行。原差分门槛如实保留43次退化，原生覆盖齐全不冒称全部判定通过。
 
 每组独立modular结果成本MD/JSON/CSV及全局索引已保存，主组表追加链接。时间、逐次峰值RSS均值与实际token分阶段；未运行的agent/Coq/内核为PENDING/BLOCKED。全部异常逐次入专项台账。旧四工具成本与完整21/45范围不覆盖。本轮未改执行器。见[本批详情](benchmark-modular-supplement-20261020.md)。
+
+
+## 2026-10-20：modular的58次残余VC ITP已全部收尾
+
+58次逐执行实际gpt-6.1-sol调用、分别编译/假设审计及58次完整独立coqchk全部通过；116个原始残余VC被反证、58个入口SAT获证，连同堆事实242个登记定理全部全局闭合，最终均按冻结预期FAIL成功检出。复用的是相同完整Goal的历史证明材料，实际模型审阅/引用、编译和内核重新计量，不宣称从零搜索；token总计3,587,331。每次ITP平均162.293281秒、61850.534483token、单次最大进程峰值均值1848.154432MiB，三个阶段分别保留，所有实际修复计量未丢弃。
+
+两模式最终各491 PASS、379 FAIL、7 UNKNOWN、23预期ERROR，预期匹配各893/900；modular完整20/21组。剩array_load7原始客户端×OFF/ON共14次，在实例化阶段未完成且未生成完整Goal，保留UNKNOWN/BLOCKED，不能伪造ITP目标；entry-exit诊断也同样未完成，额外28次含配置拒绝的本地诊断调用成本另列。原生UNKNOWN不改，原四工具成本及历史21/45范围不覆盖。见[完整收尾与均值](benchmark-modular-itp-20261020.md)。

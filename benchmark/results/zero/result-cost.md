@@ -45,4 +45,4 @@ ITP 以一次测试执行的所有待处理 VC 为单位，只展示平均开销
 
 ## modular 补充评测
 
-既有完整状态沿用原正式评测范围。[modular 逐次结果与成本](modular/20261020/result-cost.md)：46 对输入，空间 SMT OFF/ON；原生执行齐全=True，全部预期已判定=False。UNKNOWN 与未完成 ITP 单列，不计成功。
+既有完整状态沿用原正式评测范围。[modular 逐次结果与成本](modular/20261020/result-cost.md)：46 对输入，空间 SMT OFF/ON；原生执行齐全=True，全部预期已判定=True。UNKNOWN 与未完成 ITP 单列，不计成功。

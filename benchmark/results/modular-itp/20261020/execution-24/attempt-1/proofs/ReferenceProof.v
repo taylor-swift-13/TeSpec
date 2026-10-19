@@ -1,0 +1,120 @@
+Require Import ConcreteCell ExecutionGoal.
+Require Import Coq.ZArith.ZArith.
+Require Import Coq.Bool.Bool.
+Require Import Coq.Strings.String.
+Require Import Coq.Strings.Ascii.
+Require Import Coq.Lists.List.
+Require Import Coq.Classes.RelationClasses.
+Require Import Coq.Classes.Morphisms.
+Require Import Coq.micromega.Psatz.
+Require Import Coq.Sorting.Permutation.
+From AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.
+Require Import SetsClass.SetsClass. Import SetsNotation.
+From SimpleC.SL Require Import Mem SeparationLogic.
+Require Import Logic.LogicGenerator.demo932.Interface.
+Local Open Scope Z_scope.
+Local Open Scope sets.
+Local Open Scope string_scope.
+Local Open Scope list.
+Import naive_C_Rules.
+Local Open Scope sac.
+
+
+
+Theorem entry_cell : (4096 # Int |-> (2147483646)) (st (cell 127 255 255 254)).
+Proof.
+  unfold store_int, store_4byte.
+  split.
+  - change (isvalidptr_int 4096 /\ 2147483646 <= Int.max_signed /\
+            2147483646 >= Int.min_signed).
+    vm_compute; intuition discriminate.
+  - exists 127, 255, 255, 254.
+    split.
+    + change (merge_int 127 255 255 254 2147483646).
+      vm_compute; intuition discriminate.
+    + exists (st (single_byte_mem 4096 127)), (st (tail1 255 255 254)).
+      split; [apply st_join; apply join0|].
+      split; [apply byte_at|].
+      exists (st (single_byte_mem 4097 255)), (st (tail2 255 254)).
+      split; [apply st_join; apply join1|].
+      split; [apply byte_at|].
+      exists (st (single_byte_mem 4098 255)), (st (single_byte_mem 4099 254)).
+      split; [apply st_join; apply join2|].
+      split; apply byte_at.
+Qed.
+Theorem exit_cell : (4096 # Int |-> (2147483647)) (st (cell 127 255 255 255)).
+Proof.
+  unfold store_int, store_4byte.
+  split.
+  - change (isvalidptr_int 4096 /\ 2147483647 <= Int.max_signed /\
+            2147483647 >= Int.min_signed).
+    vm_compute; intuition discriminate.
+  - exists 127, 255, 255, 255.
+    split.
+    + change (merge_int 127 255 255 255 2147483647).
+      vm_compute; intuition discriminate.
+    + exists (st (single_byte_mem 4096 127)), (st (tail1 255 255 255)).
+      split; [apply st_join; apply join0|].
+      split; [apply byte_at|].
+      exists (st (single_byte_mem 4097 255)), (st (tail2 255 255)).
+      split; [apply st_join; apply join1|].
+      split; [apply byte_at|].
+      exists (st (single_byte_mem 4098 255)), (st (single_byte_mem 4099 255)).
+      split; [apply st_join; apply join2|].
+      split; apply byte_at.
+Qed.
+Theorem refute_incr_return_wit_1_split_goal_spatial : ~ ExecutionGoal.incr_return_wit_1_split_goal_spatial.
+Proof.
+  intro H.
+  unfold ExecutionGoal.incr_return_wit_1_split_goal_spatial in H.
+  assert (Hmax : 2147483646 + 1 <= INT_MAX) by (change (2147483646 + 1 <= 2147483647); lia).
+  assert (Hmin : 2147483646 + 1 >= INT_MIN) by (change (2147483646 + 1 >= -2147483648); lia).
+  assert (Hlt : 2147483646 < INT_MAX) by (change (2147483646 < 2147483647); lia).
+  specialize (H 4096 2147483646 Hmax Hmin eq_refl eq_refl Hlt).
+  specialize (H (st (cell 127 255 255 255)) exit_cell).
+  destruct H as [_ H].
+  exact (cell_not_emp 127 255 255 255 H).
+Qed.
+Theorem refute_incr_return_wit_1 : ~ ExecutionGoal.incr_return_wit_1.
+Proof.
+  intro H.
+  unfold ExecutionGoal.incr_return_wit_1 in H.
+  destruct H as [H|H].
+  - assert (Hlt : 2147483646 < INT_MAX) by (change (2147483646 < 2147483647); lia).
+    specialize (H 4096 2147483646 eq_refl eq_refl Hlt).
+    specialize (H (st (cell 127 255 255 255)) exit_cell).
+    destruct H as [_ H].
+    exact (cell_not_emp 127 255 255 255 H).
+  - assert (Hmax : 2147483646 + 1 <= INT_MAX) by (change (2147483646 + 1 <= 2147483647); lia).
+    assert (Hmin : 2147483646 + 1 >= INT_MIN) by (change (2147483646 + 1 >= -2147483648); lia).
+    assert (Hlt : 2147483646 < INT_MAX) by (change (2147483646 < 2147483647); lia).
+    specialize (H 4096 2147483646 Hmax Hmin eq_refl eq_refl Hlt).
+    specialize (H (st (cell 127 255 255 255)) exit_cell).
+    destruct H as [_ H].
+    exact (cell_not_emp 127 255 255 255 H).
+Qed.
+Theorem entry_sat : ExecutionGoal.incr_precondition_wit_1.
+Proof.
+  unfold ExecutionGoal.incr_precondition_wit_1.
+  exists 4096, 2147483646.
+  intro H.
+  assert (Hentry :
+    ( “ (4096 = 4096) ” && “ (2147483646 = 2147483646) ” &&
+      “ (2147483646 < INT_MAX) ” && (4096 # Int |-> 2147483646))
+      (st (cell 127 255 255 254))).
+  { split.
+    - split.
+      + split.
+        * change (4096 = 4096); reflexivity.
+        * change (2147483646 = 2147483646); reflexivity.
+      + change (2147483646 < 2147483647); lia.
+    - exact entry_cell. }
+  specialize (H (st (cell 127 255 255 254)) Hentry).
+  change False in H.
+  exact H.
+Qed.
+Print Assumptions entry_cell.
+Print Assumptions exit_cell.
+Print Assumptions refute_incr_return_wit_1_split_goal_spatial.
+Print Assumptions refute_incr_return_wit_1.
+Print Assumptions entry_sat.

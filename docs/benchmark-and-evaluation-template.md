@@ -456,3 +456,10 @@ VC、报告、输入/源码/工具哈希及结果成本 CSV/JSON。CLI、执行�
 每组新增执行策略结果放在benchmark/results/<group>/modular/<run-id>/result-cost.md/json/csv，由modular/index.json选择活动补充；全局入口为modular-result-cost-index.md/json。主组表与总索引通过execution_strategy_supplements引用，原complete标志保留原正式范围。新增策略的native_run_complete与evaluation_complete分别报告；原生执行覆盖齐全不等于所有预期已判定。
 
 结果必须写明execution_strategy、execution_mode和空间SMT模式。UNKNOWN中只有执行已完成且有原始残余VC的项目才列为待ITP执行；采样失败、无可达返回等未完成执行另列BLOCKED，不能凑成ITP任务。未跑的证明阶段时间/RSS为null；历史ITP结论仅比较预期，不能冒充新目标证书。各组原有CN/QCP/Fulminate与inline成本保留；原生时间/RSS/token及新增证明成本在独立补充表按原口径展示。
+
+
+### Modular残余VC的逐执行ITP（2026-10-20）
+
+残余VC在一次完整执行中整体作为一个ITP任务，必须同时核对全部原目标、入口合法性以及实际模型/编译/假设审计/完整独立内核回执。完整Goal与历史证书逐字节相同时，可明确复用证明代码；当前源/绑定/报告/Goal重新锁定，实际模型审阅、逐次重新编译、假设审计和独立coqchk仍分别计量。模型原始usage和失败尝试保留，标注exact-goal certificate review，不能冒称全新证明搜索或将旧结论直接挂到新VC。
+
+每次执行分别计时、分别取各阶段实际单进程峰值；最终只展示各阶段和ITP合计的逐执行均值。ITP合计峰值先对执行内阶段取最大，再取执行均值；合计行与三个分项重叠。需区分native_expected_matches与final_expected_matches，原生UNKNOWN保持原状。未完成执行且没有原始Goal的项目保留BLOCKED/null，不能凭通用证明或人工构造目标把它算作已测成功。对照参数诊断、配置失败与重试另列实际额外成本。

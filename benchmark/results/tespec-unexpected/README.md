@@ -1189,3 +1189,8 @@
 ## 2026-10-19 singleton malloc
 
 [56 fresh strategy/VC/SMT combinations](recheck-20261019-singleton-malloc.json): old missing_function_body execution blocker no longer occurs; Dll return obligation remains UNKNOWN in every run. Original and new report hashes, inputs, opposite-mode reports and reproduction commands are retained.
+
+
+## 2026-10-20 modular补充批次（独立计数）
+
+本页上方计数沿用原历史评测范围。新增modular批次的72次原生UNKNOWN中，58次经逐执行实际模型审阅、Coq编译/假设审计和独立内核检查后按预期FAIL成功检出；仍有14次array_load客户端在实例化阶段未完成，无原始全执行Goal可交ITP。原生分类保持，最终与证明成本见[本批专项台账](recheck-20261020-completed-modular.json)及[modular结果成本总表](../modular-result-cost-index.md)。

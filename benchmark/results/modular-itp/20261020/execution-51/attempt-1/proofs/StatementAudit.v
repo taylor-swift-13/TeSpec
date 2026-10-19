@@ -1,0 +1,3 @@
+Require Import ExecutionGoal.
+Print Assumptions ExecutionGoal.inplace_double_return_wit_1_split_goal_spatial.
+Print Assumptions ExecutionGoal.inplace_double_return_wit_1.

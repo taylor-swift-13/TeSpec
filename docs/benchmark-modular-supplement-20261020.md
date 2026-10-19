@@ -48,3 +48,8 @@ python3 -B tools/benchmark/publish_modular_group_supplement.py \
 ```
 
 现有构表器读取各组modular/index.json，在重建主表时保留补充入口。此次只增加评测数据和发布支持，不把采样或空间SMT的能力缺口改写为新的测试预期。
+
+
+## 后续逐执行ITP已完成
+
+以上为原生阶段冻结观察。58次可运行残余VC的ITP随后均已完成并通过独立内核检查，按预期FAIL成功检出；最终剩14次array_load实例化未完成，modular完整20/21组。原生分类不改；全部新模型、Coq和内核实测均值及额外诊断成本见[ITP收尾](benchmark-modular-itp-20261020.md)。

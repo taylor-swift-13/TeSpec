@@ -1,0 +1,3 @@
+Require Import ReadUnknown06Goal.
+Print Assumptions ReadUnknown06Goal.read_return_wit_1_split_goal_spatial.
+Print Assumptions ReadUnknown06Goal.read_return_wit_1.

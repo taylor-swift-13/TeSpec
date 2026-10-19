@@ -152,4 +152,9 @@ def main():
     lines+=["","全部已有变体和输入均已实际执行。UNKNOWN不算成功；证明阶段PENDING不计零成本。"]
     target.with_suffix(".md").write_text("\n".join(lines)+"\n")
     print(json.dumps({"groups":len(index),"executions":len(rows),"unmatched":len(unexpected)}))
+    itp_index=ROOT/"benchmark/results/modular-itp"/args.run_id/"index.json"
+    if itp_index.exists() and load(itp_index).get("complete"):
+        from attach_modular_itp import main as attach
+        attach(itp_index)
+
 if __name__=="__main__": main()

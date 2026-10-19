@@ -1,27 +1,31 @@
 # add_two_array：modular 结果与成本
 
-已执行全部 8 对已有输入，空间 SMT OFF/ON。原生结果和所需 ITP 完整性分别记录。
+原生分类保持；最终分类附加逐次内核检查的ITP结论。
 
-| 模式 | PASS / FAIL / UNKNOWN / ERROR | 原生预期匹配 | 待处理 UNKNOWN |
-| --- | --- | ---: | ---: |
-| off | 8 / 0 / 0 / 0 | 8/8 | 0 |
-| on | 8 / 0 / 0 / 0 | 8/8 | 0 |
+| 模式 | 原生 PASS/FAIL/UNKNOWN/ERROR | 最终 PASS/FAIL/UNKNOWN/ERROR | 最终匹配 | 已完成ITP |
+| --- | --- | --- | ---: | ---: |
+| off | 8 / 0 / 0 / 0 | 8 / 0 / 0 / 0 | 8/8 | 0 |
+| on | 8 / 0 / 0 / 0 | 8 / 0 / 0 / 0 | 8/8 | 0 |
 
-| 模式 | 阶段 | 平均秒 | 平均单次峰值 MiB | 平均 token | 状态 |
-| --- | --- | ---: | ---: | ---: | --- |
-| off | native_cli | 0.164816 | 23.289551 | 0.000000 | MEASURED |
-| off | symbolic_executor | 0.008282 | 5.506836 | 0.000000 | MEASURED |
-| off | spatial_smt | — | — | 0.000000 | NOT_REQUIRED |
-| off | agent_proof_filling | — | — | — | NOT_REQUIRED |
-| off | coq_compilation_and_assumption_audit | — | — | — | NOT_REQUIRED |
-| off | independent_kernel_check | — | — | — | NOT_REQUIRED |
-| on | native_cli | 0.164771 | 23.319336 | 0.000000 | MEASURED |
-| on | symbolic_executor | 0.008318 | 5.557617 | 0.000000 | MEASURED |
-| on | spatial_smt | 0.000203 | 21.253418 | 0.000000 | MEASURED |
-| on | agent_proof_filling | — | — | — | NOT_REQUIRED |
-| on | coq_compilation_and_assumption_audit | — | — | — | NOT_REQUIRED |
-| on | independent_kernel_check | — | — | — | NOT_REQUIRED |
+| 模式 | 阶段 | 执行数 | 平均秒 | 平均单次峰值MiB | 平均token | 状态 |
+| --- | --- | ---: | ---: | ---: | ---: | --- |
+| off | native_cli | 8 | 0.164816 | 23.289551 | 0.000000 | MEASURED |
+| off | symbolic_executor | 8 | 0.008282 | 5.506836 | 0.000000 | MEASURED |
+| off | spatial_smt | 0 | — | — | 0.000000 | NOT_REQUIRED |
+| off | agent_proof_filling | 0 | — | — | — | NOT_REQUIRED |
+| off | coq_compilation_and_assumption_audit | 0 | — | — | — | NOT_REQUIRED |
+| off | independent_kernel_check | 0 | — | — | — | NOT_REQUIRED |
+| on | native_cli | 8 | 0.164771 | 23.319336 | 0.000000 | MEASURED |
+| on | symbolic_executor | 8 | 0.008318 | 5.557617 | 0.000000 | MEASURED |
+| on | spatial_smt | 8 | 0.000203 | 21.253418 | 0.000000 | MEASURED |
+| on | agent_proof_filling | 0 | — | — | — | NOT_REQUIRED |
+| on | coq_compilation_and_assumption_audit | 0 | — | — | — | NOT_REQUIRED |
+| on | independent_kernel_check | 0 | — | — | — | NOT_REQUIRED |
+| off | itp_total | 0 | — | — | — | NOT_REQUIRED |
+| on | itp_total | 0 | — | — | — | NOT_REQUIRED |
 
-CLI、执行器、空间 SMT 是嵌套阶段，不能相加。空间阶段 RSS 为1ms采样峰值。每次执行的全部残余VC组成一个ITP任务；未跑的证明阶段保留PENDING/null，UNKNOWN不算成功。
+ITP按一次执行全部残余VC计量，所有模型/编译/内核失败与修复均计入；只展示条件均值和逐执行阶段峰值均值。使用gpt-6.1-sol实际CLI计量审阅完全相同原始Goal的历史证书，每次仍单独编译、假设审计和完整独立coqchk。不是从零证明搜索；没有把旧证明成本重复计费。
 
-CN/QCP 主验证及 Fulminate 仍见 [原组表](../../result-cost.md)。[逐次证据与成本](result-cost.json)；[成本CSV](result-cost.csv)。
+原生CLI/执行器/空间SMT为嵌套阶段，不能相加。证明三个阶段分别计量，itp_total与三个分项重叠不可再次相加；远程模型内存不在本地RSS范围内。BLOCKED表示执行未完成，无整次执行VC目标，未伪造ITP时间。
+
+[完整逐次证据](result-cost.json)；[成本CSV](result-cost.csv)；[原四工具组表](../../result-cost.md)。
