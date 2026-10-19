@@ -1185,3 +1185,7 @@
 [168 executed strategy combinations](recheck-20261018-contract-modular.json) complete the two allocation programs but retain UNKNOWN Dll return obligations. Both strategies, both VC policies and SMT OFF/ON are recorded. This does not close the historical group incompleteness or count UNKNOWN as success.
 
 [Resolved conditional-post sampling issue](recheck-20261018-conditional-post.json): abs_mem_struct negative input, OFF/ON UNKNOWN → PASS; original input and expectation unchanged.
+
+## 2026-10-19 singleton malloc
+
+[56 fresh strategy/VC/SMT combinations](recheck-20261019-singleton-malloc.json): old missing_function_body execution blocker no longer occurs; Dll return obligation remains UNKNOWN in every run. Original and new report hashes, inputs, opposite-mode reports and reproduction commands are retained.

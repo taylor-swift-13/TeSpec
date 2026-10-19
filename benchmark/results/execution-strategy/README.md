@@ -19,3 +19,7 @@ The 168 target costs are measured per execution with nested CLI, executor and sp
 ## Earlier attempts
 
 Development-smoke directories preserve initial diagnostics. contract-modular-v1 is a measurement-worker configuration error: 168 worker invocations but zero native executions, explicitly NOT_RUN. contract-modular-v2 and unit-regression concern the earlier executor before the conditional-post fix. Their hashes and results remain historical; final evidence is listed above.
+
+## 2026-10-19 singleton malloc retest
+
+[Fresh 56-run matrix](20261019-singleton-malloc-retest/retest-summary.md): all native executions complete after contract sampling; all retain one UNKNOWN Dll return VC. Same current binary and all Goal hashes as the 20261018 final run. [Cost table](20261019-singleton-malloc-retest/Dbl_Linked_List__singleton/result-cost.md).

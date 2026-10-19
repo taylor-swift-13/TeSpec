@@ -239,3 +239,7 @@ teSpec 按用户要求暂缓，本轮未运行；历史两模式各7 UNKNOWN是�
 ## 2026-10-18：第 24 组 dll_add 复查
 
 当前工具链下原依赖仍IntList解析失败；借用singleton兼容层后CN的IntList_nil、IntList_cons、add均pass。Fulminate两个既有CN记录各7个空链表输入均实际PASS，pipeline与独立执行分别计量；其中7个无add规约的orig.broken只能计程序运行，不能当规约覆盖。原CN后置仅保证形状，QCP另保证插入值，两者不等价；不改原规约来伪造对齐。非空分支仍无覆盖。teSpec分配器按约定暂缓；QCP17原始VC完整证书仍缺，历史manual只有1个引理。保持21/45完整，正式旧入口不覆盖，本次全部30个阶段成本另列。见 [第24组复查](../benchmark/results/dll_add/20261018-scope-recheck/summary.md)。
+
+## 2026-10-19：singleton malloc 新版本复测
+
+当前 main aee98873a 执行器实际重跑 singleton 原 7 输入，覆盖 inline/modular、entry-exit/all-boundaries、空间 SMT OFF/ON，共56次。全部入口SAT、契约采样成功、执行完成；每次剩1个Dll返回VC，最终56 UNKNOWN，SMT ON明确不支持Dll。原来的malloc_node缺函数体阻塞已消失；不同阶段的问题没有合并为“通过”。当前执行器和上次final相同，56个Goal哈希也匹配。本次原生时间/RSS、输入/VC/日志哈希与异常台账已独立保存，未重跑CN/QCP/Fulminate或ITP，完整组仍21/45。见[复测说明](../benchmark/results/execution-strategy/20261019-singleton-malloc-retest/retest-summary.md)。
