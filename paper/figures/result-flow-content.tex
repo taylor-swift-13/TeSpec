@@ -1,7 +1,7 @@
 \InputIfFileExists{figures/figure-style.tex}{}{\input{figure-style}}
 \begin{tikzpicture}[x=1cm,y=1cm,tsText]
 \node[tsHead] at (0,.3) {(a)\quad Establish VC evidence};
-\node[tsHead] at (10.25,.3) {(b)\quad Decide the execution path};
+\node[tsHead] at (10.25,.3) {(b)\quad Decide within the reported scope};
 \draw[tsRule] (0,-.05)--(9.5,-.05);
 \draw[tsRule] (10.25,-.05)--(17.35,-.05);
 \node[anchor=west] at (0,-.48) {$\phi_j:\forall z.\,P_j(z)\Rightarrow A_j(z)$};
@@ -14,7 +14,7 @@
 \draw[tsEvidence] (smt.east)--node[tsLabel,above]{SAT}(model.west);
 \draw[tsEvidence] (model.east)--node[tsLabel,above]{checked}(invalid.west);
 \node[tsOp,draw=tsProof,fill=tsProof!3,text width=4.65cm,minimum height=.6cm] (itp) at (3.35,-4.15)
- {ITP candidate $\longrightarrow$ kernel + audit};
+ {offline ITP $\longrightarrow$ kernel + audit};
 \draw[tsEvidence] (smt.south)--(.65,-4.15)--(itp.west);
 \node[tsLabel,align=left,anchor=west] at (.72,-3.45) {UNKNOWN /\\unsupported};
 \draw[tsEvidence] (model.south)--node[tsLabel,right]{unconfirmed}(itp.north);
@@ -44,7 +44,7 @@
 \draw[tsEvidence] (split)--(10.05,-2.9)--(10.7,-2.9);
 \draw[tsEvidence] (split)--(10.05,-4.1)--(10.7,-4.1);
 \node[align=center,text width=4.35cm] (bad) at (12.95,-1.7)
- {some VC INVALID\\\textbf{+ reachable violating state}};
+ {some VC INVALID\\\textbf{+ reachable violation}\\in the reported scope};
 \node[align=center,text width=4.35cm] (good) at (12.95,-2.9)
  {feasible execution\\all steps and checks complete\\\textbf{+ every VC VALID}};
 \node[align=center,text width=4.35cm] (open) at (12.95,-4.1) {otherwise};
@@ -55,6 +55,12 @@
 \draw[tsEvidence] (good.east)--(pass.west);
 \draw[tsEvidence] (open.east)--(unk.west);
 \draw[tsRule] (10.25,-4.7)--(17.35,-4.7);
-\node[align=center] at (13.8,-5.2)
- {path verdicts + entry + coverage\\[3pt]$\longrightarrow$ \textbf{instance verdict}};
+\node[align=center,font=\sffamily\fontsize{8}{10}\selectfont] at (13.8,-5.55)
+ {entry UNSAT $\to$ FAIL (empty instance)\\[3pt]
+   reachable violation $\to$ FAIL\\[3pt]
+   entry SAT + coverage + all paths PASS $\to$ PASS\\[3pt]
+   otherwise UNKNOWN};
+\node[tsOp,text width=4.65cm,minimum height=.55cm] (native) at (3.35,-6.35)
+ {QCP entailment\\direct simplification};
+\draw[tsEvidence] (native.east)--(8.68,-6.35)--(8.68,-5.15);
 \end{tikzpicture}

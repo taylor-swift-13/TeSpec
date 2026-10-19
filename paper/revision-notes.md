@@ -75,3 +75,23 @@ theory replay and changes no implementation, solver, benchmark, or raw result.
   archive files. No new experiments, tool builds or implementation edits.
 - Final PDF remains 11 pages; zero overfull boxes, unresolved references or
   bibliography warnings; changed pages 6 and 8 visually inspected.
+
+## 2026-10-19: execution strategies and conditional agreement
+
+- Describe inline and modular state construction separately from the
+  entry-exit/all-boundaries observation schedule, including bodyless calls.
+- Retain the decision figure and add explicit instance aggregation and a
+  QCP automatic route. The main figure shows both strategies and scoped
+  evidence; the observation figure explicitly illustrates inline.
+- Add Theorem 3 with a local two-way boundary simulation. Its conclusions
+  include finite observation traces, reachable violations, semantic boundary
+  termination, and nonvacuous total acceptance. Current sampler refinement and
+  equality of resource-bounded UNKNOWN reports are explicitly not claimed.
+- Record eight actual current-executor controls: a sound loose helper contract
+  gives inline PASS versus modular model FAIL; an exact contract gives PASS
+  in both strategies. Both observation schedules are exercised.
+- Add ModeCorrespondence.v with 14 closed principal statements and recheck all
+  12 modules / 102 principal statements with coqc and independent coqchk.
+- Add hash and evidence checks to the paper build. Preserve previous receipts.
+  New artifacts are under evidence/strategy-correspondence-20261019.
+- The resulting PDF has 12 pages. No execution engine or benchmark files changed.

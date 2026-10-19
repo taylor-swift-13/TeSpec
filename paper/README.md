@@ -1,15 +1,15 @@
 # TeSpec ICSE manuscript
 
 **TeSpec: Proof-Based Testing of Separation-Logic Specifications for C** is the
-current manuscript in `main.tex` and `main.pdf`. The current revision is eleven
+current manuscript in `main.tex` and `main.pdf`. The current revision is twelve
 pages including references. It develops the method before its formal guarantees
 and uses three complementary method figures:
 
 | Figure | Purpose | Page | Standalone PDF |
 | --- | --- | --- | --- |
-| 1. Workflow | Three stages with a visible execution spine, logical snapshot, and proof branch | 3 | `figures/overview-standalone.pdf` |
-| 2. Copied observation | The shared write/return above two different functional obligations | 3 | `figures/observation-standalone.pdf` |
-| 3. Verdict flow | SMT/ITP evidence collected into VC sets, with explicit path verdict gates | 5 | `figures/result-flow-standalone.pdf` |
+| 1. Workflow | Independent execution strategies, original VC records, and scoped evidence | 3 | `figures/overview-standalone.pdf` |
+| 2. Copied observation | Inline shared write/return above two different functional obligations | 4 | `figures/observation-standalone.pdf` |
+| 3. Verdict flow | QCP/SMT/ITP evidence, scoped path gates, and explicit instance aggregation | 5 | `figures/result-flow-standalone.pdf` |
 
 The overview directs readers to the mechanism and verdict diagrams. A shared
 `figures/figure-style.tex` fixes colors, line roles, and print-size typography. All three
@@ -99,3 +99,19 @@ is included by `approach.tex`, as are the copied-observation and verdict-flow
 figures. Older standalone semantics and development material are retained for
 provenance and are not included in the current manuscript. The IEEE template
 files retain their original licenses.
+
+## Two strategies and their correspondence (2026-10-19)
+
+Both inline and modular strategies are now described in the main manuscript.
+Theorem 3 gives conditional agreement under a two-way boundary correspondence.
+A sound but weak contract does not imply agreement; the eight paired runs
+under `evidence/strategy-correspondence-20261019/executions/` demonstrate the
+difference and an exact-summary control. Modular FAIL is labelled with its
+sampled-model scope. No execution certificate is claimed for these runs.
+
+The current full theory replay covers 12 modules and 102 closed principal
+statements, including 14 new correspondence/counterexample statements, with
+independent `coqchk` success. The receipt is
+`evidence/strategy-correspondence-20261019/theory/report.json`.
+The earlier 11-module/88-statement and no-new-experiment statements describe
+the 2026-10-17 revision, not this update. This update edits paper files only.

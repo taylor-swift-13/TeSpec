@@ -29,3 +29,22 @@ The final cross-review repaired two gaps: generated predicates must be faithful
 to the original annotation, and symbolic obligation records must be explicitly
 instantiated before comparison with the concrete observation inventory. Both
 interfaces are premises of the corresponding acceptance/refutation arguments.
+
+## 2026-10-19: two execution strategies
+
+The main paper now distinguishes inline body execution from modular
+contract/invariant/assertion sampling, independently of entry-exit and
+all-boundaries schedules. `sections/mode-correspondence.tex` states Theorem 3:
+a boundary bisimulation with matching observations transfers finite traces,
+reachable failure, semantic boundary termination, and nonvacuous total
+acceptance. `theory/ModeCorrespondence.v` supplies 14 closed principal statements,
+including a counterexample to unconditional agreement.
+
+Two-way successor coverage and matching safety/check/terminality are explicit
+premises. The current sampler is not proved to satisfy them. C-level lifting
+additionally needs finite segments with no hidden divergence or stuckness.
+The semantic theorem does not establish equal finite-resource tool statuses.
+A new full replay checks 12 modules and 102 principal statements:
+`evidence/strategy-correspondence-20261019/theory/report.json`.
+This supersedes the historical 11-module count above for the current revision;
+the historical receipt is unchanged.

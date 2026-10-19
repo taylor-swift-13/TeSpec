@@ -1,7 +1,10 @@
 \section{Instance Semantics and Guarantees}
 \label{sec:semantics}
 We distinguish constructing an execution tree, establishing its obligations,
-and assigning a verdict. A failed proof does not change execution, and a
+and assigning a verdict. The body-execution model below applies to inline
+execution with actual program transitions. A modular sampled tree instead
+uses contract transitions; transfer to body execution requires the separate
+correspondence in Section~\ref{sec:mode-correspondence}. A failed proof does not change execution, and a
 refuted abstract obligation does not by itself establish an execution
 counterexample~\cite{maksimovic2023exact}.
 
@@ -313,6 +316,8 @@ predicate at that state by Theorem~\ref{thm:acceptance}, a contradiction.
 \end{proof}
 The reachability condition is essential: an abstract endpoint may admit
 $x=1$ and refute a requirement $x=0$ even when only $x=0$ is reachable.
+
+\input{sections/mode-correspondence}
 
 \paragraph{Mechanized scope.}
 The Rocq artifact proves parameterized finite-tree acceptance, trace

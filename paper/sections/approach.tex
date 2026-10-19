@@ -1,11 +1,13 @@
 \section{Checking Stateful Instances}
 \label{sec:approach}
 Figure~\ref{fig:overview} follows a test through three stages: select an
-instance, execute its bodies while recording observations, and discharge
-the resulting propositions. The execution supplies states; the oracle
-supplies evidence about those states.
+instance, execute under the selected strategy while recording observations, and discharge
+the resulting propositions. The execution strategy supplies states; the oracle
+supplies evidence about those states and retains their execution scope.
 
-\subsection{Select an instance and execute its bodies}
+\input{sections/execution-strategies}
+
+\subsection{Select an instance and execute its bodies inline}
 Typed bindings specialize the root precondition. Binding $x$ to 13 can
 leave the address $p$ symbolic. The entry checker establishes that the
 selected domain contains a state, using automatic reasoning or an
@@ -28,7 +30,7 @@ caller with 4 even if its contract promises only some integer greater
 than 3. The contract is checked against the computed state. The concrete
 value remains available to subsequent operations.
 
-\subsection{Observe states without changing them}
+\subsection{Inline observations preserve reached states}
 \label{sec:boundaries}
 At a selected boundary, let $P$ describe the reached state and $A$ the
 resolved annotation. The checker records
@@ -58,8 +60,9 @@ witness choices; refuting one choice does not refute all of them.
 
 \paragraph{Record the selected boundaries.}
 The schedule identifies function, loop, and intermediate observations.
-Both supported execution policies run bodies and loops; the richer policy
-also checks selected internal annotations.
+The two observation schedules are independent of the execution strategies
+in Section~\ref{sec:strategies}. The richer schedule additionally checks
+selected internal annotations.
 Named contract alternatives are resolved by explicit routing or retained
 as a disjunction. An unresolved boundary match records incomplete coverage.
 The formal observation inventory in Section~\ref{sec:semantics} connects
@@ -93,11 +96,14 @@ and proof polarity. The optional complete-certificate route also replays
 automatically discharged goals and entry existence.
 
 The evidence ledger then combines VC status with execution evidence.
-A reachable violating state establishes path \fail{}; a feasible,
+A reachable violating state in the reported transition model establishes
+path \fail{}; a feasible,
 complete path whose required VCs are all valid establishes \pass{}.
 Other paths remain \unknown{}.
 At instance level, acceptance additionally requires a nonempty entry
-and coverage of its executions.
+and coverage of its executions. A single modular sample does not provide
+coverage of all contract-admitted executions or prove reachability in the
+replaced implementation.
 An empty entry is reported with an invalid-instance reason.
 Section~\ref{sec:semantics} gives the rules and their correctness arguments.
 

@@ -23,7 +23,7 @@ We present \tespec{}, a method for \emph{proof-based testing of
 separation-logic specifications for C}. Its central idea is to use
 execution to determine program states and proof to check the specification
 at those states. Input bindings restrict the initial domain. Symbolic
-execution follows available function bodies and loop iterations, retaining
+execution in the inline strategy follows available function bodies and loop iterations, retaining
 the values and memory resources they produce. Selected annotations become
 propositions in the original verification logic. Automatic reasoning
 discharges supported obligations; remaining propositions become
@@ -33,7 +33,7 @@ Realizing this idea requires separating an observation from the execution
 it observes. A verifier may replace a loop by its invariant or a function
 body by its summary~\cite{dardinier2023inlining}. When that annotation is itself under test, replacement
 can discard the information needed to check it.
-\tespec{} instead generates obligations on copies of the reached state.
+The inline strategy generates obligations on copies of the reached state.
 For a state assertion $P$ and a fully resolved check $Q_A$, it records
 $P\vdash Q_A$ while retaining $P$ for the continuation.
 Changing an intermediate assertion changes the question asked of the
@@ -46,7 +46,11 @@ values during simplification and accounts explicitly for local storage
 at observation boundaries. The oracle combines VC evidence with entry
 feasibility and execution coverage. Acceptance concerns the domain selected
 by the bindings, which may retain symbolic addresses or other unbound
-inputs. Full \qcp{} verification addresses the original contract over all
+inputs. A modular strategy also supports summary-driven continuations, including
+calls without bodies. We distinguish its sampled-model feedback from
+body-execution feedback and prove conditional agreement under a boundary
+correspondence, rather than assume that a correct summary is exact.
+Full \qcp{} verification addresses the original contract over all
 admissible inputs. These workflows share specifications and proof
 infrastructure while answering different development questions.
 
@@ -67,8 +71,8 @@ while retaining the program's evolving state
 (Section~\ref{sec:approach}).
 \item \textbf{A formal account of instance checking.}
 We give construction rules, oracle interfaces, and verdict judgments,
-with trace-preservation and acceptance arguments supported by a mechanized
-reference model (Section~\ref{sec:semantics}).
+with trace-preservation, acceptance, and conditional strategy-correspondence
+arguments supported by mechanized reference models (Section~\ref{sec:semantics}).
 \item \textbf{An implementation and comparative evidence.}
 We implement the method using \qcp{}'s symbolic execution and Rocq
 obligations, provide controlled case studies, and specify the broader

@@ -1,62 +1,47 @@
 \InputIfFileExists{figures/figure-style.tex}{}{\input{figure-style}}
 \begin{tikzpicture}[x=1cm,y=1cm,tsText]
-% Light stage guides leave the data, rather than containers, in the foreground.
 \node[tsHead] at (0,0) {\textcolor{tsExec}{01}\quad Instance};
-\node[tsHead] at (4.05,0) {\textcolor{tsExec}{02}\quad Execute and observe};
-\node[tsHead] at (11.3,0) {\textcolor{tsProof}{03}\quad Evidence};
-\draw[tsRule] (0,-.35)--(3.2,-.35);
-\draw[tsRule] (4.05,-.35)--(10.55,-.35);
-\draw[tsRule] (11.3,-.35)--(17.25,-.35);
-\draw[tsRule] (3.65,-.7)--(3.65,-4.25);
-\draw[tsRule] (10.9,-.7)--(10.9,-4.25);
-% Source document and its separate instance binding.
-\path[fill=tsExec!3,draw=tsLine,line width=.6pt]
- (.2,-.85)--(2.78,-.85)--(3.08,-1.15)--(3.08,-2.55)--(.2,-2.55)--cycle;
-\draw[tsRule] (2.78,-.85)--(2.78,-1.15)--(3.08,-1.15);
-\node[align=left,font=\ttfamily\fontsize{8.5}{10}\selectfont,anchor=north west] at (.4,-1.04)
- {root\_cell(p)\\...; *p = r;\\return r;};
-\draw[tsRule] (.4,-2.07)--(2.85,-2.07);
-\node[font=\sffamily\fontsize{8}{10}\selectfont] at (1.65,-2.3) {$R,E$;\ checks $\mathcal B$};
-\node[fill=tsExec!7,rounded corners=3pt,inner sep=5pt] (bind) at (1.65,-3.1) {$\theta:\ x=13$};
-\draw[tsEvidence] (1.65,-2.55)--(bind.north);
-\node (entry) at (1.65,-4.0) {$D_\theta\ne\varnothing$};
-\draw[tsEvidence] (bind)--node[tsLabel,right]{entry}(entry);
-% Concrete heap cells anchor the execution spine.
-\node (p0) at (4.22,-1.65) {$p$};
-\node[tsCell] (h0) at (4.85,-1.65) {$13$};
+\node[tsHead] at (3.8,0) {\textcolor{tsExec}{02}\quad Select execution strategy};
+\node[tsHead] at (11.1,0) {\textcolor{tsProof}{03}\quad Record and decide};
+\draw[tsRule] (0,-.35)--(3.1,-.35);
+\draw[tsRule] (3.8,-.35)--(10.5,-.35);
+\draw[tsRule] (11.1,-.35)--(17.25,-.35);
+\node[tsOp,text width=2.45cm,minimum height=1.2cm] (input) at (1.5,-1.5)
+ {C body + contracts\\$R,E;\ \Gamma$};
+\node[tsOp,text width=2.45cm] (bind) at (1.5,-3.0)
+ {bindings $\theta$\\e.g.\ $x=13$};
+\node[align=center,text width=2.9cm] (schedule) at (1.5,-4.5)
+ {check schedule $\mathcal B$\\entry-exit /\\all-boundaries};
+\draw[tsEvidence] (input)--(bind);
+\draw[tsEvidence] (bind)--(schedule);
+\node[anchor=west,font=\sffamily\bfseries] at (4,-.9) {Inline: bodies and iterations};
+\node (p0) at (4.05,-1.7) {$p$};
+\node[tsCell] (h0) at (4.65,-1.7) {$13$};
+\node[tsCell] (h1) at (9.9,-1.7) {$4$};
 \draw[tsFlow] (p0)--(h0);
-\node[tsCell] (hf) at (10.05,-1.65) {$4$};
-\node[anchor=north] at (10.05,-2.05) {$\mathit{ret}=4$};
-\coordinate (observe) at (7.85,-1.65);
-\draw[tsFlow] (h0.east)--(observe)--(hf.west);
-\fill[tsExec] (observe) circle (2pt);
-\node at (6.75,-1.22) {$r:0\rightarrow1\rightarrow\cdots\rightarrow4$};
-\node[tsLabel] at (8.92,-1.22) {write};
-\node[anchor=north,align=center] at (4.85,-2.05) {symbolic $p$};
-\draw[tsFlow] (entry.east)--(3.4,-4)--(3.4,-1.65)--(p0.west);
-% Frozen logical artifact; the program line continues independently above.
-\path[fill=tsProof!5,draw=tsLine] (6.14,-2.87) rectangle (9.66,-4.12);
-\path[fill=white,draw=tsProof,line width=.6pt]
- (6.04,-2.77)--(9.26,-2.77)--(9.56,-3.07)--(9.56,-4.02)--(6.04,-4.02)--cycle;
-\draw[draw=tsProof,line width=.5pt] (9.26,-2.77)--(9.26,-3.07)--(9.56,-3.07);
-\node at (7.8,-3.14) {frozen obligation};
-\node at (7.8,-3.65) {$\phi_i:\ P_i\vdash Q_i$};
-\draw[tsCopy] (observe)--node[tsLabel,right,text=tsProof]{logical copy}(7.85,-2.77);
-% Keep detail in Figure 3: one automatic route and one completion branch.
-\node[tsOp,fill=tsProof!4,text width=1.75cm,minimum height=.7cm] (auto) at (12.5,-1.65) {automatic\\reasoning};
-\node[tsOp,fill=tsProof!4,text width=1.75cm,minimum height=.7cm] (itp) at (12.5,-3.3) {proof\\completion};
-\draw[tsEvidence] (9.56,-3.4)--(10.7,-3.4)--(10.7,-1.65)--(auto.west);
-\draw[tsEvidence] (auto)--node[tsLabel,right]{unresolved}(itp);
-% Certificate glyph instead of another process rectangle.
-\path[draw=tsLine,fill=white,line width=.6pt]
- (15.04,-1.05)--(16.74,-1.05)--(17.04,-1.35)--(17.04,-2.25)--(15.04,-2.25)--cycle;
-\draw[tsRule] (16.74,-1.05)--(16.74,-1.35)--(17.04,-1.35);
-\node at (16.04,-1.48) {VC evidence};
-\node[font=\sffamily\fontsize{9}{10}\selectfont] at (16.04,-1.93)
- {\textcolor{tsValid}{V}\quad\textcolor{tsInvalid}{I}\quad\textcolor{tsUnknown}{?}};
-\draw[tsEvidence] (auto.east)--(15.04,-1.65);
-\node[align=center] (kernel) at (16.04,-3.3) {Rocq kernel\\+ assumption audit};
-\draw[tsEvidence] (itp.east)--(kernel.west);
-\draw[tsEvidence] (kernel.north)--(16.04,-2.25);
-\node[align=center] at (14.6,-4.18) {VCs $\longrightarrow$ paths $\longrightarrow$ instance verdict};
+\draw[tsFlow] (h0)--(h1);
+\node[tsLabel] at (7.25,-1.25) {$r:0\to1\to\cdots\to4$};
+\node at (7.25,-2.22) {copy observations; retain reached state};
+\node[anchor=west,font=\sffamily\bfseries] at (4,-3.15) {Modular: summary continuations};
+\node[tsOp,text width=5.7cm,minimum height=.85cm] (modular) at (7.25,-3.95)
+ {check boundary $\to$ instantiate legal model};
+\node[align=center] at (7.25,-4.7)
+ {contracts / invariants / assertions\\sampled-model scope};
+\draw[tsFlow] (bind.east)--(3.4,-3)--(3.4,-1.7)--(p0.west);
+\draw[tsFlow] (3.4,-3)--(3.4,-3.95)--(modular.west);
+\node[align=center,text=tsExec] at (7.25,-5.5)
+ {shared QCP resource transfer\\joint normalization of heap + live values};
+\node[tsOp,draw=tsProof,text width=2.1cm,minimum height=1.3cm] (ledger) at (12.25,-2.25)
+ {original VC\\check identity\\source / goal};
+\node[tsOp,text width=1.75cm,minimum height=.8cm] (oracle) at (15.9,-2.25)
+ {automatic oracle\\+ offline ITP};
+\draw[tsCopy] (10.25,-1.7)--(10.65,-1.7)--(10.65,-2.25)--(ledger.west);
+\draw[tsCopy] (modular.east)--(10.65,-3.95)--(10.65,-2.25);
+\draw[tsEvidence] (ledger.east)--(oracle.west);
+\draw[tsEvidence] (oracle.south)--(15.9,-3.35)--node[tsLabel,above]{matched evidence}(12.25,-3.35)--(ledger.south);
+\node[tsOp,text width=5.15cm,minimum height=.8cm] (verdict) at (14.05,-4.55)
+ {VCs $\to$ paths $\to$ scoped instance verdict\\entry + coverage gates: Fig.~3};
+\draw[tsEvidence] (12.25,-3.35)--(verdict.north west);
+\node[align=center,text width=5.6cm] at (14.05,-5.95)
+ {strategy agreement requires\\boundary correspondence};
 \end{tikzpicture}

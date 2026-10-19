@@ -1,7 +1,7 @@
 # Mechanized semantic core
 
-The eleven modules compile with Coq 8.20.1 using only the standard library.
-The current replay checks 88 principal theorems with closed global contexts.
+The twelve modules compile with Coq 8.20.1 using only the standard library.
+The current replay checks 102 principal theorems with closed global contexts.
 
 `InstanceChecking.v` contains the generic execution argument.
 It proves:
@@ -143,3 +143,22 @@ archived in proof-audit/shared-base-and-sublist/theory. This extends the
 arithmetic denotation lemmas, not the C implementation-refinement claim.
 
 `ObservationTrace.v` adds six closed statements for erasure, lifting, exact observation inventory, membership, satisfaction after discharge, and equality of projected execution sets. The current eleven-module replay combines these with the ten-statement `AffineOffsets.v`; its report is in `paper/evidence/theory-review-20261012/`. The older 86-statement archive predates the two shared-base difference lemmas.
+
+## Conditional strategy correspondence (2026-10-19)
+
+`ModeCorrespondence.v` adds 14 closed principal statements. A sound loose
+summary can admit a failing test sample even when the actual body passes.
+The positive theorems use a boundary-state relation, equal observation views,
+safety/check/terminality agreement, two-way successor matching, and two-way
+initial-domain coverage. They derive finite trace correspondence, reachable
+failure equivalence, semantic boundary termination, and nonvacuous total
+acceptance equivalence. Total acceptance requires progress and all-successor
+coverage, so a stuck or unfinished execution cannot pass vacuously.
+
+These are conditional reference-model results. They do not prove that the
+current modular sampler satisfies the interface, that a single sample covers
+a loose contract, or that finite-resource UNKNOWN reports agree. Lifting
+boundary termination to C requires finite segments without hidden divergence.
+The full 12-module, 102-statement replay is archived at
+`../evidence/strategy-correspondence-20261019/theory/report.json`, with compressed
+compiler/assumption and independent kernel logs.
