@@ -110,6 +110,11 @@ def main(argv=()):
         if observed_path.is_file():report['observed_positive_itp_attempt_costs']={'source':observed_path.relative_to(ROOT).as_posix(),'scope':'All preserved completed model/compile/kernel attempts including deferred repairs; raw observed values, not final per-execution means. In-flight phases remain unknown.'}
         if test_modes:
             report['test_modes']={'comparison':(mode_stats_path.parent/'comparison.md').relative_to(ROOT).as_posix(),'statistics':mode_stats_path.relative_to(ROOT).as_posix(),'modes':test_modes['modes'],'certificate':'SMT decisions are NOT_CHECKED by Coq; matching historical refutations are separate evidence.'}
+        supplements={}
+        modular_pointer=folder/'modular/index.json'
+        if modular_pointer.is_file():
+            supplements['modular']=read(modular_pointer)
+            report['execution_strategy_supplements']=supplements
         save(folder/'result-cost.json',report)
         buf=io.StringIO();writer=csv.DictWriter(buf,fieldnames=list(costs[0]),lineterminator='\n');writer.writeheader();writer.writerows(costs);(folder/'result-cost.csv').write_text(buf.getvalue())
         text=f"# {name}：结果与成本表\n\n完整状态：{'已齐全' if complete else '待补齐'}。语言版本记录 {len(group['variants'])} 条；主程序：{group.get('primary_variant') or '待绑定已有验证证据'}。\n\n"
@@ -129,10 +134,17 @@ def main(argv=()):
             text+='\n## teSpec 空间 SMT 模式\n\n| 项目 | 关闭 | 开启 |\n|---|---:|---:|\n'
             text+=f"| 原生 PASS / FAIL / UNKNOWN / ERROR | {' / '.join(str(off['native_status_counts'].get(k,0)) for k in ['PASS','FAIL','UNKNOWN','ERROR'])} | {' / '.join(str(on['native_status_counts'].get(k,0)) for k in ['PASS','FAIL','UNKNOWN','ERROR'])} |\n| 最终预期匹配（含所需 ITP） | {off['expected_matches']}/{test_modes['case_pairs']} | {on['expected_matches']}/{test_modes['case_pairs']} |\n| 每次执行平均时间（秒） | {off['mean_execution_wall_seconds']:.6f} | {on['mean_execution_wall_seconds']:.6f} |\n| 平均单次峰值 RSS（MiB） | {off['mean_execution_peak_rss_mib']:.4f} | {on['mean_execution_peak_rss_mib']:.4f} |\n| 需 ITP 判定的执行数 | {off['executions_requiring_itp_for_verdict']} | {on['executions_requiring_itp_for_verdict']} |\n"
             text+=f"\n模式逐次结果、成本和证书范围见 [模式对照]({mode_stats_path.parent.name}/comparison.md)。无需 ITP 时成本记 0，均值和峰值不适用。SMT 决策不作为 Coq 证书。\n"
+        for strategy,extra in supplements.items():
+            link=Path(extra['report']).relative_to(Path('benchmark/results')/name).as_posix()
+            text+=f"\n## {strategy} 补充评测\n\n既有完整状态沿用原正式评测范围。[{strategy} 逐次结果与成本]({link})：{extra['case_pairs']} 对输入，空间 SMT OFF/ON；原生执行齐全={extra['native_run_complete']}，全部预期已判定={extra['evaluation_complete']}。UNKNOWN 与未完成 ITP 单列，不计成功。\n"
         (folder/'result-cost.md').write_text(text)
         index.append({'program_group':name,'complete':complete,'report':(folder/'result-cost.md').relative_to(ROOT).as_posix(),'json':(folder/'result-cost.json').relative_to(ROOT).as_posix(),'csv':(folder/'result-cost.csv').relative_to(ROOT).as_posix()})
+        if supplements:index[-1]['execution_strategy_supplements']=supplements
     index.sort(key=lambda x:x['program_group'])
     save(OUT/'group-result-cost-index.json',{'groups':index,'groups_total':len(index),'complete_groups':sum(x['complete'] for x in index)})
     (OUT/'group-result-cost-index.md').write_text('# 各程序组结果与成本表\n\n| 程序组 | 完整状态 |\n|---|---|\n'+''.join(f"| [{x['program_group']}]({x['program_group']}/result-cost.md) | {'已齐全' if x['complete'] else '待补齐'} |\n" for x in index))
+    if (OUT/'modular-result-cost-index.md').is_file():
+        with (OUT/'group-result-cost-index.md').open('a') as f:
+            f.write("\n[Modular 全组补充结果与成本](modular-result-cost-index.md)；原生运行覆盖与待补证明单列。\n")
     print(f"Published {len(index)} group result/cost tables; {sum(x['complete'] for x in index)} complete, {sum(not x['complete'] for x in index)} explicitly pending.")
 if __name__=='__main__':main(None)

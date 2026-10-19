@@ -42,3 +42,7 @@ ITP 以一次测试执行的所有待处理 VC 为单位，只展示平均开销
 | 需 ITP 判定的执行数 | 0 | 0 |
 
 模式逐次结果、成本和证书范围见 [模式对照](20261016-evaluation-configured/comparison.md)。无需 ITP 时成本记 0，均值和峰值不适用。SMT 决策不作为 Coq 证书。
+
+## modular 补充评测
+
+既有完整状态沿用原正式评测范围。[modular 逐次结果与成本](modular/20261020/result-cost.md)：20 对输入，空间 SMT OFF/ON；原生执行齐全=True，全部预期已判定=True。UNKNOWN 与未完成 ITP 单列，不计成功。

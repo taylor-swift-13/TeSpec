@@ -263,3 +263,10 @@ teSpec 按用户要求暂缓，本轮未运行；历史两模式各7 UNKNOWN是�
 正常具体测试中，原生证明型 witness 请求保留原节点后排队，目标执行完成后统一复用 QCP 策略/SMT；在线必要 SMT、实例更新、分支剪枝仍保留，没有在线 ITP。两个执行策略和 VC 范围参数独立，原始义务不删；提前 ERROR 也处理已有义务。旧日志/全自动及全称验证路径保留原时序。
 
 已完整 21 组的 900 对输入 OFF/ON 共 1800 次零退化，5262 个原 Goal/auto/check 文件字节一致；modular 42 次代表执行、39 对专项也精确一致，113 项 Python 测试及队列/共享存储 ASan/UBSan 通过。最终所有队列 pending=0。OFF 仍 31 UNKNOWN，ON 0 UNKNOWN，两个模式各 23 预期 ERROR；没有把这些状态变造为 PASS。开发中边界抑制与源位置两项回归已修复，失败尝试和最终复测全部保存。未新增 ITP/全称证书，完整组仍 **21/45**，历史四工具成本不覆盖。见 [实现、证据与复现](../benchmark/results/vc-storage-regressions/20261019-deferred-vc-audit/summary.md)。
+
+
+## 2026-10-20：21组全部输入补充modular原生评测
+
+已实际补测21组/900对输入、modular空间SMT OFF/ON共1800次，旧源/输入/预期及证明证据在执行期间哈希不变。两模式各491 PASS、350 FAIL、36 UNKNOWN、23预期ERROR，原生预期匹配各864/900。16组两模式全部匹配；array_load/incr/read/slf3_basic_inplace_double/zero有72次UNKNOWN，其中58次残余VC待ITP、14次modular断言边界采样未完成、不能用ITP替代执行。原差分门槛如实保留43次退化，原生覆盖齐全不冒称全部判定通过。
+
+每组独立modular结果成本MD/JSON/CSV及全局索引已保存，主组表追加链接。时间、逐次峰值RSS均值与实际token分阶段；未运行的agent/Coq/内核为PENDING/BLOCKED。全部异常逐次入专项台账。旧四工具成本与完整21/45范围不覆盖。本轮未改执行器。见[本批详情](benchmark-modular-supplement-20261020.md)。

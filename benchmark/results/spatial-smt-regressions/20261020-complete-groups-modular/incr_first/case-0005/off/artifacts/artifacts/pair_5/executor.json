@@ -1,0 +1,172 @@
+{
+  "spec_test": {
+    "schema": "sac-spec-test/v1",
+    "execution_semantics": "modular-sampled/v1",
+    "execution_strategy": "modular",
+    "declaration_call_policy": "contract-sample/v1",
+    "query_semantics": "copy-only/v1",
+    "mode": "no-expand",
+    "scope": "execution",
+    "annotation_policy": "check-preserve",
+    "completed": true,
+    "result_scope": "contract-and-invariant-model",
+    "overall": "PASS",
+    "precondition_result": "SAT",
+    "test_result": "PASS",
+    "result_semantics": "three-valued-conjunction/v1",
+    "vc_semantics": "path-vc/v1",
+    "branch_evaluation": {
+      "schema": "instance-first-branch-query/v1",
+      "pure_queries": 6,
+      "evaluated_true": 0,
+      "evaluated_false": 0,
+      "smt_fallback": 6
+    },
+    "vc_scheduling": {
+      "schema": "post-execution-witness-smt/v1",
+      "enabled": true,
+      "collecting": false,
+      "requests": 5,
+      "queued_witnesses": 2,
+      "solved_witnesses": 2,
+      "retained_on_release": 0,
+      "pending_witnesses": 0
+    },
+    "vc_results": [
+      {
+        "kind": "partial_solve",
+        "name": null,
+        "line": 17,
+        "status": "VALID",
+        "path": "PROP[\n  q_379_addr == 12288;\n  p_382_addr == 16384 ]\nLOCAL[\n  Temp p 16384;\n  Temp q 12288 ]\nSEP[\n  store(16384, 4096, unsigned int*);\n  store(12288, 8192, unsigned int*);\n  store(4096, UINT_MAX, unsigned int);\n  store(8192, UINT_MAX, unsigned int) ]\n",
+        "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+      },
+      {
+        "kind": "return",
+        "name": null,
+        "line": 17,
+        "status": "VALID",
+        "path": "PROP[\n  q_379_addr == 12288;\n  p_382_addr == 16384 ]\nLOCAL[]\nSEP[\n  store(4096, 0, unsigned int);\n  store(8192, UINT_MAX, unsigned int) ]\n",
+        "goal": "PROP[]\nLOCAL[]\nSEP[\n  store(4096, 0, unsigned int);\n  store(8192, UINT_MAX, unsigned int) ]\n"
+      }
+    ],
+    "phases": {
+      "precondition": "SAT",
+      "safety": "PASS",
+      "postcondition": "PASS",
+      "annotations": "PASS"
+    },
+    "abstraction_events": [
+      {
+        "kind": "contract_state_sampled",
+        "function": "contract",
+        "count": 1
+      },
+      {
+        "kind": "contract-sample",
+        "function": "incr",
+        "count": 1
+      },
+      {
+        "kind": "contract_state_sampled",
+        "function": "contract-prestate",
+        "count": 1
+      }
+    ],
+    "sampling_events": [
+      {
+        "kind": "contract-prestate",
+        "constraint_state": "PROP[\n  p_381_pre == 4096;\n  q_378_pre == 8192;\n  v___tespec_entry_384_free == UINT_MAX;\n  w___tespec_entry_383_free == UINT_MAX;\n  0 <= v___tespec_entry_384_free;\n  v___tespec_entry_384_free <= UINT_MAX;\n  0 <= w___tespec_entry_383_free;\n  w___tespec_entry_383_free <= UINT_MAX ]\nLOCAL[\n  Temp p p_382_addr;\n  Temp q q_379_addr ]\nSEP[\n  store(p_382_addr, p_381_pre, unsigned int*);\n  store(q_379_addr, q_378_pre, unsigned int*);\n  store(p_381_pre, v___tespec_entry_384_free, unsigned int);\n  store(q_378_pre, w___tespec_entry_383_free, unsigned int) ]\n",
+        "selected_state": "PROP[\n  p_381_pre == 4096;\n  q_378_pre == 8192;\n  v___tespec_entry_384_free == UINT_MAX;\n  w___tespec_entry_383_free == UINT_MAX;\n  0 <= v___tespec_entry_384_free;\n  v___tespec_entry_384_free <= UINT_MAX;\n  0 <= w___tespec_entry_383_free;\n  w___tespec_entry_383_free <= UINT_MAX;\n  q_379_addr == 12288;\n  p_382_addr == 16384 ]\nLOCAL[\n  Temp p p_382_addr;\n  Temp q q_379_addr ]\nSEP[\n  store(p_382_addr, p_381_pre, unsigned int*);\n  store(q_379_addr, q_378_pre, unsigned int*);\n  store(p_381_pre, v___tespec_entry_384_free, unsigned int);\n  store(q_378_pre, w___tespec_entry_383_free, unsigned int) ]\n",
+        "status": "SAMPLED",
+        "attempt": 7,
+        "policy": "deterministic-bounds-v1"
+      },
+      {
+        "kind": "contract",
+        "constraint_state": "PROP[\n  p_381_pre == 4096;\n  q_378_pre == 8192;\n  v___tespec_entry_384_free == UINT_MAX;\n  w___tespec_entry_383_free == UINT_MAX;\n  0 <= v___tespec_entry_384_free;\n  v___tespec_entry_384_free <= UINT_MAX;\n  0 <= w___tespec_entry_383_free;\n  w___tespec_entry_383_free <= UINT_MAX;\n  q_379_addr == 12288;\n  p_382_addr == 16384 ]\nLOCAL[\n  Temp q q_379_addr;\n  Temp p p_382_addr ]\nSEP[\n  store(p_381_pre, ((v___tespec_entry_384_free + 1) %% 4294967296), unsigned int);\n  store(p_382_addr, p_381_pre, unsigned int*);\n  store(q_379_addr, q_378_pre, unsigned int*);\n  store(q_378_pre, w___tespec_entry_383_free, unsigned int) ]\n",
+        "selected_state": "PROP[\n  p_381_pre == 4096;\n  q_378_pre == 8192;\n  v___tespec_entry_384_free == UINT_MAX;\n  w___tespec_entry_383_free == UINT_MAX;\n  0 <= v___tespec_entry_384_free;\n  v___tespec_entry_384_free <= UINT_MAX;\n  0 <= w___tespec_entry_383_free;\n  w___tespec_entry_383_free <= UINT_MAX;\n  q_379_addr == 12288;\n  p_382_addr == 16384 ]\nLOCAL[\n  Temp q q_379_addr;\n  Temp p p_382_addr ]\nSEP[\n  store(p_381_pre, ((v___tespec_entry_384_free + 1) %% 4294967296), unsigned int);\n  store(p_382_addr, p_381_pre, unsigned int*);\n  store(q_379_addr, q_378_pre, unsigned int*);\n  store(q_378_pre, w___tespec_entry_383_free, unsigned int) ]\n",
+        "status": "SAMPLED",
+        "attempt": 1,
+        "policy": "deterministic-bounds-v1"
+      }
+    ],
+    "limit_reason": null,
+    "architecture_bits": 32,
+    "target_layout": {
+      "schema": "sac-target-layout/v1",
+      "architecture_bits": 32,
+      "byte_order": "big",
+      "pointer_size": 4,
+      "memory_rules": "naive_C_Rules",
+      "field_address_semantics": "base-plus-byte-offset/v1",
+      "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+      "aggregates": [],
+      "aliases": []
+    },
+    "certificate": "NOT_CHECKED"
+  },
+  "preconditions": [
+    {
+      "goal": "incr_first_precondition_wit_1",
+      "status": "SAT",
+      "proof": "auto"
+    }
+  ],
+  "fileName": "/home/yangfp/teSpec/benchmark/results/spatial-smt-regressions/20261020-complete-groups-modular/incr_first/case-0005/off/artifacts/artifacts/pair_5/input.c",
+  "functionName": "incr_first",
+  "loaded_strategies": [
+    "common",
+    "string_literal"
+  ],
+  "result": "success",
+  "verificationStatus": "proved",
+  "has_manual_obligations": false,
+  "manual_obligation_count": 0,
+  "manual_obligations": null,
+  "errormessage": null,
+  "warningmessage": null,
+  "current_assertions": null,
+  "FunctionDerivation": null,
+  "WitnessList": [
+    {
+      "functionName": "incr_first",
+      "Witness": {
+        "safety_checker_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "entailment_checker_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "return_checker_wit": {
+          "total": 1,
+          "auto_solved": 1,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "partial_solve_wit": {
+          "total": 1,
+          "auto_solved": 1,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "which_implies_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "total_witness_count": {
+          "auto_solved": 2,
+          "manual": 0
+        }
+      }
+    }
+  ]
+}

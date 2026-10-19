@@ -449,3 +449,10 @@ VC、报告、输入/源码/工具哈希及结果成本 CSV/JSON。CLI、执行�
 求解请求按原节点去重，所有原始义务、源位置、作用域、公式和出现次数保留，提前错误也须保留已产生的义务。spec_test.vc_scheduling 的 solved_witnesses 是已尝试自动求解数量，不是 VALID 数；pending=0 也不等于全部证明成功。策略 inline/modular 与 VC 范围 entry-exit/all-boundaries 仍独立。
 
 精确回归可显式使用 --ignore-runtime-metric branch_evaluation，前提是比较器验证原 schema、完整字段集合、非负整数和 pure_queries=evaluated_true+evaluated_false+smt_fallback，并保存两侧原计数。该共享查询入口也被自动证明调用；减少重复求解会改变计数，不能据此更改逻辑字段。其他旧字段不允许作为运行指标排除；新增诊断仍须证明基线不存在。原始 VC/判定/位置、实例轨迹及 Goal/auto/check 完整字节必须比较。详见 [本次调度审计](../benchmark/results/vc-storage-regressions/20261019-deferred-vc-audit/summary.md)。
+
+
+### Modular补充表的发布（2026-10-20）
+
+每组新增执行策略结果放在benchmark/results/<group>/modular/<run-id>/result-cost.md/json/csv，由modular/index.json选择活动补充；全局入口为modular-result-cost-index.md/json。主组表与总索引通过execution_strategy_supplements引用，原complete标志保留原正式范围。新增策略的native_run_complete与evaluation_complete分别报告；原生执行覆盖齐全不等于所有预期已判定。
+
+结果必须写明execution_strategy、execution_mode和空间SMT模式。UNKNOWN中只有执行已完成且有原始残余VC的项目才列为待ITP执行；采样失败、无可达返回等未完成执行另列BLOCKED，不能凑成ITP任务。未跑的证明阶段时间/RSS为null；历史ITP结论仅比较预期，不能冒充新目标证书。各组原有CN/QCP/Fulminate与inline成本保留；原生时间/RSS/token及新增证明成本在独立补充表按原口径展示。
