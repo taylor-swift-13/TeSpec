@@ -1,0 +1,369 @@
+{
+  "spec_test": {
+    "schema": "sac-spec-test/v1",
+    "execution_semantics": "modular-sampled/v1",
+    "execution_strategy": "modular",
+    "declaration_call_policy": "contract-sample/v1",
+    "query_semantics": "copy-only/v1",
+    "mode": "expand",
+    "scope": "execution",
+    "annotation_policy": "ignore",
+    "completed": true,
+    "result_scope": "contract-and-invariant-model",
+    "overall": "PASS",
+    "precondition_result": "SAT",
+    "test_result": "PASS",
+    "result_semantics": "three-valued-conjunction/v1",
+    "vc_semantics": "path-vc/v1",
+    "vc_results": [
+      {
+        "kind": "safety",
+        "name": null,
+        "line": 4,
+        "status": "VALID",
+        "path": "EX i_380_addr \nPROP[]\nLOCAL[\n  Temp i i_380_addr;\n  Temp n n_371_addr ]\nSEP[\n  has_permission(i_380_addr, signed int);\n  store(n_371_addr, 4, signed int) ]\n",
+        "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+      },
+      {
+        "kind": "safety",
+        "name": null,
+        "line": 4,
+        "status": "VALID",
+        "path": "EX i_387_value n_388_value \nPROP[\n  n_388_value == 4;\n  n_371_addr == 4096;\n  i_380_addr == 8192;\n  i_387_value == 3 ]\nLOCAL[\n  Temp n 4096;\n  Temp i 8192 ]\nSEP[\n  store(8192, 3, signed int);\n  store(4096, 4, signed int) ]\n",
+        "goal": "PROP[\n  (i_387_value + 1) <= INT_MAX;\n  (- 2147483648) <= (i_387_value + 1) ]\nLOCAL[]\nSEP[]\n"
+      },
+      {
+        "kind": "return",
+        "name": null,
+        "line": 4,
+        "status": "VALID",
+        "path": "PROP[\n  4 == i_387_value;\n  n_388_value == 4;\n  n_371_addr == 4096;\n  i_380_addr == 8192 ]\nLOCAL[]\nSEP[]\n",
+        "goal": "PROP[\n  i_387_value == 4 ]\nLOCAL[]\nSEP[]\n"
+      }
+    ],
+    "phases": {
+      "precondition": "SAT",
+      "safety": "PASS",
+      "postcondition": "PASS",
+      "annotations": "NOT_RUN"
+    },
+    "abstraction_events": [
+      {
+        "kind": "contract_state_sampled",
+        "function": "loop-exit-input",
+        "count": 1
+      },
+      {
+        "kind": "contract_state_sampled",
+        "function": "loop-preservation-input",
+        "count": 1
+      },
+      {
+        "kind": "modular-loop-invariant",
+        "function": "sample",
+        "count": 2
+      }
+    ],
+    "sampling_events": [
+      {
+        "kind": "loop-preservation-input",
+        "constraint_state": "EX i_387_value n_388_value \nPROP[\n  i_387_value < n_388_value;\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096 ]\nLOCAL[\n  Temp n n_371_addr;\n  Temp i i_380_addr ]\nSEP[\n  store(i_380_addr, i_387_value, signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+        "selected_state": "EX i_387_value n_388_value \nPROP[\n  i_387_value < n_388_value;\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096;\n  n_371_addr == 4096;\n  i_380_addr == 8192;\n  i_387_value == 3 ]\nLOCAL[\n  Temp n n_371_addr;\n  Temp i i_380_addr ]\nSEP[\n  store(i_380_addr, i_387_value, signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+        "status": "SAMPLED",
+        "attempt": 5,
+        "policy": "deterministic-bounds-v1"
+      },
+      {
+        "kind": "loop-exit-input",
+        "constraint_state": "EX i_387_value n_388_value \nPROP[\n  i_387_value >= n_388_value;\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096 ]\nLOCAL[\n  Temp n n_371_addr;\n  Temp i i_380_addr ]\nSEP[\n  store(i_380_addr, i_387_value, signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+        "selected_state": "EX i_387_value n_388_value \nPROP[\n  i_387_value >= n_388_value;\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096;\n  n_371_addr == 4096;\n  i_380_addr == 8192 ]\nLOCAL[\n  Temp n n_371_addr;\n  Temp i i_380_addr ]\nSEP[\n  store(i_380_addr, i_387_value, signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+        "status": "SAMPLED",
+        "attempt": 3,
+        "policy": "deterministic-bounds-v1"
+      }
+    ],
+    "limit_reason": null,
+    "architecture_bits": 32,
+    "target_layout": {
+      "schema": "sac-target-layout/v1",
+      "architecture_bits": 32,
+      "byte_order": "big",
+      "pointer_size": 4,
+      "memory_rules": "naive_C_Rules",
+      "field_address_semantics": "base-plus-byte-offset/v1",
+      "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+      "aggregates": [],
+      "aliases": []
+    },
+    "certificate": "NOT_CHECKED",
+    "instance_trace": [
+      {
+        "phase": "before-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-candidate/invariant-modular-entry-exit/baseline/artifacts/artifacts/one/input.c",
+        "line": 4,
+        "column": 72,
+        "branch": 0,
+        "version": 1,
+        "P": "PROP[\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096 ]\nLOCAL[\n  Temp n n_371_addr ]\nSEP[\n  store(n_371_addr, n_370_pre, signed int) ]\n",
+        "memory": "SEP[\n  store(n_371_addr, n_370_pre, signed int) ]\n",
+        "equalities": "PROP[\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096 ]\n"
+      },
+      {
+        "phase": "after-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-candidate/invariant-modular-entry-exit/baseline/artifacts/artifacts/one/input.c",
+        "line": 4,
+        "column": 72,
+        "branch": 0,
+        "version": 2,
+        "P": "EX i_380_addr \nPROP[\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096 ]\nLOCAL[\n  Temp i i_380_addr;\n  Temp n n_371_addr ]\nSEP[\n  has_permission(i_380_addr, signed int);\n  store(n_371_addr, n_370_pre, signed int) ]\n",
+        "memory": "SEP[\n  has_permission(i_380_addr, signed int);\n  store(n_371_addr, n_370_pre, signed int) ]\n",
+        "equalities": "PROP[\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096 ]\n"
+      },
+      {
+        "phase": "before-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-candidate/invariant-modular-entry-exit/baseline/artifacts/artifacts/one/input.c",
+        "line": 4,
+        "column": 72,
+        "branch": 0,
+        "version": 3,
+        "P": "EX i_380_addr \nPROP[\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096 ]\nLOCAL[\n  Temp i i_380_addr;\n  Temp n n_371_addr ]\nSEP[\n  has_permission(i_380_addr, signed int);\n  store(n_371_addr, n_370_pre, signed int) ]\n",
+        "memory": "SEP[\n  has_permission(i_380_addr, signed int);\n  store(n_371_addr, n_370_pre, signed int) ]\n",
+        "equalities": "PROP[\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096 ]\n"
+      },
+      {
+        "phase": "after-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-candidate/invariant-modular-entry-exit/baseline/artifacts/artifacts/one/input.c",
+        "line": 4,
+        "column": 72,
+        "branch": 0,
+        "version": 4,
+        "P": "EX i_380_addr \nPROP[\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096 ]\nLOCAL[\n  Temp i i_380_addr;\n  Temp n n_371_addr ]\nSEP[\n  store(i_380_addr, 0, signed int);\n  store(n_371_addr, n_370_pre, signed int) ]\n",
+        "memory": "SEP[\n  store(i_380_addr, 0, signed int);\n  store(n_371_addr, n_370_pre, signed int) ]\n",
+        "equalities": "PROP[\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096 ]\n"
+      },
+      {
+        "phase": "before-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-candidate/invariant-modular-entry-exit/baseline/artifacts/artifacts/one/input.c",
+        "line": 4,
+        "column": 81,
+        "branch": 0,
+        "version": 5,
+        "P": "EX i_380_addr \nPROP[\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096 ]\nLOCAL[\n  Temp i i_380_addr;\n  Temp n n_371_addr ]\nSEP[\n  store(i_380_addr, 0, signed int);\n  store(n_371_addr, n_370_pre, signed int) ]\n",
+        "memory": "SEP[\n  store(i_380_addr, 0, signed int);\n  store(n_371_addr, n_370_pre, signed int) ]\n",
+        "equalities": "PROP[\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096 ]\n"
+      },
+      {
+        "phase": "before-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-candidate/invariant-modular-entry-exit/baseline/artifacts/artifacts/one/input.c",
+        "line": 4,
+        "column": 81,
+        "branch": 0,
+        "version": 6,
+        "P": "EX i_380_addr \nPROP[\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096 ]\nLOCAL[\n  Temp i i_380_addr;\n  Temp n n_371_addr ]\nSEP[\n  store(i_380_addr, 0, signed int);\n  store(n_371_addr, n_370_pre, signed int) ]\n",
+        "memory": "SEP[\n  store(i_380_addr, 0, signed int);\n  store(n_371_addr, n_370_pre, signed int) ]\n",
+        "equalities": "PROP[\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096 ]\n"
+      },
+      {
+        "phase": "after-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-candidate/invariant-modular-entry-exit/baseline/artifacts/artifacts/one/input.c",
+        "line": 4,
+        "column": 81,
+        "branch": 0,
+        "version": 7,
+        "P": "EX i_387_value n_388_value \nPROP[\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096 ]\nLOCAL[\n  Temp n n_371_addr;\n  Temp i i_380_addr ]\nSEP[\n  store(i_380_addr, i_387_value, signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+        "memory": "SEP[\n  store(i_380_addr, i_387_value, signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+        "equalities": "PROP[\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096 ]\n"
+      },
+      {
+        "phase": "after-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-candidate/invariant-modular-entry-exit/baseline/artifacts/artifacts/one/input.c",
+        "line": 4,
+        "column": 81,
+        "branch": 0,
+        "version": 8,
+        "P": "EX i_387_value n_388_value \nPROP[\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096 ]\nLOCAL[\n  Temp n n_371_addr;\n  Temp i i_380_addr ]\nSEP[\n  store(i_380_addr, i_387_value, signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+        "memory": "SEP[\n  store(i_380_addr, i_387_value, signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+        "equalities": "PROP[\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096 ]\n"
+      },
+      {
+        "phase": "before-expression",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-candidate/invariant-modular-entry-exit/baseline/artifacts/artifacts/one/input.c",
+        "line": 4,
+        "column": 123,
+        "branch": 0,
+        "version": 9,
+        "P": "EX i_387_value n_388_value \nPROP[\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096 ]\nLOCAL[\n  Temp n n_371_addr;\n  Temp i i_380_addr ]\nSEP[\n  store(i_380_addr, i_387_value, signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+        "memory": "SEP[\n  store(i_380_addr, i_387_value, signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+        "equalities": "PROP[\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096 ]\n"
+      },
+      {
+        "phase": "after-expression",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-candidate/invariant-modular-entry-exit/baseline/artifacts/artifacts/one/input.c",
+        "line": 4,
+        "column": 123,
+        "branch": 0,
+        "version": 10,
+        "P": "EX i_387_value n_388_value \nPROP[\n  i_387_value >= n_388_value;\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096 ]\nLOCAL[\n  Temp n n_371_addr;\n  Temp i i_380_addr ]\nSEP[\n  store(i_380_addr, i_387_value, signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+        "memory": "SEP[\n  store(i_380_addr, i_387_value, signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+        "equalities": "PROP[\n  i_387_value >= n_388_value;\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096 ]\n"
+      },
+      {
+        "phase": "after-expression",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-candidate/invariant-modular-entry-exit/baseline/artifacts/artifacts/one/input.c",
+        "line": 4,
+        "column": 123,
+        "branch": 1,
+        "version": 11,
+        "P": "EX i_387_value n_388_value \nPROP[\n  i_387_value < n_388_value;\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096 ]\nLOCAL[\n  Temp n n_371_addr;\n  Temp i i_380_addr ]\nSEP[\n  store(i_380_addr, i_387_value, signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+        "memory": "SEP[\n  store(i_380_addr, i_387_value, signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+        "equalities": "PROP[\n  i_387_value < n_388_value;\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096 ]\n"
+      },
+      {
+        "phase": "before-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-candidate/invariant-modular-entry-exit/baseline/artifacts/artifacts/one/input.c",
+        "line": 4,
+        "column": 129,
+        "branch": 0,
+        "version": 12,
+        "P": "EX i_387_value n_388_value \nPROP[\n  i_387_value < n_388_value;\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096;\n  n_371_addr == 4096;\n  i_380_addr == 8192;\n  i_387_value == 3 ]\nLOCAL[\n  Temp n n_371_addr;\n  Temp i i_380_addr ]\nSEP[\n  store(i_380_addr, i_387_value, signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+        "memory": "SEP[\n  store(i_380_addr, i_387_value, signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+        "equalities": "PROP[\n  i_387_value < n_388_value;\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096;\n  n_371_addr == 4096;\n  i_380_addr == 8192;\n  i_387_value == 3 ]\n"
+      },
+      {
+        "phase": "after-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-candidate/invariant-modular-entry-exit/baseline/artifacts/artifacts/one/input.c",
+        "line": 4,
+        "column": 129,
+        "branch": 0,
+        "version": 13,
+        "P": "EX i_387_value n_388_value \nPROP[\n  i_387_value < n_388_value;\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096;\n  n_371_addr == 4096;\n  i_380_addr == 8192;\n  i_387_value == 3 ]\nLOCAL[\n  Temp n n_371_addr;\n  Temp i i_380_addr ]\nSEP[\n  store(i_380_addr, (i_387_value + 1), signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+        "memory": "SEP[\n  store(i_380_addr, (i_387_value + 1), signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+        "equalities": "PROP[\n  i_387_value < n_388_value;\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096;\n  n_371_addr == 4096;\n  i_380_addr == 8192;\n  i_387_value == 3 ]\n"
+      },
+      {
+        "phase": "before-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-candidate/invariant-modular-entry-exit/baseline/artifacts/artifacts/one/input.c",
+        "line": 4,
+        "column": 81,
+        "branch": 0,
+        "version": 14,
+        "P": "EX i_387_value n_388_value \nPROP[\n  i_387_value < n_388_value;\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096;\n  n_371_addr == 4096;\n  i_380_addr == 8192;\n  i_387_value == 3 ]\nLOCAL[\n  Temp n n_371_addr;\n  Temp i i_380_addr ]\nSEP[\n  store(i_380_addr, (i_387_value + 1), signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+        "memory": "SEP[\n  store(i_380_addr, (i_387_value + 1), signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+        "equalities": "PROP[\n  i_387_value < n_388_value;\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096;\n  n_371_addr == 4096;\n  i_380_addr == 8192;\n  i_387_value == 3 ]\n"
+      },
+      {
+        "phase": "before-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-candidate/invariant-modular-entry-exit/baseline/artifacts/artifacts/one/input.c",
+        "line": 4,
+        "column": 81,
+        "branch": 0,
+        "version": 15,
+        "P": "EX i_387_value n_388_value \nPROP[\n  i_387_value < n_388_value;\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096;\n  n_371_addr == 4096;\n  i_380_addr == 8192;\n  i_387_value == 3 ]\nLOCAL[\n  Temp n n_371_addr;\n  Temp i i_380_addr ]\nSEP[\n  store(i_380_addr, (i_387_value + 1), signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+        "memory": "SEP[\n  store(i_380_addr, (i_387_value + 1), signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+        "equalities": "PROP[\n  i_387_value < n_388_value;\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096;\n  n_371_addr == 4096;\n  i_380_addr == 8192;\n  i_387_value == 3 ]\n"
+      },
+      {
+        "phase": "before-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-candidate/invariant-modular-entry-exit/baseline/artifacts/artifacts/one/input.c",
+        "line": 4,
+        "column": 136,
+        "branch": 0,
+        "version": 16,
+        "P": "EX i_387_value n_388_value \nPROP[\n  i_387_value >= n_388_value;\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096;\n  n_371_addr == 4096;\n  i_380_addr == 8192 ]\nLOCAL[\n  Temp n n_371_addr;\n  Temp i i_380_addr ]\nSEP[\n  store(i_380_addr, i_387_value, signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+        "memory": "SEP[\n  store(i_380_addr, i_387_value, signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+        "equalities": "PROP[\n  i_387_value >= n_388_value;\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096;\n  n_371_addr == 4096;\n  i_380_addr == 8192 ]\n"
+      },
+      {
+        "phase": "after-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-candidate/invariant-modular-entry-exit/baseline/artifacts/artifacts/one/input.c",
+        "line": 4,
+        "column": 136,
+        "branch": 0,
+        "version": 17,
+        "P": "EX i_387_value n_388_value \nPROP[\n  i_387_value >= n_388_value;\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096;\n  n_371_addr == 4096;\n  i_380_addr == 8192 ]\nLOCAL[\n  Temp n n_371_addr;\n  Temp i i_380_addr ]\nSEP[\n  store(i_380_addr, i_387_value, signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+        "memory": "SEP[\n  store(i_380_addr, i_387_value, signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+        "equalities": "PROP[\n  i_387_value >= n_388_value;\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096;\n  n_371_addr == 4096;\n  i_380_addr == 8192 ]\n"
+      }
+    ]
+  },
+  "preconditions": [
+    {
+      "goal": "sample_precondition_wit_1",
+      "status": "SAT",
+      "proof": "auto"
+    }
+  ],
+  "fileName": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-candidate/invariant-modular-entry-exit/baseline/artifacts/artifacts/one/input.c",
+  "functionName": "sample",
+  "loaded_strategies": [
+    "common",
+    "string_literal"
+  ],
+  "result": "success",
+  "verificationStatus": "proved",
+  "has_manual_obligations": false,
+  "manual_obligation_count": 0,
+  "manual_obligations": null,
+  "errormessage": null,
+  "warningmessage": null,
+  "current_assertions": null,
+  "FunctionDerivation": null,
+  "WitnessList": [
+    {
+      "functionName": "sample",
+      "Witness": {
+        "safety_checker_wit": {
+          "total": 2,
+          "auto_solved": 2,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "entailment_checker_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "return_checker_wit": {
+          "total": 1,
+          "auto_solved": 1,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "partial_solve_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "which_implies_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "total_witness_count": {
+          "auto_solved": 3,
+          "manual": 0
+        }
+      }
+    }
+  ]
+}

@@ -243,3 +243,10 @@ teSpec 按用户要求暂缓，本轮未运行；历史两模式各7 UNKNOWN是�
 ## 2026-10-19：singleton malloc 新版本复测
 
 当前 main aee98873a 执行器实际重跑 singleton 原 7 输入，覆盖 inline/modular、entry-exit/all-boundaries、空间 SMT OFF/ON，共56次。全部入口SAT、契约采样成功、执行完成；每次剩1个Dll返回VC，最终56 UNKNOWN，SMT ON明确不支持Dll。原来的malloc_node缺函数体阻塞已消失；不同阶段的问题没有合并为“通过”。当前执行器和上次final相同，56个Goal哈希也匹配。本次原生时间/RSS、输入/VC/日志哈希与异常台账已独立保存，未重跑CN/QCP/Fulminate或ITP，完整组仍21/45。见[复测说明](../benchmark/results/execution-strategy/20261019-singleton-malloc-retest/retest-summary.md)。
+
+
+## 2026-10-19：inline VC 保存与去重回归
+
+已发布 frozen safety 载荷精确共享、VC 报告哈希索引、空临时 entailment 副本削减和 JSON 临时字符串释放；保留每一个原始证明义务。没有修改在线条件求值、循环退出或分支剪枝。现有 105 项 Python 测试、ASan/UBSan 存储测试、14 组旧新循环差分通过。21 个完整组的 900 对输入、空间 SMT OFF/ON 共 1800 次回归为 0 退化，进一步逐例确认全部原始 Goal/auto/check 字节及原生 VC/witness 记录一致；modular 42 个正例代表也通过。
+
+这不表示 1800 次均为程序 PASS：历史 UNKNOWN 和预期 ERROR 保留。没有新增完整组、没有重跑 CN/Fulminate/ITP，进度仍 21/45；历史成本不覆盖。测得重复快照存储减少，但长循环整体内存仍受活状态历史和其他 witness 影响，不宣称已解决全部内存增长。完整日志、时间/RSS、构建哈希和复现命令见 [存储优化审计](../benchmark/results/vc-storage-regressions/20261019-audit/summary.md)。
