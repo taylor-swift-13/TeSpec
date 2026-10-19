@@ -1,0 +1,482 @@
+{
+  "schema": "qcp-spectest-report/v1",
+  "job": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/composite_loop_dll_mixed_sign_updates/entry-exit/job.json",
+  "source": "/home/yangfp/teSpec/cases/composite_loop_dll/composite_loop_dll.c",
+  "spec_file": null,
+  "function": "composite_loop_dll",
+  "qcp_binary": "/home/yangfp/teSpec/bin/tespec-symexec",
+  "provenance": {
+    "source_sha256": "3f7bdce1802f01de121d4fadb95aa2570cebb31da1f93c202ba40c30ee6ed370",
+    "job_sha256": "1d7ab25f57c8e760ce8a4072b320ad289749dc01c5554d71c52fc6b099538ba5",
+    "binary_sha256": "4e551edce5c3733671b6118dd689cd0e30d12e04416a2046a29bfd9361f55ace",
+    "runtime_source_sha256": "08b41c971d404d9fe6ae40dce420752af8eb023179017c55737dc5a7df89f56a",
+    "runtime_digest_scope": "SeparationLogic and QCP_examples: .v, .h, .strategies, _CoqProject",
+    "included_source_sha256": "6a17ac7e2458585a98aca8ebe06c1803f3281d957ca7b2c6dedd4d6a7cb41e8c",
+    "spec_sha256": null
+  },
+  "vc_policy": {
+    "mode": "entry-exit",
+    "execution_strategy": "inline",
+    "execution_semantics": "inline-preserve/v1",
+    "loops": "execute_iterations",
+    "defined_function_calls": "execute_bodies",
+    "intermediate_boundaries": false,
+    "declaration_calls": "sample_contract_postconditions",
+    "call_depth_limit": 16,
+    "loop_unroll_limit": 8
+  },
+  "results": [
+    {
+      "id": "mixed_sign_updates",
+      "arguments": {
+        "head": 28672
+      },
+      "bindings": {
+        "tail": 32768,
+        "h0": -5,
+        "h1": 4,
+        "hd": 8,
+        "t0": 7,
+        "t1": -2,
+        "td": -3,
+        "expected": 7
+      },
+      "type_bindings": {},
+      "spec": null,
+      "generated_source": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/composite_loop_dll_mixed_sign_updates/entry-exit/result/artifacts/mixed_sign_updates/input.c",
+      "status": "PASS",
+      "overall": "PASS",
+      "precondition_result": "SAT",
+      "test_result": "PASS",
+      "result_semantics": "three-valued-conjunction/v1",
+      "executor_reported_status": "PASS",
+      "satisfied": true,
+      "reason": "qcp_full_auto_passed",
+      "phases": {
+        "precondition": "SAT",
+        "safety": "PASS",
+        "postcondition": "PASS",
+        "annotations": "NOT_RUN",
+        "execution": "PASS"
+      },
+      "scope": "execution",
+      "mode": "entry-exit",
+      "execution_semantics": "inline-preserve/v1",
+      "execution_strategy": "inline",
+      "requested_execution_strategy": "inline",
+      "declaration_call_policy": "contract-sample/v1",
+      "sampling_events": [],
+      "result_scope": "concrete-execution",
+      "execution_completed": true,
+      "annotation_policy": "ignore",
+      "preconditions": [
+        {
+          "goal": "composite_loop_dll_precondition_wit_1",
+          "status": "SAT",
+          "proof": "auto"
+        }
+      ],
+      "abstraction_events": [
+        {
+          "kind": "inline-call",
+          "function": "apply_meter_delta",
+          "count": 2
+        }
+      ],
+      "architecture_bits": 32,
+      "target_layout": {
+        "schema": "sac-target-layout/v1",
+        "architecture_bits": 32,
+        "byte_order": "big",
+        "pointer_size": 4,
+        "memory_rules": "naive_C_Rules",
+        "field_address_semantics": "base-plus-byte-offset/v1",
+        "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+        "aggregates": [
+          {
+            "id": 405,
+            "kind": "struct",
+            "name": "meter_node",
+            "defined": true,
+            "size": 20,
+            "alignment": 4,
+            "fields": [
+              {
+                "id": 408,
+                "name": "previous",
+                "offset": 0,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "pointer",
+                  "target": {
+                    "kind": "struct",
+                    "id": 405
+                  }
+                },
+                "computational": true
+              },
+              {
+                "id": 407,
+                "name": "following",
+                "offset": 4,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "pointer",
+                  "target": {
+                    "kind": "struct",
+                    "id": 405
+                  }
+                },
+                "computational": true
+              },
+              {
+                "id": 406,
+                "name": "meter",
+                "offset": 8,
+                "size": 12,
+                "alignment": 4,
+                "type": {
+                  "kind": "struct",
+                  "id": 369
+                },
+                "computational": true
+              }
+            ]
+          },
+          {
+            "id": 369,
+            "kind": "struct",
+            "name": "meter_payload",
+            "defined": true,
+            "size": 12,
+            "alignment": 4,
+            "fields": [
+              {
+                "id": 371,
+                "name": "readings",
+                "offset": 0,
+                "size": 8,
+                "alignment": 4,
+                "type": {
+                  "kind": "array",
+                  "length": 2,
+                  "element": {
+                    "kind": "basic",
+                    "name": "int"
+                  }
+                },
+                "computational": true
+              },
+              {
+                "id": 370,
+                "name": "delta",
+                "offset": 8,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "basic",
+                  "name": "int"
+                },
+                "computational": true
+              }
+            ]
+          }
+        ],
+        "aliases": []
+      },
+      "executor_error": null,
+      "residual_vcs": [],
+      "vc_results": [
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 83,
+          "status": "VALID",
+          "path": "EX total_481_addr cursor_478_addr \nPROP[]\nLOCAL[\n  Temp total total_481_addr;\n  Temp cursor cursor_478_addr;\n  Temp head head_453_addr ]\nSEP[\n  has_permission(total_481_addr, signed int);\n  store(cursor_478_addr, 28672, struct meter_node*);\n  store(head_453_addr, 28672, struct meter_node*);\n  store(28672, 0, struct meter_node*);\n  store(28676, 32768, struct meter_node*);\n  store(28680, (- 5), signed int);\n  store(pointer_offset(28680, 1, 4, signed int), 4, signed int);\n  store(28688, 8, signed int);\n  store(32768, 28672, struct meter_node*);\n  store(32772, 0, struct meter_node*);\n  store(32776, 7, signed int);\n  store(pointer_offset(32776, 1, 4, signed int), (- 2), signed int);\n  store(32784, (- 3), signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 84,
+          "status": "VALID",
+          "path": "EX total_481_addr cursor_478_addr \nPROP[\n  prop_false ]\nLOCAL[\n  Temp total total_481_addr;\n  Temp cursor cursor_478_addr;\n  Temp head head_453_addr ]\nSEP[\n  store(total_481_addr, 0, signed int);\n  store(cursor_478_addr, 28672, struct meter_node*);\n  store(head_453_addr, 28672, struct meter_node*);\n  store(28672, 0, struct meter_node*);\n  store(28676, 32768, struct meter_node*);\n  store(28680, (- 5), signed int);\n  store(pointer_offset(28680, 1, 4, signed int), 4, signed int);\n  store(28688, 8, signed int);\n  store(32768, 28672, struct meter_node*);\n  store(32772, 0, struct meter_node*);\n  store(32776, 7, signed int);\n  store(pointer_offset(32776, 1, 4, signed int), (- 2), signed int);\n  store(32784, (- 3), signed int) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 84,
+          "status": "VALID",
+          "path": "EX total_481_addr cursor_478_addr \nPROP[]\nLOCAL[\n  Temp total total_481_addr;\n  Temp cursor cursor_478_addr;\n  Temp head head_453_addr ]\nSEP[\n  store(total_481_addr, 0, signed int);\n  store(cursor_478_addr, 28672, struct meter_node*);\n  store(head_453_addr, 28672, struct meter_node*);\n  store(28672, 0, struct meter_node*);\n  store(28676, 32768, struct meter_node*);\n  store(28680, (- 5), signed int);\n  store(pointer_offset(28680, 1, 4, signed int), 4, signed int);\n  store(28688, 8, signed int);\n  store(32768, 28672, struct meter_node*);\n  store(32772, 0, struct meter_node*);\n  store(32776, 7, signed int);\n  store(pointer_offset(32776, 1, 4, signed int), (- 2), signed int);\n  store(32784, (- 3), signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 15,
+          "status": "VALID",
+          "path": "EX node_482_addr total_481_addr cursor_478_addr \nPROP[]\nLOCAL[\n  Temp node node_482_addr;\n  Temp total total_481_addr;\n  Temp cursor cursor_478_addr;\n  Temp head head_453_addr ]\nSEP[\n  store(node_482_addr, 28672, struct meter_node*);\n  store(total_481_addr, 0, signed int);\n  store(cursor_478_addr, 28672, struct meter_node*);\n  store(head_453_addr, 28672, struct meter_node*);\n  store(28672, 0, struct meter_node*);\n  store(28676, 32768, struct meter_node*);\n  store(28680, (- 5), signed int);\n  store(pointer_offset(28680, 1, 4, signed int), 4, signed int);\n  store(28688, 8, signed int);\n  store(32768, 28672, struct meter_node*);\n  store(32772, 0, struct meter_node*);\n  store(32776, 7, signed int);\n  store(pointer_offset(32776, 1, 4, signed int), (- 2), signed int);\n  store(32784, (- 3), signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 14,
+          "status": "VALID",
+          "path": "EX node_482_addr total_481_addr cursor_478_addr \nPROP[]\nLOCAL[\n  Temp node node_482_addr;\n  Temp total total_481_addr;\n  Temp cursor cursor_478_addr;\n  Temp head head_453_addr ]\nSEP[\n  store(node_482_addr, 28672, struct meter_node*);\n  store(total_481_addr, 0, signed int);\n  store(cursor_478_addr, 28672, struct meter_node*);\n  store(head_453_addr, 28672, struct meter_node*);\n  store(28672, 0, struct meter_node*);\n  store(28676, 32768, struct meter_node*);\n  store(28680, (- 5), signed int);\n  store(pointer_offset(28680, 1, 4, signed int), 4, signed int);\n  store(28688, 8, signed int);\n  store(32768, 28672, struct meter_node*);\n  store(32772, 0, struct meter_node*);\n  store(32776, 7, signed int);\n  store(pointer_offset(32776, 1, 4, signed int), (- 2), signed int);\n  store(32784, (- 3), signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 86,
+          "status": "VALID",
+          "path": "EX total_481_addr cursor_478_addr \nPROP[]\nLOCAL[\n  Temp total total_481_addr;\n  Temp cursor cursor_478_addr;\n  Temp head head_453_addr ]\nSEP[\n  store(total_481_addr, 0, signed int);\n  store(cursor_478_addr, 28672, struct meter_node*);\n  store(head_453_addr, 28672, struct meter_node*);\n  store(28672, 0, struct meter_node*);\n  store(28676, 32768, struct meter_node*);\n  store(28680, 3, signed int);\n  store(pointer_offset(28680, 1, 4, signed int), 4, signed int);\n  store(28688, 8, signed int);\n  store(32768, 28672, struct meter_node*);\n  store(32772, 0, struct meter_node*);\n  store(32776, 7, signed int);\n  store(pointer_offset(32776, 1, 4, signed int), (- 2), signed int);\n  store(32784, (- 3), signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 84,
+          "status": "VALID",
+          "path": "EX total_481_addr cursor_478_addr \nPROP[\n  prop_false ]\nLOCAL[\n  Temp total total_481_addr;\n  Temp cursor cursor_478_addr;\n  Temp head head_453_addr ]\nSEP[\n  store(total_481_addr, 3, signed int);\n  store(cursor_478_addr, 32768, struct meter_node*);\n  store(head_453_addr, 28672, struct meter_node*);\n  store(28672, 0, struct meter_node*);\n  store(28676, 32768, struct meter_node*);\n  store(28680, 3, signed int);\n  store(pointer_offset(28680, 1, 4, signed int), 4, signed int);\n  store(28688, 8, signed int);\n  store(32768, 28672, struct meter_node*);\n  store(32772, 0, struct meter_node*);\n  store(32776, 7, signed int);\n  store(pointer_offset(32776, 1, 4, signed int), (- 2), signed int);\n  store(32784, (- 3), signed int) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 84,
+          "status": "VALID",
+          "path": "EX total_481_addr cursor_478_addr \nPROP[]\nLOCAL[\n  Temp total total_481_addr;\n  Temp cursor cursor_478_addr;\n  Temp head head_453_addr ]\nSEP[\n  store(total_481_addr, 3, signed int);\n  store(cursor_478_addr, 32768, struct meter_node*);\n  store(head_453_addr, 28672, struct meter_node*);\n  store(28672, 0, struct meter_node*);\n  store(28676, 32768, struct meter_node*);\n  store(28680, 3, signed int);\n  store(pointer_offset(28680, 1, 4, signed int), 4, signed int);\n  store(28688, 8, signed int);\n  store(32768, 28672, struct meter_node*);\n  store(32772, 0, struct meter_node*);\n  store(32776, 7, signed int);\n  store(pointer_offset(32776, 1, 4, signed int), (- 2), signed int);\n  store(32784, (- 3), signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 15,
+          "status": "VALID",
+          "path": "EX node_483_addr total_481_addr cursor_478_addr \nPROP[]\nLOCAL[\n  Temp node node_483_addr;\n  Temp total total_481_addr;\n  Temp cursor cursor_478_addr;\n  Temp head head_453_addr ]\nSEP[\n  store(node_483_addr, 32768, struct meter_node*);\n  store(total_481_addr, 3, signed int);\n  store(cursor_478_addr, 32768, struct meter_node*);\n  store(head_453_addr, 28672, struct meter_node*);\n  store(28672, 0, struct meter_node*);\n  store(28676, 32768, struct meter_node*);\n  store(28680, 3, signed int);\n  store(pointer_offset(28680, 1, 4, signed int), 4, signed int);\n  store(28688, 8, signed int);\n  store(32768, 28672, struct meter_node*);\n  store(32772, 0, struct meter_node*);\n  store(32776, 7, signed int);\n  store(pointer_offset(32776, 1, 4, signed int), (- 2), signed int);\n  store(32784, (- 3), signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 14,
+          "status": "VALID",
+          "path": "EX node_483_addr total_481_addr cursor_478_addr \nPROP[]\nLOCAL[\n  Temp node node_483_addr;\n  Temp total total_481_addr;\n  Temp cursor cursor_478_addr;\n  Temp head head_453_addr ]\nSEP[\n  store(node_483_addr, 32768, struct meter_node*);\n  store(total_481_addr, 3, signed int);\n  store(cursor_478_addr, 32768, struct meter_node*);\n  store(head_453_addr, 28672, struct meter_node*);\n  store(28672, 0, struct meter_node*);\n  store(28676, 32768, struct meter_node*);\n  store(28680, 3, signed int);\n  store(pointer_offset(28680, 1, 4, signed int), 4, signed int);\n  store(28688, 8, signed int);\n  store(32768, 28672, struct meter_node*);\n  store(32772, 0, struct meter_node*);\n  store(32776, 7, signed int);\n  store(pointer_offset(32776, 1, 4, signed int), (- 2), signed int);\n  store(32784, (- 3), signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 86,
+          "status": "VALID",
+          "path": "EX total_481_addr cursor_478_addr \nPROP[]\nLOCAL[\n  Temp total total_481_addr;\n  Temp cursor cursor_478_addr;\n  Temp head head_453_addr ]\nSEP[\n  store(total_481_addr, 3, signed int);\n  store(cursor_478_addr, 32768, struct meter_node*);\n  store(head_453_addr, 28672, struct meter_node*);\n  store(28672, 0, struct meter_node*);\n  store(28676, 32768, struct meter_node*);\n  store(28680, 3, signed int);\n  store(pointer_offset(28680, 1, 4, signed int), 4, signed int);\n  store(28688, 8, signed int);\n  store(32768, 28672, struct meter_node*);\n  store(32772, 0, struct meter_node*);\n  store(32776, 4, signed int);\n  store(pointer_offset(32776, 1, 4, signed int), (- 2), signed int);\n  store(32784, (- 3), signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 84,
+          "status": "VALID",
+          "path": "EX total_481_addr cursor_478_addr \nPROP[]\nLOCAL[\n  Temp total total_481_addr;\n  Temp cursor cursor_478_addr;\n  Temp head head_453_addr ]\nSEP[\n  store(total_481_addr, 7, signed int);\n  store(cursor_478_addr, 0, struct meter_node*);\n  store(head_453_addr, 28672, struct meter_node*);\n  store(28672, 0, struct meter_node*);\n  store(28676, 32768, struct meter_node*);\n  store(28680, 3, signed int);\n  store(pointer_offset(28680, 1, 4, signed int), 4, signed int);\n  store(28688, 8, signed int);\n  store(32768, 28672, struct meter_node*);\n  store(32772, 0, struct meter_node*);\n  store(32776, 4, signed int);\n  store(pointer_offset(32776, 1, 4, signed int), (- 2), signed int);\n  store(32784, (- 3), signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "return",
+          "name": null,
+          "line": 89,
+          "status": "VALID",
+          "path": "PROP[]\nLOCAL[]\nSEP[\n  store(28672, 0, struct meter_node*);\n  store(28676, 32768, struct meter_node*);\n  store(28680, 3, signed int);\n  store(pointer_offset(28680, 1, 4, signed int), 4, signed int);\n  store(28688, 8, signed int);\n  store(32768, 28672, struct meter_node*);\n  store(32772, 0, struct meter_node*);\n  store(32776, 4, signed int);\n  store(pointer_offset(32776, 1, 4, signed int), (- 2), signed int);\n  store(32784, (- 3), signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[\n  store(28672, 0, struct meter_node*);\n  store(28676, 32768, struct meter_node*);\n  store(28680, 3, signed int);\n  store(pointer_offset(28680, 1, 4, signed int), 4, signed int);\n  store(28688, 8, signed int);\n  store(32768, 28672, struct meter_node*);\n  store(32772, 0, struct meter_node*);\n  store(32776, 4, signed int);\n  store(pointer_offset(32776, 1, 4, signed int), (- 2), signed int);\n  store(32784, (- 3), signed int) ]\n"
+        }
+      ],
+      "evidence": {
+        "decision_backend": "qcp-smt",
+        "certificate": "NOT_CHECKED"
+      },
+      "returncode": 0,
+      "generated_source_sha256": "e57d688cba7c9049780c3ec749a779068f97325071b87f97a461fe5655c230d4",
+      "duration_seconds": 0.014951,
+      "peak_rss_kb": 7096,
+      "cpu_seconds": 0.0,
+      "command": [
+        "/home/yangfp/teSpec/bin/tespec-symexec",
+        "--arch=32",
+        "--input-file=/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/composite_loop_dll_mixed_sign_updates/entry-exit/result/artifacts/mixed_sign_updates/input.c",
+        "--full-auto",
+        "--Json-output",
+        "--emit-residual-vc",
+        "--no-strategy-gen",
+        "--gen-and-backup",
+        "--coq-output-dir",
+        "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/composite_loop_dll_mixed_sign_updates/entry-exit/result/artifacts/mixed_sign_updates/vc",
+        "--no-logic-path",
+        "--disable-solver-info",
+        "--no-exec-info",
+        "--function",
+        "composite_loop_dll",
+        "--concrete-bindings",
+        "--instance-trace",
+        "--spec",
+        "__tespec_entry",
+        "-I/home/yangfp/teSpec/cases/composite_loop_dll",
+        "--loop-unroll-limit",
+        "8",
+        "--call-depth-limit",
+        "16"
+      ],
+      "stdout": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/composite_loop_dll_mixed_sign_updates/entry-exit/result/artifacts/mixed_sign_updates/executor.json",
+      "stderr": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/composite_loop_dll_mixed_sign_updates/entry-exit/result/artifacts/mixed_sign_updates/stderr.log",
+      "vc": {
+        "schema": "qcp-spectest-vc-manifest/v1",
+        "case_id": "mixed_sign_updates",
+        "function": "composite_loop_dll",
+        "source": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/composite_loop_dll_mixed_sign_updates/entry-exit/result/artifacts/mixed_sign_updates/input.c",
+        "qcip_root": "/home/yangfp/teSpec/runtime/qcip",
+        "status": "auto_proved",
+        "residual_goals": [],
+        "counterexample_goals": [],
+        "files": {
+          "goal": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/composite_loop_dll_mixed_sign_updates/entry-exit/result/artifacts/mixed_sign_updates/vc/input_goal.v",
+          "proof_auto": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/composite_loop_dll_mixed_sign_updates/entry-exit/result/artifacts/mixed_sign_updates/vc/input_proof_auto.v",
+          "proof_manual": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/composite_loop_dll_mixed_sign_updates/entry-exit/result/artifacts/mixed_sign_updates/vc/input_proof_manual.v",
+          "goal_check": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/composite_loop_dll_mixed_sign_updates/entry-exit/result/artifacts/mixed_sign_updates/vc/input_goal_check.v"
+        },
+        "missing_files": [],
+        "immutable_sha256": {
+          "goal": "0d0e7f3ad405d319ffcc9e4e8d17d4b4d2432d9626c441b09348b9b358aadb95",
+          "proof_auto": "f8dd46be99d2bb306539127e0020229ff4b822d8a77bb79fe15e3bc5d85284c0",
+          "goal_check": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e"
+        },
+        "coq_dependencies": [],
+        "runtime_dependencies": [],
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [
+            {
+              "id": 405,
+              "kind": "struct",
+              "name": "meter_node",
+              "defined": true,
+              "size": 20,
+              "alignment": 4,
+              "fields": [
+                {
+                  "id": 408,
+                  "name": "previous",
+                  "offset": 0,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "pointer",
+                    "target": {
+                      "kind": "struct",
+                      "id": 405
+                    }
+                  },
+                  "computational": true
+                },
+                {
+                  "id": 407,
+                  "name": "following",
+                  "offset": 4,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "pointer",
+                    "target": {
+                      "kind": "struct",
+                      "id": 405
+                    }
+                  },
+                  "computational": true
+                },
+                {
+                  "id": 406,
+                  "name": "meter",
+                  "offset": 8,
+                  "size": 12,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "struct",
+                    "id": 369
+                  },
+                  "computational": true
+                }
+              ]
+            },
+            {
+              "id": 369,
+              "kind": "struct",
+              "name": "meter_payload",
+              "defined": true,
+              "size": 12,
+              "alignment": 4,
+              "fields": [
+                {
+                  "id": 371,
+                  "name": "readings",
+                  "offset": 0,
+                  "size": 8,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "array",
+                    "length": 2,
+                    "element": {
+                      "kind": "basic",
+                      "name": "int"
+                    }
+                  },
+                  "computational": true
+                },
+                {
+                  "id": 370,
+                  "name": "delta",
+                  "offset": 8,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "basic",
+                    "name": "int"
+                  },
+                  "computational": true
+                }
+              ]
+            }
+          ],
+          "aliases": []
+        },
+        "manifest": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/composite_loop_dll_mixed_sign_updates/entry-exit/result/artifacts/mixed_sign_updates/vc/manifest.json"
+      },
+      "resources": {
+        "wall_seconds": 0.014951,
+        "cpu_seconds": 0.0,
+        "measurement": "GNU time; executor and children; maximum process RSS",
+        "peak_rss_kib": 7096
+      }
+    }
+  ],
+  "itp_vcs": [],
+  "summary": {
+    "total": 1,
+    "PASS": 1,
+    "FAIL": 0,
+    "UNKNOWN": 0,
+    "ERROR": 0,
+    "INVALID": 0,
+    "specification_only": 0,
+    "duration_seconds": 0.02017,
+    "executor_cpu_seconds": 0.0,
+    "peak_rss_kb": 7096
+  }
+}

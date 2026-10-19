@@ -1,0 +1,572 @@
+{
+  "spec_test": {
+    "schema": "sac-spec-test/v1",
+    "execution_semantics": "inline-preserve/v1",
+    "execution_strategy": "inline",
+    "declaration_call_policy": "contract-sample/v1",
+    "query_semantics": "copy-only/v1",
+    "mode": "expand",
+    "scope": "execution",
+    "annotation_policy": "ignore",
+    "completed": true,
+    "result_scope": "concrete-execution",
+    "overall": "UNKNOWN",
+    "precondition_result": "UNKNOWN",
+    "test_result": "UNKNOWN",
+    "result_semantics": "three-valued-conjunction/v1",
+    "vc_semantics": "path-vc/v1",
+    "vc_storage": {
+      "schema": "frozen-safety-sharing/v1",
+      "snapshot_requests": 3,
+      "unique_or_unpooled": 3,
+      "shared_requests": 0,
+      "intra_snapshot_aliases": 0,
+      "original_occurrences_preserved": true
+    },
+    "branch_evaluation": {
+      "schema": "instance-first-branch-query/v1",
+      "pure_queries": 11,
+      "evaluated_true": 1,
+      "evaluated_false": 3,
+      "smt_fallback": 7
+    },
+    "vc_scheduling": {
+      "schema": "post-execution-witness-smt/v1",
+      "enabled": true,
+      "collecting": false,
+      "requests": 12,
+      "queued_witnesses": 5,
+      "solved_witnesses": 5,
+      "retained_on_release": 0,
+      "pending_witnesses": 0
+    },
+    "vc_results": [
+      {
+        "kind": "safety",
+        "name": null,
+        "line": 19,
+        "status": "VALID",
+        "path": "EX w_426_addr \nPROP[]\nLOCAL[\n  Temp w w_426_addr;\n  Temp p p_412_addr ]\nSEP[\n  has_permission(w_426_addr, struct list*);\n  store(p_412_addr, 4096, struct list*);\n  sll (Z_1, int_payload, 4096, cons(Z_1, 0, nil(Z_1))) ]\n",
+        "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+      },
+      {
+        "kind": "safety",
+        "name": null,
+        "line": 24,
+        "status": "VALID",
+        "path": "EX w_426_addr v_429_addr y_437_free h_438_free \nPROP[\n  y_437_free != 0 ]\nLOCAL[\n  Temp p p_412_addr;\n  Temp w w_426_addr;\n  Temp v v_429_addr ]\nSEP[\n  store(4100, 0, struct list*);\n  sll (Z_1, int_payload, y_437_free, nil(Z_1));\n  int_payload (h_438_free, 0);\n  store(4096, h_438_free, struct list*);\n  store(v_429_addr, y_437_free, struct list*);\n  store(w_426_addr, 4096, struct list*);\n  store(p_412_addr, 4096, struct list*) ]\n",
+        "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+      },
+      {
+        "kind": "safety",
+        "name": null,
+        "line": 24,
+        "status": "VALID",
+        "path": "EX v_429_addr w_426_addr \nPROP[\n  prop_false ]\nLOCAL[\n  Temp v v_429_addr;\n  Temp w w_426_addr;\n  Temp p p_412_addr ]\nSEP[\n  store(v_429_addr, 4096, struct list*);\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, 4096, struct list*);\n  sll (Z_1, int_payload, 4096, cons(Z_1, 0, nil(Z_1))) ]\n",
+        "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+      },
+      {
+        "kind": "return",
+        "name": null,
+        "line": 34,
+        "status": "VALID",
+        "path": "PROP[\n  y_437_free == 0 ]\nLOCAL[]\nSEP[\n  store(4100, 0, struct list*);\n  sll (Z_1, int_payload, 0, nil(Z_1));\n  int_payload (h_438_free, 0);\n  store(4096, h_438_free, struct list*) ]\n",
+        "goal": "PROP[]\nLOCAL[]\nSEP[\n  sll (Z_1, int_payload, 4096, cons(Z_1, 0, nil(Z_1))) ]\n"
+      }
+    ],
+    "phases": {
+      "precondition": "UNKNOWN",
+      "safety": "PASS",
+      "postcondition": "PASS",
+      "annotations": "NOT_RUN"
+    },
+    "abstraction_events": [],
+    "sampling_events": [],
+    "limit_reason": null,
+    "architecture_bits": 32,
+    "target_layout": {
+      "schema": "sac-target-layout/v1",
+      "architecture_bits": 32,
+      "byte_order": "big",
+      "pointer_size": 4,
+      "memory_rules": "naive_C_Rules",
+      "field_address_semantics": "base-plus-byte-offset/v1",
+      "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+      "aggregates": [
+        {
+          "id": 371,
+          "kind": "struct",
+          "name": "list",
+          "defined": true,
+          "size": 8,
+          "alignment": 4,
+          "fields": [
+            {
+              "id": 373,
+              "name": "data",
+              "offset": 0,
+              "size": 4,
+              "alignment": 4,
+              "type": {
+                "kind": "pointer",
+                "target": {
+                  "kind": "basic",
+                  "name": "void"
+                }
+              },
+              "computational": true
+            },
+            {
+              "id": 372,
+              "name": "next",
+              "offset": 4,
+              "size": 4,
+              "alignment": 4,
+              "type": {
+                "kind": "pointer",
+                "target": {
+                  "kind": "struct",
+                  "id": 371
+                }
+              },
+              "computational": true
+            }
+          ]
+        }
+      ],
+      "aliases": []
+    },
+    "certificate": "NOT_CHECKED",
+    "instance_trace": [
+      {
+        "phase": "before-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_polymorphic_reverse/entry-exit/result/artifacts/fixed/input.c",
+        "line": 19,
+        "column": 3,
+        "branch": 0,
+        "version": 1,
+        "P": "PROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload ]\nLOCAL[\n  Temp p p_412_addr ]\nSEP[\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "memory": "SEP[\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "equalities": "PROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload ]\n"
+      },
+      {
+        "phase": "after-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_polymorphic_reverse/entry-exit/result/artifacts/fixed/input.c",
+        "line": 19,
+        "column": 3,
+        "branch": 0,
+        "version": 2,
+        "P": "EX w_426_addr \nPROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload ]\nLOCAL[\n  Temp w w_426_addr;\n  Temp p p_412_addr ]\nSEP[\n  has_permission(w_426_addr, struct list*);\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "memory": "SEP[\n  has_permission(w_426_addr, struct list*);\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "equalities": "PROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload ]\n"
+      },
+      {
+        "phase": "before-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_polymorphic_reverse/entry-exit/result/artifacts/fixed/input.c",
+        "line": 19,
+        "column": 3,
+        "branch": 0,
+        "version": 3,
+        "P": "EX w_426_addr \nPROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload ]\nLOCAL[\n  Temp w w_426_addr;\n  Temp p p_412_addr ]\nSEP[\n  has_permission(w_426_addr, struct list*);\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "memory": "SEP[\n  has_permission(w_426_addr, struct list*);\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "equalities": "PROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload ]\n"
+      },
+      {
+        "phase": "after-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_polymorphic_reverse/entry-exit/result/artifacts/fixed/input.c",
+        "line": 19,
+        "column": 3,
+        "branch": 0,
+        "version": 4,
+        "P": "EX w_426_addr \nPROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload ]\nLOCAL[\n  Temp w w_426_addr;\n  Temp p p_412_addr ]\nSEP[\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "memory": "SEP[\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "equalities": "PROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload ]\n"
+      },
+      {
+        "phase": "before-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_polymorphic_reverse/entry-exit/result/artifacts/fixed/input.c",
+        "line": 19,
+        "column": 3,
+        "branch": 0,
+        "version": 5,
+        "P": "EX w_426_addr \nPROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload ]\nLOCAL[\n  Temp w w_426_addr;\n  Temp p p_412_addr ]\nSEP[\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "memory": "SEP[\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "equalities": "PROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload ]\n"
+      },
+      {
+        "phase": "after-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_polymorphic_reverse/entry-exit/result/artifacts/fixed/input.c",
+        "line": 19,
+        "column": 3,
+        "branch": 0,
+        "version": 6,
+        "P": "EX v_429_addr w_426_addr \nPROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload ]\nLOCAL[\n  Temp v v_429_addr;\n  Temp w w_426_addr;\n  Temp p p_412_addr ]\nSEP[\n  has_permission(v_429_addr, struct list*);\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "memory": "SEP[\n  has_permission(v_429_addr, struct list*);\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "equalities": "PROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload ]\n"
+      },
+      {
+        "phase": "before-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_polymorphic_reverse/entry-exit/result/artifacts/fixed/input.c",
+        "line": 19,
+        "column": 3,
+        "branch": 0,
+        "version": 7,
+        "P": "EX v_429_addr w_426_addr \nPROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload ]\nLOCAL[\n  Temp v v_429_addr;\n  Temp w w_426_addr;\n  Temp p p_412_addr ]\nSEP[\n  has_permission(v_429_addr, struct list*);\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "memory": "SEP[\n  has_permission(v_429_addr, struct list*);\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "equalities": "PROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload ]\n"
+      },
+      {
+        "phase": "after-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_polymorphic_reverse/entry-exit/result/artifacts/fixed/input.c",
+        "line": 19,
+        "column": 3,
+        "branch": 0,
+        "version": 8,
+        "P": "EX v_429_addr w_426_addr \nPROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload ]\nLOCAL[\n  Temp v v_429_addr;\n  Temp w w_426_addr;\n  Temp p p_412_addr ]\nSEP[\n  store(v_429_addr, p_411_pre, struct list*);\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "memory": "SEP[\n  store(v_429_addr, p_411_pre, struct list*);\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "equalities": "PROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload ]\n"
+      },
+      {
+        "phase": "before-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_polymorphic_reverse/entry-exit/result/artifacts/fixed/input.c",
+        "line": 20,
+        "column": 3,
+        "branch": 0,
+        "version": 9,
+        "P": "EX v_429_addr w_426_addr \nPROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload ]\nLOCAL[\n  Temp v v_429_addr;\n  Temp w w_426_addr;\n  Temp p p_412_addr ]\nSEP[\n  store(v_429_addr, p_411_pre, struct list*);\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "memory": "SEP[\n  store(v_429_addr, p_411_pre, struct list*);\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "equalities": "PROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload ]\n"
+      },
+      {
+        "phase": "after-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_polymorphic_reverse/entry-exit/result/artifacts/fixed/input.c",
+        "line": 20,
+        "column": 3,
+        "branch": 0,
+        "version": 10,
+        "P": "EX v_429_addr w_426_addr \nPROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload ]\nLOCAL[\n  Temp v v_429_addr;\n  Temp w w_426_addr;\n  Temp p p_412_addr ]\nSEP[\n  store(v_429_addr, p_411_pre, struct list*);\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "memory": "SEP[\n  store(v_429_addr, p_411_pre, struct list*);\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "equalities": "PROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload ]\n"
+      },
+      {
+        "phase": "before-expression",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_polymorphic_reverse/entry-exit/result/artifacts/fixed/input.c",
+        "line": 24,
+        "column": 10,
+        "branch": 0,
+        "version": 11,
+        "P": "EX v_429_addr w_426_addr \nPROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload ]\nLOCAL[\n  Temp v v_429_addr;\n  Temp w w_426_addr;\n  Temp p p_412_addr ]\nSEP[\n  store(v_429_addr, p_411_pre, struct list*);\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "memory": "SEP[\n  store(v_429_addr, p_411_pre, struct list*);\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "equalities": "PROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload ]\n"
+      },
+      {
+        "phase": "after-expression",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_polymorphic_reverse/entry-exit/result/artifacts/fixed/input.c",
+        "line": 24,
+        "column": 10,
+        "branch": 0,
+        "version": 12,
+        "P": "EX v_429_addr w_426_addr \nPROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload ]\nLOCAL[\n  Temp v v_429_addr;\n  Temp w w_426_addr;\n  Temp p p_412_addr ]\nSEP[\n  store(v_429_addr, p_411_pre, struct list*);\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "memory": "SEP[\n  store(v_429_addr, p_411_pre, struct list*);\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "equalities": "PROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload ]\n"
+      },
+      {
+        "phase": "before-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_polymorphic_reverse/entry-exit/result/artifacts/fixed/input.c",
+        "line": 25,
+        "column": 6,
+        "branch": 0,
+        "version": 13,
+        "P": "EX v_429_addr w_426_addr \nPROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0 ]\nLOCAL[\n  Temp v v_429_addr;\n  Temp w w_426_addr;\n  Temp p p_412_addr ]\nSEP[\n  store(v_429_addr, p_411_pre, struct list*);\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "memory": "SEP[\n  store(v_429_addr, p_411_pre, struct list*);\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "equalities": "PROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0 ]\n"
+      },
+      {
+        "phase": "after-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_polymorphic_reverse/entry-exit/result/artifacts/fixed/input.c",
+        "line": 25,
+        "column": 6,
+        "branch": 0,
+        "version": 14,
+        "P": "EX v_429_addr w_426_addr \nPROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0 ]\nLOCAL[\n  Temp v v_429_addr;\n  Temp w w_426_addr;\n  Temp p p_412_addr ]\nSEP[\n  store(v_429_addr, p_411_pre, struct list*);\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "memory": "SEP[\n  store(v_429_addr, p_411_pre, struct list*);\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "equalities": "PROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0 ]\n"
+      },
+      {
+        "phase": "before-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_polymorphic_reverse/entry-exit/result/artifacts/fixed/input.c",
+        "line": 29,
+        "column": 6,
+        "branch": 0,
+        "version": 15,
+        "P": "EX v_429_addr w_426_addr \nPROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0 ]\nLOCAL[\n  Temp v v_429_addr;\n  Temp w w_426_addr;\n  Temp p p_412_addr ]\nSEP[\n  store(v_429_addr, p_411_pre, struct list*);\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "memory": "SEP[\n  store(v_429_addr, p_411_pre, struct list*);\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "equalities": "PROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0 ]\n"
+      },
+      {
+        "phase": "after-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_polymorphic_reverse/entry-exit/result/artifacts/fixed/input.c",
+        "line": 29,
+        "column": 6,
+        "branch": 0,
+        "version": 16,
+        "P": "EX t_434_addr v_429_addr w_426_addr \nPROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0 ]\nLOCAL[\n  Temp t t_434_addr;\n  Temp v v_429_addr;\n  Temp w w_426_addr;\n  Temp p p_412_addr ]\nSEP[\n  has_permission(t_434_addr, struct list*);\n  store(v_429_addr, p_411_pre, struct list*);\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "memory": "SEP[\n  has_permission(t_434_addr, struct list*);\n  store(v_429_addr, p_411_pre, struct list*);\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "equalities": "PROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0 ]\n"
+      },
+      {
+        "phase": "before-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_polymorphic_reverse/entry-exit/result/artifacts/fixed/input.c",
+        "line": 29,
+        "column": 6,
+        "branch": 0,
+        "version": 17,
+        "P": "EX t_434_addr v_429_addr w_426_addr \nPROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0 ]\nLOCAL[\n  Temp t t_434_addr;\n  Temp v v_429_addr;\n  Temp w w_426_addr;\n  Temp p p_412_addr ]\nSEP[\n  has_permission(t_434_addr, struct list*);\n  store(v_429_addr, p_411_pre, struct list*);\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "memory": "SEP[\n  has_permission(t_434_addr, struct list*);\n  store(v_429_addr, p_411_pre, struct list*);\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, p_411_pre, l___tespec_entry_413_free) ]\n",
+        "equalities": "PROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0 ]\n"
+      },
+      {
+        "phase": "after-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_polymorphic_reverse/entry-exit/result/artifacts/fixed/input.c",
+        "line": 29,
+        "column": 6,
+        "branch": 0,
+        "version": 18,
+        "P": "EX w_426_addr v_429_addr t_434_addr y_437_free h_438_free \nPROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0 ]\nLOCAL[\n  Temp p p_412_addr;\n  Temp w w_426_addr;\n  Temp v v_429_addr;\n  Temp t t_434_addr ]\nSEP[\n  store(&(p_411_pre->next), y_437_free, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, y_437_free, nil(Z_1));\n  storeA (h_438_free, 0);\n  store(&(p_411_pre->data), h_438_free, struct list*);\n  store(t_434_addr, y_437_free, struct list*);\n  store(v_429_addr, p_411_pre, struct list*);\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*) ]\n",
+        "memory": "SEP[\n  store(&(p_411_pre->next), y_437_free, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, y_437_free, nil(Z_1));\n  storeA (h_438_free, 0);\n  store(&(p_411_pre->data), h_438_free, struct list*);\n  store(t_434_addr, y_437_free, struct list*);\n  store(v_429_addr, p_411_pre, struct list*);\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*) ]\n",
+        "equalities": "PROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0 ]\n"
+      },
+      {
+        "phase": "before-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_polymorphic_reverse/entry-exit/result/artifacts/fixed/input.c",
+        "line": 30,
+        "column": 6,
+        "branch": 0,
+        "version": 19,
+        "P": "EX w_426_addr v_429_addr t_434_addr y_437_free h_438_free \nPROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0 ]\nLOCAL[\n  Temp p p_412_addr;\n  Temp w w_426_addr;\n  Temp v v_429_addr;\n  Temp t t_434_addr ]\nSEP[\n  store(&(p_411_pre->next), y_437_free, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, y_437_free, nil(Z_1));\n  storeA (h_438_free, 0);\n  store(&(p_411_pre->data), h_438_free, struct list*);\n  store(t_434_addr, y_437_free, struct list*);\n  store(v_429_addr, p_411_pre, struct list*);\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*) ]\n",
+        "memory": "SEP[\n  store(&(p_411_pre->next), y_437_free, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, y_437_free, nil(Z_1));\n  storeA (h_438_free, 0);\n  store(&(p_411_pre->data), h_438_free, struct list*);\n  store(t_434_addr, y_437_free, struct list*);\n  store(v_429_addr, p_411_pre, struct list*);\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*) ]\n",
+        "equalities": "PROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0 ]\n"
+      },
+      {
+        "phase": "after-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_polymorphic_reverse/entry-exit/result/artifacts/fixed/input.c",
+        "line": 30,
+        "column": 6,
+        "branch": 0,
+        "version": 20,
+        "P": "EX w_426_addr v_429_addr t_434_addr y_437_free h_438_free \nPROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0 ]\nLOCAL[\n  Temp p p_412_addr;\n  Temp w w_426_addr;\n  Temp v v_429_addr;\n  Temp t t_434_addr ]\nSEP[\n  store(&(p_411_pre->next), 0, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, y_437_free, nil(Z_1));\n  storeA (h_438_free, 0);\n  store(&(p_411_pre->data), h_438_free, struct list*);\n  store(t_434_addr, y_437_free, struct list*);\n  store(v_429_addr, p_411_pre, struct list*);\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*) ]\n",
+        "memory": "SEP[\n  store(&(p_411_pre->next), 0, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, y_437_free, nil(Z_1));\n  storeA (h_438_free, 0);\n  store(&(p_411_pre->data), h_438_free, struct list*);\n  store(t_434_addr, y_437_free, struct list*);\n  store(v_429_addr, p_411_pre, struct list*);\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*) ]\n",
+        "equalities": "PROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0 ]\n"
+      },
+      {
+        "phase": "before-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_polymorphic_reverse/entry-exit/result/artifacts/fixed/input.c",
+        "line": 31,
+        "column": 6,
+        "branch": 0,
+        "version": 21,
+        "P": "EX w_426_addr v_429_addr t_434_addr y_437_free h_438_free \nPROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0 ]\nLOCAL[\n  Temp p p_412_addr;\n  Temp w w_426_addr;\n  Temp v v_429_addr;\n  Temp t t_434_addr ]\nSEP[\n  store(&(p_411_pre->next), 0, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, y_437_free, nil(Z_1));\n  storeA (h_438_free, 0);\n  store(&(p_411_pre->data), h_438_free, struct list*);\n  store(t_434_addr, y_437_free, struct list*);\n  store(v_429_addr, p_411_pre, struct list*);\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*) ]\n",
+        "memory": "SEP[\n  store(&(p_411_pre->next), 0, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, y_437_free, nil(Z_1));\n  storeA (h_438_free, 0);\n  store(&(p_411_pre->data), h_438_free, struct list*);\n  store(t_434_addr, y_437_free, struct list*);\n  store(v_429_addr, p_411_pre, struct list*);\n  store(w_426_addr, 0, struct list*);\n  store(p_412_addr, p_411_pre, struct list*) ]\n",
+        "equalities": "PROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0 ]\n"
+      },
+      {
+        "phase": "after-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_polymorphic_reverse/entry-exit/result/artifacts/fixed/input.c",
+        "line": 31,
+        "column": 6,
+        "branch": 0,
+        "version": 22,
+        "P": "EX w_426_addr v_429_addr t_434_addr y_437_free h_438_free \nPROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0 ]\nLOCAL[\n  Temp p p_412_addr;\n  Temp w w_426_addr;\n  Temp v v_429_addr;\n  Temp t t_434_addr ]\nSEP[\n  store(&(p_411_pre->next), 0, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, y_437_free, nil(Z_1));\n  storeA (h_438_free, 0);\n  store(&(p_411_pre->data), h_438_free, struct list*);\n  store(t_434_addr, y_437_free, struct list*);\n  store(v_429_addr, p_411_pre, struct list*);\n  store(w_426_addr, p_411_pre, struct list*);\n  store(p_412_addr, p_411_pre, struct list*) ]\n",
+        "memory": "SEP[\n  store(&(p_411_pre->next), 0, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, y_437_free, nil(Z_1));\n  storeA (h_438_free, 0);\n  store(&(p_411_pre->data), h_438_free, struct list*);\n  store(t_434_addr, y_437_free, struct list*);\n  store(v_429_addr, p_411_pre, struct list*);\n  store(w_426_addr, p_411_pre, struct list*);\n  store(p_412_addr, p_411_pre, struct list*) ]\n",
+        "equalities": "PROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0 ]\n"
+      },
+      {
+        "phase": "before-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_polymorphic_reverse/entry-exit/result/artifacts/fixed/input.c",
+        "line": 32,
+        "column": 6,
+        "branch": 0,
+        "version": 23,
+        "P": "EX w_426_addr v_429_addr t_434_addr y_437_free h_438_free \nPROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0 ]\nLOCAL[\n  Temp p p_412_addr;\n  Temp w w_426_addr;\n  Temp v v_429_addr;\n  Temp t t_434_addr ]\nSEP[\n  store(&(p_411_pre->next), 0, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, y_437_free, nil(Z_1));\n  storeA (h_438_free, 0);\n  store(&(p_411_pre->data), h_438_free, struct list*);\n  store(t_434_addr, y_437_free, struct list*);\n  store(v_429_addr, p_411_pre, struct list*);\n  store(w_426_addr, p_411_pre, struct list*);\n  store(p_412_addr, p_411_pre, struct list*) ]\n",
+        "memory": "SEP[\n  store(&(p_411_pre->next), 0, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, y_437_free, nil(Z_1));\n  storeA (h_438_free, 0);\n  store(&(p_411_pre->data), h_438_free, struct list*);\n  store(t_434_addr, y_437_free, struct list*);\n  store(v_429_addr, p_411_pre, struct list*);\n  store(w_426_addr, p_411_pre, struct list*);\n  store(p_412_addr, p_411_pre, struct list*) ]\n",
+        "equalities": "PROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0 ]\n"
+      },
+      {
+        "phase": "after-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_polymorphic_reverse/entry-exit/result/artifacts/fixed/input.c",
+        "line": 32,
+        "column": 6,
+        "branch": 0,
+        "version": 24,
+        "P": "EX w_426_addr v_429_addr t_434_addr y_437_free h_438_free \nPROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0 ]\nLOCAL[\n  Temp p p_412_addr;\n  Temp w w_426_addr;\n  Temp v v_429_addr;\n  Temp t t_434_addr ]\nSEP[\n  store(&(p_411_pre->next), 0, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, y_437_free, nil(Z_1));\n  storeA (h_438_free, 0);\n  store(&(p_411_pre->data), h_438_free, struct list*);\n  store(t_434_addr, y_437_free, struct list*);\n  store(v_429_addr, y_437_free, struct list*);\n  store(w_426_addr, p_411_pre, struct list*);\n  store(p_412_addr, p_411_pre, struct list*) ]\n",
+        "memory": "SEP[\n  store(&(p_411_pre->next), 0, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, y_437_free, nil(Z_1));\n  storeA (h_438_free, 0);\n  store(&(p_411_pre->data), h_438_free, struct list*);\n  store(t_434_addr, y_437_free, struct list*);\n  store(v_429_addr, y_437_free, struct list*);\n  store(w_426_addr, p_411_pre, struct list*);\n  store(p_412_addr, p_411_pre, struct list*) ]\n",
+        "equalities": "PROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0 ]\n"
+      },
+      {
+        "phase": "before-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_polymorphic_reverse/entry-exit/result/artifacts/fixed/input.c",
+        "line": 20,
+        "column": 3,
+        "branch": 0,
+        "version": 25,
+        "P": "EX w_426_addr v_429_addr y_437_free h_438_free \nPROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0 ]\nLOCAL[\n  Temp p p_412_addr;\n  Temp w w_426_addr;\n  Temp v v_429_addr ]\nSEP[\n  store(&(p_411_pre->next), 0, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, y_437_free, nil(Z_1));\n  storeA (h_438_free, 0);\n  store(&(p_411_pre->data), h_438_free, struct list*);\n  store(v_429_addr, y_437_free, struct list*);\n  store(w_426_addr, p_411_pre, struct list*);\n  store(p_412_addr, p_411_pre, struct list*) ]\n",
+        "memory": "SEP[\n  store(&(p_411_pre->next), 0, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, y_437_free, nil(Z_1));\n  storeA (h_438_free, 0);\n  store(&(p_411_pre->data), h_438_free, struct list*);\n  store(v_429_addr, y_437_free, struct list*);\n  store(w_426_addr, p_411_pre, struct list*);\n  store(p_412_addr, p_411_pre, struct list*) ]\n",
+        "equalities": "PROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0 ]\n"
+      },
+      {
+        "phase": "after-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_polymorphic_reverse/entry-exit/result/artifacts/fixed/input.c",
+        "line": 20,
+        "column": 3,
+        "branch": 0,
+        "version": 26,
+        "P": "EX w_426_addr v_429_addr y_437_free h_438_free \nPROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0 ]\nLOCAL[\n  Temp p p_412_addr;\n  Temp w w_426_addr;\n  Temp v v_429_addr ]\nSEP[\n  store(&(p_411_pre->next), 0, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, y_437_free, nil(Z_1));\n  storeA (h_438_free, 0);\n  store(&(p_411_pre->data), h_438_free, struct list*);\n  store(v_429_addr, y_437_free, struct list*);\n  store(w_426_addr, p_411_pre, struct list*);\n  store(p_412_addr, p_411_pre, struct list*) ]\n",
+        "memory": "SEP[\n  store(&(p_411_pre->next), 0, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, y_437_free, nil(Z_1));\n  storeA (h_438_free, 0);\n  store(&(p_411_pre->data), h_438_free, struct list*);\n  store(v_429_addr, y_437_free, struct list*);\n  store(w_426_addr, p_411_pre, struct list*);\n  store(p_412_addr, p_411_pre, struct list*) ]\n",
+        "equalities": "PROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0 ]\n"
+      },
+      {
+        "phase": "before-expression",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_polymorphic_reverse/entry-exit/result/artifacts/fixed/input.c",
+        "line": 24,
+        "column": 10,
+        "branch": 0,
+        "version": 27,
+        "P": "EX w_426_addr v_429_addr y_437_free h_438_free \nPROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0 ]\nLOCAL[\n  Temp p p_412_addr;\n  Temp w w_426_addr;\n  Temp v v_429_addr ]\nSEP[\n  store(&(p_411_pre->next), 0, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, y_437_free, nil(Z_1));\n  storeA (h_438_free, 0);\n  store(&(p_411_pre->data), h_438_free, struct list*);\n  store(v_429_addr, y_437_free, struct list*);\n  store(w_426_addr, p_411_pre, struct list*);\n  store(p_412_addr, p_411_pre, struct list*) ]\n",
+        "memory": "SEP[\n  store(&(p_411_pre->next), 0, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, y_437_free, nil(Z_1));\n  storeA (h_438_free, 0);\n  store(&(p_411_pre->data), h_438_free, struct list*);\n  store(v_429_addr, y_437_free, struct list*);\n  store(w_426_addr, p_411_pre, struct list*);\n  store(p_412_addr, p_411_pre, struct list*) ]\n",
+        "equalities": "PROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0 ]\n"
+      },
+      {
+        "phase": "after-expression",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_polymorphic_reverse/entry-exit/result/artifacts/fixed/input.c",
+        "line": 24,
+        "column": 10,
+        "branch": 0,
+        "version": 28,
+        "P": "EX w_426_addr v_429_addr y_437_free h_438_free \nPROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0 ]\nLOCAL[\n  Temp p p_412_addr;\n  Temp w w_426_addr;\n  Temp v v_429_addr ]\nSEP[\n  store(&(p_411_pre->next), 0, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, y_437_free, nil(Z_1));\n  storeA (h_438_free, 0);\n  store(&(p_411_pre->data), h_438_free, struct list*);\n  store(v_429_addr, y_437_free, struct list*);\n  store(w_426_addr, p_411_pre, struct list*);\n  store(p_412_addr, p_411_pre, struct list*) ]\n",
+        "memory": "SEP[\n  store(&(p_411_pre->next), 0, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, y_437_free, nil(Z_1));\n  storeA (h_438_free, 0);\n  store(&(p_411_pre->data), h_438_free, struct list*);\n  store(v_429_addr, y_437_free, struct list*);\n  store(w_426_addr, p_411_pre, struct list*);\n  store(p_412_addr, p_411_pre, struct list*) ]\n",
+        "equalities": "PROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0 ]\n"
+      },
+      {
+        "phase": "before-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_polymorphic_reverse/entry-exit/result/artifacts/fixed/input.c",
+        "line": 34,
+        "column": 3,
+        "branch": 0,
+        "version": 29,
+        "P": "EX w_426_addr v_429_addr y_437_free h_438_free \nPROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0;\n  y_437_free == 0 ]\nLOCAL[\n  Temp p p_412_addr;\n  Temp w w_426_addr;\n  Temp v v_429_addr ]\nSEP[\n  store(&(p_411_pre->next), 0, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, y_437_free, nil(Z_1));\n  storeA (h_438_free, 0);\n  store(&(p_411_pre->data), h_438_free, struct list*);\n  store(v_429_addr, y_437_free, struct list*);\n  store(w_426_addr, p_411_pre, struct list*);\n  store(p_412_addr, p_411_pre, struct list*) ]\n",
+        "memory": "SEP[\n  store(&(p_411_pre->next), 0, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, y_437_free, nil(Z_1));\n  storeA (h_438_free, 0);\n  store(&(p_411_pre->data), h_438_free, struct list*);\n  store(v_429_addr, y_437_free, struct list*);\n  store(w_426_addr, p_411_pre, struct list*);\n  store(p_412_addr, p_411_pre, struct list*) ]\n",
+        "equalities": "PROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0;\n  y_437_free == 0 ]\n"
+      },
+      {
+        "phase": "after-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_polymorphic_reverse/entry-exit/result/artifacts/fixed/input.c",
+        "line": 34,
+        "column": 3,
+        "branch": 0,
+        "version": 30,
+        "P": "EX w_426_addr v_429_addr y_437_free h_438_free \nPROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0;\n  y_437_free == 0 ]\nLOCAL[\n  Temp p p_412_addr;\n  Temp w w_426_addr;\n  Temp v v_429_addr ]\nSEP[\n  store(&(p_411_pre->next), 0, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, y_437_free, nil(Z_1));\n  storeA (h_438_free, 0);\n  store(&(p_411_pre->data), h_438_free, struct list*);\n  store(v_429_addr, y_437_free, struct list*);\n  store(w_426_addr, p_411_pre, struct list*);\n  store(p_412_addr, p_411_pre, struct list*) ]\n",
+        "memory": "SEP[\n  store(&(p_411_pre->next), 0, struct list*);\n  sll (Z_1, storeA___tespec_entry_414_free, y_437_free, nil(Z_1));\n  storeA (h_438_free, 0);\n  store(&(p_411_pre->data), h_438_free, struct list*);\n  store(v_429_addr, y_437_free, struct list*);\n  store(w_426_addr, p_411_pre, struct list*);\n  store(p_412_addr, p_411_pre, struct list*) ]\n",
+        "equalities": "PROP[\n  p_411_pre == 4096;\n  l___tespec_entry_413_free == cons(Z_1, 0, nil(Z_1));\n  storeA___tespec_entry_414_free == int_payload;\n  p_411_pre != 0;\n  y_437_free == 0 ]\n"
+      }
+    ]
+  },
+  "preconditions": [
+    {
+      "goal": "reverse_precondition_wit_1",
+      "status": "UNKNOWN",
+      "proof": "manual"
+    }
+  ],
+  "fileName": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_polymorphic_reverse/entry-exit/result/artifacts/fixed/input.c",
+  "functionName": "reverse",
+  "loaded_strategies": [
+    "poly_sll",
+    "common",
+    "string_literal"
+  ],
+  "result": "success",
+  "verificationStatus": "unproved",
+  "has_manual_obligations": true,
+  "manual_obligation_count": 1,
+  "manual_obligations": [
+    {
+      "kind": "precondition",
+      "goal": "reverse_precondition_wit_1"
+    }
+  ],
+  "errormessage": null,
+  "warningmessage": null,
+  "current_assertions": null,
+  "FunctionDerivation": null,
+  "WitnessList": [
+    {
+      "functionName": "reverse",
+      "Witness": {
+        "safety_checker_wit": {
+          "total": 3,
+          "auto_solved": 3,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "entailment_checker_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "return_checker_wit": {
+          "total": 1,
+          "auto_solved": 1,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "partial_solve_wit": {
+          "total": 1,
+          "auto_solved": 1,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "which_implies_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "total_witness_count": {
+          "auto_solved": 5,
+          "manual": 0
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,575 @@
+{
+  "schema": "qcp-spectest-report/v1",
+  "job": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_tree_size_input_2/entry-exit/job.json",
+  "source": "/home/yangfp/teSpec/benchmark/paper-cn-qcp/cases/control_tree_size/subject.qcp.c",
+  "spec_file": null,
+  "function": "sample",
+  "qcp_binary": "/home/yangfp/teSpec/bin/tespec-symexec",
+  "provenance": {
+    "source_sha256": "ec9a3c20f75828793a89745679c8f0b27c32c362fdb0f6ab11e04a10cb031521",
+    "job_sha256": "cb8da71556534f431c11a73a11565240afd12c097445c3abfd14d95bf515d932",
+    "binary_sha256": "4e551edce5c3733671b6118dd689cd0e30d12e04416a2046a29bfd9361f55ace",
+    "runtime_source_sha256": "08b41c971d404d9fe6ae40dce420752af8eb023179017c55737dc5a7df89f56a",
+    "runtime_digest_scope": "SeparationLogic and QCP_examples: .v, .h, .strategies, _CoqProject",
+    "included_source_sha256": "722943e9e164720cb09b3351ff8e6f5d7962b5f025fa6a835f3364368aae1a04",
+    "spec_sha256": null
+  },
+  "vc_policy": {
+    "mode": "entry-exit",
+    "execution_strategy": "inline",
+    "execution_semantics": "inline-preserve/v1",
+    "loops": "execute_iterations",
+    "defined_function_calls": "execute_bodies",
+    "intermediate_boundaries": false,
+    "declaration_calls": "sample_contract_postconditions",
+    "call_depth_limit": 16,
+    "loop_unroll_limit": 8
+  },
+  "results": [
+    {
+      "id": "input_2",
+      "arguments": {
+        "p": 4096
+      },
+      "bindings": {
+        "t": "make_tree(make_tree(empty,1,10,empty),2,20,make_tree(empty,3,30,empty))"
+      },
+      "type_bindings": {},
+      "spec": null,
+      "generated_source": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_tree_size_input_2/entry-exit/result/artifacts/input_2/input.c",
+      "status": "UNKNOWN",
+      "overall": "UNKNOWN",
+      "precondition_result": "UNKNOWN",
+      "test_result": "UNKNOWN",
+      "result_semantics": "three-valued-conjunction/v1",
+      "executor_reported_status": "UNKNOWN",
+      "satisfied": null,
+      "reason": "precondition_requires_proof",
+      "phases": {
+        "precondition": "UNKNOWN",
+        "safety": "PASS",
+        "postcondition": "UNKNOWN",
+        "annotations": "NOT_RUN",
+        "execution": "PASS"
+      },
+      "scope": "execution",
+      "mode": "entry-exit",
+      "execution_semantics": "inline-preserve/v1",
+      "execution_strategy": "inline",
+      "requested_execution_strategy": "inline",
+      "declaration_call_policy": "contract-sample/v1",
+      "sampling_events": [],
+      "result_scope": "concrete-execution",
+      "execution_completed": true,
+      "annotation_policy": "ignore",
+      "preconditions": [
+        {
+          "goal": "sample_precondition_wit_1",
+          "status": "UNKNOWN",
+          "proof": "manual"
+        }
+      ],
+      "abstraction_events": [
+        {
+          "kind": "inline-call",
+          "function": "sample",
+          "count": 6
+        }
+      ],
+      "architecture_bits": 32,
+      "target_layout": {
+        "schema": "sac-target-layout/v1",
+        "architecture_bits": 32,
+        "byte_order": "big",
+        "pointer_size": 4,
+        "memory_rules": "naive_C_Rules",
+        "field_address_semantics": "base-plus-byte-offset/v1",
+        "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+        "aggregates": [
+          {
+            "id": 369,
+            "kind": "struct",
+            "name": "tree",
+            "defined": true,
+            "size": 16,
+            "alignment": 4,
+            "fields": [
+              {
+                "id": 373,
+                "name": "key",
+                "offset": 0,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "basic",
+                  "name": "int"
+                },
+                "computational": true
+              },
+              {
+                "id": 372,
+                "name": "value",
+                "offset": 4,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "basic",
+                  "name": "int"
+                },
+                "computational": true
+              },
+              {
+                "id": 371,
+                "name": "left",
+                "offset": 8,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "pointer",
+                  "target": {
+                    "kind": "struct",
+                    "id": 369
+                  }
+                },
+                "computational": true
+              },
+              {
+                "id": 370,
+                "name": "right",
+                "offset": 12,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "pointer",
+                  "target": {
+                    "kind": "struct",
+                    "id": 369
+                  }
+                },
+                "computational": true
+              }
+            ]
+          }
+        ],
+        "aliases": []
+      },
+      "executor_error": null,
+      "residual_vcs": [
+        "proof_of_sample_return_wit_1_split_goal_1",
+        "proof_of_sample_return_wit_1_split_goal_spatial",
+        "proof_of_sample_return_wit_1",
+        "proof_of_sample_precondition_wit_1"
+      ],
+      "vc_results": [
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 43,
+          "status": "VALID",
+          "path": "PROP[\n  prop_false ]\nLOCAL[\n  Temp p p_441_addr ]\nSEP[\n  store(p_441_addr, 4096, struct tree*);\n  store_tree (4096, make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty))) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 43,
+          "status": "VALID",
+          "path": "PROP[\n  0 <= tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty)));\n  tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty))) <= 100 ]\nLOCAL[\n  Temp p p_441_addr ]\nSEP[\n  store(p_441_addr, 4096, struct tree*);\n  store_tree (4096, make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty))) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 43,
+          "status": "VALID",
+          "path": "EX p_470_addr l_464_free r_465_free l_466_free r_467_free l_468_free r_469_free \nPROP[\n  prop_false ]\nLOCAL[\n  Temp p p_470_addr ]\nSEP[\n  store(p_470_addr, 0, struct tree*);\n  store(4104, 0, struct tree*);\n  store(12, 0, struct tree*);\n  store(8, 0, struct tree*);\n  store(4, 10, signed int);\n  store(0, 1, signed int);\n  store((r_465_free + 12), 0, struct tree*);\n  store((r_465_free + 8), 0, struct tree*);\n  store((r_465_free + 4), 30, signed int);\n  store(r_465_free, 3, signed int);\n  store(4108, r_465_free, struct tree*);\n  store(4100, 20, signed int);\n  store(4096, 2, signed int);\n  store(p_441_addr, 4096, struct tree*) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 43,
+          "status": "VALID",
+          "path": "EX p_470_addr l_464_free r_465_free l_466_free r_467_free l_468_free r_469_free \nPROP[\n  l_466_free == 0;\n  r_467_free == 0;\n  l_468_free == 0;\n  r_469_free == 0;\n  l_464_free != 0;\n  r_465_free != 0;\n  0 <= tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty)));\n  tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty))) <= 100 ]\nLOCAL[\n  Temp p p_470_addr ]\nSEP[\n  store(p_470_addr, l_464_free, struct tree*);\n  store(4104, l_464_free, struct tree*);\n  store((l_464_free + 12), 0, struct tree*);\n  store((l_464_free + 8), 0, struct tree*);\n  store((l_464_free + 4), 10, signed int);\n  store(l_464_free, 1, signed int);\n  store((r_465_free + 12), 0, struct tree*);\n  store((r_465_free + 8), 0, struct tree*);\n  store((r_465_free + 4), 30, signed int);\n  store(r_465_free, 3, signed int);\n  store(4108, r_465_free, struct tree*);\n  store(4100, 20, signed int);\n  store(4096, 2, signed int);\n  store(p_441_addr, 4096, struct tree*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 43,
+          "status": "VALID",
+          "path": "EX p_471_addr p_470_addr l_464_free r_465_free l_466_free r_467_free l_468_free r_469_free \nPROP[\n  prop_false ]\nLOCAL[\n  Temp p p_471_addr ]\nSEP[\n  store(p_471_addr, 0, struct tree*);\n  store(p_470_addr, l_464_free, struct tree*);\n  store(4104, l_464_free, struct tree*);\n  store((l_464_free + 12), 0, struct tree*);\n  store((l_464_free + 8), 0, struct tree*);\n  store((l_464_free + 4), 10, signed int);\n  store(l_464_free, 1, signed int);\n  store((r_465_free + 12), 0, struct tree*);\n  store((r_465_free + 8), 0, struct tree*);\n  store((r_465_free + 4), 30, signed int);\n  store(r_465_free, 3, signed int);\n  store(4108, r_465_free, struct tree*);\n  store(4100, 20, signed int);\n  store(4096, 2, signed int);\n  store(p_441_addr, 4096, struct tree*) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 43,
+          "status": "VALID",
+          "path": "EX p_471_addr p_470_addr l_464_free r_465_free l_466_free r_467_free l_468_free r_469_free \nPROP[\n  l_464_free != 0;\n  l_466_free == 0;\n  r_467_free == 0;\n  l_468_free == 0;\n  r_469_free == 0;\n  l_464_free != 0;\n  r_465_free != 0;\n  0 <= tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty)));\n  tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty))) <= 100 ]\nLOCAL[\n  Temp p p_471_addr ]\nSEP[\n  store(p_471_addr, 0, struct tree*);\n  store(p_470_addr, l_464_free, struct tree*);\n  store(4104, l_464_free, struct tree*);\n  store((l_464_free + 12), 0, struct tree*);\n  store((l_464_free + 8), 0, struct tree*);\n  store((l_464_free + 4), 10, signed int);\n  store(l_464_free, 1, signed int);\n  store((r_465_free + 12), 0, struct tree*);\n  store((r_465_free + 8), 0, struct tree*);\n  store((r_465_free + 4), 30, signed int);\n  store(r_465_free, 3, signed int);\n  store(4108, r_465_free, struct tree*);\n  store(4100, 20, signed int);\n  store(4096, 2, signed int);\n  store(p_441_addr, 4096, struct tree*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 43,
+          "status": "VALID",
+          "path": "EX p_471_addr p_470_addr l_464_free r_465_free l_466_free r_467_free l_468_free r_469_free \nPROP[\n  l_468_free == 0;\n  l_464_free != 0;\n  l_466_free == 0;\n  r_467_free == 0;\n  r_469_free == 0;\n  l_464_free != 0;\n  r_465_free != 0;\n  0 <= tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty)));\n  tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty))) <= 100 ]\nLOCAL[\n  Temp p p_471_addr ]\nSEP[\n  store(p_471_addr, 0, struct tree*);\n  store(p_470_addr, l_464_free, struct tree*);\n  store(4104, l_464_free, struct tree*);\n  store((l_464_free + 12), 0, struct tree*);\n  store((l_464_free + 8), 0, struct tree*);\n  store((l_464_free + 4), 10, signed int);\n  store(l_464_free, 1, signed int);\n  store((r_465_free + 12), 0, struct tree*);\n  store((r_465_free + 8), 0, struct tree*);\n  store((r_465_free + 4), 30, signed int);\n  store(r_465_free, 3, signed int);\n  store(4108, r_465_free, struct tree*);\n  store(4100, 20, signed int);\n  store(4096, 2, signed int);\n  store(p_441_addr, 4096, struct tree*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 43,
+          "status": "VALID",
+          "path": "EX p_472_addr p_470_addr l_464_free r_465_free l_466_free r_467_free l_468_free r_469_free \nPROP[\n  prop_false ]\nLOCAL[\n  Temp p p_472_addr ]\nSEP[\n  store(p_472_addr, 0, struct tree*);\n  store(p_470_addr, l_464_free, struct tree*);\n  store(4104, l_464_free, struct tree*);\n  store((l_464_free + 12), 0, struct tree*);\n  store((l_464_free + 8), 0, struct tree*);\n  store((l_464_free + 4), 10, signed int);\n  store(l_464_free, 1, signed int);\n  store((r_465_free + 12), 0, struct tree*);\n  store((r_465_free + 8), 0, struct tree*);\n  store((r_465_free + 4), 30, signed int);\n  store(r_465_free, 3, signed int);\n  store(4108, r_465_free, struct tree*);\n  store(4100, 20, signed int);\n  store(4096, 2, signed int);\n  store(p_441_addr, 4096, struct tree*) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 43,
+          "status": "VALID",
+          "path": "EX p_472_addr p_470_addr l_464_free r_465_free l_466_free r_467_free l_468_free r_469_free \nPROP[\n  l_468_free == 0;\n  l_464_free != 0;\n  l_466_free == 0;\n  r_467_free == 0;\n  r_469_free == 0;\n  l_464_free != 0;\n  r_465_free != 0;\n  0 <= tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty)));\n  tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty))) <= 100 ]\nLOCAL[\n  Temp p p_472_addr ]\nSEP[\n  store(p_472_addr, 0, struct tree*);\n  store(p_470_addr, l_464_free, struct tree*);\n  store(4104, l_464_free, struct tree*);\n  store((l_464_free + 12), 0, struct tree*);\n  store((l_464_free + 8), 0, struct tree*);\n  store((l_464_free + 4), 10, signed int);\n  store(l_464_free, 1, signed int);\n  store((r_465_free + 12), 0, struct tree*);\n  store((r_465_free + 8), 0, struct tree*);\n  store((r_465_free + 4), 30, signed int);\n  store(r_465_free, 3, signed int);\n  store(4108, r_465_free, struct tree*);\n  store(4100, 20, signed int);\n  store(4096, 2, signed int);\n  store(p_441_addr, 4096, struct tree*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 43,
+          "status": "VALID",
+          "path": "EX p_472_addr p_470_addr l_464_free r_465_free l_466_free r_467_free l_468_free r_469_free \nPROP[\n  r_469_free == 0;\n  l_468_free == 0;\n  l_464_free != 0;\n  l_466_free == 0;\n  r_467_free == 0;\n  l_464_free != 0;\n  r_465_free != 0;\n  0 <= tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty)));\n  tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty))) <= 100 ]\nLOCAL[\n  Temp p p_472_addr ]\nSEP[\n  store(p_472_addr, 0, struct tree*);\n  store(p_470_addr, l_464_free, struct tree*);\n  store(4104, l_464_free, struct tree*);\n  store((l_464_free + 12), 0, struct tree*);\n  store((l_464_free + 8), 0, struct tree*);\n  store((l_464_free + 4), 10, signed int);\n  store(l_464_free, 1, signed int);\n  store((r_465_free + 12), 0, struct tree*);\n  store((r_465_free + 8), 0, struct tree*);\n  store((r_465_free + 4), 30, signed int);\n  store(r_465_free, 3, signed int);\n  store(4108, r_465_free, struct tree*);\n  store(4100, 20, signed int);\n  store(4096, 2, signed int);\n  store(p_441_addr, 4096, struct tree*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 43,
+          "status": "VALID",
+          "path": "EX p_470_addr l_464_free r_465_free l_466_free r_467_free l_468_free r_469_free \nPROP[\n  l_464_free != 0;\n  l_466_free == 0;\n  r_467_free == 0;\n  l_468_free == 0;\n  r_469_free == 0;\n  l_464_free != 0;\n  r_465_free != 0;\n  0 <= tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty)));\n  tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty))) <= 100 ]\nLOCAL[\n  Temp p p_470_addr ]\nSEP[\n  store(p_470_addr, l_464_free, struct tree*);\n  store(4104, l_464_free, struct tree*);\n  store((l_464_free + 12), 0, struct tree*);\n  store((l_464_free + 8), 0, struct tree*);\n  store((l_464_free + 4), 10, signed int);\n  store(l_464_free, 1, signed int);\n  store((r_465_free + 12), 0, struct tree*);\n  store((r_465_free + 8), 0, struct tree*);\n  store((r_465_free + 4), 30, signed int);\n  store(r_465_free, 3, signed int);\n  store(4108, r_465_free, struct tree*);\n  store(4100, 20, signed int);\n  store(4096, 2, signed int);\n  store(p_441_addr, 4096, struct tree*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 36,
+          "status": "VALID",
+          "path": "EX p_470_addr l_464_free r_465_free l_466_free r_467_free l_468_free r_469_free \nPROP[\n  l_468_free == 0;\n  l_464_free != 0;\n  l_466_free == 0;\n  r_467_free == 0;\n  r_469_free == 0;\n  l_464_free != 0;\n  r_465_free != 0;\n  0 <= tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty)));\n  tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty))) <= 100 ]\nLOCAL[\n  Temp p p_470_addr ]\nSEP[\n  store(p_470_addr, l_464_free, struct tree*);\n  store(4104, l_464_free, struct tree*);\n  store((l_464_free + 12), 0, struct tree*);\n  store((l_464_free + 8), 0, struct tree*);\n  store((l_464_free + 4), 10, signed int);\n  store(l_464_free, 1, signed int);\n  store((r_465_free + 12), 0, struct tree*);\n  store((r_465_free + 8), 0, struct tree*);\n  store((r_465_free + 4), 30, signed int);\n  store(r_465_free, 3, signed int);\n  store(4108, r_465_free, struct tree*);\n  store(4100, 20, signed int);\n  store(4096, 2, signed int);\n  store(p_441_addr, 4096, struct tree*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 36,
+          "status": "VALID",
+          "path": "EX p_470_addr l_464_free r_465_free l_466_free r_467_free l_468_free r_469_free \nPROP[\n  r_469_free == 0;\n  l_468_free == 0;\n  l_464_free != 0;\n  l_466_free == 0;\n  r_467_free == 0;\n  l_464_free != 0;\n  r_465_free != 0;\n  0 <= tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty)));\n  tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty))) <= 100 ]\nLOCAL[\n  Temp p p_470_addr ]\nSEP[\n  store(p_470_addr, l_464_free, struct tree*);\n  store(4104, l_464_free, struct tree*);\n  store((l_464_free + 12), 0, struct tree*);\n  store((l_464_free + 8), 0, struct tree*);\n  store((l_464_free + 4), 10, signed int);\n  store(l_464_free, 1, signed int);\n  store((r_465_free + 12), 0, struct tree*);\n  store((r_465_free + 8), 0, struct tree*);\n  store((r_465_free + 4), 30, signed int);\n  store(r_465_free, 3, signed int);\n  store(4108, r_465_free, struct tree*);\n  store(4100, 20, signed int);\n  store(4096, 2, signed int);\n  store(p_441_addr, 4096, struct tree*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 43,
+          "status": "VALID",
+          "path": "EX p_473_addr l_464_free r_465_free l_466_free r_467_free l_468_free r_469_free \nPROP[\n  prop_false ]\nLOCAL[\n  Temp p p_473_addr ]\nSEP[\n  store(p_473_addr, 0, struct tree*);\n  store(4104, l_464_free, struct tree*);\n  store((l_464_free + 12), 0, struct tree*);\n  store((l_464_free + 8), 0, struct tree*);\n  store((l_464_free + 4), 10, signed int);\n  store(l_464_free, 1, signed int);\n  store(12, 0, struct tree*);\n  store(8, 0, struct tree*);\n  store(4, 30, signed int);\n  store(0, 3, signed int);\n  store(4108, 0, struct tree*);\n  store(4100, 20, signed int);\n  store(4096, 2, signed int);\n  store(p_441_addr, 4096, struct tree*) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 43,
+          "status": "VALID",
+          "path": "EX p_473_addr l_464_free r_465_free l_466_free r_467_free l_468_free r_469_free \nPROP[\n  r_469_free == 0;\n  l_468_free == 0;\n  l_464_free != 0;\n  l_466_free == 0;\n  r_467_free == 0;\n  l_464_free != 0;\n  r_465_free != 0;\n  0 <= tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty)));\n  tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty))) <= 100 ]\nLOCAL[\n  Temp p p_473_addr ]\nSEP[\n  store(p_473_addr, r_465_free, struct tree*);\n  store(4104, l_464_free, struct tree*);\n  store((l_464_free + 12), 0, struct tree*);\n  store((l_464_free + 8), 0, struct tree*);\n  store((l_464_free + 4), 10, signed int);\n  store(l_464_free, 1, signed int);\n  store((r_465_free + 12), 0, struct tree*);\n  store((r_465_free + 8), 0, struct tree*);\n  store((r_465_free + 4), 30, signed int);\n  store(r_465_free, 3, signed int);\n  store(4108, r_465_free, struct tree*);\n  store(4100, 20, signed int);\n  store(4096, 2, signed int);\n  store(p_441_addr, 4096, struct tree*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 43,
+          "status": "VALID",
+          "path": "EX p_474_addr p_473_addr l_464_free r_465_free l_466_free r_467_free l_468_free r_469_free \nPROP[\n  prop_false ]\nLOCAL[\n  Temp p p_474_addr ]\nSEP[\n  store(p_474_addr, 0, struct tree*);\n  store(p_473_addr, r_465_free, struct tree*);\n  store(4104, l_464_free, struct tree*);\n  store((l_464_free + 12), 0, struct tree*);\n  store((l_464_free + 8), 0, struct tree*);\n  store((l_464_free + 4), 10, signed int);\n  store(l_464_free, 1, signed int);\n  store((r_465_free + 12), 0, struct tree*);\n  store((r_465_free + 8), 0, struct tree*);\n  store((r_465_free + 4), 30, signed int);\n  store(r_465_free, 3, signed int);\n  store(4108, r_465_free, struct tree*);\n  store(4100, 20, signed int);\n  store(4096, 2, signed int);\n  store(p_441_addr, 4096, struct tree*) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 43,
+          "status": "VALID",
+          "path": "EX p_474_addr p_473_addr l_464_free r_465_free l_466_free r_467_free l_468_free r_469_free \nPROP[\n  r_465_free != 0;\n  r_469_free == 0;\n  l_468_free == 0;\n  l_464_free != 0;\n  l_466_free == 0;\n  r_467_free == 0;\n  l_464_free != 0;\n  r_465_free != 0;\n  0 <= tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty)));\n  tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty))) <= 100 ]\nLOCAL[\n  Temp p p_474_addr ]\nSEP[\n  store(p_474_addr, 0, struct tree*);\n  store(p_473_addr, r_465_free, struct tree*);\n  store(4104, l_464_free, struct tree*);\n  store((l_464_free + 12), 0, struct tree*);\n  store((l_464_free + 8), 0, struct tree*);\n  store((l_464_free + 4), 10, signed int);\n  store(l_464_free, 1, signed int);\n  store((r_465_free + 12), 0, struct tree*);\n  store((r_465_free + 8), 0, struct tree*);\n  store((r_465_free + 4), 30, signed int);\n  store(r_465_free, 3, signed int);\n  store(4108, r_465_free, struct tree*);\n  store(4100, 20, signed int);\n  store(4096, 2, signed int);\n  store(p_441_addr, 4096, struct tree*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 43,
+          "status": "VALID",
+          "path": "EX p_474_addr p_473_addr l_464_free r_465_free l_466_free r_467_free l_468_free r_469_free \nPROP[\n  l_466_free == 0;\n  r_465_free != 0;\n  r_469_free == 0;\n  l_468_free == 0;\n  l_464_free != 0;\n  r_467_free == 0;\n  l_464_free != 0;\n  r_465_free != 0;\n  0 <= tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty)));\n  tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty))) <= 100 ]\nLOCAL[\n  Temp p p_474_addr ]\nSEP[\n  store(p_474_addr, 0, struct tree*);\n  store(p_473_addr, r_465_free, struct tree*);\n  store(4104, l_464_free, struct tree*);\n  store((l_464_free + 12), 0, struct tree*);\n  store((l_464_free + 8), 0, struct tree*);\n  store((l_464_free + 4), 10, signed int);\n  store(l_464_free, 1, signed int);\n  store((r_465_free + 12), 0, struct tree*);\n  store((r_465_free + 8), 0, struct tree*);\n  store((r_465_free + 4), 30, signed int);\n  store(r_465_free, 3, signed int);\n  store(4108, r_465_free, struct tree*);\n  store(4100, 20, signed int);\n  store(4096, 2, signed int);\n  store(p_441_addr, 4096, struct tree*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 43,
+          "status": "VALID",
+          "path": "EX p_475_addr p_473_addr l_464_free r_465_free l_466_free r_467_free l_468_free r_469_free \nPROP[\n  prop_false ]\nLOCAL[\n  Temp p p_475_addr ]\nSEP[\n  store(p_475_addr, 0, struct tree*);\n  store(p_473_addr, r_465_free, struct tree*);\n  store(4104, l_464_free, struct tree*);\n  store((l_464_free + 12), 0, struct tree*);\n  store((l_464_free + 8), 0, struct tree*);\n  store((l_464_free + 4), 10, signed int);\n  store(l_464_free, 1, signed int);\n  store((r_465_free + 12), 0, struct tree*);\n  store((r_465_free + 8), 0, struct tree*);\n  store((r_465_free + 4), 30, signed int);\n  store(r_465_free, 3, signed int);\n  store(4108, r_465_free, struct tree*);\n  store(4100, 20, signed int);\n  store(4096, 2, signed int);\n  store(p_441_addr, 4096, struct tree*) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 43,
+          "status": "VALID",
+          "path": "EX p_475_addr p_473_addr l_464_free r_465_free l_466_free r_467_free l_468_free r_469_free \nPROP[\n  l_466_free == 0;\n  r_465_free != 0;\n  r_469_free == 0;\n  l_468_free == 0;\n  l_464_free != 0;\n  r_467_free == 0;\n  l_464_free != 0;\n  r_465_free != 0;\n  0 <= tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty)));\n  tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty))) <= 100 ]\nLOCAL[\n  Temp p p_475_addr ]\nSEP[\n  store(p_475_addr, 0, struct tree*);\n  store(p_473_addr, r_465_free, struct tree*);\n  store(4104, l_464_free, struct tree*);\n  store((l_464_free + 12), 0, struct tree*);\n  store((l_464_free + 8), 0, struct tree*);\n  store((l_464_free + 4), 10, signed int);\n  store(l_464_free, 1, signed int);\n  store((r_465_free + 12), 0, struct tree*);\n  store((r_465_free + 8), 0, struct tree*);\n  store((r_465_free + 4), 30, signed int);\n  store(r_465_free, 3, signed int);\n  store(4108, r_465_free, struct tree*);\n  store(4100, 20, signed int);\n  store(4096, 2, signed int);\n  store(p_441_addr, 4096, struct tree*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 43,
+          "status": "VALID",
+          "path": "EX p_475_addr p_473_addr l_464_free r_465_free l_466_free r_467_free l_468_free r_469_free \nPROP[\n  r_467_free == 0;\n  l_466_free == 0;\n  r_465_free != 0;\n  r_469_free == 0;\n  l_468_free == 0;\n  l_464_free != 0;\n  l_464_free != 0;\n  r_465_free != 0;\n  0 <= tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty)));\n  tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty))) <= 100 ]\nLOCAL[\n  Temp p p_475_addr ]\nSEP[\n  store(p_475_addr, 0, struct tree*);\n  store(p_473_addr, r_465_free, struct tree*);\n  store(4104, l_464_free, struct tree*);\n  store((l_464_free + 12), 0, struct tree*);\n  store((l_464_free + 8), 0, struct tree*);\n  store((l_464_free + 4), 10, signed int);\n  store(l_464_free, 1, signed int);\n  store((r_465_free + 12), 0, struct tree*);\n  store((r_465_free + 8), 0, struct tree*);\n  store((r_465_free + 4), 30, signed int);\n  store(r_465_free, 3, signed int);\n  store(4108, r_465_free, struct tree*);\n  store(4100, 20, signed int);\n  store(4096, 2, signed int);\n  store(p_441_addr, 4096, struct tree*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 43,
+          "status": "VALID",
+          "path": "EX p_473_addr l_464_free r_465_free l_466_free r_467_free l_468_free r_469_free \nPROP[\n  r_465_free != 0;\n  r_469_free == 0;\n  l_468_free == 0;\n  l_464_free != 0;\n  l_466_free == 0;\n  r_467_free == 0;\n  l_464_free != 0;\n  r_465_free != 0;\n  0 <= tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty)));\n  tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty))) <= 100 ]\nLOCAL[\n  Temp p p_473_addr ]\nSEP[\n  store(p_473_addr, r_465_free, struct tree*);\n  store(4104, l_464_free, struct tree*);\n  store((l_464_free + 12), 0, struct tree*);\n  store((l_464_free + 8), 0, struct tree*);\n  store((l_464_free + 4), 10, signed int);\n  store(l_464_free, 1, signed int);\n  store((r_465_free + 12), 0, struct tree*);\n  store((r_465_free + 8), 0, struct tree*);\n  store((r_465_free + 4), 30, signed int);\n  store(r_465_free, 3, signed int);\n  store(4108, r_465_free, struct tree*);\n  store(4100, 20, signed int);\n  store(4096, 2, signed int);\n  store(p_441_addr, 4096, struct tree*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 36,
+          "status": "VALID",
+          "path": "EX p_473_addr l_464_free r_465_free l_466_free r_467_free l_468_free r_469_free \nPROP[\n  l_466_free == 0;\n  r_465_free != 0;\n  r_469_free == 0;\n  l_468_free == 0;\n  l_464_free != 0;\n  r_467_free == 0;\n  l_464_free != 0;\n  r_465_free != 0;\n  0 <= tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty)));\n  tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty))) <= 100 ]\nLOCAL[\n  Temp p p_473_addr ]\nSEP[\n  store(p_473_addr, r_465_free, struct tree*);\n  store(4104, l_464_free, struct tree*);\n  store((l_464_free + 12), 0, struct tree*);\n  store((l_464_free + 8), 0, struct tree*);\n  store((l_464_free + 4), 10, signed int);\n  store(l_464_free, 1, signed int);\n  store((r_465_free + 12), 0, struct tree*);\n  store((r_465_free + 8), 0, struct tree*);\n  store((r_465_free + 4), 30, signed int);\n  store(r_465_free, 3, signed int);\n  store(4108, r_465_free, struct tree*);\n  store(4100, 20, signed int);\n  store(4096, 2, signed int);\n  store(p_441_addr, 4096, struct tree*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 36,
+          "status": "VALID",
+          "path": "EX p_473_addr l_464_free r_465_free l_466_free r_467_free l_468_free r_469_free \nPROP[\n  r_467_free == 0;\n  l_466_free == 0;\n  r_465_free != 0;\n  r_469_free == 0;\n  l_468_free == 0;\n  l_464_free != 0;\n  l_464_free != 0;\n  r_465_free != 0;\n  0 <= tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty)));\n  tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty))) <= 100 ]\nLOCAL[\n  Temp p p_473_addr ]\nSEP[\n  store(p_473_addr, r_465_free, struct tree*);\n  store(4104, l_464_free, struct tree*);\n  store((l_464_free + 12), 0, struct tree*);\n  store((l_464_free + 8), 0, struct tree*);\n  store((l_464_free + 4), 10, signed int);\n  store(l_464_free, 1, signed int);\n  store((r_465_free + 12), 0, struct tree*);\n  store((r_465_free + 8), 0, struct tree*);\n  store((r_465_free + 4), 30, signed int);\n  store(r_465_free, 3, signed int);\n  store(4108, r_465_free, struct tree*);\n  store(4100, 20, signed int);\n  store(4096, 2, signed int);\n  store(p_441_addr, 4096, struct tree*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 36,
+          "status": "VALID",
+          "path": "EX l_464_free r_465_free l_466_free r_467_free l_468_free r_469_free \nPROP[\n  r_469_free == 0;\n  l_468_free == 0;\n  l_464_free != 0;\n  l_466_free == 0;\n  r_467_free == 0;\n  l_464_free != 0;\n  r_465_free != 0;\n  0 <= tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty)));\n  tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty))) <= 100 ]\nLOCAL[\n  Temp p p_441_addr ]\nSEP[\n  store(4104, l_464_free, struct tree*);\n  store((l_464_free + 12), 0, struct tree*);\n  store((l_464_free + 8), 0, struct tree*);\n  store((l_464_free + 4), 10, signed int);\n  store(l_464_free, 1, signed int);\n  store((r_465_free + 12), 0, struct tree*);\n  store((r_465_free + 8), 0, struct tree*);\n  store((r_465_free + 4), 30, signed int);\n  store(r_465_free, 3, signed int);\n  store(4108, r_465_free, struct tree*);\n  store(4100, 20, signed int);\n  store(4096, 2, signed int);\n  store(p_441_addr, 4096, struct tree*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 36,
+          "status": "VALID",
+          "path": "EX l_464_free r_465_free l_466_free r_467_free l_468_free r_469_free \nPROP[\n  r_467_free == 0;\n  l_466_free == 0;\n  r_465_free != 0;\n  r_469_free == 0;\n  l_468_free == 0;\n  l_464_free != 0;\n  l_464_free != 0;\n  r_465_free != 0;\n  0 <= tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty)));\n  tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty))) <= 100 ]\nLOCAL[\n  Temp p p_441_addr ]\nSEP[\n  store(4104, l_464_free, struct tree*);\n  store((l_464_free + 12), 0, struct tree*);\n  store((l_464_free + 8), 0, struct tree*);\n  store((l_464_free + 4), 10, signed int);\n  store(l_464_free, 1, signed int);\n  store((r_465_free + 12), 0, struct tree*);\n  store((r_465_free + 8), 0, struct tree*);\n  store((r_465_free + 4), 30, signed int);\n  store(r_465_free, 3, signed int);\n  store(4108, r_465_free, struct tree*);\n  store(4100, 20, signed int);\n  store(4096, 2, signed int);\n  store(p_441_addr, 4096, struct tree*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "return",
+          "name": null,
+          "line": 36,
+          "status": "UNKNOWN",
+          "path": "PROP[\n  r_467_free == 0;\n  l_466_free == 0;\n  r_465_free != 0;\n  r_469_free == 0;\n  l_468_free == 0;\n  l_464_free != 0;\n  l_464_free != 0;\n  r_465_free != 0;\n  0 <= tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty)));\n  tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty))) <= 100 ]\nLOCAL[]\nSEP[\n  store(4104, l_464_free, struct tree*);\n  store((l_464_free + 12), 0, struct tree*);\n  store((l_464_free + 8), 0, struct tree*);\n  store((l_464_free + 4), 10, signed int);\n  store(l_464_free, 1, signed int);\n  store((r_465_free + 12), 0, struct tree*);\n  store((r_465_free + 8), 0, struct tree*);\n  store((r_465_free + 4), 30, signed int);\n  store(r_465_free, 3, signed int);\n  store(4108, r_465_free, struct tree*);\n  store(4100, 20, signed int);\n  store(4096, 2, signed int) ]\n",
+          "goal": "PROP[\n  3 == tree_size(make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty))) ]\nLOCAL[]\nSEP[\n  store_tree (4096, make_tree(make_tree(empty, 1, 10, empty), 2, 20, make_tree(empty, 3, 30, empty))) ]\n"
+        }
+      ],
+      "evidence": {
+        "decision_backend": "qcp-smt",
+        "certificate": "NOT_CHECKED"
+      },
+      "returncode": 3,
+      "generated_source_sha256": "3d53d148b07368a31320fa3727464a358d6e5e05a6fe0155efea45aaff31cf44",
+      "duration_seconds": 0.045178,
+      "peak_rss_kb": 8140,
+      "cpu_seconds": 0.03,
+      "command": [
+        "/home/yangfp/teSpec/bin/tespec-symexec",
+        "--arch=32",
+        "--input-file=/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_tree_size_input_2/entry-exit/result/artifacts/input_2/input.c",
+        "--full-auto",
+        "--Json-output",
+        "--emit-residual-vc",
+        "--no-strategy-gen",
+        "--gen-and-backup",
+        "--coq-output-dir",
+        "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_tree_size_input_2/entry-exit/result/artifacts/input_2/vc",
+        "--no-logic-path",
+        "--disable-solver-info",
+        "--no-exec-info",
+        "--function",
+        "sample",
+        "--concrete-bindings",
+        "--instance-trace",
+        "--spec",
+        "__tespec_entry",
+        "-I/home/yangfp/teSpec/benchmark/paper-cn-qcp/cases/control_tree_size",
+        "-I/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+        "-I/home/yangfp/teSpec/runtime/qcip/QCP_examples",
+        "--loop-unroll-limit",
+        "8",
+        "--call-depth-limit",
+        "16"
+      ],
+      "stdout": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_tree_size_input_2/entry-exit/result/artifacts/input_2/executor.json",
+      "stderr": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_tree_size_input_2/entry-exit/result/artifacts/input_2/stderr.log",
+      "vc": {
+        "schema": "qcp-spectest-vc-manifest/v1",
+        "case_id": "input_2",
+        "function": "sample",
+        "source": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_tree_size_input_2/entry-exit/result/artifacts/input_2/input.c",
+        "qcip_root": "/home/yangfp/teSpec/runtime/qcip",
+        "status": "residual",
+        "residual_goals": [
+          "proof_of_sample_return_wit_1_split_goal_1",
+          "proof_of_sample_return_wit_1_split_goal_spatial",
+          "proof_of_sample_return_wit_1",
+          "proof_of_sample_precondition_wit_1"
+        ],
+        "counterexample_goals": [],
+        "files": {
+          "goal": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_tree_size_input_2/entry-exit/result/artifacts/input_2/vc/input_goal.v",
+          "proof_auto": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_tree_size_input_2/entry-exit/result/artifacts/input_2/vc/input_proof_auto.v",
+          "proof_manual": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_tree_size_input_2/entry-exit/result/artifacts/input_2/vc/input_proof_manual.v",
+          "goal_check": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_tree_size_input_2/entry-exit/result/artifacts/input_2/vc/input_goal_check.v"
+        },
+        "missing_files": [],
+        "immutable_sha256": {
+          "goal": "7772e864a6be231375aa25c59a4da9c84399cfc9451d675320db0f5578246919",
+          "proof_auto": "441ae9a8237ae0b3545485b98abf0fa62f316fa1ab43760cc98939f7757aacf8",
+          "goal_check": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e"
+        },
+        "coq_dependencies": [
+          {
+            "module": "TreeMeasure",
+            "source": "/home/yangfp/teSpec/benchmark/paper-cn-qcp/cases/control_tree_size/TreeMeasure.v",
+            "staged": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_tree_size_input_2/entry-exit/result/artifacts/input_2/vc/dependencies/TreeMeasure.v",
+            "sha256": "007e759aef35bad514c98a587c8fa29f6299ab4ad63e1c97e8dd630876625908"
+          }
+        ],
+        "runtime_dependencies": [
+          {
+            "module": "SimpleC.EE.QCP_demos_human.bst_lib",
+            "source": "/home/yangfp/teSpec/runtime/qcip/SeparationLogic/examples/QCP_demos_human/bst_lib.v",
+            "sha256": "bda3a399a93d460752b28dda2a5979228b43de04b54abdd2e01a567cc000283c",
+            "compiled": null,
+            "compiled_sha256": null,
+            "origin": "pinned-runtime"
+          }
+        ],
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [
+            {
+              "id": 369,
+              "kind": "struct",
+              "name": "tree",
+              "defined": true,
+              "size": 16,
+              "alignment": 4,
+              "fields": [
+                {
+                  "id": 373,
+                  "name": "key",
+                  "offset": 0,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "basic",
+                    "name": "int"
+                  },
+                  "computational": true
+                },
+                {
+                  "id": 372,
+                  "name": "value",
+                  "offset": 4,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "basic",
+                    "name": "int"
+                  },
+                  "computational": true
+                },
+                {
+                  "id": 371,
+                  "name": "left",
+                  "offset": 8,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "pointer",
+                    "target": {
+                      "kind": "struct",
+                      "id": 369
+                    }
+                  },
+                  "computational": true
+                },
+                {
+                  "id": 370,
+                  "name": "right",
+                  "offset": 12,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "pointer",
+                    "target": {
+                      "kind": "struct",
+                      "id": 369
+                    }
+                  },
+                  "computational": true
+                }
+              ]
+            }
+          ],
+          "aliases": []
+        },
+        "manifest": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_tree_size_input_2/entry-exit/result/artifacts/input_2/vc/manifest.json"
+      },
+      "resources": {
+        "wall_seconds": 0.045178,
+        "cpu_seconds": 0.03,
+        "measurement": "GNU time; executor and children; maximum process RSS",
+        "peak_rss_kib": 8140
+      }
+    }
+  ],
+  "itp_vcs": [
+    {
+      "case_id": "input_2",
+      "function": "sample",
+      "manifest": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_tree_size_input_2/entry-exit/result/artifacts/input_2/vc/manifest.json",
+      "goals": [
+        "proof_of_sample_return_wit_1_split_goal_1",
+        "proof_of_sample_return_wit_1_split_goal_spatial",
+        "proof_of_sample_return_wit_1",
+        "proof_of_sample_precondition_wit_1"
+      ]
+    }
+  ],
+  "summary": {
+    "total": 1,
+    "PASS": 0,
+    "FAIL": 0,
+    "UNKNOWN": 1,
+    "ERROR": 0,
+    "INVALID": 0,
+    "specification_only": 0,
+    "duration_seconds": 0.051269,
+    "executor_cpu_seconds": 0.03,
+    "peak_rss_kb": 8140
+  }
+}

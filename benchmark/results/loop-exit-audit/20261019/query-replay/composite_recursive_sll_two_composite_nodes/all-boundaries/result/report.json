@@ -1,0 +1,468 @@
+{
+  "schema": "qcp-spectest-report/v1",
+  "job": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/composite_recursive_sll_two_composite_nodes/all-boundaries/job.json",
+  "source": "/home/yangfp/teSpec/cases/composite_recursive_sll/composite_recursive_sll.c",
+  "spec_file": null,
+  "function": "composite_recursive_sll",
+  "qcp_binary": "/home/yangfp/teSpec/bin/tespec-symexec",
+  "provenance": {
+    "source_sha256": "566b48536b2b43cbd3c8585ee6194d33238f4708f556676250b7376de7556ffc",
+    "job_sha256": "20435e28e7efc23623cce6d287f6ea2cb85a24aae397adf97c207abfdaca3028",
+    "binary_sha256": "4e551edce5c3733671b6118dd689cd0e30d12e04416a2046a29bfd9361f55ace",
+    "runtime_source_sha256": "08b41c971d404d9fe6ae40dce420752af8eb023179017c55737dc5a7df89f56a",
+    "runtime_digest_scope": "SeparationLogic and QCP_examples: .v, .h, .strategies, _CoqProject",
+    "included_source_sha256": "f664a398928f87d23bec9d5cbf37dfb461709c84b59493fe1f01bf43d17c6be0",
+    "spec_sha256": null
+  },
+  "vc_policy": {
+    "mode": "all-boundaries",
+    "execution_strategy": "inline",
+    "execution_semantics": "inline-preserve/v1",
+    "loops": "execute_iterations",
+    "defined_function_calls": "execute_bodies",
+    "intermediate_boundaries": true,
+    "declaration_calls": "sample_contract_postconditions",
+    "call_depth_limit": 16,
+    "loop_unroll_limit": 8
+  },
+  "results": [
+    {
+      "id": "two_composite_nodes",
+      "arguments": {
+        "head": 4096
+      },
+      "bindings": {
+        "second": 8192,
+        "a0": 1,
+        "a1": 2,
+        "ab": 3,
+        "b0": 5,
+        "b1": 8,
+        "bb": 13,
+        "expected": 32
+      },
+      "type_bindings": {},
+      "spec": null,
+      "generated_source": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/composite_recursive_sll_two_composite_nodes/all-boundaries/result/artifacts/two_composite_nodes/input.c",
+      "status": "PASS",
+      "overall": "PASS",
+      "precondition_result": "SAT",
+      "test_result": "PASS",
+      "result_semantics": "three-valued-conjunction/v1",
+      "executor_reported_status": "PASS",
+      "satisfied": true,
+      "reason": "qcp_full_auto_passed",
+      "phases": {
+        "precondition": "SAT",
+        "safety": "PASS",
+        "postcondition": "PASS",
+        "annotations": "PASS",
+        "execution": "PASS"
+      },
+      "scope": "execution",
+      "mode": "all-boundaries",
+      "execution_semantics": "inline-preserve/v1",
+      "execution_strategy": "inline",
+      "requested_execution_strategy": "inline",
+      "declaration_call_policy": "contract-sample/v1",
+      "sampling_events": [],
+      "result_scope": "concrete-execution",
+      "execution_completed": true,
+      "annotation_policy": "check-preserve",
+      "preconditions": [
+        {
+          "goal": "composite_recursive_sll_precondition_wit_1",
+          "status": "SAT",
+          "proof": "auto"
+        }
+      ],
+      "abstraction_events": [
+        {
+          "kind": "inline-call",
+          "function": "recursive_payload_sum",
+          "count": 3
+        }
+      ],
+      "architecture_bits": 32,
+      "target_layout": {
+        "schema": "sac-target-layout/v1",
+        "architecture_bits": 32,
+        "byte_order": "big",
+        "pointer_size": 4,
+        "memory_rules": "naive_C_Rules",
+        "field_address_semantics": "base-plus-byte-offset/v1",
+        "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+        "aggregates": [
+          {
+            "id": 405,
+            "kind": "struct",
+            "name": "sample_link",
+            "defined": true,
+            "size": 16,
+            "alignment": 4,
+            "fields": [
+              {
+                "id": 407,
+                "name": "payload",
+                "offset": 0,
+                "size": 12,
+                "alignment": 4,
+                "type": {
+                  "kind": "struct",
+                  "id": 369
+                },
+                "computational": true
+              },
+              {
+                "id": 406,
+                "name": "next",
+                "offset": 12,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "pointer",
+                  "target": {
+                    "kind": "struct",
+                    "id": 405
+                  }
+                },
+                "computational": true
+              }
+            ]
+          },
+          {
+            "id": 369,
+            "kind": "struct",
+            "name": "sample_pair",
+            "defined": true,
+            "size": 12,
+            "alignment": 4,
+            "fields": [
+              {
+                "id": 371,
+                "name": "lane",
+                "offset": 0,
+                "size": 8,
+                "alignment": 4,
+                "type": {
+                  "kind": "array",
+                  "length": 2,
+                  "element": {
+                    "kind": "basic",
+                    "name": "int"
+                  }
+                },
+                "computational": true
+              },
+              {
+                "id": 370,
+                "name": "bias",
+                "offset": 8,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "basic",
+                  "name": "int"
+                },
+                "computational": true
+              }
+            ]
+          }
+        ],
+        "aliases": []
+      },
+      "executor_error": null,
+      "residual_vcs": [],
+      "vc_results": [
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 13,
+          "status": "VALID",
+          "path": "EX node_473_addr \nPROP[\n  prop_false ]\nLOCAL[\n  Temp node node_473_addr;\n  Temp head head_450_addr ]\nSEP[\n  store(node_473_addr, 4096, struct sample_link*);\n  store(head_450_addr, 4096, struct sample_link*);\n  store(4096, 1, signed int);\n  store(pointer_offset(4096, 1, 4, signed int), 2, signed int);\n  store(4104, 3, signed int);\n  store(4108, 8192, struct sample_link*);\n  store(8192, 5, signed int);\n  store(pointer_offset(8192, 1, 4, signed int), 8, signed int);\n  store(8200, 13, signed int);\n  store(8204, 0, struct sample_link*) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 13,
+          "status": "VALID",
+          "path": "EX node_473_addr \nPROP[]\nLOCAL[\n  Temp node node_473_addr;\n  Temp head head_450_addr ]\nSEP[\n  store(node_473_addr, 4096, struct sample_link*);\n  store(head_450_addr, 4096, struct sample_link*);\n  store(4096, 1, signed int);\n  store(pointer_offset(4096, 1, 4, signed int), 2, signed int);\n  store(4104, 3, signed int);\n  store(4108, 8192, struct sample_link*);\n  store(8192, 5, signed int);\n  store(pointer_offset(8192, 1, 4, signed int), 8, signed int);\n  store(8200, 13, signed int);\n  store(8204, 0, struct sample_link*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 13,
+          "status": "VALID",
+          "path": "EX node_474_addr node_473_addr \nPROP[\n  prop_false ]\nLOCAL[\n  Temp node node_474_addr;\n  Temp head head_450_addr ]\nSEP[\n  store(node_474_addr, 8192, struct sample_link*);\n  store(node_473_addr, 4096, struct sample_link*);\n  store(head_450_addr, 4096, struct sample_link*);\n  store(4096, 1, signed int);\n  store(pointer_offset(4096, 1, 4, signed int), 2, signed int);\n  store(4104, 3, signed int);\n  store(4108, 8192, struct sample_link*);\n  store(8192, 5, signed int);\n  store(pointer_offset(8192, 1, 4, signed int), 8, signed int);\n  store(8200, 13, signed int);\n  store(8204, 0, struct sample_link*) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 13,
+          "status": "VALID",
+          "path": "EX node_474_addr node_473_addr \nPROP[]\nLOCAL[\n  Temp node node_474_addr;\n  Temp head head_450_addr ]\nSEP[\n  store(node_474_addr, 8192, struct sample_link*);\n  store(node_473_addr, 4096, struct sample_link*);\n  store(head_450_addr, 4096, struct sample_link*);\n  store(4096, 1, signed int);\n  store(pointer_offset(4096, 1, 4, signed int), 2, signed int);\n  store(4104, 3, signed int);\n  store(4108, 8192, struct sample_link*);\n  store(8192, 5, signed int);\n  store(pointer_offset(8192, 1, 4, signed int), 8, signed int);\n  store(8200, 13, signed int);\n  store(8204, 0, struct sample_link*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 13,
+          "status": "VALID",
+          "path": "EX node_475_addr node_474_addr node_473_addr \nPROP[]\nLOCAL[\n  Temp node node_475_addr;\n  Temp head head_450_addr ]\nSEP[\n  store(node_475_addr, 0, struct sample_link*);\n  store(node_474_addr, 8192, struct sample_link*);\n  store(node_473_addr, 4096, struct sample_link*);\n  store(head_450_addr, 4096, struct sample_link*);\n  store(4096, 1, signed int);\n  store(pointer_offset(4096, 1, 4, signed int), 2, signed int);\n  store(4104, 3, signed int);\n  store(4108, 8192, struct sample_link*);\n  store(8192, 5, signed int);\n  store(pointer_offset(8192, 1, 4, signed int), 8, signed int);\n  store(8200, 13, signed int);\n  store(8204, 0, struct sample_link*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 14,
+          "status": "VALID",
+          "path": "EX node_475_addr node_474_addr node_473_addr \nPROP[]\nLOCAL[\n  Temp node node_475_addr;\n  Temp head head_450_addr ]\nSEP[\n  store(node_475_addr, 0, struct sample_link*);\n  store(node_474_addr, 8192, struct sample_link*);\n  store(node_473_addr, 4096, struct sample_link*);\n  store(head_450_addr, 4096, struct sample_link*);\n  store(4096, 1, signed int);\n  store(pointer_offset(4096, 1, 4, signed int), 2, signed int);\n  store(4104, 3, signed int);\n  store(4108, 8192, struct sample_link*);\n  store(8192, 5, signed int);\n  store(pointer_offset(8192, 1, 4, signed int), 8, signed int);\n  store(8200, 13, signed int);\n  store(8204, 0, struct sample_link*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 17,
+          "status": "VALID",
+          "path": "EX node_474_addr node_473_addr \nPROP[]\nLOCAL[\n  Temp node node_474_addr;\n  Temp head head_450_addr ]\nSEP[\n  store(node_474_addr, 8192, struct sample_link*);\n  store(node_473_addr, 4096, struct sample_link*);\n  store(head_450_addr, 4096, struct sample_link*);\n  store(4096, 1, signed int);\n  store(pointer_offset(4096, 1, 4, signed int), 2, signed int);\n  store(4104, 3, signed int);\n  store(4108, 8192, struct sample_link*);\n  store(8192, 5, signed int);\n  store(pointer_offset(8192, 1, 4, signed int), 8, signed int);\n  store(8200, 13, signed int);\n  store(8204, 0, struct sample_link*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 16,
+          "status": "VALID",
+          "path": "EX node_474_addr node_473_addr \nPROP[]\nLOCAL[\n  Temp node node_474_addr;\n  Temp head head_450_addr ]\nSEP[\n  store(node_474_addr, 8192, struct sample_link*);\n  store(node_473_addr, 4096, struct sample_link*);\n  store(head_450_addr, 4096, struct sample_link*);\n  store(4096, 1, signed int);\n  store(pointer_offset(4096, 1, 4, signed int), 2, signed int);\n  store(4104, 3, signed int);\n  store(4108, 8192, struct sample_link*);\n  store(8192, 5, signed int);\n  store(pointer_offset(8192, 1, 4, signed int), 8, signed int);\n  store(8200, 13, signed int);\n  store(8204, 0, struct sample_link*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 18,
+          "status": "VALID",
+          "path": "EX node_474_addr node_473_addr \nPROP[]\nLOCAL[\n  Temp node node_474_addr;\n  Temp head head_450_addr ]\nSEP[\n  store(node_474_addr, 8192, struct sample_link*);\n  store(node_473_addr, 4096, struct sample_link*);\n  store(head_450_addr, 4096, struct sample_link*);\n  store(4096, 1, signed int);\n  store(pointer_offset(4096, 1, 4, signed int), 2, signed int);\n  store(4104, 3, signed int);\n  store(4108, 8192, struct sample_link*);\n  store(8192, 5, signed int);\n  store(pointer_offset(8192, 1, 4, signed int), 8, signed int);\n  store(8200, 13, signed int);\n  store(8204, 0, struct sample_link*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 11,
+          "status": "VALID",
+          "path": "EX node_474_addr node_473_addr \nPROP[]\nLOCAL[\n  Temp node node_474_addr;\n  Temp head head_450_addr ]\nSEP[\n  store(node_474_addr, 8192, struct sample_link*);\n  store(node_473_addr, 4096, struct sample_link*);\n  store(head_450_addr, 4096, struct sample_link*);\n  store(4096, 1, signed int);\n  store(pointer_offset(4096, 1, 4, signed int), 2, signed int);\n  store(4104, 3, signed int);\n  store(4108, 8192, struct sample_link*);\n  store(8192, 5, signed int);\n  store(pointer_offset(8192, 1, 4, signed int), 8, signed int);\n  store(8200, 13, signed int);\n  store(8204, 0, struct sample_link*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 17,
+          "status": "VALID",
+          "path": "EX node_473_addr \nPROP[]\nLOCAL[\n  Temp node node_473_addr;\n  Temp head head_450_addr ]\nSEP[\n  store(node_473_addr, 4096, struct sample_link*);\n  store(head_450_addr, 4096, struct sample_link*);\n  store(4096, 1, signed int);\n  store(pointer_offset(4096, 1, 4, signed int), 2, signed int);\n  store(4104, 3, signed int);\n  store(4108, 8192, struct sample_link*);\n  store(8192, 5, signed int);\n  store(pointer_offset(8192, 1, 4, signed int), 8, signed int);\n  store(8200, 13, signed int);\n  store(8204, 0, struct sample_link*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 16,
+          "status": "VALID",
+          "path": "EX node_473_addr \nPROP[]\nLOCAL[\n  Temp node node_473_addr;\n  Temp head head_450_addr ]\nSEP[\n  store(node_473_addr, 4096, struct sample_link*);\n  store(head_450_addr, 4096, struct sample_link*);\n  store(4096, 1, signed int);\n  store(pointer_offset(4096, 1, 4, signed int), 2, signed int);\n  store(4104, 3, signed int);\n  store(4108, 8192, struct sample_link*);\n  store(8192, 5, signed int);\n  store(pointer_offset(8192, 1, 4, signed int), 8, signed int);\n  store(8200, 13, signed int);\n  store(8204, 0, struct sample_link*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 18,
+          "status": "VALID",
+          "path": "EX node_473_addr \nPROP[]\nLOCAL[\n  Temp node node_473_addr;\n  Temp head head_450_addr ]\nSEP[\n  store(node_473_addr, 4096, struct sample_link*);\n  store(head_450_addr, 4096, struct sample_link*);\n  store(4096, 1, signed int);\n  store(pointer_offset(4096, 1, 4, signed int), 2, signed int);\n  store(4104, 3, signed int);\n  store(4108, 8192, struct sample_link*);\n  store(8192, 5, signed int);\n  store(pointer_offset(8192, 1, 4, signed int), 8, signed int);\n  store(8200, 13, signed int);\n  store(8204, 0, struct sample_link*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 11,
+          "status": "VALID",
+          "path": "EX node_473_addr \nPROP[]\nLOCAL[\n  Temp node node_473_addr;\n  Temp head head_450_addr ]\nSEP[\n  store(node_473_addr, 4096, struct sample_link*);\n  store(head_450_addr, 4096, struct sample_link*);\n  store(4096, 1, signed int);\n  store(pointer_offset(4096, 1, 4, signed int), 2, signed int);\n  store(4104, 3, signed int);\n  store(4108, 8192, struct sample_link*);\n  store(8192, 5, signed int);\n  store(pointer_offset(8192, 1, 4, signed int), 8, signed int);\n  store(8200, 13, signed int);\n  store(8204, 0, struct sample_link*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "return",
+          "name": null,
+          "line": 11,
+          "status": "VALID",
+          "path": "PROP[]\nLOCAL[]\nSEP[\n  store(4096, 1, signed int);\n  store(pointer_offset(4096, 1, 4, signed int), 2, signed int);\n  store(4104, 3, signed int);\n  store(4108, 8192, struct sample_link*);\n  store(8192, 5, signed int);\n  store(pointer_offset(8192, 1, 4, signed int), 8, signed int);\n  store(8200, 13, signed int);\n  store(8204, 0, struct sample_link*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[\n  store(4096, 1, signed int);\n  store(pointer_offset(4096, 1, 4, signed int), 2, signed int);\n  store(4104, 3, signed int);\n  store(4108, 8192, struct sample_link*);\n  store(8192, 5, signed int);\n  store(pointer_offset(8192, 1, 4, signed int), 8, signed int);\n  store(8200, 13, signed int);\n  store(8204, 0, struct sample_link*) ]\n"
+        }
+      ],
+      "evidence": {
+        "decision_backend": "qcp-smt",
+        "certificate": "NOT_CHECKED"
+      },
+      "returncode": 0,
+      "generated_source_sha256": "b3b0f1908cbd787533a4ad9b93c177a6ff8418adc5c82018e44ba06bfbe9f583",
+      "duration_seconds": 0.012368,
+      "peak_rss_kb": 6804,
+      "cpu_seconds": 0.0,
+      "command": [
+        "/home/yangfp/teSpec/bin/tespec-symexec",
+        "--arch=32",
+        "--input-file=/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/composite_recursive_sll_two_composite_nodes/all-boundaries/result/artifacts/two_composite_nodes/input.c",
+        "--full-auto",
+        "--Json-output",
+        "--emit-residual-vc",
+        "--no-strategy-gen",
+        "--gen-and-backup",
+        "--coq-output-dir",
+        "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/composite_recursive_sll_two_composite_nodes/all-boundaries/result/artifacts/two_composite_nodes/vc",
+        "--no-logic-path",
+        "--disable-solver-info",
+        "--no-exec-info",
+        "--function",
+        "composite_recursive_sll",
+        "--spec-test-no-expand",
+        "--instance-trace",
+        "--spec",
+        "__tespec_entry",
+        "-I/home/yangfp/teSpec/cases/composite_recursive_sll",
+        "--loop-unroll-limit",
+        "8",
+        "--call-depth-limit",
+        "16"
+      ],
+      "stdout": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/composite_recursive_sll_two_composite_nodes/all-boundaries/result/artifacts/two_composite_nodes/executor.json",
+      "stderr": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/composite_recursive_sll_two_composite_nodes/all-boundaries/result/artifacts/two_composite_nodes/stderr.log",
+      "vc": {
+        "schema": "qcp-spectest-vc-manifest/v1",
+        "case_id": "two_composite_nodes",
+        "function": "composite_recursive_sll",
+        "source": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/composite_recursive_sll_two_composite_nodes/all-boundaries/result/artifacts/two_composite_nodes/input.c",
+        "qcip_root": "/home/yangfp/teSpec/runtime/qcip",
+        "status": "auto_proved",
+        "residual_goals": [],
+        "counterexample_goals": [],
+        "files": {
+          "goal": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/composite_recursive_sll_two_composite_nodes/all-boundaries/result/artifacts/two_composite_nodes/vc/input_goal.v",
+          "proof_auto": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/composite_recursive_sll_two_composite_nodes/all-boundaries/result/artifacts/two_composite_nodes/vc/input_proof_auto.v",
+          "proof_manual": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/composite_recursive_sll_two_composite_nodes/all-boundaries/result/artifacts/two_composite_nodes/vc/input_proof_manual.v",
+          "goal_check": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/composite_recursive_sll_two_composite_nodes/all-boundaries/result/artifacts/two_composite_nodes/vc/input_goal_check.v"
+        },
+        "missing_files": [],
+        "immutable_sha256": {
+          "goal": "f228e5eddd4c06f3fafa49359331495402581c78bc18eca60a6fa312890fc539",
+          "proof_auto": "deba3910aa9d34fd4fc38a4cfad73d979a9929963e69b8d614ef806f3505d341",
+          "goal_check": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e"
+        },
+        "coq_dependencies": [],
+        "runtime_dependencies": [],
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [
+            {
+              "id": 405,
+              "kind": "struct",
+              "name": "sample_link",
+              "defined": true,
+              "size": 16,
+              "alignment": 4,
+              "fields": [
+                {
+                  "id": 407,
+                  "name": "payload",
+                  "offset": 0,
+                  "size": 12,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "struct",
+                    "id": 369
+                  },
+                  "computational": true
+                },
+                {
+                  "id": 406,
+                  "name": "next",
+                  "offset": 12,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "pointer",
+                    "target": {
+                      "kind": "struct",
+                      "id": 405
+                    }
+                  },
+                  "computational": true
+                }
+              ]
+            },
+            {
+              "id": 369,
+              "kind": "struct",
+              "name": "sample_pair",
+              "defined": true,
+              "size": 12,
+              "alignment": 4,
+              "fields": [
+                {
+                  "id": 371,
+                  "name": "lane",
+                  "offset": 0,
+                  "size": 8,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "array",
+                    "length": 2,
+                    "element": {
+                      "kind": "basic",
+                      "name": "int"
+                    }
+                  },
+                  "computational": true
+                },
+                {
+                  "id": 370,
+                  "name": "bias",
+                  "offset": 8,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "basic",
+                    "name": "int"
+                  },
+                  "computational": true
+                }
+              ]
+            }
+          ],
+          "aliases": []
+        },
+        "manifest": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/composite_recursive_sll_two_composite_nodes/all-boundaries/result/artifacts/two_composite_nodes/vc/manifest.json"
+      },
+      "resources": {
+        "wall_seconds": 0.012368,
+        "cpu_seconds": 0.0,
+        "measurement": "GNU time; executor and children; maximum process RSS",
+        "peak_rss_kib": 6804
+      }
+    }
+  ],
+  "itp_vcs": [],
+  "summary": {
+    "total": 1,
+    "PASS": 1,
+    "FAIL": 0,
+    "UNKNOWN": 0,
+    "ERROR": 0,
+    "INVALID": 0,
+    "specification_only": 0,
+    "duration_seconds": 0.016762,
+    "executor_cpu_seconds": 0.0,
+    "peak_rss_kb": 6804
+  }
+}

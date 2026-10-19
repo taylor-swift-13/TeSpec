@@ -1,0 +1,222 @@
+{
+  "spec_test": {
+    "schema": "sac-spec-test/v1",
+    "execution_semantics": "inline-preserve/v1",
+    "execution_strategy": "inline",
+    "declaration_call_policy": "contract-sample/v1",
+    "query_semantics": "copy-only/v1",
+    "mode": "expand",
+    "scope": "execution",
+    "annotation_policy": "ignore",
+    "completed": true,
+    "result_scope": "concrete-execution",
+    "overall": "UNKNOWN",
+    "precondition_result": "UNKNOWN",
+    "test_result": "UNKNOWN",
+    "result_semantics": "three-valued-conjunction/v1",
+    "vc_semantics": "path-vc/v1",
+    "vc_storage": {
+      "schema": "frozen-safety-sharing/v1",
+      "snapshot_requests": 2,
+      "unique_or_unpooled": 2,
+      "shared_requests": 0,
+      "intra_snapshot_aliases": 0,
+      "original_occurrences_preserved": true
+    },
+    "branch_evaluation": {
+      "schema": "instance-first-branch-query/v1",
+      "pure_queries": 5,
+      "evaluated_true": 0,
+      "evaluated_false": 1,
+      "smt_fallback": 4
+    },
+    "vc_scheduling": {
+      "schema": "post-execution-witness-smt/v1",
+      "enabled": true,
+      "collecting": false,
+      "requests": 11,
+      "queued_witnesses": 4,
+      "solved_witnesses": 4,
+      "retained_on_release": 0,
+      "pending_witnesses": 0
+    },
+    "vc_results": [
+      {
+        "kind": "safety",
+        "name": null,
+        "line": 25,
+        "status": "VALID",
+        "path": "EX q_427_free \nPROP[\n  prop_false ]\nLOCAL[\n  Temp linklist linklist_416_addr ]\nSEP[\n  store(8192, 0, struct SingleLinklistNode*);\n  store(linklist_416_addr, 8192, struct SingleLinklistNode*) ]\n",
+        "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+      },
+      {
+        "kind": "safety",
+        "name": null,
+        "line": 25,
+        "status": "VALID",
+        "path": "EX q_427_free \nPROP[\n  q_427_free == 0 ]\nLOCAL[\n  Temp linklist linklist_416_addr ]\nSEP[\n  store(8192, 0, struct SingleLinklistNode*);\n  store(linklist_416_addr, 8192, struct SingleLinklistNode*) ]\n",
+        "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+      },
+      {
+        "kind": "return",
+        "name": null,
+        "line": 25,
+        "status": "VALID",
+        "path": "PROP[\n  q_427_free == 0 ]\nLOCAL[]\nSEP[\n  store(8192, 0, struct SingleLinklistNode*) ]\n",
+        "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[\n  xizi_sll_head (8192, nil(Z_1)) ]\n\nPROP[]\nLOCAL[]\nSEP[\n  xizi_sll_head (8192, nil(Z_1)) ]\n"
+      }
+    ],
+    "phases": {
+      "precondition": "UNKNOWN",
+      "safety": "PASS",
+      "postcondition": "PASS",
+      "annotations": "NOT_RUN"
+    },
+    "abstraction_events": [],
+    "sampling_events": [],
+    "limit_reason": null,
+    "architecture_bits": 32,
+    "target_layout": {
+      "schema": "sac-target-layout/v1",
+      "architecture_bits": 32,
+      "byte_order": "big",
+      "pointer_size": 4,
+      "memory_rules": "naive_C_Rules",
+      "field_address_semantics": "base-plus-byte-offset/v1",
+      "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+      "aggregates": [
+        {
+          "id": 369,
+          "kind": "struct",
+          "name": "SingleLinklistNode",
+          "defined": true,
+          "size": 4,
+          "alignment": 4,
+          "fields": [
+            {
+              "id": 370,
+              "name": "node_next",
+              "offset": 0,
+              "size": 4,
+              "alignment": 4,
+              "type": {
+                "kind": "pointer",
+                "target": {
+                  "kind": "struct",
+                  "id": 369
+                }
+              },
+              "computational": true
+            }
+          ]
+        }
+      ],
+      "aliases": [
+        {
+          "id": 402,
+          "name": "SysSingleLinklistType",
+          "type": {
+            "kind": "struct",
+            "id": 369
+          }
+        }
+      ]
+    },
+    "certificate": "NOT_CHECKED",
+    "instance_trace": [
+      {
+        "phase": "before-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/xizi_single_link_empty_empty/entry-exit/result/artifacts/empty/input.c",
+        "line": 25,
+        "column": 4,
+        "branch": 0,
+        "version": 1,
+        "P": "PROP[\n  linklist_415_pre == 8192;\n  l___tespec_entry_417_free == nil(Z_1) ]\nLOCAL[\n  Temp linklist linklist_416_addr ]\nSEP[\n  store(linklist_416_addr, linklist_415_pre, struct SingleLinklistNode*);\n  xizi_sll_head (linklist_415_pre, l___tespec_entry_417_free) ]\n",
+        "memory": "SEP[\n  store(linklist_416_addr, linklist_415_pre, struct SingleLinklistNode*);\n  xizi_sll_head (linklist_415_pre, l___tespec_entry_417_free) ]\n",
+        "equalities": "PROP[\n  linklist_415_pre == 8192;\n  l___tespec_entry_417_free == nil(Z_1) ]\n"
+      },
+      {
+        "phase": "after-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/xizi_single_link_empty_empty/entry-exit/result/artifacts/empty/input.c",
+        "line": 25,
+        "column": 4,
+        "branch": 0,
+        "version": 2,
+        "P": "EX q_427_free \nPROP[\n  q_427_free == 0;\n  q_427_free == 0;\n  linklist_415_pre != 0;\n  linklist_415_pre == 8192;\n  l___tespec_entry_417_free == nil(Z_1) ]\nLOCAL[\n  Temp linklist linklist_416_addr ]\nSEP[\n  store(&(linklist_415_pre->node_next), q_427_free, struct SingleLinklistNode*);\n  store(linklist_416_addr, linklist_415_pre, struct SingleLinklistNode*) ]\n",
+        "memory": "SEP[\n  store(&(linklist_415_pre->node_next), q_427_free, struct SingleLinklistNode*);\n  store(linklist_416_addr, linklist_415_pre, struct SingleLinklistNode*) ]\n",
+        "equalities": "PROP[\n  q_427_free == 0;\n  q_427_free == 0;\n  linklist_415_pre != 0;\n  linklist_415_pre == 8192;\n  l___tespec_entry_417_free == nil(Z_1) ]\n"
+      }
+    ]
+  },
+  "preconditions": [
+    {
+      "goal": "xizi_single_link_empty_precondition_wit_1",
+      "status": "UNKNOWN",
+      "proof": "manual"
+    }
+  ],
+  "fileName": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/xizi_single_link_empty_empty/entry-exit/result/artifacts/empty/input.c",
+  "functionName": "xizi_single_link_empty",
+  "loaded_strategies": [
+    "xizi_single_link",
+    "common",
+    "string_literal"
+  ],
+  "result": "success",
+  "verificationStatus": "unproved",
+  "has_manual_obligations": true,
+  "manual_obligation_count": 1,
+  "manual_obligations": [
+    {
+      "kind": "precondition",
+      "goal": "xizi_single_link_empty_precondition_wit_1"
+    }
+  ],
+  "errormessage": null,
+  "warningmessage": null,
+  "current_assertions": null,
+  "FunctionDerivation": null,
+  "WitnessList": [
+    {
+      "functionName": "xizi_single_link_empty",
+      "Witness": {
+        "safety_checker_wit": {
+          "total": 2,
+          "auto_solved": 2,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "entailment_checker_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "return_checker_wit": {
+          "total": 1,
+          "auto_solved": 1,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "partial_solve_wit": {
+          "total": 1,
+          "auto_solved": 1,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "which_implies_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "total_witness_count": {
+          "auto_solved": 4,
+          "manual": 0
+        }
+      }
+    }
+  ]
+}

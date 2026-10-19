@@ -1,0 +1,501 @@
+{
+  "schema": "qcp-spectest-report/v1",
+  "job": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/closed_struct_array_nested_signed/all-boundaries/job.json",
+  "source": "/home/yangfp/teSpec/cases/closed_struct_array/closed_struct_array.c",
+  "spec_file": null,
+  "function": "closed_struct_array",
+  "qcp_binary": "/home/yangfp/teSpec/bin/tespec-symexec",
+  "provenance": {
+    "source_sha256": "621a2f40057887d72e5335df8943035a8654382bf6a5f73c4a3219bacc4126df",
+    "job_sha256": "0ed9feccb97beadfb4c7ec19732e626b8ad159900325e2f99c91cce72cf40a80",
+    "binary_sha256": "4e551edce5c3733671b6118dd689cd0e30d12e04416a2046a29bfd9361f55ace",
+    "runtime_source_sha256": "08b41c971d404d9fe6ae40dce420752af8eb023179017c55737dc5a7df89f56a",
+    "runtime_digest_scope": "SeparationLogic and QCP_examples: .v, .h, .strategies, _CoqProject",
+    "included_source_sha256": "81f83101d2da857f214e4fe6bd19d73f623952ea8a42dffd8bd1dbb601af33b5",
+    "spec_sha256": null
+  },
+  "vc_policy": {
+    "mode": "all-boundaries",
+    "execution_strategy": "inline",
+    "execution_semantics": "inline-preserve/v1",
+    "loops": "execute_iterations",
+    "defined_function_calls": "execute_bodies",
+    "intermediate_boundaries": true,
+    "declaration_calls": "sample_contract_postconditions",
+    "call_depth_limit": 16,
+    "loop_unroll_limit": 8
+  },
+  "results": [
+    {
+      "id": "nested_signed",
+      "arguments": {
+        "matrix": 8192,
+        "delta": -4
+      },
+      "bindings": {
+        "row0": [
+          -1,
+          6
+        ],
+        "row1": [
+          9,
+          -2
+        ],
+        "weight0": 3,
+        "weight1": -5,
+        "expected": 2
+      },
+      "type_bindings": {},
+      "spec": null,
+      "generated_source": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/closed_struct_array_nested_signed/all-boundaries/result/artifacts/nested_signed/input.c",
+      "status": "PASS",
+      "overall": "PASS",
+      "precondition_result": "SAT",
+      "test_result": "PASS",
+      "result_semantics": "three-valued-conjunction/v1",
+      "executor_reported_status": "PASS",
+      "satisfied": true,
+      "reason": "qcp_full_auto_passed",
+      "phases": {
+        "precondition": "SAT",
+        "safety": "PASS",
+        "postcondition": "PASS",
+        "annotations": "PASS",
+        "execution": "PASS"
+      },
+      "scope": "execution",
+      "mode": "all-boundaries",
+      "execution_semantics": "inline-preserve/v1",
+      "execution_strategy": "inline",
+      "requested_execution_strategy": "inline",
+      "declaration_call_policy": "contract-sample/v1",
+      "sampling_events": [],
+      "result_scope": "concrete-execution",
+      "execution_completed": true,
+      "annotation_policy": "check-preserve",
+      "preconditions": [
+        {
+          "goal": "closed_struct_array_precondition_wit_1",
+          "status": "SAT",
+          "proof": "auto"
+        }
+      ],
+      "abstraction_events": [],
+      "architecture_bits": 32,
+      "target_layout": {
+        "schema": "sac-target-layout/v1",
+        "architecture_bits": 32,
+        "byte_order": "big",
+        "pointer_size": 4,
+        "memory_rules": "naive_C_Rules",
+        "field_address_semantics": "base-plus-byte-offset/v1",
+        "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+        "aggregates": [
+          {
+            "id": 409,
+            "kind": "struct",
+            "name": "closed_matrix",
+            "defined": true,
+            "size": 24,
+            "alignment": 4,
+            "fields": [
+              {
+                "id": 410,
+                "name": "rows",
+                "offset": 0,
+                "size": 24,
+                "alignment": 4,
+                "type": {
+                  "kind": "array",
+                  "length": 2,
+                  "element": {
+                    "kind": "struct",
+                    "id": 373
+                  }
+                },
+                "computational": true
+              }
+            ]
+          },
+          {
+            "id": 373,
+            "kind": "struct",
+            "name": "matrix_leaf",
+            "defined": true,
+            "size": 12,
+            "alignment": 4,
+            "fields": [
+              {
+                "id": 375,
+                "name": "cells",
+                "offset": 0,
+                "size": 8,
+                "alignment": 4,
+                "type": {
+                  "kind": "array",
+                  "length": 2,
+                  "element": {
+                    "kind": "basic",
+                    "name": "int"
+                  }
+                },
+                "computational": true
+              },
+              {
+                "id": 374,
+                "name": "weight",
+                "offset": 8,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "basic",
+                  "name": "int"
+                },
+                "computational": true
+              }
+            ]
+          }
+        ],
+        "aliases": []
+      },
+      "executor_error": null,
+      "residual_vcs": [],
+      "vc_results": [
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 75,
+          "status": "VALID",
+          "path": "EX total_469_addr index_466_addr \nPROP[]\nLOCAL[\n  Temp total total_469_addr;\n  Temp index index_466_addr;\n  Temp matrix matrix_447_addr;\n  Temp delta delta_444_addr ]\nSEP[\n  has_permission(total_469_addr, signed int);\n  has_permission(index_466_addr, signed int);\n  store(matrix_447_addr, 8192, struct closed_matrix*);\n  store(delta_444_addr, (- 4), signed int);\n  IntArray.full (8192, 2, cons(Z_1, (- 1), cons(Z_1, 6, nil(Z_1))));\n  store(8200, 3, signed int);\n  IntArray.full (8204, 2, cons(Z_1, 9, cons(Z_1, (- 2), nil(Z_1))));\n  store(8212, (- 5), signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 76,
+          "status": "VALID",
+          "path": "EX total_469_addr index_466_addr \nPROP[]\nLOCAL[\n  Temp total total_469_addr;\n  Temp index index_466_addr;\n  Temp matrix matrix_447_addr;\n  Temp delta delta_444_addr ]\nSEP[\n  store(total_469_addr, 0, signed int);\n  has_permission(index_466_addr, signed int);\n  store(matrix_447_addr, 8192, struct closed_matrix*);\n  store(delta_444_addr, (- 4), signed int);\n  IntArray.full (8192, 2, cons(Z_1, (- 1), cons(Z_1, 6, nil(Z_1))));\n  store(8200, 3, signed int);\n  IntArray.full (8204, 2, cons(Z_1, 9, cons(Z_1, (- 2), nil(Z_1))));\n  store(8212, (- 5), signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 76,
+          "status": "VALID",
+          "path": "EX total_469_addr index_466_addr \nPROP[]\nLOCAL[\n  Temp total total_469_addr;\n  Temp index index_466_addr;\n  Temp matrix matrix_447_addr;\n  Temp delta delta_444_addr ]\nSEP[\n  store(total_469_addr, 0, signed int);\n  store(index_466_addr, 0, signed int);\n  store(matrix_447_addr, 8192, struct closed_matrix*);\n  store(delta_444_addr, (- 4), signed int);\n  IntArray.full (8192, 2, cons(Z_1, (- 1), cons(Z_1, 6, nil(Z_1))));\n  store(8200, 3, signed int);\n  IntArray.full (8204, 2, cons(Z_1, 9, cons(Z_1, (- 2), nil(Z_1))));\n  store(8212, (- 5), signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 78,
+          "status": "VALID",
+          "path": "EX total_469_addr index_466_addr \nPROP[]\nLOCAL[\n  Temp total total_469_addr;\n  Temp index index_466_addr;\n  Temp matrix matrix_447_addr;\n  Temp delta delta_444_addr ]\nSEP[\n  store(total_469_addr, 0, signed int);\n  store(index_466_addr, 0, signed int);\n  store(matrix_447_addr, 8192, struct closed_matrix*);\n  store(delta_444_addr, (- 4), signed int);\n  IntArray.full (8192, 2, cons(Z_1, (- 1), cons(Z_1, 6, nil(Z_1))));\n  store(8200, 3, signed int);\n  IntArray.full (8204, 2, cons(Z_1, 9, cons(Z_1, (- 2), nil(Z_1))));\n  store(8212, (- 5), signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 79,
+          "status": "VALID",
+          "path": "EX total_469_addr index_466_addr \nPROP[]\nLOCAL[\n  Temp total total_469_addr;\n  Temp index index_466_addr;\n  Temp matrix matrix_447_addr;\n  Temp delta delta_444_addr ]\nSEP[\n  store(total_469_addr, 0, signed int);\n  store(index_466_addr, 0, signed int);\n  store(matrix_447_addr, 8192, struct closed_matrix*);\n  store(delta_444_addr, (- 4), signed int);\n  IntArray.full (8192, 2, cons(Z_1, (- 1), cons(Z_1, 6, nil(Z_1))));\n  store(8200, 3, signed int);\n  IntArray.full (8204, 2, cons(Z_1, 9, cons(Z_1, (- 2), nil(Z_1))));\n  store(8212, (- 5), signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 80,
+          "status": "VALID",
+          "path": "EX total_469_addr index_466_addr \nPROP[]\nLOCAL[\n  Temp total total_469_addr;\n  Temp index index_466_addr;\n  Temp matrix matrix_447_addr;\n  Temp delta delta_444_addr ]\nSEP[\n  store(total_469_addr, 0, signed int);\n  store(index_466_addr, 0, signed int);\n  store(matrix_447_addr, 8192, struct closed_matrix*);\n  store(delta_444_addr, (- 4), signed int);\n  IntArray.full (8192, 2, cons(Z_1, (- 1), cons(Z_1, 6, nil(Z_1))));\n  store(8200, 3, signed int);\n  IntArray.full (8204, 2, cons(Z_1, 9, cons(Z_1, (- 2), nil(Z_1))));\n  store(8212, (- 5), signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 77,
+          "status": "VALID",
+          "path": "EX total_469_addr index_466_addr \nPROP[]\nLOCAL[\n  Temp total total_469_addr;\n  Temp index index_466_addr;\n  Temp matrix matrix_447_addr;\n  Temp delta delta_444_addr ]\nSEP[\n  store(total_469_addr, 0, signed int);\n  store(index_466_addr, 0, signed int);\n  store(matrix_447_addr, 8192, struct closed_matrix*);\n  store(delta_444_addr, (- 4), signed int);\n  IntArray.full (8192, 2, cons(Z_1, (- 1), cons(Z_1, 6, nil(Z_1))));\n  store(8200, 3, signed int);\n  IntArray.full (8204, 2, cons(Z_1, 9, cons(Z_1, (- 2), nil(Z_1))));\n  store(8212, (- 5), signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 83,
+          "status": "VALID",
+          "path": "EX total_469_addr index_466_addr \nPROP[]\nLOCAL[\n  Temp total total_469_addr;\n  Temp index index_466_addr;\n  Temp matrix matrix_447_addr;\n  Temp delta delta_444_addr ]\nSEP[\n  store(total_469_addr, 0, signed int);\n  store(index_466_addr, 0, signed int);\n  store(matrix_447_addr, 8192, struct closed_matrix*);\n  store(delta_444_addr, (- 4), signed int);\n  IntArray.full (8192, 2, cons(Z_1, (- 1), cons(Z_1, 5, nil(Z_1))));\n  store(8200, 3, signed int);\n  IntArray.full (8204, 2, cons(Z_1, 9, cons(Z_1, (- 2), nil(Z_1))));\n  store(8212, (- 5), signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 82,
+          "status": "VALID",
+          "path": "EX total_469_addr index_466_addr \nPROP[]\nLOCAL[\n  Temp total total_469_addr;\n  Temp index index_466_addr;\n  Temp matrix matrix_447_addr;\n  Temp delta delta_444_addr ]\nSEP[\n  store(total_469_addr, 0, signed int);\n  store(index_466_addr, 0, signed int);\n  store(matrix_447_addr, 8192, struct closed_matrix*);\n  store(delta_444_addr, (- 4), signed int);\n  IntArray.full (8192, 2, cons(Z_1, (- 1), cons(Z_1, 5, nil(Z_1))));\n  store(8200, 3, signed int);\n  IntArray.full (8204, 2, cons(Z_1, 9, cons(Z_1, (- 2), nil(Z_1))));\n  store(8212, (- 5), signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 76,
+          "status": "VALID",
+          "path": "EX total_469_addr index_466_addr \nPROP[]\nLOCAL[\n  Temp total total_469_addr;\n  Temp index index_466_addr;\n  Temp matrix matrix_447_addr;\n  Temp delta delta_444_addr ]\nSEP[\n  store(total_469_addr, 4, signed int);\n  store(index_466_addr, 0, signed int);\n  store(matrix_447_addr, 8192, struct closed_matrix*);\n  store(delta_444_addr, (- 4), signed int);\n  IntArray.full (8192, 2, cons(Z_1, (- 1), cons(Z_1, 5, nil(Z_1))));\n  store(8200, 3, signed int);\n  IntArray.full (8204, 2, cons(Z_1, 9, cons(Z_1, (- 2), nil(Z_1))));\n  store(8212, (- 5), signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 76,
+          "status": "VALID",
+          "path": "EX total_469_addr index_466_addr \nPROP[\n  prop_false ]\nLOCAL[\n  Temp total total_469_addr;\n  Temp index index_466_addr;\n  Temp matrix matrix_447_addr;\n  Temp delta delta_444_addr ]\nSEP[\n  store(total_469_addr, 4, signed int);\n  store(index_466_addr, 1, signed int);\n  store(matrix_447_addr, 8192, struct closed_matrix*);\n  store(delta_444_addr, (- 4), signed int);\n  IntArray.full (8192, 2, cons(Z_1, (- 1), cons(Z_1, 5, nil(Z_1))));\n  store(8200, 3, signed int);\n  IntArray.full (8204, 2, cons(Z_1, 9, cons(Z_1, (- 2), nil(Z_1))));\n  store(8212, (- 5), signed int) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 76,
+          "status": "VALID",
+          "path": "EX total_469_addr index_466_addr \nPROP[]\nLOCAL[\n  Temp total total_469_addr;\n  Temp index index_466_addr;\n  Temp matrix matrix_447_addr;\n  Temp delta delta_444_addr ]\nSEP[\n  store(total_469_addr, 4, signed int);\n  store(index_466_addr, 1, signed int);\n  store(matrix_447_addr, 8192, struct closed_matrix*);\n  store(delta_444_addr, (- 4), signed int);\n  IntArray.full (8192, 2, cons(Z_1, (- 1), cons(Z_1, 5, nil(Z_1))));\n  store(8200, 3, signed int);\n  IntArray.full (8204, 2, cons(Z_1, 9, cons(Z_1, (- 2), nil(Z_1))));\n  store(8212, (- 5), signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 78,
+          "status": "VALID",
+          "path": "EX total_469_addr index_466_addr \nPROP[]\nLOCAL[\n  Temp total total_469_addr;\n  Temp index index_466_addr;\n  Temp matrix matrix_447_addr;\n  Temp delta delta_444_addr ]\nSEP[\n  store(total_469_addr, 4, signed int);\n  store(index_466_addr, 1, signed int);\n  store(matrix_447_addr, 8192, struct closed_matrix*);\n  store(delta_444_addr, (- 4), signed int);\n  IntArray.full (8192, 2, cons(Z_1, (- 1), cons(Z_1, 5, nil(Z_1))));\n  store(8200, 3, signed int);\n  IntArray.full (8204, 2, cons(Z_1, 9, cons(Z_1, (- 2), nil(Z_1))));\n  store(8212, (- 5), signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 79,
+          "status": "VALID",
+          "path": "EX total_469_addr index_466_addr \nPROP[]\nLOCAL[\n  Temp total total_469_addr;\n  Temp index index_466_addr;\n  Temp matrix matrix_447_addr;\n  Temp delta delta_444_addr ]\nSEP[\n  store(total_469_addr, 4, signed int);\n  store(index_466_addr, 1, signed int);\n  store(matrix_447_addr, 8192, struct closed_matrix*);\n  store(delta_444_addr, (- 4), signed int);\n  IntArray.full (8192, 2, cons(Z_1, (- 1), cons(Z_1, 5, nil(Z_1))));\n  store(8200, 3, signed int);\n  IntArray.full (8204, 2, cons(Z_1, 9, cons(Z_1, (- 2), nil(Z_1))));\n  store(8212, (- 5), signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 80,
+          "status": "VALID",
+          "path": "EX total_469_addr index_466_addr \nPROP[]\nLOCAL[\n  Temp total total_469_addr;\n  Temp index index_466_addr;\n  Temp matrix matrix_447_addr;\n  Temp delta delta_444_addr ]\nSEP[\n  store(total_469_addr, 4, signed int);\n  store(index_466_addr, 1, signed int);\n  store(matrix_447_addr, 8192, struct closed_matrix*);\n  store(delta_444_addr, (- 4), signed int);\n  IntArray.full (8192, 2, cons(Z_1, (- 1), cons(Z_1, 5, nil(Z_1))));\n  store(8200, 3, signed int);\n  IntArray.full (8204, 2, cons(Z_1, 9, cons(Z_1, (- 2), nil(Z_1))));\n  store(8212, (- 5), signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 77,
+          "status": "VALID",
+          "path": "EX total_469_addr index_466_addr \nPROP[]\nLOCAL[\n  Temp total total_469_addr;\n  Temp index index_466_addr;\n  Temp matrix matrix_447_addr;\n  Temp delta delta_444_addr ]\nSEP[\n  store(total_469_addr, 4, signed int);\n  store(index_466_addr, 1, signed int);\n  store(matrix_447_addr, 8192, struct closed_matrix*);\n  store(delta_444_addr, (- 4), signed int);\n  IntArray.full (8192, 2, cons(Z_1, (- 1), cons(Z_1, 5, nil(Z_1))));\n  store(8200, 3, signed int);\n  IntArray.full (8204, 2, cons(Z_1, 9, cons(Z_1, (- 2), nil(Z_1))));\n  store(8212, (- 5), signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 83,
+          "status": "VALID",
+          "path": "EX total_469_addr index_466_addr \nPROP[]\nLOCAL[\n  Temp total total_469_addr;\n  Temp index index_466_addr;\n  Temp matrix matrix_447_addr;\n  Temp delta delta_444_addr ]\nSEP[\n  store(total_469_addr, 4, signed int);\n  store(index_466_addr, 1, signed int);\n  store(matrix_447_addr, 8192, struct closed_matrix*);\n  store(delta_444_addr, (- 4), signed int);\n  IntArray.full (8192, 2, cons(Z_1, (- 1), cons(Z_1, 5, nil(Z_1))));\n  store(8200, 3, signed int);\n  IntArray.full (8204, 2, cons(Z_1, 9, cons(Z_1, (- 11), nil(Z_1))));\n  store(8212, (- 5), signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 82,
+          "status": "VALID",
+          "path": "EX total_469_addr index_466_addr \nPROP[]\nLOCAL[\n  Temp total total_469_addr;\n  Temp index index_466_addr;\n  Temp matrix matrix_447_addr;\n  Temp delta delta_444_addr ]\nSEP[\n  store(total_469_addr, 4, signed int);\n  store(index_466_addr, 1, signed int);\n  store(matrix_447_addr, 8192, struct closed_matrix*);\n  store(delta_444_addr, (- 4), signed int);\n  IntArray.full (8192, 2, cons(Z_1, (- 1), cons(Z_1, 5, nil(Z_1))));\n  store(8200, 3, signed int);\n  IntArray.full (8204, 2, cons(Z_1, 9, cons(Z_1, (- 11), nil(Z_1))));\n  store(8212, (- 5), signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 76,
+          "status": "VALID",
+          "path": "EX total_469_addr index_466_addr \nPROP[]\nLOCAL[\n  Temp total total_469_addr;\n  Temp index index_466_addr;\n  Temp matrix matrix_447_addr;\n  Temp delta delta_444_addr ]\nSEP[\n  store(total_469_addr, 2, signed int);\n  store(index_466_addr, 1, signed int);\n  store(matrix_447_addr, 8192, struct closed_matrix*);\n  store(delta_444_addr, (- 4), signed int);\n  IntArray.full (8192, 2, cons(Z_1, (- 1), cons(Z_1, 5, nil(Z_1))));\n  store(8200, 3, signed int);\n  IntArray.full (8204, 2, cons(Z_1, 9, cons(Z_1, (- 11), nil(Z_1))));\n  store(8212, (- 5), signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 76,
+          "status": "VALID",
+          "path": "EX total_469_addr index_466_addr \nPROP[\n  prop_false ]\nLOCAL[\n  Temp total total_469_addr;\n  Temp index index_466_addr;\n  Temp matrix matrix_447_addr;\n  Temp delta delta_444_addr ]\nSEP[\n  store(total_469_addr, 2, signed int);\n  store(index_466_addr, 2, signed int);\n  store(matrix_447_addr, 8192, struct closed_matrix*);\n  store(delta_444_addr, (- 4), signed int);\n  IntArray.full (8192, 2, cons(Z_1, (- 1), cons(Z_1, 5, nil(Z_1))));\n  store(8200, 3, signed int);\n  IntArray.full (8204, 2, cons(Z_1, 9, cons(Z_1, (- 11), nil(Z_1))));\n  store(8212, (- 5), signed int) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 76,
+          "status": "VALID",
+          "path": "EX total_469_addr index_466_addr \nPROP[]\nLOCAL[\n  Temp total total_469_addr;\n  Temp index index_466_addr;\n  Temp matrix matrix_447_addr;\n  Temp delta delta_444_addr ]\nSEP[\n  store(total_469_addr, 2, signed int);\n  store(index_466_addr, 2, signed int);\n  store(matrix_447_addr, 8192, struct closed_matrix*);\n  store(delta_444_addr, (- 4), signed int);\n  IntArray.full (8192, 2, cons(Z_1, (- 1), cons(Z_1, 5, nil(Z_1))));\n  store(8200, 3, signed int);\n  IntArray.full (8204, 2, cons(Z_1, 9, cons(Z_1, (- 11), nil(Z_1))));\n  store(8212, (- 5), signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "return",
+          "name": null,
+          "line": 85,
+          "status": "VALID",
+          "path": "PROP[]\nLOCAL[]\nSEP[\n  IntArray.full (8192, 2, cons(Z_1, (- 1), cons(Z_1, 5, nil(Z_1))));\n  store(8200, 3, signed int);\n  IntArray.full (8204, 2, cons(Z_1, 9, cons(Z_1, (- 11), nil(Z_1))));\n  store(8212, (- 5), signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[\n  IntArray.full (8192, 2, cons(Z_1, (- 1), cons(Z_1, 5, nil(Z_1))));\n  store(8200, 3, signed int);\n  IntArray.full (8204, 2, cons(Z_1, 9, cons(Z_1, (- 11), nil(Z_1))));\n  store(8212, (- 5), signed int) ]\n"
+        }
+      ],
+      "evidence": {
+        "decision_backend": "qcp-smt",
+        "certificate": "NOT_CHECKED"
+      },
+      "returncode": 0,
+      "generated_source_sha256": "a329ff92226297c9f6da7760909f9be80f020d72ad43297c41540a766a4c8336",
+      "duration_seconds": 0.027687,
+      "peak_rss_kb": 7932,
+      "cpu_seconds": 0.02,
+      "command": [
+        "/home/yangfp/teSpec/bin/tespec-symexec",
+        "--arch=32",
+        "--input-file=/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/closed_struct_array_nested_signed/all-boundaries/result/artifacts/nested_signed/input.c",
+        "--full-auto",
+        "--Json-output",
+        "--emit-residual-vc",
+        "--no-strategy-gen",
+        "--gen-and-backup",
+        "--coq-output-dir",
+        "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/closed_struct_array_nested_signed/all-boundaries/result/artifacts/nested_signed/vc",
+        "--no-logic-path",
+        "--disable-solver-info",
+        "--no-exec-info",
+        "--function",
+        "closed_struct_array",
+        "--spec-test-no-expand",
+        "--instance-trace",
+        "--spec",
+        "__tespec_entry",
+        "-I/home/yangfp/teSpec/cases/closed_struct_array",
+        "-I/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_LLM",
+        "--loop-unroll-limit",
+        "8",
+        "--call-depth-limit",
+        "16"
+      ],
+      "stdout": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/closed_struct_array_nested_signed/all-boundaries/result/artifacts/nested_signed/executor.json",
+      "stderr": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/closed_struct_array_nested_signed/all-boundaries/result/artifacts/nested_signed/stderr.log",
+      "vc": {
+        "schema": "qcp-spectest-vc-manifest/v1",
+        "case_id": "nested_signed",
+        "function": "closed_struct_array",
+        "source": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/closed_struct_array_nested_signed/all-boundaries/result/artifacts/nested_signed/input.c",
+        "qcip_root": "/home/yangfp/teSpec/runtime/qcip",
+        "status": "auto_proved",
+        "residual_goals": [],
+        "counterexample_goals": [],
+        "files": {
+          "goal": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/closed_struct_array_nested_signed/all-boundaries/result/artifacts/nested_signed/vc/input_goal.v",
+          "proof_auto": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/closed_struct_array_nested_signed/all-boundaries/result/artifacts/nested_signed/vc/input_proof_auto.v",
+          "proof_manual": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/closed_struct_array_nested_signed/all-boundaries/result/artifacts/nested_signed/vc/input_proof_manual.v",
+          "goal_check": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/closed_struct_array_nested_signed/all-boundaries/result/artifacts/nested_signed/vc/input_goal_check.v"
+        },
+        "missing_files": [],
+        "immutable_sha256": {
+          "goal": "b533b5f5859b43b5ce950318c5e1cd8a30cbb9d864de9fa4d8a0d9e052742c56",
+          "proof_auto": "2b39161427f34315be933d4db54651de85761d69802db15714e58843d0ac2825",
+          "goal_check": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e"
+        },
+        "coq_dependencies": [],
+        "runtime_dependencies": [],
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [
+            {
+              "id": 409,
+              "kind": "struct",
+              "name": "closed_matrix",
+              "defined": true,
+              "size": 24,
+              "alignment": 4,
+              "fields": [
+                {
+                  "id": 410,
+                  "name": "rows",
+                  "offset": 0,
+                  "size": 24,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "array",
+                    "length": 2,
+                    "element": {
+                      "kind": "struct",
+                      "id": 373
+                    }
+                  },
+                  "computational": true
+                }
+              ]
+            },
+            {
+              "id": 373,
+              "kind": "struct",
+              "name": "matrix_leaf",
+              "defined": true,
+              "size": 12,
+              "alignment": 4,
+              "fields": [
+                {
+                  "id": 375,
+                  "name": "cells",
+                  "offset": 0,
+                  "size": 8,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "array",
+                    "length": 2,
+                    "element": {
+                      "kind": "basic",
+                      "name": "int"
+                    }
+                  },
+                  "computational": true
+                },
+                {
+                  "id": 374,
+                  "name": "weight",
+                  "offset": 8,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "basic",
+                    "name": "int"
+                  },
+                  "computational": true
+                }
+              ]
+            }
+          ],
+          "aliases": []
+        },
+        "manifest": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/closed_struct_array_nested_signed/all-boundaries/result/artifacts/nested_signed/vc/manifest.json"
+      },
+      "resources": {
+        "wall_seconds": 0.027687,
+        "cpu_seconds": 0.02,
+        "measurement": "GNU time; executor and children; maximum process RSS",
+        "peak_rss_kib": 7932
+      }
+    }
+  ],
+  "itp_vcs": [],
+  "summary": {
+    "total": 1,
+    "PASS": 1,
+    "FAIL": 0,
+    "UNKNOWN": 0,
+    "ERROR": 0,
+    "INVALID": 0,
+    "specification_only": 0,
+    "duration_seconds": 0.032921,
+    "executor_cpu_seconds": 0.02,
+    "peak_rss_kb": 7932
+  }
+}

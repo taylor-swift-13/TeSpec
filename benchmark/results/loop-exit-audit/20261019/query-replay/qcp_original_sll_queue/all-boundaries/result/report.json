@@ -1,0 +1,385 @@
+{
+  "schema": "qcp-spectest-report/v1",
+  "job": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_sll_queue/all-boundaries/job.json",
+  "source": "/home/yangfp/teSpec/benchmark/paper-cn-qcp/qcp-memory-v2/cases/qcp_original_sll_queue/reference.qcp.c",
+  "spec_file": null,
+  "function": "dequeue",
+  "qcp_binary": "/home/yangfp/teSpec/bin/tespec-symexec",
+  "provenance": {
+    "source_sha256": "0a0fca9da9d58b64d63d42e5b52f4fc95391f0bb0ea4a170a2e13200526550c7",
+    "job_sha256": "be0c39e2b9cf73bf61076848193cfcaf3d98c2967b5cf07852dfcb0b72801027",
+    "binary_sha256": "4e551edce5c3733671b6118dd689cd0e30d12e04416a2046a29bfd9361f55ace",
+    "runtime_source_sha256": "08b41c971d404d9fe6ae40dce420752af8eb023179017c55737dc5a7df89f56a",
+    "runtime_digest_scope": "SeparationLogic and QCP_examples: .v, .h, .strategies, _CoqProject",
+    "included_source_sha256": "dfbd6a13e8e2c002c2680b6f618df0a70d958801dfdd1418fc3cd10b56263a7f",
+    "spec_sha256": null
+  },
+  "vc_policy": {
+    "mode": "all-boundaries",
+    "execution_strategy": "inline",
+    "execution_semantics": "inline-preserve/v1",
+    "loops": "execute_iterations",
+    "defined_function_calls": "execute_bodies",
+    "intermediate_boundaries": true,
+    "declaration_calls": "sample_contract_postconditions",
+    "call_depth_limit": 16,
+    "loop_unroll_limit": 8
+  },
+  "results": [
+    {
+      "id": "fixed",
+      "arguments": {
+        "q": 4096
+      },
+      "bindings": {
+        "x": 3,
+        "l": [
+          4
+        ]
+      },
+      "type_bindings": {},
+      "spec": null,
+      "generated_source": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_sll_queue/all-boundaries/result/artifacts/fixed/input.c",
+      "status": "ERROR",
+      "overall": "ERROR",
+      "precondition_result": "UNKNOWN",
+      "test_result": "UNKNOWN",
+      "result_semantics": "three-valued-conjunction/v1",
+      "executor_reported_status": "ERROR",
+      "satisfied": null,
+      "reason": "qcp_execution_error",
+      "phases": {
+        "precondition": "UNKNOWN",
+        "safety": "UNKNOWN",
+        "postcondition": "UNKNOWN",
+        "annotations": "UNKNOWN",
+        "execution": "UNKNOWN"
+      },
+      "scope": "execution",
+      "mode": "all-boundaries",
+      "execution_semantics": "inline-preserve/v1",
+      "execution_strategy": "inline",
+      "requested_execution_strategy": "inline",
+      "declaration_call_policy": "contract-sample/v1",
+      "sampling_events": [],
+      "result_scope": "concrete-execution",
+      "execution_completed": false,
+      "annotation_policy": "check-preserve",
+      "preconditions": [
+        {
+          "goal": "dequeue_precondition_wit_1",
+          "status": "UNKNOWN",
+          "proof": "manual"
+        }
+      ],
+      "abstraction_events": [
+        {
+          "kind": "annotation-check",
+          "function": "dequeue",
+          "count": 1
+        }
+      ],
+      "architecture_bits": 32,
+      "target_layout": {
+        "schema": "sac-target-layout/v1",
+        "architecture_bits": 32,
+        "byte_order": "big",
+        "pointer_size": 4,
+        "memory_rules": "naive_C_Rules",
+        "field_address_semantics": "base-plus-byte-offset/v1",
+        "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+        "aggregates": [
+          {
+            "id": 408,
+            "kind": "struct",
+            "name": "queue",
+            "defined": true,
+            "size": 8,
+            "alignment": 4,
+            "fields": [
+              {
+                "id": 410,
+                "name": "head",
+                "offset": 0,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "pointer",
+                  "target": {
+                    "kind": "struct",
+                    "id": 369
+                  }
+                },
+                "computational": true
+              },
+              {
+                "id": 409,
+                "name": "tail",
+                "offset": 4,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "pointer",
+                  "target": {
+                    "kind": "struct",
+                    "id": 369
+                  }
+                },
+                "computational": true
+              }
+            ]
+          },
+          {
+            "id": 369,
+            "kind": "struct",
+            "name": "list",
+            "defined": true,
+            "size": 8,
+            "alignment": 4,
+            "fields": [
+              {
+                "id": 371,
+                "name": "data",
+                "offset": 0,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "basic",
+                  "name": "int"
+                },
+                "computational": true
+              },
+              {
+                "id": 370,
+                "name": "next",
+                "offset": 4,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "pointer",
+                  "target": {
+                    "kind": "struct",
+                    "id": 369
+                  }
+                },
+                "computational": true
+              }
+            ]
+          }
+        ],
+        "aliases": []
+      },
+      "executor_error": {
+        "Main Error Message": "fatal error: Symbolic execution failed: cannot read memory through this pointer because the current assertion does not prove readable memory at the target address. Add a Require/Assert memory predicate such as data_at(pointer, value), or prove that the pointer aliases an owned memory cell.",
+        "fileName": null,
+        "line": 76,
+        "column": 6,
+        "additional_info": [
+          "Read address: &(q_493_pre->head)\n",
+          "Current assertion:\nq@pre == 4096 &&\nl == cons(4, nil) &&\nx == 3 &&\nhas_permission(&p) *\nhas_permission(&x0) *\n(q == q@pre) *\nstore_queue(q@pre, cons(x, l))\n\n"
+        ]
+      },
+      "residual_vcs": [],
+      "vc_results": [
+        {
+          "kind": "which_implies",
+          "name": null,
+          "line": 68,
+          "status": "UNKNOWN",
+          "path": "PROP[]\nLOCAL[\n  Temp q q_494_addr ]\nSEP[\n  store_queue (q_512_value, cons(Z_1, 3, cons(Z_1, 4, nil(Z_1)))) ]\n",
+          "goal": "EX q_value_head_-1_next_518 q_value_head_516 v_511 u_510 q_value_tail_513 \nPROP[\n  q_value_tail_513 != 0 ]\nLOCAL[\n  Temp q q_494_addr ]\nSEP[\n  store((q_512_value + 4), q_value_tail_513, struct list*);\n  store(q_value_tail_513, u_510, signed int);\n  store((q_value_tail_513 + 4), v_511, struct list*);\n  store(q_512_value, q_value_head_516, struct list*);\n  store(q_value_head_516, 3, signed int);\n  store((q_value_head_516 + 4), q_value_head_-1_next_518, struct list*);\n  sllseg (q_value_head_-1_next_518, q_value_tail_513, cons(Z_1, 4, nil(Z_1))) ]\n"
+        }
+      ],
+      "evidence": {
+        "decision_backend": "qcp-smt",
+        "certificate": "NOT_CHECKED"
+      },
+      "returncode": 1,
+      "generated_source_sha256": "71be7a9c2ada5fd985d2414c7d71cd7bc6d11dd262e14f7c7ae8a8108e29bd4b",
+      "duration_seconds": 0.006628,
+      "peak_rss_kb": 5724,
+      "cpu_seconds": 0.0,
+      "command": [
+        "/home/yangfp/teSpec/bin/tespec-symexec",
+        "--arch=32",
+        "--input-file=/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_sll_queue/all-boundaries/result/artifacts/fixed/input.c",
+        "--full-auto",
+        "--Json-output",
+        "--emit-residual-vc",
+        "--no-strategy-gen",
+        "--gen-and-backup",
+        "--coq-output-dir",
+        "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_sll_queue/all-boundaries/result/artifacts/fixed/vc",
+        "--no-logic-path",
+        "--disable-solver-info",
+        "--no-exec-info",
+        "--function",
+        "dequeue",
+        "--spec-test-no-expand",
+        "--instance-trace",
+        "--spec",
+        "__tespec_entry",
+        "-I/home/yangfp/teSpec/benchmark/paper-cn-qcp/qcp-memory-v2/cases/qcp_original_sll_queue",
+        "-I/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_human",
+        "-I/home/yangfp/teSpec/runtime/qcip/QCP_examples/stdlib",
+        "--loop-unroll-limit",
+        "8",
+        "--call-depth-limit",
+        "16"
+      ],
+      "stdout": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_sll_queue/all-boundaries/result/artifacts/fixed/executor.json",
+      "stderr": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_sll_queue/all-boundaries/result/artifacts/fixed/stderr.log",
+      "vc": {
+        "schema": "qcp-spectest-vc-manifest/v1",
+        "case_id": "fixed",
+        "function": "dequeue",
+        "source": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_sll_queue/all-boundaries/result/artifacts/fixed/input.c",
+        "qcip_root": "/home/yangfp/teSpec/runtime/qcip",
+        "status": "not_generated",
+        "residual_goals": [],
+        "counterexample_goals": [],
+        "files": {
+          "goal": null,
+          "proof_auto": null,
+          "proof_manual": null,
+          "goal_check": null
+        },
+        "missing_files": [
+          "goal",
+          "proof_auto",
+          "proof_manual",
+          "goal_check"
+        ],
+        "immutable_sha256": {},
+        "coq_dependencies": [],
+        "runtime_dependencies": [
+          {
+            "module": "SimpleC.EE.QCP_demos_human.sll_lib",
+            "source": "/home/yangfp/teSpec/runtime/qcip/SeparationLogic/examples/QCP_demos_human/sll_lib.v",
+            "sha256": "91d172559c4b3e21b108c7e2a005476cc76d56337213ef65fb5a9ef1d433a9ad",
+            "compiled": null,
+            "compiled_sha256": null,
+            "origin": "pinned-runtime"
+          },
+          {
+            "module": "SimpleC.EE.QCP_demos_human.sll_queue_lib",
+            "source": "/home/yangfp/teSpec/runtime/qcip/SeparationLogic/examples/QCP_demos_human/sll_queue_lib.v",
+            "sha256": "b05e8712df6421204fe8a50bed8de483e8a1251e98eabaabbaa03bacb45babf1",
+            "compiled": null,
+            "compiled_sha256": null,
+            "origin": "pinned-runtime"
+          }
+        ],
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [
+            {
+              "id": 408,
+              "kind": "struct",
+              "name": "queue",
+              "defined": true,
+              "size": 8,
+              "alignment": 4,
+              "fields": [
+                {
+                  "id": 410,
+                  "name": "head",
+                  "offset": 0,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "pointer",
+                    "target": {
+                      "kind": "struct",
+                      "id": 369
+                    }
+                  },
+                  "computational": true
+                },
+                {
+                  "id": 409,
+                  "name": "tail",
+                  "offset": 4,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "pointer",
+                    "target": {
+                      "kind": "struct",
+                      "id": 369
+                    }
+                  },
+                  "computational": true
+                }
+              ]
+            },
+            {
+              "id": 369,
+              "kind": "struct",
+              "name": "list",
+              "defined": true,
+              "size": 8,
+              "alignment": 4,
+              "fields": [
+                {
+                  "id": 371,
+                  "name": "data",
+                  "offset": 0,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "basic",
+                    "name": "int"
+                  },
+                  "computational": true
+                },
+                {
+                  "id": 370,
+                  "name": "next",
+                  "offset": 4,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "pointer",
+                    "target": {
+                      "kind": "struct",
+                      "id": 369
+                    }
+                  },
+                  "computational": true
+                }
+              ]
+            }
+          ],
+          "aliases": []
+        },
+        "manifest": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_original_sll_queue/all-boundaries/result/artifacts/fixed/vc/manifest.json"
+      },
+      "resources": {
+        "wall_seconds": 0.006628,
+        "cpu_seconds": 0.0,
+        "measurement": "GNU time; executor and children; maximum process RSS",
+        "peak_rss_kib": 5724
+      }
+    }
+  ],
+  "itp_vcs": [],
+  "summary": {
+    "total": 1,
+    "PASS": 0,
+    "FAIL": 0,
+    "UNKNOWN": 0,
+    "ERROR": 1,
+    "INVALID": 0,
+    "specification_only": 0,
+    "duration_seconds": 0.011044,
+    "executor_cpu_seconds": 0.0,
+    "peak_rss_kb": 5724
+  }
+}

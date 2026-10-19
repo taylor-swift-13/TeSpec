@@ -1,0 +1,387 @@
+{
+  "schema": "qcp-spectest-report/v1",
+  "job": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_sll_loop_call/all-boundaries/job.json",
+  "source": "/home/yangfp/teSpec/tests/fixtures/query_simplification/qcp_sll_loop_call.c",
+  "spec_file": null,
+  "function": "sample",
+  "qcp_binary": "/home/yangfp/teSpec/bin/tespec-symexec",
+  "provenance": {
+    "source_sha256": "f2a75b4b4aa4b0c2ce83e21f1ab086d51dd6a381f2a205a794723dd785b9e2e2",
+    "job_sha256": "8cd791509cfc2c1fdec6e467977476f98268258443d9fc8cd99ec2a034ff9dc1",
+    "binary_sha256": "4e551edce5c3733671b6118dd689cd0e30d12e04416a2046a29bfd9361f55ace",
+    "runtime_source_sha256": "08b41c971d404d9fe6ae40dce420752af8eb023179017c55737dc5a7df89f56a",
+    "runtime_digest_scope": "SeparationLogic and QCP_examples: .v, .h, .strategies, _CoqProject",
+    "included_source_sha256": "ac49c6fb0a0852f23a61123c26e00b1fc1e8ab6998469692028819b7279fc957",
+    "spec_sha256": null
+  },
+  "vc_policy": {
+    "mode": "all-boundaries",
+    "execution_strategy": "inline",
+    "execution_semantics": "inline-preserve/v1",
+    "loops": "execute_iterations",
+    "defined_function_calls": "execute_bodies",
+    "intermediate_boundaries": true,
+    "declaration_calls": "sample_contract_postconditions",
+    "call_depth_limit": 16,
+    "loop_unroll_limit": 8
+  },
+  "results": [
+    {
+      "id": "fixed",
+      "arguments": {
+        "p": 4096
+      },
+      "bindings": {
+        "xs": [
+          1,
+          2
+        ]
+      },
+      "type_bindings": {},
+      "spec": null,
+      "generated_source": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_sll_loop_call/all-boundaries/result/artifacts/fixed/input.c",
+      "status": "UNKNOWN",
+      "overall": "UNKNOWN",
+      "precondition_result": "UNKNOWN",
+      "test_result": "UNKNOWN",
+      "result_semantics": "three-valued-conjunction/v1",
+      "executor_reported_status": "UNKNOWN",
+      "satisfied": null,
+      "reason": "precondition_requires_proof",
+      "phases": {
+        "precondition": "UNKNOWN",
+        "safety": "PASS",
+        "postcondition": "UNKNOWN",
+        "annotations": "PASS",
+        "execution": "PASS"
+      },
+      "scope": "execution",
+      "mode": "all-boundaries",
+      "execution_semantics": "inline-preserve/v1",
+      "execution_strategy": "inline",
+      "requested_execution_strategy": "inline",
+      "declaration_call_policy": "contract-sample/v1",
+      "sampling_events": [],
+      "result_scope": "concrete-execution",
+      "execution_completed": true,
+      "annotation_policy": "check-preserve",
+      "preconditions": [
+        {
+          "goal": "sample_precondition_wit_1",
+          "status": "UNKNOWN",
+          "proof": "manual"
+        }
+      ],
+      "abstraction_events": [
+        {
+          "kind": "inline-call",
+          "function": "read_data",
+          "count": 2
+        }
+      ],
+      "architecture_bits": 32,
+      "target_layout": {
+        "schema": "sac-target-layout/v1",
+        "architecture_bits": 32,
+        "byte_order": "big",
+        "pointer_size": 4,
+        "memory_rules": "naive_C_Rules",
+        "field_address_semantics": "base-plus-byte-offset/v1",
+        "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+        "aggregates": [
+          {
+            "id": 369,
+            "kind": "struct",
+            "name": "list",
+            "defined": true,
+            "size": 8,
+            "alignment": 4,
+            "fields": [
+              {
+                "id": 371,
+                "name": "data",
+                "offset": 0,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "basic",
+                  "name": "int"
+                },
+                "computational": true
+              },
+              {
+                "id": 370,
+                "name": "next",
+                "offset": 4,
+                "size": 4,
+                "alignment": 4,
+                "type": {
+                  "kind": "pointer",
+                  "target": {
+                    "kind": "struct",
+                    "id": 369
+                  }
+                },
+                "computational": true
+              }
+            ]
+          }
+        ],
+        "aliases": []
+      },
+      "executor_error": null,
+      "residual_vcs": [
+        "proof_of_sample_return_wit_1_split_goal_1",
+        "proof_of_sample_return_wit_1_split_goal_2",
+        "proof_of_sample_return_wit_1_split_goal_3",
+        "proof_of_sample_return_wit_1_split_goal_spatial",
+        "proof_of_sample_return_wit_1",
+        "proof_of_sample_precondition_wit_1"
+      ],
+      "vc_results": [
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 11,
+          "status": "VALID",
+          "path": "EX total_428_addr \nPROP[]\nLOCAL[\n  Temp total total_428_addr;\n  Temp p p_417_addr ]\nSEP[\n  has_permission(total_428_addr, signed int);\n  store(p_417_addr, 4096, struct list*);\n  sll (4096, cons(Z_1, 1, cons(Z_1, 2, nil(Z_1)))) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 13,
+          "status": "VALID",
+          "path": "EX cur_431_addr total_428_addr \nPROP[\n  prop_false ]\nLOCAL[\n  Temp cur cur_431_addr;\n  Temp total total_428_addr;\n  Temp p p_417_addr ]\nSEP[\n  store(cur_431_addr, 4096, struct list*);\n  store(total_428_addr, 0, signed int);\n  store(p_417_addr, 4096, struct list*);\n  sll (4096, cons(Z_1, 1, cons(Z_1, 2, nil(Z_1)))) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 13,
+          "status": "VALID",
+          "path": "EX cur_431_addr total_428_addr \nPROP[]\nLOCAL[\n  Temp cur cur_431_addr;\n  Temp total total_428_addr;\n  Temp p p_417_addr ]\nSEP[\n  store(cur_431_addr, 4096, struct list*);\n  store(total_428_addr, 0, signed int);\n  store(p_417_addr, 4096, struct list*);\n  sll (4096, cons(Z_1, 1, cons(Z_1, 2, nil(Z_1)))) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 2,
+          "status": "VALID",
+          "path": "EX total_428_addr cur_431_addr y_439_free y_440_free \nPROP[\n  y_440_free == 0 ]\nLOCAL[\n  Temp p p_417_addr;\n  Temp total total_428_addr;\n  Temp cur cur_431_addr ]\nSEP[\n  store(4096, 1, signed int);\n  store((y_439_free + 4), 0, struct list*);\n  store(y_439_free, 2, signed int);\n  store(4100, y_439_free, struct list*);\n  store(cur_431_addr, 4096, struct list*);\n  store(total_428_addr, 0, signed int);\n  store(p_417_addr, 4096, struct list*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 13,
+          "status": "VALID",
+          "path": "EX total_428_addr cur_431_addr y_439_free y_440_free \nPROP[\n  y_440_free == 0 ]\nLOCAL[\n  Temp p p_417_addr;\n  Temp total total_428_addr;\n  Temp cur cur_431_addr ]\nSEP[\n  store(4096, 1, signed int);\n  store((y_439_free + 4), 0, struct list*);\n  store(y_439_free, 2, signed int);\n  store(4100, y_439_free, struct list*);\n  store(cur_431_addr, y_439_free, struct list*);\n  store(total_428_addr, 1, signed int);\n  store(p_417_addr, 4096, struct list*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 2,
+          "status": "VALID",
+          "path": "EX total_428_addr cur_431_addr y_439_free y_440_free \nPROP[\n  y_439_free != 0;\n  y_440_free == 0 ]\nLOCAL[\n  Temp p p_417_addr;\n  Temp total total_428_addr;\n  Temp cur cur_431_addr ]\nSEP[\n  store(4096, 1, signed int);\n  store((y_439_free + 4), 0, struct list*);\n  store(y_439_free, 2, signed int);\n  store(4100, y_439_free, struct list*);\n  store(cur_431_addr, y_439_free, struct list*);\n  store(total_428_addr, 1, signed int);\n  store(p_417_addr, 4096, struct list*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 13,
+          "status": "VALID",
+          "path": "EX total_428_addr cur_431_addr y_439_free y_440_free \nPROP[\n  prop_false ]\nLOCAL[\n  Temp p p_417_addr;\n  Temp total total_428_addr;\n  Temp cur cur_431_addr ]\nSEP[\n  store(4096, 1, signed int);\n  store((y_439_free + 4), 0, struct list*);\n  store(y_439_free, 2, signed int);\n  store(4100, y_439_free, struct list*);\n  store(cur_431_addr, 0, struct list*);\n  store(total_428_addr, 3, signed int);\n  store(p_417_addr, 4096, struct list*) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 13,
+          "status": "VALID",
+          "path": "EX total_428_addr cur_431_addr y_439_free y_440_free \nPROP[\n  y_439_free != 0;\n  y_440_free == 0 ]\nLOCAL[\n  Temp p p_417_addr;\n  Temp total total_428_addr;\n  Temp cur cur_431_addr ]\nSEP[\n  store(4096, 1, signed int);\n  store((y_439_free + 4), 0, struct list*);\n  store(y_439_free, 2, signed int);\n  store(4100, y_439_free, struct list*);\n  store(cur_431_addr, 0, struct list*);\n  store(total_428_addr, 3, signed int);\n  store(p_417_addr, 4096, struct list*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "return",
+          "name": null,
+          "line": 14,
+          "status": "UNKNOWN",
+          "path": "PROP[\n  y_439_free == 0;\n  y_440_free == 0 ]\nLOCAL[]\nSEP[\n  store(4096, 1, signed int);\n  store(4, 0, struct list*);\n  store(0, 2, signed int);\n  store(4100, 0, struct list*) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[\n  sll (4096, cons(Z_1, 1, cons(Z_1, 2, nil(Z_1)))) ]\n"
+        },
+        {
+          "kind": "return",
+          "name": null,
+          "line": 14,
+          "status": "VALID",
+          "path": "PROP[\n  y_440_free == 0;\n  y_439_free != 0 ]\nLOCAL[]\nSEP[\n  store(4096, 1, signed int);\n  store((y_439_free + 4), 0, struct list*);\n  store(y_439_free, 2, signed int);\n  store(4100, y_439_free, struct list*) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[\n  sll (4096, cons(Z_1, 1, cons(Z_1, 2, nil(Z_1)))) ]\n"
+        }
+      ],
+      "evidence": {
+        "decision_backend": "qcp-smt",
+        "certificate": "NOT_CHECKED"
+      },
+      "returncode": 3,
+      "generated_source_sha256": "c288618c4a9b23fd3ad2d35ed2b79aa119b8389dee08fec3eb326b4eb817f665",
+      "duration_seconds": 0.014136,
+      "peak_rss_kb": 6268,
+      "cpu_seconds": 0.0,
+      "command": [
+        "/home/yangfp/teSpec/bin/tespec-symexec",
+        "--arch=32",
+        "--input-file=/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_sll_loop_call/all-boundaries/result/artifacts/fixed/input.c",
+        "--full-auto",
+        "--Json-output",
+        "--emit-residual-vc",
+        "--no-strategy-gen",
+        "--gen-and-backup",
+        "--coq-output-dir",
+        "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_sll_loop_call/all-boundaries/result/artifacts/fixed/vc",
+        "--no-logic-path",
+        "--disable-solver-info",
+        "--no-exec-info",
+        "--function",
+        "sample",
+        "--spec-test-no-expand",
+        "--instance-trace",
+        "--spec",
+        "__tespec_entry",
+        "-I/home/yangfp/teSpec/tests/fixtures/query_simplification",
+        "-I/home/yangfp/teSpec/runtime/qcip/QCP_examples/QCP_demos_LLM",
+        "-I/home/yangfp/teSpec/runtime/qcip/QCP_examples/stdlib",
+        "--loop-unroll-limit",
+        "8",
+        "--call-depth-limit",
+        "16"
+      ],
+      "stdout": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_sll_loop_call/all-boundaries/result/artifacts/fixed/executor.json",
+      "stderr": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_sll_loop_call/all-boundaries/result/artifacts/fixed/stderr.log",
+      "vc": {
+        "schema": "qcp-spectest-vc-manifest/v1",
+        "case_id": "fixed",
+        "function": "sample",
+        "source": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_sll_loop_call/all-boundaries/result/artifacts/fixed/input.c",
+        "qcip_root": "/home/yangfp/teSpec/runtime/qcip",
+        "status": "residual",
+        "residual_goals": [
+          "proof_of_sample_return_wit_1_split_goal_1",
+          "proof_of_sample_return_wit_1_split_goal_2",
+          "proof_of_sample_return_wit_1_split_goal_3",
+          "proof_of_sample_return_wit_1_split_goal_spatial",
+          "proof_of_sample_return_wit_1",
+          "proof_of_sample_precondition_wit_1"
+        ],
+        "counterexample_goals": [],
+        "files": {
+          "goal": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_sll_loop_call/all-boundaries/result/artifacts/fixed/vc/input_goal.v",
+          "proof_auto": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_sll_loop_call/all-boundaries/result/artifacts/fixed/vc/input_proof_auto.v",
+          "proof_manual": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_sll_loop_call/all-boundaries/result/artifacts/fixed/vc/input_proof_manual.v",
+          "goal_check": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_sll_loop_call/all-boundaries/result/artifacts/fixed/vc/input_goal_check.v"
+        },
+        "missing_files": [],
+        "immutable_sha256": {
+          "goal": "d99f50b36df13e4adedc480fca35b88b773ddc455870a7421de5e10593f2aa0c",
+          "proof_auto": "0e7df7c921704f055063a55d42dd9340e2d77248b6c84e2d60b1edf6c36c40d3",
+          "goal_check": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e"
+        },
+        "coq_dependencies": [],
+        "runtime_dependencies": [
+          {
+            "module": "SimpleC.EE.QCP_demos_LLM.sll_lib",
+            "source": "/home/yangfp/teSpec/runtime/qcip/SeparationLogic/examples/QCP_demos_LLM/sll_lib.v",
+            "sha256": "41c686d2176139aac52fbb5c0165ac60f7c63c74b52cb17b075c9e7b013181c8",
+            "compiled": null,
+            "compiled_sha256": null,
+            "origin": "pinned-runtime"
+          }
+        ],
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [
+            {
+              "id": 369,
+              "kind": "struct",
+              "name": "list",
+              "defined": true,
+              "size": 8,
+              "alignment": 4,
+              "fields": [
+                {
+                  "id": 371,
+                  "name": "data",
+                  "offset": 0,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "basic",
+                    "name": "int"
+                  },
+                  "computational": true
+                },
+                {
+                  "id": 370,
+                  "name": "next",
+                  "offset": 4,
+                  "size": 4,
+                  "alignment": 4,
+                  "type": {
+                    "kind": "pointer",
+                    "target": {
+                      "kind": "struct",
+                      "id": 369
+                    }
+                  },
+                  "computational": true
+                }
+              ]
+            }
+          ],
+          "aliases": []
+        },
+        "manifest": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_sll_loop_call/all-boundaries/result/artifacts/fixed/vc/manifest.json"
+      },
+      "resources": {
+        "wall_seconds": 0.014136,
+        "cpu_seconds": 0.0,
+        "measurement": "GNU time; executor and children; maximum process RSS",
+        "peak_rss_kib": 6268
+      }
+    }
+  ],
+  "itp_vcs": [
+    {
+      "case_id": "fixed",
+      "function": "sample",
+      "manifest": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_sll_loop_call/all-boundaries/result/artifacts/fixed/vc/manifest.json",
+      "goals": [
+        "proof_of_sample_return_wit_1_split_goal_1",
+        "proof_of_sample_return_wit_1_split_goal_2",
+        "proof_of_sample_return_wit_1_split_goal_3",
+        "proof_of_sample_return_wit_1_split_goal_spatial",
+        "proof_of_sample_return_wit_1",
+        "proof_of_sample_precondition_wit_1"
+      ]
+    }
+  ],
+  "summary": {
+    "total": 1,
+    "PASS": 0,
+    "FAIL": 0,
+    "UNKNOWN": 1,
+    "ERROR": 0,
+    "INVALID": 0,
+    "specification_only": 0,
+    "duration_seconds": 0.018408,
+    "executor_cpu_seconds": 0.0,
+    "peak_rss_kb": 6268
+  }
+}

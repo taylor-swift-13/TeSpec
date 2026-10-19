@@ -1,0 +1,293 @@
+{
+  "spec_test": {
+    "schema": "sac-spec-test/v1",
+    "execution_semantics": "inline-preserve/v1",
+    "execution_strategy": "inline",
+    "declaration_call_policy": "contract-sample/v1",
+    "query_semantics": "copy-only/v1",
+    "mode": "no-expand",
+    "scope": "execution",
+    "annotation_policy": "check-preserve",
+    "completed": true,
+    "result_scope": "concrete-execution",
+    "overall": "UNKNOWN",
+    "precondition_result": "UNKNOWN",
+    "test_result": "UNKNOWN",
+    "result_semantics": "three-valued-conjunction/v1",
+    "vc_semantics": "path-vc/v1",
+    "vc_storage": {
+      "schema": "frozen-safety-sharing/v1",
+      "snapshot_requests": 3,
+      "unique_or_unpooled": 2,
+      "shared_requests": 1,
+      "intra_snapshot_aliases": 2,
+      "original_occurrences_preserved": true
+    },
+    "branch_evaluation": {
+      "schema": "instance-first-branch-query/v1",
+      "pure_queries": 7,
+      "evaluated_true": 0,
+      "evaluated_false": 1,
+      "smt_fallback": 6
+    },
+    "vc_scheduling": {
+      "schema": "post-execution-witness-smt/v1",
+      "enabled": true,
+      "collecting": false,
+      "requests": 11,
+      "queued_witnesses": 4,
+      "solved_witnesses": 4,
+      "retained_on_release": 0,
+      "pending_witnesses": 0
+    },
+    "vc_results": [
+      {
+        "kind": "safety",
+        "name": null,
+        "line": 43,
+        "status": "VALID",
+        "path": "PROP[\n  prop_false ]\nLOCAL[\n  Temp p p_441_addr ]\nSEP[\n  store(p_441_addr, 0, struct tree*);\n  store_tree (0, empty) ]\n",
+        "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+      },
+      {
+        "kind": "safety",
+        "name": null,
+        "line": 43,
+        "status": "VALID",
+        "path": "PROP[\n  0 <= tree_size(empty);\n  tree_size(empty) <= 100 ]\nLOCAL[\n  Temp p p_441_addr ]\nSEP[\n  store(p_441_addr, 0, struct tree*);\n  store_tree (0, empty) ]\n",
+        "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+      },
+      {
+        "kind": "return",
+        "name": null,
+        "line": 43,
+        "status": "UNKNOWN",
+        "path": "PROP[\n  0 <= tree_size(empty);\n  tree_size(empty) <= 100 ]\nLOCAL[]\nSEP[\n  store_tree (0, empty) ]\n",
+        "goal": "PROP[\n  0 == tree_size(empty) ]\nLOCAL[]\nSEP[\n  store_tree (0, empty) ]\n"
+      }
+    ],
+    "phases": {
+      "precondition": "UNKNOWN",
+      "safety": "PASS",
+      "postcondition": "UNKNOWN",
+      "annotations": "PASS"
+    },
+    "abstraction_events": [],
+    "sampling_events": [],
+    "limit_reason": null,
+    "architecture_bits": 32,
+    "target_layout": {
+      "schema": "sac-target-layout/v1",
+      "architecture_bits": 32,
+      "byte_order": "big",
+      "pointer_size": 4,
+      "memory_rules": "naive_C_Rules",
+      "field_address_semantics": "base-plus-byte-offset/v1",
+      "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+      "aggregates": [
+        {
+          "id": 369,
+          "kind": "struct",
+          "name": "tree",
+          "defined": true,
+          "size": 16,
+          "alignment": 4,
+          "fields": [
+            {
+              "id": 373,
+              "name": "key",
+              "offset": 0,
+              "size": 4,
+              "alignment": 4,
+              "type": {
+                "kind": "basic",
+                "name": "int"
+              },
+              "computational": true
+            },
+            {
+              "id": 372,
+              "name": "value",
+              "offset": 4,
+              "size": 4,
+              "alignment": 4,
+              "type": {
+                "kind": "basic",
+                "name": "int"
+              },
+              "computational": true
+            },
+            {
+              "id": 371,
+              "name": "left",
+              "offset": 8,
+              "size": 4,
+              "alignment": 4,
+              "type": {
+                "kind": "pointer",
+                "target": {
+                  "kind": "struct",
+                  "id": 369
+                }
+              },
+              "computational": true
+            },
+            {
+              "id": 370,
+              "name": "right",
+              "offset": 12,
+              "size": 4,
+              "alignment": 4,
+              "type": {
+                "kind": "pointer",
+                "target": {
+                  "kind": "struct",
+                  "id": 369
+                }
+              },
+              "computational": true
+            }
+          ]
+        }
+      ],
+      "aliases": []
+    },
+    "certificate": "NOT_CHECKED",
+    "instance_trace": [
+      {
+        "phase": "before-expression",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_tree_size_input_0/all-boundaries/result/artifacts/input_0/input.c",
+        "line": 43,
+        "column": 8,
+        "branch": 0,
+        "version": 1,
+        "P": "PROP[\n  p_440_pre == 0;\n  t___tespec_entry_442_free == empty;\n  0 <= tree_size(t___tespec_entry_442_free);\n  tree_size(t___tespec_entry_442_free) <= 100 ]\nLOCAL[\n  Temp p p_441_addr ]\nSEP[\n  store(p_441_addr, p_440_pre, struct tree*);\n  store_tree (p_440_pre, t___tespec_entry_442_free) ]\n",
+        "memory": "SEP[\n  store(p_441_addr, p_440_pre, struct tree*);\n  store_tree (p_440_pre, t___tespec_entry_442_free) ]\n",
+        "equalities": "PROP[\n  p_440_pre == 0;\n  t___tespec_entry_442_free == empty;\n  0 <= tree_size(t___tespec_entry_442_free);\n  tree_size(t___tespec_entry_442_free) <= 100 ]\n"
+      },
+      {
+        "phase": "after-expression",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_tree_size_input_0/all-boundaries/result/artifacts/input_0/input.c",
+        "line": 43,
+        "column": 8,
+        "branch": 0,
+        "version": 2,
+        "P": "PROP[\n  p_440_pre == 0;\n  p_440_pre == 0;\n  t___tespec_entry_442_free == empty;\n  0 <= tree_size(t___tespec_entry_442_free);\n  tree_size(t___tespec_entry_442_free) <= 100 ]\nLOCAL[\n  Temp p p_441_addr ]\nSEP[\n  store(p_441_addr, p_440_pre, struct tree*);\n  store_tree (p_440_pre, t___tespec_entry_442_free) ]\n",
+        "memory": "SEP[\n  store(p_441_addr, p_440_pre, struct tree*);\n  store_tree (p_440_pre, t___tespec_entry_442_free) ]\n",
+        "equalities": "PROP[\n  p_440_pre == 0;\n  p_440_pre == 0;\n  t___tespec_entry_442_free == empty;\n  0 <= tree_size(t___tespec_entry_442_free);\n  tree_size(t___tespec_entry_442_free) <= 100 ]\n"
+      },
+      {
+        "phase": "before-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_tree_size_input_0/all-boundaries/result/artifacts/input_0/input.c",
+        "line": 43,
+        "column": 16,
+        "branch": 0,
+        "version": 3,
+        "P": "PROP[\n  p_440_pre == 0;\n  p_440_pre == 0;\n  t___tespec_entry_442_free == empty;\n  0 <= tree_size(t___tespec_entry_442_free);\n  tree_size(t___tespec_entry_442_free) <= 100 ]\nLOCAL[\n  Temp p p_441_addr ]\nSEP[\n  store(p_441_addr, p_440_pre, struct tree*);\n  store_tree (p_440_pre, t___tespec_entry_442_free) ]\n",
+        "memory": "SEP[\n  store(p_441_addr, p_440_pre, struct tree*);\n  store_tree (p_440_pre, t___tespec_entry_442_free) ]\n",
+        "equalities": "PROP[\n  p_440_pre == 0;\n  p_440_pre == 0;\n  t___tespec_entry_442_free == empty;\n  0 <= tree_size(t___tespec_entry_442_free);\n  tree_size(t___tespec_entry_442_free) <= 100 ]\n"
+      },
+      {
+        "phase": "after-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_tree_size_input_0/all-boundaries/result/artifacts/input_0/input.c",
+        "line": 43,
+        "column": 16,
+        "branch": 0,
+        "version": 4,
+        "P": "PROP[\n  p_440_pre == 0;\n  p_440_pre == 0;\n  t___tespec_entry_442_free == empty;\n  0 <= tree_size(t___tespec_entry_442_free);\n  tree_size(t___tespec_entry_442_free) <= 100 ]\nLOCAL[\n  Temp p p_441_addr ]\nSEP[\n  store(p_441_addr, p_440_pre, struct tree*);\n  store_tree (p_440_pre, t___tespec_entry_442_free) ]\n",
+        "memory": "SEP[\n  store(p_441_addr, p_440_pre, struct tree*);\n  store_tree (p_440_pre, t___tespec_entry_442_free) ]\n",
+        "equalities": "PROP[\n  p_440_pre == 0;\n  p_440_pre == 0;\n  t___tespec_entry_442_free == empty;\n  0 <= tree_size(t___tespec_entry_442_free);\n  tree_size(t___tespec_entry_442_free) <= 100 ]\n"
+      }
+    ]
+  },
+  "preconditions": [
+    {
+      "goal": "sample_precondition_wit_1",
+      "status": "UNKNOWN",
+      "proof": "manual"
+    }
+  ],
+  "fileName": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_tree_size_input_0/all-boundaries/result/artifacts/input_0/input.c",
+  "functionName": "sample",
+  "loaded_strategies": [
+    "bst",
+    "teSpec_tree_size",
+    "common",
+    "string_literal"
+  ],
+  "result": "success",
+  "verificationStatus": "unproved",
+  "has_manual_obligations": true,
+  "manual_obligation_count": 2,
+  "manual_obligations": [
+    {
+      "kind": "return_checker_wit",
+      "functionName": "sample",
+      "fileName": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_tree_size_input_0/all-boundaries/result/artifacts/input_0/input.c",
+      "line": 43,
+      "column": 23,
+      "summary": "Cannot automatically prove that a return path satisfies the postcondition.",
+      "goal": "p@pre == 0 &&\np@pre == 0 &&\nt == empty &&\n0 <= tree_size(t) &&\ntree_size(t) <= 100 &&\n__return == 0 &&\nstore_tree(p@pre, t)\n\n|--\n0 == tree_size(t) &&\n__return == 0 &&\nstore_tree(p@pre, t)\n"
+    },
+    {
+      "kind": "precondition",
+      "goal": "sample_precondition_wit_1"
+    }
+  ],
+  "errormessage": null,
+  "warningmessage": null,
+  "current_assertions": null,
+  "FunctionDerivation": null,
+  "WitnessList": [
+    {
+      "functionName": "sample",
+      "Witness": {
+        "safety_checker_wit": {
+          "total": 3,
+          "auto_solved": 3,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "entailment_checker_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "return_checker_wit": {
+          "total": 1,
+          "auto_solved": 0,
+          "manual": 1,
+          "manual_witness": [
+            {
+              "line": 43,
+              "column": 23,
+              "fileName": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/qcp_tree_size_input_0/all-boundaries/result/artifacts/input_0/input.c",
+              "goal": "p@pre == 0 &&\np@pre == 0 &&\nt == empty &&\n0 <= tree_size(t) &&\ntree_size(t) <= 100 &&\n__return == 0 &&\nstore_tree(p@pre, t)\n\n|--\n0 == tree_size(t) &&\n__return == 0 &&\nstore_tree(p@pre, t)\n"
+            }
+          ]
+        },
+        "partial_solve_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "which_implies_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "total_witness_count": {
+          "auto_solved": 3,
+          "manual": 1
+        }
+      }
+    }
+  ]
+}

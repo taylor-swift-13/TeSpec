@@ -1,0 +1,295 @@
+{
+  "spec_test": {
+    "schema": "sac-spec-test/v1",
+    "execution_semantics": "inline-preserve/v1",
+    "execution_strategy": "inline",
+    "declaration_call_policy": "contract-sample/v1",
+    "query_semantics": "copy-only/v1",
+    "mode": "no-expand",
+    "scope": "execution",
+    "annotation_policy": "check-preserve",
+    "completed": true,
+    "result_scope": "concrete-execution",
+    "overall": "PASS",
+    "precondition_result": "SAT",
+    "test_result": "PASS",
+    "result_semantics": "three-valued-conjunction/v1",
+    "vc_semantics": "path-vc/v1",
+    "vc_storage": {
+      "schema": "frozen-safety-sharing/v1",
+      "snapshot_requests": 2,
+      "unique_or_unpooled": 2,
+      "shared_requests": 0,
+      "intra_snapshot_aliases": 0,
+      "original_occurrences_preserved": true
+    },
+    "branch_evaluation": {
+      "schema": "instance-first-branch-query/v1",
+      "pure_queries": 9,
+      "evaluated_true": 8,
+      "evaluated_false": 1,
+      "smt_fallback": 0
+    },
+    "vc_scheduling": {
+      "schema": "post-execution-witness-smt/v1",
+      "enabled": true,
+      "collecting": false,
+      "requests": 11,
+      "queued_witnesses": 4,
+      "solved_witnesses": 4,
+      "retained_on_release": 0,
+      "pending_witnesses": 0
+    },
+    "vc_results": [
+      {
+        "kind": "safety",
+        "name": null,
+        "line": 11,
+        "status": "VALID",
+        "path": "EX j_385_addr \nPROP[]\nLOCAL[\n  Temp j j_385_addr;\n  Temp p p_374_addr;\n  Temp n n_371_addr ]\nSEP[\n  has_permission(j_385_addr, unsigned int);\n  store(p_374_addr, 4096, signed I8*);\n  store(n_371_addr, 0, unsigned int);\n  CharArray.full (4096, 0, nil(Z_1)) ]\n",
+        "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+      },
+      {
+        "kind": "entailment",
+        "name": null,
+        "line": 12,
+        "status": "VALID",
+        "path": "PROP[]\nLOCAL[\n  Temp j j_385_addr;\n  Temp p p_374_addr;\n  Temp n n_371_addr ]\nSEP[\n  CharArray.full (4096, 0, nil(Z_1)) ]\n",
+        "goal": "EX li_391 \nPROP[]\nLOCAL[\n  Temp n n_371_addr;\n  Temp p p_374_addr;\n  Temp j j_385_addr ]\nSEP[\n  CharArray.full (4096, 0, li_391) ]\n"
+      },
+      {
+        "kind": "safety",
+        "name": null,
+        "line": 13,
+        "status": "VALID",
+        "path": "EX j_385_addr \nPROP[\n  prop_false ]\nLOCAL[\n  Temp j j_385_addr;\n  Temp p p_374_addr;\n  Temp n n_371_addr ]\nSEP[\n  store(j_385_addr, 0, unsigned int);\n  store(p_374_addr, 4096, signed I8*);\n  store(n_371_addr, 0, unsigned int);\n  CharArray.full (4096, 0, nil(Z_1)) ]\n",
+        "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+      },
+      {
+        "kind": "return",
+        "name": null,
+        "line": 11,
+        "status": "VALID",
+        "path": "PROP[]\nLOCAL[]\nSEP[\n  CharArray.full (4096, 0, nil(Z_1)) ]\n",
+        "goal": "EX l2_376 \nPROP[]\nLOCAL[]\nSEP[\n  CharArray.full (4096, 0, l2_376) ]\n"
+      }
+    ],
+    "phases": {
+      "precondition": "SAT",
+      "safety": "PASS",
+      "postcondition": "PASS",
+      "annotations": "PASS"
+    },
+    "abstraction_events": [
+      {
+        "kind": "loop-invariant",
+        "function": "init_array",
+        "count": 1
+      }
+    ],
+    "sampling_events": [],
+    "limit_reason": null,
+    "architecture_bits": 32,
+    "target_layout": {
+      "schema": "sac-target-layout/v1",
+      "architecture_bits": 32,
+      "byte_order": "big",
+      "pointer_size": 4,
+      "memory_rules": "naive_C_Rules",
+      "field_address_semantics": "base-plus-byte-offset/v1",
+      "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+      "aggregates": [],
+      "aliases": []
+    },
+    "certificate": "NOT_CHECKED",
+    "instance_trace": [
+      {
+        "phase": "before-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/benchmark-replay/init_array/case-00/off/artifacts/artifacts/length_0/input.c",
+        "line": 10,
+        "column": 2,
+        "branch": 0,
+        "version": 1,
+        "P": "PROP[\n  p_373_pre == 4096;\n  n_370_pre == 0;\n  l___tespec_entry_375_free == nil(Z_1);\n  0 <= n_370_pre;\n  n_370_pre <= UINT_MAX ]\nLOCAL[\n  Temp p p_374_addr;\n  Temp n n_371_addr ]\nSEP[\n  store(p_374_addr, p_373_pre, signed I8*);\n  store(n_371_addr, n_370_pre, unsigned int);\n  CharArray.full (p_373_pre, n_370_pre, l___tespec_entry_375_free) ]\n",
+        "memory": "SEP[\n  store(p_374_addr, p_373_pre, signed I8*);\n  store(n_371_addr, n_370_pre, unsigned int);\n  CharArray.full (p_373_pre, n_370_pre, l___tespec_entry_375_free) ]\n",
+        "equalities": "PROP[\n  p_373_pre == 4096;\n  n_370_pre == 0;\n  l___tespec_entry_375_free == nil(Z_1);\n  0 <= n_370_pre;\n  n_370_pre <= UINT_MAX ]\n"
+      },
+      {
+        "phase": "after-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/benchmark-replay/init_array/case-00/off/artifacts/artifacts/length_0/input.c",
+        "line": 10,
+        "column": 2,
+        "branch": 0,
+        "version": 2,
+        "P": "EX j_385_addr \nPROP[\n  p_373_pre == 4096;\n  n_370_pre == 0;\n  l___tespec_entry_375_free == nil(Z_1);\n  0 <= n_370_pre;\n  n_370_pre <= UINT_MAX ]\nLOCAL[\n  Temp j j_385_addr;\n  Temp p p_374_addr;\n  Temp n n_371_addr ]\nSEP[\n  has_permission(j_385_addr, unsigned int);\n  store(p_374_addr, p_373_pre, signed I8*);\n  store(n_371_addr, n_370_pre, unsigned int);\n  CharArray.full (p_373_pre, n_370_pre, l___tespec_entry_375_free) ]\n",
+        "memory": "SEP[\n  has_permission(j_385_addr, unsigned int);\n  store(p_374_addr, p_373_pre, signed I8*);\n  store(n_371_addr, n_370_pre, unsigned int);\n  CharArray.full (p_373_pre, n_370_pre, l___tespec_entry_375_free) ]\n",
+        "equalities": "PROP[\n  p_373_pre == 4096;\n  n_370_pre == 0;\n  l___tespec_entry_375_free == nil(Z_1);\n  0 <= n_370_pre;\n  n_370_pre <= UINT_MAX ]\n"
+      },
+      {
+        "phase": "before-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/benchmark-replay/init_array/case-00/off/artifacts/artifacts/length_0/input.c",
+        "line": 11,
+        "column": 2,
+        "branch": 0,
+        "version": 3,
+        "P": "EX j_385_addr \nPROP[\n  p_373_pre == 4096;\n  n_370_pre == 0;\n  l___tespec_entry_375_free == nil(Z_1);\n  0 <= n_370_pre;\n  n_370_pre <= UINT_MAX ]\nLOCAL[\n  Temp j j_385_addr;\n  Temp p p_374_addr;\n  Temp n n_371_addr ]\nSEP[\n  has_permission(j_385_addr, unsigned int);\n  store(p_374_addr, p_373_pre, signed I8*);\n  store(n_371_addr, n_370_pre, unsigned int);\n  CharArray.full (p_373_pre, n_370_pre, l___tespec_entry_375_free) ]\n",
+        "memory": "SEP[\n  has_permission(j_385_addr, unsigned int);\n  store(p_374_addr, p_373_pre, signed I8*);\n  store(n_371_addr, n_370_pre, unsigned int);\n  CharArray.full (p_373_pre, n_370_pre, l___tespec_entry_375_free) ]\n",
+        "equalities": "PROP[\n  p_373_pre == 4096;\n  n_370_pre == 0;\n  l___tespec_entry_375_free == nil(Z_1);\n  0 <= n_370_pre;\n  n_370_pre <= UINT_MAX ]\n"
+      },
+      {
+        "phase": "after-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/benchmark-replay/init_array/case-00/off/artifacts/artifacts/length_0/input.c",
+        "line": 11,
+        "column": 2,
+        "branch": 0,
+        "version": 4,
+        "P": "EX j_385_addr \nPROP[\n  p_373_pre == 4096;\n  n_370_pre == 0;\n  l___tespec_entry_375_free == nil(Z_1);\n  0 <= n_370_pre;\n  n_370_pre <= UINT_MAX ]\nLOCAL[\n  Temp j j_385_addr;\n  Temp p p_374_addr;\n  Temp n n_371_addr ]\nSEP[\n  store(j_385_addr, 0, unsigned int);\n  store(p_374_addr, p_373_pre, signed I8*);\n  store(n_371_addr, n_370_pre, unsigned int);\n  CharArray.full (p_373_pre, n_370_pre, l___tespec_entry_375_free) ]\n",
+        "memory": "SEP[\n  store(j_385_addr, 0, unsigned int);\n  store(p_374_addr, p_373_pre, signed I8*);\n  store(n_371_addr, n_370_pre, unsigned int);\n  CharArray.full (p_373_pre, n_370_pre, l___tespec_entry_375_free) ]\n",
+        "equalities": "PROP[\n  p_373_pre == 4096;\n  n_370_pre == 0;\n  l___tespec_entry_375_free == nil(Z_1);\n  0 <= n_370_pre;\n  n_370_pre <= UINT_MAX ]\n"
+      },
+      {
+        "phase": "before-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/benchmark-replay/init_array/case-00/off/artifacts/artifacts/length_0/input.c",
+        "line": 12,
+        "column": 2,
+        "branch": 0,
+        "version": 5,
+        "P": "EX j_385_addr \nPROP[\n  p_373_pre == 4096;\n  n_370_pre == 0;\n  l___tespec_entry_375_free == nil(Z_1);\n  0 <= n_370_pre;\n  n_370_pre <= UINT_MAX ]\nLOCAL[\n  Temp j j_385_addr;\n  Temp p p_374_addr;\n  Temp n n_371_addr ]\nSEP[\n  store(j_385_addr, 0, unsigned int);\n  store(p_374_addr, p_373_pre, signed I8*);\n  store(n_371_addr, n_370_pre, unsigned int);\n  CharArray.full (p_373_pre, n_370_pre, l___tespec_entry_375_free) ]\n",
+        "memory": "SEP[\n  store(j_385_addr, 0, unsigned int);\n  store(p_374_addr, p_373_pre, signed I8*);\n  store(n_371_addr, n_370_pre, unsigned int);\n  CharArray.full (p_373_pre, n_370_pre, l___tespec_entry_375_free) ]\n",
+        "equalities": "PROP[\n  p_373_pre == 4096;\n  n_370_pre == 0;\n  l___tespec_entry_375_free == nil(Z_1);\n  0 <= n_370_pre;\n  n_370_pre <= UINT_MAX ]\n"
+      },
+      {
+        "phase": "before-statement",
+        "state_role": "boundary-copy",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/benchmark-replay/init_array/case-00/off/artifacts/artifacts/length_0/input.c",
+        "line": 12,
+        "column": 2,
+        "branch": 0,
+        "version": 6,
+        "P": "EX j_385_addr \nPROP[]\nLOCAL[\n  Temp j j_385_addr;\n  Temp p p_374_addr;\n  Temp n n_371_addr ]\nSEP[\n  store(j_385_addr, 0, unsigned int);\n  store(p_374_addr, 4096, signed I8*);\n  store(n_371_addr, 0, unsigned int);\n  CharArray.full (4096, 0, nil(Z_1)) ]\n",
+        "memory": "SEP[\n  store(j_385_addr, 0, unsigned int);\n  store(p_374_addr, 4096, signed I8*);\n  store(n_371_addr, 0, unsigned int);\n  CharArray.full (4096, 0, nil(Z_1)) ]\n",
+        "equalities": "PROP[]\n"
+      },
+      {
+        "phase": "after-statement",
+        "state_role": "boundary-copy",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/benchmark-replay/init_array/case-00/off/artifacts/artifacts/length_0/input.c",
+        "line": 12,
+        "column": 2,
+        "branch": 0,
+        "version": 7,
+        "P": "EX li_391 \nPROP[\n  0 == 0 ]\nLOCAL[\n  Temp n n_371_addr;\n  Temp p p_374_addr;\n  Temp j j_385_addr ]\nSEP[\n  store(n_371_addr, 0, unsigned int);\n  store(p_374_addr, 4096, signed I8*);\n  store(j_385_addr, 0, unsigned int);\n  CharArray.full (4096, 0, li_391) ]\n",
+        "memory": "SEP[\n  store(n_371_addr, 0, unsigned int);\n  store(p_374_addr, 4096, signed I8*);\n  store(j_385_addr, 0, unsigned int);\n  CharArray.full (4096, 0, li_391) ]\n",
+        "equalities": "PROP[\n  0 == 0 ]\n"
+      },
+      {
+        "phase": "after-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/benchmark-replay/init_array/case-00/off/artifacts/artifacts/length_0/input.c",
+        "line": 12,
+        "column": 2,
+        "branch": 0,
+        "version": 8,
+        "P": "EX j_385_addr \nPROP[\n  p_373_pre == 4096;\n  n_370_pre == 0;\n  l___tespec_entry_375_free == nil(Z_1);\n  0 <= n_370_pre;\n  n_370_pre <= UINT_MAX ]\nLOCAL[\n  Temp j j_385_addr;\n  Temp p p_374_addr;\n  Temp n n_371_addr ]\nSEP[\n  store(j_385_addr, 0, unsigned int);\n  store(p_374_addr, p_373_pre, signed I8*);\n  store(n_371_addr, n_370_pre, unsigned int);\n  CharArray.full (p_373_pre, n_370_pre, l___tespec_entry_375_free) ]\n",
+        "memory": "SEP[\n  store(j_385_addr, 0, unsigned int);\n  store(p_374_addr, p_373_pre, signed I8*);\n  store(n_371_addr, n_370_pre, unsigned int);\n  CharArray.full (p_373_pre, n_370_pre, l___tespec_entry_375_free) ]\n",
+        "equalities": "PROP[\n  p_373_pre == 4096;\n  n_370_pre == 0;\n  l___tespec_entry_375_free == nil(Z_1);\n  0 <= n_370_pre;\n  n_370_pre <= UINT_MAX ]\n"
+      },
+      {
+        "phase": "before-expression",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/benchmark-replay/init_array/case-00/off/artifacts/artifacts/length_0/input.c",
+        "line": 13,
+        "column": 11,
+        "branch": 0,
+        "version": 9,
+        "P": "EX j_385_addr \nPROP[\n  p_373_pre == 4096;\n  n_370_pre == 0;\n  l___tespec_entry_375_free == nil(Z_1);\n  0 <= n_370_pre;\n  n_370_pre <= UINT_MAX ]\nLOCAL[\n  Temp j j_385_addr;\n  Temp p p_374_addr;\n  Temp n n_371_addr ]\nSEP[\n  store(j_385_addr, 0, unsigned int);\n  store(p_374_addr, p_373_pre, signed I8*);\n  store(n_371_addr, n_370_pre, unsigned int);\n  CharArray.full (p_373_pre, n_370_pre, l___tespec_entry_375_free) ]\n",
+        "memory": "SEP[\n  store(j_385_addr, 0, unsigned int);\n  store(p_374_addr, p_373_pre, signed I8*);\n  store(n_371_addr, n_370_pre, unsigned int);\n  CharArray.full (p_373_pre, n_370_pre, l___tespec_entry_375_free) ]\n",
+        "equalities": "PROP[\n  p_373_pre == 4096;\n  n_370_pre == 0;\n  l___tespec_entry_375_free == nil(Z_1);\n  0 <= n_370_pre;\n  n_370_pre <= UINT_MAX ]\n"
+      },
+      {
+        "phase": "after-expression",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/benchmark-replay/init_array/case-00/off/artifacts/artifacts/length_0/input.c",
+        "line": 13,
+        "column": 11,
+        "branch": 0,
+        "version": 10,
+        "P": "EX j_385_addr \nPROP[\n  0 >= n_370_pre;\n  p_373_pre == 4096;\n  n_370_pre == 0;\n  l___tespec_entry_375_free == nil(Z_1);\n  0 <= n_370_pre;\n  n_370_pre <= UINT_MAX ]\nLOCAL[\n  Temp j j_385_addr;\n  Temp p p_374_addr;\n  Temp n n_371_addr ]\nSEP[\n  store(j_385_addr, 0, unsigned int);\n  store(p_374_addr, p_373_pre, signed I8*);\n  store(n_371_addr, n_370_pre, unsigned int);\n  CharArray.full (p_373_pre, n_370_pre, l___tespec_entry_375_free) ]\n",
+        "memory": "SEP[\n  store(j_385_addr, 0, unsigned int);\n  store(p_374_addr, p_373_pre, signed I8*);\n  store(n_371_addr, n_370_pre, unsigned int);\n  CharArray.full (p_373_pre, n_370_pre, l___tespec_entry_375_free) ]\n",
+        "equalities": "PROP[\n  0 >= n_370_pre;\n  p_373_pre == 4096;\n  n_370_pre == 0;\n  l___tespec_entry_375_free == nil(Z_1);\n  0 <= n_370_pre;\n  n_370_pre <= UINT_MAX ]\n"
+      }
+    ]
+  },
+  "preconditions": [
+    {
+      "goal": "init_array_precondition_wit_1",
+      "status": "SAT",
+      "proof": "auto"
+    }
+  ],
+  "fileName": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/benchmark-replay/init_array/case-00/off/artifacts/artifacts/length_0/input.c",
+  "functionName": "init_array",
+  "loaded_strategies": [
+    "char_array",
+    "common",
+    "string_literal",
+    "undef_char_array",
+    "mixed_char_array",
+    "char_array_shape"
+  ],
+  "result": "success",
+  "verificationStatus": "proved",
+  "has_manual_obligations": false,
+  "manual_obligation_count": 0,
+  "manual_obligations": null,
+  "errormessage": null,
+  "warningmessage": null,
+  "current_assertions": null,
+  "FunctionDerivation": null,
+  "WitnessList": [
+    {
+      "functionName": "init_array",
+      "Witness": {
+        "safety_checker_wit": {
+          "total": 2,
+          "auto_solved": 2,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "entailment_checker_wit": {
+          "total": 1,
+          "auto_solved": 1,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "return_checker_wit": {
+          "total": 1,
+          "auto_solved": 1,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "partial_solve_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "which_implies_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "total_witness_count": {
+          "auto_solved": 4,
+          "manual": 0
+        }
+      }
+    }
+  ]
+}

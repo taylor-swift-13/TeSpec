@@ -1,0 +1,270 @@
+{
+  "spec_test": {
+    "schema": "sac-spec-test/v1",
+    "execution_semantics": "inline-preserve/v1",
+    "execution_strategy": "inline",
+    "declaration_call_policy": "contract-sample/v1",
+    "query_semantics": "copy-only/v1",
+    "mode": "expand",
+    "scope": "execution",
+    "annotation_policy": "ignore",
+    "completed": true,
+    "result_scope": "concrete-execution",
+    "overall": "PASS",
+    "precondition_result": "SAT",
+    "test_result": "PASS",
+    "result_semantics": "three-valued-conjunction/v1",
+    "vc_semantics": "path-vc/v1",
+    "vc_storage": {
+      "schema": "frozen-safety-sharing/v1",
+      "snapshot_requests": 2,
+      "unique_or_unpooled": 2,
+      "shared_requests": 0,
+      "intra_snapshot_aliases": 0,
+      "original_occurrences_preserved": true
+    },
+    "branch_evaluation": {
+      "schema": "instance-first-branch-query/v1",
+      "pure_queries": 4,
+      "evaluated_true": 0,
+      "evaluated_false": 0,
+      "smt_fallback": 4
+    },
+    "vc_scheduling": {
+      "schema": "post-execution-witness-smt/v1",
+      "enabled": true,
+      "collecting": false,
+      "requests": 10,
+      "queued_witnesses": 3,
+      "solved_witnesses": 3,
+      "retained_on_release": 0,
+      "pending_witnesses": 0
+    },
+    "vc_results": [
+      {
+        "kind": "safety",
+        "name": null,
+        "line": 4,
+        "status": "VALID",
+        "path": "EX q_431_addr p_pre_value_421 \nPROP[\n  p_pre_value_421 == 3 ]\nLOCAL[\n  Temp q q_431_addr;\n  Temp p p_420_addr;\n  Temp q q_417_addr ]\nSEP[\n  store(q_431_addr, 4096, struct Cell*);\n  store(p_420_addr, 4096, struct Cell*);\n  store(q_417_addr, 4096, struct Cell*);\n  store(4100, 3, signed int) ]\n",
+        "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+      },
+      {
+        "kind": "safety",
+        "name": null,
+        "line": 4,
+        "status": "VALID",
+        "path": "EX q_431_addr p_pre_value_421 \nPROP[\n  p_pre_value_421 == 3 ]\nLOCAL[\n  Temp q q_431_addr;\n  Temp p p_420_addr;\n  Temp q q_417_addr ]\nSEP[\n  store(q_431_addr, 4096, struct Cell*);\n  store(p_420_addr, 4096, struct Cell*);\n  store(q_417_addr, 4096, struct Cell*);\n  store(4100, 3, signed int) ]\n",
+        "goal": "PROP[\n  (p_pre_value_421 + 1) <= INT_MAX;\n  (- 2147483648) <= (p_pre_value_421 + 1) ]\nLOCAL[]\nSEP[]\n"
+      },
+      {
+        "kind": "return",
+        "name": null,
+        "line": 15,
+        "status": "VALID",
+        "path": "PROP[\n  p_pre_value_421 == 3 ]\nLOCAL[]\nSEP[\n  store(4100, 4, signed int) ]\n",
+        "goal": "EX p_pre_value_423 \nPROP[\n  (p_pre_value_421 + 1) == 4;\n  p_pre_value_423 == 4 ]\nLOCAL[]\nSEP[\n  store(4100, 4, signed int) ]\n"
+      }
+    ],
+    "phases": {
+      "precondition": "SAT",
+      "safety": "PASS",
+      "postcondition": "PASS",
+      "annotations": "NOT_RUN"
+    },
+    "abstraction_events": [
+      {
+        "kind": "inline-call",
+        "function": "step",
+        "count": 1
+      }
+    ],
+    "sampling_events": [],
+    "limit_reason": null,
+    "architecture_bits": 32,
+    "target_layout": {
+      "schema": "sac-target-layout/v1",
+      "architecture_bits": 32,
+      "byte_order": "big",
+      "pointer_size": 4,
+      "memory_rules": "naive_C_Rules",
+      "field_address_semantics": "base-plus-byte-offset/v1",
+      "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+      "aggregates": [
+        {
+          "id": 369,
+          "kind": "struct",
+          "name": "Cell",
+          "defined": true,
+          "size": 8,
+          "alignment": 4,
+          "fields": [
+            {
+              "id": 371,
+              "name": "padding",
+              "offset": 0,
+              "size": 4,
+              "alignment": 4,
+              "type": {
+                "kind": "basic",
+                "name": "int"
+              },
+              "computational": true
+            },
+            {
+              "id": 370,
+              "name": "value",
+              "offset": 4,
+              "size": 4,
+              "alignment": 4,
+              "type": {
+                "kind": "basic",
+                "name": "int"
+              },
+              "computational": true
+            }
+          ]
+        }
+      ],
+      "aliases": []
+    },
+    "certificate": "NOT_CHECKED",
+    "instance_trace": [
+      {
+        "phase": "before-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/field_call_alias/entry-exit/result/artifacts/fixed/input.c",
+        "line": 14,
+        "column": 4,
+        "branch": 0,
+        "version": 1,
+        "P": "EX p_pre_value_421 \nPROP[\n  p_419_pre == 4096;\n  q_416_pre == 4096;\n  p_419_pre == q_416_pre;\n  p_pre_value_421 == 3 ]\nLOCAL[\n  Temp p p_420_addr;\n  Temp q q_417_addr ]\nSEP[\n  store(p_420_addr, p_419_pre, struct Cell*);\n  store(q_417_addr, q_416_pre, struct Cell*);\n  store(&(p_419_pre->value), p_pre_value_421, signed int) ]\n",
+        "memory": "SEP[\n  store(p_420_addr, p_419_pre, struct Cell*);\n  store(q_417_addr, q_416_pre, struct Cell*);\n  store(&(p_419_pre->value), p_pre_value_421, signed int) ]\n",
+        "equalities": "PROP[\n  p_419_pre == 4096;\n  q_416_pre == 4096;\n  p_419_pre == q_416_pre;\n  p_pre_value_421 == 3 ]\n"
+      },
+      {
+        "phase": "before-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/field_call_alias/entry-exit/result/artifacts/fixed/input.c",
+        "line": 4,
+        "column": 2,
+        "branch": 0,
+        "version": 2,
+        "P": "EX q_431_addr p_pre_value_421 \nPROP[\n  p_419_pre == 4096;\n  q_416_pre == 4096;\n  p_419_pre == q_416_pre;\n  p_pre_value_421 == 3 ]\nLOCAL[\n  Temp q q_431_addr;\n  Temp p p_420_addr;\n  Temp q q_417_addr ]\nSEP[\n  store(q_431_addr, q_416_pre, struct Cell*);\n  store(p_420_addr, p_419_pre, struct Cell*);\n  store(q_417_addr, q_416_pre, struct Cell*);\n  store(&(p_419_pre->value), p_pre_value_421, signed int) ]\n",
+        "memory": "SEP[\n  store(q_431_addr, q_416_pre, struct Cell*);\n  store(p_420_addr, p_419_pre, struct Cell*);\n  store(q_417_addr, q_416_pre, struct Cell*);\n  store(&(p_419_pre->value), p_pre_value_421, signed int) ]\n",
+        "equalities": "PROP[\n  p_419_pre == 4096;\n  q_416_pre == 4096;\n  p_419_pre == q_416_pre;\n  p_pre_value_421 == 3 ]\n"
+      },
+      {
+        "phase": "after-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/field_call_alias/entry-exit/result/artifacts/fixed/input.c",
+        "line": 4,
+        "column": 2,
+        "branch": 0,
+        "version": 3,
+        "P": "EX q_431_addr p_pre_value_421 \nPROP[\n  p_419_pre == 4096;\n  q_416_pre == 4096;\n  p_419_pre == q_416_pre;\n  p_pre_value_421 == 3 ]\nLOCAL[\n  Temp q q_431_addr;\n  Temp p p_420_addr;\n  Temp q q_417_addr ]\nSEP[\n  store(q_431_addr, q_416_pre, struct Cell*);\n  store(p_420_addr, p_419_pre, struct Cell*);\n  store(q_417_addr, q_416_pre, struct Cell*);\n  store(&(p_419_pre->value), (p_pre_value_421 + 1), signed int) ]\n",
+        "memory": "SEP[\n  store(q_431_addr, q_416_pre, struct Cell*);\n  store(p_420_addr, p_419_pre, struct Cell*);\n  store(q_417_addr, q_416_pre, struct Cell*);\n  store(&(p_419_pre->value), (p_pre_value_421 + 1), signed int) ]\n",
+        "equalities": "PROP[\n  p_419_pre == 4096;\n  q_416_pre == 4096;\n  p_419_pre == q_416_pre;\n  p_pre_value_421 == 3 ]\n"
+      },
+      {
+        "phase": "after-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/field_call_alias/entry-exit/result/artifacts/fixed/input.c",
+        "line": 14,
+        "column": 4,
+        "branch": 0,
+        "version": 4,
+        "P": "EX p_pre_value_421 \nPROP[\n  p_419_pre == 4096;\n  q_416_pre == 4096;\n  p_419_pre == q_416_pre;\n  p_pre_value_421 == 3 ]\nLOCAL[\n  Temp p p_420_addr;\n  Temp q q_417_addr ]\nSEP[\n  store(p_420_addr, p_419_pre, struct Cell*);\n  store(q_417_addr, q_416_pre, struct Cell*);\n  store(&(p_419_pre->value), (p_pre_value_421 + 1), signed int) ]\n",
+        "memory": "SEP[\n  store(p_420_addr, p_419_pre, struct Cell*);\n  store(q_417_addr, q_416_pre, struct Cell*);\n  store(&(p_419_pre->value), (p_pre_value_421 + 1), signed int) ]\n",
+        "equalities": "PROP[\n  p_419_pre == 4096;\n  q_416_pre == 4096;\n  p_419_pre == q_416_pre;\n  p_pre_value_421 == 3 ]\n"
+      },
+      {
+        "phase": "before-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/field_call_alias/entry-exit/result/artifacts/fixed/input.c",
+        "line": 15,
+        "column": 4,
+        "branch": 0,
+        "version": 5,
+        "P": "EX p_pre_value_421 \nPROP[\n  p_419_pre == 4096;\n  q_416_pre == 4096;\n  p_419_pre == q_416_pre;\n  p_pre_value_421 == 3 ]\nLOCAL[\n  Temp p p_420_addr;\n  Temp q q_417_addr ]\nSEP[\n  store(p_420_addr, p_419_pre, struct Cell*);\n  store(q_417_addr, q_416_pre, struct Cell*);\n  store(&(p_419_pre->value), (p_pre_value_421 + 1), signed int) ]\n",
+        "memory": "SEP[\n  store(p_420_addr, p_419_pre, struct Cell*);\n  store(q_417_addr, q_416_pre, struct Cell*);\n  store(&(p_419_pre->value), (p_pre_value_421 + 1), signed int) ]\n",
+        "equalities": "PROP[\n  p_419_pre == 4096;\n  q_416_pre == 4096;\n  p_419_pre == q_416_pre;\n  p_pre_value_421 == 3 ]\n"
+      },
+      {
+        "phase": "after-statement",
+        "state_role": "execution",
+        "file": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/field_call_alias/entry-exit/result/artifacts/fixed/input.c",
+        "line": 15,
+        "column": 4,
+        "branch": 0,
+        "version": 6,
+        "P": "EX p_pre_value_421 \nPROP[\n  p_419_pre == 4096;\n  q_416_pre == 4096;\n  p_419_pre == q_416_pre;\n  p_pre_value_421 == 3 ]\nLOCAL[\n  Temp p p_420_addr;\n  Temp q q_417_addr ]\nSEP[\n  store(p_420_addr, p_419_pre, struct Cell*);\n  store(q_417_addr, q_416_pre, struct Cell*);\n  store(&(p_419_pre->value), (p_pre_value_421 + 1), signed int) ]\n",
+        "memory": "SEP[\n  store(p_420_addr, p_419_pre, struct Cell*);\n  store(q_417_addr, q_416_pre, struct Cell*);\n  store(&(p_419_pre->value), (p_pre_value_421 + 1), signed int) ]\n",
+        "equalities": "PROP[\n  p_419_pre == 4096;\n  q_416_pre == 4096;\n  p_419_pre == q_416_pre;\n  p_pre_value_421 == 3 ]\n"
+      }
+    ]
+  },
+  "preconditions": [
+    {
+      "goal": "sample_precondition_wit_1",
+      "status": "SAT",
+      "proof": "auto"
+    }
+  ],
+  "fileName": "/home/yangfp/teSpec/benchmark/results/loop-exit-audit/20261019/query-replay/field_call_alias/entry-exit/result/artifacts/fixed/input.c",
+  "functionName": "sample",
+  "loaded_strategies": [
+    "common",
+    "string_literal"
+  ],
+  "result": "success",
+  "verificationStatus": "proved",
+  "has_manual_obligations": false,
+  "manual_obligation_count": 0,
+  "manual_obligations": null,
+  "errormessage": null,
+  "warningmessage": null,
+  "current_assertions": null,
+  "FunctionDerivation": null,
+  "WitnessList": [
+    {
+      "functionName": "sample",
+      "Witness": {
+        "safety_checker_wit": {
+          "total": 2,
+          "auto_solved": 2,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "entailment_checker_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "return_checker_wit": {
+          "total": 1,
+          "auto_solved": 1,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "partial_solve_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "which_implies_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "total_witness_count": {
+          "auto_solved": 3,
+          "manual": 0
+        }
+      }
+    }
+  ]
+}
