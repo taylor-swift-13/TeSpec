@@ -1,0 +1,502 @@
+{
+  "id": "invariant-modular-entry-exit",
+  "fixture": {
+    "id": "invariant-modular-entry-exit",
+    "n": 4,
+    "strategy": "modular",
+    "mode": "entry-exit",
+    "expected": "PASS",
+    "source": "int sample(int n) /*@ Require 0 <= n && n <= 4096 && emp Ensure __return == n && emp */ { int i=0; /*@ Inv 0 <= i && i <= n && emp */ while(i<n) { i++; } return i; }\n"
+  },
+  "source_sha256": "83b45ec03d86e88c37d4f92ab47826589360aabba0a26ee2943e38cde17a3710",
+  "binds_sha256": "2cf1a1f2552594b442278c01353dd4301b84333f754c639c2b10ed55bfe08407",
+  "trace_enabled": true,
+  "baseline": {
+    "report": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch/invariant-modular-entry-exit/baseline/artifacts/report.json",
+    "report_sha256": "866af5ab6773cdc4b704cd5fecace8f2cd248531724fb43ccc3772bd4ec2b67f",
+    "raw": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch/invariant-modular-entry-exit/baseline/artifacts/artifacts/one/executor.json",
+    "raw_sha256": "930f2d11a4228815ab6bbdfe37a810c367837df3c7082997203d0c39591ef99b",
+    "legacy_raw_sha256": "6a34a058745cc0ed01347f7444bb38b5aa3be0901da36afaf378005463ab6be4",
+    "decisions": {
+      "status": "PASS",
+      "overall": "PASS",
+      "precondition_result": "SAT",
+      "execution_completed": true,
+      "executor_error": null,
+      "executor_reported_status": "PASS",
+      "residual_vcs": [],
+      "vc_results": [
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX i_380_addr \nPROP[]\nLOCAL[\n  Temp i i_380_addr;\n  Temp n n_371_addr ]\nSEP[\n  has_permission(i_380_addr, signed int);\n  store(n_371_addr, 4, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX i_387_value n_388_value \nPROP[\n  n_388_value == 4;\n  n_371_addr == 4096;\n  i_380_addr == 8192;\n  i_387_value == 3 ]\nLOCAL[\n  Temp n 4096;\n  Temp i 8192 ]\nSEP[\n  store(8192, 3, signed int);\n  store(4096, 4, signed int) ]\n",
+          "goal": "PROP[\n  (i_387_value + 1) <= INT_MAX;\n  (- 2147483648) <= (i_387_value + 1) ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "return",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "PROP[\n  4 == i_387_value;\n  n_388_value == 4;\n  n_371_addr == 4096;\n  i_380_addr == 8192 ]\nLOCAL[]\nSEP[]\n",
+          "goal": "PROP[\n  i_387_value == 4 ]\nLOCAL[]\nSEP[]\n"
+        }
+      ],
+      "phases": {
+        "precondition": "SAT",
+        "safety": "PASS",
+        "postcondition": "PASS",
+        "annotations": "NOT_RUN",
+        "execution": "PASS"
+      },
+      "result_scope": "contract-and-invariant-model",
+      "sampling_events": [
+        {
+          "kind": "loop-preservation-input",
+          "constraint_state": "EX i_387_value n_388_value \nPROP[\n  i_387_value < n_388_value;\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096 ]\nLOCAL[\n  Temp n n_371_addr;\n  Temp i i_380_addr ]\nSEP[\n  store(i_380_addr, i_387_value, signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+          "selected_state": "EX i_387_value n_388_value \nPROP[\n  i_387_value < n_388_value;\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096;\n  n_371_addr == 4096;\n  i_380_addr == 8192;\n  i_387_value == 3 ]\nLOCAL[\n  Temp n n_371_addr;\n  Temp i i_380_addr ]\nSEP[\n  store(i_380_addr, i_387_value, signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+          "status": "SAMPLED",
+          "attempt": 5,
+          "policy": "deterministic-bounds-v1"
+        },
+        {
+          "kind": "loop-exit-input",
+          "constraint_state": "EX i_387_value n_388_value \nPROP[\n  i_387_value >= n_388_value;\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096 ]\nLOCAL[\n  Temp n n_371_addr;\n  Temp i i_380_addr ]\nSEP[\n  store(i_380_addr, i_387_value, signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+          "selected_state": "EX i_387_value n_388_value \nPROP[\n  i_387_value >= n_388_value;\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096;\n  n_371_addr == 4096;\n  i_380_addr == 8192 ]\nLOCAL[\n  Temp n n_371_addr;\n  Temp i i_380_addr ]\nSEP[\n  store(i_380_addr, i_387_value, signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+          "status": "SAMPLED",
+          "attempt": 3,
+          "policy": "deterministic-bounds-v1"
+        }
+      ],
+      "abstraction_events": [
+        {
+          "kind": "contract_state_sampled",
+          "function": "loop-exit-input",
+          "count": 1
+        },
+        {
+          "kind": "contract_state_sampled",
+          "function": "loop-preservation-input",
+          "count": 1
+        },
+        {
+          "kind": "modular-loop-invariant",
+          "function": "sample",
+          "count": 2
+        }
+      ]
+    },
+    "coq": {
+      "goal": {
+        "path": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch/invariant-modular-entry-exit/baseline/artifacts/artifacts/one/vc/input_goal.v",
+        "exists": true,
+        "sha256": "a18465243fef7248631e8848ab97d8709824ce1b87fb32a7d31650e991160027",
+        "bytes": 2023
+      },
+      "proof_auto": {
+        "path": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch/invariant-modular-entry-exit/baseline/artifacts/artifacts/one/vc/input_proof_auto.v",
+        "exists": true,
+        "sha256": "173a6238aadc0789558c5c2372e45183c0c69d25d4f82da5c61018972f819f34",
+        "bytes": 1075
+      },
+      "goal_check": {
+        "path": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch/invariant-modular-entry-exit/baseline/artifacts/artifacts/one/vc/input_goal_check.v",
+        "exists": true,
+        "sha256": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e",
+        "bytes": 178
+      }
+    },
+    "storage_metrics": {},
+    "executor_resources": {
+      "wall_seconds": 0.008082,
+      "cpu_seconds": 0.0,
+      "measurement": "GNU time; executor and children; maximum process RSS",
+      "peak_rss_kib": 5536
+    },
+    "vc_count": 3,
+    "witness_counts": [
+      {
+        "functionName": "sample",
+        "Witness": {
+          "safety_checker_wit": {
+            "total": 2,
+            "auto_solved": 2,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "entailment_checker_wit": {
+            "total": 0,
+            "auto_solved": 0,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "return_checker_wit": {
+            "total": 1,
+            "auto_solved": 1,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "partial_solve_wit": {
+            "total": 0,
+            "auto_solved": 0,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "which_implies_wit": {
+            "total": 0,
+            "auto_solved": 0,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "total_witness_count": {
+            "auto_solved": 3,
+            "manual": 0
+          }
+        }
+      }
+    ],
+    "generated_source_sha256": "568d6ddb9f6a9274671d272866035d907474bc0850c47691b527cc0392e25a14",
+    "measurement": {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "spectest",
+        "run",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch/invariant-modular-entry-exit/input.c",
+        "--function",
+        "sample",
+        "--binds",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch/invariant-modular-entry-exit/binds.json",
+        "--qcp-binary",
+        "/tmp/tespec-direct-branch-baseline/tespec-symexec",
+        "--execution-strategy",
+        "modular",
+        "--execution-mode",
+        "entry-exit",
+        "--loop-unroll-limit",
+        "16",
+        "--output-dir",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch/invariant-modular-entry-exit/baseline/artifacts",
+        "--timeout",
+        "60",
+        "--no-spatial-smt",
+        "--instance-trace"
+      ],
+      "executed_wrapper_command": [
+        "/usr/bin/time",
+        "--quiet",
+        "-f",
+        "{\"max_process_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"wall_seconds_gnu\":%e}",
+        "-o",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch/invariant-modular-entry-exit/baseline/resources.json",
+        "/usr/bin/timeout",
+        "--signal=TERM",
+        "--kill-after=5",
+        "75",
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "spectest",
+        "run",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch/invariant-modular-entry-exit/input.c",
+        "--function",
+        "sample",
+        "--binds",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch/invariant-modular-entry-exit/binds.json",
+        "--qcp-binary",
+        "/tmp/tespec-direct-branch-baseline/tespec-symexec",
+        "--execution-strategy",
+        "modular",
+        "--execution-mode",
+        "entry-exit",
+        "--loop-unroll-limit",
+        "16",
+        "--output-dir",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch/invariant-modular-entry-exit/baseline/artifacts",
+        "--timeout",
+        "60",
+        "--no-spatial-smt",
+        "--instance-trace"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.16491106899775332,
+      "resources": {
+        "max_process_rss_kib": 19776,
+        "user_seconds": 0.07,
+        "system_seconds": 0.04,
+        "wall_seconds_gnu": 0.12
+      },
+      "tokens": 0,
+      "model_calls": 0,
+      "stdout": "benchmark/results/vc-storage-regressions/20261019-direct-branch/invariant-modular-entry-exit/baseline/stdout.log",
+      "stderr": "benchmark/results/vc-storage-regressions/20261019-direct-branch/invariant-modular-entry-exit/baseline/stderr.log",
+      "memory_definition": "GNU time %M: largest measured process peak RSS, not aggregate tree memory."
+    },
+    "matches_expected": true
+  },
+  "candidate": {
+    "report": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch/invariant-modular-entry-exit/candidate/artifacts/report.json",
+    "report_sha256": "329aef207f5c04deb97dc043010cb9f86e35005357f518b2c3310950b7615571",
+    "raw": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch/invariant-modular-entry-exit/candidate/artifacts/artifacts/one/executor.json",
+    "raw_sha256": "d4a2bf1b921fef3a2417cc265d1461bda6cd604d57580e3e2109bb1aa2b0bfa2",
+    "legacy_raw_sha256": "6a34a058745cc0ed01347f7444bb38b5aa3be0901da36afaf378005463ab6be4",
+    "decisions": {
+      "status": "PASS",
+      "overall": "PASS",
+      "precondition_result": "SAT",
+      "execution_completed": true,
+      "executor_error": null,
+      "executor_reported_status": "PASS",
+      "residual_vcs": [],
+      "vc_results": [
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX i_380_addr \nPROP[]\nLOCAL[\n  Temp i i_380_addr;\n  Temp n n_371_addr ]\nSEP[\n  has_permission(i_380_addr, signed int);\n  store(n_371_addr, 4, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX i_387_value n_388_value \nPROP[\n  n_388_value == 4;\n  n_371_addr == 4096;\n  i_380_addr == 8192;\n  i_387_value == 3 ]\nLOCAL[\n  Temp n 4096;\n  Temp i 8192 ]\nSEP[\n  store(8192, 3, signed int);\n  store(4096, 4, signed int) ]\n",
+          "goal": "PROP[\n  (i_387_value + 1) <= INT_MAX;\n  (- 2147483648) <= (i_387_value + 1) ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "return",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "PROP[\n  4 == i_387_value;\n  n_388_value == 4;\n  n_371_addr == 4096;\n  i_380_addr == 8192 ]\nLOCAL[]\nSEP[]\n",
+          "goal": "PROP[\n  i_387_value == 4 ]\nLOCAL[]\nSEP[]\n"
+        }
+      ],
+      "phases": {
+        "precondition": "SAT",
+        "safety": "PASS",
+        "postcondition": "PASS",
+        "annotations": "NOT_RUN",
+        "execution": "PASS"
+      },
+      "result_scope": "contract-and-invariant-model",
+      "sampling_events": [
+        {
+          "kind": "loop-preservation-input",
+          "constraint_state": "EX i_387_value n_388_value \nPROP[\n  i_387_value < n_388_value;\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096 ]\nLOCAL[\n  Temp n n_371_addr;\n  Temp i i_380_addr ]\nSEP[\n  store(i_380_addr, i_387_value, signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+          "selected_state": "EX i_387_value n_388_value \nPROP[\n  i_387_value < n_388_value;\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096;\n  n_371_addr == 4096;\n  i_380_addr == 8192;\n  i_387_value == 3 ]\nLOCAL[\n  Temp n n_371_addr;\n  Temp i i_380_addr ]\nSEP[\n  store(i_380_addr, i_387_value, signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+          "status": "SAMPLED",
+          "attempt": 5,
+          "policy": "deterministic-bounds-v1"
+        },
+        {
+          "kind": "loop-exit-input",
+          "constraint_state": "EX i_387_value n_388_value \nPROP[\n  i_387_value >= n_388_value;\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096 ]\nLOCAL[\n  Temp n n_371_addr;\n  Temp i i_380_addr ]\nSEP[\n  store(i_380_addr, i_387_value, signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+          "selected_state": "EX i_387_value n_388_value \nPROP[\n  i_387_value >= n_388_value;\n  0 <= i_387_value;\n  i_387_value <= n_388_value;\n  n_388_value == n_370_pre;\n  n_370_pre == 4;\n  0 <= n_370_pre;\n  n_370_pre <= 4096;\n  n_371_addr == 4096;\n  i_380_addr == 8192 ]\nLOCAL[\n  Temp n n_371_addr;\n  Temp i i_380_addr ]\nSEP[\n  store(i_380_addr, i_387_value, signed int);\n  store(n_371_addr, n_388_value, signed int) ]\n",
+          "status": "SAMPLED",
+          "attempt": 3,
+          "policy": "deterministic-bounds-v1"
+        }
+      ],
+      "abstraction_events": [
+        {
+          "kind": "contract_state_sampled",
+          "function": "loop-exit-input",
+          "count": 1
+        },
+        {
+          "kind": "contract_state_sampled",
+          "function": "loop-preservation-input",
+          "count": 1
+        },
+        {
+          "kind": "modular-loop-invariant",
+          "function": "sample",
+          "count": 2
+        }
+      ]
+    },
+    "coq": {
+      "goal": {
+        "path": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch/invariant-modular-entry-exit/candidate/artifacts/artifacts/one/vc/input_goal.v",
+        "exists": true,
+        "sha256": "a18465243fef7248631e8848ab97d8709824ce1b87fb32a7d31650e991160027",
+        "bytes": 2023
+      },
+      "proof_auto": {
+        "path": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch/invariant-modular-entry-exit/candidate/artifacts/artifacts/one/vc/input_proof_auto.v",
+        "exists": true,
+        "sha256": "173a6238aadc0789558c5c2372e45183c0c69d25d4f82da5c61018972f819f34",
+        "bytes": 1075
+      },
+      "goal_check": {
+        "path": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch/invariant-modular-entry-exit/candidate/artifacts/artifacts/one/vc/input_goal_check.v",
+        "exists": true,
+        "sha256": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e",
+        "bytes": 178
+      }
+    },
+    "storage_metrics": {
+      "branch_evaluation": {
+        "schema": "instance-first-branch-query/v1",
+        "pure_queries": 16,
+        "evaluated_true": 2,
+        "evaluated_false": 0,
+        "smt_fallback": 14
+      }
+    },
+    "executor_resources": {
+      "wall_seconds": 0.008423,
+      "cpu_seconds": 0.0,
+      "measurement": "GNU time; executor and children; maximum process RSS",
+      "peak_rss_kib": 5548
+    },
+    "vc_count": 3,
+    "witness_counts": [
+      {
+        "functionName": "sample",
+        "Witness": {
+          "safety_checker_wit": {
+            "total": 2,
+            "auto_solved": 2,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "entailment_checker_wit": {
+            "total": 0,
+            "auto_solved": 0,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "return_checker_wit": {
+            "total": 1,
+            "auto_solved": 1,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "partial_solve_wit": {
+            "total": 0,
+            "auto_solved": 0,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "which_implies_wit": {
+            "total": 0,
+            "auto_solved": 0,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "total_witness_count": {
+            "auto_solved": 3,
+            "manual": 0
+          }
+        }
+      }
+    ],
+    "generated_source_sha256": "568d6ddb9f6a9274671d272866035d907474bc0850c47691b527cc0392e25a14",
+    "measurement": {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "spectest",
+        "run",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch/invariant-modular-entry-exit/input.c",
+        "--function",
+        "sample",
+        "--binds",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch/invariant-modular-entry-exit/binds.json",
+        "--qcp-binary",
+        "/home/yangfp/sac-query-simplification/build/query-simplification/symexec",
+        "--execution-strategy",
+        "modular",
+        "--execution-mode",
+        "entry-exit",
+        "--loop-unroll-limit",
+        "16",
+        "--output-dir",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch/invariant-modular-entry-exit/candidate/artifacts",
+        "--timeout",
+        "60",
+        "--no-spatial-smt",
+        "--instance-trace"
+      ],
+      "executed_wrapper_command": [
+        "/usr/bin/time",
+        "--quiet",
+        "-f",
+        "{\"max_process_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"wall_seconds_gnu\":%e}",
+        "-o",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch/invariant-modular-entry-exit/candidate/resources.json",
+        "/usr/bin/timeout",
+        "--signal=TERM",
+        "--kill-after=5",
+        "75",
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "spectest",
+        "run",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch/invariant-modular-entry-exit/input.c",
+        "--function",
+        "sample",
+        "--binds",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch/invariant-modular-entry-exit/binds.json",
+        "--qcp-binary",
+        "/home/yangfp/sac-query-simplification/build/query-simplification/symexec",
+        "--execution-strategy",
+        "modular",
+        "--execution-mode",
+        "entry-exit",
+        "--loop-unroll-limit",
+        "16",
+        "--output-dir",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch/invariant-modular-entry-exit/candidate/artifacts",
+        "--timeout",
+        "60",
+        "--no-spatial-smt",
+        "--instance-trace"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.1649236209996161,
+      "resources": {
+        "max_process_rss_kib": 19848,
+        "user_seconds": 0.08,
+        "system_seconds": 0.04,
+        "wall_seconds_gnu": 0.12
+      },
+      "tokens": 0,
+      "model_calls": 0,
+      "stdout": "benchmark/results/vc-storage-regressions/20261019-direct-branch/invariant-modular-entry-exit/candidate/stdout.log",
+      "stderr": "benchmark/results/vc-storage-regressions/20261019-direct-branch/invariant-modular-entry-exit/candidate/stderr.log",
+      "memory_definition": "GNU time %M: largest measured process peak RSS, not aggregate tree memory."
+    },
+    "matches_expected": true
+  },
+  "comparison": {
+    "passed": true,
+    "ignored_metrics_are_new_only": true,
+    "raw_differences": [],
+    "decision_differences": [],
+    "coq_byte_differences": [],
+    "source_bytes_equal": true,
+    "baseline_vc_count": 3,
+    "candidate_vc_count": 3,
+    "original_coq_files_byte_equal": true,
+    "legacy_raw_equal": true,
+    "both_match_expected": true,
+    "transport_ok": true
+  }
+}

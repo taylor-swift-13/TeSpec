@@ -97,6 +97,30 @@ class QueryIsolationTests(unittest.TestCase):
                 self.assertIn("store(4096, 0,", goals)
                 self.assertIn("store(4096, 1,", goals)
 
+    def test_fixed_loop_feasibility_avoids_smt(self):
+        for mode in REPLAY.MODES:
+            with self.subTest(mode=mode):
+                payload = self.payload("bound_loop", mode)
+                counts = payload["branch_evaluation"]
+                self.assertGreater(counts["evaluated_true"], 0)
+                self.assertGreater(counts["evaluated_false"], 0)
+                self.assertEqual(counts["smt_fallback"], 0)
+                self.assertEqual(counts["pure_queries"],
+                                 counts["evaluated_true"] + counts["evaluated_false"])
+                self.assertTrue(payload["completed"])
+                self.assertIsNone(payload["limit_reason"])
+
+    def test_unfixed_heap_keeps_symbolic_branch_fallback(self):
+        for mode in REPLAY.MODES:
+            with self.subTest(mode=mode):
+                payload = self.payload("two_feasible_branches", mode)
+                counts = payload["branch_evaluation"]
+                self.assertGreater(counts["smt_fallback"], 0)
+                self.assertEqual(counts["pure_queries"], counts["evaluated_true"]
+                                 + counts["evaluated_false"] + counts["smt_fallback"])
+                returns = [v for v in payload["vc_results"] if v["kind"] == "return"]
+                self.assertEqual(len(returns), 2)
+
     def test_fixed_logical_lists_terminate(self):
         for case in (
             "qcp_sll_loop_call",

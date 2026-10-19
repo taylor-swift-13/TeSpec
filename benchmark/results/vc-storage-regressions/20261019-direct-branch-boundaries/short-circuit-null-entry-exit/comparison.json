@@ -1,0 +1,452 @@
+{
+  "id": "short-circuit-null-entry-exit",
+  "fixture": {
+    "id": "short-circuit-null-entry-exit",
+    "n": 0,
+    "strategy": "inline",
+    "mode": "entry-exit",
+    "expected": "PASS",
+    "source": "int sample(int n) /*@ Require 0 <= n && n <= 4096 && emp Ensure __return == n && emp */ { int *p=0; if(n==0 || *p) return n; return 1; }\n"
+  },
+  "source_sha256": "e376ae787a63ec21557fd2ef99c1a8e7fc8b7073eb965f52691f68ffb391a947",
+  "binds_sha256": "46a6d78c19e6e8f6383326a9b4f234429251d6275bbe6f23a4181e03c995cbb7",
+  "trace_enabled": true,
+  "baseline": {
+    "report": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries/short-circuit-null-entry-exit/baseline/artifacts/report.json",
+    "report_sha256": "b5db2f9ae5ceff15f32e7d1f6ad3341c4d902c9446fd70e5309931ccd450135d",
+    "raw": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries/short-circuit-null-entry-exit/baseline/artifacts/artifacts/one/executor.json",
+    "raw_sha256": "ee088532f3a9c152acbe06e8fcd02e1f9d4bf57fcc2b73601e60ac90fbe2da3e",
+    "legacy_raw_sha256": "6b5d084334e09f479cd7a6e8ba088fefa2abcdee7f325d1b12ccfeb22171fa70",
+    "decisions": {
+      "status": "PASS",
+      "overall": "PASS",
+      "precondition_result": "SAT",
+      "execution_completed": true,
+      "executor_error": null,
+      "executor_reported_status": "PASS",
+      "residual_vcs": [],
+      "vc_results": [
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX p_380_addr \nPROP[]\nLOCAL[\n  Temp p p_380_addr;\n  Temp n n_371_addr ]\nSEP[\n  has_permission(p_380_addr, signed int*);\n  store(n_371_addr, 0, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX p_380_addr \nPROP[\n  prop_false ]\nLOCAL[\n  Temp p p_380_addr;\n  Temp n n_371_addr ]\nSEP[\n  store(p_380_addr, 0, signed int*);\n  store(n_371_addr, 0, signed int) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX p_380_addr \nPROP[]\nLOCAL[\n  Temp p p_380_addr;\n  Temp n n_371_addr ]\nSEP[\n  store(p_380_addr, 0, signed int*);\n  store(n_371_addr, 0, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "return",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "PROP[]\nLOCAL[]\nSEP[]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        }
+      ],
+      "phases": {
+        "precondition": "SAT",
+        "safety": "PASS",
+        "postcondition": "PASS",
+        "annotations": "NOT_RUN",
+        "execution": "PASS"
+      },
+      "result_scope": "concrete-execution",
+      "sampling_events": [],
+      "abstraction_events": []
+    },
+    "coq": {
+      "goal": {
+        "path": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries/short-circuit-null-entry-exit/baseline/artifacts/artifacts/one/vc/input_goal.v",
+        "exists": true,
+        "sha256": "c84be1fdfa191c9bf6dbecf7566fbfe8ce9c82f7fc99ca1426a1ae9f433db866",
+        "bytes": 1936
+      },
+      "proof_auto": {
+        "path": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries/short-circuit-null-entry-exit/baseline/artifacts/artifacts/one/vc/input_proof_auto.v",
+        "exists": true,
+        "sha256": "da66b04bed2d6a313810d22ad496ef9ed8c9b69f3d39360bd84cbcaa971f85d4",
+        "bytes": 1152
+      },
+      "goal_check": {
+        "path": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries/short-circuit-null-entry-exit/baseline/artifacts/artifacts/one/vc/input_goal_check.v",
+        "exists": true,
+        "sha256": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e",
+        "bytes": 178
+      }
+    },
+    "storage_metrics": {},
+    "executor_resources": {
+      "wall_seconds": 0.005363,
+      "cpu_seconds": 0.0,
+      "measurement": "GNU time; executor and children; maximum process RSS",
+      "peak_rss_kib": 5020
+    },
+    "vc_count": 4,
+    "witness_counts": [
+      {
+        "functionName": "sample",
+        "Witness": {
+          "safety_checker_wit": {
+            "total": 3,
+            "auto_solved": 3,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "entailment_checker_wit": {
+            "total": 0,
+            "auto_solved": 0,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "return_checker_wit": {
+            "total": 1,
+            "auto_solved": 1,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "partial_solve_wit": {
+            "total": 0,
+            "auto_solved": 0,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "which_implies_wit": {
+            "total": 0,
+            "auto_solved": 0,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "total_witness_count": {
+            "auto_solved": 4,
+            "manual": 0
+          }
+        }
+      }
+    ],
+    "generated_source_sha256": "e55d170c80b8814ba4f57cf98d03cc5f0fbef5cce9b0a6f2399959d583c1a04e",
+    "measurement": {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "spectest",
+        "run",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries/short-circuit-null-entry-exit/input.c",
+        "--function",
+        "sample",
+        "--binds",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries/short-circuit-null-entry-exit/binds.json",
+        "--qcp-binary",
+        "/tmp/tespec-direct-branch-baseline/tespec-symexec",
+        "--execution-strategy",
+        "inline",
+        "--execution-mode",
+        "entry-exit",
+        "--loop-unroll-limit",
+        "16",
+        "--output-dir",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries/short-circuit-null-entry-exit/baseline/artifacts",
+        "--timeout",
+        "60",
+        "--no-spatial-smt",
+        "--instance-trace"
+      ],
+      "executed_wrapper_command": [
+        "/usr/bin/time",
+        "--quiet",
+        "-f",
+        "{\"max_process_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"wall_seconds_gnu\":%e}",
+        "-o",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries/short-circuit-null-entry-exit/baseline/resources.json",
+        "/usr/bin/timeout",
+        "--signal=TERM",
+        "--kill-after=5",
+        "75",
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "spectest",
+        "run",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries/short-circuit-null-entry-exit/input.c",
+        "--function",
+        "sample",
+        "--binds",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries/short-circuit-null-entry-exit/binds.json",
+        "--qcp-binary",
+        "/tmp/tespec-direct-branch-baseline/tespec-symexec",
+        "--execution-strategy",
+        "inline",
+        "--execution-mode",
+        "entry-exit",
+        "--loop-unroll-limit",
+        "16",
+        "--output-dir",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries/short-circuit-null-entry-exit/baseline/artifacts",
+        "--timeout",
+        "60",
+        "--no-spatial-smt",
+        "--instance-trace"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.16473235600278713,
+      "resources": {
+        "max_process_rss_kib": 19992,
+        "user_seconds": 0.07,
+        "system_seconds": 0.04,
+        "wall_seconds_gnu": 0.11
+      },
+      "tokens": 0,
+      "model_calls": 0,
+      "stdout": "benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries/short-circuit-null-entry-exit/baseline/stdout.log",
+      "stderr": "benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries/short-circuit-null-entry-exit/baseline/stderr.log",
+      "memory_definition": "GNU time %M: largest measured process peak RSS, not aggregate tree memory."
+    },
+    "matches_expected": true
+  },
+  "candidate": {
+    "report": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries/short-circuit-null-entry-exit/candidate/artifacts/report.json",
+    "report_sha256": "5f2adf9ee5e825c5037572d2cc4c56070d900055a71e77bec48ac8505d0655e8",
+    "raw": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries/short-circuit-null-entry-exit/candidate/artifacts/artifacts/one/executor.json",
+    "raw_sha256": "26a5927e8369393f76b56197faea1f6d1ee634c6d57cb2f79164239f3d63bf8d",
+    "legacy_raw_sha256": "6b5d084334e09f479cd7a6e8ba088fefa2abcdee7f325d1b12ccfeb22171fa70",
+    "decisions": {
+      "status": "PASS",
+      "overall": "PASS",
+      "precondition_result": "SAT",
+      "execution_completed": true,
+      "executor_error": null,
+      "executor_reported_status": "PASS",
+      "residual_vcs": [],
+      "vc_results": [
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX p_380_addr \nPROP[]\nLOCAL[\n  Temp p p_380_addr;\n  Temp n n_371_addr ]\nSEP[\n  has_permission(p_380_addr, signed int*);\n  store(n_371_addr, 0, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX p_380_addr \nPROP[\n  prop_false ]\nLOCAL[\n  Temp p p_380_addr;\n  Temp n n_371_addr ]\nSEP[\n  store(p_380_addr, 0, signed int*);\n  store(n_371_addr, 0, signed int) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "EX p_380_addr \nPROP[]\nLOCAL[\n  Temp p p_380_addr;\n  Temp n n_371_addr ]\nSEP[\n  store(p_380_addr, 0, signed int*);\n  store(n_371_addr, 0, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "return",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "PROP[]\nLOCAL[]\nSEP[]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        }
+      ],
+      "phases": {
+        "precondition": "SAT",
+        "safety": "PASS",
+        "postcondition": "PASS",
+        "annotations": "NOT_RUN",
+        "execution": "PASS"
+      },
+      "result_scope": "concrete-execution",
+      "sampling_events": [],
+      "abstraction_events": []
+    },
+    "coq": {
+      "goal": {
+        "path": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries/short-circuit-null-entry-exit/candidate/artifacts/artifacts/one/vc/input_goal.v",
+        "exists": true,
+        "sha256": "c84be1fdfa191c9bf6dbecf7566fbfe8ce9c82f7fc99ca1426a1ae9f433db866",
+        "bytes": 1936
+      },
+      "proof_auto": {
+        "path": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries/short-circuit-null-entry-exit/candidate/artifacts/artifacts/one/vc/input_proof_auto.v",
+        "exists": true,
+        "sha256": "da66b04bed2d6a313810d22ad496ef9ed8c9b69f3d39360bd84cbcaa971f85d4",
+        "bytes": 1152
+      },
+      "goal_check": {
+        "path": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries/short-circuit-null-entry-exit/candidate/artifacts/artifacts/one/vc/input_goal_check.v",
+        "exists": true,
+        "sha256": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e",
+        "bytes": 178
+      }
+    },
+    "storage_metrics": {
+      "branch_evaluation": {
+        "schema": "instance-first-branch-query/v1",
+        "pure_queries": 9,
+        "evaluated_true": 8,
+        "evaluated_false": 1,
+        "smt_fallback": 0
+      }
+    },
+    "executor_resources": {
+      "wall_seconds": 0.005608,
+      "cpu_seconds": 0.0,
+      "measurement": "GNU time; executor and children; maximum process RSS",
+      "peak_rss_kib": 5068
+    },
+    "vc_count": 4,
+    "witness_counts": [
+      {
+        "functionName": "sample",
+        "Witness": {
+          "safety_checker_wit": {
+            "total": 3,
+            "auto_solved": 3,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "entailment_checker_wit": {
+            "total": 0,
+            "auto_solved": 0,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "return_checker_wit": {
+            "total": 1,
+            "auto_solved": 1,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "partial_solve_wit": {
+            "total": 0,
+            "auto_solved": 0,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "which_implies_wit": {
+            "total": 0,
+            "auto_solved": 0,
+            "manual": 0,
+            "manual_witness": null
+          },
+          "total_witness_count": {
+            "auto_solved": 4,
+            "manual": 0
+          }
+        }
+      }
+    ],
+    "generated_source_sha256": "e55d170c80b8814ba4f57cf98d03cc5f0fbef5cce9b0a6f2399959d583c1a04e",
+    "measurement": {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "spectest",
+        "run",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries/short-circuit-null-entry-exit/input.c",
+        "--function",
+        "sample",
+        "--binds",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries/short-circuit-null-entry-exit/binds.json",
+        "--qcp-binary",
+        "/home/yangfp/teSpec/bin/tespec-symexec",
+        "--execution-strategy",
+        "inline",
+        "--execution-mode",
+        "entry-exit",
+        "--loop-unroll-limit",
+        "16",
+        "--output-dir",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries/short-circuit-null-entry-exit/candidate/artifacts",
+        "--timeout",
+        "60",
+        "--no-spatial-smt",
+        "--instance-trace"
+      ],
+      "executed_wrapper_command": [
+        "/usr/bin/time",
+        "--quiet",
+        "-f",
+        "{\"max_process_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"wall_seconds_gnu\":%e}",
+        "-o",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries/short-circuit-null-entry-exit/candidate/resources.json",
+        "/usr/bin/timeout",
+        "--signal=TERM",
+        "--kill-after=5",
+        "75",
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "spectest",
+        "run",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries/short-circuit-null-entry-exit/input.c",
+        "--function",
+        "sample",
+        "--binds",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries/short-circuit-null-entry-exit/binds.json",
+        "--qcp-binary",
+        "/home/yangfp/teSpec/bin/tespec-symexec",
+        "--execution-strategy",
+        "inline",
+        "--execution-mode",
+        "entry-exit",
+        "--loop-unroll-limit",
+        "16",
+        "--output-dir",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries/short-circuit-null-entry-exit/candidate/artifacts",
+        "--timeout",
+        "60",
+        "--no-spatial-smt",
+        "--instance-trace"
+      ],
+      "exit_code": 0,
+      "wall_seconds": 0.1647163149973494,
+      "resources": {
+        "max_process_rss_kib": 19816,
+        "user_seconds": 0.08,
+        "system_seconds": 0.02,
+        "wall_seconds_gnu": 0.11
+      },
+      "tokens": 0,
+      "model_calls": 0,
+      "stdout": "benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries/short-circuit-null-entry-exit/candidate/stdout.log",
+      "stderr": "benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries/short-circuit-null-entry-exit/candidate/stderr.log",
+      "memory_definition": "GNU time %M: largest measured process peak RSS, not aggregate tree memory."
+    },
+    "matches_expected": true
+  },
+  "comparison": {
+    "passed": true,
+    "ignored_metrics_are_new_only": true,
+    "raw_differences": [],
+    "decision_differences": [],
+    "coq_byte_differences": [],
+    "source_bytes_equal": true,
+    "baseline_vc_count": 4,
+    "candidate_vc_count": 4,
+    "original_coq_files_byte_equal": true,
+    "legacy_raw_equal": true,
+    "both_match_expected": true,
+    "transport_ok": true
+  }
+}

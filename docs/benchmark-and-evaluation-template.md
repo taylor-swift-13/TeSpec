@@ -434,3 +434,9 @@ VC、报告、输入/源码/工具哈希及结果成本 CSV/JSON。CLI、执行�
 修改此层必须对比原始 Goal、proof_auto、goal_check 的完整字节，以及原生 VC 公式/状态、所有 witness 数量、最终分类；仅比较残余 VC 或总 PASS 数量不够。循环专项同时比较启用的实例轨迹，覆盖最后一轮失败、break/continue 和两个独立模式参数。比较只允许规范化输出目录及显式列出的新增诊断字段；不得屏蔽旧字段差异。
 
 已有证明仅在原目标与依赖仍匹配时复用。本轮是原生差分回归，没有新调用 ITP 或独立内核证明，不重写历史四工具成本。完整结果见 [本次审计](../benchmark/results/vc-storage-regressions/20261019-audit/summary.md)。
+
+### 分支判定诊断（2026-10-19）
+
+原生输出可附带 `spec_test.branch_evaluation`（`instance-first-branch-query/v1`）。`pure_queries` 是分支可达性纯查询次数，等于 `evaluated_true + evaluated_false + smt_fallback`。前两项是在已有实例代入后的查询副本上直接算出的结果，第三项才进入残余纯公式 SMT 查询；未知不能用于剪枝。空间策略检查仍保留。
+
+这些计数不代表所有 SMT 调用或 C 分支次数，也不能替代原始 VC 数量、证明文件和逐阶段成本。新旧版本比较仅可明确排除该新增诊断字段；仍需比较原有决策、公式、轨迹及完整生成的 Coq 文件，不能据此省略义务或将 UNKNOWN 计成功。

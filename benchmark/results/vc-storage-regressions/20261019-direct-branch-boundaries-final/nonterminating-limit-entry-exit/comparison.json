@@ -1,0 +1,324 @@
+{
+  "id": "nonterminating-limit-entry-exit",
+  "fixture": {
+    "id": "nonterminating-limit-entry-exit",
+    "n": 3,
+    "strategy": "inline",
+    "mode": "entry-exit",
+    "expected": "UNKNOWN",
+    "source": "int sample(int n) /*@ Require 0 <= n && n <= 4096 && emp Ensure __return == n && emp */ { while(n>0) {} return n; }\n"
+  },
+  "source_sha256": "06d050c678a284d529c948b4c2af4b7a49256deceae8dcbc6aba652572410529",
+  "binds_sha256": "1b0da99ab914ef949fd1e0912ad9e3e19dcc77d4e55af6bfd347bd6664828c8d",
+  "trace_enabled": true,
+  "baseline": {
+    "report": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries-final/nonterminating-limit-entry-exit/baseline/artifacts/report.json",
+    "report_sha256": "e55df8b525d405f3d928d3cd0b8b05180bce9aa77e119eb3a0d66a3101e25274",
+    "raw": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries-final/nonterminating-limit-entry-exit/baseline/artifacts/artifacts/one/executor.json",
+    "raw_sha256": "d539b212e4cd0731edda17933101e8681622326fc8dde37ba73a9807638d3cc1",
+    "legacy_raw_sha256": "f17f24e6ab9fe2165b4e6c4c2a19412784af6eb20cc97260fd7cbfe47fa32e83",
+    "decisions": {
+      "status": "UNKNOWN",
+      "overall": "UNKNOWN",
+      "precondition_result": "SAT",
+      "execution_completed": false,
+      "executor_error": {
+        "Main Error Message": "fatal error: Loop unroll limit exceeded for while loop after 16 iterations; concrete test inputs do not force loop exit",
+        "fileName": null,
+        "line": 4,
+        "column": 80,
+        "additional_info": null
+      },
+      "executor_reported_status": "UNKNOWN",
+      "residual_vcs": [],
+      "vc_results": [
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "PROP[\n  prop_false ]\nLOCAL[\n  Temp n n_371_addr ]\nSEP[\n  store(n_371_addr, 3, signed int) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "PROP[]\nLOCAL[\n  Temp n n_371_addr ]\nSEP[\n  store(n_371_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        }
+      ],
+      "phases": {
+        "precondition": "SAT",
+        "safety": "UNKNOWN",
+        "postcondition": "UNKNOWN",
+        "annotations": "NOT_RUN",
+        "execution": "UNKNOWN"
+      },
+      "result_scope": "concrete-execution",
+      "sampling_events": [],
+      "abstraction_events": []
+    },
+    "coq": {},
+    "storage_metrics": {},
+    "executor_resources": {
+      "wall_seconds": 0.0078,
+      "cpu_seconds": 0.0,
+      "measurement": "GNU time; executor and children; maximum process RSS",
+      "peak_rss_kib": 5752
+    },
+    "vc_count": 2,
+    "witness_counts": [
+      {
+        "functionName": "sample",
+        "Witness": null
+      }
+    ],
+    "generated_source_sha256": "4c804a6a811aaaf5892d8f34f025406b3630f5450c9502a9545fb9c3367abc15",
+    "measurement": {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "spectest",
+        "run",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries-final/nonterminating-limit-entry-exit/input.c",
+        "--function",
+        "sample",
+        "--binds",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries-final/nonterminating-limit-entry-exit/binds.json",
+        "--qcp-binary",
+        "/tmp/tespec-direct-branch-baseline/tespec-symexec",
+        "--execution-strategy",
+        "inline",
+        "--execution-mode",
+        "entry-exit",
+        "--loop-unroll-limit",
+        "16",
+        "--output-dir",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries-final/nonterminating-limit-entry-exit/baseline/artifacts",
+        "--timeout",
+        "60",
+        "--no-spatial-smt",
+        "--instance-trace"
+      ],
+      "executed_wrapper_command": [
+        "/usr/bin/time",
+        "--quiet",
+        "-f",
+        "{\"max_process_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"wall_seconds_gnu\":%e}",
+        "-o",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries-final/nonterminating-limit-entry-exit/baseline/resources.json",
+        "/usr/bin/timeout",
+        "--signal=TERM",
+        "--kill-after=5",
+        "75",
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "spectest",
+        "run",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries-final/nonterminating-limit-entry-exit/input.c",
+        "--function",
+        "sample",
+        "--binds",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries-final/nonterminating-limit-entry-exit/binds.json",
+        "--qcp-binary",
+        "/tmp/tespec-direct-branch-baseline/tespec-symexec",
+        "--execution-strategy",
+        "inline",
+        "--execution-mode",
+        "entry-exit",
+        "--loop-unroll-limit",
+        "16",
+        "--output-dir",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries-final/nonterminating-limit-entry-exit/baseline/artifacts",
+        "--timeout",
+        "60",
+        "--no-spatial-smt",
+        "--instance-trace"
+      ],
+      "exit_code": 1,
+      "wall_seconds": 0.16473307099658996,
+      "resources": {
+        "max_process_rss_kib": 20024,
+        "user_seconds": 0.08,
+        "system_seconds": 0.03,
+        "wall_seconds_gnu": 0.11
+      },
+      "tokens": 0,
+      "model_calls": 0,
+      "stdout": "benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries-final/nonterminating-limit-entry-exit/baseline/stdout.log",
+      "stderr": "benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries-final/nonterminating-limit-entry-exit/baseline/stderr.log",
+      "memory_definition": "GNU time %M: largest measured process peak RSS, not aggregate tree memory."
+    },
+    "matches_expected": true
+  },
+  "candidate": {
+    "report": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries-final/nonterminating-limit-entry-exit/candidate/artifacts/report.json",
+    "report_sha256": "7e89949ae0723ce6f29e9d9e3d93e30c43dbb1873bf36dca818f5e8d5180afaa",
+    "raw": "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries-final/nonterminating-limit-entry-exit/candidate/artifacts/artifacts/one/executor.json",
+    "raw_sha256": "71922e9c45bcc7430640a309dd5bb8897a19012aa8fc288c4b3b9886c9c090fc",
+    "legacy_raw_sha256": "f17f24e6ab9fe2165b4e6c4c2a19412784af6eb20cc97260fd7cbfe47fa32e83",
+    "decisions": {
+      "status": "UNKNOWN",
+      "overall": "UNKNOWN",
+      "precondition_result": "SAT",
+      "execution_completed": false,
+      "executor_error": {
+        "Main Error Message": "fatal error: Loop unroll limit exceeded for while loop after 16 iterations; concrete test inputs do not force loop exit",
+        "fileName": null,
+        "line": 4,
+        "column": 80,
+        "additional_info": null
+      },
+      "executor_reported_status": "UNKNOWN",
+      "residual_vcs": [],
+      "vc_results": [
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "PROP[\n  prop_false ]\nLOCAL[\n  Temp n n_371_addr ]\nSEP[\n  store(n_371_addr, 3, signed int) ]\n",
+          "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+        },
+        {
+          "kind": "safety",
+          "name": null,
+          "line": 4,
+          "status": "VALID",
+          "path": "PROP[]\nLOCAL[\n  Temp n n_371_addr ]\nSEP[\n  store(n_371_addr, 3, signed int) ]\n",
+          "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+        }
+      ],
+      "phases": {
+        "precondition": "SAT",
+        "safety": "UNKNOWN",
+        "postcondition": "UNKNOWN",
+        "annotations": "NOT_RUN",
+        "execution": "UNKNOWN"
+      },
+      "result_scope": "concrete-execution",
+      "sampling_events": [],
+      "abstraction_events": []
+    },
+    "coq": {},
+    "storage_metrics": {
+      "branch_evaluation": {
+        "schema": "instance-first-branch-query/v1",
+        "pure_queries": 85,
+        "evaluated_true": 68,
+        "evaluated_false": 17,
+        "smt_fallback": 0
+      }
+    },
+    "executor_resources": {
+      "wall_seconds": 0.007488,
+      "cpu_seconds": 0.0,
+      "measurement": "GNU time; executor and children; maximum process RSS",
+      "peak_rss_kib": 5764
+    },
+    "vc_count": 2,
+    "witness_counts": [
+      {
+        "functionName": "sample",
+        "Witness": null
+      }
+    ],
+    "generated_source_sha256": "4c804a6a811aaaf5892d8f34f025406b3630f5450c9502a9545fb9c3367abc15",
+    "measurement": {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "spectest",
+        "run",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries-final/nonterminating-limit-entry-exit/input.c",
+        "--function",
+        "sample",
+        "--binds",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries-final/nonterminating-limit-entry-exit/binds.json",
+        "--qcp-binary",
+        "/home/yangfp/teSpec/bin/tespec-symexec",
+        "--execution-strategy",
+        "inline",
+        "--execution-mode",
+        "entry-exit",
+        "--loop-unroll-limit",
+        "16",
+        "--output-dir",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries-final/nonterminating-limit-entry-exit/candidate/artifacts",
+        "--timeout",
+        "60",
+        "--no-spatial-smt",
+        "--instance-trace"
+      ],
+      "executed_wrapper_command": [
+        "/usr/bin/time",
+        "--quiet",
+        "-f",
+        "{\"max_process_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"wall_seconds_gnu\":%e}",
+        "-o",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries-final/nonterminating-limit-entry-exit/candidate/resources.json",
+        "/usr/bin/timeout",
+        "--signal=TERM",
+        "--kill-after=5",
+        "75",
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "spectest",
+        "run",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries-final/nonterminating-limit-entry-exit/input.c",
+        "--function",
+        "sample",
+        "--binds",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries-final/nonterminating-limit-entry-exit/binds.json",
+        "--qcp-binary",
+        "/home/yangfp/teSpec/bin/tespec-symexec",
+        "--execution-strategy",
+        "inline",
+        "--execution-mode",
+        "entry-exit",
+        "--loop-unroll-limit",
+        "16",
+        "--output-dir",
+        "/home/yangfp/teSpec/benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries-final/nonterminating-limit-entry-exit/candidate/artifacts",
+        "--timeout",
+        "60",
+        "--no-spatial-smt",
+        "--instance-trace"
+      ],
+      "exit_code": 1,
+      "wall_seconds": 0.1647766519963625,
+      "resources": {
+        "max_process_rss_kib": 20076,
+        "user_seconds": 0.09,
+        "system_seconds": 0.02,
+        "wall_seconds_gnu": 0.11
+      },
+      "tokens": 0,
+      "model_calls": 0,
+      "stdout": "benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries-final/nonterminating-limit-entry-exit/candidate/stdout.log",
+      "stderr": "benchmark/results/vc-storage-regressions/20261019-direct-branch-boundaries-final/nonterminating-limit-entry-exit/candidate/stderr.log",
+      "memory_definition": "GNU time %M: largest measured process peak RSS, not aggregate tree memory."
+    },
+    "matches_expected": true
+  },
+  "comparison": {
+    "passed": true,
+    "ignored_metrics_are_new_only": true,
+    "raw_differences": [],
+    "decision_differences": [],
+    "coq_byte_differences": [],
+    "source_bytes_equal": true,
+    "baseline_vc_count": 2,
+    "candidate_vc_count": 2,
+    "original_coq_files_byte_equal": true,
+    "legacy_raw_equal": true,
+    "both_match_expected": true,
+    "transport_ok": true
+  }
+}

@@ -250,3 +250,9 @@ teSpec 按用户要求暂缓，本轮未运行；历史两模式各7 UNKNOWN是�
 已发布 frozen safety 载荷精确共享、VC 报告哈希索引、空临时 entailment 副本削减和 JSON 临时字符串释放；保留每一个原始证明义务。没有修改在线条件求值、循环退出或分支剪枝。现有 105 项 Python 测试、ASan/UBSan 存储测试、14 组旧新循环差分通过。21 个完整组的 900 对输入、空间 SMT OFF/ON 共 1800 次回归为 0 退化，进一步逐例确认全部原始 Goal/auto/check 字节及原生 VC/witness 记录一致；modular 42 个正例代表也通过。
 
 这不表示 1800 次均为程序 PASS：历史 UNKNOWN 和预期 ERROR 保留。没有新增完整组、没有重跑 CN/Fulminate/ITP，进度仍 21/45；历史成本不覆盖。测得重复快照存储减少，但长循环整体内存仍受活状态历史和其他 witness 影响，不宣称已解决全部内存增长。完整日志、时间/RSS、构建哈希和复现命令见 [存储优化审计](../benchmark/results/vc-storage-regressions/20261019-audit/summary.md)。
+
+### 2026-10-19：实例值优先的在线分支判定
+
+已复用 QCP 实例代入/常量化简，在分支纯可达性查询中优先直接求值；剩余符号公式回退原 SMT，空间策略检查保持。live state、原始见证和 VC 生成不变。21 组 1800 次 OFF/ON 完整回归结果一致，5262 份 Coq 文件逐字节一致；42 次 modular 对照、11 个既有循环对照和24个控制流边界对照通过。现有105项 Python 测试通过，query子集重跑含新增2项，共107项不同测试。
+
+完整组数保持21/45；无新增 CN/Fulminate/ITP 测量。审计：[实例值优先分支判定](../benchmark/results/vc-storage-regressions/20261019-direct-branch-audit/summary.md)。
