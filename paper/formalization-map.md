@@ -18,9 +18,9 @@ is immutable even as execution proceeds.
 | Joint normalization | `theory/DefinitionNormalization.v` preserves the joint heap/live-value denotation for licensed reductions | Rule licensing, root-binding preservation, fresh typed witnesses |
 | Entry and scalar calls | `theory/PreconditionOracle.v`, `theory/CallFrames.v` | Initial-query polarity, argument binding, aliases, and lifetime modeling |
 
-The existing replay receipt is `evidence/theory-review-20261012/report.json`:
-11 modules and 88 principal statements. This revision hash-checks the sources
-against that receipt; it does not rerun or extend their kernel replay.
+The historical 2026-10-17 replay receipt is `evidence/theory-review-20261012/report.json`:
+11 modules and 88 principal statements. That revision hash-checked the sources against that receipt. Later replay
+and extension receipts are recorded below.
 The integrated frontend-to-oracle construction is specified and reasoned about
 in the paper. The manuscript does not claim an end-to-end mechanically checked
 refinement of the C frontend or the concrete SMT adapters.
@@ -32,9 +32,10 @@ interfaces are premises of the corresponding acceptance/refutation arguments.
 
 ## 2026-10-19: two execution strategies
 
-The main paper now distinguishes inline body execution from modular
+The 2026-10-19 revision distinguishes inline body execution from modular
 contract/invariant/assertion sampling, independently of entry-exit and
-all-boundaries schedules. `sections/mode-correspondence.tex` states Theorem 3:
+all-boundaries schedules. Its former Theorem 3, now retained in
+`supplement/mode-correspondence.tex`, states that
 a boundary bisimulation with matching observations transfers finite traces,
 reachable failure, semantic boundary termination, and nonvacuous total
 acceptance. `theory/ModeCorrespondence.v` supplies 14 closed principal statements,
@@ -46,5 +47,35 @@ additionally needs finite segments with no hidden divergence or stuckness.
 The semantic theorem does not establish equal finite-resource tool statuses.
 A new full replay checks 12 modules and 102 principal statements:
 `evidence/strategy-correspondence-20261019/theory/report.json`.
-This supersedes the historical 11-module count above for the current revision;
+This supersedes the historical 11-module count above for that revision;
 the historical receipt is unchanged.
+
+## 2026-10-20: agreement for verified specifications
+
+The main Theorem 3 in `sections/mode-correspondence.tex` now states the intended
+consistency property: complete modular verification entails valid selected
+checks under every legal sample, and both completed testing modes return PASS.
+States, traces, sample choices and inventories may differ. No bisimulation or
+exact summary is required. The 2026-10-19 trace theorem remains supplementary.
+
+`theory/VerifiedSpecificationTesting.v` supplies 20 new closed principal statements:
+
+| Part | Mechanized support | Implementation interface |
+| --- | --- | --- |
+| Verified continuation | `every_legal_contract_sample_preserves_continuation` | Full relational postcondition, old values, frame and return value; caller verified for every legal output |
+| Either execution mode | `every_sampled_run_preserves_annotations` and `verified_specification_two_modes_semantically_accept` | Entry/step/boundary verification; legal samples; selected checks include safety and terminal postcondition |
+| Loops and assertions | Loop initiation/preservation/exit and assertion observation/resampling lemmas | Sample the framed invariant with exit guard, or the framed assertion; do not discard live constraints |
+| Whole original VC | `verified_annotation_implies_original_frozen_vc_valid` | Entire frozen source implies the verified annotation; target is exactly the original check |
+| Original inventory and reports | `verified_specification_original_vc_reports_agree` | Each mode supplies its full original inventory, sound completed decisions, nonempty entry, execution completion and coverage certificates |
+
+The new module was compiled and independently checked with Coq 8.20.1.
+All 20 printed assumption audits are `Closed under the global context`.
+The receipt `evidence/verified-specification-testing-20261020/report.json`
+archives successful and failed development attempts and reuses the unchanged,
+hash-matching 12-module/102-statement receipt. Combined coverage is 13 modules
+and 122 principal statements; only the new module was replayed in this revision.
+
+The report flags and original-inventory completeness are abstract certificate
+interfaces. This is not a mechanical refinement of the concrete C executor,
+VC exporter, sampler or report generator. Partial correctness does not imply
+termination or completion within a solver budget; an unfinished check is UNKNOWN.

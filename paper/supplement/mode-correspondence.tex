@@ -1,0 +1,73 @@
+\subsection{Conditional correspondence of the two strategies}
+\label{sec:mode-correspondence}
+Sound summaries alone do not imply equal test results:
+$\{1\}\subseteq\{0,1\}$ is a sound abstraction, but the additional result
+0 refutes a caller's requirement that the return be 1.
+Likewise, an inductive invariant may contain states unreachable at a
+particular iteration. Conversely, a single summary sample may omit an
+implementation behavior. We therefore state a sufficient correspondence
+condition explicitly rather than assume agreement from a mode switch.
+
+Let $i\leadsto_I i'$ and $m\leadsto_M m'$ be steps between corresponding
+boundaries of body execution and summary execution.
+A boundary may package several C steps only if their safety conditions
+and selected observations are retained; an endpoint-only summary cannot
+silently hide intermediate violations.
+Let $\mathcal R(i,m)$ relate their states, including immutable bindings,
+live values, visible heap resources and frames.
+The interface requires:
+\begin{enumerate}
+\item the initial domains cover each other through $\mathcal R$;
+\item related states have equal observation views and agree on safety,
+selected checks (including return checks), and terminality;
+\item every body successor has a related summary successor, and every
+summary successor has a related body successor.
+\end{enumerate}
+The last condition is a local two-way simulation:
+\[
+\begin{split}
+\mathcal R(i,m)\land i\leadsto_I i'
+ &\Rightarrow \exists m'.\ m\leadsto_M m'\land\mathcal R(i',m'),\\
+\mathcal R(i,m)\land m\leadsto_M m'
+ &\Rightarrow \exists i'.\ i\leadsto_I i'\land\mathcal R(i',m').
+\end{split}
+\]
+An observation view records selected check identities and order, visible
+values and resources. The same schedule and interpretation are used on both
+sides. Any additional modular preservation obligations must also be
+justified; matching final return values alone does not discharge them.
+
+\begin{theorem}[Conditional strategy correspondence]
+\label{thm:mode-correspondence}
+Under this interface, related states have matching finite boundary traces
+with the same observation views. They agree on existence of a reachable
+violation, on correctness of complete finite traces, and on semantic
+well-founded termination. Nonvacuous total acceptance agrees between the
+related initial domains when acceptance requires safety and all selected
+checks, progress at nonterminal states, and termination without outgoing
+steps at terminal states.
+\end{theorem}
+\begin{proof}
+Induction on a finite trace applies the appropriate successor clause at
+each step and preserves $\mathcal R$; the observation and check clauses
+transfer the recorded views and their truth. This transports both a
+violating endpoint and every complete trace in either direction.
+Induction on the total-acceptance derivation transports safety, checks,
+terminality, and progress; the reverse successor clause ensures that
+\emph{every} successor on the other side is covered by the induction
+hypothesis. Initial-domain coverage transfers nonemptiness and the
+universal acceptance condition. The same successor matching transports
+well-founded termination.
+\end{proof}
+
+The standard-library Rocq module \texttt{ModeCorrespondence.v} proves
+these relational claims and the loose-summary counterexample.
+The interface is an obligation for a concrete summary construction,
+not a claim that arbitrary contracts, invariants, or the current sampler
+satisfy it. In particular, choosing one legal model is insufficient.
+Termination here concerns the supplied boundary transition systems.
+Lifting it to C also requires finite boundary segments that do not hide
+internal divergence or stuck behavior. The theorem compares semantic outcomes. Identical finite-resource tool
+reports additionally require complete execution coverage and successful
+decision of corresponding obligations; different solver support, proof
+search, or time limits may leave one report UNKNOWN.

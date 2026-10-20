@@ -1,7 +1,8 @@
 # Mechanized semantic core
 
-The twelve modules compile with Coq 8.20.1 using only the standard library.
-The current replay checks 102 principal theorems with closed global contexts.
+The thirteen modules compile with Coq 8.20.1 using only the standard library.
+Current evidence covers 122 principal statements with closed global contexts:
+the unchanged 12-module/102-statement replay plus the new 20-statement module.
 
 `InstanceChecking.v` contains the generic execution argument.
 It proves:
@@ -162,3 +163,22 @@ boundary termination to C requires finite segments without hidden divergence.
 The full 12-module, 102-statement replay is archived at
 `../evidence/strategy-correspondence-20261019/theory/report.json`, with compressed
 compiler/assumption and independent kernel logs.
+
+
+`VerifiedSpecificationTesting.v` proves agreement under fully verified modular
+specifications, independently of the stronger trace correspondence above.
+It covers arbitrary legal contract samples, invariant initialization/preservation/
+exit, framed assertion sampling, preservation of selected checks, and both
+completed modes returning PASS. Distinct legal outputs are explicitly allowed.
+The final four principal statements bridge verified annotations to each whole
+original VC and then to the completed original-inventory report. Faithful source
+inclusion, exact original targets, full inventory coverage and sound completed
+decisions are explicit interfaces; no concrete C implementation refinement is claimed.
+
+The 2026-10-20 receipt is
+`../evidence/verified-specification-testing-20261020/report.json`.
+All 20 principal statements are closed and independent `coqchk` succeeds.
+All available development logs, including three failed initial proof attempts,
+are retained. The 12 unchanged modules are reused by source hash; this revision
+does not pretend to have rerun those modules. The replay script now includes
+all 13 modules when a fresh full replay is requested.

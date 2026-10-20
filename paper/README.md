@@ -1,7 +1,7 @@
 # TeSpec ICSE manuscript
 
 **TeSpec: Proof-Based Testing of Separation-Logic Specifications for C** is the
-current manuscript in `main.tex` and `main.pdf`. The current revision is twelve
+current manuscript in `main.tex` and `main.pdf`. The current revision is thirteen
 pages including references. It develops the method before its formal guarantees
 and uses three complementary method figures:
 
@@ -9,7 +9,7 @@ and uses three complementary method figures:
 | --- | --- | --- | --- |
 | 1. Workflow | Independent execution strategies, original VC records, and scoped evidence | 3 | `figures/overview-standalone.pdf` |
 | 2. Copied observation | Inline shared write/return above two different functional obligations | 4 | `figures/observation-standalone.pdf` |
-| 3. Verdict flow | QCP/SMT/ITP evidence, scoped path gates, and explicit instance aggregation | 5 | `figures/result-flow-standalone.pdf` |
+| 3. Verdict flow | QCP/SMT/ITP evidence, scoped path gates, and explicit instance aggregation | 6 | `figures/result-flow-standalone.pdf` |
 
 The overview directs readers to the mechanism and verdict diagrams. A shared
 `figures/figure-style.tex` fixes colors, line roles, and print-size typography. All three
@@ -30,10 +30,10 @@ is complete in the earlier study protocol.
 ## Argument and structure
 
 1. Original logical assertions can require proof after inputs are fixed.
-2. Actual C execution supplies the states; copied observations preserve them.
+2. Inline execution preserves reached states; modular execution selects legal summary states.
 3. Exact local frames and joint heap/value normalization preserve what is checked.
-4. Formal construction rules connect execution, faithful resolution, typed
-   observation records, oracle evidence, and path/instance judgments.
+4. Verified modular specifications imply valid checks under arbitrary legal sampling,
+   and both completed testing modes PASS; no equality of sampled states is required.
 5. Four evidence-backed case studies explain arithmetic safety, quantified
    contracts, and spatial proof completion.
 6. The evaluation design distinguishes planned comparisons from recorded cases.
@@ -58,13 +58,12 @@ read-only dependencies of the paper evidence audit.
 `revision-validation.json` records the latest PDF build and visual inspection.
 `citation-audit.md` records the 17-to-39 expansion of actual manuscript citations,
 primary-source checks, and section coverage; the library contains 49 entries.
-`formalization-map.md` connects the two theorems and two propositions to the
-existing Rocq developments and identifies the paper-level interface arguments.
-`tmp/pdfs/` holds ignored preview images. The present revision does not rerun
-benchmarks, invoke proof agents, or recheck the Coq theory. Existing theorem
-receipts remain under `evidence/theory-review-20261012/` (11 modules, 88 principal
-statements). The reference guarantees and implementation obligations are
-separated in the formal section.
+`formalization-map.md` connects the three theorems and two propositions to
+the Rocq developments and identifies the paper-level implementation interfaces.
+`tmp/pdfs/` holds ignored previews. The current revision proves agreement for
+verified specifications and retains the stronger trace correspondence in the
+supplement. Historical benchmark and proof receipts remain unchanged; see the
+dated evidence sections below for exactly which checks were rerun.
 
 ## CN/Fulminate version policy
 
@@ -103,15 +102,38 @@ files retain their original licenses.
 ## Two strategies and their correspondence (2026-10-19)
 
 Both inline and modular strategies are now described in the main manuscript.
-Theorem 3 gives conditional agreement under a two-way boundary correspondence.
-A sound but weak contract does not imply agreement; the eight paired runs
+In that revision, Theorem 3 gave agreement under a two-way boundary correspondence;
+the 2026-10-20 revision moves that stronger result to the supplement.
+A sound but weak callee contract alone does not establish the caller's
+modular verification. The eight paired runs
 under `evidence/strategy-correspondence-20261019/executions/` demonstrate the
 difference and an exact-summary control. Modular FAIL is labelled with its
 sampled-model scope. No execution certificate is claimed for these runs.
 
-The current full theory replay covers 12 modules and 102 closed principal
+The 2026-10-19 full theory replay covers 12 modules and 102 closed principal
 statements, including 14 new correspondence/counterexample statements, with
 independent `coqchk` success. The receipt is
 `evidence/strategy-correspondence-20261019/theory/report.json`.
 The earlier 11-module/88-statement and no-new-experiment statements describe
 the 2026-10-17 revision, not this update. This update edits paper files only.
+
+## Verified-specification agreement (2026-10-20)
+
+The main Theorem 3 now proves the intended property: when the whole program's
+modular specification obligations are verified, arbitrary legal boundary samples
+preserve the checked assertions. Inline and modular therefore both return PASS
+when execution, coverage and sound VC decisions complete. The theorem does not
+require identical states or exact summaries. Incomplete checks remain UNKNOWN.
+
+`theory/VerifiedSpecificationTesting.v` adds 20 principal statements, all closed
+under the global context and independently checked by Coq 8.20.1's `coqchk`.
+The proof explicitly connects whole original VC sources to verified assertions
+and connects complete VC inventories to PASS/PASS agreement. The sampler,
+VC generator and report certificates remain implementation interfaces.
+
+`evidence/verified-specification-testing-20261020/report.json` records the new
+proof, all available attempt logs and reuse of the hash-matching 12-module/
+102-statement receipt. Combined evidence covers 13 modules and 122 statements.
+The build checks both receipts. No new runtime benchmark trials were run for
+this paper revision. The older strong trace theorem is retained in
+`supplement/mode-correspondence.tex`; the verdict figure is retained.

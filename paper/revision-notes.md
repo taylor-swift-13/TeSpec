@@ -95,3 +95,29 @@ theory replay and changes no implementation, solver, benchmark, or raw result.
 - Add hash and evidence checks to the paper build. Preserve previous receipts.
   New artifacts are under evidence/strategy-correspondence-20261019.
 - The resulting PDF has 12 pages. No execution engine or benchmark files changed.
+
+## 2026-10-20: verified specifications imply agreement
+
+- Replace main Theorem 3 with agreement for fully verified modular specifications:
+  every legal sample preserves verified assertions; both completed tests PASS.
+  This does not require equal values, traces or exact summaries.
+- Cover contracts, loop initiation/preservation/exit and framed assertions. State
+  universal continuation obligations and the shared dependency interpretation.
+- Add the whole-original-VC implication bridge; single-sample truth alone is
+  insufficient. Original inventory coverage and sound completed decisions yield
+  agreement of reports in the reference model.
+- Retain the older boundary-bisimulation theorem as supplementary material and
+  preserve the verdict diagram. Update the overview, introduction and discussion
+  around the verified-specification premise.
+- Add VerifiedSpecificationTesting.v: 20 closed principal statements, compiled
+  and independently kernel-checked with Coq 8.20.1. Preserve all available proof
+  attempt logs, including three failures. Reuse the hash-matching 12-module/
+  102-statement receipt; combined coverage is 13 modules / 122 statements.
+- This is a reference-model proof with explicit sampler/VC/report interfaces,
+  not a verified implementation of the C executor. No runtime trials were rerun.
+- Final build and visual review details are in revision-validation.json.
+- Final manuscript: 13 pages, no LaTeX errors, overfull boxes, undefined
+  references/citations or bibliography warnings. Five underfull diagnostics
+  were visually checked. The theorem pages, overview and preserved decision
+  diagram were inspected at readable resolution, with all pages reviewed in
+  a contact sheet.

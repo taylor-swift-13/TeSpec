@@ -1,73 +1,87 @@
-\subsection{Conditional correspondence of the two strategies}
+\subsection{Agreement when the specifications are verified}
 \label{sec:mode-correspondence}
-Sound summaries alone do not imply equal test results:
-$\{1\}\subseteq\{0,1\}$ is a sound abstraction, but the additional result
-0 refutes a caller's requirement that the return be 1.
-Likewise, an inductive invariant may contain states unreachable at a
-particular iteration. Conversely, a single summary sample may omit an
-implementation behavior. We therefore state a sufficient correspondence
-condition explicitly rather than assume agreement from a mode switch.
+The two strategies need not produce the same states. The relevant consistency
+property is that a verified specification cannot be falsified by choosing
+another legal summary model. Here \emph{verified} means that the complete
+modular proof obligations have been discharged in the same interpretation
+$\Gamma$: the entry and return contracts, arithmetic and memory safety,
+call obligations, and every assertion and invariant selected by the
+observation schedule. External functions without bodies contribute explicit
+environment assumptions. Proof dependencies and target-layout assumptions
+must agree with those used by testing.
 
-Let $i\leadsto_I i'$ and $m\leadsto_M m'$ be steps between corresponding
-boundaries of body execution and summary execution.
-A boundary may package several C steps only if their safety conditions
-and selected observations are retained; an endpoint-only summary cannot
-silently hide intermediate violations.
-Let $\mathcal R(i,m)$ relate their states, including immutable bindings,
-live values, visible heap resources and frames.
-The interface requires:
-\begin{enumerate}
-\item the initial domains cover each other through $\mathcal R$;
-\item related states have equal observation views and agree on safety,
-selected checks (including return checks), and terminality;
-\item every body successor has a related summary successor, and every
-summary successor has a related body successor.
-\end{enumerate}
-The last condition is a local two-way simulation:
+Let $A_\ell(s)$ be the assertion established by the verification proof at
+program point $\ell$. The proof establishes entry inclusion in $A_{\rm entry}$,
+preservation by ordinary program steps, and the selected checks under
+$A_\ell$. At a boundary $b$, write $C_b(s,t)$ for the complete relational
+postcondition, including old values, the returned value and preserved frames.
+Verification of the continuation establishes
 \[
-\begin{split}
-\mathcal R(i,m)\land i\leadsto_I i'
- &\Rightarrow \exists m'.\ m\leadsto_M m'\land\mathcal R(i',m'),\\
-\mathcal R(i,m)\land m\leadsto_M m'
- &\Rightarrow \exists i'.\ i\leadsto_I i'\land\mathcal R(i',m').
-\end{split}
+ A_\ell(s)\land C_b(s,t)\ \Longrightarrow\ A_{\ell'}(t).
 \]
-An observation view records selected check identities and order, visible
-values and resources. The same schedule and interpretation are used on both
-sides. Any additional modular preservation obligations must also be
-justified; matching final return values alone does not discharge them.
+This implication quantifies over \emph{every} legal post-state $t$.
+When it returns, the verified body supplies a post-state satisfying $C_b$
+in inline mode;
+a correct sampler supplies such a state in modular mode.
+The same argument covers invariant initialization, preservation and exit,
+and continuation after an assertion. The sampler may choose a different
+state on every visit; it must preserve the full relational constraints.
 
-\begin{theorem}[Conditional strategy correspondence]
+\paragraph{From verified assertions to original VCs.}
+Trace correctness alone does not establish an entailment over a larger
+symbolic source set. For each original record $e$ at point $\ell_e$, the
+instance-construction interface therefore requires
+\[
+  \forall s.\ S_e(s)\Rightarrow A_{\ell_e}(s),
+  \qquad
+  \forall s.\ A_{\ell_e}(s)\Rightarrow Q_e(s).
+\]
+The second implication comes from the verified check and faithful resolution;
+the first requires that specialization, resource transfer, framing and
+normalization retain the verified facts. Together they establish the
+\emph{whole} original VC $\phi_e=\forall s.\,S_e(s)\Rightarrow Q_e(s)$,
+not merely its truth at the chosen sample.
+
+\begin{theorem}[Agreement for verified specifications]
 \label{thm:mode-correspondence}
-Under this interface, related states have matching finite boundary traces
-with the same observation views. They agree on existence of a reachable
-violation, on correctness of complete finite traces, and on semantic
-well-founded termination. Nonvacuous total acceptance agrees between the
-related initial domains when acceptance requires safety and all selected
-checks, progress at nonterminal states, and termination without outgoing
-steps at terminal states.
+Assume the modular verification obligations above, legal instance inputs,
+correct relational sampling, and faithful original-VC construction.
+Every finite inline or modular test prefix preserves the verified
+assertions and satisfies its selected checks; every generated original VC
+is valid. If both tests complete execution and the required coverage, have
+nonempty entry domains, and finish soundly deciding every required VC, then
+their verdicts agree: both are \pass{}. The claim quantifies over every
+legal sequence of modular samples and does not require equal states or
+matching execution traces.
 \end{theorem}
 \begin{proof}
-Induction on a finite trace applies the appropriate successor clause at
-each step and preserves $\mathcal R$; the observation and check clauses
-transfer the recorded views and their truth. This transports both a
-violating endpoint and every complete trace in either direction.
-Induction on the total-acceptance derivation transports safety, checks,
-terminality, and progress; the reverse successor clause ensures that
-\emph{every} successor on the other side is covered by the induction
-hypothesis. Initial-domain coverage transfers nonemptiness and the
-universal acceptance condition. The same successor matching transports
-well-founded termination.
+Induct on execution steps. Entry verification establishes the initial
+assertion. Ordinary-step verification preserves it. At a contract,
+invariant or assertion boundary, legal sampling satisfies the complete
+boundary relation; the universally verified continuation implication
+establishes the next assertion independently of which legal state was
+chosen. The verified assertion entails safety and the selected checks,
+including the return condition at a completed exit.
+For each original VC, compose source inclusion with its verified target
+implication. Sound completed decisions therefore classify all required VCs
+as VALID. Nonempty entry and completed coverage then yield \pass{} in both
+strategies by the aggregation rule.
 \end{proof}
 
-The standard-library Rocq module \texttt{ModeCorrespondence.v} proves
-these relational claims and the loose-summary counterexample.
-The interface is an obligation for a concrete summary construction,
-not a claim that arbitrary contracts, invariants, or the current sampler
-satisfy it. In particular, choosing one legal model is insufficient.
-Termination here concerns the supplied boundary transition systems.
-Lifting it to C also requires finite boundary segments that do not hide
-internal divergence or stuck behavior. The theorem compares semantic outcomes. Identical finite-resource tool
-reports additionally require complete execution coverage and successful
-decision of corresponding obligations; different solver support, proof
-search, or time limits may leave one report UNKNOWN.
+For example, a helper may return 1 while guaranteeing only
+$0\le\mathit{ret}\le1$. If the caller's verified continuation accepts this
+entire range, inline can produce 1 and modular can sample 0 while both tests
+pass. If the caller instead requires exactly 1, the continuation implication
+has not been verified against that weak summary. Such a disagreement is
+outside the theorem's premise; it does not refute verified-specification
+consistency.
+
+The module \texttt{VerifiedSpecificationTesting.v} mechanizes preservation
+under legal sampling, the VC implication bridge, and agreement of completed
+decisions. Its proof interfaces are explicit; the theorem is not an
+end-to-end verification of the C executor or of its solver adapters.
+Partial-correctness verification does not guarantee termination or a finite
+solver budget. An unfinished execution or proof remains UNKNOWN rather
+than contradicting semantic agreement.
+The stronger two-way trace correspondence in \texttt{ModeCorrespondence.v}
+is retained as supplementary material; it is not required for this theorem.

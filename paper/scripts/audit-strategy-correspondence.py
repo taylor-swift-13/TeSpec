@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check the paired strategy example and the current theory replay receipt."""
+"""Check the paired strategy example and the archived 2026-10-19 theory replay receipt."""
 import gzip
 import hashlib
 import json

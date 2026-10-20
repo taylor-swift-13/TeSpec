@@ -3,8 +3,11 @@
 We distinguish constructing an execution tree, establishing its obligations,
 and assigning a verdict. The body-execution model below applies to inline
 execution with actual program transitions. A modular sampled tree instead
-uses contract transitions; transfer to body execution requires the separate
-correspondence in Section~\ref{sec:mode-correspondence}. A failed proof does not change execution, and a
+uses contract transitions. Section~\ref{sec:mode-correspondence} proves that
+verified specifications give passing completed tests in both models, even
+when their states differ. For unverified specifications, transferring a
+modular counterexample to body execution still requires a matching reachable
+execution. A failed proof does not change execution, and a
 refuted abstract obligation does not by itself establish an execution
 counterexample~\cite{maksimovic2023exact}.
 
@@ -322,7 +325,8 @@ $x=1$ and refute a requirement $x=0$ even when only $x=0$ is reachable.
 \paragraph{Mechanized scope.}
 The Rocq artifact proves parameterized finite-tree acceptance, trace
 erasure and lifting, exact local framing, and preservation under licensed
-normalization. It also formalizes entry polarity and scalar call/alias
-properties. The rules in this section compose these interfaces at paper
+normalization. It also formalizes entry polarity, scalar call/alias properties, and
+verified-specification preservation under arbitrary legal samples, with a
+bridge from faithful original VCs to completed verdict agreement. The rules in this section compose these interfaces at paper
 level. Correct realization of transfer, resolution, the observation
 schedule, and solver adapters is a premise of the implementation guarantee.

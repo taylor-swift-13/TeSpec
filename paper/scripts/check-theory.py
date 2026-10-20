@@ -34,6 +34,7 @@ def main():
         ("DefinitionNormalization", 7),
         ("ObservationTrace", 6),
         ("ModeCorrespondence", 14),
+        ("VerifiedSpecificationTesting", 20),
     ]
     sources = {}
     for module, _ in modules:
@@ -100,7 +101,7 @@ def main():
     )
     report = {
         "schema": "tespec-theory-replay/v1",
-        "scope": "execution core, scalar-cell calls, arithmetic rewriting, layout bridge, initial-VC polarity, exact local-frame observations, closed list equality typed-witness inhabitance and budgeted definition normalization; conditional two-strategy trace and total-acceptance correspondence; not C implementation refinement",
+        "scope": "execution core, scalar-cell calls, arithmetic rewriting, layout bridge, initial-VC polarity, exact local-frame observations, closed list equality typed-witness inhabitance and budgeted definition normalization; conditional two-strategy trace and total-acceptance correspondence; verified-specification arbitrary-sampling preservation, original-VC validity and completed verdict agreement; not C implementation refinement",
         "modules": checked,
         "principal_theorems_closed": sum(
             m["principal_theorems_closed"] for m in checked

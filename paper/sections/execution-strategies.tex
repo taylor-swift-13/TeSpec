@@ -43,21 +43,30 @@ both the transition model and the states actually covered.
 Mixed executions containing bodyless calls inherit this qualification
 unless those external transitions have a justified implementation model.
 
-\paragraph{Why agreement requires conditions.}
+\paragraph{Verification makes legal samples safe.}
+A fully verified continuation must accept every post-state admitted by the
+callee contract, not just the result of one implementation. Therefore weak
+summaries can still yield agreement: if the caller accepts every value in
+$[0,1]$, both an inline result of 1 and a modular sample of 0 pass.
+Section~\ref{sec:mode-correspondence} proves this preservation property from
+the modular verification obligations.
+
+\paragraph{An unverified continuation is a different case.}
 Consider a helper that returns 1 but promises only
 $0\le\mathit{ret}\le1$, and a caller whose postcondition requires
 $\mathit{ret}=1$.
-The helper satisfies its contract. Inline execution returns 1;
+The helper satisfies its contract, but the caller cannot establish its
+postcondition from that contract alone. Inline execution returns 1;
 a modular continuation may legally choose 0.
 The two tests therefore ask different questions despite sharing an input.
 Changing the helper's summary to $\mathit{ret}=1$ removes this difference
 for the example. It does not establish agreement for arbitrary programs.
 
 The paired artifact runs both summaries, both strategies, and both
-observation schedules on the current executor: eight executions.
+observation schedules on the archived 2026-10-19 executor: eight executions.
 With the loose summary, inline reports PASS and modular selects 0 and
 reports FAIL in its model scope under both schedules. With the exact
 summary, all four executions report PASS. These are automatic reports,
 not new kernel-checked execution certificates.
-Section~\ref{sec:mode-correspondence} states the additional correspondence
-conditions needed for a general agreement theorem.
+The loose-summary caller has an open modular continuation obligation and
+is not an instance of the verified-specification theorem.

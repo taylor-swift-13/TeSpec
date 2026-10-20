@@ -3,6 +3,7 @@ set -euo pipefail
 cd -- "$(dirname -- "$0")"
 python3 scripts/audit-case-studies.py
 python3 scripts/audit-strategy-correspondence.py
+python3 scripts/audit-verified-specification-testing.py
 python3 scripts/summarize-evidence.py
 for figure in overview observation result-flow; do
   (cd figures && pdflatex -interaction=nonstopmode -halt-on-error "$figure-standalone.tex" > "build-$figure.log")

@@ -10,14 +10,15 @@ preserving the execution and its obligations. Quantified contracts illustrate
 where proof completion remains useful.
 
 \paragraph{Agreement between strategies.}
-A sound summary may admit behaviors absent from its implementation, and
-an invariant may admit unreachable loop states. Sampling can also miss an
-implementation behavior. Consequently, strategy agreement needs matching
-observations, two-way boundary simulation, and appropriate coverage; sound
-contracts alone are insufficient. The correspondence theorem is conditional,
-not a certificate that arbitrary contracts satisfy those interfaces. Solver
-incompleteness and resource limits can still yield different UNKNOWN reports
-for semantically equivalent tests.
+For a fully verified modular specification, every legal boundary post-state
+satisfies the verified continuation, even when a summary admits values that
+the implementation never produces. Theorem~\ref{thm:mode-correspondence}
+therefore proves common PASS for completed decisions without requiring equal
+states or two-way simulation. Verification must cover the entire selected
+specification, and instance construction must preserve the verified facts
+in every original VC. Open continuation obligations fall outside this
+premise. Solver incompleteness or execution limits may still leave a test
+UNKNOWN; partial correctness does not prove termination.
 
 \paragraph{Validity of the comparison.}
 The selected cases explain mechanisms and do not estimate their prevalence
