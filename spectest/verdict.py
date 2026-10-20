@@ -55,7 +55,6 @@ def _executor_target_layout(output: str | None) -> dict[str, Any] | None:
 def _executor_result(
     output: str, returncode: int, vc: dict[str, Any], *,
     expected_strategy: str | None = None,
-    expected_modular_instantiation: str | None = None,
 ) -> dict[str, Any]:
     """Consume executor JSON. Missing fields are explicitly unknown, not success."""
     try:
@@ -109,22 +108,16 @@ def _executor_result(
     # A legacy inline executor is usable by default; it must never silently
     # satisfy a modular request. New executors must bind strategy and semantics.
     strategy = result.get("execution_strategy", "inline")
-    instantiation = result.get("modular_instantiation", "off")
     if (
         not isinstance(strategy, str)
         or strategy not in EXECUTION_SEMANTICS
-        or instantiation not in ("on", "off")
         or (strategy == "modular" and (
-            instantiation != "off" or bool(result.get("sampling_events"))
+            bool(result.get("sampling_events"))
             or result.get("declaration_call_policy") != "contract-symbolic/v1"
             or result.get("result_scope") != "contract-and-invariant-symbolic"))
-        or (strategy == "modular" and expected_modular_instantiation is not None
-            and instantiation != expected_modular_instantiation)
         or (expected_strategy is not None and strategy != expected_strategy)
         or ("execution_strategy" in result
-            and result.get("execution_semantics") != (
-                "modular-symbolic/v1" if strategy == "modular" and instantiation == "off"
-                else EXECUTION_SEMANTICS[strategy]))
+            and result.get("execution_semantics") != EXECUTION_SEMANTICS[strategy])
         or ("execution_strategy" not in result
             and result.get("execution_semantics") in {
                 "modular-sampled/v1", "modular-symbolic/v1", "modular-hybrid/v2"})
@@ -268,7 +261,6 @@ def _executor_result(
         "execution_strategy": strategy,
         "requested_execution_strategy": expected_strategy,
         "declaration_call_policy": result.get("declaration_call_policy"),
-        "modular_instantiation": instantiation if strategy == "modular" else None,
         "sampling_failure_policy": result.get("sampling_failure_policy"),
         "sampling_events": sampling_events,
         "result_scope": result.get("result_scope"),

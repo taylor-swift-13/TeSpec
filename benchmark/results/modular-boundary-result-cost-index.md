@@ -1,6 +1,6 @@
 # Modular边界修复：各组结果与成本
 
-**当前策略已移除 modular 边界采样。** [最新无采样结果与成本](modular-symbolic-only-20261020/index.md)。以下表格保留为历史记录。
+**当前策略已移除 modular 边界采样。** [最新 20 组复测结果与成本](modular-20-groups-20261020/index.md)。以下表格保留为历史记录。
 
 采样开关×空间SMT开关共四种配置，21组900对输入。20组全部匹配，array_load的弱合同客户端在ITP后仍为UNKNOWN；未改原预期。
 

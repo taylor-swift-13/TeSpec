@@ -209,10 +209,6 @@ def _run_parser() -> argparse.ArgumentParser:
         "bodies use their contracts; only inline may sample their results",
     )
     parser.add_argument(
-        "--modular-instantiation", choices=("off",), default="off",
-        help="compatibility option: modular boundary sampling is removed; only off is supported",
-    )
-    parser.add_argument(
         "--annotation-policy", choices=("ignore", "check-preserve", "qcp")
     )
     parser.add_argument(
@@ -289,7 +285,6 @@ def _run_source(argv: list[str]) -> int:
                 "loop_unroll_limit": args.loop_unroll_limit,
                 "execution_mode": args.execution_mode,
                 "execution_strategy": args.execution_strategy,
-                "modular_instantiation": args.modular_instantiation,
                 "annotation_policy": args.annotation_policy,
                 "instance_trace": args.instance_trace,
                 "call_depth_limit": args.call_depth_limit,

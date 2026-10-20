@@ -54,7 +54,7 @@ def native_result(strategy="inline", mode="entry-exit"):
 
     if strategy == "modular":
         payload["spec_test"].update(
-            modular_instantiation="off", declaration_call_policy="contract-symbolic/v1",
+            declaration_call_policy="contract-symbolic/v1",
             result_scope="contract-and-invariant-symbolic", sampling_events=[],
             abstraction_events=[{"kind": "contract-use", "function": "external"}],
         )
@@ -155,9 +155,9 @@ class ExecutionStrategyTests(unittest.TestCase):
     def test_symbolic_request_rejects_legacy_sampled_modular_semantics(self):
         payload = native_result("modular")
         result = _executor_result(json.dumps(payload), 0, VC,
-            expected_strategy="modular", expected_modular_instantiation="off")
+            expected_strategy="modular")
         self.assertEqual(result["status"], "PASS")
-        self.assertEqual(result["modular_instantiation"], "off")
+        self.assertNotIn("modular_instantiation", result)
         for fields in (
             {"modular_instantiation": "on", "execution_semantics": "modular-hybrid/v2"},
             {"sampling_events": [{"status": "SAMPLED"}]},
@@ -168,13 +168,15 @@ class ExecutionStrategyTests(unittest.TestCase):
             self.assertEqual(_executor_result(json.dumps(bad), 0, VC,
                 expected_strategy="modular")["status"], "ERROR")
 
-    def test_modular_sampling_on_is_not_a_supported_configuration(self):
-        with self.assertRaisesRegex(JobError, "sampling has been removed"):
-            _parse_qcp_config({"qcp": {"execution_strategy": "modular",
-                                      "modular_instantiation": "on"}}, ROOT, ROOT)
+    def test_removed_modular_configuration_is_rejected(self):
+        for value in ("on", "off"):
+            with self.subTest(value=value), self.assertRaisesRegex(JobError, "was removed"):
+                _parse_qcp_config({"qcp": {"execution_strategy": "modular",
+                                          "modular_instantiation": value}}, ROOT, ROOT)
         args = _run_parser().parse_args(["input.c", "--function", "sample", "--binds", "binds.json",
                                         "--execution-strategy", "modular"])
-        self.assertEqual(args.modular_instantiation, "off")
+        self.assertFalse(hasattr(args, "modular_instantiation"))
+        self.assertNotIn("--modular-instantiation", _run_parser().format_help())
 
     def test_legacy_inline_response_is_usable_but_not_for_modular(self):
         payload = native_result("inline")
@@ -283,8 +285,7 @@ class NativeExecutionStrategyTests(unittest.TestCase):
         )
         for mode in ("entry-exit", "all-boundaries"):
             with self.subTest(mode=mode):
-                case, raw = self.run_source(source, "modular", mode,
-                                            modular_instantiation="off")
+                case, raw = self.run_source(source, "modular", mode)
                 self.assertTrue(case["execution_completed"], case)
                 self.assertEqual(case["execution_semantics"], "modular-symbolic/v1")
                 self.assertEqual(case["declaration_call_policy"], "contract-symbolic/v1")
@@ -301,18 +302,16 @@ class NativeExecutionStrategyTests(unittest.TestCase):
             "void external(void) /*@ Require emp Ensure opaque(7) */;\n"
         )
         for mode in ("entry-exit", "all-boundaries"):
-            for sampling in ("off",):
-                with self.subTest(mode=mode, sampling=sampling):
-                    source = prefix + (
-                        "int sample(void) /*@ Require emp Ensure __return == 0 && opaque(7) */ "
-                        "{ external(); return 0; }"
-                    )
-                    case, raw = self.run_source(source, "modular", mode,
-                                                modular_instantiation=sampling)
-                    self.assertEqual(case["status"], "PASS", case)
-                    self.assertTrue(case["execution_completed"], case)
-                    self.assertTrue(case["vc_results"], case)
-                    self.assertEqual(case["sampling_events"], [])
+            with self.subTest(mode=mode):
+                source = prefix + (
+                    "int sample(void) /*@ Require emp Ensure __return == 0 && opaque(7) */ "
+                    "{ external(); return 0; }"
+                )
+                case, raw = self.run_source(source, "modular", mode)
+                self.assertEqual(case["status"], "PASS", case)
+                self.assertTrue(case["execution_completed"], case)
+                self.assertTrue(case["vc_results"], case)
+                self.assertEqual(case["sampling_events"], [])
         # The same unsupported predicate in an unproved assertion remains an
         # original obligation; falling back must not manufacture a PASS.
         source = "/*@ Extern Coq (opaque : Z -> Assertion) */\n" + (
@@ -329,12 +328,10 @@ class NativeExecutionStrategyTests(unittest.TestCase):
             "int external(void) /*@ Require emp Ensure __return < 0 && __return >= 0 && emp */;\n"
             "int sample(void) /*@ Require emp Ensure __return == 0 && emp */ { external(); return 0; }"
         )
-        for sampling in ("off",):
-            with self.subTest(sampling=sampling):
-                case, raw = self.run_source(source, "modular", "all-boundaries",
-                                            modular_instantiation=sampling)
-                self.assertEqual(case["status"], "UNKNOWN", case)
-                self.assertNotEqual(case["reason"], "qcp_full_auto_passed", raw)
+        with self.subTest(strategy="modular"):
+            case, raw = self.run_source(source, "modular", "all-boundaries")
+            self.assertEqual(case["status"], "UNKNOWN", case)
+            self.assertNotEqual(case["reason"], "qcp_full_auto_passed", raw)
 
     def test_defined_weak_contract_uses_body_only_in_inline(self):
         source = (

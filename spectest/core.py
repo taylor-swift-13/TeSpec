@@ -162,7 +162,6 @@ class QcpConfig:
     spatial_smt: bool = False
     spatial_smt_timeout_ms: int = 2000
     execution_strategy: str = "inline"
-    modular_instantiation: str = "off"
 
 
 @dataclass(frozen=True)
@@ -1330,11 +1329,8 @@ def _parse_qcp_config(job: dict[str, Any], base: Path, source_dir: Path) -> QcpC
         execution_strategy = normalize_execution_strategy(raw.get("execution_strategy", "inline"))
     except ValueError as error:
         raise JobError(f"qcp.{error}") from error
-    modular_instantiation = raw.get("modular_instantiation", "off")
-    if modular_instantiation not in ("on", "off"):
-        raise JobError("qcp.modular_instantiation must be on or off")
-    if execution_strategy == "modular" and modular_instantiation != "off":
-        raise JobError("modular boundary sampling has been removed; omit qcp.modular_instantiation or use off")
+    if "modular_instantiation" in raw:
+        raise JobError("qcp.modular_instantiation was removed; select execution_strategy=modular")
     architecture_bits = raw.get("architecture_bits", 32)
     if type(architecture_bits) is not int or architecture_bits not in (32, 64):
         raise JobError("qcp.architecture_bits must be 32 or 64")
@@ -1378,7 +1374,6 @@ def _parse_qcp_config(job: dict[str, Any], base: Path, source_dir: Path) -> QcpC
         timeout_seconds=float(timeout),
         execution_mode=execution_mode,
         execution_strategy=execution_strategy,
-        modular_instantiation=modular_instantiation,
         annotation_policy=raw.get("annotation_policy"),
         instance_trace=instance_trace,
         loop_unroll_limit=loop_unroll_limit,
@@ -1421,8 +1416,6 @@ def _qcp_command(
     # requires the new native flag; its response is checked before accepting it.
     if config.execution_strategy != "inline":
         command.extend(("--execution-strategy", config.execution_strategy))
-        if config.modular_instantiation == "off":
-            command.extend(("--modular-instantiation", "off"))
     if config.instance_trace:
         command.append("--instance-trace")
     if config.annotation_policy is not None:
@@ -1974,7 +1967,6 @@ def run_job(
                     **_executor_result(
                         completed.stdout, completed.returncode, vc,
                         expected_strategy=config.execution_strategy,
-                        expected_modular_instantiation=config.modular_instantiation,
                     ),
                     "returncode": completed.returncode,
                     "generated_source_sha256": _sha256(generated_source),
@@ -2117,8 +2109,7 @@ def run_job(
         "vc_policy": {
             "mode": config.execution_mode,
             "execution_strategy": config.execution_strategy,
-            "execution_semantics": execution_semantics(config.execution_strategy, config.modular_instantiation),
-            "modular_instantiation": config.modular_instantiation,
+            "execution_semantics": execution_semantics(config.execution_strategy),
             "loops": "execute_iterations" if config.execution_strategy == "inline" else "retain_symbolic_invariant_boundaries",
             "defined_function_calls": "execute_bodies" if config.execution_strategy == "inline" else "retain_symbolic_contract_postconditions",
             "intermediate_boundaries": (

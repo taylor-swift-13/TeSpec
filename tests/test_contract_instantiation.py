@@ -122,7 +122,7 @@ class ContractInstantiationTests(unittest.TestCase):
                  "--modular-instantiation=on"], capture_output=True, text=True, timeout=20,
             )
             self.assertNotEqual(result.returncode, 0)
-            self.assertIn("sampling has been removed", result.stdout + result.stderr)
+            self.assertIn("--modular-instantiation", result.stdout + result.stderr)
 
     def variants(self, name):
         results = []

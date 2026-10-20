@@ -3,9 +3,7 @@
 EXECUTION_MODES = ("entry-exit", "all-boundaries")
 EXECUTION_STRATEGIES = ("inline", "modular")
 EXECUTION_SEMANTICS = {"inline": "inline-preserve/v1", "modular": "modular-symbolic/v1"}
-def execution_semantics(strategy: str, modular_instantiation: str = "off") -> str:
-    if strategy == "modular" and modular_instantiation != "off":
-        raise ValueError("modular boundary sampling has been removed")
+def execution_semantics(strategy: str) -> str:
     return EXECUTION_SEMANTICS[strategy]
 
 

@@ -25,9 +25,9 @@ int sample(int *p)
 
 @unittest.skipUnless(os.environ.get("SAC_SYMEXEC"), "select a native candidate")
 class ModularBoundaryInstanceTests(unittest.TestCase):
-    def run_instance(self, text, mode="all-boundaries", sampling="off"):
+    def run_instance(self, text, mode="all-boundaries"):
         return support.NativeExecutionStrategyTests().run_source(
-            text, "modular", mode, modular_instantiation=sampling,
+            text, "modular", mode,
             include_dirs=[str(ROOT / "runtime/qcip/QCP_examples/QCP_demos_human")],
         )
 
@@ -38,10 +38,10 @@ class ModularBoundaryInstanceTests(unittest.TestCase):
                 self.assertEqual(case["status"], "PASS", case)
                 self.assertTrue(case["execution_completed"])
                 self.assertEqual(case["sampling_events"], [])
-                self.assertEqual(case["modular_instantiation"], "off")
+                self.assertNotIn("modular_instantiation", case)
 
-    def test_symbolic_switch_keeps_same_explicit_array_result(self):
-        case, _ = self.run_instance(source("IntArray::full(p,2,xs)"), sampling="off")
+    def test_default_symbolic_mode_keeps_explicit_array_result(self):
+        case, _ = self.run_instance(source("IntArray::full(p,2,xs)"))
         self.assertEqual(case["status"], "PASS", case)
         self.assertEqual(case["sampling_events"], [])
 

@@ -408,7 +408,7 @@ historical results under their original version; retain new measurements under
 
 ## 现行 modular 策略：移除边界采样（2026-10-20）
 
-modular 只在函数入口应用测试绑定。函数规约、循环不变式和 assertion 边界保留符号状态，不进入候选搜索；采样事件必须为空。默认 `modular_instantiation=off`，`on` 不再支持，不能把旧采样执行器输出当作当前 modular 结果。`execution_semantics=modular-symbolic/v1`、`declaration_call_policy=contract-symbolic/v1`、`result_scope=contract-and-invariant-symbolic`。inline 原行为及 VC 范围参数保持独立不变。
+modular 只在函数入口应用测试绑定。函数规约、循环不变式和 assertion 边界保留符号状态，不进入候选搜索；采样事件必须为空。`--modular-instantiation` 和 `qcp.modular_instantiation` 已删除，不再区分 on/off，也不接受 off 兼容开关。直接选择 `execution_strategy=modular`；不能把旧采样执行器输出当作当前 modular 结果。`execution_semantics=modular-symbolic/v1`、`declaration_call_policy=contract-symbolic/v1`、`result_scope=contract-and-invariant-symbolic`。inline 原行为及 VC 范围参数保持独立不变。
 
 以下带日期的采样方案为历史记录，不能用于描述现行默认值。旧结果、成本与二进制哈希原样保留。此次删除不扩大空间 SMT 接入条件；未解决义务仍为 UNKNOWN。详见 [删除记录](modular-no-boundary-sampling.md)。
 

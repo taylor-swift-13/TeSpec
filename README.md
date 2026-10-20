@@ -37,7 +37,7 @@ TeSpec 先检查实例化的 Require 是否可满足，再检查安全性和 Ens
 
 无函数体的被调用函数在两种策略中都使用契约；modular 保留符号后状态，inline 沿用原有契约采样。没有契约时不能继续调用。作为检查目标的只有声明的函数仍只检查 Require，安全性和 Ensure 为 NOT_RUN。旧模式名称 `expand` / `no-expand` 仍分别是 `entry-exit` / `all-boundaries` 的输入别名。
 
-模块化执行保留入口测试绑定、旧值关系、未修改资源及地址分离，在边界使用规约或不变式的符号状态。循环体与出口分别保留不变式加守卫/退出条件，不再选择具体值；所有原始证明义务保留。`--modular-instantiation off` 仅为兼容旧命令保留，`on` 已移除。
+模块化执行保留入口测试绑定、旧值关系、未修改资源及地址分离，在边界使用规约或不变式的符号状态。循环体与出口分别保留不变式加守卫/退出条件，不再选择具体值；所有原始证明义务保留。`--modular-instantiation` 及对应配置字段已删除；直接使用 `--execution-strategy modular`。
 
 modular 报告使用 `modular-symbolic/v1`、`contract-symbolic/v1` 和 `result_scope=contract-and-invariant-symbolic`，`sampling_events=[]`。这是固定入口下的模块化检查，不能据此声称真实函数体的完整运行已被验证。只有 inline 的声明调用仍可能产生采样事件；其有限候选搜索语义保持不变。入口不可满足为 INVALID；剩余 VC 为 UNKNOWN；自动流程不启动证明 Agent。
 
