@@ -16,7 +16,7 @@ from typing import Any
 
 from .errors import JobError
 from .modes import (
-    EXECUTION_SEMANTICS, normalize_execution_mode, normalize_execution_strategy,
+    execution_semantics, normalize_execution_mode, normalize_execution_strategy,
 )
 from .verdict import _executor_result, _executor_target_layout
 
@@ -162,6 +162,7 @@ class QcpConfig:
     spatial_smt: bool = False
     spatial_smt_timeout_ms: int = 2000
     execution_strategy: str = "inline"
+    modular_instantiation: str = "on"
 
 
 @dataclass(frozen=True)
@@ -1329,6 +1330,9 @@ def _parse_qcp_config(job: dict[str, Any], base: Path, source_dir: Path) -> QcpC
         execution_strategy = normalize_execution_strategy(raw.get("execution_strategy", "inline"))
     except ValueError as error:
         raise JobError(f"qcp.{error}") from error
+    modular_instantiation = raw.get("modular_instantiation", "on")
+    if modular_instantiation not in ("on", "off"):
+        raise JobError("qcp.modular_instantiation must be on or off")
     architecture_bits = raw.get("architecture_bits", 32)
     if type(architecture_bits) is not int or architecture_bits not in (32, 64):
         raise JobError("qcp.architecture_bits must be 32 or 64")
@@ -1372,6 +1376,7 @@ def _parse_qcp_config(job: dict[str, Any], base: Path, source_dir: Path) -> QcpC
         timeout_seconds=float(timeout),
         execution_mode=execution_mode,
         execution_strategy=execution_strategy,
+        modular_instantiation=modular_instantiation,
         annotation_policy=raw.get("annotation_policy"),
         instance_trace=instance_trace,
         loop_unroll_limit=loop_unroll_limit,
@@ -1414,6 +1419,8 @@ def _qcp_command(
     # requires the new native flag; its response is checked before accepting it.
     if config.execution_strategy != "inline":
         command.extend(("--execution-strategy", config.execution_strategy))
+        if config.modular_instantiation == "off":
+            command.extend(("--modular-instantiation", "off"))
     if config.instance_trace:
         command.append("--instance-trace")
     if config.annotation_policy is not None:
@@ -1965,6 +1972,7 @@ def run_job(
                     **_executor_result(
                         completed.stdout, completed.returncode, vc,
                         expected_strategy=config.execution_strategy,
+                        expected_modular_instantiation=config.modular_instantiation,
                     ),
                     "returncode": completed.returncode,
                     "generated_source_sha256": _sha256(generated_source),
@@ -2107,9 +2115,10 @@ def run_job(
         "vc_policy": {
             "mode": config.execution_mode,
             "execution_strategy": config.execution_strategy,
-            "execution_semantics": EXECUTION_SEMANTICS[config.execution_strategy],
-            "loops": "execute_iterations" if config.execution_strategy == "inline" else "sample_invariant_boundaries",
-            "defined_function_calls": "execute_bodies" if config.execution_strategy == "inline" else "sample_contract_postconditions",
+            "execution_semantics": execution_semantics(config.execution_strategy, config.modular_instantiation),
+            "modular_instantiation": config.modular_instantiation,
+            "loops": "execute_iterations" if config.execution_strategy == "inline" else ("retain_symbolic_invariant_boundaries" if config.modular_instantiation == "off" else "sample_invariant_boundaries"),
+            "defined_function_calls": "execute_bodies" if config.execution_strategy == "inline" else ("retain_symbolic_contract_postconditions" if config.modular_instantiation == "off" else "sample_contract_postconditions"),
             "intermediate_boundaries": (
                 config.annotation_policy not in (None, "ignore")
                 or config.execution_mode == "all-boundaries"
@@ -2118,7 +2127,9 @@ def run_job(
                 "sample_contract_postconditions"
                 if any(result.get("declaration_call_policy") == "contract-sample/v1"
                        for result in results)
-                else "not_reported_by_executor"
+                else ("retain_symbolic_contract_postconditions"
+                      if any(result.get("declaration_call_policy") == "contract-symbolic/v1" for result in results)
+                      else "not_reported_by_executor")
             ),
             "call_depth_limit": config.call_depth_limit,
             "loop_unroll_limit": config.loop_unroll_limit or 1024,

@@ -1,0 +1,164 @@
+{
+  "spec_test": {
+    "schema": "sac-spec-test/v1",
+    "execution_semantics": "inline-preserve/v1",
+    "execution_strategy": "inline",
+    "declaration_call_policy": "contract-sample/v1",
+    "query_semantics": "copy-only/v1",
+    "mode": "no-expand",
+    "scope": "execution",
+    "annotation_policy": "check-preserve",
+    "completed": true,
+    "result_scope": "concrete-execution",
+    "overall": "FAIL",
+    "precondition_result": "SAT",
+    "test_result": "FAIL",
+    "result_semantics": "three-valued-conjunction/v1",
+    "vc_semantics": "path-vc/v1",
+    "vc_storage": {
+      "schema": "frozen-safety-sharing/v1",
+      "snapshot_requests": 1,
+      "unique_or_unpooled": 1,
+      "shared_requests": 0,
+      "intra_snapshot_aliases": 0,
+      "original_occurrences_preserved": true
+    },
+    "branch_evaluation": {
+      "schema": "instance-first-branch-query/v1",
+      "pure_queries": 2,
+      "evaluated_true": 2,
+      "evaluated_false": 0,
+      "smt_fallback": 0
+    },
+    "vc_scheduling": {
+      "schema": "post-execution-witness-smt/v1",
+      "enabled": true,
+      "collecting": false,
+      "requests": 5,
+      "queued_witnesses": 2,
+      "solved_witnesses": 2,
+      "retained_on_release": 0,
+      "pending_witnesses": 0
+    },
+    "vc_results": [
+      {
+        "kind": "safety",
+        "name": null,
+        "line": 7,
+        "status": "VALID",
+        "path": "EX m_383_addr n_380_addr \nPROP[]\nLOCAL[\n  Temp m m_383_addr;\n  Temp n n_380_addr;\n  Temp p p_371_addr ]\nSEP[\n  has_permission(m_383_addr, signed int);\n  store(n_380_addr, 2, signed int);\n  store(p_371_addr, 4096, signed int*);\n  store(4096, 2, signed int) ]\n",
+        "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+      },
+      {
+        "kind": "return",
+        "name": null,
+        "line": 7,
+        "status": "INVALID",
+        "path": "PROP[]\nLOCAL[]\nSEP[\n  store(4096, 4, signed int) ]\n",
+        "goal": "PROP[]\nLOCAL[]\nSEP[\n  store(4096, 2, signed int) ]\n"
+      }
+    ],
+    "phases": {
+      "precondition": "SAT",
+      "safety": "PASS",
+      "postcondition": "UNKNOWN",
+      "annotations": "PASS"
+    },
+    "abstraction_events": [],
+    "sampling_events": [],
+    "limit_reason": null,
+    "architecture_bits": 32,
+    "target_layout": {
+      "schema": "sac-target-layout/v1",
+      "architecture_bits": 32,
+      "byte_order": "big",
+      "pointer_size": 4,
+      "memory_rules": "naive_C_Rules",
+      "field_address_semantics": "base-plus-byte-offset/v1",
+      "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+      "aggregates": [],
+      "aliases": []
+    },
+    "certificate": "NOT_CHECKED"
+  },
+  "preconditions": [
+    {
+      "goal": "inplace_double_precondition_wit_1",
+      "status": "SAT",
+      "proof": "auto"
+    }
+  ],
+  "fileName": "/home/yangfp/teSpec/benchmark/results/spatial-smt-regressions/20261020-inline-after-modular-symbolic/slf3_basic_inplace_double/case-0046/off/artifacts/artifacts/value_4/input.c",
+  "functionName": "inplace_double",
+  "loaded_strategies": [
+    "common",
+    "string_literal"
+  ],
+  "result": "success",
+  "verificationStatus": "unproved",
+  "has_manual_obligations": true,
+  "manual_obligation_count": 1,
+  "manual_obligations": [
+    {
+      "kind": "return_checker_wit",
+      "functionName": "inplace_double",
+      "fileName": "/home/yangfp/teSpec/benchmark/results/spatial-smt-regressions/20261020-inline-after-modular-symbolic/slf3_basic_inplace_double/case-0046/off/artifacts/artifacts/value_4/input.c",
+      "line": 7,
+      "column": 24,
+      "summary": "Cannot automatically prove that a return path satisfies the postcondition.",
+      "goal": "p@pre == 4096 &&\nold == 2 &&\n-1073741824 <= old &&\nold <= 1073741823 &&\n*p@pre == old + old\n\n|--\n*p@pre == old\n"
+    }
+  ],
+  "errormessage": null,
+  "warningmessage": null,
+  "current_assertions": null,
+  "FunctionDerivation": null,
+  "WitnessList": [
+    {
+      "functionName": "inplace_double",
+      "Witness": {
+        "safety_checker_wit": {
+          "total": 1,
+          "auto_solved": 1,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "entailment_checker_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "return_checker_wit": {
+          "total": 1,
+          "auto_solved": 0,
+          "manual": 1,
+          "manual_witness": [
+            {
+              "line": 7,
+              "column": 24,
+              "fileName": "/home/yangfp/teSpec/benchmark/results/spatial-smt-regressions/20261020-inline-after-modular-symbolic/slf3_basic_inplace_double/case-0046/off/artifacts/artifacts/value_4/input.c",
+              "goal": "p@pre == 4096 &&\nold == 2 &&\n-1073741824 <= old &&\nold <= 1073741823 &&\n*p@pre == old + old\n\n|--\n*p@pre == old\n"
+            }
+          ]
+        },
+        "partial_solve_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "which_implies_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "total_witness_count": {
+          "auto_solved": 1,
+          "manual": 1
+        }
+      }
+    }
+  ]
+}

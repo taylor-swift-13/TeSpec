@@ -463,3 +463,8 @@ VC、报告、输入/源码/工具哈希及结果成本 CSV/JSON。CLI、执行�
 残余VC在一次完整执行中整体作为一个ITP任务，必须同时核对全部原目标、入口合法性以及实际模型/编译/假设审计/完整独立内核回执。完整Goal与历史证书逐字节相同时，可明确复用证明代码；当前源/绑定/报告/Goal重新锁定，实际模型审阅、逐次重新编译、假设审计和独立coqchk仍分别计量。模型原始usage和失败尝试保留，标注exact-goal certificate review，不能冒称全新证明搜索或将旧结论直接挂到新VC。
 
 每次执行分别计时、分别取各阶段实际单进程峰值；最终只展示各阶段和ITP合计的逐执行均值。ITP合计峰值先对执行内阶段取最大，再取执行均值；合计行与三个分项重叠。需区分native_expected_matches与final_expected_matches，原生UNKNOWN保持原状。未完成执行且没有原始Goal的项目保留BLOCKED/null，不能凭通用证明或人工构造目标把它算作已测成功。对照参数诊断、配置失败与重试另列实际额外成本。
+
+
+## Modular 边界实例化消融（2026-10-20）
+
+--modular-instantiation on|off 独立于执行策略和VC范围，默认on。仅modular下off关闭有界整状态选值，保留符号规约/断言/不变式状态、入口绑定、类型限制、资源衔接和原始VC。报告必须明确modular-symbolic/v1、contract-symbolic/v1与sampling_events；不能把范围状态检查当作单个新抽样实例。inline行为不变。具体结果见[实验记录](benchmark-modular-symbolic-20261020.md)。本轮为原生消融，没有新增ITP测量；即使原始Goal与旧内核证书完全相同，也分栏披露历史证据，不填入新模型/内核成本。新残余VC与边界限制均保留UNKNOWN，不计成功。

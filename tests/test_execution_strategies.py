@@ -144,6 +144,18 @@ class ExecutionStrategyTests(unittest.TestCase):
             self.assertEqual(result["status"], "ERROR")
             self.assertEqual(result["reason"], "executor_execution_strategy_mismatch")
 
+    def test_symbolic_request_requires_matching_executor_semantics(self):
+        payload = native_result("modular")
+        self.assertEqual(_executor_result(json.dumps(payload), 0, VC,
+            expected_strategy="modular", expected_modular_instantiation="off")["status"], "ERROR")
+        payload["spec_test"].update(modular_instantiation="off",
+            execution_semantics="modular-symbolic/v1", declaration_call_policy="contract-symbolic/v1",
+            sampling_events=[], result_scope="contract-and-invariant-symbolic")
+        result = _executor_result(json.dumps(payload), 0, VC,
+            expected_strategy="modular", expected_modular_instantiation="off")
+        self.assertEqual(result["status"], "PASS")
+        self.assertEqual(result["modular_instantiation"], "off")
+
     def test_legacy_inline_response_is_usable_but_not_for_modular(self):
         payload = native_result("inline")
         for field in ("execution_strategy", "declaration_call_policy", "sampling_events", "result_scope"):
@@ -241,6 +253,27 @@ class NativeExecutionStrategyTests(unittest.TestCase):
             and isinstance(event.get("selected_state"), str)
             for event in case["sampling_events"]
         ), case)
+
+    def test_symbolic_modular_keeps_range_and_all_original_obligations(self):
+        source = (
+            "int external(void) /*@ Require emp Ensure "
+            "0 <= __return && __return <= 1 && emp */;\n"
+            "int sample(void) /*@ Require emp Ensure __return == 0 && emp */ "
+            "{ return external(); }"
+        )
+        for mode in ("entry-exit", "all-boundaries"):
+            with self.subTest(mode=mode):
+                case, raw = self.run_source(source, "modular", mode,
+                                            modular_instantiation="off")
+                self.assertTrue(case["execution_completed"], case)
+                self.assertEqual(case["execution_semantics"], "modular-symbolic/v1")
+                self.assertEqual(case["declaration_call_policy"], "contract-symbolic/v1")
+                self.assertEqual(case["sampling_events"], [])
+                # A range permitting 1 cannot silently become the passing sample 0.
+                self.assertNotEqual(case["status"], "PASS", case)
+                self.assertTrue(case["vc_results"], case)
+                self.assertTrue(any(e["kind"] == "contract_state_symbolic"
+                                    for e in case["abstraction_events"]), raw)
 
     def test_defined_weak_contract_uses_body_only_in_inline(self):
         source = (

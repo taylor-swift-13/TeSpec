@@ -3,6 +3,12 @@
 EXECUTION_MODES = ("entry-exit", "all-boundaries")
 EXECUTION_STRATEGIES = ("inline", "modular")
 EXECUTION_SEMANTICS = {"inline": "inline-preserve/v1", "modular": "modular-sampled/v1"}
+def execution_semantics(strategy: str, modular_instantiation: str = "on") -> str:
+    if strategy == "modular" and modular_instantiation == "off":
+        return "modular-symbolic/v1"
+    return EXECUTION_SEMANTICS[strategy]
+
+
 MODE_ALIASES = {"expand": "entry-exit", "no-expand": "all-boundaries"}
 
 

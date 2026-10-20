@@ -1,0 +1,173 @@
+{
+  "spec_test": {
+    "schema": "sac-spec-test/v1",
+    "execution_semantics": "modular-symbolic/v1",
+    "execution_strategy": "modular",
+    "modular_instantiation": "off",
+    "declaration_call_policy": "contract-symbolic/v1",
+    "query_semantics": "copy-only/v1",
+    "mode": "no-expand",
+    "scope": "execution",
+    "annotation_policy": "check-preserve",
+    "completed": true,
+    "result_scope": "contract-and-invariant-symbolic",
+    "overall": "FAIL",
+    "precondition_result": "SAT",
+    "test_result": "FAIL",
+    "result_semantics": "three-valued-conjunction/v1",
+    "vc_semantics": "path-vc/v1",
+    "branch_evaluation": {
+      "schema": "instance-first-branch-query/v1",
+      "pure_queries": 2,
+      "evaluated_true": 2,
+      "evaluated_false": 0,
+      "smt_fallback": 0
+    },
+    "vc_scheduling": {
+      "schema": "post-execution-witness-smt/v1",
+      "enabled": true,
+      "collecting": false,
+      "requests": 17,
+      "queued_witnesses": 6,
+      "solved_witnesses": 6,
+      "retained_on_release": 0,
+      "pending_witnesses": 0
+    },
+    "vc_results": [
+      {
+        "kind": "safety",
+        "name": null,
+        "line": 7,
+        "status": "VALID",
+        "path": "EX a_380_addr \nPROP[]\nLOCAL[\n  Temp a a_380_addr;\n  Temp n n_371_addr ]\nSEP[\n  has_permission(a_380_addr, signed int);\n  store(n_371_addr, (- 715827883), signed int) ]\n",
+        "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+      },
+      {
+        "kind": "safety",
+        "name": null,
+        "line": 7,
+        "status": "VALID",
+        "path": "EX b_383_addr a_380_addr \nPROP[]\nLOCAL[\n  Temp b b_383_addr;\n  Temp a a_380_addr;\n  Temp n n_371_addr ]\nSEP[\n  has_permission(b_383_addr, signed int);\n  store(a_380_addr, (- 715827882), signed int);\n  store(n_371_addr, (- 715827883), signed int) ]\n",
+        "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+      },
+      {
+        "kind": "safety",
+        "name": null,
+        "line": 7,
+        "status": "VALID",
+        "path": "EX b_383_addr a_380_addr \nPROP[]\nLOCAL[\n  Temp b b_383_addr;\n  Temp a a_380_addr;\n  Temp n n_371_addr ]\nSEP[\n  store(b_383_addr, (- 715827884), signed int);\n  store(a_380_addr, (- 715827882), signed int);\n  store(n_371_addr, (- 715827883), signed int) ]\n",
+        "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+      },
+      {
+        "kind": "return",
+        "name": null,
+        "line": 7,
+        "status": "INVALID",
+        "path": "PROP[]\nLOCAL[]\nSEP[]\n",
+        "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+      }
+    ],
+    "phases": {
+      "precondition": "SAT",
+      "safety": "PASS",
+      "postcondition": "UNKNOWN",
+      "annotations": "PASS"
+    },
+    "abstraction_events": [],
+    "sampling_events": [],
+    "limit_reason": null,
+    "architecture_bits": 32,
+    "target_layout": {
+      "schema": "sac-target-layout/v1",
+      "architecture_bits": 32,
+      "byte_order": "big",
+      "pointer_size": 4,
+      "memory_rules": "naive_C_Rules",
+      "field_address_semantics": "base-plus-byte-offset/v1",
+      "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+      "aggregates": [],
+      "aliases": []
+    },
+    "certificate": "NOT_CHECKED"
+  },
+  "preconditions": [
+    {
+      "goal": "doubled_precondition_wit_1",
+      "status": "SAT",
+      "proof": "auto"
+    }
+  ],
+  "fileName": "/home/yangfp/teSpec/benchmark/results/spatial-smt-regressions/20261020-modular-symbolic/example_let/case-0104/off/artifacts/artifacts/n_1/input.c",
+  "functionName": "doubled",
+  "loaded_strategies": [
+    "common",
+    "string_literal"
+  ],
+  "result": "success",
+  "verificationStatus": "unproved",
+  "has_manual_obligations": true,
+  "manual_obligation_count": 1,
+  "manual_obligations": [
+    {
+      "kind": "return_checker_wit",
+      "functionName": "doubled",
+      "fileName": "/home/yangfp/teSpec/benchmark/results/spatial-smt-regressions/20261020-modular-symbolic/example_let/case-0104/off/artifacts/artifacts/n_1/input.c",
+      "line": 7,
+      "column": 37,
+      "summary": "Cannot automatically prove that a return path satisfies the postcondition.",
+      "goal": "n@pre == -715827883 &&\n-1073741824 <= n@pre &&\nn@pre <= 1073741823 &&\n__return == n@pre + 1 + (n@pre - 1)\n\n|--\nn@pre + 1 + (n@pre - 1) == n@pre &&\n__return == n@pre + 1 + (n@pre - 1)\n"
+    }
+  ],
+  "errormessage": null,
+  "warningmessage": null,
+  "current_assertions": null,
+  "FunctionDerivation": null,
+  "WitnessList": [
+    {
+      "functionName": "doubled",
+      "Witness": {
+        "safety_checker_wit": {
+          "total": 5,
+          "auto_solved": 5,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "entailment_checker_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "return_checker_wit": {
+          "total": 1,
+          "auto_solved": 0,
+          "manual": 1,
+          "manual_witness": [
+            {
+              "line": 7,
+              "column": 37,
+              "fileName": "/home/yangfp/teSpec/benchmark/results/spatial-smt-regressions/20261020-modular-symbolic/example_let/case-0104/off/artifacts/artifacts/n_1/input.c",
+              "goal": "n@pre == -715827883 &&\n-1073741824 <= n@pre &&\nn@pre <= 1073741823 &&\n__return == n@pre + 1 + (n@pre - 1)\n\n|--\nn@pre + 1 + (n@pre - 1) == n@pre &&\n__return == n@pre + 1 + (n@pre - 1)\n"
+            }
+          ]
+        },
+        "partial_solve_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "which_implies_wit": {
+          "total": 0,
+          "auto_solved": 0,
+          "manual": 0,
+          "manual_witness": null
+        },
+        "total_witness_count": {
+          "auto_solved": 5,
+          "manual": 1
+        }
+      }
+    }
+  ]
+}

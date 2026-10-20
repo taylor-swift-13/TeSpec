@@ -16,6 +16,7 @@ def main():
     parser.add_argument("--output", required=True)
     parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--execution-strategy", choices=("inline", "modular"), default="inline")
+    parser.add_argument("--modular-instantiation", choices=("on", "off"), default="on")
     parser.add_argument("--positive-representatives", action="store_true")
     args = parser.parse_args()
     shared.require(1 <= args.workers <= 4, "workers must be 1..4")
@@ -37,6 +38,7 @@ def main():
             selection="First common baseline PASS input per completed group.")
     coverage["execution_strategy"] = args.execution_strategy
     coverage["worker_concurrency"] = args.workers
+    coverage["modular_instantiation"] = args.modular_instantiation
     out = shared.output_path(args.output)
     shared.require(not out.exists(), "output must be fresh")
     out.mkdir(parents=True)
@@ -61,7 +63,8 @@ def main():
     (out / "executor-build.json").write_bytes((shared.ROOT / "bin/tespec-symexec.build.json").read_bytes())
     original = shared.cli_arguments
     shared.cli_arguments = lambda task, mode, folder: (
-        original(task, mode, folder) + ["--execution-strategy", args.execution_strategy])
+        original(task, mode, folder) + ["--execution-strategy", args.execution_strategy,
+                                      "--modular-instantiation", args.modular_instantiation])
     rows = []
     try:
         with ThreadPoolExecutor(max_workers=args.workers) as pool:
