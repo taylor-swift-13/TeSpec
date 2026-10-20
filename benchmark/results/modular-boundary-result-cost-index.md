@@ -29,3 +29,5 @@
 | zero | 46 | 46/46 | 是 | [结果与成本](zero/modular-boundary/20261020/result-cost.md) |
 
 [完整方法、ITP及成本说明](../../docs/benchmark-modular-boundary-fix-20261020.md)；[机器索引](modular-boundary-result-cost-index.json)。
+
+2026-10-21 第21组 array_load 跟进：inline67/67，modular66/67；完整父VC诊断通过内核检查，但未解决translation12。见[array_load当前结果](array_load/20261021-parent-analysis/result-cost.md)。

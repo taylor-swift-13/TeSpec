@@ -27,3 +27,5 @@
 | [zero](zero/modular/20261020/result-cost.md) | 46 | 46/46 | 46/46 | 0 / 0 |
 
 原生与ITP后最终分类均保留；独立逐次ITP成本见各组表。BLOCKED未完成执行不算成功。
+
+2026-10-21 第21组 array_load 跟进：inline67/67，modular66/67；完整父VC诊断通过内核检查，但未解决translation12。见[array_load当前结果](array_load/20261021-parent-analysis/result-cost.md)。

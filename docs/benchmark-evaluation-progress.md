@@ -287,3 +287,7 @@ teSpec 按用户要求暂缓，本轮未运行；历史两模式各7 UNKNOWN是�
 ## 2026-10-20 modular边界修复与逐执行ITP
 
 采样改为副本选值、失败原样符号回退；修复局部/入口地址关联、QCP所有权frame推断、资源折叠与typed sizeof策略兼容。21组900对输入，采样ON/OFF×空间OFF/ON共3600次，所有非预期ERROR输入均执行到出口；原7个array_load客户端全部解除采样/边界frame阻塞。新增8次ITP、17次实测gpt-6.1-sol调用（全部失败修复计入）；translation7四次原始整体目标证明通过，translation12四次只完成入口SAT和辅助纯子目标反证，父目标保留其他空间分支，正式结果仍UNKNOWN。不能把辅助反证当作整次FAIL；原控制器的过度分类在发布审计中拒绝，原回执保留。旧58份精确同目标证书审计后分别引用到两个采样设置，未冒充新测量。每套配置最终497 PASS、379 FAIL、1 UNKNOWN、23预期ERROR，899/900匹配；未知均为translation12，未改预期。inline1800次原始VC/Coq/状态精确一致；466项测试通过（15跳过）。原完成范围保持历史含义。见[完整报告与成本](benchmark-modular-boundary-fix-20261020.md)。
+
+## 2026-10-21：第 21 组 array_load 完整父 VC 诊断
+
+当前版本重跑全部67对输入、inline/modular×空间OFF/ON，共268次，未修改源/spec/输入/预期。inline最终两模式均67 PASS；modular通过精确目标哈希引用translation7证书后均66 PASS、1 UNKNOWN，仍为translation12。实际gpt-6.1-sol五次调用、972766 token，全部失败编译/修复计入同一执行任务；八个诊断引理经编译、原始假设审计和完整独立coqchk，但没有原始父VC的无条件证明或反证，所以仍不将modular第21组标为全部符合预期。根因涉及弱read合同不足和空间反模型缺少局部栈地址布局见证。见[完整诊断](benchmark-array-load-parent-vc-20261021.md)与[结果成本](../benchmark/results/array_load/20261021-parent-analysis/result-cost.md).
