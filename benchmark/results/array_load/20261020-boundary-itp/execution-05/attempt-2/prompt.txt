@@ -1,0 +1,514 @@
+Fill Candidate.v for this ONE actual completed modular test execution. All original residual VCs are frozen in ExecutionGoal.v and listed in binding.json. Preserve every supplied theorem statement, original definitions/imports and Print Assumptions. The entry SAT theorem must be proved too. For the strong-contract client prove all residuals. For the weak-contract client formally refute the designated original necessary pure VC; one false conjunct decides this execution's modular obligation, so do not manufacture proofs of its other false VCs. The benchmark's original expected PASS refers to the inlined body and is NOT changed to fit a modular result. No admitted/admit, new axioms/parameters, unsafe casts, delegation, compiler or shell calls. Edit Candidate.v only; optionally write diagnosis.txt. Controller compiles and runs full independent coqchk with resource limits. Use the exact original target names, not substitute or universal program proofs. Useful runtime facts: naive_C_Rules.model is ConAssertion.state with s_mem, s_STS, s_token. empty_state is provided using Mem.empty_mem, Sets.full and Sets.empty. For an OR goal a valid reflexive entailment alternative can be proved without constructing an array heap. The selected weak-client pure target universally claims a bounded integer equals zero; instantiate a legal nonzero integer. All actual repairs are separately metered.
+
+BINDING
+{
+  "execution_index": 5,
+  "group": "array_load",
+  "case": "original_client_translation7_only_entry",
+  "modular_instantiation": "off",
+  "mode": "on",
+  "report": {
+    "path": "benchmark/results/spatial-smt-regressions/20261020-modular-boundary-off/array_load/case-0032/on/artifacts/report.json",
+    "sha256": "9cb475d74dd35a03fd4f4077d699033086a6fd30d7b0594cfac3e807285f823e"
+  },
+  "source": {
+    "path": "benchmark/programs/array_load/variants/qcp_existing_601105f7c1b14876ab6b/qcp/array_load_strong_client.qcp.c",
+    "sha256": "4f5693bc26ea462e435f686538a8de757ca22ba41a0002ed9330e82593ca22bd"
+  },
+  "binds": {
+    "path": "benchmark/programs/array_load/variants/cn_original_array_load.broken/tests/20261018-evaluation-v3/original_client_translation7_only_entry/binds.json",
+    "sha256": "4833a0b8e14d1d2bba9e2b5bab0591ced5d511a7df8084b4e4be244f474ab24d"
+  },
+  "original_goal": {
+    "path": "benchmark/results/spatial-smt-regressions/20261020-modular-boundary-off/array_load/case-0032/on/artifacts/artifacts/original_client_translation7_only_entry/vc/input_goal.v",
+    "sha256": "3f1cb800f65927b5f86110667b749908b2645822a78bb63ea2d6b3c82052bcb8"
+  },
+  "all_original_residual_vcs": [
+    "main_entail_wit_5"
+  ],
+  "checked_theorems": [
+    [
+      "entry_sat",
+      "ExecutionGoal.main_precondition_wit_1"
+    ],
+    [
+      "resolved_main_entail_wit_5",
+      "ExecutionGoal.main_entail_wit_5"
+    ]
+  ],
+  "decisive_refuted_original_vc": null,
+  "expected": "PASS",
+  "intended_final_status": "PASS",
+  "scope": "Modular contract/invariant obligation. Refutation of the weak callee client is not a counterexample to the inlined C body."
+}
+ORIGINAL GOAL
+Require Import Coq.ZArith.ZArith.
+Require Import Coq.Bool.Bool.
+Require Import Coq.Strings.String.
+Require Import Coq.Strings.Ascii.
+Require Import Coq.Lists.List.
+Require Import Coq.Classes.RelationClasses.
+Require Import Coq.Classes.Morphisms.
+Require Import Coq.micromega.Psatz.
+Require Import Coq.Sorting.Permutation.
+From AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.
+Require Import SetsClass.SetsClass. Import SetsNotation.
+From SimpleC.SL Require Import Mem SeparationLogic.
+Require Import Logic.LogicGenerator.demo932.Interface.
+Local Open Scope Z_scope.
+Local Open Scope sets.
+Local Open Scope string_scope.
+Local Open Scope list.
+Import naive_C_Rules.
+Local Open Scope sac.
+Local Open Scope Z_scope.
+
+(*----- Function main -----*)
+
+Definition main_safety_wit_1 := 
+forall (retval: Z) (retval_2: Z) (retval_3: Z) (PreH1 : (retval_3 = 2)) (PreH2 : (retval_2 = 1)) (PreH3 : (retval = 0)) ,
+  (IntArray.full ( &( "a_spec_395" ) ) 3 (cons (0) ((cons (1) ((cons (2) ((@nil Z))))))) )
+  **  ((( &( "third_spec_446" ) )) # Ptr  |-> (( &( "a_spec_395" ) ) + (2 * 4)))
+  **  ((( &( "two_spec_434" ) )) # Int  |-> 2)
+  **  ((( &( "second_spec_428" ) )) # Ptr  |-> (( &( "a_spec_395" ) ) + (1 * 4)))
+  **  ((( &( "one_spec_416" ) )) # Int  |-> 1)
+  **  ((( &( "first_spec_410" ) )) # Ptr  |-> (( &( "a_spec_395" ) ) + (0 * 4)))
+  **  ((( &( "zero_spec_398" ) )) # Int  |-> 0)
+|--
+  TT && emp 
+.
+
+Definition main_safety_wit_2 := 
+forall (retval: Z) (retval_2: Z) (retval_3: Z) (PreH1 : (retval_3 = 2)) (PreH2 : (retval_2 = 1)) (PreH3 : (retval = 0)) ,
+  ((( &( "third_spec_446" ) )) # Ptr  |->_)
+  **  ((( &( "two_spec_434" ) )) # Int  |-> 2)
+  **  (IntArray.full ( &( "a_spec_395" ) ) 3 (cons (0) ((cons (1) ((cons (2) ((@nil Z))))))) )
+  **  ((( &( "second_spec_428" ) )) # Ptr  |-> (( &( "a_spec_395" ) ) + (1 * 4)))
+  **  ((( &( "one_spec_416" ) )) # Int  |-> 1)
+  **  ((( &( "first_spec_410" ) )) # Ptr  |-> (( &( "a_spec_395" ) ) + (0 * 4)))
+  **  ((( &( "zero_spec_398" ) )) # Int  |-> 0)
+|--
+  TT && emp 
+.
+
+Definition main_safety_wit_3 := 
+forall (retval: Z) (retval_2: Z) (retval_3: Z) (PreH1 : (retval_3 = 2)) (PreH2 : (retval_2 = 1)) (PreH3 : (retval = 0)) ,
+  ((( &( "third_spec_446" ) )) # Ptr  |->_)
+  **  ((( &( "two_spec_434" ) )) # Int  |-> 2)
+  **  (IntArray.full ( &( "a_spec_395" ) ) 3 (cons (0) ((cons (1) ((cons (2) ((@nil Z))))))) )
+  **  ((( &( "second_spec_428" ) )) # Ptr  |-> (( &( "a_spec_395" ) ) + (1 * 4)))
+  **  ((( &( "one_spec_416" ) )) # Int  |-> 1)
+  **  ((( &( "first_spec_410" ) )) # Ptr  |-> (( &( "a_spec_395" ) ) + (0 * 4)))
+  **  ((( &( "zero_spec_398" ) )) # Int  |-> 0)
+|--
+  TT && emp 
+.
+
+Definition main_safety_wit_4 := 
+forall (retval: Z) (retval_2: Z) (PreH1 : (retval_2 = 1)) (PreH2 : (retval = 0)) ,
+  ((( &( "two_spec_434" ) )) # Int  |->_)
+  **  (IntArray.full ( &( "a_spec_395" ) ) 3 (cons (0) ((cons (1) ((cons (2) ((@nil Z))))))) )
+  **  ((( &( "second_spec_428" ) )) # Ptr  |-> (( &( "a_spec_395" ) ) + (1 * 4)))
+  **  ((( &( "one_spec_416" ) )) # Int  |-> 1)
+  **  ((( &( "first_spec_410" ) )) # Ptr  |-> (( &( "a_spec_395" ) ) + (0 * 4)))
+  **  ((( &( "zero_spec_398" ) )) # Int  |-> 0)
+|--
+  TT && emp 
+.
+
+Definition main_safety_wit_5 := 
+forall (retval: Z) (retval_2: Z) (PreH1 : (retval_2 = 1)) (PreH2 : (retval = 0)) ,
+  ((( &( "two_spec_434" ) )) # Int  |->_)
+  **  (IntArray.full ( &( "a_spec_395" ) ) 3 (cons (0) ((cons (1) ((cons (2) ((@nil Z))))))) )
+  **  ((( &( "second_spec_428" ) )) # Ptr  |-> (( &( "a_spec_395" ) ) + (1 * 4)))
+  **  ((( &( "one_spec_416" ) )) # Int  |-> 1)
+  **  ((( &( "first_spec_410" ) )) # Ptr  |-> (( &( "a_spec_395" ) ) + (0 * 4)))
+  **  ((( &( "zero_spec_398" ) )) # Int  |-> 0)
+|--
+  TT && emp 
+.
+
+Definition main_safety_wit_6 := 
+forall (retval: Z) (retval_2: Z) (PreH1 : (retval_2 = 1)) (PreH2 : (retval = 0)) ,
+  ((( &( "second_spec_428" ) )) # Ptr  |->_)
+  **  ((( &( "one_spec_416" ) )) # Int  |-> 1)
+  **  (IntArray.full ( &( "a_spec_395" ) ) 3 (cons (0) ((cons (1) ((cons (2) ((@nil Z))))))) )
+  **  ((( &( "first_spec_410" ) )) # Ptr  |-> (( &( "a_spec_395" ) ) + (0 * 4)))
+  **  ((( &( "zero_spec_398" ) )) # Int  |-> 0)
+|--
+  TT && emp 
+.
+
+Definition main_safety_wit_7 := 
+forall (retval: Z) (retval_2: Z) (PreH1 : (retval_2 = 1)) (PreH2 : (retval = 0)) ,
+  ((( &( "second_spec_428" ) )) # Ptr  |->_)
+  **  ((( &( "one_spec_416" ) )) # Int  |-> 1)
+  **  (IntArray.full ( &( "a_spec_395" ) ) 3 (cons (0) ((cons (1) ((cons (2) ((@nil Z))))))) )
+  **  ((( &( "first_spec_410" ) )) # Ptr  |-> (( &( "a_spec_395" ) ) + (0 * 4)))
+  **  ((( &( "zero_spec_398" ) )) # Int  |-> 0)
+|--
+  TT && emp 
+.
+
+Definition main_safety_wit_8 := 
+forall (retval: Z) (PreH1 : (retval = 0)) ,
+  ((( &( "one_spec_416" ) )) # Int  |->_)
+  **  (IntArray.full ( &( "a_spec_395" ) ) 3 (cons (0) ((cons (1) ((cons (2) ((@nil Z))))))) )
+  **  ((( &( "first_spec_410" ) )) # Ptr  |-> (( &( "a_spec_395" ) ) + (0 * 4)))
+  **  ((( &( "zero_spec_398" ) )) # Int  |-> 0)
+|--
+  TT && emp 
+.
+
+Definition main_safety_wit_9 := 
+forall (retval: Z) (PreH1 : (retval = 0)) ,
+  ((( &( "one_spec_416" ) )) # Int  |->_)
+  **  (IntArray.full ( &( "a_spec_395" ) ) 3 (cons (0) ((cons (1) ((cons (2) ((@nil Z))))))) )
+  **  ((( &( "first_spec_410" ) )) # Ptr  |-> (( &( "a_spec_395" ) ) + (0 * 4)))
+  **  ((( &( "zero_spec_398" ) )) # Int  |-> 0)
+|--
+  TT && emp 
+.
+
+Definition main_safety_wit_10 := 
+forall (retval: Z) (PreH1 : (retval = 0)) ,
+  ((( &( "first_spec_410" ) )) # Ptr  |->_)
+  **  ((( &( "zero_spec_398" ) )) # Int  |-> 0)
+  **  (IntArray.full ( &( "a_spec_395" ) ) 3 (cons (0) ((cons (1) ((cons (2) ((@nil Z))))))) )
+|--
+  TT && emp 
+.
+
+Definition main_safety_wit_11 := 
+  ((( &( "zero_spec_398" ) )) # Int  |->_)
+  **  (IntArray.full ( &( "a_spec_395" ) ) 3 (cons (0) ((cons (1) ((cons (2) ((@nil Z))))))) )
+|--
+  TT && emp 
+.
+
+Definition main_safety_wit_12 := 
+  ((( &( "zero_spec_398" ) )) # Int  |->_)
+  **  (IntArray.full ( &( "a_spec_395" ) ) 3 (cons (0) ((cons (1) ((cons (2) ((@nil Z))))))) )
+|--
+  TT && emp 
+.
+
+Definition main_safety_wit_13 := 
+  TT && emp 
+|--
+  TT && emp 
+.
+
+Definition main_safety_wit_14 := 
+  TT && emp 
+|--
+  TT && emp 
+.
+
+Definition main_safety_wit_15 := 
+  TT && emp 
+|--
+  TT && emp 
+.
+
+Definition main_entail_wit_1 := 
+forall (retval: Z) (retval_2: Z) (retval_3: Z) (PreH1 : (2 = 2)) (PreH2 : (retval_3 = (Znth (2) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0)))) (PreH3 : (retval_2 = (Znth (1) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0)))) (PreH4 : (retval = (Znth (0) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0)))) (PreH5 : ((INT_MIN) <= retval)) (PreH6 : (retval <= INT_MAX)) (PreH7 : ((INT_MIN) <= retval_2)) (PreH8 : (retval_2 <= INT_MAX)) (PreH9 : ((INT_MIN) <= retval_3)) (PreH10 : (retval_3 <= INT_MAX)) ,
+  (IntArray.full ( &( "a_spec_395" ) ) 3 (cons (0) ((cons (1) ((cons (2) ((@nil Z))))))) )
+|--
+  “ (2 = 2) ” 
+  &&  “ (retval_3 = (Znth (2) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0))) ” 
+  &&  “ (retval_2 = (Znth (1) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0))) ” 
+  &&  “ (retval = (Znth (0) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0))) ” 
+  &&  “ ((INT_MIN) <= retval) ” 
+  &&  “ (retval <= INT_MAX) ” 
+  &&  “ ((INT_MIN) <= retval_2) ” 
+  &&  “ (retval_2 <= INT_MAX) ” 
+  &&  “ ((INT_MIN) <= retval_3) ” 
+  &&  “ (retval_3 <= INT_MAX) ”
+  &&  (((( &( "a_spec_395" ) ) + (2 * sizeof(INT)))) # Int  |-> 2)
+  **  (IntArray.missing_i ( &( "a_spec_395" ) ) 2 0 3 (cons (0) ((cons (1) ((cons (2) ((@nil Z))))))) )
+.
+
+Definition main_entail_wit_2 := 
+forall (retval: Z) (retval_2: Z) (retval_3: Z) (PreH1 : (retval_3 = (Znth (2) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0)))) (PreH2 : (retval_2 = (Znth (1) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0)))) (PreH3 : (retval = (Znth (0) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0)))) (PreH4 : ((INT_MIN) <= retval)) (PreH5 : (retval <= INT_MAX)) (PreH6 : ((INT_MIN) <= retval_2)) (PreH7 : (retval_2 <= INT_MAX)) (PreH8 : ((INT_MIN) <= retval_3)) (PreH9 : (retval_3 <= INT_MAX)) ,
+  (IntArray.full ( &( "a_spec_395" ) ) 3 (cons (0) ((cons (1) ((cons (2) ((@nil Z))))))) )
+  **  ((( &( "two_spec_434" ) )) # Int  |-> retval_3)
+|--
+  “ (2 = 2) ” 
+  &&  “ (retval_3 = (Znth (2) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0))) ” 
+  &&  “ (retval_2 = (Znth (1) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0))) ” 
+  &&  “ (retval = (Znth (0) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0))) ” 
+  &&  “ ((INT_MIN) <= retval) ” 
+  &&  “ (retval <= INT_MAX) ” 
+  &&  “ ((INT_MIN) <= retval_2) ” 
+  &&  “ (retval_2 <= INT_MAX) ” 
+  &&  “ ((INT_MIN) <= retval_3) ” 
+  &&  “ (retval_3 <= INT_MAX) ”
+  &&  ((( &( "two_spec_434" ) )) # Int  |-> 2)
+  **  (IntArray.full ( &( "a_spec_395" ) ) 3 (cons (0) ((cons (1) ((cons (2) ((@nil Z))))))) )
+.
+
+Definition main_entail_wit_3 := 
+forall (retval: Z) (retval_2: Z) (PreH1 : (1 = 1)) (PreH2 : (retval_2 = (Znth (1) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0)))) (PreH3 : (retval = (Znth (0) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0)))) (PreH4 : ((INT_MIN) <= retval)) (PreH5 : (retval <= INT_MAX)) (PreH6 : ((INT_MIN) <= retval_2)) (PreH7 : (retval_2 <= INT_MAX)) ,
+  (IntArray.full ( &( "a_spec_395" ) ) 3 (cons (0) ((cons (1) ((cons (2) ((@nil Z))))))) )
+|--
+  “ (1 = 1) ” 
+  &&  “ (retval_2 = (Znth (1) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0))) ” 
+  &&  “ (retval = (Znth (0) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0))) ” 
+  &&  “ ((INT_MIN) <= retval) ” 
+  &&  “ (retval <= INT_MAX) ” 
+  &&  “ ((INT_MIN) <= retval_2) ” 
+  &&  “ (retval_2 <= INT_MAX) ”
+  &&  (((( &( "a_spec_395" ) ) + (1 * sizeof(INT)))) # Int  |-> 1)
+  **  (IntArray.missing_i ( &( "a_spec_395" ) ) 1 0 3 (cons (0) ((cons (1) ((cons (2) ((@nil Z))))))) )
+.
+
+Definition main_entail_wit_4 := 
+forall (retval: Z) (retval_2: Z) (PreH1 : (retval_2 = (Znth (1) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0)))) (PreH2 : (retval = (Znth (0) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0)))) (PreH3 : ((INT_MIN) <= retval)) (PreH4 : (retval <= INT_MAX)) (PreH5 : ((INT_MIN) <= retval_2)) (PreH6 : (retval_2 <= INT_MAX)) ,
+  (IntArray.full ( &( "a_spec_395" ) ) 3 (cons (0) ((cons (1) ((cons (2) ((@nil Z))))))) )
+  **  ((( &( "one_spec_416" ) )) # Int  |-> retval_2)
+|--
+  “ (1 = 1) ” 
+  &&  “ (retval_2 = (Znth (1) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0))) ” 
+  &&  “ (retval = (Znth (0) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0))) ” 
+  &&  “ ((INT_MIN) <= retval) ” 
+  &&  “ (retval <= INT_MAX) ” 
+  &&  “ ((INT_MIN) <= retval_2) ” 
+  &&  “ (retval_2 <= INT_MAX) ”
+  &&  ((( &( "one_spec_416" ) )) # Int  |-> 1)
+  **  (IntArray.full ( &( "a_spec_395" ) ) 3 (cons (0) ((cons (1) ((cons (2) ((@nil Z))))))) )
+.
+
+Definition main_entail_wit_5 := 
+(
+forall (retval: Z) (PreH1 : (0 = 0)) (PreH2 : (retval = (Znth (0) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0)))) (PreH3 : ((INT_MIN) <= retval)) (PreH4 : (retval <= INT_MAX)) ,
+  (IntArray.full ( &( "a_spec_395" ) ) 3 (cons (0) ((cons (1) ((cons (2) ((@nil Z))))))) )
+|--
+  “ (0 = 0) ” 
+  &&  “ (retval = (Znth (0) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0))) ” 
+  &&  “ ((INT_MIN) <= retval) ” 
+  &&  “ (retval <= INT_MAX) ”
+  &&  (((( &( "a_spec_395" ) ) + (0 * sizeof(INT)))) # Int  |-> 0)
+  **  (IntArray.missing_i ( &( "a_spec_395" ) ) 0 0 3 (cons (0) ((cons (1) ((cons (2) ((@nil Z))))))) )
+) \/
+(
+forall (retval: Z) (PreH1 : (retval = (Znth (0) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0)))) (PreH2 : ((INT_MIN) <= retval)) (PreH3 : (retval <= INT_MAX)) ,
+  TT && emp 
+|--
+  TT && emp 
+).
+
+Definition main_entail_wit_6 := 
+forall (retval: Z) (PreH1 : (retval = (Znth (0) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0)))) (PreH2 : ((INT_MIN) <= retval)) (PreH3 : (retval <= INT_MAX)) ,
+  (IntArray.full ( &( "a_spec_395" ) ) 3 (cons (0) ((cons (1) ((cons (2) ((@nil Z))))))) )
+  **  ((( &( "zero_spec_398" ) )) # Int  |-> retval)
+|--
+  “ (0 = 0) ” 
+  &&  “ (retval = (Znth (0) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0))) ” 
+  &&  “ ((INT_MIN) <= retval) ” 
+  &&  “ (retval <= INT_MAX) ”
+  &&  ((( &( "zero_spec_398" ) )) # Int  |-> 0)
+  **  (IntArray.full ( &( "a_spec_395" ) ) 3 (cons (0) ((cons (1) ((cons (2) ((@nil Z))))))) )
+.
+
+Definition main_return_wit_1 := 
+forall (retval: Z) (retval_2: Z) (retval_3: Z) (PreH1 : (2 = 2)) (PreH2 : (retval_3 = (Znth (2) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0)))) (PreH3 : (retval_2 = (Znth (1) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0)))) (PreH4 : (retval = (Znth (0) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0)))) (PreH5 : ((INT_MIN) <= retval)) (PreH6 : (retval <= INT_MAX)) (PreH7 : ((INT_MIN) <= retval_2)) (PreH8 : (retval_2 <= INT_MAX)) (PreH9 : ((INT_MIN) <= retval_3)) (PreH10 : (retval_3 <= INT_MAX)) ,
+  TT && emp 
+|--
+  “ (0 = 0) ”
+  &&  emp
+.
+
+Definition main_partial_solve_wit_1_pure := 
+forall (retval: Z) (retval_2: Z) (PreH1 : (1 = 1)) (PreH2 : (retval_2 = (Znth (1) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0)))) (PreH3 : (retval = (Znth (0) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0)))) (PreH4 : ((INT_MIN) <= retval)) (PreH5 : (retval <= INT_MAX)) (PreH6 : ((INT_MIN) <= retval_2)) (PreH7 : (retval_2 <= INT_MAX)) ,
+  ((( &( "two_spec_434" ) )) # Int  |->_)
+  **  (IntArray.full ( &( "a_spec_395" ) ) 3 (replace_Znth (1) (1) ((cons (0) ((cons (1) ((cons (2) ((@nil Z))))))))) )
+  **  ((( &( "second_spec_428" ) )) # Ptr  |-> (( &( "a_spec_395" ) ) + (1 * sizeof(INT))))
+  **  ((( &( "one_spec_416" ) )) # Int  |-> 1)
+  **  ((( &( "first_spec_410" ) )) # Ptr  |-> (( &( "a_spec_395" ) ) + (0 * sizeof(INT))))
+  **  ((( &( "zero_spec_398" ) )) # Int  |-> 0)
+|--
+  “ (0 <= 2) ” 
+  &&  “ (2 < 3) ”
+.
+
+Definition main_partial_solve_wit_1_aux := 
+forall (retval: Z) (retval_2: Z) (PreH1 : (1 = 1)) (PreH2 : (retval_2 = (Znth (1) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0)))) (PreH3 : (retval = (Znth (0) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0)))) (PreH4 : ((INT_MIN) <= retval)) (PreH5 : (retval <= INT_MAX)) (PreH6 : ((INT_MIN) <= retval_2)) (PreH7 : (retval_2 <= INT_MAX)) ,
+  (IntArray.full ( &( "a_spec_395" ) ) 3 (replace_Znth (1) (1) ((cons (0) ((cons (1) ((cons (2) ((@nil Z))))))))) )
+|--
+  “ (0 <= 2) ” 
+  &&  “ (2 < 3) ” 
+  &&  “ (retval_2 = (Znth (1) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0))) ” 
+  &&  “ (retval = (Znth (0) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0))) ” 
+  &&  “ ((INT_MIN) <= retval) ” 
+  &&  “ (retval <= INT_MAX) ” 
+  &&  “ ((INT_MIN) <= retval_2) ” 
+  &&  “ (retval_2 <= INT_MAX) ”
+  &&  (IntArray.full ( &( "a_spec_395" ) ) 3 (cons (0) ((cons (1) ((cons (2) ((@nil Z))))))) )
+.
+
+Definition main_partial_solve_wit_1 := main_partial_solve_wit_1_pure -> main_partial_solve_wit_1_aux.
+
+Definition main_partial_solve_wit_2_pure := 
+forall (retval: Z) (PreH1 : (0 = 0)) (PreH2 : (retval = (Znth (0) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0)))) (PreH3 : ((INT_MIN) <= retval)) (PreH4 : (retval <= INT_MAX)) ,
+  ((( &( "one_spec_416" ) )) # Int  |->_)
+  **  (IntArray.full ( &( "a_spec_395" ) ) 3 (replace_Znth (0) (0) ((cons (0) ((cons (1) ((cons (2) ((@nil Z))))))))) )
+  **  ((( &( "first_spec_410" ) )) # Ptr  |-> (( &( "a_spec_395" ) ) + (0 * sizeof(INT))))
+  **  ((( &( "zero_spec_398" ) )) # Int  |-> 0)
+|--
+  “ (0 <= 1) ” 
+  &&  “ (1 < 3) ”
+.
+
+Definition main_partial_solve_wit_2_aux := 
+forall (retval: Z) (PreH1 : (0 = 0)) (PreH2 : (retval = (Znth (0) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0)))) (PreH3 : ((INT_MIN) <= retval)) (PreH4 : (retval <= INT_MAX)) ,
+  (IntArray.full ( &( "a_spec_395" ) ) 3 (replace_Znth (0) (0) ((cons (0) ((cons (1) ((cons (2) ((@nil Z))))))))) )
+|--
+  “ (0 <= 1) ” 
+  &&  “ (1 < 3) ” 
+  &&  “ (retval = (Znth (0) ((cons (0) ((cons (1) ((cons (2) ((@nil Z)))))))) (0))) ” 
+  &&  “ ((INT_MIN) <= retval) ” 
+  &&  “ (retval <= INT_MAX) ”
+  &&  (IntArray.full ( &( "a_spec_395" ) ) 3 (cons (0) ((cons (1) ((cons (2) ((@nil Z))))))) )
+.
+
+Definition main_partial_solve_wit_2 := main_partial_solve_wit_2_pure -> main_partial_solve_wit_2_aux.
+
+Definition main_partial_solve_wit_3_pure := 
+  ((( &( "zero_spec_398" ) )) # Int  |->_)
+  **  (IntArray.full ( &( "a_spec_395" ) ) 3 (cons (0) ((cons (1) ((cons (2) ((@nil Z))))))) )
+|--
+  “ (0 <= 0) ” 
+  &&  “ (0 < 3) ”
+.
+
+Definition main_partial_solve_wit_3_aux := 
+  (IntArray.full ( &( "a_spec_395" ) ) 3 (cons (0) ((cons (1) ((cons (2) ((@nil Z))))))) )
+|--
+  “ (0 <= 0) ” 
+  &&  “ (0 < 3) ”
+  &&  (IntArray.full ( &( "a_spec_395" ) ) 3 (cons (0) ((cons (1) ((cons (2) ((@nil Z))))))) )
+.
+
+Definition main_partial_solve_wit_3 := main_partial_solve_wit_3_pure -> main_partial_solve_wit_3_aux.
+
+Definition main_precondition_wit_1 :=
+~ ((  TT && emp ) |-- “ False ”).
+
+Module Type VC_Correct.
+
+Axiom proof_of_main_safety_wit_1 : main_safety_wit_1.
+Axiom proof_of_main_safety_wit_2 : main_safety_wit_2.
+Axiom proof_of_main_safety_wit_3 : main_safety_wit_3.
+Axiom proof_of_main_safety_wit_4 : main_safety_wit_4.
+Axiom proof_of_main_safety_wit_5 : main_safety_wit_5.
+Axiom proof_of_main_safety_wit_6 : main_safety_wit_6.
+Axiom proof_of_main_safety_wit_7 : main_safety_wit_7.
+Axiom proof_of_main_safety_wit_8 : main_safety_wit_8.
+Axiom proof_of_main_safety_wit_9 : main_safety_wit_9.
+Axiom proof_of_main_safety_wit_10 : main_safety_wit_10.
+Axiom proof_of_main_safety_wit_11 : main_safety_wit_11.
+Axiom proof_of_main_safety_wit_12 : main_safety_wit_12.
+Axiom proof_of_main_safety_wit_13 : main_safety_wit_13.
+Axiom proof_of_main_safety_wit_14 : main_safety_wit_14.
+Axiom proof_of_main_safety_wit_15 : main_safety_wit_15.
+Axiom proof_of_main_entail_wit_1 : main_entail_wit_1.
+Axiom proof_of_main_entail_wit_2 : main_entail_wit_2.
+Axiom proof_of_main_entail_wit_3 : main_entail_wit_3.
+Axiom proof_of_main_entail_wit_4 : main_entail_wit_4.
+Axiom proof_of_main_entail_wit_5 : main_entail_wit_5.
+Axiom proof_of_main_entail_wit_6 : main_entail_wit_6.
+Axiom proof_of_main_return_wit_1 : main_return_wit_1.
+Axiom proof_of_main_partial_solve_wit_1_pure : main_partial_solve_wit_1_pure.
+Axiom proof_of_main_partial_solve_wit_1 : main_partial_solve_wit_1.
+Axiom proof_of_main_partial_solve_wit_2_pure : main_partial_solve_wit_2_pure.
+Axiom proof_of_main_partial_solve_wit_2 : main_partial_solve_wit_2.
+Axiom proof_of_main_partial_solve_wit_3_pure : main_partial_solve_wit_3_pure.
+Axiom proof_of_main_partial_solve_wit_3 : main_partial_solve_wit_3.
+Axiom proof_of_main_precondition_wit_1 : main_precondition_wit_1.
+
+End VC_Correct.
+
+CANDIDATE
+Require Import ExecutionGoal.
+Require Import Coq.ZArith.ZArith.
+Require Import Coq.Bool.Bool.
+Require Import Coq.Strings.String.
+Require Import Coq.Strings.Ascii.
+Require Import Coq.Lists.List.
+Require Import Coq.Classes.RelationClasses.
+Require Import Coq.Classes.Morphisms.
+Require Import Coq.micromega.Psatz.
+Require Import Coq.Sorting.Permutation.
+From AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.
+Require Import SetsClass.SetsClass. Import SetsNotation.
+From SimpleC.SL Require Import Mem SeparationLogic.
+Require Import Logic.LogicGenerator.demo932.Interface.
+Local Open Scope Z_scope.
+Local Open Scope sets.
+Local Open Scope string_scope.
+Local Open Scope list.
+Import naive_C_Rules.
+Local Open Scope sac.
+Local Open Scope Z_scope.
+
+
+Definition empty_state : naive_C_Rules.model := {| ConAssertion.s_mem := Mem.empty_mem; ConAssertion.s_STS := Sets.full; ConAssertion.s_token := Sets.empty |}.
+Theorem entry_sat : ExecutionGoal.main_precondition_wit_1.
+Proof. Admitted.
+Theorem resolved_main_entail_wit_5 : ExecutionGoal.main_entail_wit_5.
+Proof. Admitted.
+Print Assumptions entry_sat.
+Print Assumptions resolved_main_entail_wit_5.
+
+
+REPAIR CURRENT Candidate.v. Previous actual compiler/audit errors:
+File "/home/yangfp/teSpec/benchmark/results/array_load/20261020-boundary-itp/execution-05/attempt-1/proofs/Candidate.v", line 30, characters 16-27:
+Error:
+ The relation (@Sets.empty ConAssertion.TokenSet) is not a declared reflexive relation. Maybe you need to require the Coq.Classes.RelationClasses library
+
+
+Controller status: COMPILE_FAILED
+
+Current Candidate:
+Require Import ExecutionGoal.
+Require Import Coq.ZArith.ZArith.
+Require Import Coq.Bool.Bool.
+Require Import Coq.Strings.String.
+Require Import Coq.Strings.Ascii.
+Require Import Coq.Lists.List.
+Require Import Coq.Classes.RelationClasses.
+Require Import Coq.Classes.Morphisms.
+Require Import Coq.micromega.Psatz.
+Require Import Coq.Sorting.Permutation.
+From AUXLib Require Import int_auto Axioms Feq Idents ListLib VMap.
+Require Import SetsClass.SetsClass. Import SetsNotation.
+From SimpleC.SL Require Import Mem SeparationLogic.
+Require Import Logic.LogicGenerator.demo932.Interface.
+Local Open Scope Z_scope.
+Local Open Scope sets.
+Local Open Scope string_scope.
+Local Open Scope list.
+Import naive_C_Rules.
+Local Open Scope sac.
+Local Open Scope Z_scope.
+
+
+Definition empty_state : naive_C_Rules.model := {| ConAssertion.s_mem := Mem.empty_mem; ConAssertion.s_STS := Sets.full; ConAssertion.s_token := Sets.empty |}.
+Theorem entry_sat : ExecutionGoal.main_precondition_wit_1.
+Proof.
+  unfold ExecutionGoal.main_precondition_wit_1.
+  intro H.
+  apply (H empty_state).
+  repeat split; reflexivity.
+Qed.
+Theorem resolved_main_entail_wit_5 : ExecutionGoal.main_entail_wit_5.
+Proof.
+  unfold ExecutionGoal.main_entail_wit_5.
+  right.
+  intros retval PreH1 PreH2 PreH3.
+  intros s Hs.
+  exact Hs.
+Qed.
+Print Assumptions entry_sat.
+Print Assumptions resolved_main_entail_wit_5.

@@ -88,15 +88,22 @@ def _checked_contract_samples(case: dict, native: dict) -> bool:
     this adapter. Every accepted finite VC retains its contract-model scope.
     """
     strategy = native.get("execution_strategy")
+    semantics = native.get("execution_semantics")
+    hybrid = semantics == "modular-hybrid/v2"
+    admitted_semantics = {EXECUTION_SEMANTICS.get(strategy) if isinstance(strategy, str) else None}
+    if strategy == "modular":
+        admitted_semantics.add("modular-sampled/v1")
+    sample_scope = "contract-and-invariant-hybrid" if hybrid else "contract-and-invariant-model"
+    call_policy = "contract-sample-or-symbolic/v2" if hybrid else "contract-sample/v1"
     if (
         not isinstance(strategy, str) or strategy not in EXECUTION_SEMANTICS
         or case.get("execution_strategy") != strategy
-        or native.get("execution_semantics") != EXECUTION_SEMANTICS[strategy]
-        or case.get("execution_semantics") != EXECUTION_SEMANTICS[strategy]
-        or native.get("result_scope") != "contract-and-invariant-model"
-        or case.get("result_scope") != "contract-and-invariant-model"
-        or native.get("declaration_call_policy") != "contract-sample/v1"
-        or case.get("declaration_call_policy") != "contract-sample/v1"
+        or semantics not in admitted_semantics
+        or case.get("execution_semantics") != semantics
+        or native.get("result_scope") != sample_scope
+        or case.get("result_scope") != sample_scope
+        or native.get("declaration_call_policy") != call_policy
+        or case.get("declaration_call_policy") != call_policy
         or native.get("completed") is not True
         or native.get("scope") != "execution"
         or native.get("annotation_policy") != case.get("annotation_policy")
@@ -163,7 +170,7 @@ def _checked_contract_samples(case: dict, native: dict) -> bool:
 def _checked_events(case: dict, native: dict, function: str) -> bool:
     """Admit unchanged concrete traces or validated contract-only samples."""
     if (
-        native.get("execution_semantics") == "modular-sampled/v1"
+        native.get("execution_strategy") == "modular"
         or native.get("sampling_events") or case.get("sampling_events")
         or native.get("result_scope") == "contract-and-invariant-model"
     ):
@@ -407,7 +414,7 @@ def refine_case(
             native.get("schema") != "sac-spec-test/v1"
             or native.get("vc_semantics") != "path-vc/v1"
             or native.get("query_semantics") != "copy-only/v1"
-            or native.get("execution_semantics") not in EXECUTION_SEMANTICS.values()
+            or native.get("execution_semantics") not in {*EXECUTION_SEMANTICS.values(), "modular-sampled/v1"}
             or native.get("result_semantics") != "three-valued-conjunction/v1"
             or native.get("limit_reason")
             or native.get("vc_results") != case.get("vc_results")

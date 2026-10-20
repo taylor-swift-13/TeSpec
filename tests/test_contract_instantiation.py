@@ -109,7 +109,7 @@ class ContractInstantiationTests(unittest.TestCase):
             native = report["spec_test"]
             self.assertEqual(native["execution_strategy"], strategy)
             self.assertEqual(native["annotation_policy"], policy)
-            self.assertEqual(native["declaration_call_policy"], "contract-sample/v1")
+            self.assertEqual(native["declaration_call_policy"], "contract-sample-or-symbolic/v2" if strategy == "modular" else "contract-sample/v1")
             return native, report
 
     def variants(self, name):
@@ -187,10 +187,17 @@ class ContractInstantiationTests(unittest.TestCase):
     def test_impossible_postcondition_is_not_a_vacuous_pass(self):
         for native, _ in self.variants("contradictory_post"):
             self.assertEqual(native["overall"], "UNKNOWN", native)
-            self.assertFalse(native["completed"], native)
-            self.assertEqual(native["limit_reason"], "contract_instantiation_unknown")
-            self.assertTrue(any(event["status"] == "UNKNOWN"
-                                for event in native["sampling_events"]))
+            if native["execution_strategy"] == "modular":
+                # Symbolic continuation may reach the syntactic exit, but an
+                # inconsistent contract must keep the whole test UNKNOWN.
+                self.assertEqual(native["limit_reason"], "contract_postcondition_inconsistent")
+                self.assertTrue(any(event["status"] == "SYMBOLIC_FALLBACK"
+                                    for event in native["sampling_events"]))
+            else:
+                self.assertFalse(native["completed"], native)
+                self.assertEqual(native["limit_reason"], "contract_instantiation_unknown")
+                self.assertTrue(any(event["status"] == "UNKNOWN"
+                                    for event in native["sampling_events"]))
 
     def test_infeasible_conditional_post_sibling_does_not_poison_valid_sample(self):
         for native, _ in self.variants("conditional_return"):
@@ -202,10 +209,17 @@ class ContractInstantiationTests(unittest.TestCase):
     def test_entirely_infeasible_post_disjunction_remains_unknown(self):
         for native, _ in self.variants("all_false_alternatives"):
             self.assertEqual(native["overall"], "UNKNOWN", native)
-            self.assertFalse(native["completed"], native)
-            self.assertEqual(native["limit_reason"], "contract_instantiation_unknown")
-            self.assertTrue(any(event["status"] == "UNKNOWN"
-                                for event in native["sampling_events"]))
+            if native["execution_strategy"] == "modular":
+                # Symbolic continuation may reach the syntactic exit, but an
+                # inconsistent contract must keep the whole test UNKNOWN.
+                self.assertEqual(native["limit_reason"], "contract_postcondition_inconsistent")
+                self.assertTrue(any(event["status"] == "SYMBOLIC_FALLBACK"
+                                    for event in native["sampling_events"]))
+            else:
+                self.assertFalse(native["completed"], native)
+                self.assertEqual(native["limit_reason"], "contract_instantiation_unknown")
+                self.assertTrue(any(event["status"] == "UNKNOWN"
+                                    for event in native["sampling_events"]))
 
     def test_sampling_does_not_initialize_uninitialized_resources(self):
         for native, report in self.variants("undef_read"):

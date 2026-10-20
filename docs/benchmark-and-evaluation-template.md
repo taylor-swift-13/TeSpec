@@ -468,3 +468,12 @@ VC、报告、输入/源码/工具哈希及结果成本 CSV/JSON。CLI、执行�
 ## Modular 边界实例化消融（2026-10-20）
 
 --modular-instantiation on|off 独立于执行策略和VC范围，默认on。仅modular下off关闭有界整状态选值，保留符号规约/断言/不变式状态、入口绑定、类型限制、资源衔接和原始VC。报告必须明确modular-symbolic/v1、contract-symbolic/v1与sampling_events；不能把范围状态检查当作单个新抽样实例。inline行为不变。具体结果见[实验记录](benchmark-modular-symbolic-20261020.md)。本轮为原生消融，没有新增ITP测量；即使原始Goal与旧内核证书完全相同，也分栏披露历史证据，不填入新模型/内核成本。新残余VC与边界限制均保留UNKNOWN，不计成功。
+
+
+## Modular 非阻塞采样与原始父目标的判定（2026-10-20）
+
+modular-instantiation=on使用modular-hybrid/v2：采样只在副本上尽力选值，未找到模型时原样传递符号状态并记录SYMBOLIC_FALLBACK，不据此丢弃路径或生成失败结论。入口实例、未修改的地址/局部值及frame应保留，循环实际可写位置仍可抽象。off保留符号状态；VC生成范围独立。真实矛盾后条件必须保留UNKNOWN等限制，不能将执行图到达出口当作存在合法具体实例。
+
+ITP以整次执行的原始残余目标为单位。自动分解的纯/空间子目标可能只是父目标的某个证明方向；若父目标保留其他可成立的分支，不能仅由一个辅助子目标被反证就将整次测试判FAIL。必须审计子目标与原始父目标的逻辑关系，保留未决父目标。当前收集器拒绝translation12初始控制器的这种过度提升，原始回执保留，正式结果为UNKNOWN。实际编译/内核检查仍是有效子目标证据，其时间、RSS与全部模型修复token继续计入，不因最终测试未决而丢弃。
+
+完整记录及修复回归见[边界修复](benchmark-modular-boundary-fix-20261020.md)。

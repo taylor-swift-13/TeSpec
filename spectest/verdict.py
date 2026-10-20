@@ -122,7 +122,8 @@ def _executor_result(
                 "modular-symbolic/v1" if strategy == "modular" and instantiation == "off"
                 else EXECUTION_SEMANTICS[strategy]))
         or ("execution_strategy" not in result
-            and result.get("execution_semantics") == "modular-sampled/v1")
+            and result.get("execution_semantics") in {
+                "modular-sampled/v1", "modular-symbolic/v1", "modular-hybrid/v2"})
     ):
         return {
             "status": "ERROR", "overall": "ERROR", "satisfied": None,
@@ -264,6 +265,7 @@ def _executor_result(
         "requested_execution_strategy": expected_strategy,
         "declaration_call_policy": result.get("declaration_call_policy"),
         "modular_instantiation": instantiation if strategy == "modular" else None,
+        "sampling_failure_policy": result.get("sampling_failure_policy"),
         "sampling_events": sampling_events,
         "result_scope": result.get("result_scope"),
         "execution_completed": (

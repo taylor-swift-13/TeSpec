@@ -2117,8 +2117,8 @@ def run_job(
             "execution_strategy": config.execution_strategy,
             "execution_semantics": execution_semantics(config.execution_strategy, config.modular_instantiation),
             "modular_instantiation": config.modular_instantiation,
-            "loops": "execute_iterations" if config.execution_strategy == "inline" else ("retain_symbolic_invariant_boundaries" if config.modular_instantiation == "off" else "sample_invariant_boundaries"),
-            "defined_function_calls": "execute_bodies" if config.execution_strategy == "inline" else ("retain_symbolic_contract_postconditions" if config.modular_instantiation == "off" else "sample_contract_postconditions"),
+            "loops": "execute_iterations" if config.execution_strategy == "inline" else ("retain_symbolic_invariant_boundaries" if config.modular_instantiation == "off" else "sample_or_retain_symbolic_invariant_boundaries"),
+            "defined_function_calls": "execute_bodies" if config.execution_strategy == "inline" else ("retain_symbolic_contract_postconditions" if config.modular_instantiation == "off" else "sample_or_retain_symbolic_contract_postconditions"),
             "intermediate_boundaries": (
                 config.annotation_policy not in (None, "ignore")
                 or config.execution_mode == "all-boundaries"
@@ -2129,7 +2129,9 @@ def run_job(
                        for result in results)
                 else ("retain_symbolic_contract_postconditions"
                       if any(result.get("declaration_call_policy") == "contract-symbolic/v1" for result in results)
-                      else "not_reported_by_executor")
+                      else ("sample_or_retain_symbolic_contract_postconditions"
+                            if any(result.get("declaration_call_policy") == "contract-sample-or-symbolic/v2" for result in results)
+                            else "not_reported_by_executor"))
             ),
             "call_depth_limit": config.call_depth_limit,
             "loop_unroll_limit": config.loop_unroll_limit or 1024,

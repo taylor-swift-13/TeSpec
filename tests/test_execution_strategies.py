@@ -178,7 +178,7 @@ class ExecutionStrategyTests(unittest.TestCase):
         result = _executor_result(json.dumps(payload), 0, VC, expected_strategy="modular")
         self.assertEqual(result["status"], "FAIL")
         self.assertEqual(result["sampling_events"], payload["spec_test"]["sampling_events"])
-        self.assertEqual(result["execution_semantics"], "modular-sampled/v1")
+        self.assertEqual(result["execution_semantics"], EXECUTION_SEMANTICS["modular"])
 
     def test_report_does_not_describe_modular_or_external_calls_as_inline(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -205,7 +205,7 @@ class ExecutionStrategyTests(unittest.TestCase):
                         self.assertEqual(policy["execution_semantics"], EXECUTION_SEMANTICS[strategy])
                         self.assertEqual(policy["declaration_calls"], "sample_contract_postconditions")
                         self.assertEqual(policy["defined_function_calls"],
-                                         "execute_bodies" if strategy == "inline" else "sample_contract_postconditions")
+                                         "execute_bodies" if strategy == "inline" else "sample_or_retain_symbolic_contract_postconditions")
                         self.assertEqual(report["results"][0]["sampling_events"],
                                          payload["spec_test"]["sampling_events"])
 
@@ -243,7 +243,7 @@ class NativeExecutionStrategyTests(unittest.TestCase):
             return case, raw
 
     def assert_sampled(self, case, kind):
-        self.assertEqual(case["result_scope"], "contract-and-invariant-model", case)
+        self.assertEqual(case["result_scope"], "contract-and-invariant-hybrid" if case["execution_strategy"] == "modular" else "contract-and-invariant-model", case)
         self.assertTrue(any(event.get("kind") == kind
                             for event in case["abstraction_events"]), case)
         self.assertTrue(case["sampling_events"], case)
@@ -274,6 +274,52 @@ class NativeExecutionStrategyTests(unittest.TestCase):
                 self.assertTrue(case["vc_results"], case)
                 self.assertTrue(any(e["kind"] == "contract_state_symbolic"
                                     for e in case["abstraction_events"]), raw)
+
+    def test_opaque_contract_sampling_cannot_block_execution_or_erase_vcs(self):
+        prefix = (
+            "/*@ Extern Coq (opaque : Z -> Assertion) */\n"
+            "void external(void) /*@ Require emp Ensure opaque(7) */;\n"
+        )
+        for mode in ("entry-exit", "all-boundaries"):
+            for sampling in ("on", "off"):
+                with self.subTest(mode=mode, sampling=sampling):
+                    source = prefix + (
+                        "int sample(void) /*@ Require emp Ensure __return == 0 && opaque(7) */ "
+                        "{ external(); return 0; }"
+                    )
+                    case, raw = self.run_source(source, "modular", mode,
+                                                modular_instantiation=sampling)
+                    self.assertEqual(case["status"], "PASS", case)
+                    self.assertTrue(case["execution_completed"], case)
+                    self.assertTrue(case["vc_results"], case)
+                    if sampling == "on":
+                        fallback = [e for e in case["sampling_events"] if e["status"] == "SYMBOLIC_FALLBACK"]
+                        self.assertTrue(fallback, raw)
+                        self.assertTrue(all(e["constraint_state"] == e["selected_state"] for e in fallback))
+                    else:
+                        self.assertEqual(case["sampling_events"], [])
+        # The same unsupported predicate in an unproved assertion remains an
+        # original obligation; falling back must not manufacture a PASS.
+        source = "/*@ Extern Coq (opaque : Z -> Assertion) */\n" + (
+            "int sample(void) /*@ Require emp Ensure __return == 0 && opaque(7) */ "
+            "{ /*@ Assert opaque(7) */ return 0; }"
+        )
+        case, _ = self.run_source(source, "modular", "all-boundaries")
+        self.assertNotEqual(case["status"], "PASS", case)
+        self.assertTrue(any(v["kind"] == "entailment" and v["status"] != "VALID"
+                            for v in case["vc_results"]), case)
+
+    def test_inconsistent_modular_contract_is_not_a_successful_fallback(self):
+        source = (
+            "int external(void) /*@ Require emp Ensure __return < 0 && __return >= 0 && emp */;\n"
+            "int sample(void) /*@ Require emp Ensure __return == 0 && emp */ { external(); return 0; }"
+        )
+        for sampling in ("on", "off"):
+            with self.subTest(sampling=sampling):
+                case, raw = self.run_source(source, "modular", "all-boundaries",
+                                            modular_instantiation=sampling)
+                self.assertEqual(case["status"], "UNKNOWN", case)
+                self.assertNotEqual(case["reason"], "qcp_full_auto_passed", raw)
 
     def test_defined_weak_contract_uses_body_only_in_inline(self):
         source = (
@@ -307,7 +353,7 @@ class NativeExecutionStrategyTests(unittest.TestCase):
                 with self.subTest(mode=mode, strategy=strategy):
                     case, _ = self.run_source(source, strategy, mode)
                     self.assertEqual(case["status"], "PASS", case)
-                    self.assertEqual(case["declaration_call_policy"], "contract-sample/v1")
+                    self.assertEqual(case["declaration_call_policy"], "contract-sample-or-symbolic/v2" if strategy == "modular" else "contract-sample/v1")
                     self.assert_sampled(case, "contract-sample")
 
     def test_assertion_vc_policy_stays_independent_of_state_strategy(self):

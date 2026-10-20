@@ -210,7 +210,7 @@ def _run_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--modular-instantiation", choices=("on", "off"), default="on",
-        help="modular only: sample boundary states (on) or retain symbolic states (off)",
+        help="modular only: try boundary samples with symbolic fallback (on), or retain symbolic states (off)",
     )
     parser.add_argument(
         "--annotation-policy", choices=("ignore", "check-preserve", "qcp")
