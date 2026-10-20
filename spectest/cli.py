@@ -204,13 +204,13 @@ def _run_parser() -> argparse.ArgumentParser:
         type=normalize_execution_strategy,
         choices=EXECUTION_STRATEGIES,
         default="inline",
-        help="inline: execute bodies and loop iterations; modular: sample states "
-        "at contract, invariant and assertion boundaries. Calls without bodies "
-        "use contract sampling in either strategy",
+        help="inline: execute bodies and loop iterations; modular: retain symbolic "
+        "states at contract, invariant and assertion boundaries. Calls without "
+        "bodies use their contracts; only inline may sample their results",
     )
     parser.add_argument(
-        "--modular-instantiation", choices=("on", "off"), default="on",
-        help="modular only: try boundary samples with symbolic fallback (on), or retain symbolic states (off)",
+        "--modular-instantiation", choices=("off",), default="off",
+        help="compatibility option: modular boundary sampling is removed; only off is supported",
     )
     parser.add_argument(
         "--annotation-policy", choices=("ignore", "check-preserve", "qcp")

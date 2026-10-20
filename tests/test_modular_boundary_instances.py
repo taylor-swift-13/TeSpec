@@ -1,4 +1,4 @@
-"""Entry and modular boundaries share explicit-instance checking, not SAT guesses."""
+"""Modular boundaries keep symbolic states and cannot enter the sampler."""
 from __future__ import annotations
 
 import os
@@ -25,24 +25,20 @@ int sample(int *p)
 
 @unittest.skipUnless(os.environ.get("SAC_SYMEXEC"), "select a native candidate")
 class ModularBoundaryInstanceTests(unittest.TestCase):
-    def run_instance(self, text, mode="all-boundaries", sampling="on"):
+    def run_instance(self, text, mode="all-boundaries", sampling="off"):
         return support.NativeExecutionStrategyTests().run_source(
             text, "modular", mode, modular_instantiation=sampling,
             include_dirs=[str(ROOT / "runtime/qcip/QCP_examples/QCP_demos_human")],
         )
 
-    def test_explicit_array_contents_sample_without_replacing_qcp_heap(self):
+    def test_explicit_array_contents_preserved_without_sampling(self):
         for mode in ("entry-exit", "all-boundaries"):
             with self.subTest(mode=mode):
                 case, _ = self.run_instance(source("IntArray::full(p,2,xs)"), mode)
                 self.assertEqual(case["status"], "PASS", case)
                 self.assertTrue(case["execution_completed"])
-                self.assertTrue(case["sampling_events"])
-                for event in case["sampling_events"]:
-                    self.assertEqual(event["status"], "SAMPLED", event)
-                    self.assertIn("IntArray.full", event["selected_state"])
-                    self.assertIn("cons(Z_1, 9, cons(Z_1, 13", event["selected_state"])
-                    self.assertRegex(event["selected_state"], r"p_\d+_pre == 4096")
+                self.assertEqual(case["sampling_events"], [])
+                self.assertEqual(case["modular_instantiation"], "off")
 
     def test_symbolic_switch_keeps_same_explicit_array_result(self):
         case, _ = self.run_instance(source("IntArray::full(p,2,xs)"), sampling="off")
@@ -52,10 +48,7 @@ class ModularBoundaryInstanceTests(unittest.TestCase):
     def test_shape_only_post_keeps_original_state_and_unproved_obligations(self):
         case, _ = self.run_instance(source("IntArray::full_shape(p,2)"))
         self.assertNotEqual(case["status"], "PASS", case)
-        events = [e for e in case["sampling_events"] if e["kind"] == "contract"]
-        self.assertEqual(len(events), 1, events)
-        self.assertEqual(events[0]["status"], "SYMBOLIC_FALLBACK")
-        self.assertEqual(events[0]["constraint_state"], events[0]["selected_state"])
+        self.assertEqual(case["sampling_events"], [])
         self.assertTrue(case["vc_results"], case)
 
     def test_overlapping_array_and_cell_is_invalid_entry(self):

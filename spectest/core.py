@@ -162,7 +162,7 @@ class QcpConfig:
     spatial_smt: bool = False
     spatial_smt_timeout_ms: int = 2000
     execution_strategy: str = "inline"
-    modular_instantiation: str = "on"
+    modular_instantiation: str = "off"
 
 
 @dataclass(frozen=True)
@@ -1330,9 +1330,11 @@ def _parse_qcp_config(job: dict[str, Any], base: Path, source_dir: Path) -> QcpC
         execution_strategy = normalize_execution_strategy(raw.get("execution_strategy", "inline"))
     except ValueError as error:
         raise JobError(f"qcp.{error}") from error
-    modular_instantiation = raw.get("modular_instantiation", "on")
+    modular_instantiation = raw.get("modular_instantiation", "off")
     if modular_instantiation not in ("on", "off"):
         raise JobError("qcp.modular_instantiation must be on or off")
+    if execution_strategy == "modular" and modular_instantiation != "off":
+        raise JobError("modular boundary sampling has been removed; omit qcp.modular_instantiation or use off")
     architecture_bits = raw.get("architecture_bits", 32)
     if type(architecture_bits) is not int or architecture_bits not in (32, 64):
         raise JobError("qcp.architecture_bits must be 32 or 64")
@@ -2117,8 +2119,8 @@ def run_job(
             "execution_strategy": config.execution_strategy,
             "execution_semantics": execution_semantics(config.execution_strategy, config.modular_instantiation),
             "modular_instantiation": config.modular_instantiation,
-            "loops": "execute_iterations" if config.execution_strategy == "inline" else ("retain_symbolic_invariant_boundaries" if config.modular_instantiation == "off" else "sample_or_retain_symbolic_invariant_boundaries"),
-            "defined_function_calls": "execute_bodies" if config.execution_strategy == "inline" else ("retain_symbolic_contract_postconditions" if config.modular_instantiation == "off" else "sample_or_retain_symbolic_contract_postconditions"),
+            "loops": "execute_iterations" if config.execution_strategy == "inline" else "retain_symbolic_invariant_boundaries",
+            "defined_function_calls": "execute_bodies" if config.execution_strategy == "inline" else "retain_symbolic_contract_postconditions",
             "intermediate_boundaries": (
                 config.annotation_policy not in (None, "ignore")
                 or config.execution_mode == "all-boundaries"

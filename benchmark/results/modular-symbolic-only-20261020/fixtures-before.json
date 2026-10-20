@@ -1,0 +1,3248 @@
+[
+  {
+    "case": "contradictory_post",
+    "policy": "ignore",
+    "source": "int external_value(void)\n/*@ Require emp Ensure __return < 0 && __return > 0 && emp */;\nint sample(void)\n/*@ Require emp Ensure emp */\n{ return external_value(); }\n",
+    "code": 0,
+    "report": {
+      "spec_test": {
+        "schema": "sac-spec-test/v1",
+        "execution_semantics": "modular-symbolic/v1",
+        "execution_strategy": "modular",
+        "modular_instantiation": "off",
+        "declaration_call_policy": "contract-symbolic/v1",
+        "sampling_failure_policy": "retain-original-symbolic-state/v1",
+        "query_semantics": "copy-only/v1",
+        "mode": "expand",
+        "scope": "execution",
+        "annotation_policy": "ignore",
+        "completed": true,
+        "result_scope": "contract-and-invariant-symbolic",
+        "overall": "UNKNOWN",
+        "precondition_result": "SAT",
+        "test_result": "UNKNOWN",
+        "result_semantics": "three-valued-conjunction/v1",
+        "vc_semantics": "path-vc/v1",
+        "branch_evaluation": {
+          "schema": "instance-first-branch-query/v1",
+          "pure_queries": 1,
+          "evaluated_true": 0,
+          "evaluated_false": 0,
+          "smt_fallback": 1
+        },
+        "vc_scheduling": {
+          "schema": "post-execution-witness-smt/v1",
+          "enabled": false,
+          "collecting": false,
+          "requests": 0,
+          "queued_witnesses": 0,
+          "solved_witnesses": 0,
+          "retained_on_release": 0,
+          "pending_witnesses": 0
+        },
+        "vc_results": [
+          {
+            "kind": "safety",
+            "name": null,
+            "line": 5,
+            "status": "VALID",
+            "path": "EX retval_380 \nPROP[\n  retval_380 < 0;\n  retval_380 > 0;\n  (- 2147483648) <= retval_380;\n  retval_380 <= INT_MAX ]\nLOCAL[]\nSEP[]\n",
+            "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+          }
+        ],
+        "phases": {
+          "precondition": "SAT",
+          "safety": "PASS",
+          "postcondition": "UNKNOWN",
+          "annotations": "NOT_RUN"
+        },
+        "abstraction_events": [
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract",
+            "count": 1
+          },
+          {
+            "kind": "contract-sample",
+            "function": "external_value",
+            "count": 1
+          },
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract-prestate",
+            "count": 1
+          }
+        ],
+        "sampling_events": [],
+        "limit_reason": "contract_postcondition_inconsistent",
+        "architecture_bits": 32,
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [],
+          "aliases": []
+        },
+        "certificate": "NOT_CHECKED"
+      },
+      "preconditions": [
+        {
+          "goal": "sample_precondition_wit_1",
+          "status": "SAT",
+          "proof": "auto"
+        }
+      ],
+      "fileName": "/tmp/tmpy3wpsjdq/input.c",
+      "functionName": "sample",
+      "loaded_strategies": [
+        "common",
+        "string_literal"
+      ],
+      "result": "success",
+      "verificationStatus": "proved",
+      "has_manual_obligations": false,
+      "manual_obligation_count": 0,
+      "manual_obligations": null,
+      "errormessage": null,
+      "warningmessage": null,
+      "current_assertions": null,
+      "FunctionDerivation": null,
+      "WitnessList": [
+        {
+          "functionName": "sample",
+          "Witness": {
+            "safety_checker_wit": {
+              "total": 1,
+              "auto_solved": 1,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "entailment_checker_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "return_checker_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "partial_solve_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "which_implies_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "total_witness_count": {
+              "auto_solved": 1,
+              "manual": 0
+            }
+          }
+        }
+      ]
+    },
+    "stderr": "[precondition] sample_precondition_wit_1: SAT (auto)\n"
+  },
+  {
+    "case": "contradictory_post",
+    "policy": "check-preserve",
+    "source": "int external_value(void)\n/*@ Require emp Ensure __return < 0 && __return > 0 && emp */;\nint sample(void)\n/*@ Require emp Ensure emp */\n{ return external_value(); }\n",
+    "code": 0,
+    "report": {
+      "spec_test": {
+        "schema": "sac-spec-test/v1",
+        "execution_semantics": "modular-symbolic/v1",
+        "execution_strategy": "modular",
+        "modular_instantiation": "off",
+        "declaration_call_policy": "contract-symbolic/v1",
+        "sampling_failure_policy": "retain-original-symbolic-state/v1",
+        "query_semantics": "copy-only/v1",
+        "mode": "expand",
+        "scope": "execution",
+        "annotation_policy": "check-preserve",
+        "completed": true,
+        "result_scope": "contract-and-invariant-symbolic",
+        "overall": "UNKNOWN",
+        "precondition_result": "SAT",
+        "test_result": "UNKNOWN",
+        "result_semantics": "three-valued-conjunction/v1",
+        "vc_semantics": "path-vc/v1",
+        "branch_evaluation": {
+          "schema": "instance-first-branch-query/v1",
+          "pure_queries": 5,
+          "evaluated_true": 4,
+          "evaluated_false": 0,
+          "smt_fallback": 1
+        },
+        "vc_scheduling": {
+          "schema": "post-execution-witness-smt/v1",
+          "enabled": false,
+          "collecting": false,
+          "requests": 0,
+          "queued_witnesses": 0,
+          "solved_witnesses": 0,
+          "retained_on_release": 0,
+          "pending_witnesses": 0
+        },
+        "vc_results": [
+          {
+            "kind": "safety",
+            "name": null,
+            "line": 5,
+            "status": "VALID",
+            "path": "EX retval_380 \nPROP[\n  retval_380 < 0;\n  retval_380 > 0;\n  (- 2147483648) <= retval_380;\n  retval_380 <= INT_MAX ]\nLOCAL[]\nSEP[]\n",
+            "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+          }
+        ],
+        "phases": {
+          "precondition": "SAT",
+          "safety": "PASS",
+          "postcondition": "UNKNOWN",
+          "annotations": "PASS"
+        },
+        "abstraction_events": [
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract",
+            "count": 1
+          },
+          {
+            "kind": "contract-sample",
+            "function": "external_value",
+            "count": 1
+          },
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract-prestate",
+            "count": 1
+          }
+        ],
+        "sampling_events": [],
+        "limit_reason": "contract_postcondition_inconsistent",
+        "architecture_bits": 32,
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [],
+          "aliases": []
+        },
+        "certificate": "NOT_CHECKED"
+      },
+      "preconditions": [
+        {
+          "goal": "sample_precondition_wit_1",
+          "status": "SAT",
+          "proof": "auto"
+        }
+      ],
+      "fileName": "/tmp/tmpy3wpsjdq/input.c",
+      "functionName": "sample",
+      "loaded_strategies": [
+        "common",
+        "string_literal"
+      ],
+      "result": "success",
+      "verificationStatus": "proved",
+      "has_manual_obligations": false,
+      "manual_obligation_count": 0,
+      "manual_obligations": null,
+      "errormessage": null,
+      "warningmessage": null,
+      "current_assertions": null,
+      "FunctionDerivation": null,
+      "WitnessList": [
+        {
+          "functionName": "sample",
+          "Witness": {
+            "safety_checker_wit": {
+              "total": 1,
+              "auto_solved": 1,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "entailment_checker_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "return_checker_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "partial_solve_wit": {
+              "total": 1,
+              "auto_solved": 1,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "which_implies_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "total_witness_count": {
+              "auto_solved": 2,
+              "manual": 0
+            }
+          }
+        }
+      ]
+    },
+    "stderr": "[precondition] sample_precondition_wit_1: SAT (auto)\n"
+  },
+  {
+    "case": "double_alloc",
+    "policy": "ignore",
+    "source": "int *fresh(void)\n/*@ Require emp Ensure __return != 0 && undef_data_at(__return, int) */;\nvoid release(int *p)\n/*@ Require undef_data_at(p, int) Ensure emp */;\nint sample(void)\n/*@ Require emp Ensure __return == 33 && emp */\n{ int *a = fresh(); int *b = fresh(); *a = 11; *b = 22; int result = *a + *b; release(a); release(b); return result; }\n",
+    "code": 0,
+    "report": {
+      "spec_test": {
+        "schema": "sac-spec-test/v1",
+        "execution_semantics": "modular-symbolic/v1",
+        "execution_strategy": "modular",
+        "modular_instantiation": "off",
+        "declaration_call_policy": "contract-symbolic/v1",
+        "sampling_failure_policy": "retain-original-symbolic-state/v1",
+        "query_semantics": "copy-only/v1",
+        "mode": "expand",
+        "scope": "execution",
+        "annotation_policy": "ignore",
+        "completed": true,
+        "result_scope": "contract-and-invariant-symbolic",
+        "overall": "PASS",
+        "precondition_result": "SAT",
+        "test_result": "PASS",
+        "result_semantics": "three-valued-conjunction/v1",
+        "vc_semantics": "path-vc/v1",
+        "branch_evaluation": {
+          "schema": "instance-first-branch-query/v1",
+          "pure_queries": 12,
+          "evaluated_true": 0,
+          "evaluated_false": 0,
+          "smt_fallback": 12
+        },
+        "vc_scheduling": {
+          "schema": "post-execution-witness-smt/v1",
+          "enabled": false,
+          "collecting": false,
+          "requests": 0,
+          "queued_witnesses": 0,
+          "solved_witnesses": 0,
+          "retained_on_release": 0,
+          "pending_witnesses": 0
+        },
+        "vc_results": [
+          {
+            "kind": "safety",
+            "name": null,
+            "line": 7,
+            "status": "VALID",
+            "path": "EX retval_395 b_393_addr retval_390 a_388_addr \nPROP[\n  retval_395 != 0;\n  retval_390 != 0;\n  0 <= retval_390;\n  retval_390 <= UINT_MAX;\n  0 <= retval_395;\n  retval_395 <= UINT_MAX ]\nLOCAL[\n  Temp a a_388_addr;\n  Temp b b_393_addr ]\nSEP[\n  has_permission(retval_395, signed int);\n  store(b_393_addr, retval_395, signed int*);\n  has_permission(retval_390, signed int);\n  store(a_388_addr, retval_390, signed int*) ]\n",
+            "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+          },
+          {
+            "kind": "safety",
+            "name": null,
+            "line": 7,
+            "status": "VALID",
+            "path": "EX retval_395 b_393_addr retval_390 a_388_addr \nPROP[\n  retval_395 != 0;\n  retval_390 != 0;\n  0 <= retval_390;\n  retval_390 <= UINT_MAX;\n  0 <= retval_395;\n  retval_395 <= UINT_MAX ]\nLOCAL[\n  Temp a a_388_addr;\n  Temp b b_393_addr ]\nSEP[\n  has_permission(retval_395, signed int);\n  store(b_393_addr, retval_395, signed int*);\n  store(retval_390, 11, signed int);\n  store(a_388_addr, retval_390, signed int*) ]\n",
+            "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+          },
+          {
+            "kind": "safety",
+            "name": null,
+            "line": 7,
+            "status": "VALID",
+            "path": "EX result_398_addr retval_395 b_393_addr retval_390 a_388_addr \nPROP[\n  retval_395 != 0;\n  retval_390 != 0;\n  0 <= retval_390;\n  retval_390 <= UINT_MAX;\n  0 <= retval_395;\n  retval_395 <= UINT_MAX ]\nLOCAL[\n  Temp result result_398_addr;\n  Temp a a_388_addr;\n  Temp b b_393_addr ]\nSEP[\n  has_permission(result_398_addr, signed int);\n  store(retval_395, 22, signed int);\n  store(b_393_addr, retval_395, signed int*);\n  store(retval_390, 11, signed int);\n  store(a_388_addr, retval_390, signed int*) ]\n",
+            "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+          },
+          {
+            "kind": "return",
+            "name": null,
+            "line": 7,
+            "status": "VALID",
+            "path": "PROP[\n  retval_395 != 0;\n  retval_390 != 0;\n  0 <= retval_390;\n  retval_390 <= UINT_MAX;\n  0 <= retval_395;\n  retval_395 <= UINT_MAX ]\nLOCAL[]\nSEP[]\n",
+            "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+          }
+        ],
+        "phases": {
+          "precondition": "SAT",
+          "safety": "PASS",
+          "postcondition": "PASS",
+          "annotations": "NOT_RUN"
+        },
+        "abstraction_events": [
+          {
+            "kind": "contract-sample",
+            "function": "release",
+            "count": 2
+          },
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract",
+            "count": 4
+          },
+          {
+            "kind": "contract-sample",
+            "function": "fresh",
+            "count": 2
+          },
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract-prestate",
+            "count": 4
+          }
+        ],
+        "sampling_events": [],
+        "limit_reason": null,
+        "architecture_bits": 32,
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [],
+          "aliases": []
+        },
+        "certificate": "NOT_CHECKED"
+      },
+      "preconditions": [
+        {
+          "goal": "sample_precondition_wit_1",
+          "status": "SAT",
+          "proof": "auto"
+        }
+      ],
+      "fileName": "/tmp/tmpmmvdm06u/input.c",
+      "functionName": "sample",
+      "loaded_strategies": [
+        "common",
+        "string_literal"
+      ],
+      "result": "success",
+      "verificationStatus": "proved",
+      "has_manual_obligations": false,
+      "manual_obligation_count": 0,
+      "manual_obligations": null,
+      "errormessage": null,
+      "warningmessage": null,
+      "current_assertions": null,
+      "FunctionDerivation": null,
+      "WitnessList": [
+        {
+          "functionName": "sample",
+          "Witness": {
+            "safety_checker_wit": {
+              "total": 3,
+              "auto_solved": 3,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "entailment_checker_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "return_checker_wit": {
+              "total": 1,
+              "auto_solved": 1,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "partial_solve_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "which_implies_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "total_witness_count": {
+              "auto_solved": 4,
+              "manual": 0
+            }
+          }
+        }
+      ]
+    },
+    "stderr": "[precondition] sample_precondition_wit_1: SAT (auto)\n"
+  },
+  {
+    "case": "double_alloc",
+    "policy": "check-preserve",
+    "source": "int *fresh(void)\n/*@ Require emp Ensure __return != 0 && undef_data_at(__return, int) */;\nvoid release(int *p)\n/*@ Require undef_data_at(p, int) Ensure emp */;\nint sample(void)\n/*@ Require emp Ensure __return == 33 && emp */\n{ int *a = fresh(); int *b = fresh(); *a = 11; *b = 22; int result = *a + *b; release(a); release(b); return result; }\n",
+    "code": 0,
+    "report": {
+      "spec_test": {
+        "schema": "sac-spec-test/v1",
+        "execution_semantics": "modular-symbolic/v1",
+        "execution_strategy": "modular",
+        "modular_instantiation": "off",
+        "declaration_call_policy": "contract-symbolic/v1",
+        "sampling_failure_policy": "retain-original-symbolic-state/v1",
+        "query_semantics": "copy-only/v1",
+        "mode": "expand",
+        "scope": "execution",
+        "annotation_policy": "check-preserve",
+        "completed": true,
+        "result_scope": "contract-and-invariant-symbolic",
+        "overall": "PASS",
+        "precondition_result": "SAT",
+        "test_result": "PASS",
+        "result_semantics": "three-valued-conjunction/v1",
+        "vc_semantics": "path-vc/v1",
+        "branch_evaluation": {
+          "schema": "instance-first-branch-query/v1",
+          "pure_queries": 28,
+          "evaluated_true": 4,
+          "evaluated_false": 0,
+          "smt_fallback": 24
+        },
+        "vc_scheduling": {
+          "schema": "post-execution-witness-smt/v1",
+          "enabled": false,
+          "collecting": false,
+          "requests": 0,
+          "queued_witnesses": 0,
+          "solved_witnesses": 0,
+          "retained_on_release": 0,
+          "pending_witnesses": 0
+        },
+        "vc_results": [
+          {
+            "kind": "safety",
+            "name": null,
+            "line": 7,
+            "status": "VALID",
+            "path": "EX retval_395 b_393_addr retval_390 a_388_addr \nPROP[\n  retval_395 != 0;\n  retval_390 != 0;\n  0 <= retval_390;\n  retval_390 <= UINT_MAX;\n  0 <= retval_395;\n  retval_395 <= UINT_MAX ]\nLOCAL[\n  Temp a a_388_addr;\n  Temp b b_393_addr ]\nSEP[\n  has_permission(retval_395, signed int);\n  store(b_393_addr, retval_395, signed int*);\n  has_permission(retval_390, signed int);\n  store(a_388_addr, retval_390, signed int*) ]\n",
+            "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+          },
+          {
+            "kind": "safety",
+            "name": null,
+            "line": 7,
+            "status": "VALID",
+            "path": "EX retval_395 b_393_addr retval_390 a_388_addr \nPROP[\n  retval_395 != 0;\n  retval_390 != 0;\n  0 <= retval_390;\n  retval_390 <= UINT_MAX;\n  0 <= retval_395;\n  retval_395 <= UINT_MAX ]\nLOCAL[\n  Temp a a_388_addr;\n  Temp b b_393_addr ]\nSEP[\n  has_permission(retval_395, signed int);\n  store(b_393_addr, retval_395, signed int*);\n  store(retval_390, 11, signed int);\n  store(a_388_addr, retval_390, signed int*) ]\n",
+            "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+          },
+          {
+            "kind": "safety",
+            "name": null,
+            "line": 7,
+            "status": "VALID",
+            "path": "EX result_398_addr retval_395 b_393_addr retval_390 a_388_addr \nPROP[\n  retval_395 != 0;\n  retval_390 != 0;\n  0 <= retval_390;\n  retval_390 <= UINT_MAX;\n  0 <= retval_395;\n  retval_395 <= UINT_MAX ]\nLOCAL[\n  Temp result result_398_addr;\n  Temp a a_388_addr;\n  Temp b b_393_addr ]\nSEP[\n  has_permission(result_398_addr, signed int);\n  store(retval_395, 22, signed int);\n  store(b_393_addr, retval_395, signed int*);\n  store(retval_390, 11, signed int);\n  store(a_388_addr, retval_390, signed int*) ]\n",
+            "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+          },
+          {
+            "kind": "return",
+            "name": null,
+            "line": 7,
+            "status": "VALID",
+            "path": "PROP[\n  retval_395 != 0;\n  retval_390 != 0;\n  0 <= retval_390;\n  retval_390 <= UINT_MAX;\n  0 <= retval_395;\n  retval_395 <= UINT_MAX ]\nLOCAL[]\nSEP[]\n",
+            "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+          }
+        ],
+        "phases": {
+          "precondition": "SAT",
+          "safety": "PASS",
+          "postcondition": "PASS",
+          "annotations": "PASS"
+        },
+        "abstraction_events": [
+          {
+            "kind": "contract-sample",
+            "function": "release",
+            "count": 2
+          },
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract",
+            "count": 4
+          },
+          {
+            "kind": "contract-sample",
+            "function": "fresh",
+            "count": 2
+          },
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract-prestate",
+            "count": 4
+          }
+        ],
+        "sampling_events": [],
+        "limit_reason": null,
+        "architecture_bits": 32,
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [],
+          "aliases": []
+        },
+        "certificate": "NOT_CHECKED"
+      },
+      "preconditions": [
+        {
+          "goal": "sample_precondition_wit_1",
+          "status": "SAT",
+          "proof": "auto"
+        }
+      ],
+      "fileName": "/tmp/tmpmmvdm06u/input.c",
+      "functionName": "sample",
+      "loaded_strategies": [
+        "common",
+        "string_literal"
+      ],
+      "result": "success",
+      "verificationStatus": "proved",
+      "has_manual_obligations": false,
+      "manual_obligation_count": 0,
+      "manual_obligations": null,
+      "errormessage": null,
+      "warningmessage": null,
+      "current_assertions": null,
+      "FunctionDerivation": null,
+      "WitnessList": [
+        {
+          "functionName": "sample",
+          "Witness": {
+            "safety_checker_wit": {
+              "total": 3,
+              "auto_solved": 3,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "entailment_checker_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "return_checker_wit": {
+              "total": 1,
+              "auto_solved": 1,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "partial_solve_wit": {
+              "total": 4,
+              "auto_solved": 4,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "which_implies_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "total_witness_count": {
+              "auto_solved": 8,
+              "manual": 0
+            }
+          }
+        }
+      ]
+    },
+    "stderr": "[precondition] sample_precondition_wit_1: SAT (auto)\n"
+  },
+  {
+    "case": "frame",
+    "policy": "ignore",
+    "source": "int *fresh(void)\n/*@ Require emp Ensure __return != 0 && undef_data_at(__return, int) */;\nvoid release(int *p)\n/*@ Require undef_data_at(p, int) Ensure emp */;\nint sample(int *q)\n/*@ Require q == 4096 && data_at(q, int, 9) Ensure __return == 9 && data_at(q, int, 9) */\n{ int *p = fresh(); *p = 1; release(p); return *q; }\n",
+    "code": 0,
+    "report": {
+      "spec_test": {
+        "schema": "sac-spec-test/v1",
+        "execution_semantics": "modular-symbolic/v1",
+        "execution_strategy": "modular",
+        "modular_instantiation": "off",
+        "declaration_call_policy": "contract-symbolic/v1",
+        "sampling_failure_policy": "retain-original-symbolic-state/v1",
+        "query_semantics": "copy-only/v1",
+        "mode": "expand",
+        "scope": "execution",
+        "annotation_policy": "ignore",
+        "completed": true,
+        "result_scope": "contract-and-invariant-symbolic",
+        "overall": "PASS",
+        "precondition_result": "SAT",
+        "test_result": "PASS",
+        "result_semantics": "three-valued-conjunction/v1",
+        "vc_semantics": "path-vc/v1",
+        "branch_evaluation": {
+          "schema": "instance-first-branch-query/v1",
+          "pure_queries": 8,
+          "evaluated_true": 0,
+          "evaluated_false": 0,
+          "smt_fallback": 8
+        },
+        "vc_scheduling": {
+          "schema": "post-execution-witness-smt/v1",
+          "enabled": false,
+          "collecting": false,
+          "requests": 0,
+          "queued_witnesses": 0,
+          "solved_witnesses": 0,
+          "retained_on_release": 0,
+          "pending_witnesses": 0
+        },
+        "vc_results": [
+          {
+            "kind": "safety",
+            "name": null,
+            "line": 7,
+            "status": "VALID",
+            "path": "EX retval_393 p_391_addr \nPROP[\n  retval_393 != 0;\n  0 <= retval_393;\n  retval_393 <= UINT_MAX ]\nLOCAL[\n  Temp q q_383_addr;\n  Temp p p_391_addr ]\nSEP[\n  has_permission(retval_393, signed int);\n  store(p_391_addr, retval_393, signed int*);\n  store(q_383_addr, 4096, signed int*);\n  store(4096, 9, signed int) ]\n",
+            "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+          },
+          {
+            "kind": "return",
+            "name": null,
+            "line": 7,
+            "status": "VALID",
+            "path": "PROP[\n  retval_393 != 0;\n  0 <= retval_393;\n  retval_393 <= UINT_MAX ]\nLOCAL[]\nSEP[\n  store(4096, 9, signed int) ]\n",
+            "goal": "PROP[]\nLOCAL[]\nSEP[\n  store(4096, 9, signed int) ]\n"
+          }
+        ],
+        "phases": {
+          "precondition": "SAT",
+          "safety": "PASS",
+          "postcondition": "PASS",
+          "annotations": "NOT_RUN"
+        },
+        "abstraction_events": [
+          {
+            "kind": "contract-sample",
+            "function": "release",
+            "count": 1
+          },
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract",
+            "count": 2
+          },
+          {
+            "kind": "contract-sample",
+            "function": "fresh",
+            "count": 1
+          },
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract-prestate",
+            "count": 2
+          }
+        ],
+        "sampling_events": [],
+        "limit_reason": null,
+        "architecture_bits": 32,
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [],
+          "aliases": []
+        },
+        "certificate": "NOT_CHECKED"
+      },
+      "preconditions": [
+        {
+          "goal": "sample_precondition_wit_1",
+          "status": "SAT",
+          "proof": "auto"
+        }
+      ],
+      "fileName": "/tmp/tmpyn6x8v1u/input.c",
+      "functionName": "sample",
+      "loaded_strategies": [
+        "common",
+        "string_literal"
+      ],
+      "result": "success",
+      "verificationStatus": "proved",
+      "has_manual_obligations": false,
+      "manual_obligation_count": 0,
+      "manual_obligations": null,
+      "errormessage": null,
+      "warningmessage": null,
+      "current_assertions": null,
+      "FunctionDerivation": null,
+      "WitnessList": [
+        {
+          "functionName": "sample",
+          "Witness": {
+            "safety_checker_wit": {
+              "total": 1,
+              "auto_solved": 1,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "entailment_checker_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "return_checker_wit": {
+              "total": 1,
+              "auto_solved": 1,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "partial_solve_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "which_implies_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "total_witness_count": {
+              "auto_solved": 2,
+              "manual": 0
+            }
+          }
+        }
+      ]
+    },
+    "stderr": "[precondition] sample_precondition_wit_1: SAT (auto)\n"
+  },
+  {
+    "case": "frame",
+    "policy": "check-preserve",
+    "source": "int *fresh(void)\n/*@ Require emp Ensure __return != 0 && undef_data_at(__return, int) */;\nvoid release(int *p)\n/*@ Require undef_data_at(p, int) Ensure emp */;\nint sample(int *q)\n/*@ Require q == 4096 && data_at(q, int, 9) Ensure __return == 9 && data_at(q, int, 9) */\n{ int *p = fresh(); *p = 1; release(p); return *q; }\n",
+    "code": 0,
+    "report": {
+      "spec_test": {
+        "schema": "sac-spec-test/v1",
+        "execution_semantics": "modular-symbolic/v1",
+        "execution_strategy": "modular",
+        "modular_instantiation": "off",
+        "declaration_call_policy": "contract-symbolic/v1",
+        "sampling_failure_policy": "retain-original-symbolic-state/v1",
+        "query_semantics": "copy-only/v1",
+        "mode": "expand",
+        "scope": "execution",
+        "annotation_policy": "check-preserve",
+        "completed": true,
+        "result_scope": "contract-and-invariant-symbolic",
+        "overall": "PASS",
+        "precondition_result": "SAT",
+        "test_result": "PASS",
+        "result_semantics": "three-valued-conjunction/v1",
+        "vc_semantics": "path-vc/v1",
+        "branch_evaluation": {
+          "schema": "instance-first-branch-query/v1",
+          "pure_queries": 16,
+          "evaluated_true": 4,
+          "evaluated_false": 0,
+          "smt_fallback": 12
+        },
+        "vc_scheduling": {
+          "schema": "post-execution-witness-smt/v1",
+          "enabled": false,
+          "collecting": false,
+          "requests": 0,
+          "queued_witnesses": 0,
+          "solved_witnesses": 0,
+          "retained_on_release": 0,
+          "pending_witnesses": 0
+        },
+        "vc_results": [
+          {
+            "kind": "safety",
+            "name": null,
+            "line": 7,
+            "status": "VALID",
+            "path": "EX retval_393 p_391_addr \nPROP[\n  retval_393 != 0;\n  0 <= retval_393;\n  retval_393 <= UINT_MAX ]\nLOCAL[\n  Temp q q_383_addr;\n  Temp p p_391_addr ]\nSEP[\n  has_permission(retval_393, signed int);\n  store(p_391_addr, retval_393, signed int*);\n  store(q_383_addr, 4096, signed int*);\n  store(4096, 9, signed int) ]\n",
+            "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+          },
+          {
+            "kind": "return",
+            "name": null,
+            "line": 7,
+            "status": "VALID",
+            "path": "PROP[\n  retval_393 != 0;\n  0 <= retval_393;\n  retval_393 <= UINT_MAX ]\nLOCAL[]\nSEP[\n  store(4096, 9, signed int) ]\n",
+            "goal": "PROP[]\nLOCAL[]\nSEP[\n  store(4096, 9, signed int) ]\n"
+          }
+        ],
+        "phases": {
+          "precondition": "SAT",
+          "safety": "PASS",
+          "postcondition": "PASS",
+          "annotations": "PASS"
+        },
+        "abstraction_events": [
+          {
+            "kind": "contract-sample",
+            "function": "release",
+            "count": 1
+          },
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract",
+            "count": 2
+          },
+          {
+            "kind": "contract-sample",
+            "function": "fresh",
+            "count": 1
+          },
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract-prestate",
+            "count": 2
+          }
+        ],
+        "sampling_events": [],
+        "limit_reason": null,
+        "architecture_bits": 32,
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [],
+          "aliases": []
+        },
+        "certificate": "NOT_CHECKED"
+      },
+      "preconditions": [
+        {
+          "goal": "sample_precondition_wit_1",
+          "status": "SAT",
+          "proof": "auto"
+        }
+      ],
+      "fileName": "/tmp/tmpyn6x8v1u/input.c",
+      "functionName": "sample",
+      "loaded_strategies": [
+        "common",
+        "string_literal"
+      ],
+      "result": "success",
+      "verificationStatus": "proved",
+      "has_manual_obligations": false,
+      "manual_obligation_count": 0,
+      "manual_obligations": null,
+      "errormessage": null,
+      "warningmessage": null,
+      "current_assertions": null,
+      "FunctionDerivation": null,
+      "WitnessList": [
+        {
+          "functionName": "sample",
+          "Witness": {
+            "safety_checker_wit": {
+              "total": 1,
+              "auto_solved": 1,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "entailment_checker_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "return_checker_wit": {
+              "total": 1,
+              "auto_solved": 1,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "partial_solve_wit": {
+              "total": 2,
+              "auto_solved": 2,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "which_implies_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "total_witness_count": {
+              "auto_solved": 4,
+              "manual": 0
+            }
+          }
+        }
+      ]
+    },
+    "stderr": "[precondition] sample_precondition_wit_1: SAT (auto)\n"
+  },
+  {
+    "case": "old_heap_value",
+    "policy": "ignore",
+    "source": "void advance(int *p)\n/*@ With old Require data_at(p, int, old) Ensure data_at(p, int, old + 1) */;\nint sample(int *p)\n/*@ Require p == 4096 && data_at(p, int, 5) Ensure __return == 6 && data_at(p, int, 6) */\n{ advance(p); return *p; }\n",
+    "code": 0,
+    "report": {
+      "spec_test": {
+        "schema": "sac-spec-test/v1",
+        "execution_semantics": "modular-symbolic/v1",
+        "execution_strategy": "modular",
+        "modular_instantiation": "off",
+        "declaration_call_policy": "contract-symbolic/v1",
+        "sampling_failure_policy": "retain-original-symbolic-state/v1",
+        "query_semantics": "copy-only/v1",
+        "mode": "expand",
+        "scope": "execution",
+        "annotation_policy": "ignore",
+        "completed": true,
+        "result_scope": "contract-and-invariant-symbolic",
+        "overall": "PASS",
+        "precondition_result": "SAT",
+        "test_result": "PASS",
+        "result_semantics": "three-valued-conjunction/v1",
+        "vc_semantics": "path-vc/v1",
+        "branch_evaluation": {
+          "schema": "instance-first-branch-query/v1",
+          "pure_queries": 6,
+          "evaluated_true": 6,
+          "evaluated_false": 0,
+          "smt_fallback": 0
+        },
+        "vc_scheduling": {
+          "schema": "post-execution-witness-smt/v1",
+          "enabled": false,
+          "collecting": false,
+          "requests": 0,
+          "queued_witnesses": 0,
+          "solved_witnesses": 0,
+          "retained_on_release": 0,
+          "pending_witnesses": 0
+        },
+        "vc_results": [
+          {
+            "kind": "return",
+            "name": null,
+            "line": 5,
+            "status": "VALID",
+            "path": "PROP[]\nLOCAL[]\nSEP[\n  store(4096, 6, signed int) ]\n",
+            "goal": "PROP[]\nLOCAL[]\nSEP[\n  store(4096, 6, signed int) ]\n"
+          }
+        ],
+        "phases": {
+          "precondition": "SAT",
+          "safety": "PASS",
+          "postcondition": "PASS",
+          "annotations": "NOT_RUN"
+        },
+        "abstraction_events": [
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract",
+            "count": 1
+          },
+          {
+            "kind": "contract-sample",
+            "function": "advance",
+            "count": 1
+          },
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract-prestate",
+            "count": 1
+          }
+        ],
+        "sampling_events": [],
+        "limit_reason": null,
+        "architecture_bits": 32,
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [],
+          "aliases": []
+        },
+        "certificate": "NOT_CHECKED"
+      },
+      "preconditions": [
+        {
+          "goal": "sample_precondition_wit_1",
+          "status": "SAT",
+          "proof": "auto"
+        }
+      ],
+      "fileName": "/tmp/tmp3phpvdos/input.c",
+      "functionName": "sample",
+      "loaded_strategies": [
+        "common",
+        "string_literal"
+      ],
+      "result": "success",
+      "verificationStatus": "proved",
+      "has_manual_obligations": false,
+      "manual_obligation_count": 0,
+      "manual_obligations": null,
+      "errormessage": null,
+      "warningmessage": null,
+      "current_assertions": null,
+      "FunctionDerivation": null,
+      "WitnessList": [
+        {
+          "functionName": "sample",
+          "Witness": {
+            "safety_checker_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "entailment_checker_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "return_checker_wit": {
+              "total": 1,
+              "auto_solved": 1,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "partial_solve_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "which_implies_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "total_witness_count": {
+              "auto_solved": 1,
+              "manual": 0
+            }
+          }
+        }
+      ]
+    },
+    "stderr": "[precondition] sample_precondition_wit_1: SAT (auto)\n"
+  },
+  {
+    "case": "old_heap_value",
+    "policy": "check-preserve",
+    "source": "void advance(int *p)\n/*@ With old Require data_at(p, int, old) Ensure data_at(p, int, old + 1) */;\nint sample(int *p)\n/*@ Require p == 4096 && data_at(p, int, 5) Ensure __return == 6 && data_at(p, int, 6) */\n{ advance(p); return *p; }\n",
+    "code": 0,
+    "report": {
+      "spec_test": {
+        "schema": "sac-spec-test/v1",
+        "execution_semantics": "modular-symbolic/v1",
+        "execution_strategy": "modular",
+        "modular_instantiation": "off",
+        "declaration_call_policy": "contract-symbolic/v1",
+        "sampling_failure_policy": "retain-original-symbolic-state/v1",
+        "query_semantics": "copy-only/v1",
+        "mode": "expand",
+        "scope": "execution",
+        "annotation_policy": "check-preserve",
+        "completed": true,
+        "result_scope": "contract-and-invariant-symbolic",
+        "overall": "PASS",
+        "precondition_result": "SAT",
+        "test_result": "PASS",
+        "result_semantics": "three-valued-conjunction/v1",
+        "vc_semantics": "path-vc/v1",
+        "branch_evaluation": {
+          "schema": "instance-first-branch-query/v1",
+          "pure_queries": 10,
+          "evaluated_true": 10,
+          "evaluated_false": 0,
+          "smt_fallback": 0
+        },
+        "vc_scheduling": {
+          "schema": "post-execution-witness-smt/v1",
+          "enabled": false,
+          "collecting": false,
+          "requests": 0,
+          "queued_witnesses": 0,
+          "solved_witnesses": 0,
+          "retained_on_release": 0,
+          "pending_witnesses": 0
+        },
+        "vc_results": [
+          {
+            "kind": "return",
+            "name": null,
+            "line": 5,
+            "status": "VALID",
+            "path": "PROP[]\nLOCAL[]\nSEP[\n  store(4096, 6, signed int) ]\n",
+            "goal": "PROP[]\nLOCAL[]\nSEP[\n  store(4096, 6, signed int) ]\n"
+          }
+        ],
+        "phases": {
+          "precondition": "SAT",
+          "safety": "PASS",
+          "postcondition": "PASS",
+          "annotations": "PASS"
+        },
+        "abstraction_events": [
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract",
+            "count": 1
+          },
+          {
+            "kind": "contract-sample",
+            "function": "advance",
+            "count": 1
+          },
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract-prestate",
+            "count": 1
+          }
+        ],
+        "sampling_events": [],
+        "limit_reason": null,
+        "architecture_bits": 32,
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [],
+          "aliases": []
+        },
+        "certificate": "NOT_CHECKED"
+      },
+      "preconditions": [
+        {
+          "goal": "sample_precondition_wit_1",
+          "status": "SAT",
+          "proof": "auto"
+        }
+      ],
+      "fileName": "/tmp/tmp3phpvdos/input.c",
+      "functionName": "sample",
+      "loaded_strategies": [
+        "common",
+        "string_literal"
+      ],
+      "result": "success",
+      "verificationStatus": "proved",
+      "has_manual_obligations": false,
+      "manual_obligation_count": 0,
+      "manual_obligations": null,
+      "errormessage": null,
+      "warningmessage": null,
+      "current_assertions": null,
+      "FunctionDerivation": null,
+      "WitnessList": [
+        {
+          "functionName": "sample",
+          "Witness": {
+            "safety_checker_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "entailment_checker_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "return_checker_wit": {
+              "total": 1,
+              "auto_solved": 1,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "partial_solve_wit": {
+              "total": 1,
+              "auto_solved": 1,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "which_implies_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "total_witness_count": {
+              "auto_solved": 2,
+              "manual": 0
+            }
+          }
+        }
+      ]
+    },
+    "stderr": "[precondition] sample_precondition_wit_1: SAT (auto)\n"
+  },
+  {
+    "case": "old_input_range",
+    "policy": "ignore",
+    "source": "int external_value(int x)\n/*@ With old Require x == old && emp Ensure old <= __return && __return <= old + 2 && emp */;\nint sample(void)\n/*@ Require emp Ensure 100000 <= __return && __return <= 100002 && emp */\n{ return external_value(100000); }\n",
+    "code": 0,
+    "report": {
+      "spec_test": {
+        "schema": "sac-spec-test/v1",
+        "execution_semantics": "modular-symbolic/v1",
+        "execution_strategy": "modular",
+        "modular_instantiation": "off",
+        "declaration_call_policy": "contract-symbolic/v1",
+        "sampling_failure_policy": "retain-original-symbolic-state/v1",
+        "query_semantics": "copy-only/v1",
+        "mode": "expand",
+        "scope": "execution",
+        "annotation_policy": "ignore",
+        "completed": true,
+        "result_scope": "contract-and-invariant-symbolic",
+        "overall": "PASS",
+        "precondition_result": "SAT",
+        "test_result": "PASS",
+        "result_semantics": "three-valued-conjunction/v1",
+        "vc_semantics": "path-vc/v1",
+        "branch_evaluation": {
+          "schema": "instance-first-branch-query/v1",
+          "pure_queries": 6,
+          "evaluated_true": 0,
+          "evaluated_false": 0,
+          "smt_fallback": 6
+        },
+        "vc_scheduling": {
+          "schema": "post-execution-witness-smt/v1",
+          "enabled": false,
+          "collecting": false,
+          "requests": 0,
+          "queued_witnesses": 0,
+          "solved_witnesses": 0,
+          "retained_on_release": 0,
+          "pending_witnesses": 0
+        },
+        "vc_results": [
+          {
+            "kind": "safety",
+            "name": null,
+            "line": 5,
+            "status": "VALID",
+            "path": "PROP[]\nLOCAL[]\nSEP[]\n",
+            "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+          },
+          {
+            "kind": "return",
+            "name": null,
+            "line": 5,
+            "status": "VALID",
+            "path": "PROP[\n  100000 <= retval_386;\n  retval_386 <= 100002;\n  (- 2147483648) <= retval_386;\n  retval_386 <= INT_MAX ]\nLOCAL[]\nSEP[]\n",
+            "goal": "PROP[\n  100000 <= retval_386;\n  retval_386 <= 100002 ]\nLOCAL[]\nSEP[]\n"
+          }
+        ],
+        "phases": {
+          "precondition": "SAT",
+          "safety": "PASS",
+          "postcondition": "PASS",
+          "annotations": "NOT_RUN"
+        },
+        "abstraction_events": [
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract",
+            "count": 1
+          },
+          {
+            "kind": "contract-sample",
+            "function": "external_value",
+            "count": 1
+          },
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract-prestate",
+            "count": 1
+          }
+        ],
+        "sampling_events": [],
+        "limit_reason": null,
+        "architecture_bits": 32,
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [],
+          "aliases": []
+        },
+        "certificate": "NOT_CHECKED"
+      },
+      "preconditions": [
+        {
+          "goal": "sample_precondition_wit_1",
+          "status": "SAT",
+          "proof": "auto"
+        }
+      ],
+      "fileName": "/tmp/tmp7ysy7kwp/input.c",
+      "functionName": "sample",
+      "loaded_strategies": [
+        "common",
+        "string_literal"
+      ],
+      "result": "success",
+      "verificationStatus": "proved",
+      "has_manual_obligations": false,
+      "manual_obligation_count": 0,
+      "manual_obligations": null,
+      "errormessage": null,
+      "warningmessage": null,
+      "current_assertions": null,
+      "FunctionDerivation": null,
+      "WitnessList": [
+        {
+          "functionName": "sample",
+          "Witness": {
+            "safety_checker_wit": {
+              "total": 1,
+              "auto_solved": 1,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "entailment_checker_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "return_checker_wit": {
+              "total": 1,
+              "auto_solved": 1,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "partial_solve_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "which_implies_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "total_witness_count": {
+              "auto_solved": 2,
+              "manual": 0
+            }
+          }
+        }
+      ]
+    },
+    "stderr": "[precondition] sample_precondition_wit_1: SAT (auto)\n"
+  },
+  {
+    "case": "old_input_range",
+    "policy": "check-preserve",
+    "source": "int external_value(int x)\n/*@ With old Require x == old && emp Ensure old <= __return && __return <= old + 2 && emp */;\nint sample(void)\n/*@ Require emp Ensure 100000 <= __return && __return <= 100002 && emp */\n{ return external_value(100000); }\n",
+    "code": 0,
+    "report": {
+      "spec_test": {
+        "schema": "sac-spec-test/v1",
+        "execution_semantics": "modular-symbolic/v1",
+        "execution_strategy": "modular",
+        "modular_instantiation": "off",
+        "declaration_call_policy": "contract-symbolic/v1",
+        "sampling_failure_policy": "retain-original-symbolic-state/v1",
+        "query_semantics": "copy-only/v1",
+        "mode": "expand",
+        "scope": "execution",
+        "annotation_policy": "check-preserve",
+        "completed": true,
+        "result_scope": "contract-and-invariant-symbolic",
+        "overall": "PASS",
+        "precondition_result": "SAT",
+        "test_result": "PASS",
+        "result_semantics": "three-valued-conjunction/v1",
+        "vc_semantics": "path-vc/v1",
+        "branch_evaluation": {
+          "schema": "instance-first-branch-query/v1",
+          "pure_queries": 14,
+          "evaluated_true": 8,
+          "evaluated_false": 0,
+          "smt_fallback": 6
+        },
+        "vc_scheduling": {
+          "schema": "post-execution-witness-smt/v1",
+          "enabled": false,
+          "collecting": false,
+          "requests": 0,
+          "queued_witnesses": 0,
+          "solved_witnesses": 0,
+          "retained_on_release": 0,
+          "pending_witnesses": 0
+        },
+        "vc_results": [
+          {
+            "kind": "safety",
+            "name": null,
+            "line": 5,
+            "status": "VALID",
+            "path": "PROP[]\nLOCAL[]\nSEP[]\n",
+            "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+          },
+          {
+            "kind": "partial_solve",
+            "name": null,
+            "line": 5,
+            "status": "VALID",
+            "path": "PROP[]\nLOCAL[]\nSEP[]\n",
+            "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+          },
+          {
+            "kind": "return",
+            "name": null,
+            "line": 5,
+            "status": "VALID",
+            "path": "PROP[\n  100000 <= retval_386;\n  retval_386 <= 100002;\n  (- 2147483648) <= retval_386;\n  retval_386 <= INT_MAX ]\nLOCAL[]\nSEP[]\n",
+            "goal": "PROP[\n  100000 <= retval_386;\n  retval_386 <= 100002 ]\nLOCAL[]\nSEP[]\n"
+          }
+        ],
+        "phases": {
+          "precondition": "SAT",
+          "safety": "PASS",
+          "postcondition": "PASS",
+          "annotations": "PASS"
+        },
+        "abstraction_events": [
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract",
+            "count": 1
+          },
+          {
+            "kind": "contract-sample",
+            "function": "external_value",
+            "count": 1
+          },
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract-prestate",
+            "count": 1
+          }
+        ],
+        "sampling_events": [],
+        "limit_reason": null,
+        "architecture_bits": 32,
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [],
+          "aliases": []
+        },
+        "certificate": "NOT_CHECKED"
+      },
+      "preconditions": [
+        {
+          "goal": "sample_precondition_wit_1",
+          "status": "SAT",
+          "proof": "auto"
+        }
+      ],
+      "fileName": "/tmp/tmp7ysy7kwp/input.c",
+      "functionName": "sample",
+      "loaded_strategies": [
+        "common",
+        "string_literal"
+      ],
+      "result": "success",
+      "verificationStatus": "proved",
+      "has_manual_obligations": false,
+      "manual_obligation_count": 0,
+      "manual_obligations": null,
+      "errormessage": null,
+      "warningmessage": null,
+      "current_assertions": null,
+      "FunctionDerivation": null,
+      "WitnessList": [
+        {
+          "functionName": "sample",
+          "Witness": {
+            "safety_checker_wit": {
+              "total": 1,
+              "auto_solved": 1,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "entailment_checker_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "return_checker_wit": {
+              "total": 1,
+              "auto_solved": 1,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "partial_solve_wit": {
+              "total": 1,
+              "auto_solved": 1,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "which_implies_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "total_witness_count": {
+              "auto_solved": 3,
+              "manual": 0
+            }
+          }
+        }
+      ]
+    },
+    "stderr": "[precondition] sample_precondition_wit_1: SAT (auto)\n"
+  },
+  {
+    "case": "undef_read",
+    "policy": "ignore",
+    "source": "int *fresh(void)\n/*@ Require emp Ensure __return != 0 && undef_data_at(__return, int) */;\nvoid release(int *p)\n/*@ Require undef_data_at(p, int) Ensure emp */;\nint sample(void)\n/*@ Require emp Ensure emp */\n{ int *p = fresh(); return *p; }\n",
+    "code": 1,
+    "report": {
+      "spec_test": {
+        "schema": "sac-spec-test/v1",
+        "execution_semantics": "modular-symbolic/v1",
+        "execution_strategy": "modular",
+        "modular_instantiation": "off",
+        "declaration_call_policy": "contract-symbolic/v1",
+        "sampling_failure_policy": "retain-original-symbolic-state/v1",
+        "query_semantics": "copy-only/v1",
+        "mode": "expand",
+        "scope": "execution",
+        "annotation_policy": "ignore",
+        "completed": false,
+        "result_scope": "contract-and-invariant-symbolic",
+        "overall": "ERROR",
+        "precondition_result": "SAT",
+        "test_result": "UNKNOWN",
+        "result_semantics": "three-valued-conjunction/v1",
+        "vc_semantics": "path-vc/v1",
+        "branch_evaluation": {
+          "schema": "instance-first-branch-query/v1",
+          "pure_queries": 2,
+          "evaluated_true": 0,
+          "evaluated_false": 0,
+          "smt_fallback": 2
+        },
+        "vc_scheduling": {
+          "schema": "post-execution-witness-smt/v1",
+          "enabled": false,
+          "collecting": false,
+          "requests": 0,
+          "queued_witnesses": 0,
+          "solved_witnesses": 0,
+          "retained_on_release": 0,
+          "pending_witnesses": 0
+        },
+        "vc_results": [],
+        "phases": {
+          "precondition": "SAT",
+          "safety": "UNKNOWN",
+          "postcondition": "UNKNOWN",
+          "annotations": "NOT_RUN"
+        },
+        "abstraction_events": [
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract",
+            "count": 1
+          },
+          {
+            "kind": "contract-sample",
+            "function": "fresh",
+            "count": 1
+          },
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract-prestate",
+            "count": 1
+          }
+        ],
+        "sampling_events": [],
+        "limit_reason": null,
+        "architecture_bits": 32,
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [],
+          "aliases": []
+        },
+        "certificate": "NOT_CHECKED"
+      },
+      "preconditions": [
+        {
+          "goal": "sample_precondition_wit_1",
+          "status": "SAT",
+          "proof": "auto"
+        }
+      ],
+      "fileName": "/tmp/tmp4yggd0rc/input.c",
+      "functionName": "sample",
+      "loaded_strategies": [
+        "common",
+        "string_literal"
+      ],
+      "result": "failed",
+      "verificationStatus": "failed",
+      "has_manual_obligations": false,
+      "manual_obligation_count": 0,
+      "manual_obligations": null,
+      "errormessage": {
+        "Main Error Message": "fatal error: Symbolic execution failed: cannot read memory through this pointer because the current assertion does not prove readable memory at the target address. Add a Require/Assert memory predicate such as data_at(pointer, value), or prove that the pointer aliases an owned memory cell.",
+        "fileName": null,
+        "line": 7,
+        "column": 27,
+        "additional_info": [
+          "Read address: retval_390\n",
+          "Current assertion:\np != 0 &&\n0 <= p &&\np <= 4294967295 &&\nhas_permission(p)\n\n"
+        ]
+      },
+      "warningmessage": null,
+      "current_assertions": null,
+      "FunctionDerivation": null,
+      "WitnessList": [
+        {
+          "functionName": "sample",
+          "Witness": null
+        }
+      ]
+    },
+    "stderr": "[precondition] sample_precondition_wit_1: SAT (auto)\n"
+  },
+  {
+    "case": "undef_read",
+    "policy": "check-preserve",
+    "source": "int *fresh(void)\n/*@ Require emp Ensure __return != 0 && undef_data_at(__return, int) */;\nvoid release(int *p)\n/*@ Require undef_data_at(p, int) Ensure emp */;\nint sample(void)\n/*@ Require emp Ensure emp */\n{ int *p = fresh(); return *p; }\n",
+    "code": 1,
+    "report": {
+      "spec_test": {
+        "schema": "sac-spec-test/v1",
+        "execution_semantics": "modular-symbolic/v1",
+        "execution_strategy": "modular",
+        "modular_instantiation": "off",
+        "declaration_call_policy": "contract-symbolic/v1",
+        "sampling_failure_policy": "retain-original-symbolic-state/v1",
+        "query_semantics": "copy-only/v1",
+        "mode": "expand",
+        "scope": "execution",
+        "annotation_policy": "check-preserve",
+        "completed": false,
+        "result_scope": "contract-and-invariant-symbolic",
+        "overall": "ERROR",
+        "precondition_result": "SAT",
+        "test_result": "UNKNOWN",
+        "result_semantics": "three-valued-conjunction/v1",
+        "vc_semantics": "path-vc/v1",
+        "branch_evaluation": {
+          "schema": "instance-first-branch-query/v1",
+          "pure_queries": 4,
+          "evaluated_true": 2,
+          "evaluated_false": 0,
+          "smt_fallback": 2
+        },
+        "vc_scheduling": {
+          "schema": "post-execution-witness-smt/v1",
+          "enabled": false,
+          "collecting": false,
+          "requests": 0,
+          "queued_witnesses": 0,
+          "solved_witnesses": 0,
+          "retained_on_release": 0,
+          "pending_witnesses": 0
+        },
+        "vc_results": [],
+        "phases": {
+          "precondition": "SAT",
+          "safety": "UNKNOWN",
+          "postcondition": "UNKNOWN",
+          "annotations": "UNKNOWN"
+        },
+        "abstraction_events": [
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract",
+            "count": 1
+          },
+          {
+            "kind": "contract-sample",
+            "function": "fresh",
+            "count": 1
+          },
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract-prestate",
+            "count": 1
+          }
+        ],
+        "sampling_events": [],
+        "limit_reason": null,
+        "architecture_bits": 32,
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [],
+          "aliases": []
+        },
+        "certificate": "NOT_CHECKED"
+      },
+      "preconditions": [
+        {
+          "goal": "sample_precondition_wit_1",
+          "status": "SAT",
+          "proof": "auto"
+        }
+      ],
+      "fileName": "/tmp/tmp4yggd0rc/input.c",
+      "functionName": "sample",
+      "loaded_strategies": [
+        "common",
+        "string_literal"
+      ],
+      "result": "failed",
+      "verificationStatus": "failed",
+      "has_manual_obligations": false,
+      "manual_obligation_count": 0,
+      "manual_obligations": null,
+      "errormessage": {
+        "Main Error Message": "fatal error: Symbolic execution failed: cannot read memory through this pointer because the current assertion does not prove readable memory at the target address. Add a Require/Assert memory predicate such as data_at(pointer, value), or prove that the pointer aliases an owned memory cell.",
+        "fileName": null,
+        "line": 7,
+        "column": 27,
+        "additional_info": [
+          "Read address: retval_390\n",
+          "Current assertion:\np != 0 &&\n0 <= p &&\np <= 4294967295 &&\nhas_permission(p)\n\n"
+        ]
+      },
+      "warningmessage": null,
+      "current_assertions": null,
+      "FunctionDerivation": null,
+      "WitnessList": [
+        {
+          "functionName": "sample",
+          "Witness": null
+        }
+      ]
+    },
+    "stderr": "[precondition] sample_precondition_wit_1: SAT (auto)\n"
+  },
+  {
+    "case": "weak_return",
+    "policy": "ignore",
+    "source": "int external_value(void)\n/*@ Require emp Ensure emp */;\nint sample(void)\n/*@ Require emp Ensure __return == __return && emp */\n{ int x = external_value(); return x; }\n",
+    "code": 0,
+    "report": {
+      "spec_test": {
+        "schema": "sac-spec-test/v1",
+        "execution_semantics": "modular-symbolic/v1",
+        "execution_strategy": "modular",
+        "modular_instantiation": "off",
+        "declaration_call_policy": "contract-symbolic/v1",
+        "sampling_failure_policy": "retain-original-symbolic-state/v1",
+        "query_semantics": "copy-only/v1",
+        "mode": "expand",
+        "scope": "execution",
+        "annotation_policy": "ignore",
+        "completed": true,
+        "result_scope": "contract-and-invariant-symbolic",
+        "overall": "PASS",
+        "precondition_result": "SAT",
+        "test_result": "PASS",
+        "result_semantics": "three-valued-conjunction/v1",
+        "vc_semantics": "path-vc/v1",
+        "branch_evaluation": {
+          "schema": "instance-first-branch-query/v1",
+          "pure_queries": 6,
+          "evaluated_true": 0,
+          "evaluated_false": 0,
+          "smt_fallback": 6
+        },
+        "vc_scheduling": {
+          "schema": "post-execution-witness-smt/v1",
+          "enabled": false,
+          "collecting": false,
+          "requests": 0,
+          "queued_witnesses": 0,
+          "solved_witnesses": 0,
+          "retained_on_release": 0,
+          "pending_witnesses": 0
+        },
+        "vc_results": [
+          {
+            "kind": "return",
+            "name": null,
+            "line": 5,
+            "status": "VALID",
+            "path": "PROP[\n  (- 2147483648) <= retval_383;\n  retval_383 <= INT_MAX ]\nLOCAL[]\nSEP[]\n",
+            "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+          }
+        ],
+        "phases": {
+          "precondition": "SAT",
+          "safety": "PASS",
+          "postcondition": "PASS",
+          "annotations": "NOT_RUN"
+        },
+        "abstraction_events": [
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract",
+            "count": 1
+          },
+          {
+            "kind": "contract-sample",
+            "function": "external_value",
+            "count": 1
+          },
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract-prestate",
+            "count": 1
+          }
+        ],
+        "sampling_events": [],
+        "limit_reason": null,
+        "architecture_bits": 32,
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [],
+          "aliases": []
+        },
+        "certificate": "NOT_CHECKED"
+      },
+      "preconditions": [
+        {
+          "goal": "sample_precondition_wit_1",
+          "status": "SAT",
+          "proof": "auto"
+        }
+      ],
+      "fileName": "/tmp/tmphv0bxs5n/input.c",
+      "functionName": "sample",
+      "loaded_strategies": [
+        "common",
+        "string_literal"
+      ],
+      "result": "success",
+      "verificationStatus": "proved",
+      "has_manual_obligations": false,
+      "manual_obligation_count": 0,
+      "manual_obligations": null,
+      "errormessage": null,
+      "warningmessage": null,
+      "current_assertions": null,
+      "FunctionDerivation": null,
+      "WitnessList": [
+        {
+          "functionName": "sample",
+          "Witness": {
+            "safety_checker_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "entailment_checker_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "return_checker_wit": {
+              "total": 1,
+              "auto_solved": 1,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "partial_solve_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "which_implies_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "total_witness_count": {
+              "auto_solved": 1,
+              "manual": 0
+            }
+          }
+        }
+      ]
+    },
+    "stderr": "[precondition] sample_precondition_wit_1: SAT (auto)\n"
+  },
+  {
+    "case": "weak_return",
+    "policy": "check-preserve",
+    "source": "int external_value(void)\n/*@ Require emp Ensure emp */;\nint sample(void)\n/*@ Require emp Ensure __return == __return && emp */\n{ int x = external_value(); return x; }\n",
+    "code": 0,
+    "report": {
+      "spec_test": {
+        "schema": "sac-spec-test/v1",
+        "execution_semantics": "modular-symbolic/v1",
+        "execution_strategy": "modular",
+        "modular_instantiation": "off",
+        "declaration_call_policy": "contract-symbolic/v1",
+        "sampling_failure_policy": "retain-original-symbolic-state/v1",
+        "query_semantics": "copy-only/v1",
+        "mode": "expand",
+        "scope": "execution",
+        "annotation_policy": "check-preserve",
+        "completed": true,
+        "result_scope": "contract-and-invariant-symbolic",
+        "overall": "PASS",
+        "precondition_result": "SAT",
+        "test_result": "PASS",
+        "result_semantics": "three-valued-conjunction/v1",
+        "vc_semantics": "path-vc/v1",
+        "branch_evaluation": {
+          "schema": "instance-first-branch-query/v1",
+          "pure_queries": 10,
+          "evaluated_true": 4,
+          "evaluated_false": 0,
+          "smt_fallback": 6
+        },
+        "vc_scheduling": {
+          "schema": "post-execution-witness-smt/v1",
+          "enabled": false,
+          "collecting": false,
+          "requests": 0,
+          "queued_witnesses": 0,
+          "solved_witnesses": 0,
+          "retained_on_release": 0,
+          "pending_witnesses": 0
+        },
+        "vc_results": [
+          {
+            "kind": "return",
+            "name": null,
+            "line": 5,
+            "status": "VALID",
+            "path": "PROP[\n  (- 2147483648) <= retval_383;\n  retval_383 <= INT_MAX ]\nLOCAL[]\nSEP[]\n",
+            "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+          }
+        ],
+        "phases": {
+          "precondition": "SAT",
+          "safety": "PASS",
+          "postcondition": "PASS",
+          "annotations": "PASS"
+        },
+        "abstraction_events": [
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract",
+            "count": 1
+          },
+          {
+            "kind": "contract-sample",
+            "function": "external_value",
+            "count": 1
+          },
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract-prestate",
+            "count": 1
+          }
+        ],
+        "sampling_events": [],
+        "limit_reason": null,
+        "architecture_bits": 32,
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [],
+          "aliases": []
+        },
+        "certificate": "NOT_CHECKED"
+      },
+      "preconditions": [
+        {
+          "goal": "sample_precondition_wit_1",
+          "status": "SAT",
+          "proof": "auto"
+        }
+      ],
+      "fileName": "/tmp/tmphv0bxs5n/input.c",
+      "functionName": "sample",
+      "loaded_strategies": [
+        "common",
+        "string_literal"
+      ],
+      "result": "success",
+      "verificationStatus": "proved",
+      "has_manual_obligations": false,
+      "manual_obligation_count": 0,
+      "manual_obligations": null,
+      "errormessage": null,
+      "warningmessage": null,
+      "current_assertions": null,
+      "FunctionDerivation": null,
+      "WitnessList": [
+        {
+          "functionName": "sample",
+          "Witness": {
+            "safety_checker_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "entailment_checker_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "return_checker_wit": {
+              "total": 1,
+              "auto_solved": 1,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "partial_solve_wit": {
+              "total": 1,
+              "auto_solved": 1,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "which_implies_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "total_witness_count": {
+              "auto_solved": 2,
+              "manual": 0
+            }
+          }
+        }
+      ]
+    },
+    "stderr": "[precondition] sample_precondition_wit_1: SAT (auto)\n"
+  },
+  {
+    "case": "wide_range",
+    "policy": "ignore",
+    "source": "int external_value(int x)\n/*@ Require x == 100000 && emp Ensure 100000 <= __return && __return <= 100002 && emp */;\nint sample(void)\n/*@ Require emp Ensure 100000 <= __return && __return <= 100002 && emp */\n{ return external_value(100000); }\n",
+    "code": 0,
+    "report": {
+      "spec_test": {
+        "schema": "sac-spec-test/v1",
+        "execution_semantics": "modular-symbolic/v1",
+        "execution_strategy": "modular",
+        "modular_instantiation": "off",
+        "declaration_call_policy": "contract-symbolic/v1",
+        "sampling_failure_policy": "retain-original-symbolic-state/v1",
+        "query_semantics": "copy-only/v1",
+        "mode": "expand",
+        "scope": "execution",
+        "annotation_policy": "ignore",
+        "completed": true,
+        "result_scope": "contract-and-invariant-symbolic",
+        "overall": "PASS",
+        "precondition_result": "SAT",
+        "test_result": "PASS",
+        "result_semantics": "three-valued-conjunction/v1",
+        "vc_semantics": "path-vc/v1",
+        "branch_evaluation": {
+          "schema": "instance-first-branch-query/v1",
+          "pure_queries": 6,
+          "evaluated_true": 0,
+          "evaluated_false": 0,
+          "smt_fallback": 6
+        },
+        "vc_scheduling": {
+          "schema": "post-execution-witness-smt/v1",
+          "enabled": false,
+          "collecting": false,
+          "requests": 0,
+          "queued_witnesses": 0,
+          "solved_witnesses": 0,
+          "retained_on_release": 0,
+          "pending_witnesses": 0
+        },
+        "vc_results": [
+          {
+            "kind": "safety",
+            "name": null,
+            "line": 5,
+            "status": "VALID",
+            "path": "PROP[]\nLOCAL[]\nSEP[]\n",
+            "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+          },
+          {
+            "kind": "return",
+            "name": null,
+            "line": 5,
+            "status": "VALID",
+            "path": "PROP[\n  100000 <= retval_384;\n  retval_384 <= 100002;\n  (- 2147483648) <= retval_384;\n  retval_384 <= INT_MAX ]\nLOCAL[]\nSEP[]\n",
+            "goal": "PROP[\n  100000 <= retval_384;\n  retval_384 <= 100002 ]\nLOCAL[]\nSEP[]\n"
+          }
+        ],
+        "phases": {
+          "precondition": "SAT",
+          "safety": "PASS",
+          "postcondition": "PASS",
+          "annotations": "NOT_RUN"
+        },
+        "abstraction_events": [
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract",
+            "count": 1
+          },
+          {
+            "kind": "contract-sample",
+            "function": "external_value",
+            "count": 1
+          },
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract-prestate",
+            "count": 1
+          }
+        ],
+        "sampling_events": [],
+        "limit_reason": null,
+        "architecture_bits": 32,
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [],
+          "aliases": []
+        },
+        "certificate": "NOT_CHECKED"
+      },
+      "preconditions": [
+        {
+          "goal": "sample_precondition_wit_1",
+          "status": "SAT",
+          "proof": "auto"
+        }
+      ],
+      "fileName": "/tmp/tmptsblf82y/input.c",
+      "functionName": "sample",
+      "loaded_strategies": [
+        "common",
+        "string_literal"
+      ],
+      "result": "success",
+      "verificationStatus": "proved",
+      "has_manual_obligations": false,
+      "manual_obligation_count": 0,
+      "manual_obligations": null,
+      "errormessage": null,
+      "warningmessage": null,
+      "current_assertions": null,
+      "FunctionDerivation": null,
+      "WitnessList": [
+        {
+          "functionName": "sample",
+          "Witness": {
+            "safety_checker_wit": {
+              "total": 1,
+              "auto_solved": 1,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "entailment_checker_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "return_checker_wit": {
+              "total": 1,
+              "auto_solved": 1,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "partial_solve_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "which_implies_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "total_witness_count": {
+              "auto_solved": 2,
+              "manual": 0
+            }
+          }
+        }
+      ]
+    },
+    "stderr": "[precondition] sample_precondition_wit_1: SAT (auto)\n"
+  },
+  {
+    "case": "wide_range",
+    "policy": "check-preserve",
+    "source": "int external_value(int x)\n/*@ Require x == 100000 && emp Ensure 100000 <= __return && __return <= 100002 && emp */;\nint sample(void)\n/*@ Require emp Ensure 100000 <= __return && __return <= 100002 && emp */\n{ return external_value(100000); }\n",
+    "code": 0,
+    "report": {
+      "spec_test": {
+        "schema": "sac-spec-test/v1",
+        "execution_semantics": "modular-symbolic/v1",
+        "execution_strategy": "modular",
+        "modular_instantiation": "off",
+        "declaration_call_policy": "contract-symbolic/v1",
+        "sampling_failure_policy": "retain-original-symbolic-state/v1",
+        "query_semantics": "copy-only/v1",
+        "mode": "expand",
+        "scope": "execution",
+        "annotation_policy": "check-preserve",
+        "completed": true,
+        "result_scope": "contract-and-invariant-symbolic",
+        "overall": "PASS",
+        "precondition_result": "SAT",
+        "test_result": "PASS",
+        "result_semantics": "three-valued-conjunction/v1",
+        "vc_semantics": "path-vc/v1",
+        "branch_evaluation": {
+          "schema": "instance-first-branch-query/v1",
+          "pure_queries": 14,
+          "evaluated_true": 8,
+          "evaluated_false": 0,
+          "smt_fallback": 6
+        },
+        "vc_scheduling": {
+          "schema": "post-execution-witness-smt/v1",
+          "enabled": false,
+          "collecting": false,
+          "requests": 0,
+          "queued_witnesses": 0,
+          "solved_witnesses": 0,
+          "retained_on_release": 0,
+          "pending_witnesses": 0
+        },
+        "vc_results": [
+          {
+            "kind": "safety",
+            "name": null,
+            "line": 5,
+            "status": "VALID",
+            "path": "PROP[]\nLOCAL[]\nSEP[]\n",
+            "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+          },
+          {
+            "kind": "partial_solve",
+            "name": null,
+            "line": 5,
+            "status": "VALID",
+            "path": "PROP[]\nLOCAL[]\nSEP[]\n",
+            "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+          },
+          {
+            "kind": "return",
+            "name": null,
+            "line": 5,
+            "status": "VALID",
+            "path": "PROP[\n  100000 <= retval_384;\n  retval_384 <= 100002;\n  (- 2147483648) <= retval_384;\n  retval_384 <= INT_MAX ]\nLOCAL[]\nSEP[]\n",
+            "goal": "PROP[\n  100000 <= retval_384;\n  retval_384 <= 100002 ]\nLOCAL[]\nSEP[]\n"
+          }
+        ],
+        "phases": {
+          "precondition": "SAT",
+          "safety": "PASS",
+          "postcondition": "PASS",
+          "annotations": "PASS"
+        },
+        "abstraction_events": [
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract",
+            "count": 1
+          },
+          {
+            "kind": "contract-sample",
+            "function": "external_value",
+            "count": 1
+          },
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract-prestate",
+            "count": 1
+          }
+        ],
+        "sampling_events": [],
+        "limit_reason": null,
+        "architecture_bits": 32,
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [],
+          "aliases": []
+        },
+        "certificate": "NOT_CHECKED"
+      },
+      "preconditions": [
+        {
+          "goal": "sample_precondition_wit_1",
+          "status": "SAT",
+          "proof": "auto"
+        }
+      ],
+      "fileName": "/tmp/tmptsblf82y/input.c",
+      "functionName": "sample",
+      "loaded_strategies": [
+        "common",
+        "string_literal"
+      ],
+      "result": "success",
+      "verificationStatus": "proved",
+      "has_manual_obligations": false,
+      "manual_obligation_count": 0,
+      "manual_obligations": null,
+      "errormessage": null,
+      "warningmessage": null,
+      "current_assertions": null,
+      "FunctionDerivation": null,
+      "WitnessList": [
+        {
+          "functionName": "sample",
+          "Witness": {
+            "safety_checker_wit": {
+              "total": 1,
+              "auto_solved": 1,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "entailment_checker_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "return_checker_wit": {
+              "total": 1,
+              "auto_solved": 1,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "partial_solve_wit": {
+              "total": 1,
+              "auto_solved": 1,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "which_implies_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "total_witness_count": {
+              "auto_solved": 3,
+              "manual": 0
+            }
+          }
+        }
+      ]
+    },
+    "stderr": "[precondition] sample_precondition_wit_1: SAT (auto)\n"
+  },
+  {
+    "case": "conditional_return",
+    "policy": "ignore",
+    "source": "int external_abs(int x)\n/*@ With old Require x == old && -2147483648 < old && emp\n    Ensure ((old >= 0 && __return == old) ||\n            (old < 0 && __return == -old)) && emp */;\nint sample(void)\n/*@ Require emp Ensure __return == 2147483647 && emp */\n{ return external_abs(-2147483647); }\n",
+    "code": 0,
+    "report": {
+      "spec_test": {
+        "schema": "sac-spec-test/v1",
+        "execution_semantics": "modular-symbolic/v1",
+        "execution_strategy": "modular",
+        "modular_instantiation": "off",
+        "declaration_call_policy": "contract-symbolic/v1",
+        "sampling_failure_policy": "retain-original-symbolic-state/v1",
+        "query_semantics": "copy-only/v1",
+        "mode": "expand",
+        "scope": "execution",
+        "annotation_policy": "ignore",
+        "completed": true,
+        "result_scope": "contract-and-invariant-symbolic",
+        "overall": "PASS",
+        "precondition_result": "SAT",
+        "test_result": "PASS",
+        "result_semantics": "three-valued-conjunction/v1",
+        "vc_semantics": "path-vc/v1",
+        "branch_evaluation": {
+          "schema": "instance-first-branch-query/v1",
+          "pure_queries": 6,
+          "evaluated_true": 0,
+          "evaluated_false": 0,
+          "smt_fallback": 6
+        },
+        "vc_scheduling": {
+          "schema": "post-execution-witness-smt/v1",
+          "enabled": false,
+          "collecting": false,
+          "requests": 0,
+          "queued_witnesses": 0,
+          "solved_witnesses": 0,
+          "retained_on_release": 0,
+          "pending_witnesses": 0
+        },
+        "vc_results": [
+          {
+            "kind": "safety",
+            "name": null,
+            "line": 7,
+            "status": "VALID",
+            "path": "PROP[]\nLOCAL[]\nSEP[]\n",
+            "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+          },
+          {
+            "kind": "return",
+            "name": null,
+            "line": 7,
+            "status": "VALID",
+            "path": "PROP[\n  retval_386 == INT_MAX ]\nLOCAL[]\nSEP[]\n",
+            "goal": "PROP[\n  retval_386 == INT_MAX ]\nLOCAL[]\nSEP[]\n"
+          }
+        ],
+        "phases": {
+          "precondition": "SAT",
+          "safety": "PASS",
+          "postcondition": "PASS",
+          "annotations": "NOT_RUN"
+        },
+        "abstraction_events": [
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract",
+            "count": 1
+          },
+          {
+            "kind": "contract-sample",
+            "function": "external_abs",
+            "count": 1
+          },
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract-prestate",
+            "count": 1
+          }
+        ],
+        "sampling_events": [],
+        "limit_reason": null,
+        "architecture_bits": 32,
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [],
+          "aliases": []
+        },
+        "certificate": "NOT_CHECKED"
+      },
+      "preconditions": [
+        {
+          "goal": "sample_precondition_wit_1",
+          "status": "SAT",
+          "proof": "auto"
+        }
+      ],
+      "fileName": "/tmp/tmpz3lijrww/input.c",
+      "functionName": "sample",
+      "loaded_strategies": [
+        "common",
+        "string_literal"
+      ],
+      "result": "success",
+      "verificationStatus": "proved",
+      "has_manual_obligations": false,
+      "manual_obligation_count": 0,
+      "manual_obligations": null,
+      "errormessage": null,
+      "warningmessage": null,
+      "current_assertions": null,
+      "FunctionDerivation": null,
+      "WitnessList": [
+        {
+          "functionName": "sample",
+          "Witness": {
+            "safety_checker_wit": {
+              "total": 2,
+              "auto_solved": 2,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "entailment_checker_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "return_checker_wit": {
+              "total": 1,
+              "auto_solved": 1,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "partial_solve_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "which_implies_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "total_witness_count": {
+              "auto_solved": 3,
+              "manual": 0
+            }
+          }
+        }
+      ]
+    },
+    "stderr": "[precondition] sample_precondition_wit_1: SAT (auto)\n"
+  },
+  {
+    "case": "conditional_return",
+    "policy": "check-preserve",
+    "source": "int external_abs(int x)\n/*@ With old Require x == old && -2147483648 < old && emp\n    Ensure ((old >= 0 && __return == old) ||\n            (old < 0 && __return == -old)) && emp */;\nint sample(void)\n/*@ Require emp Ensure __return == 2147483647 && emp */\n{ return external_abs(-2147483647); }\n",
+    "code": 0,
+    "report": {
+      "spec_test": {
+        "schema": "sac-spec-test/v1",
+        "execution_semantics": "modular-symbolic/v1",
+        "execution_strategy": "modular",
+        "modular_instantiation": "off",
+        "declaration_call_policy": "contract-symbolic/v1",
+        "sampling_failure_policy": "retain-original-symbolic-state/v1",
+        "query_semantics": "copy-only/v1",
+        "mode": "expand",
+        "scope": "execution",
+        "annotation_policy": "check-preserve",
+        "completed": true,
+        "result_scope": "contract-and-invariant-symbolic",
+        "overall": "PASS",
+        "precondition_result": "SAT",
+        "test_result": "PASS",
+        "result_semantics": "three-valued-conjunction/v1",
+        "vc_semantics": "path-vc/v1",
+        "branch_evaluation": {
+          "schema": "instance-first-branch-query/v1",
+          "pure_queries": 14,
+          "evaluated_true": 8,
+          "evaluated_false": 0,
+          "smt_fallback": 6
+        },
+        "vc_scheduling": {
+          "schema": "post-execution-witness-smt/v1",
+          "enabled": false,
+          "collecting": false,
+          "requests": 0,
+          "queued_witnesses": 0,
+          "solved_witnesses": 0,
+          "retained_on_release": 0,
+          "pending_witnesses": 0
+        },
+        "vc_results": [
+          {
+            "kind": "safety",
+            "name": null,
+            "line": 7,
+            "status": "VALID",
+            "path": "PROP[]\nLOCAL[]\nSEP[]\n",
+            "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+          },
+          {
+            "kind": "partial_solve",
+            "name": null,
+            "line": 7,
+            "status": "VALID",
+            "path": "PROP[]\nLOCAL[]\nSEP[]\n",
+            "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+          },
+          {
+            "kind": "return",
+            "name": null,
+            "line": 7,
+            "status": "VALID",
+            "path": "PROP[\n  retval_386 == INT_MAX ]\nLOCAL[]\nSEP[]\n",
+            "goal": "PROP[\n  retval_386 == INT_MAX ]\nLOCAL[]\nSEP[]\n"
+          }
+        ],
+        "phases": {
+          "precondition": "SAT",
+          "safety": "PASS",
+          "postcondition": "PASS",
+          "annotations": "PASS"
+        },
+        "abstraction_events": [
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract",
+            "count": 1
+          },
+          {
+            "kind": "contract-sample",
+            "function": "external_abs",
+            "count": 1
+          },
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract-prestate",
+            "count": 1
+          }
+        ],
+        "sampling_events": [],
+        "limit_reason": null,
+        "architecture_bits": 32,
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [],
+          "aliases": []
+        },
+        "certificate": "NOT_CHECKED"
+      },
+      "preconditions": [
+        {
+          "goal": "sample_precondition_wit_1",
+          "status": "SAT",
+          "proof": "auto"
+        }
+      ],
+      "fileName": "/tmp/tmpz3lijrww/input.c",
+      "functionName": "sample",
+      "loaded_strategies": [
+        "common",
+        "string_literal"
+      ],
+      "result": "success",
+      "verificationStatus": "proved",
+      "has_manual_obligations": false,
+      "manual_obligation_count": 0,
+      "manual_obligations": null,
+      "errormessage": null,
+      "warningmessage": null,
+      "current_assertions": null,
+      "FunctionDerivation": null,
+      "WitnessList": [
+        {
+          "functionName": "sample",
+          "Witness": {
+            "safety_checker_wit": {
+              "total": 2,
+              "auto_solved": 2,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "entailment_checker_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "return_checker_wit": {
+              "total": 1,
+              "auto_solved": 1,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "partial_solve_wit": {
+              "total": 1,
+              "auto_solved": 1,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "which_implies_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "total_witness_count": {
+              "auto_solved": 4,
+              "manual": 0
+            }
+          }
+        }
+      ]
+    },
+    "stderr": "[precondition] sample_precondition_wit_1: SAT (auto)\n"
+  },
+  {
+    "case": "all_false_alternatives",
+    "policy": "ignore",
+    "source": "int external_value(int x)\n/*@ With old Require x == old && emp\n    Ensure ((old > 0 && __return == 1) ||\n            (old < 0 && __return == -1)) && emp */;\nint sample(void)\n/*@ Require emp Ensure emp */\n{ return external_value(0); }\n",
+    "code": 0,
+    "report": {
+      "spec_test": {
+        "schema": "sac-spec-test/v1",
+        "execution_semantics": "modular-symbolic/v1",
+        "execution_strategy": "modular",
+        "modular_instantiation": "off",
+        "declaration_call_policy": "contract-symbolic/v1",
+        "sampling_failure_policy": "retain-original-symbolic-state/v1",
+        "query_semantics": "copy-only/v1",
+        "mode": "expand",
+        "scope": "execution",
+        "annotation_policy": "ignore",
+        "completed": true,
+        "result_scope": "contract-and-invariant-symbolic",
+        "overall": "UNKNOWN",
+        "precondition_result": "SAT",
+        "test_result": "UNKNOWN",
+        "result_semantics": "three-valued-conjunction/v1",
+        "vc_semantics": "path-vc/v1",
+        "branch_evaluation": {
+          "schema": "instance-first-branch-query/v1",
+          "pure_queries": 2,
+          "evaluated_true": 0,
+          "evaluated_false": 2,
+          "smt_fallback": 0
+        },
+        "vc_scheduling": {
+          "schema": "post-execution-witness-smt/v1",
+          "enabled": false,
+          "collecting": false,
+          "requests": 0,
+          "queued_witnesses": 0,
+          "solved_witnesses": 0,
+          "retained_on_release": 0,
+          "pending_witnesses": 0
+        },
+        "vc_results": [
+          {
+            "kind": "safety",
+            "name": null,
+            "line": 7,
+            "status": "VALID",
+            "path": "EX retval_387 \nPROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n",
+            "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+          },
+          {
+            "kind": "safety",
+            "name": null,
+            "line": 7,
+            "status": "VALID",
+            "path": "EX retval_386 \nPROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n",
+            "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+          },
+          {
+            "kind": "safety",
+            "name": null,
+            "line": 7,
+            "status": "VALID",
+            "path": "PROP[]\nLOCAL[]\nSEP[]\n",
+            "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+          }
+        ],
+        "phases": {
+          "precondition": "SAT",
+          "safety": "PASS",
+          "postcondition": "UNKNOWN",
+          "annotations": "NOT_RUN"
+        },
+        "abstraction_events": [
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract",
+            "count": 2
+          },
+          {
+            "kind": "contract-sample",
+            "function": "external_value",
+            "count": 1
+          },
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract-prestate",
+            "count": 1
+          }
+        ],
+        "sampling_events": [],
+        "limit_reason": "contract_postcondition_inconsistent",
+        "architecture_bits": 32,
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [],
+          "aliases": []
+        },
+        "certificate": "NOT_CHECKED"
+      },
+      "preconditions": [
+        {
+          "goal": "sample_precondition_wit_1",
+          "status": "SAT",
+          "proof": "auto"
+        }
+      ],
+      "fileName": "/tmp/tmpchi0goxs/input.c",
+      "functionName": "sample",
+      "loaded_strategies": [
+        "common",
+        "string_literal"
+      ],
+      "result": "success",
+      "verificationStatus": "proved",
+      "has_manual_obligations": false,
+      "manual_obligation_count": 0,
+      "manual_obligations": null,
+      "errormessage": null,
+      "warningmessage": null,
+      "current_assertions": null,
+      "FunctionDerivation": null,
+      "WitnessList": [
+        {
+          "functionName": "sample",
+          "Witness": {
+            "safety_checker_wit": {
+              "total": 3,
+              "auto_solved": 3,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "entailment_checker_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "return_checker_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "partial_solve_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "which_implies_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "total_witness_count": {
+              "auto_solved": 3,
+              "manual": 0
+            }
+          }
+        }
+      ]
+    },
+    "stderr": "[precondition] sample_precondition_wit_1: SAT (auto)\n"
+  },
+  {
+    "case": "all_false_alternatives",
+    "policy": "check-preserve",
+    "source": "int external_value(int x)\n/*@ With old Require x == old && emp\n    Ensure ((old > 0 && __return == 1) ||\n            (old < 0 && __return == -1)) && emp */;\nint sample(void)\n/*@ Require emp Ensure emp */\n{ return external_value(0); }\n",
+    "code": 0,
+    "report": {
+      "spec_test": {
+        "schema": "sac-spec-test/v1",
+        "execution_semantics": "modular-symbolic/v1",
+        "execution_strategy": "modular",
+        "modular_instantiation": "off",
+        "declaration_call_policy": "contract-symbolic/v1",
+        "sampling_failure_policy": "retain-original-symbolic-state/v1",
+        "query_semantics": "copy-only/v1",
+        "mode": "expand",
+        "scope": "execution",
+        "annotation_policy": "check-preserve",
+        "completed": true,
+        "result_scope": "contract-and-invariant-symbolic",
+        "overall": "UNKNOWN",
+        "precondition_result": "SAT",
+        "test_result": "UNKNOWN",
+        "result_semantics": "three-valued-conjunction/v1",
+        "vc_semantics": "path-vc/v1",
+        "branch_evaluation": {
+          "schema": "instance-first-branch-query/v1",
+          "pure_queries": 10,
+          "evaluated_true": 8,
+          "evaluated_false": 2,
+          "smt_fallback": 0
+        },
+        "vc_scheduling": {
+          "schema": "post-execution-witness-smt/v1",
+          "enabled": false,
+          "collecting": false,
+          "requests": 0,
+          "queued_witnesses": 0,
+          "solved_witnesses": 0,
+          "retained_on_release": 0,
+          "pending_witnesses": 0
+        },
+        "vc_results": [
+          {
+            "kind": "safety",
+            "name": null,
+            "line": 7,
+            "status": "VALID",
+            "path": "EX retval_387 \nPROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n",
+            "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+          },
+          {
+            "kind": "safety",
+            "name": null,
+            "line": 7,
+            "status": "VALID",
+            "path": "EX retval_386 \nPROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n",
+            "goal": "PROP[\n  prop_false ]\nLOCAL[]\nSEP[]\n"
+          },
+          {
+            "kind": "safety",
+            "name": null,
+            "line": 7,
+            "status": "VALID",
+            "path": "PROP[]\nLOCAL[]\nSEP[]\n",
+            "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+          },
+          {
+            "kind": "partial_solve",
+            "name": null,
+            "line": 7,
+            "status": "VALID",
+            "path": "PROP[]\nLOCAL[]\nSEP[]\n",
+            "goal": "PROP[]\nLOCAL[]\nSEP[]\n"
+          }
+        ],
+        "phases": {
+          "precondition": "SAT",
+          "safety": "PASS",
+          "postcondition": "UNKNOWN",
+          "annotations": "PASS"
+        },
+        "abstraction_events": [
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract",
+            "count": 2
+          },
+          {
+            "kind": "contract-sample",
+            "function": "external_value",
+            "count": 1
+          },
+          {
+            "kind": "contract_state_symbolic",
+            "function": "contract-prestate",
+            "count": 1
+          }
+        ],
+        "sampling_events": [],
+        "limit_reason": "contract_postcondition_inconsistent",
+        "architecture_bits": 32,
+        "target_layout": {
+          "schema": "sac-target-layout/v1",
+          "architecture_bits": 32,
+          "byte_order": "big",
+          "pointer_size": 4,
+          "memory_rules": "naive_C_Rules",
+          "field_address_semantics": "base-plus-byte-offset/v1",
+          "imported_predicate_semantics": "definition-bound; compatibility-not-certified",
+          "aggregates": [],
+          "aliases": []
+        },
+        "certificate": "NOT_CHECKED"
+      },
+      "preconditions": [
+        {
+          "goal": "sample_precondition_wit_1",
+          "status": "SAT",
+          "proof": "auto"
+        }
+      ],
+      "fileName": "/tmp/tmpchi0goxs/input.c",
+      "functionName": "sample",
+      "loaded_strategies": [
+        "common",
+        "string_literal"
+      ],
+      "result": "success",
+      "verificationStatus": "proved",
+      "has_manual_obligations": false,
+      "manual_obligation_count": 0,
+      "manual_obligations": null,
+      "errormessage": null,
+      "warningmessage": null,
+      "current_assertions": null,
+      "FunctionDerivation": null,
+      "WitnessList": [
+        {
+          "functionName": "sample",
+          "Witness": {
+            "safety_checker_wit": {
+              "total": 3,
+              "auto_solved": 3,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "entailment_checker_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "return_checker_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "partial_solve_wit": {
+              "total": 1,
+              "auto_solved": 1,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "which_implies_wit": {
+              "total": 0,
+              "auto_solved": 0,
+              "manual": 0,
+              "manual_witness": null
+            },
+            "total_witness_count": {
+              "auto_solved": 4,
+              "manual": 0
+            }
+          }
+        }
+      ]
+    },
+    "stderr": "[precondition] sample_precondition_wit_1: SAT (auto)\n"
+  }
+]

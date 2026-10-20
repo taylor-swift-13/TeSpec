@@ -1,0 +1,205 @@
+{
+  "group": "incr",
+  "variant": "cn_original:slf0_basic_incr.signed.broken",
+  "paired_qcp_variant": "qcp_existing:8c930c120c9ede42e31e",
+  "case": "input_2",
+  "mode": "off",
+  "source": {
+    "path": "benchmark/programs/incr/variants/qcp_existing_8c930c120c9ede42e31e/qcp/uninit_signed.qcp.c",
+    "sha256": "8c930c120c9ede42e31edb577ca5e6b620cc2e90eb58a6564dd6ea96ba593e30"
+  },
+  "binds": {
+    "path": "benchmark/programs/incr/variants/cn_original_slf0_basic_incr.signed.broken/tests/20261016-evaluation/input_2/binds.json",
+    "sha256": "a3f5bfb7965fd7ed2fb2bc152a3bb3e7e6afe6bfec7b68316715f113b8df5bca"
+  },
+  "expected": "ERROR",
+  "baseline": {
+    "status": "ERROR",
+    "published_final_status": "ERROR",
+    "reason": "qcp_execution_error",
+    "precondition_result": "SAT",
+    "execution_completed": false,
+    "executor_error": {
+      "Main Error Message": "fatal error: Symbolic execution failed: cannot read memory through this pointer because the current assertion does not prove readable memory at the target address. Add a Require/Assert memory predicate such as data_at(pointer, value), or prove that the pointer aliases an owned memory cell.",
+      "fileName": null,
+      "line": 8,
+      "column": 7,
+      "additional_info": [
+        "Read address: p_370_pre\n",
+        "Current assertion:\np@pre == 16384 &&\n(p == p@pre) *\nhas_permission(p@pre)\n\n"
+      ]
+    },
+    "report": {
+      "path": "benchmark/results/incr/20261016-evaluation/cn_original_slf0_basic_incr.signed.broken/input_2/tespec-off/artifacts/report.json",
+      "sha256": "62f38ecd7cdc29c9b7f900e298e628966eb58905bdbd5cf62b8235d0abaf2e84"
+    },
+    "vc_artifacts": [],
+    "residual_vcs": [],
+    "command": [
+      "/usr/bin/python3",
+      "-m",
+      "spectest",
+      "run",
+      "/home/yangfp/teSpec/benchmark/programs/incr/variants/qcp_existing_8c930c120c9ede42e31e/qcp/uninit_signed.qcp.c",
+      "--function",
+      "incr",
+      "--binds",
+      "/home/yangfp/teSpec/benchmark/programs/incr/variants/cn_original_slf0_basic_incr.signed.broken/tests/20261016-evaluation/input_2/binds.json",
+      "--execution-mode",
+      "all-boundaries",
+      "--output-dir",
+      "/home/yangfp/teSpec/benchmark/results/incr/20261016-evaluation/cn_original_slf0_basic_incr.signed.broken/input_2/tespec-off/artifacts",
+      "--timeout",
+      "30",
+      "--compact",
+      "--no-spatial-smt",
+      "--spatial-smt-timeout-ms",
+      "2000",
+      "-I",
+      "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/supplemental/uninit_signed"
+    ]
+  },
+  "itp_comparison_oracle": null,
+  "current": {
+    "status": "ERROR",
+    "reason": "qcp_execution_error",
+    "precondition_result": "SAT",
+    "execution_completed": false,
+    "executor_error": {
+      "Main Error Message": "fatal error: Symbolic execution failed: cannot read memory through this pointer because the current assertion does not prove readable memory at the target address. Add a Require/Assert memory predicate such as data_at(pointer, value), or prove that the pointer aliases an owned memory cell.",
+      "fileName": null,
+      "line": 8,
+      "column": 7,
+      "additional_info": [
+        "Read address: p_370_pre\n",
+        "Current assertion:\np@pre == 16384 &&\n(p == p@pre) *\nhas_permission(p@pre)\n\n"
+      ]
+    },
+    "residual_vcs": [],
+    "phases": {
+      "precondition": "SAT",
+      "safety": "UNKNOWN",
+      "postcondition": "UNKNOWN",
+      "annotations": "UNKNOWN",
+      "execution": "UNKNOWN"
+    },
+    "spatial_smt": null
+  },
+  "comparison": {
+    "ok": true,
+    "kind": "EXPECTED_ERROR_PRESERVED"
+  },
+  "measurement": {
+    "command": [
+      "/usr/bin/python3",
+      "-B",
+      "/home/yangfp/teSpec/tools/finite_spatial_smt/regress_completed_groups.py",
+      "--_worker",
+      "/home/yangfp/teSpec/benchmark/results/spatial-smt-regressions/20261020-inline-after-no-modular-sampling/incr/case-0015/off/phase-metrics.json",
+      "--",
+      "run",
+      "/home/yangfp/teSpec/benchmark/programs/incr/variants/qcp_existing_8c930c120c9ede42e31e/qcp/uninit_signed.qcp.c",
+      "--function",
+      "incr",
+      "--binds",
+      "/home/yangfp/teSpec/benchmark/programs/incr/variants/cn_original_slf0_basic_incr.signed.broken/tests/20261016-evaluation/input_2/binds.json",
+      "--execution-mode",
+      "all-boundaries",
+      "--output-dir",
+      "/home/yangfp/teSpec/benchmark/results/spatial-smt-regressions/20261020-inline-after-no-modular-sampling/incr/case-0015/off/artifacts",
+      "--timeout",
+      "30",
+      "--compact",
+      "--spatial-smt-timeout-ms",
+      "2000",
+      "-I",
+      "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/supplemental/uninit_signed",
+      "--no-spatial-smt",
+      "--execution-strategy",
+      "inline",
+      "--modular-instantiation",
+      "off"
+    ],
+    "executed_wrapper_command": [
+      "/usr/bin/time",
+      "--quiet",
+      "-f",
+      "{\"max_process_rss_kib\":%M,\"user_seconds\":%U,\"system_seconds\":%S,\"wall_seconds_gnu\":%e}",
+      "-o",
+      "/home/yangfp/teSpec/benchmark/results/spatial-smt-regressions/20261020-inline-after-no-modular-sampling/incr/case-0015/off/resources.json",
+      "/usr/bin/timeout",
+      "--signal=TERM",
+      "--kill-after=5",
+      "90",
+      "/usr/bin/python3",
+      "-B",
+      "/home/yangfp/teSpec/tools/finite_spatial_smt/regress_completed_groups.py",
+      "--_worker",
+      "/home/yangfp/teSpec/benchmark/results/spatial-smt-regressions/20261020-inline-after-no-modular-sampling/incr/case-0015/off/phase-metrics.json",
+      "--",
+      "run",
+      "/home/yangfp/teSpec/benchmark/programs/incr/variants/qcp_existing_8c930c120c9ede42e31e/qcp/uninit_signed.qcp.c",
+      "--function",
+      "incr",
+      "--binds",
+      "/home/yangfp/teSpec/benchmark/programs/incr/variants/cn_original_slf0_basic_incr.signed.broken/tests/20261016-evaluation/input_2/binds.json",
+      "--execution-mode",
+      "all-boundaries",
+      "--output-dir",
+      "/home/yangfp/teSpec/benchmark/results/spatial-smt-regressions/20261020-inline-after-no-modular-sampling/incr/case-0015/off/artifacts",
+      "--timeout",
+      "30",
+      "--compact",
+      "--spatial-smt-timeout-ms",
+      "2000",
+      "-I",
+      "/home/yangfp/teSpec/arxiv/benchmark-support/selection/qcp-migration/supplemental/uninit_signed",
+      "--no-spatial-smt",
+      "--execution-strategy",
+      "inline",
+      "--modular-instantiation",
+      "off"
+    ],
+    "exit_code": 1,
+    "wall_seconds": 0.16503880999516696,
+    "resources": {
+      "max_process_rss_kib": 23536,
+      "user_seconds": 0.09,
+      "system_seconds": 0.04,
+      "wall_seconds_gnu": 0.14
+    },
+    "tokens": 0,
+    "model_calls": 0,
+    "stdout": "benchmark/results/spatial-smt-regressions/20261020-inline-after-no-modular-sampling/incr/case-0015/off/stdout.log",
+    "stderr": "benchmark/results/spatial-smt-regressions/20261020-inline-after-no-modular-sampling/incr/case-0015/off/stderr.log",
+    "memory_definition": "GNU time %M: largest measured process peak RSS, not aggregate tree memory.",
+    "stdout_sha256": "37db1b4b5b7d0b2c741243aab4e3314c7217a444729060f6aa9f936916f76b07",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "report": {
+    "path": "benchmark/results/spatial-smt-regressions/20261020-inline-after-no-modular-sampling/incr/case-0015/off/artifacts/report.json",
+    "sha256": "030c71e03622e2a6adb1f78936a77d88783c0153795fd3ad9d940090d6f6ac8b"
+  },
+  "vc_artifacts": [],
+  "stage_measurements": {
+    "native_cli": {
+      "wall_seconds": 0.16503880999516696,
+      "resources": {
+        "max_process_rss_kib": 23536,
+        "user_seconds": 0.09,
+        "system_seconds": 0.04,
+        "wall_seconds_gnu": 0.14
+      },
+      "tokens": 0,
+      "model_calls": 0
+    },
+    "symbolic_executor": {
+      "wall_seconds": 0.005078,
+      "cpu_seconds": 0.0,
+      "measurement": "GNU time; executor and children; maximum process RSS",
+      "peak_rss_kib": 5004
+    },
+    "spatial_smt": [],
+    "scope": "Nested stages, not additive. Executor resources from native report. No ITP rerun; historical ITP cost excluded."
+  }
+}

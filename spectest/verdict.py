@@ -109,11 +109,15 @@ def _executor_result(
     # A legacy inline executor is usable by default; it must never silently
     # satisfy a modular request. New executors must bind strategy and semantics.
     strategy = result.get("execution_strategy", "inline")
-    instantiation = result.get("modular_instantiation", "on")
+    instantiation = result.get("modular_instantiation", "off")
     if (
         not isinstance(strategy, str)
         or strategy not in EXECUTION_SEMANTICS
         or instantiation not in ("on", "off")
+        or (strategy == "modular" and (
+            instantiation != "off" or bool(result.get("sampling_events"))
+            or result.get("declaration_call_policy") != "contract-symbolic/v1"
+            or result.get("result_scope") != "contract-and-invariant-symbolic"))
         or (strategy == "modular" and expected_modular_instantiation is not None
             and instantiation != expected_modular_instantiation)
         or (expected_strategy is not None and strategy != expected_strategy)

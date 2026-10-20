@@ -16,7 +16,7 @@ def main():
     parser.add_argument("--output", required=True)
     parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--execution-strategy", choices=("inline", "modular"), default="inline")
-    parser.add_argument("--modular-instantiation", choices=("on", "off"), default="on")
+    parser.add_argument("--modular-instantiation", choices=("off",), default="off")
     parser.add_argument("--positive-representatives", action="store_true")
     args = parser.parse_args()
     shared.require(1 <= args.workers <= 4, "workers must be 1..4")

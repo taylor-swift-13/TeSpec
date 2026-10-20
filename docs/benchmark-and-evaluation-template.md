@@ -406,6 +406,12 @@ Old-source equality alone never authorizes reuse across tool versions. Keep
 historical results under their original version; retain new measurements under
 `benchmark/results`, with CN/runtime/compiler identities and stage diagnostics.
 
+## 现行 modular 策略：移除边界采样（2026-10-20）
+
+modular 只在函数入口应用测试绑定。函数规约、循环不变式和 assertion 边界保留符号状态，不进入候选搜索；采样事件必须为空。默认 `modular_instantiation=off`，`on` 不再支持，不能把旧采样执行器输出当作当前 modular 结果。`execution_semantics=modular-symbolic/v1`、`declaration_call_policy=contract-symbolic/v1`、`result_scope=contract-and-invariant-symbolic`。inline 原行为及 VC 范围参数保持独立不变。
+
+以下带日期的采样方案为历史记录，不能用于描述现行默认值。旧结果、成本与二进制哈希原样保留。此次删除不扩大空间 SMT 接入条件；未解决义务仍为 UNKNOWN。详见 [删除记录](modular-no-boundary-sampling.md)。
+
 ## 执行策略与 VC 范围的独立评测（2026-10-18）
 
 新增 `execution_strategy=inline|modular`，默认 inline；既有
@@ -444,7 +450,7 @@ VC、报告、输入/源码/工具哈希及结果成本 CSV/JSON。CLI、执行�
 
 ### 证明型 VC 的求解时序（2026-10-19）
 
-正常具体 teSpec 测试将 safety、entailment、return、which-implies、partial-solve 的自动证明请求排队，执行结束后复用原 QCP 策略和 SMT，空间 SMT 继续随后处理残余 VC。在线保留必要的条件判定、实例采样和资源匹配 SMT，不调用 ITP；SMT 未判定仍为 UNKNOWN。离线 ITP 如另行运行，继续按每次执行的所有残余目标独立计量。全称验证及旧日志/全自动兼容路径保留原求解时序。
+正常具体 teSpec 测试将 safety、entailment、return、which-implies、partial-solve 的自动证明请求排队，执行结束后复用原 QCP 策略和 SMT，空间 SMT 继续随后处理残余 VC。在线保留必要的条件判定和资源匹配 SMT，只有 inline 声明调用保留实例采样，不调用 ITP；SMT 未判定仍为 UNKNOWN。离线 ITP 如另行运行，继续按每次执行的所有残余目标独立计量。全称验证及旧日志/全自动兼容路径保留原求解时序。
 
 求解请求按原节点去重，所有原始义务、源位置、作用域、公式和出现次数保留，提前错误也须保留已产生的义务。spec_test.vc_scheduling 的 solved_witnesses 是已尝试自动求解数量，不是 VALID 数；pending=0 也不等于全部证明成功。策略 inline/modular 与 VC 范围 entry-exit/all-boundaries 仍独立。
 
@@ -465,12 +471,12 @@ VC、报告、输入/源码/工具哈希及结果成本 CSV/JSON。CLI、执行�
 每次执行分别计时、分别取各阶段实际单进程峰值；最终只展示各阶段和ITP合计的逐执行均值。ITP合计峰值先对执行内阶段取最大，再取执行均值；合计行与三个分项重叠。需区分native_expected_matches与final_expected_matches，原生UNKNOWN保持原状。未完成执行且没有原始Goal的项目保留BLOCKED/null，不能凭通用证明或人工构造目标把它算作已测成功。对照参数诊断、配置失败与重试另列实际额外成本。
 
 
-## Modular 边界实例化消融（2026-10-20）
+## 历史：Modular 边界实例化消融（2026-10-20）
 
 --modular-instantiation on|off 独立于执行策略和VC范围，默认on。仅modular下off关闭有界整状态选值，保留符号规约/断言/不变式状态、入口绑定、类型限制、资源衔接和原始VC。报告必须明确modular-symbolic/v1、contract-symbolic/v1与sampling_events；不能把范围状态检查当作单个新抽样实例。inline行为不变。具体结果见[实验记录](benchmark-modular-symbolic-20261020.md)。本轮为原生消融，没有新增ITP测量；即使原始Goal与旧内核证书完全相同，也分栏披露历史证据，不填入新模型/内核成本。新残余VC与边界限制均保留UNKNOWN，不计成功。
 
 
-## Modular 非阻塞采样与原始父目标的判定（2026-10-20）
+## 历史：Modular 非阻塞采样与原始父目标的判定（2026-10-20）
 
 modular-instantiation=on使用modular-hybrid/v2：采样只在副本上尽力选值，未找到模型时原样传递符号状态并记录SYMBOLIC_FALLBACK，不据此丢弃路径或生成失败结论。入口实例、未修改的地址/局部值及frame应保留，循环实际可写位置仍可抽象。off保留符号状态；VC生成范围独立。真实矛盾后条件必须保留UNKNOWN等限制，不能将执行图到达出口当作存在合法具体实例。
 

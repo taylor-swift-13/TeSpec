@@ -22,7 +22,7 @@ VC = {"status": "generated", "residual_goals": [], "manifest": "manifest.json"}
 
 
 def native_result(strategy="inline", mode="entry-exit"):
-    return {
+    payload = {
         "spec_test": {
             "schema": "sac-spec-test/v1",
             "mode": mode,
@@ -51,6 +51,14 @@ def native_result(strategy="inline", mode="entry-exit"):
             "vc_results": [],
         },
     }
+
+    if strategy == "modular":
+        payload["spec_test"].update(
+            modular_instantiation="off", declaration_call_policy="contract-symbolic/v1",
+            result_scope="contract-and-invariant-symbolic", sampling_events=[],
+            abstraction_events=[{"kind": "contract-use", "function": "external"}],
+        )
+    return payload
 
 
 class ExecutionStrategyTests(unittest.TestCase):
@@ -124,8 +132,8 @@ class ExecutionStrategyTests(unittest.TestCase):
                     self.assertEqual(result["status"], "PASS")
                     self.assertEqual(result["execution_strategy"], strategy)
                     self.assertEqual(result["execution_semantics"], EXECUTION_SEMANTICS[strategy])
-                    self.assertEqual(result["declaration_call_policy"], "contract-sample/v1")
-                    self.assertEqual(result["result_scope"], "contract-and-invariant-model")
+                    self.assertEqual(result["declaration_call_policy"], "contract-symbolic/v1" if strategy == "modular" else "contract-sample/v1")
+                    self.assertEqual(result["result_scope"], "contract-and-invariant-symbolic" if strategy == "modular" else "contract-and-invariant-model")
                     self.assertEqual(result["sampling_events"],
                                      payload["spec_test"]["sampling_events"])
                     self.assertEqual(result["abstraction_events"],
@@ -144,17 +152,29 @@ class ExecutionStrategyTests(unittest.TestCase):
             self.assertEqual(result["status"], "ERROR")
             self.assertEqual(result["reason"], "executor_execution_strategy_mismatch")
 
-    def test_symbolic_request_requires_matching_executor_semantics(self):
+    def test_symbolic_request_rejects_legacy_sampled_modular_semantics(self):
         payload = native_result("modular")
-        self.assertEqual(_executor_result(json.dumps(payload), 0, VC,
-            expected_strategy="modular", expected_modular_instantiation="off")["status"], "ERROR")
-        payload["spec_test"].update(modular_instantiation="off",
-            execution_semantics="modular-symbolic/v1", declaration_call_policy="contract-symbolic/v1",
-            sampling_events=[], result_scope="contract-and-invariant-symbolic")
         result = _executor_result(json.dumps(payload), 0, VC,
             expected_strategy="modular", expected_modular_instantiation="off")
         self.assertEqual(result["status"], "PASS")
         self.assertEqual(result["modular_instantiation"], "off")
+        for fields in (
+            {"modular_instantiation": "on", "execution_semantics": "modular-hybrid/v2"},
+            {"sampling_events": [{"status": "SAMPLED"}]},
+            {"declaration_call_policy": "contract-sample-or-symbolic/v2"},
+        ):
+            bad = native_result("modular")
+            bad["spec_test"].update(fields)
+            self.assertEqual(_executor_result(json.dumps(bad), 0, VC,
+                expected_strategy="modular")["status"], "ERROR")
+
+    def test_modular_sampling_on_is_not_a_supported_configuration(self):
+        with self.assertRaisesRegex(JobError, "sampling has been removed"):
+            _parse_qcp_config({"qcp": {"execution_strategy": "modular",
+                                      "modular_instantiation": "on"}}, ROOT, ROOT)
+        args = _run_parser().parse_args(["input.c", "--function", "sample", "--binds", "binds.json",
+                                        "--execution-strategy", "modular"])
+        self.assertEqual(args.modular_instantiation, "off")
 
     def test_legacy_inline_response_is_usable_but_not_for_modular(self):
         payload = native_result("inline")
@@ -203,9 +223,9 @@ class ExecutionStrategyTests(unittest.TestCase):
                         self.assertEqual(policy["mode"], mode)
                         self.assertEqual(policy["execution_strategy"], strategy)
                         self.assertEqual(policy["execution_semantics"], EXECUTION_SEMANTICS[strategy])
-                        self.assertEqual(policy["declaration_calls"], "sample_contract_postconditions")
+                        self.assertEqual(policy["declaration_calls"], "retain_symbolic_contract_postconditions" if strategy == "modular" else "sample_contract_postconditions")
                         self.assertEqual(policy["defined_function_calls"],
-                                         "execute_bodies" if strategy == "inline" else "sample_or_retain_symbolic_contract_postconditions")
+                                         "execute_bodies" if strategy == "inline" else "retain_symbolic_contract_postconditions")
                         self.assertEqual(report["results"][0]["sampling_events"],
                                          payload["spec_test"]["sampling_events"])
 
@@ -242,17 +262,17 @@ class NativeExecutionStrategyTests(unittest.TestCase):
             self.assertEqual(case["mode"], mode, case)
             return case, raw
 
-    def assert_sampled(self, case, kind):
-        self.assertEqual(case["result_scope"], "contract-and-invariant-hybrid" if case["execution_strategy"] == "modular" else "contract-and-invariant-model", case)
-        self.assertTrue(any(event.get("kind") == kind
-                            for event in case["abstraction_events"]), case)
-        self.assertTrue(case["sampling_events"], case)
-        self.assertTrue(any(
-            event.get("status") == "SAMPLED"
-            and isinstance(event.get("constraint_state"), str)
-            and isinstance(event.get("selected_state"), str)
-            for event in case["sampling_events"]
-        ), case)
+    def assert_boundary_policy(self, case, kind):
+        if case["execution_strategy"] == "modular":
+            self.assertEqual(case["result_scope"], "contract-and-invariant-symbolic", case)
+            self.assertEqual(case["declaration_call_policy"], "contract-symbolic/v1", case)
+            self.assertEqual(case["sampling_events"], [], case)
+            kind = "contract-use" if kind == "contract-sample" else kind
+        else:
+            self.assertEqual(case["result_scope"], "contract-and-invariant-model", case)
+            self.assertTrue(case["sampling_events"], case)
+            self.assertTrue(any(event.get("status") == "SAMPLED" for event in case["sampling_events"]), case)
+        self.assertTrue(any(event.get("kind") == kind for event in case["abstraction_events"]), case)
 
     def test_symbolic_modular_keeps_range_and_all_original_obligations(self):
         source = (
@@ -275,13 +295,13 @@ class NativeExecutionStrategyTests(unittest.TestCase):
                 self.assertTrue(any(e["kind"] == "contract_state_symbolic"
                                     for e in case["abstraction_events"]), raw)
 
-    def test_opaque_contract_sampling_cannot_block_execution_or_erase_vcs(self):
+    def test_opaque_symbolic_contract_preserves_execution_and_vcs(self):
         prefix = (
             "/*@ Extern Coq (opaque : Z -> Assertion) */\n"
             "void external(void) /*@ Require emp Ensure opaque(7) */;\n"
         )
         for mode in ("entry-exit", "all-boundaries"):
-            for sampling in ("on", "off"):
+            for sampling in ("off",):
                 with self.subTest(mode=mode, sampling=sampling):
                     source = prefix + (
                         "int sample(void) /*@ Require emp Ensure __return == 0 && opaque(7) */ "
@@ -292,12 +312,7 @@ class NativeExecutionStrategyTests(unittest.TestCase):
                     self.assertEqual(case["status"], "PASS", case)
                     self.assertTrue(case["execution_completed"], case)
                     self.assertTrue(case["vc_results"], case)
-                    if sampling == "on":
-                        fallback = [e for e in case["sampling_events"] if e["status"] == "SYMBOLIC_FALLBACK"]
-                        self.assertTrue(fallback, raw)
-                        self.assertTrue(all(e["constraint_state"] == e["selected_state"] for e in fallback))
-                    else:
-                        self.assertEqual(case["sampling_events"], [])
+                    self.assertEqual(case["sampling_events"], [])
         # The same unsupported predicate in an unproved assertion remains an
         # original obligation; falling back must not manufacture a PASS.
         source = "/*@ Extern Coq (opaque : Z -> Assertion) */\n" + (
@@ -314,7 +329,7 @@ class NativeExecutionStrategyTests(unittest.TestCase):
             "int external(void) /*@ Require emp Ensure __return < 0 && __return >= 0 && emp */;\n"
             "int sample(void) /*@ Require emp Ensure __return == 0 && emp */ { external(); return 0; }"
         )
-        for sampling in ("on", "off"):
+        for sampling in ("off",):
             with self.subTest(sampling=sampling):
                 case, raw = self.run_source(source, "modular", "all-boundaries",
                                             modular_instantiation=sampling)
@@ -334,13 +349,13 @@ class NativeExecutionStrategyTests(unittest.TestCase):
                     case, _ = self.run_source(source, strategy, mode)
                     self.assertEqual(case["status"], "PASS", case)
                     if strategy == "modular":
-                        self.assert_sampled(case, "contract-sample")
+                        self.assert_boundary_policy(case, "contract-sample")
                     else:
                         self.assertEqual(case["result_scope"], "concrete-execution", case)
                         self.assertFalse(any(event.get("kind") == "contract-sample"
                                              for event in case["abstraction_events"]), case)
 
-    def test_bodyless_range_contract_is_sampled_in_all_four_combinations(self):
+    def test_bodyless_range_uses_symbolic_contract_in_modular(self):
         source = (
             "int external(int x) /*@ Require x == 5 && emp Ensure "
             "x <= __return && __return <= x + 2 && emp */;\n"
@@ -353,8 +368,8 @@ class NativeExecutionStrategyTests(unittest.TestCase):
                 with self.subTest(mode=mode, strategy=strategy):
                     case, _ = self.run_source(source, strategy, mode)
                     self.assertEqual(case["status"], "PASS", case)
-                    self.assertEqual(case["declaration_call_policy"], "contract-sample-or-symbolic/v2" if strategy == "modular" else "contract-sample/v1")
-                    self.assert_sampled(case, "contract-sample")
+                    self.assertEqual(case["declaration_call_policy"], "contract-symbolic/v1" if strategy == "modular" else "contract-sample/v1")
+                    self.assert_boundary_policy(case, "contract-sample")
 
     def test_assertion_vc_policy_stays_independent_of_state_strategy(self):
         source = (
@@ -385,10 +400,8 @@ class NativeExecutionStrategyTests(unittest.TestCase):
                 modular, _ = self.run_source(source, "modular", mode, loop_unroll_limit=1)
                 self.assertEqual(modular["status"], "PASS", modular)
                 self.assertTrue(modular["execution_completed"], modular)
-                self.assert_sampled(modular, "modular-loop-invariant")
-                kinds = {event["kind"] for event in modular["sampling_events"]}
-                self.assertIn("loop-preservation-input", kinds)
-                self.assertIn("loop-exit-input", kinds)
+                self.assert_boundary_policy(modular, "modular-loop-invariant")
+                self.assertEqual(modular["sampling_events"], [])
 
     def test_modular_assertion_poststate_controls_continuation_only(self):
         source = (
@@ -399,9 +412,9 @@ class NativeExecutionStrategyTests(unittest.TestCase):
         modular, _ = self.run_source(source, "modular", "entry-exit")
         self.assertEqual(inline["status"], "FAIL", inline)
         self.assertEqual(modular["status"], "PASS", modular)
-        self.assertTrue(any(event.get("kind") == "assertion-poststate"
-                            and event.get("status") == "SAMPLED"
-                            for event in modular["sampling_events"]), modular)
+        self.assertEqual(modular["sampling_events"], [])
+        self.assertTrue(any(event.get("kind") == "modular-assertion"
+                            for event in modular["abstraction_events"]), modular)
 
     def test_modular_loop_keeps_entry_binding_and_unmodified_frame(self):
         source = (
@@ -415,7 +428,7 @@ class NativeExecutionStrategyTests(unittest.TestCase):
                 case, _ = self.run_source(source, "modular", mode, loop_unroll_limit=1,
                                           arguments={"n": 3})
                 self.assertEqual(case["status"], "PASS", case)
-                self.assert_sampled(case, "modular-loop-invariant")
+                self.assert_boundary_policy(case, "modular-loop-invariant")
 
     def test_pure_modular_assertion_preserves_unmentioned_heap(self):
         source = (
@@ -427,9 +440,9 @@ class NativeExecutionStrategyTests(unittest.TestCase):
             with self.subTest(mode=mode):
                 case, _ = self.run_source(source, "modular", mode)
                 self.assertEqual(case["status"], "PASS", case)
-                self.assert_sampled(case, "modular-assertion")
+                self.assert_boundary_policy(case, "modular-assertion")
 
-    def test_modular_loop_initialization_failure_survives_sampling(self):
+    def test_modular_loop_initialization_failure_is_retained(self):
         source = (
             "int sample(void) /*@ Require emp Ensure __return == 3 && emp */ "
             "{ int i = 0; /*@ Inv 1 <= i && i <= 3 && emp */ "
@@ -439,7 +452,7 @@ class NativeExecutionStrategyTests(unittest.TestCase):
         self.assertEqual(case["status"], "FAIL", case)
         self.assertTrue(any(vc["status"] == "INVALID" for vc in case["vc_results"]), case)
 
-    def test_modular_loop_preservation_failure_survives_sampled_exit(self):
+    def test_modular_loop_preservation_failure_is_retained(self):
         source = (
             "int sample(void) /*@ Require emp Ensure __return == 3 && emp */ "
             "{ int i = 0; /*@ Inv 0 <= i && i <= 3 && emp */ "
@@ -462,4 +475,4 @@ class NativeExecutionStrategyTests(unittest.TestCase):
                     case, _ = self.run_source(source, "modular", mode,
                                               arguments={"n": 3}, loop_unroll_limit=1)
                     self.assertEqual(case["status"], "PASS", case)
-                    self.assert_sampled(case, "modular-loop-invariant")
+                    self.assert_boundary_policy(case, "modular-loop-invariant")
