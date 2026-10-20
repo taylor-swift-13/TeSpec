@@ -121,3 +121,23 @@ theory replay and changes no implementation, solver, benchmark, or raw result.
   were visually checked. The theorem pages, overview and preserved decision
   diagram were inspected at readable resolution, with all pages reviewed in
   a contact sheet.
+
+## 2026-10-20: restore the paper's argument hierarchy
+
+- Center the narrative on testing original proof-oriented specifications before
+  full verification: execution-derived states, original VCs, checked evidence,
+  and verdict scope.
+- Explain inline execution and copied observations before modular continuations.
+  Preserve both strategies, independent observation schedules and bodyless calls.
+- Remove repeated promotion of verified-specification agreement from the
+  abstract, contribution list, main figure and discussion. Retain Theorem 3
+  and a concise proof as a supporting formal guarantee; preserve its expanded
+  argument in supplement/verified-specification-testing.tex.
+- Keep the shared decision figure and case-study organization. Mark an explicit
+  observation point in the overview and connect its snapshot to the original VC.
+- Record editorial priorities in README.md. Coq sources, historical evidence and
+  runtime benchmark results are unchanged; build-time audits reuse their hashes.
+- Final PDF returns to 12 pages. Checked the revised opening, method, theory,
+  discussion, conclusion and overview at readable resolution, plus the complete
+  page contact sheet. No LaTeX errors, overfull boxes, undefined references or
+  bibliography warnings; the two underfull diagnostics were visually checked.

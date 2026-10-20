@@ -79,3 +79,12 @@ The report flags and original-inventory completeness are abstract certificate
 interfaces. This is not a mechanical refinement of the concrete C executor,
 VC exporter, sampler or report generator. Partial correctness does not imply
 termination or completion within a solver budget; an unfinished check is UNKNOWN.
+
+## Editorial placement after the 2026-10-20 review
+
+The verified-specification theorem remains Theorem 3 with the same semantic
+premises, including whole original-VC source inclusion and completed coverage
+and decisions. It is a supporting consistency result, not a precondition for
+using the test method. The concise statement and proof remain in the main
+semantics section; `supplement/verified-specification-testing.tex` preserves the
+expanded argument. No Coq statement, proof receipt or benchmark result changed.

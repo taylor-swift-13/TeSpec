@@ -1,7 +1,7 @@
 \InputIfFileExists{figures/figure-style.tex}{}{\input{figure-style}}
 \begin{tikzpicture}[x=1cm,y=1cm,tsText]
 \node[tsHead] at (0,0) {\textcolor{tsExec}{01}\quad Instance};
-\node[tsHead] at (3.8,0) {\textcolor{tsExec}{02}\quad Select execution strategy};
+\node[tsHead] at (3.8,0) {\textcolor{tsExec}{02}\quad Construct test states};
 \node[tsHead] at (11.1,0) {\textcolor{tsProof}{03}\quad Record and decide};
 \draw[tsRule] (0,-.35)--(3.1,-.35);
 \draw[tsRule] (3.8,-.35)--(10.5,-.35);
@@ -21,7 +21,10 @@
 \draw[tsFlow] (p0)--(h0);
 \draw[tsFlow] (h0)--(h1);
 \node[tsLabel] at (7.25,-1.25) {$r:0\to1\to\cdots\to4$};
-\node at (7.25,-2.22) {copy observations; retain reached state};
+\coordinate (observation) at (7.9,-1.7);
+\fill[tsProof] (observation) circle[radius=1.6pt];
+\node[align=center,text width=3.5cm] at (5.85,-2.25)
+ {snapshot +\\resolved check};
 \node[anchor=west,font=\sffamily\bfseries] at (4,-3.15) {Modular: summary continuations};
 \node[tsOp,text width=5.7cm,minimum height=.85cm] (modular) at (7.25,-3.95)
  {check boundary $\to$ instantiate legal model};
@@ -35,7 +38,7 @@
  {original VC\\check identity\\source / goal};
 \node[tsOp,text width=1.75cm,minimum height=.8cm] (oracle) at (15.9,-2.25)
  {automatic oracle\\+ offline ITP};
-\draw[tsCopy] (10.25,-1.7)--(10.65,-1.7)--(10.65,-2.25)--(ledger.west);
+\draw[tsCopy] (observation)--(7.9,-2.65)--(10.65,-2.65)--(10.65,-2.25)--(ledger.west);
 \draw[tsCopy] (modular.east)--(10.65,-3.95)--(10.65,-2.25);
 \draw[tsEvidence] (ledger.east)--(oracle.west);
 \draw[tsEvidence] (oracle.south)--(15.9,-3.35)--node[tsLabel,above]{matched evidence}(12.25,-3.35)--(ledger.south);
@@ -43,5 +46,5 @@
  {VCs $\to$ paths $\to$ scoped instance verdict\\entry + coverage gates: Fig.~3};
 \draw[tsEvidence] (12.25,-3.35)--(verdict.north west);
 \node[align=center,text width=5.6cm] at (14.05,-5.95)
- {verified specifications + completed checks\\$\Longrightarrow$ both strategies PASS};
+ {retain original goal identity\\and checked proof polarity};
 \end{tikzpicture}

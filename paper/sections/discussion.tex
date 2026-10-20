@@ -9,16 +9,14 @@ cases show how improving automatic discharge can remove proof work while
 preserving the execution and its obligations. Quantified contracts illustrate
 where proof completion remains useful.
 
-\paragraph{Agreement between strategies.}
-For a fully verified modular specification, every legal boundary post-state
-satisfies the verified continuation, even when a summary admits values that
-the implementation never produces. Theorem~\ref{thm:mode-correspondence}
-therefore proves common PASS for completed decisions without requiring equal
-states or two-way simulation. Verification must cover the entire selected
-specification, and instance construction must preserve the verified facts
-in every original VC. Open continuation obligations fall outside this
-premise. Solver incompleteness or execution limits may still leave a test
-UNKNOWN; partial correctness does not prove termination.
+\paragraph{Choosing an execution strategy.}
+Inline execution is useful when the annotation under investigation should
+not determine the subsequent state. Modular execution instead exposes the
+obligations imposed by interfaces and supports calls without bodies.
+This choice changes the scope of feedback: an insufficient summary can fail
+a caller check even when the available callee happens to produce an acceptable
+value. The consistency result relates the strategies after full verification;
+it does not make prior verification a prerequisite for testing.
 
 \paragraph{Validity of the comparison.}
 The selected cases explain mechanisms and do not estimate their prevalence

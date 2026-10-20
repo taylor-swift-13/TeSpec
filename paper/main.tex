@@ -51,8 +51,9 @@ selected input bindings; a modular strategy samples summary-admitted states. Inl
 the reached states, allowing execution to continue with the values and
 memory it produced. Automatic reasoning and proof-assistant completion
 check these obligations in the original specification logic.
-We formalize instance checking and mechanize trace-preservation, acceptance,
-and consistency of the two strategies for verified specifications in reference models.
+The formal account separates evidence for an assertion from the execution
+and coverage evidence required for a test verdict, with mechanized support
+for its reference guarantees.
 Recorded case studies examine a signed-overflow violation missed by a
 Fulminate configuration, original quantified contracts with equivalent
 runtime controls, and spatial obligations resolved by automatic reasoning
@@ -72,10 +73,12 @@ Specification testing, symbolic execution, separation logic, proof checking
 \input{sections/related-work}
 \section{Conclusion}
 \tespec{} connects execution-based feedback with proof-oriented C contracts.
-Input bindings select the tested domain, actual program transitions determine
-the observed states, and proofs establish their specified properties. Copied
-observations, joint normalization, and exact local frames preserve this
-connection through the verification infrastructure. The case studies show
+Input bindings select the tested domain; body execution or explicit summary
+models supply states; proofs check the original assertions at those states.
+Copied observations, joint normalization, and exact local frames preserve
+the connection between execution state and proof obligation. Recording each
+result against its original obligation supports verdicts with an explicit
+execution scope. The case studies show
 why a useful oracle must account for arithmetic safety, original quantified
 relations, and spatial ownership. The resulting workflow supports testing
 with the same specifications and logical libraries used for full verification.

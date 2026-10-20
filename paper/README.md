@@ -1,15 +1,15 @@
 # TeSpec ICSE manuscript
 
 **TeSpec: Proof-Based Testing of Separation-Logic Specifications for C** is the
-current manuscript in `main.tex` and `main.pdf`. The current revision is thirteen
+current manuscript in `main.tex` and `main.pdf`. The current revision is twelve
 pages including references. It develops the method before its formal guarantees
 and uses three complementary method figures:
 
 | Figure | Purpose | Page | Standalone PDF |
 | --- | --- | --- | --- |
 | 1. Workflow | Independent execution strategies, original VC records, and scoped evidence | 3 | `figures/overview-standalone.pdf` |
-| 2. Copied observation | Inline shared write/return above two different functional obligations | 4 | `figures/observation-standalone.pdf` |
-| 3. Verdict flow | QCP/SMT/ITP evidence, scoped path gates, and explicit instance aggregation | 6 | `figures/result-flow-standalone.pdf` |
+| 2. Copied observation | Inline shared write/return above two different functional obligations | 3 | `figures/observation-standalone.pdf` |
+| 3. Verdict flow | QCP/SMT/ITP evidence, scoped path gates, and explicit instance aggregation | 5 | `figures/result-flow-standalone.pdf` |
 
 The overview directs readers to the mechanism and verdict diagrams. A shared
 `figures/figure-style.tex` fixes colors, line roles, and print-size typography. All three
@@ -29,14 +29,31 @@ is complete in the earlier study protocol.
 
 ## Argument and structure
 
-1. Original logical assertions can require proof after inputs are fixed.
-2. Inline execution preserves reached states; modular execution selects legal summary states.
-3. Exact local frames and joint heap/value normalization preserve what is checked.
-4. Verified modular specifications imply valid checks under arbitrary legal sampling,
-   and both completed testing modes PASS; no equality of sampled states is required.
-5. Four evidence-backed case studies explain arithmetic safety, quantified
-   contracts, and spatial proof completion.
-6. The evaluation design distinguishes planned comparisons from recorded cases.
+1. A fixed program input can still leave an original quantified or spatial assertion without an executable oracle.
+2. Execution produces the states to test; copied inline observations preserve the subsequent computation.
+3. Exact local frames and joint heap/value normalization preserve the meaning of the original obligation.
+4. Automatic reasoning and checked proofs produce evidence tied to the original VC; feasibility, reachability and coverage determine the scope of the verdict.
+5. Modular execution offers summary-based feedback with a distinct interpretation. Agreement under completed verification is a supporting consistency property.
+6. Recorded cases explain these mechanisms; broader benchmark comparisons remain separate study plans.
+
+### Editorial priorities
+
+The paper's central question is how to obtain trustworthy test feedback from
+original proof-oriented specifications before full verification. Organize
+new material by its role in that argument, rather than by the order of
+implementation changes or discussion requests.
+
+The method, evidence chain and limits of the verdict take priority. Present
+execution strategies as ways to construct test states, and place their
+conditional consistency result with the other formal guarantees. Do not
+repeat a supporting theorem in the abstract, contribution list, main diagram
+and discussion. The three figures respectively explain the workflow, the
+copied-observation mechanism and the evidence-to-verdict decision.
+
+A new claim must be checked for soundness, relevance to the central question,
+and fit with existing evidence before it enters the manuscript. Retain proof
+details and historical controls in supplementary material when they interrupt
+the method; do not weaken their assumptions to simplify the narrative.
 
 The first case study is the read negation mutant at INT_MIN: the recorded
 Fulminate configuration exits normally, whereas TeSpec rejects its arithmetic
@@ -60,9 +77,9 @@ read-only dependencies of the paper evidence audit.
 primary-source checks, and section coverage; the library contains 49 entries.
 `formalization-map.md` connects the three theorems and two propositions to
 the Rocq developments and identifies the paper-level implementation interfaces.
-`tmp/pdfs/` holds ignored previews. The current revision proves agreement for
-verified specifications and retains the stronger trace correspondence in the
-supplement. Historical benchmark and proof receipts remain unchanged; see the
+`tmp/pdfs/` holds ignored previews. The main text develops the method before its guarantees. Agreement for
+verified specifications is a supporting result; its expanded argument and
+the stronger trace correspondence are retained in the supplement. Historical benchmark and proof receipts remain unchanged; see the
 dated evidence sections below for exactly which checks were rerun.
 
 ## CN/Fulminate version policy

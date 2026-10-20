@@ -48,10 +48,8 @@ feasibility and execution coverage. Acceptance concerns the domain selected
 by the bindings, which may retain symbolic addresses or other unbound
 inputs. A modular strategy also supports summary-driven continuations, including
 calls without bodies. We distinguish its sampled-model feedback from
-body-execution feedback. We prove that, when the full modular specification
-has been verified, arbitrary legal sampling preserves its checks and both
-completed testing modes pass. This requires neither exact summaries nor
-equal intermediate states.
+body-execution feedback. In either case, the result records which original
+obligations were established and which executions were covered.
 Full \qcp{} verification addresses the original contract over all
 admissible inputs. These workflows share specifications and proof
 infrastructure while answering different development questions.
@@ -69,12 +67,13 @@ Our contributions are:
 \begin{enumerate}
 \item \textbf{Execution with copied observations.}
 We construct obligations at function, loop, and intermediate boundaries
-while retaining the program's evolving state
+while retaining reached states in inline execution, and make summary-driven
+testing an explicit alternative
 (Section~\ref{sec:approach}).
 \item \textbf{A formal account of instance checking.}
 We give construction rules, oracle interfaces, and verdict judgments,
-with trace-preservation, acceptance, and verified-specification consistency
-arguments supported by mechanized reference models (Section~\ref{sec:semantics}).
+connecting original-assertion evidence to scoped test results, supported
+by mechanized reference models (Section~\ref{sec:semantics}).
 \item \textbf{An implementation and comparative evidence.}
 We implement the method using \qcp{}'s symbolic execution and Rocq
 obligations, provide controlled case studies, and specify the broader

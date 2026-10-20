@@ -1,72 +1,41 @@
-\subsection{Two execution strategies, one observation schedule}
+\subsection{Modular continuations and observation schedules}
 \label{sec:strategies}
-The execution strategy and the observation schedule are independent.
-\texttt{inline} executes available function bodies and loop iterations.
-At a selected annotation it records an obligation on a copy and retains
-the reached state for the continuation.
-\texttt{modular} instead uses contracts, invariants, and assertions to
-construct summary-driven continuations. At a selected boundary, it checks
-the incoming state before abstracting and sampling a legal continuation;
-sampling does not erase an earlier obligation.
-Both strategies reuse QCP's resource matching, invocation bindings,
-and frame transfer.
+The \texttt{inline} strategy above tests states reached by executing
+available bodies and loop iterations. The \texttt{modular} strategy instead
+uses contracts, invariants, and assertions to construct continuations.
+At a boundary it checks the incoming obligation before abstracting and
+sampling a legal continuation; sampling does not erase an earlier obligation.
+Both strategies reuse QCP's resource matching, invocation bindings and frames.
 
-For a modular call, the contract constrains the returned value and
-modified resources. A modular loop checks entry, samples a
-guard-satisfying invariant state for a preservation path, and samples
-an invariant state satisfying the exit guard for the continuation.
-These samples need not be successive states of an actual loop run.
-An assertion can likewise provide a new boundary state.
-Sampling preserves the constraints represented at the boundary, including
-retained entry-value equalities and framed resources; it does not infer
-omitted relational constraints. Unsupported or unsuccessful sampling is
-unresolved.
+For a modular call, the contract constrains the returned value and modified
+resources. A modular loop checks entry, samples a guard-satisfying invariant
+state for a preservation path, and samples an invariant state satisfying the
+exit guard for the continuation. These need not be successive states of an
+actual loop run. An assertion can similarly provide a boundary state.
+Sampling retains the represented relational constraints and framed resources;
+it cannot reconstruct constraints omitted from the annotation.
+Unsupported or unsuccessful sampling remains unresolved.
 
-Independently, \texttt{entry-exit} selects entry, safety, and final checks,
-whereas \texttt{all-boundaries} additionally selects internal observations.
-Changing the strategy changes how states are obtained; changing the
-schedule changes which properties of those states are checked.
+The observation schedule is independent of this choice.
+\texttt{entry-exit} selects entry, safety and final checks;
+\texttt{all-boundaries} additionally selects internal observations.
 A call without a body uses contract instantiation in either strategy.
-A declaration-only root has only an entry check and does not establish
-execution or postcondition success.
+A declaration-only root provides an entry check, not evidence of successful
+execution or a satisfied postcondition.
 
-\paragraph{Different scopes of feedback.}
-Body execution checks reached states. Modular execution checks selected
-models of contracts and invariants, recorded as
-\texttt{contract-and-invariant-model}.
-A sampled model can expose that a summary is insufficient for a caller,
-without exhibiting a bug in the available callee body.
-A successful sample does not cover every model of its summary. Its reported
-success concerns the selected sample tree; interpreting it over the full
-entry domain additionally requires a coverage proof. Scope therefore includes
-both the transition model and the states actually covered.
-Mixed executions containing bodyless calls inherit this qualification
-unless those external transitions have a justified implementation model.
+\paragraph{Interpreting the feedback.}
+Body execution checks reached states, whereas modular execution checks
+selected models of summaries. For example, let a helper return 1 under the
+contract $0\le\mathit{ret}\le1$, and let its caller require $\mathit{ret}=1$.
+Inline execution passes this check; modular execution may sample 0 and
+expose that the contract does not suffice for the caller.
+This diagnoses an interface obligation without exhibiting a violating
+execution of the available helper body. Archived paired controls exercise
+both this case and an exact-summary case under both observation schedules.
 
-\paragraph{Verification makes legal samples safe.}
-A fully verified continuation must accept every post-state admitted by the
-callee contract, not just the result of one implementation. Therefore weak
-summaries can still yield agreement: if the caller accepts every value in
-$[0,1]$, both an inline result of 1 and a modular sample of 0 pass.
-Section~\ref{sec:mode-correspondence} proves this preservation property from
-the modular verification obligations.
-
-\paragraph{An unverified continuation is a different case.}
-Consider a helper that returns 1 but promises only
-$0\le\mathit{ret}\le1$, and a caller whose postcondition requires
-$\mathit{ret}=1$.
-The helper satisfies its contract, but the caller cannot establish its
-postcondition from that contract alone. Inline execution returns 1;
-a modular continuation may legally choose 0.
-The two tests therefore ask different questions despite sharing an input.
-Changing the helper's summary to $\mathit{ret}=1$ removes this difference
-for the example. It does not establish agreement for arbitrary programs.
-
-The paired artifact runs both summaries, both strategies, and both
-observation schedules on the archived 2026-10-19 executor: eight executions.
-With the loose summary, inline reports PASS and modular selects 0 and
-reports FAIL in its model scope under both schedules. With the exact
-summary, all four executions report PASS. These are automatic reports,
-not new kernel-checked execution certificates.
-The loose-summary caller has an open modular continuation obligation and
-is not an instance of the verified-specification theorem.
+Reports therefore identify the transition model and the states covered.
+A passing sample does not establish all behaviors admitted by a summary.
+Mixed executions with bodyless calls inherit this qualification unless
+those external transitions have a justified implementation model.
+Section~\ref{sec:mode-correspondence} relates the two strategies when the
+complete modular specification has already been verified.
