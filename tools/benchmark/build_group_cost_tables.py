@@ -141,7 +141,12 @@ def main(argv=()):
         index.append({'program_group':name,'complete':complete,'report':(folder/'result-cost.md').relative_to(ROOT).as_posix(),'json':(folder/'result-cost.json').relative_to(ROOT).as_posix(),'csv':(folder/'result-cost.csv').relative_to(ROOT).as_posix()})
         if supplements:index[-1]['execution_strategy_supplements']=supplements
     index.sort(key=lambda x:x['program_group'])
-    save(OUT/'group-result-cost-index.json',{'groups':index,'groups_total':len(index),'complete_groups':sum(x['complete'] for x in index)})
+    index_path=OUT/'group-result-cost-index.json'
+    preserved={}
+    if index_path.is_file():
+        preserved={key:value for key,value in read(index_path).items()
+                   if key not in {'groups','groups_total','complete_groups'}}
+    save(index_path,{'groups':index,'groups_total':len(index),'complete_groups':sum(x['complete'] for x in index),**preserved})
     (OUT/'group-result-cost-index.md').write_text('# 各程序组结果与成本表\n\n| 程序组 | 完整状态 |\n|---|---|\n'+''.join(f"| [{x['program_group']}]({x['program_group']}/result-cost.md) | {'已齐全' if x['complete'] else '待补齐'} |\n" for x in index))
     if (OUT/'modular-result-cost-index.md').is_file():
         with (OUT/'group-result-cost-index.md').open('a') as f:

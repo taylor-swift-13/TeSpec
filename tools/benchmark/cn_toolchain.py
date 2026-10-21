@@ -12,8 +12,15 @@ LOCK = json.loads(LOCK_PATH.read_text())
 SWITCH = Path(os.environ.get("OPAMROOT", str(Path.home() / ".opam"))) / LOCK["switch"]
 CN = SWITCH / "bin/cn"
 ENV = dict(os.environ)
+locked_tool_dirs = []
+for executable in LOCK["fingerprint"]["executables"].values():
+    directory = str(Path(executable["path"]).parent)
+    if directory not in locked_tool_dirs:
+        locked_tool_dirs.append(directory)
 ENV["OPAM_SWITCH_PREFIX"] = str(SWITCH)
-ENV["PATH"] = str(SWITCH / "bin") + os.pathsep + ENV.get("PATH", os.defpath)
+ENV["PATH"] = os.pathsep.join(
+    [str(SWITCH / "bin"), *locked_tool_dirs, ENV.get("PATH", os.defpath)]
+)
 
 
 def sha(path):

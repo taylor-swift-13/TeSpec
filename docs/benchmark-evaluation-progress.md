@@ -299,3 +299,11 @@ teSpec 按用户要求暂缓，本轮未运行；历史两模式各7 UNKNOWN是�
 ## 2026-10-21 前 21 组预期审查
 
 900 对输入的 inline/modular 和 Fulminate 预期已独立审查，未发现新增状态预期错误。array_load 的 42 对增强 QCP 规约测试已标记为不能用于同规约比较；read 的 7 个旧 Fulminate ERROR 仅按预期运行拒绝归一化。详见[审查说明](benchmark-expectation-audit-20261021.md)与[逐组明细](../benchmark/results/expectation-audit-20261021/index.md)。本次不覆盖或重算原实验成本。
+
+## 2026-10-21：第 22 组 const_example_lessgood 完成
+
+活动 benchmark 的 CN 副本只移除了原 `trusted` 指令，逻辑定义、assertion 和 C 函数体保持不变；`arxiv/` 下不可变来源快照未修改。锁定 CN 5.2 对实际函数体和 assertion 验证通过，耗时 0.114832 秒，峰值进程 RSS 43.597656 MiB。该修订解决了旧记录中“CN 接受仅来自 trusted”的范围缺口。
+
+QCP 重新生成的原始 Goal 哈希为 `96d87968c1b8b5bacd4a2175309983eb1d47f889c3be9bf7c3c39cabbeb4c719`，与既有三义务证明收据逐字节一致，因此复用已完成的 gpt-6.1-sol 证明填写、Coq 编译与假设审计、独立 `coqchk`：3/3 义务全局封闭，无新增公理。既有实际 token 为 54,857，各阶段时间与峰值 RSS 继续由同一证明收据计入，不重复调用模型。
+
+唯一无参合法入口重新运行 Fulminate、teSpec inline 空间 SMT OFF/ON，均为 PASS 且符合冻结预期；另用标准策略回归器运行 inline/modular × OFF/ON 共 4 次，也全部 PASS、无 UNKNOWN、无需 ITP、源和输入哈希不变。正式发布验证通过全部源、日志、原始 VC、证明与成本哈希检查。当前完整 **22/45**，尚缺 23 组；完整结果见 [第 22 组结果与成本表](../benchmark/results/const_example_lessgood/result-cost.md)。
