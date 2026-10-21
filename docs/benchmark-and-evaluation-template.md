@@ -493,3 +493,13 @@ ITP以整次执行的原始残余目标为单位。自动分解的纯/空间子�
 测试预期按具体输入及执行策略定义，空间 SMT OFF/ON 共享语义预期。必须从代码、规约和合法输入推导，不能用待测工具的输出反推。缺权访问的预期 ERROR 需核对具体原因；工具内部错误、超时或未完成判定不能冒充成功检出。错误变体在个别输入上也可能合法通过。CN/QCP 配对规约强度不同时，须单列并排除同规约比较；主程序证明不外推至其他变体。
 
 已审查的[前 21 组模板](benchmark-expectation-audit-20261021.md)保存逐例判定依据、源码/绑定哈希及跨模式差异。审查本身不重算时间、RSS 或 token，不改写历史测量。
+
+## 极简证据保留
+
+完成并通过发布审计后，每组长期只保留以下数据：组级结果/成本 MD、JSON、CSV；每个 case 的最终预期与状态；各工具阶段时间、峰值 RSS、token 和模型调用数；复现命令；CN/QCP 源哈希；输入/测试 harness 哈希；CN 成功验证摘要；QCP 原始 Goal 哈希及最终内核检查证明收据。inline/modular 和空间 SMT OFF/ON 只保存策略、状态、成本及源/输入哈希。
+
+不长期保存能够由同一源、输入和命令重新生成的目录：重复的 executor/job 快照、instrumented C、每模式的 Goal/auto/manual/check 副本、空日志、重复 toolchain 全仓文件表、driver/worker 源快照及逐阶段目录树。失败修复中只有影响最终成本或结论的次数、时间、RSS、token、退出状态和日志哈希进入摘要；不复制完整临时工作区。
+
+正式 QCP 证明是例外：最终 Candidate、原始 Goal、编译/假设审计和独立内核检查收据必须保留。若新运行的 Goal 哈希与已有正式证明完全相同，摘要直接引用既有证明，不复制第二套 Goal 和证明目录。
+
+发布后运行 `python3 tools/benchmark/compact_group_evidence.py --group <group>`，再运行 `validate_group_evaluation.py`。验证器必须在原始目录删除后仍能检查活动源哈希、CN 成功、QCP Goal/证明绑定、最终状态和成本。压缩前的运行目录只属于临时测量工作区，不提交 Git。

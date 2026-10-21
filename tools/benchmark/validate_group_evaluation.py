@@ -7,6 +7,37 @@ from execution_itp_receipts import validate_receipt
 from publish_group_evaluation import repository_path,run_directory,cn_attempt_costs,audit_reused_qcp_native
 
 def load(p):return json.loads(p.read_text())
+def validate_compact(ROOT,g,b,manifest,idx,evaluation,nativepath,proofpath,data):
+    assert load(b/'result-cost.json')['complete']
+    variants={load(ROOT/v['manifest'])['id']:load(ROOT/v['manifest']) for v in manifest['variants']}
+    covered=set()
+    for row in data['runs']:
+        covered.update([row['variant'],row['paired_qcp_variant']])
+        assert row['precondition_valid'] and row['expected'] in ['PASS','FAIL','ERROR']
+        assert sha(ROOT/variants[row['variant']]['files']['cn']['path'])==row['cn_source_sha256']
+        assert sha(ROOT/variants[row['paired_qcp_variant']]['files']['qcp']['path'])==row['qcp_source_sha256']
+        for key in ['fulminate_pipeline','fulminate_test','tespec_off','tespec_on']:
+            measurement=row[key]
+            assert measurement['wall_seconds']>=0 and measurement['resources']['max_process_rss_kib']>0
+        assert row['fulminate_test']['status']==row['expected']
+        assert row['tespec_off'].get('final_status',row['tespec_off']['status'])==row['expected']
+        assert row['tespec_on'].get('final_status',row['tespec_on']['status'])==row['expected']
+    assert covered==set(variants)
+    native=load(nativepath);proof=load(proofpath)
+    assert idx['native_receipt_sha256']==sha(nativepath)
+    published=load(b/'cn/results.json');assert published['evidence_sha256']==sha(nativepath)
+    assert native['cn']['exit_code']==0 and native['qcp']['exit_code']==0
+    assert sha(ROOT/native['cn_source'])==native['cn_source_sha256']
+    assert sha(ROOT/native['qcp_source'])==native['qcp_source_sha256']
+    assert proof['status']=='VERIFIED_KERNEL_CHECKED' and proof['kernel_check']['exit_code']==0
+    assert native['goal_sha256']==proof['original_goal_sha256']
+    assert sha(ROOT/proof['proof'])==proof['proof_sha256']
+    for strategy in ['inline','modular']:
+        evidence=load(ROOT/manifest['execution_strategy_evidence'][strategy])
+        assert evidence['summary']['passed'] and evidence['summary']['regressions']==0
+        assert all(row['status']==row['expected'] for row in evidence['runs'])
+    print(f'PASS {manifest["program_group"]}: compact durable evidence, exact source/proof hashes, full primary verification and inline/modular OFF/ON decisions.')
+
 def main():
     p=argparse.ArgumentParser();p.add_argument('--group',required=True);p.add_argument('--run-id');p.add_argument('--native-receipt');p.add_argument('--qcp-receipt');a=p.parse_args();g=ROOT/'benchmark/programs'/a.group;b=ROOT/'benchmark/results'/a.group;manifest=load(g/'manifest.json');idx=load(b/'index.json')
     evaluation=repository_path(idx['evaluation'])
@@ -17,6 +48,9 @@ def main():
     proofpath=repository_path(idx['qcp_receipt'])
     if a.qcp_receipt:assert proofpath==repository_path(a.qcp_receipt), 'Requested QCP receipt is not the published receipt'
     data=load(evaluation);runs=data['runs'];table=load(b/'result-cost.json');assert table['complete']
+    if data.get('schema')=='tespec-compact-group-evidence/v1':
+        validate_compact(ROOT,g,b,manifest,idx,evaluation,nativepath,proofpath,data)
+        return
     variants={load(ROOT/v['manifest'])['id']:load(ROOT/v['manifest']) for v in manifest['variants']};covered=set()
     for r in runs:
         covered.update([r['variant'],r['paired_qcp_variant']]);assert r['precondition_valid'] and r['expected'] in ['PASS','FAIL','ERROR']
