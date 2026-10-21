@@ -25,7 +25,7 @@
 - read：OFF 22 PASS / 20 FAIL / 12 UNKNOWN / 7 预期 ERROR；ON 22 PASS / 32 FAIL / 7 预期 ERROR。原先已解决的 12 条错误规约仍被拒绝。
 - 原有四工具结果成本表保持为历史完整评测；本轮只重跑 teSpec 原生流程，没有重新运行 CN、QCP 全称验证、Fulminate、模型证明或 Coq 检查。完整组数仍为 21/45。
 
-正式产物见 [回归摘要](../benchmark/results/spatial-smt-regressions/20261018-annotation-array-v1/summary.md)、[逐组统计](../benchmark/results/spatial-smt-regressions/20261018-annotation-array-v1/group-summary.json) 和 [审计回执](../benchmark/results/spatial-smt-regressions/20261018-annotation-array-v1/post-run-audit.json)。11683 个新源、报告、VC 与日志引用完成哈希检查。每次执行保存完整 CLI / 执行器时间与 RSS；ON 另有空间阶段计量。
+正式产物见 [回归摘要](../benchmark/results/regression-history.json)、[逐组统计](../benchmark/results/regression-history.json) 和 [审计回执](../benchmark/results/regression-history.json)。11683 个新源、报告、VC 与日志引用完成哈希检查。每次执行保存完整 CLI / 执行器时间与 RSS；ON 另有空间阶段计量。
 
 | 本轮原生回归计量 | OFF（900 次） | ON（900 次） |
 |---|---:|---:|

@@ -1,0 +1,532 @@
+{
+  "summary": {
+    "group": "init_point",
+    "case_pairs": 6,
+    "pairings": 1,
+    "function_configurations": 1,
+    "derived_counts": {
+      "inline": {
+        "PASS": 6
+      },
+      "modular": {
+        "PASS": 6
+      },
+      "fulminate": {
+        "PASS": 6
+      }
+    },
+    "mismatches": 0,
+    "non_equivalent_contract_cases": 0,
+    "primary_verification_scope": {
+      "primary_cn_variant": "cn_original:init_point",
+      "primary_qcp_variant": "qcp_existing:476459c98ec1bb030189",
+      "function": "init_point"
+    },
+    "verification_caveat": "CN/QCP full verification is restricted to the selected primary target/module. This audit neither reruns it nor extends certificates to every variant/client."
+  },
+  "pairs": [
+    {
+      "group": "init_point",
+      "cn_variant": "cn_original:init_point",
+      "qcp_variant": "qcp_existing:476459c98ec1bb030189",
+      "cn_source": {
+        "path": "benchmark/programs/init_point/variants/cn_original_init_point/cn/init_point.c",
+        "sha256": "e7339d4fbfb26ede467f7b494e4c779bbcf63929b024345a9c6cfb4e5da81469"
+      },
+      "qcp_source": {
+        "path": "benchmark/programs/init_point/variants/qcp_existing_476459c98ec1bb030189/qcp/init_point.qcp.c",
+        "sha256": "476459c98ec1bb03018903c1f22e3b768f12e1795386d01f9803b74dcd028da2"
+      },
+      "qcp_functions": {
+        "zero": {
+          "return_type": "void",
+          "parameters": "int *p",
+          "contract": "/*@ Require undef_data_at(p, int) Ensure data_at(p, int, 0) */",
+          "body": "\n  *p = 0;\n"
+        },
+        "init_point": {
+          "return_type": "void",
+          "parameters": "struct point *p",
+          "contract": "/*@ Require undef_data_at(&p->x, int) * undef_data_at(&p->y, int) Ensure data_at(&p->x, int, 0) * data_at(&p->y, int, 0) */",
+          "body": "\n  zero(&p->x);\n  zero(&p->y);\n"
+        }
+      },
+      "cn_specifications": [
+        "/*@ requires take u = Block<int>(p);\n    ensures take v = Owned<int>(p);\n            v == 0i32; @*/",
+        "/*@ requires take s = Block<struct point>(p);\n    ensures take s2 = Owned<struct point>(p);\n            s2.x == 0i32;\n            s2.y == 0i32;\n@*/",
+        "/*@ trusted; @*/",
+        "/*@ assert (p.x == 0i32 && p.y == 0i32); @*/"
+      ],
+      "c_body_differences": {},
+      "alignment": "REVIEWED_TARGET_PAIR",
+      "scope_note": "Comparison concerns each language contract at this target. It is not a claim of arbitrary whole-file contract equivalence.",
+      "manual_derivation": "Disjoint uninitialized x/y fields each receive 0 via zero; no uninitialized value is read.",
+      "cases": [
+        "region_0",
+        "region_1",
+        "region_2",
+        "region_3",
+        "region_4",
+        "region_5"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "group": "init_point",
+      "variant": "cn_original:init_point",
+      "paired_qcp_variant": "qcp_existing:476459c98ec1bb030189",
+      "case": "region_0",
+      "function": "init_point",
+      "qcp_source": {
+        "path": "benchmark/programs/init_point/variants/qcp_existing_476459c98ec1bb030189/qcp/init_point.qcp.c",
+        "sha256": "476459c98ec1bb03018903c1f22e3b768f12e1795386d01f9803b74dcd028da2"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/init_point/variants/cn_original_init_point/cn/init_point.c",
+        "sha256": "e7339d4fbfb26ede467f7b494e4c779bbcf63929b024345a9c6cfb4e5da81469"
+      },
+      "binds": {
+        "path_omitted": {
+          "sha256": "cb36e3b717fc25843e0a83e04732f68152b472805d149463883a2199acbb4eea"
+        },
+        "sha256": "cb36e3b717fc25843e0a83e04732f68152b472805d149463883a2199acbb4eea"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "region_index": 0,
+        "byte_offset": 0,
+        "entry_fields": "uninitialized (Block/undef ownership)"
+      },
+      "cn_harness": {
+        "path_omitted": {
+          "sha256": "f63c2a22cd2237fa4b8ca8305337215a4a382bf9592c4ed15ae9246abca5bda4"
+        },
+        "sha256": "f63c2a22cd2237fa4b8ca8305337215a4a382bf9592c4ed15ae9246abca5bda4"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {},
+          "id": "region_0"
+        },
+        "reason": "Disjoint uninitialized x/y fields each receive 0 via zero; no uninitialized value is read.",
+        "final_fields": {
+          "x": 0,
+          "y": 0
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path_omitted": {
+              "sha256": "f63c2a22cd2237fa4b8ca8305337215a4a382bf9592c4ed15ae9246abca5bda4"
+            },
+            "sha256": "f63c2a22cd2237fa4b8ca8305337215a4a382bf9592c4ed15ae9246abca5bda4"
+          },
+          "entry_body": "struct point cells[6]; init_point(&cells[0]); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "init_point",
+      "variant": "cn_original:init_point",
+      "paired_qcp_variant": "qcp_existing:476459c98ec1bb030189",
+      "case": "region_1",
+      "function": "init_point",
+      "qcp_source": {
+        "path": "benchmark/programs/init_point/variants/qcp_existing_476459c98ec1bb030189/qcp/init_point.qcp.c",
+        "sha256": "476459c98ec1bb03018903c1f22e3b768f12e1795386d01f9803b74dcd028da2"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/init_point/variants/cn_original_init_point/cn/init_point.c",
+        "sha256": "e7339d4fbfb26ede467f7b494e4c779bbcf63929b024345a9c6cfb4e5da81469"
+      },
+      "binds": {
+        "path_omitted": {
+          "sha256": "e544cd0502fee7a6db6c01259763ffd2e296e12877aee42d3d0183dd2fa4ab36"
+        },
+        "sha256": "e544cd0502fee7a6db6c01259763ffd2e296e12877aee42d3d0183dd2fa4ab36"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "region_index": 1,
+        "byte_offset": 8,
+        "entry_fields": "uninitialized (Block/undef ownership)"
+      },
+      "cn_harness": {
+        "path_omitted": {
+          "sha256": "bcbe1bd20303dddcbff200ffde72edc02bac666b0d0695a42ff5753c46cf0a13"
+        },
+        "sha256": "bcbe1bd20303dddcbff200ffde72edc02bac666b0d0695a42ff5753c46cf0a13"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4104
+          },
+          "values": {},
+          "id": "region_1"
+        },
+        "reason": "Disjoint uninitialized x/y fields each receive 0 via zero; no uninitialized value is read.",
+        "final_fields": {
+          "x": 0,
+          "y": 0
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path_omitted": {
+              "sha256": "bcbe1bd20303dddcbff200ffde72edc02bac666b0d0695a42ff5753c46cf0a13"
+            },
+            "sha256": "bcbe1bd20303dddcbff200ffde72edc02bac666b0d0695a42ff5753c46cf0a13"
+          },
+          "entry_body": "struct point cells[6]; init_point(&cells[1]); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "init_point",
+      "variant": "cn_original:init_point",
+      "paired_qcp_variant": "qcp_existing:476459c98ec1bb030189",
+      "case": "region_2",
+      "function": "init_point",
+      "qcp_source": {
+        "path": "benchmark/programs/init_point/variants/qcp_existing_476459c98ec1bb030189/qcp/init_point.qcp.c",
+        "sha256": "476459c98ec1bb03018903c1f22e3b768f12e1795386d01f9803b74dcd028da2"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/init_point/variants/cn_original_init_point/cn/init_point.c",
+        "sha256": "e7339d4fbfb26ede467f7b494e4c779bbcf63929b024345a9c6cfb4e5da81469"
+      },
+      "binds": {
+        "path_omitted": {
+          "sha256": "2d96300cb09f3db225999bd43c68e1ab66fe1f9dfe61545ac6fcfa7fe0b23688"
+        },
+        "sha256": "2d96300cb09f3db225999bd43c68e1ab66fe1f9dfe61545ac6fcfa7fe0b23688"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "region_index": 2,
+        "byte_offset": 16,
+        "entry_fields": "uninitialized (Block/undef ownership)"
+      },
+      "cn_harness": {
+        "path_omitted": {
+          "sha256": "9ad4f10c4ab4c5ab02874e0b8aa99a09a165dc2d798d72e7b31431f55bca17d7"
+        },
+        "sha256": "9ad4f10c4ab4c5ab02874e0b8aa99a09a165dc2d798d72e7b31431f55bca17d7"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4112
+          },
+          "values": {},
+          "id": "region_2"
+        },
+        "reason": "Disjoint uninitialized x/y fields each receive 0 via zero; no uninitialized value is read.",
+        "final_fields": {
+          "x": 0,
+          "y": 0
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path_omitted": {
+              "sha256": "9ad4f10c4ab4c5ab02874e0b8aa99a09a165dc2d798d72e7b31431f55bca17d7"
+            },
+            "sha256": "9ad4f10c4ab4c5ab02874e0b8aa99a09a165dc2d798d72e7b31431f55bca17d7"
+          },
+          "entry_body": "struct point cells[6]; init_point(&cells[2]); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "init_point",
+      "variant": "cn_original:init_point",
+      "paired_qcp_variant": "qcp_existing:476459c98ec1bb030189",
+      "case": "region_3",
+      "function": "init_point",
+      "qcp_source": {
+        "path": "benchmark/programs/init_point/variants/qcp_existing_476459c98ec1bb030189/qcp/init_point.qcp.c",
+        "sha256": "476459c98ec1bb03018903c1f22e3b768f12e1795386d01f9803b74dcd028da2"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/init_point/variants/cn_original_init_point/cn/init_point.c",
+        "sha256": "e7339d4fbfb26ede467f7b494e4c779bbcf63929b024345a9c6cfb4e5da81469"
+      },
+      "binds": {
+        "path_omitted": {
+          "sha256": "a111d03a9b1c3f16b0c3b8a5ee0b5f778783d653e0ca84b4800060ad4dbf86ea"
+        },
+        "sha256": "a111d03a9b1c3f16b0c3b8a5ee0b5f778783d653e0ca84b4800060ad4dbf86ea"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "region_index": 3,
+        "byte_offset": 24,
+        "entry_fields": "uninitialized (Block/undef ownership)"
+      },
+      "cn_harness": {
+        "path_omitted": {
+          "sha256": "2915b03545ce79251b00bb61d928ae7b1ac1ca0ebee75c9cc98dba3fb917fc55"
+        },
+        "sha256": "2915b03545ce79251b00bb61d928ae7b1ac1ca0ebee75c9cc98dba3fb917fc55"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4120
+          },
+          "values": {},
+          "id": "region_3"
+        },
+        "reason": "Disjoint uninitialized x/y fields each receive 0 via zero; no uninitialized value is read.",
+        "final_fields": {
+          "x": 0,
+          "y": 0
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path_omitted": {
+              "sha256": "2915b03545ce79251b00bb61d928ae7b1ac1ca0ebee75c9cc98dba3fb917fc55"
+            },
+            "sha256": "2915b03545ce79251b00bb61d928ae7b1ac1ca0ebee75c9cc98dba3fb917fc55"
+          },
+          "entry_body": "struct point cells[6]; init_point(&cells[3]); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "init_point",
+      "variant": "cn_original:init_point",
+      "paired_qcp_variant": "qcp_existing:476459c98ec1bb030189",
+      "case": "region_4",
+      "function": "init_point",
+      "qcp_source": {
+        "path": "benchmark/programs/init_point/variants/qcp_existing_476459c98ec1bb030189/qcp/init_point.qcp.c",
+        "sha256": "476459c98ec1bb03018903c1f22e3b768f12e1795386d01f9803b74dcd028da2"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/init_point/variants/cn_original_init_point/cn/init_point.c",
+        "sha256": "e7339d4fbfb26ede467f7b494e4c779bbcf63929b024345a9c6cfb4e5da81469"
+      },
+      "binds": {
+        "path_omitted": {
+          "sha256": "d60a718b7886fad6483a3ed973367e458214fdde4bfff0ddbfa2ecb9a773e43d"
+        },
+        "sha256": "d60a718b7886fad6483a3ed973367e458214fdde4bfff0ddbfa2ecb9a773e43d"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "region_index": 4,
+        "byte_offset": 32,
+        "entry_fields": "uninitialized (Block/undef ownership)"
+      },
+      "cn_harness": {
+        "path_omitted": {
+          "sha256": "0cffcf8c055288060bf3cb2962c3102d12f834e0787421ed77d80398ebefdf6b"
+        },
+        "sha256": "0cffcf8c055288060bf3cb2962c3102d12f834e0787421ed77d80398ebefdf6b"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4128
+          },
+          "values": {},
+          "id": "region_4"
+        },
+        "reason": "Disjoint uninitialized x/y fields each receive 0 via zero; no uninitialized value is read.",
+        "final_fields": {
+          "x": 0,
+          "y": 0
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path_omitted": {
+              "sha256": "0cffcf8c055288060bf3cb2962c3102d12f834e0787421ed77d80398ebefdf6b"
+            },
+            "sha256": "0cffcf8c055288060bf3cb2962c3102d12f834e0787421ed77d80398ebefdf6b"
+          },
+          "entry_body": "struct point cells[6]; init_point(&cells[4]); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "init_point",
+      "variant": "cn_original:init_point",
+      "paired_qcp_variant": "qcp_existing:476459c98ec1bb030189",
+      "case": "region_5",
+      "function": "init_point",
+      "qcp_source": {
+        "path": "benchmark/programs/init_point/variants/qcp_existing_476459c98ec1bb030189/qcp/init_point.qcp.c",
+        "sha256": "476459c98ec1bb03018903c1f22e3b768f12e1795386d01f9803b74dcd028da2"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/init_point/variants/cn_original_init_point/cn/init_point.c",
+        "sha256": "e7339d4fbfb26ede467f7b494e4c779bbcf63929b024345a9c6cfb4e5da81469"
+      },
+      "binds": {
+        "path_omitted": {
+          "sha256": "900acfd2b3a576b4f9ca17b3993a5c593562a33c771f08de11d17108c1c3d009"
+        },
+        "sha256": "900acfd2b3a576b4f9ca17b3993a5c593562a33c771f08de11d17108c1c3d009"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "region_index": 5,
+        "byte_offset": 40,
+        "entry_fields": "uninitialized (Block/undef ownership)"
+      },
+      "cn_harness": {
+        "path_omitted": {
+          "sha256": "0efb38f944ef4fabfd8cb04609b2ca7fa3a334a99bd0b2eba12eb3961fbe7b56"
+        },
+        "sha256": "0efb38f944ef4fabfd8cb04609b2ca7fa3a334a99bd0b2eba12eb3961fbe7b56"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4136
+          },
+          "values": {},
+          "id": "region_5"
+        },
+        "reason": "Disjoint uninitialized x/y fields each receive 0 via zero; no uninitialized value is read.",
+        "final_fields": {
+          "x": 0,
+          "y": 0
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path_omitted": {
+              "sha256": "0efb38f944ef4fabfd8cb04609b2ca7fa3a334a99bd0b2eba12eb3961fbe7b56"
+            },
+            "sha256": "0efb38f944ef4fabfd8cb04609b2ca7fa3a334a99bd0b2eba12eb3961fbe7b56"
+          },
+          "entry_body": "struct point cells[6]; init_point(&cells[5]); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    }
+  ]
+}

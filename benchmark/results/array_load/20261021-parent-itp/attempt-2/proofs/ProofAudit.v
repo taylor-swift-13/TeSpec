@@ -1,9 +1,0 @@
-Require Import Candidate.
-Print Assumptions Candidate.diagnostic_pure_branch_false.
-Print Assumptions Candidate.diagnostic_parent_iff_spatial_branch.
-Print Assumptions Candidate.diagnostic_parent_iff_models.
-Print Assumptions Candidate.diagnostic_vacuous_parent.
-Print Assumptions Candidate.diagnostic_refutation_requires_nonvacuity.
-Print Assumptions Candidate.diagnostic_invalid_local_has_no_models.
-Print Assumptions Candidate.diagnostic_invalid_local_vacuous_parent.
-Print Assumptions Candidate.diagnostic_countermodel_refutes_parent.

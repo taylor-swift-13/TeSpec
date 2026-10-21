@@ -1,0 +1,667 @@
+{
+  "summary": {
+    "group": "abs_mem",
+    "case_pairs": 7,
+    "pairings": 1,
+    "function_configurations": 1,
+    "derived_counts": {
+      "inline": {
+        "PASS": 7
+      },
+      "modular": {
+        "PASS": 7
+      },
+      "fulminate": {
+        "PASS": 7
+      }
+    },
+    "mismatches": 0,
+    "non_equivalent_contract_cases": 0,
+    "primary_verification_scope": {
+      "primary_cn_variant": "cn_original:abs_mem",
+      "primary_qcp_variant": "qcp_existing:e65b2638921bc5c296d1",
+      "function": "abs_mem"
+    },
+    "verification_caveat": "CN/QCP full verification is restricted to the selected primary target/module. This audit neither reruns it nor extends certificates to every variant/client."
+  },
+  "pairs": [
+    {
+      "group": "abs_mem",
+      "cn_variant": "cn_original:abs_mem",
+      "qcp_variant": "qcp_existing:e65b2638921bc5c296d1",
+      "cn_source": {
+        "path": "benchmark/programs/abs_mem/variants/cn_original_abs_mem/cn/abs_mem.c",
+        "sha256": "90eda6ffc26ee1a46a33e239052363b9058a8dc45c29cdbf69818b21a01577c6"
+      },
+      "qcp_source": {
+        "path": "benchmark/programs/abs_mem/variants/qcp_existing_e65b2638921bc5c296d1/qcp/abs_mem.qcp.c",
+        "sha256": "e65b2638921bc5c296d11421f3753a8bae07be3f71f70418dcc177f6364cef9e"
+      },
+      "qcp_functions": {
+        "abs_mem": {
+          "return_type": "int",
+          "parameters": "int *p",
+          "contract": "/*@ With v Require -2147483648 < v && data_at(p, int, v) Ensure ((v >= 0 && __return == v) || (v < 0 && __return == -v)) && data_at(p, int, v) */",
+          "body": "\n  int x = *p;\n  if (x >= 0) {\n    return x;\n  }\n  else {\n    return -x;\n  }\n"
+        }
+      },
+      "cn_specifications": [
+        "/*@ requires take x = Owned<int>(p);\n             MINi32() < x;\n    ensures take x2 = Owned<int>(p);\n            x == x2;\n            return == ((x >= 0i32) ? x : (0i32-x));\n@*/",
+        "/*@ trusted; @*/",
+        "/*@ assert (x == MAXi32()); @*/",
+        "/*@ assert (y == MAXi32()); @*/",
+        "/*@ assert (z == 0i32); @*/"
+      ],
+      "c_body_differences": {},
+      "alignment": "REVIEWED_TARGET_PAIR",
+      "scope_note": "Comparison concerns each language contract at this target. It is not a claim of arbitrary whole-file contract equivalence.",
+      "manual_derivation": "Bounded arithmetic/cell model; see each case trace.",
+      "cases": [
+        "value_0",
+        "value_1",
+        "value_2",
+        "value_3",
+        "value_4",
+        "value_5",
+        "value_6"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "group": "abs_mem",
+      "variant": "cn_original:abs_mem",
+      "paired_qcp_variant": "qcp_existing:e65b2638921bc5c296d1",
+      "case": "value_0",
+      "function": "abs_mem",
+      "qcp_source": {
+        "path": "benchmark/programs/abs_mem/variants/qcp_existing_e65b2638921bc5c296d1/qcp/abs_mem.qcp.c",
+        "sha256": "e65b2638921bc5c296d11421f3753a8bae07be3f71f70418dcc177f6364cef9e"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/abs_mem/variants/cn_original_abs_mem/cn/abs_mem.c",
+        "sha256": "90eda6ffc26ee1a46a33e239052363b9058a8dc45c29cdbf69818b21a01577c6"
+      },
+      "binds": {
+        "path_omitted": {
+          "sha256": "57fb366b81a611a17e6af6af0fba4cc9f0bfdfcb134669436e076e606e6c7541"
+        },
+        "sha256": "57fb366b81a611a17e6af6af0fba4cc9f0bfdfcb134669436e076e606e6c7541"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": -2147483647,
+      "cn_harness": {
+        "path_omitted": {
+          "sha256": "09ae18a5b3cc79687507234238623500917239d3fb91fb19b12941b44243ffdd"
+        },
+        "sha256": "09ae18a5b3cc79687507234238623500917239d3fb91fb19b12941b44243ffdd"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "independent checked arithmetic/single-cell interpreter",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "v": -2147483647
+          },
+          "id": "value_0"
+        },
+        "trace": [
+          {
+            "assignment": "x",
+            "value": -2147483647
+          },
+          {
+            "condition": "x >= 0",
+            "value": false
+          }
+        ],
+        "reason": "postcondition holds",
+        "return_value": 2147483647,
+        "final_cell": -2147483647,
+        "owned": true,
+        "initialized": true,
+        "postcondition_instantiated": "((v >= 0 && __return == v) || (v < 0 && __return == -v)) && True",
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path_omitted": {
+              "sha256": "09ae18a5b3cc79687507234238623500917239d3fb91fb19b12941b44243ffdd"
+            },
+            "sha256": "09ae18a5b3cc79687507234238623500917239d3fb91fb19b12941b44243ffdd"
+          },
+          "entry_body": "int cell = -2147483647; abs_mem(&cell); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "abs_mem",
+      "variant": "cn_original:abs_mem",
+      "paired_qcp_variant": "qcp_existing:e65b2638921bc5c296d1",
+      "case": "value_1",
+      "function": "abs_mem",
+      "qcp_source": {
+        "path": "benchmark/programs/abs_mem/variants/qcp_existing_e65b2638921bc5c296d1/qcp/abs_mem.qcp.c",
+        "sha256": "e65b2638921bc5c296d11421f3753a8bae07be3f71f70418dcc177f6364cef9e"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/abs_mem/variants/cn_original_abs_mem/cn/abs_mem.c",
+        "sha256": "90eda6ffc26ee1a46a33e239052363b9058a8dc45c29cdbf69818b21a01577c6"
+      },
+      "binds": {
+        "path_omitted": {
+          "sha256": "71130c86006352fbff068b045d2726c39948910380a502f430399bb09ac668f9"
+        },
+        "sha256": "71130c86006352fbff068b045d2726c39948910380a502f430399bb09ac668f9"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": -7,
+      "cn_harness": {
+        "path_omitted": {
+          "sha256": "571e610872aaf277b930658736721ac406511805b984ba08cad696d3c21d2a69"
+        },
+        "sha256": "571e610872aaf277b930658736721ac406511805b984ba08cad696d3c21d2a69"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "independent checked arithmetic/single-cell interpreter",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "v": -7
+          },
+          "id": "value_1"
+        },
+        "trace": [
+          {
+            "assignment": "x",
+            "value": -7
+          },
+          {
+            "condition": "x >= 0",
+            "value": false
+          }
+        ],
+        "reason": "postcondition holds",
+        "return_value": 7,
+        "final_cell": -7,
+        "owned": true,
+        "initialized": true,
+        "postcondition_instantiated": "((v >= 0 && __return == v) || (v < 0 && __return == -v)) && True",
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path_omitted": {
+              "sha256": "571e610872aaf277b930658736721ac406511805b984ba08cad696d3c21d2a69"
+            },
+            "sha256": "571e610872aaf277b930658736721ac406511805b984ba08cad696d3c21d2a69"
+          },
+          "entry_body": "int cell = -7; abs_mem(&cell); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "abs_mem",
+      "variant": "cn_original:abs_mem",
+      "paired_qcp_variant": "qcp_existing:e65b2638921bc5c296d1",
+      "case": "value_2",
+      "function": "abs_mem",
+      "qcp_source": {
+        "path": "benchmark/programs/abs_mem/variants/qcp_existing_e65b2638921bc5c296d1/qcp/abs_mem.qcp.c",
+        "sha256": "e65b2638921bc5c296d11421f3753a8bae07be3f71f70418dcc177f6364cef9e"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/abs_mem/variants/cn_original_abs_mem/cn/abs_mem.c",
+        "sha256": "90eda6ffc26ee1a46a33e239052363b9058a8dc45c29cdbf69818b21a01577c6"
+      },
+      "binds": {
+        "path_omitted": {
+          "sha256": "7cf0319fdf77ba059de56864ffd7a01fd7679b3b94bdf670fc01f25bd7b0f5e2"
+        },
+        "sha256": "7cf0319fdf77ba059de56864ffd7a01fd7679b3b94bdf670fc01f25bd7b0f5e2"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": -1,
+      "cn_harness": {
+        "path_omitted": {
+          "sha256": "f550f8288b242a98775114c32c96ac13d00463af4a9fbb832735242e03c1679c"
+        },
+        "sha256": "f550f8288b242a98775114c32c96ac13d00463af4a9fbb832735242e03c1679c"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "independent checked arithmetic/single-cell interpreter",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "v": -1
+          },
+          "id": "value_2"
+        },
+        "trace": [
+          {
+            "assignment": "x",
+            "value": -1
+          },
+          {
+            "condition": "x >= 0",
+            "value": false
+          }
+        ],
+        "reason": "postcondition holds",
+        "return_value": 1,
+        "final_cell": -1,
+        "owned": true,
+        "initialized": true,
+        "postcondition_instantiated": "((v >= 0 && __return == v) || (v < 0 && __return == -v)) && True",
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path_omitted": {
+              "sha256": "f550f8288b242a98775114c32c96ac13d00463af4a9fbb832735242e03c1679c"
+            },
+            "sha256": "f550f8288b242a98775114c32c96ac13d00463af4a9fbb832735242e03c1679c"
+          },
+          "entry_body": "int cell = -1; abs_mem(&cell); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "abs_mem",
+      "variant": "cn_original:abs_mem",
+      "paired_qcp_variant": "qcp_existing:e65b2638921bc5c296d1",
+      "case": "value_3",
+      "function": "abs_mem",
+      "qcp_source": {
+        "path": "benchmark/programs/abs_mem/variants/qcp_existing_e65b2638921bc5c296d1/qcp/abs_mem.qcp.c",
+        "sha256": "e65b2638921bc5c296d11421f3753a8bae07be3f71f70418dcc177f6364cef9e"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/abs_mem/variants/cn_original_abs_mem/cn/abs_mem.c",
+        "sha256": "90eda6ffc26ee1a46a33e239052363b9058a8dc45c29cdbf69818b21a01577c6"
+      },
+      "binds": {
+        "path_omitted": {
+          "sha256": "dbf459848991d7f67459c66fce94d5164543bfc28ae4825d86d4b505944b6317"
+        },
+        "sha256": "dbf459848991d7f67459c66fce94d5164543bfc28ae4825d86d4b505944b6317"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": 0,
+      "cn_harness": {
+        "path_omitted": {
+          "sha256": "a5f89cfe241b651592d3ed62ad4314fafd7412de551a5a5ca097509ccedc0dbc"
+        },
+        "sha256": "a5f89cfe241b651592d3ed62ad4314fafd7412de551a5a5ca097509ccedc0dbc"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "independent checked arithmetic/single-cell interpreter",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "v": 0
+          },
+          "id": "value_3"
+        },
+        "trace": [
+          {
+            "assignment": "x",
+            "value": 0
+          },
+          {
+            "condition": "x >= 0",
+            "value": true
+          }
+        ],
+        "reason": "postcondition holds",
+        "return_value": 0,
+        "final_cell": 0,
+        "owned": true,
+        "initialized": true,
+        "postcondition_instantiated": "((v >= 0 && __return == v) || (v < 0 && __return == -v)) && True",
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path_omitted": {
+              "sha256": "a5f89cfe241b651592d3ed62ad4314fafd7412de551a5a5ca097509ccedc0dbc"
+            },
+            "sha256": "a5f89cfe241b651592d3ed62ad4314fafd7412de551a5a5ca097509ccedc0dbc"
+          },
+          "entry_body": "int cell = 0; abs_mem(&cell); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "abs_mem",
+      "variant": "cn_original:abs_mem",
+      "paired_qcp_variant": "qcp_existing:e65b2638921bc5c296d1",
+      "case": "value_4",
+      "function": "abs_mem",
+      "qcp_source": {
+        "path": "benchmark/programs/abs_mem/variants/qcp_existing_e65b2638921bc5c296d1/qcp/abs_mem.qcp.c",
+        "sha256": "e65b2638921bc5c296d11421f3753a8bae07be3f71f70418dcc177f6364cef9e"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/abs_mem/variants/cn_original_abs_mem/cn/abs_mem.c",
+        "sha256": "90eda6ffc26ee1a46a33e239052363b9058a8dc45c29cdbf69818b21a01577c6"
+      },
+      "binds": {
+        "path_omitted": {
+          "sha256": "6e76edf74278953e0d9660ad34129eddc23bd4cdc6b1ebc9223c2edba4294610"
+        },
+        "sha256": "6e76edf74278953e0d9660ad34129eddc23bd4cdc6b1ebc9223c2edba4294610"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": 1,
+      "cn_harness": {
+        "path_omitted": {
+          "sha256": "57b33c029e4cccca3dd0e3ce8615bbd36507b4876accbe98b44c12716a55874d"
+        },
+        "sha256": "57b33c029e4cccca3dd0e3ce8615bbd36507b4876accbe98b44c12716a55874d"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "independent checked arithmetic/single-cell interpreter",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "v": 1
+          },
+          "id": "value_4"
+        },
+        "trace": [
+          {
+            "assignment": "x",
+            "value": 1
+          },
+          {
+            "condition": "x >= 0",
+            "value": true
+          }
+        ],
+        "reason": "postcondition holds",
+        "return_value": 1,
+        "final_cell": 1,
+        "owned": true,
+        "initialized": true,
+        "postcondition_instantiated": "((v >= 0 && __return == v) || (v < 0 && __return == -v)) && True",
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path_omitted": {
+              "sha256": "57b33c029e4cccca3dd0e3ce8615bbd36507b4876accbe98b44c12716a55874d"
+            },
+            "sha256": "57b33c029e4cccca3dd0e3ce8615bbd36507b4876accbe98b44c12716a55874d"
+          },
+          "entry_body": "int cell = 1; abs_mem(&cell); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "abs_mem",
+      "variant": "cn_original:abs_mem",
+      "paired_qcp_variant": "qcp_existing:e65b2638921bc5c296d1",
+      "case": "value_5",
+      "function": "abs_mem",
+      "qcp_source": {
+        "path": "benchmark/programs/abs_mem/variants/qcp_existing_e65b2638921bc5c296d1/qcp/abs_mem.qcp.c",
+        "sha256": "e65b2638921bc5c296d11421f3753a8bae07be3f71f70418dcc177f6364cef9e"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/abs_mem/variants/cn_original_abs_mem/cn/abs_mem.c",
+        "sha256": "90eda6ffc26ee1a46a33e239052363b9058a8dc45c29cdbf69818b21a01577c6"
+      },
+      "binds": {
+        "path_omitted": {
+          "sha256": "d91226ab7e68cf2a0436fa0b1ffca6dbb1f1dcef9461fc6c70c3e1309f1de7fb"
+        },
+        "sha256": "d91226ab7e68cf2a0436fa0b1ffca6dbb1f1dcef9461fc6c70c3e1309f1de7fb"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": 7,
+      "cn_harness": {
+        "path_omitted": {
+          "sha256": "1332098847a3c710d408faa58617e9d6f9fc70b297217e40cca208d19dc894be"
+        },
+        "sha256": "1332098847a3c710d408faa58617e9d6f9fc70b297217e40cca208d19dc894be"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "independent checked arithmetic/single-cell interpreter",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "v": 7
+          },
+          "id": "value_5"
+        },
+        "trace": [
+          {
+            "assignment": "x",
+            "value": 7
+          },
+          {
+            "condition": "x >= 0",
+            "value": true
+          }
+        ],
+        "reason": "postcondition holds",
+        "return_value": 7,
+        "final_cell": 7,
+        "owned": true,
+        "initialized": true,
+        "postcondition_instantiated": "((v >= 0 && __return == v) || (v < 0 && __return == -v)) && True",
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path_omitted": {
+              "sha256": "1332098847a3c710d408faa58617e9d6f9fc70b297217e40cca208d19dc894be"
+            },
+            "sha256": "1332098847a3c710d408faa58617e9d6f9fc70b297217e40cca208d19dc894be"
+          },
+          "entry_body": "int cell = 7; abs_mem(&cell); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "abs_mem",
+      "variant": "cn_original:abs_mem",
+      "paired_qcp_variant": "qcp_existing:e65b2638921bc5c296d1",
+      "case": "value_6",
+      "function": "abs_mem",
+      "qcp_source": {
+        "path": "benchmark/programs/abs_mem/variants/qcp_existing_e65b2638921bc5c296d1/qcp/abs_mem.qcp.c",
+        "sha256": "e65b2638921bc5c296d11421f3753a8bae07be3f71f70418dcc177f6364cef9e"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/abs_mem/variants/cn_original_abs_mem/cn/abs_mem.c",
+        "sha256": "90eda6ffc26ee1a46a33e239052363b9058a8dc45c29cdbf69818b21a01577c6"
+      },
+      "binds": {
+        "path_omitted": {
+          "sha256": "03e1c1291abc3e2305e341ed22e1f0dd8ba27f3d66da33c834a45e5cbf463fb5"
+        },
+        "sha256": "03e1c1291abc3e2305e341ed22e1f0dd8ba27f3d66da33c834a45e5cbf463fb5"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": 2147483647,
+      "cn_harness": {
+        "path_omitted": {
+          "sha256": "78c8412fe11f3fd182c283613eba41472e1a6515a3f0403b4b94e6d1324c444e"
+        },
+        "sha256": "78c8412fe11f3fd182c283613eba41472e1a6515a3f0403b4b94e6d1324c444e"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "independent checked arithmetic/single-cell interpreter",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "v": 2147483647
+          },
+          "id": "value_6"
+        },
+        "trace": [
+          {
+            "assignment": "x",
+            "value": 2147483647
+          },
+          {
+            "condition": "x >= 0",
+            "value": true
+          }
+        ],
+        "reason": "postcondition holds",
+        "return_value": 2147483647,
+        "final_cell": 2147483647,
+        "owned": true,
+        "initialized": true,
+        "postcondition_instantiated": "((v >= 0 && __return == v) || (v < 0 && __return == -v)) && True",
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path_omitted": {
+              "sha256": "78c8412fe11f3fd182c283613eba41472e1a6515a3f0403b4b94e6d1324c444e"
+            },
+            "sha256": "78c8412fe11f3fd182c283613eba41472e1a6515a3f0403b4b94e6d1324c444e"
+          },
+          "entry_body": "int cell = 2147483647; abs_mem(&cell); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    }
+  ]
+}

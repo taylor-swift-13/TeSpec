@@ -103,3 +103,16 @@ benchmark/
 6. Git 只提交上述长期文件。
 
 每个程序组最终只有一份输入与预期、一份当前正式结果、一份四工具成本表、一份极简证据摘要，以及必要时的一份正式 QCP 证明。
+
+## 已发布旧格式的迁移
+
+前 22 组使用 `tools/benchmark/compact_published_groups.py` 一次性迁移。迁移先核对源文件和主程序证明哈希，把旧测试绑定与分模式预期并入组内输入计划，再保留逐阶段成本、模型实际用量、失败尝试摘要和正式 QCP/ITP 证明依赖，最后删除可再生文件。大型机器证据使用紧凑 JSON，人工查看使用 MD/CSV 成本表。
+
+迁移审计入口为 `benchmark/results/storage-migration-audit.json`；各组 `index.json` 的 `durable_evidence` 指向当前输入和策略结果。审计逐项检查迁移前后的数值与判定不变量、源/证明字节和活动 JSON 哈希，不冒充重新运行验证器或 Coq 内核。
+
+```sh
+python3 tools/benchmark/compact_published_groups.py --audit
+python3 tools/benchmark/validate_group_evaluation.py --group <group>
+```
+
+迁移前旧验证器已有的格式不兼容和审计失败单独记录在迁移回执中；清理不改写这些历史问题或实验结论。

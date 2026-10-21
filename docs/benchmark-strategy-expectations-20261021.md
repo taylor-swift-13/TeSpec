@@ -48,6 +48,6 @@ translation12 的空间 ON 现在为第一条完整断言生成合法字节堆�
 
 新反例 ITP 共 2 次实际 gpt-6.1-sol 调用，857838 token；模型 220.703 秒、305.676 MiB，含所有失败/重试的 Coq 编译审计 14.716 秒、589.957 MiB，独立内核 127.404 秒、2101.969 MiB，总计 362.823 秒。第一次编译失败和第二次过严的“必须全局封闭”检查失败均保留；后者仅出现原类型参数，改为逐定理核对允许参数后，对相同候选重新编译审计和内核检查，没有新模型调用。此前完整父目标诊断的 5 次调用及成本继续单列引用。
 
-[21组逐组结果与成本](../benchmark/results/strategy-expectations-20261021/index.md)，[array_load结果](../benchmark/results/strategy-expectations-20261021/groups/array_load/result-cost.md)，[新反例证明与全部尝试](../benchmark/results/array_load/20261021-local-counterexample/)，[已解决异常记录](../benchmark/results/tespec-unexpected/resolved-20261021-translation12.json)。
+[21组逐组结果与成本](../benchmark/results/strategy-expectations-20261021/index.md)，[array_load结果](../benchmark/results/array_load/evidence/strategies.md)，[新反例证明与全部尝试](../benchmark/results/array_load/20261021-local-counterexample/)，[已解决异常记录](../benchmark/results/tespec-unexpected/resolved-20261021-translation12.json)。
 
 最终 Python 回归：487 项测试，472 通过、15 项环境相关跳过，无失败。另有16项符号数组/策略预期/modular门禁定向测试通过（包含随后补充的2项入口/执行失败防护）；最终分类器重放3600份原始结果，全部分类保持一致。既有紧凑格式文件使用原有 E701/E702/F401 豁免检查，其余新增和修改文件通过 Ruff。

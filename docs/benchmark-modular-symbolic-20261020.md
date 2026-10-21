@@ -47,7 +47,7 @@ python3 -B tools/benchmark/regress_execution_strategies.py \
   --output benchmark/results/spatial-smt-regressions/<fresh-run>
 ```
 
-- [原生全部运行与资源](../benchmark/results/spatial-smt-regressions/20261020-modular-symbolic/results.json)
-- [对照、每组成本索引及58份同目标证据](../benchmark/results/spatial-smt-regressions/20261020-modular-symbolic/ablation-summary.json)
+- [原生全部运行与资源](../benchmark/results/regression-history.json)
+- [对照、每组成本索引及58份同目标证据](../benchmark/results/regression-history.json)
 - [异常逐例台账](../benchmark/results/tespec-unexpected/recheck-20261020-modular-symbolic.json)
 - [inline精确差分](../benchmark/results/vc-storage-regressions/20261020-modular-symbolic-inline-exact/summary.md)

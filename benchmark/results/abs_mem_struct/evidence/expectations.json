@@ -1,0 +1,610 @@
+{
+  "summary": {
+    "group": "abs_mem_struct",
+    "case_pairs": 7,
+    "pairings": 1,
+    "function_configurations": 1,
+    "derived_counts": {
+      "inline": {
+        "PASS": 7
+      },
+      "modular": {
+        "PASS": 7
+      },
+      "fulminate": {
+        "PASS": 7
+      }
+    },
+    "mismatches": 0,
+    "non_equivalent_contract_cases": 0,
+    "primary_verification_scope": {
+      "primary_cn_variant": "cn_original:abs_mem_struct",
+      "primary_qcp_variant": "qcp_existing:74fd4027b01ad1c4ed90",
+      "function": "abs_y"
+    },
+    "verification_caveat": "CN/QCP full verification is restricted to the selected primary target/module. This audit neither reruns it nor extends certificates to every variant/client."
+  },
+  "pairs": [
+    {
+      "group": "abs_mem_struct",
+      "cn_variant": "cn_original:abs_mem_struct",
+      "qcp_variant": "qcp_existing:74fd4027b01ad1c4ed90",
+      "cn_source": {
+        "path": "benchmark/programs/abs_mem_struct/variants/cn_original_abs_mem_struct/cn/abs_mem_struct.c",
+        "sha256": "98c416fc23402ed0535aa655e12128829cc4da52ac7975869a606d17783662b7"
+      },
+      "qcp_source": {
+        "path": "benchmark/programs/abs_mem_struct/variants/qcp_existing_74fd4027b01ad1c4ed90/qcp/abs_mem_struct.qcp.c",
+        "sha256": "74fd4027b01ad1c4ed9004b26abe663b639e95b966064736837467f4add41bfe"
+      },
+      "qcp_functions": {
+        "abs_mem": {
+          "return_type": "int",
+          "parameters": "int *p",
+          "contract": "/*@ With v Require -2147483648 < v && data_at(p, int, v) Ensure ((v >= 0 && __return == v) || (v < 0 && __return == -v)) && data_at(p, int, v) */",
+          "body": "\n  int x = *p;\n  if (x >= 0) {\n    return x;\n  }\n  else {\n    return -x;\n  }\n"
+        },
+        "abs_y": {
+          "return_type": "int",
+          "parameters": "struct tuple *p",
+          "contract": "/*@ With x y Require -2147483648 < y && data_at(&p->x, int, x) * data_at(&p->y, int, y) Ensure ((y >= 0 && __return == y) || (y < 0 && __return == -y)) && data_at(&p->x, int, x) * data_at(&p->y, int, y) */",
+          "body": "\n  return abs_mem(&p->y);\n"
+        }
+      },
+      "cn_specifications": [
+        "/*@ requires take x = Owned<int>(p);\n             MINi32() < x;\n    ensures take x2 = Owned<int>(p);\n            x == x2;\n            return == ((x >= 0i32) ? x : (0i32-x));\n@*/",
+        "/*@ requires take s = Owned(p);\n             MINi32() < s.y;\n    ensures  take s2 = Owned(p);\n             s == s2;\n             return == ((s.y >= 0i32) ? s.y : (0i32-s.y));\n@*/",
+        "/*@ assert (x == MAXi32() && t == { y : MAXi32(), ..t}); @*/",
+        "/*@ assert (y == MAXi32() && t == { y : MINi32() + 1i32, ..t}); @*/",
+        "/*@ assert (z == 0i32 && t == { y : 0i32, ..t}); @*/"
+      ],
+      "c_body_differences": {},
+      "alignment": "REVIEWED_TARGET_PAIR",
+      "scope_note": "Comparison concerns each language contract at this target. It is not a claim of arbitrary whole-file contract equivalence.",
+      "manual_derivation": "abs_mem requires MIN<y, returns abs(y), and preserves its cell. Frame p.x across the call; both fields survive.",
+      "cases": [
+        "value_0",
+        "value_1",
+        "value_2",
+        "value_3",
+        "value_4",
+        "value_5",
+        "value_6"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "group": "abs_mem_struct",
+      "variant": "cn_original:abs_mem_struct",
+      "paired_qcp_variant": "qcp_existing:74fd4027b01ad1c4ed90",
+      "case": "value_0",
+      "function": "abs_y",
+      "qcp_source": {
+        "path": "benchmark/programs/abs_mem_struct/variants/qcp_existing_74fd4027b01ad1c4ed90/qcp/abs_mem_struct.qcp.c",
+        "sha256": "74fd4027b01ad1c4ed9004b26abe663b639e95b966064736837467f4add41bfe"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/abs_mem_struct/variants/cn_original_abs_mem_struct/cn/abs_mem_struct.c",
+        "sha256": "98c416fc23402ed0535aa655e12128829cc4da52ac7975869a606d17783662b7"
+      },
+      "binds": {
+        "path_omitted": {
+          "sha256": "a42dd4ceff658fa726aa97ad92a547d6933cfd42e22deedb15f5574461bcd4a9"
+        },
+        "sha256": "a42dd4ceff658fa726aa97ad92a547d6933cfd42e22deedb15f5574461bcd4a9"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": -2147483647,
+      "cn_harness": {
+        "path_omitted": {
+          "sha256": "f10764a905dc489f3437e351e5bb8e7667b74acc30ed30f91a639cb8e72a096c"
+        },
+        "sha256": "f10764a905dc489f3437e351e5bb8e7667b74acc30ed30f91a639cb8e72a096c"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "x": 0,
+            "y": -2147483647
+          },
+          "id": "value_0"
+        },
+        "reason": "abs_mem requires MIN<y, returns abs(y), and preserves its cell. Frame p.x across the call; both fields survive.",
+        "return_value": 2147483647,
+        "final_fields": {
+          "x": 0,
+          "y": -2147483647
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path_omitted": {
+              "sha256": "f10764a905dc489f3437e351e5bb8e7667b74acc30ed30f91a639cb8e72a096c"
+            },
+            "sha256": "f10764a905dc489f3437e351e5bb8e7667b74acc30ed30f91a639cb8e72a096c"
+          },
+          "entry_body": "struct tuple cell = { .x = 0, .y = -2147483647 }; abs_y(&cell); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "abs_mem_struct",
+      "variant": "cn_original:abs_mem_struct",
+      "paired_qcp_variant": "qcp_existing:74fd4027b01ad1c4ed90",
+      "case": "value_1",
+      "function": "abs_y",
+      "qcp_source": {
+        "path": "benchmark/programs/abs_mem_struct/variants/qcp_existing_74fd4027b01ad1c4ed90/qcp/abs_mem_struct.qcp.c",
+        "sha256": "74fd4027b01ad1c4ed9004b26abe663b639e95b966064736837467f4add41bfe"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/abs_mem_struct/variants/cn_original_abs_mem_struct/cn/abs_mem_struct.c",
+        "sha256": "98c416fc23402ed0535aa655e12128829cc4da52ac7975869a606d17783662b7"
+      },
+      "binds": {
+        "path_omitted": {
+          "sha256": "14ad19a0430d4096318889917d53f8b5cff7420da60f2c12619ba61710f103ac"
+        },
+        "sha256": "14ad19a0430d4096318889917d53f8b5cff7420da60f2c12619ba61710f103ac"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": -7,
+      "cn_harness": {
+        "path_omitted": {
+          "sha256": "882eb9622942effcd8ecaaa1ab3164c42ea272b731032c1cb26e2ae1516fa2db"
+        },
+        "sha256": "882eb9622942effcd8ecaaa1ab3164c42ea272b731032c1cb26e2ae1516fa2db"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "x": 7,
+            "y": -7
+          },
+          "id": "value_1"
+        },
+        "reason": "abs_mem requires MIN<y, returns abs(y), and preserves its cell. Frame p.x across the call; both fields survive.",
+        "return_value": 7,
+        "final_fields": {
+          "x": 7,
+          "y": -7
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path_omitted": {
+              "sha256": "882eb9622942effcd8ecaaa1ab3164c42ea272b731032c1cb26e2ae1516fa2db"
+            },
+            "sha256": "882eb9622942effcd8ecaaa1ab3164c42ea272b731032c1cb26e2ae1516fa2db"
+          },
+          "entry_body": "struct tuple cell = { .x = 7, .y = -7 }; abs_y(&cell); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "abs_mem_struct",
+      "variant": "cn_original:abs_mem_struct",
+      "paired_qcp_variant": "qcp_existing:74fd4027b01ad1c4ed90",
+      "case": "value_2",
+      "function": "abs_y",
+      "qcp_source": {
+        "path": "benchmark/programs/abs_mem_struct/variants/qcp_existing_74fd4027b01ad1c4ed90/qcp/abs_mem_struct.qcp.c",
+        "sha256": "74fd4027b01ad1c4ed9004b26abe663b639e95b966064736837467f4add41bfe"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/abs_mem_struct/variants/cn_original_abs_mem_struct/cn/abs_mem_struct.c",
+        "sha256": "98c416fc23402ed0535aa655e12128829cc4da52ac7975869a606d17783662b7"
+      },
+      "binds": {
+        "path_omitted": {
+          "sha256": "d4e5ada4ccdb88fad387ec6c64be3e2b5a55a393aa87b9cbe4e4491f55940be1"
+        },
+        "sha256": "d4e5ada4ccdb88fad387ec6c64be3e2b5a55a393aa87b9cbe4e4491f55940be1"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": -1,
+      "cn_harness": {
+        "path_omitted": {
+          "sha256": "40145e1cd7b1a371376e6a103e0e679445c8a6a24e6b912ae9fb0e15e9b5b5ff"
+        },
+        "sha256": "40145e1cd7b1a371376e6a103e0e679445c8a6a24e6b912ae9fb0e15e9b5b5ff"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "x": -2147483648,
+            "y": -1
+          },
+          "id": "value_2"
+        },
+        "reason": "abs_mem requires MIN<y, returns abs(y), and preserves its cell. Frame p.x across the call; both fields survive.",
+        "return_value": 1,
+        "final_fields": {
+          "x": -2147483648,
+          "y": -1
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path_omitted": {
+              "sha256": "40145e1cd7b1a371376e6a103e0e679445c8a6a24e6b912ae9fb0e15e9b5b5ff"
+            },
+            "sha256": "40145e1cd7b1a371376e6a103e0e679445c8a6a24e6b912ae9fb0e15e9b5b5ff"
+          },
+          "entry_body": "struct tuple cell = { .x = -2147483648, .y = -1 }; abs_y(&cell); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "abs_mem_struct",
+      "variant": "cn_original:abs_mem_struct",
+      "paired_qcp_variant": "qcp_existing:74fd4027b01ad1c4ed90",
+      "case": "value_3",
+      "function": "abs_y",
+      "qcp_source": {
+        "path": "benchmark/programs/abs_mem_struct/variants/qcp_existing_74fd4027b01ad1c4ed90/qcp/abs_mem_struct.qcp.c",
+        "sha256": "74fd4027b01ad1c4ed9004b26abe663b639e95b966064736837467f4add41bfe"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/abs_mem_struct/variants/cn_original_abs_mem_struct/cn/abs_mem_struct.c",
+        "sha256": "98c416fc23402ed0535aa655e12128829cc4da52ac7975869a606d17783662b7"
+      },
+      "binds": {
+        "path_omitted": {
+          "sha256": "d818999b46baea5b56d0ac61f1996b10c4cc8080f9bf7bd27e9365e8023e767d"
+        },
+        "sha256": "d818999b46baea5b56d0ac61f1996b10c4cc8080f9bf7bd27e9365e8023e767d"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": 0,
+      "cn_harness": {
+        "path_omitted": {
+          "sha256": "88893951b03c996a4a7c6efc2f4b417214efa808f0ada23b9194b178d2830c04"
+        },
+        "sha256": "88893951b03c996a4a7c6efc2f4b417214efa808f0ada23b9194b178d2830c04"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "x": -1,
+            "y": 0
+          },
+          "id": "value_3"
+        },
+        "reason": "abs_mem requires MIN<y, returns abs(y), and preserves its cell. Frame p.x across the call; both fields survive.",
+        "return_value": 0,
+        "final_fields": {
+          "x": -1,
+          "y": 0
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path_omitted": {
+              "sha256": "88893951b03c996a4a7c6efc2f4b417214efa808f0ada23b9194b178d2830c04"
+            },
+            "sha256": "88893951b03c996a4a7c6efc2f4b417214efa808f0ada23b9194b178d2830c04"
+          },
+          "entry_body": "struct tuple cell = { .x = -1, .y = 0 }; abs_y(&cell); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "abs_mem_struct",
+      "variant": "cn_original:abs_mem_struct",
+      "paired_qcp_variant": "qcp_existing:74fd4027b01ad1c4ed90",
+      "case": "value_4",
+      "function": "abs_y",
+      "qcp_source": {
+        "path": "benchmark/programs/abs_mem_struct/variants/qcp_existing_74fd4027b01ad1c4ed90/qcp/abs_mem_struct.qcp.c",
+        "sha256": "74fd4027b01ad1c4ed9004b26abe663b639e95b966064736837467f4add41bfe"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/abs_mem_struct/variants/cn_original_abs_mem_struct/cn/abs_mem_struct.c",
+        "sha256": "98c416fc23402ed0535aa655e12128829cc4da52ac7975869a606d17783662b7"
+      },
+      "binds": {
+        "path_omitted": {
+          "sha256": "5562d88c2bce73ea49d7052443756f54ae4cca938bdd9516d7c3a839dfa514e8"
+        },
+        "sha256": "5562d88c2bce73ea49d7052443756f54ae4cca938bdd9516d7c3a839dfa514e8"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": 1,
+      "cn_harness": {
+        "path_omitted": {
+          "sha256": "45df145a4f60b8fe1fcf4308c9f113bbe376434318cd883444ac0439904163c2"
+        },
+        "sha256": "45df145a4f60b8fe1fcf4308c9f113bbe376434318cd883444ac0439904163c2"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "x": 2147483647,
+            "y": 1
+          },
+          "id": "value_4"
+        },
+        "reason": "abs_mem requires MIN<y, returns abs(y), and preserves its cell. Frame p.x across the call; both fields survive.",
+        "return_value": 1,
+        "final_fields": {
+          "x": 2147483647,
+          "y": 1
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path_omitted": {
+              "sha256": "45df145a4f60b8fe1fcf4308c9f113bbe376434318cd883444ac0439904163c2"
+            },
+            "sha256": "45df145a4f60b8fe1fcf4308c9f113bbe376434318cd883444ac0439904163c2"
+          },
+          "entry_body": "struct tuple cell = { .x = 2147483647, .y = 1 }; abs_y(&cell); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "abs_mem_struct",
+      "variant": "cn_original:abs_mem_struct",
+      "paired_qcp_variant": "qcp_existing:74fd4027b01ad1c4ed90",
+      "case": "value_5",
+      "function": "abs_y",
+      "qcp_source": {
+        "path": "benchmark/programs/abs_mem_struct/variants/qcp_existing_74fd4027b01ad1c4ed90/qcp/abs_mem_struct.qcp.c",
+        "sha256": "74fd4027b01ad1c4ed9004b26abe663b639e95b966064736837467f4add41bfe"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/abs_mem_struct/variants/cn_original_abs_mem_struct/cn/abs_mem_struct.c",
+        "sha256": "98c416fc23402ed0535aa655e12128829cc4da52ac7975869a606d17783662b7"
+      },
+      "binds": {
+        "path_omitted": {
+          "sha256": "7724c8aa3aa460f6dcb65c008e926a3e9767be50be195b8b0651606700786f0f"
+        },
+        "sha256": "7724c8aa3aa460f6dcb65c008e926a3e9767be50be195b8b0651606700786f0f"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": 7,
+      "cn_harness": {
+        "path_omitted": {
+          "sha256": "29e8781a1291c28eb8dbef4529ec2586cf03e1672159bac9491bedb7f5478d1f"
+        },
+        "sha256": "29e8781a1291c28eb8dbef4529ec2586cf03e1672159bac9491bedb7f5478d1f"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "x": 0,
+            "y": 7
+          },
+          "id": "value_5"
+        },
+        "reason": "abs_mem requires MIN<y, returns abs(y), and preserves its cell. Frame p.x across the call; both fields survive.",
+        "return_value": 7,
+        "final_fields": {
+          "x": 0,
+          "y": 7
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path_omitted": {
+              "sha256": "29e8781a1291c28eb8dbef4529ec2586cf03e1672159bac9491bedb7f5478d1f"
+            },
+            "sha256": "29e8781a1291c28eb8dbef4529ec2586cf03e1672159bac9491bedb7f5478d1f"
+          },
+          "entry_body": "struct tuple cell = { .x = 0, .y = 7 }; abs_y(&cell); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "abs_mem_struct",
+      "variant": "cn_original:abs_mem_struct",
+      "paired_qcp_variant": "qcp_existing:74fd4027b01ad1c4ed90",
+      "case": "value_6",
+      "function": "abs_y",
+      "qcp_source": {
+        "path": "benchmark/programs/abs_mem_struct/variants/qcp_existing_74fd4027b01ad1c4ed90/qcp/abs_mem_struct.qcp.c",
+        "sha256": "74fd4027b01ad1c4ed9004b26abe663b639e95b966064736837467f4add41bfe"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/abs_mem_struct/variants/cn_original_abs_mem_struct/cn/abs_mem_struct.c",
+        "sha256": "98c416fc23402ed0535aa655e12128829cc4da52ac7975869a606d17783662b7"
+      },
+      "binds": {
+        "path_omitted": {
+          "sha256": "e5f0e82f5847cb2a1ea00eddd0f17eebfa8a382ffb21f0e49593d7612bd008a1"
+        },
+        "sha256": "e5f0e82f5847cb2a1ea00eddd0f17eebfa8a382ffb21f0e49593d7612bd008a1"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": 2147483647,
+      "cn_harness": {
+        "path_omitted": {
+          "sha256": "080fd1396ba7e48169d255cc339467387c87546e8f95a611c22fbf2cfd7cd4aa"
+        },
+        "sha256": "080fd1396ba7e48169d255cc339467387c87546e8f95a611c22fbf2cfd7cd4aa"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "x": -7,
+            "y": 2147483647
+          },
+          "id": "value_6"
+        },
+        "reason": "abs_mem requires MIN<y, returns abs(y), and preserves its cell. Frame p.x across the call; both fields survive.",
+        "return_value": 2147483647,
+        "final_fields": {
+          "x": -7,
+          "y": 2147483647
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path_omitted": {
+              "sha256": "080fd1396ba7e48169d255cc339467387c87546e8f95a611c22fbf2cfd7cd4aa"
+            },
+            "sha256": "080fd1396ba7e48169d255cc339467387c87546e8f95a611c22fbf2cfd7cd4aa"
+          },
+          "entry_body": "struct tuple cell = { .x = -7, .y = 2147483647 }; abs_y(&cell); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    }
+  ]
+}

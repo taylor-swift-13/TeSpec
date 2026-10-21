@@ -40,6 +40,10 @@ def validate_compact(ROOT,g,b,manifest,idx,evaluation,nativepath,proofpath,data)
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--group',required=True);p.add_argument('--run-id');p.add_argument('--native-receipt');p.add_argument('--qcp-receipt');a=p.parse_args();g=ROOT/'benchmark/programs'/a.group;b=ROOT/'benchmark/results'/a.group;manifest=load(g/'manifest.json');idx=load(b/'index.json')
+    if idx.get('durable_evidence'):
+        from compact_published_groups import audit_compacted_group
+        audit_compacted_group(a.group, ROOT)
+        return
     evaluation=repository_path(idx['evaluation'])
     if a.run_id:assert evaluation==run_directory(b,a.run_id)/'results.json', 'Requested batch is not the published evaluation'
     cn_publication=load(b/'cn/results.json')
