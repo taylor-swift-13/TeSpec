@@ -41,19 +41,20 @@ existing validated versions. They are not replaced with unrelated upstream code.
 | Bennet/Lucas on the bounded integer heap case | Upstream integer-generation conversion error |
 | Darcy on the bounded integer heap case | Generated program fails to link its integer replication helper |
 
-The generator failures remain in the raw records. They are not counted as
-successful bug detections. Lucas additionally prints an experimental-status
+The generator failures remain in the final check summary with diagnostic and
+log hashes. They are not counted as successful bug detections. Lucas additionally prints an experimental-status
 warning. Installation checks are not benchmark performance measurements.
 
-Recheck the required CN/Fulminate interfaces in a **fresh** output directory:
+Recheck the required CN/Fulminate interfaces in a fresh temporary output directory:
 
 ```sh
 python3 scripts/check-cn-toolchain.py \
-  --output benchmark/results/toolchain/<new-batch>/core-smoke
+  --output /tmp/tespec-toolchain-check/core-smoke
 ```
 
 `--generators` additionally probes the bounded heap case and returns failure if
-those probes remain unsupported. Both successful and failed attempts are retained.
+those probes remain unsupported. Retain the active lock and final check summary;
+delete the temporary execution tree after recording its hashes and costs.
 
 ## Starting a new experiment
 
@@ -63,19 +64,26 @@ Freeze that identity within the batch. Never silently use the April fallback.
 Changes to toolchain, source, logical dependencies or compiler configuration
 require a new batch identity; they cannot relabel a measured old batch.
 
+All run directories are temporary. The current storage contract is
+[Benchmark 与 Results 存储规范](benchmark-storage-policy.md).
+
 ```sh
 python3 tools/benchmark/test_group_variants.py --group <group> --run-id <new-batch>
 python3 tools/benchmark/prepare_group_primary.py \
-  --group <group> --run-id <new-primary-batch> --task-dir <proof-task-directory>
+  --group <group> --run-id <new-primary-batch> --task-dir /tmp/<proof-task-directory>
 python3 tools/benchmark/test_read_variants.py \
-  --output benchmark/results/read/<new-batch>
+  --output benchmark/results/read/<temporary-batch>
 ```
 
 The group driver checks toolchain and input identities before resuming cached
 measurements or importing Fulminate stages. Missing legacy metadata is a refusal,
-not permission to reuse. Incomplete execution directories are preserved; use a
+not permission to reuse. Incomplete execution directories are temporary; use a
 fresh batch rather than reading a stale report. Primary verification also checks
 input/dependency and executor identity before reuse; the explicit continuation
 of a failed CN attempt must match its original input and leave QCP output empty.
+After publication, retain only the activity summary, tool/source/input hashes,
+costs and formal proof receipt; run `compact_group_evidence.py` and revalidate
+before commit. Summarize failed attempts in `attempts` instead of copying their
+directories.
 Historical reports and already completed proofs remain available under their
 original identities. This installation update does not rerun the full benchmark.

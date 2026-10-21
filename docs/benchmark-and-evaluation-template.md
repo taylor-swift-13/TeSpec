@@ -4,7 +4,7 @@
 
 来源收录的 76 个 CN 文件已归入 45 个程序组；本文件的完整评测实例是 `read`，不表示其他组已经完成。
 
-当前可执行策略见 [benchmark/protocol.json](../benchmark/protocol.json)。`read` 的程序入口为 [程序组清单](../benchmark/programs/read/manifest.json)，结果入口为 [结果索引](../benchmark/results/read/index.json)，四工具总表为 [comparison.csv](../benchmark/results/read/comparison.csv)。
+当前可执行策略见 [benchmark/protocol.json](../benchmark/protocol.json)。benchmark 与 results 的唯一现行存储规则见 [存储规范](benchmark-storage-policy.md)；本文带日期的历史实验说明不覆盖该规则。`read` 的程序入口为 [程序组清单](../benchmark/programs/read/manifest.json)，结果入口为 [结果索引](../benchmark/results/read/index.json)，四工具总表为 [comparison.csv](../benchmark/results/read/comparison.csv)。
 
 ## 1. 数据单位与计数
 
@@ -41,65 +41,33 @@
 
 ## 2. 文件结构
 
-原始上游快照和历史迁移材料放在 `arxiv/`。当前 benchmark 按程序组组织；所有执行结果、证明回执、日志和统计放在 `benchmark/results/`。
+原始上游快照和历史迁移材料放在 `arxiv/`。`benchmark/programs/` 只保存实验输入，`benchmark/results/` 只保存当前结论、成本、哈希与必要证明。完整规则见 [Benchmark 与 Results 存储规范](benchmark-storage-policy.md)。
 
 ```text
-arxiv/
-  fulminate-cn/                     固定版本原始快照
-  benchmark-support/                历史输入、迁移脚本和证明源文件
-
 benchmark/
-  protocol.json                     当前评测规则
-  programs/
+  programs/<group>/
+    manifest.json
+    evaluation-plan.json
+    variants/<variant>/
+      manifest.json
+      cn/<source>.c
+      qcp/<source>.qcp.c
+  results/<group>/
     index.json
-    <group>/
-      manifest.json                 主程序、变体、四工具结果引用
-      variants/<variant-id>/
-        manifest.json               源码哈希、实现/spec 身份、来源和证据关联
-        cn/<source>.c               有对应版本时提供
-        qcp/<source>.c              有对应版本时提供
-        tests/
-          inputs.json               输入及来源索引
-          cases/                    已有关联输入
-          generated/<case-id>/
-            binds.json              QCP 参数及逻辑输入绑定
-            fulminate.cn.c          保留该变体目标函数与规约的运行驱动
-  results/
-    index.json
-    evidence.json                   历史证据当前位置及哈希
-    relocation-map.json             旧路径到当前位置的逐文件映射
-    historical/                     冻结的历史结果及统计
-    <group>/
-      README.md
-      index.json
-      comparison.json
-      comparison.csv
-      cn/{results.json,statistics.json}
-      qcp/{results.json,statistics.json}
-      fulminate/{results.json,statistics.json}
-      tespec/{results.json,statistics.json}
-      complete/
-        cases.csv                   执行、ITP、最终结果及预期匹配情况
-        results.json                完整测试报告
-        statistics.json             各阶段与完整开销
-      <execution-run>/              原始测试结果、日志和资源数据
-      <itp-run>/
-        receipt.json
-        statistics.json
-        resolved-results.json
-        attempt-1/
-          model-receipt.json
-          usage-events.json
-          prompt.txt
-          proofs/                   原始目标、复用辅助库、候选证明
-          compilation/              stdout/stderr、resources.json
-          kernel-check/             stdout/stderr、resources.json
-          coq-receipt.json
+    cases.csv
+    result-cost.{md,json,csv}
+    cn/{results.json,statistics.json}
+    qcp/{results.json,statistics.json,proof/}
+    fulminate/{results.json,statistics.json}
+    tespec/{results.json,statistics.json}
+    evidence/{evaluation.json,native-verification.json,inline.json,modular.json}
 ```
 
-缺少语言版本时明确记录缺口，不生成占位翻译。目录名中的稳定 ID 用于关联；可读名称写入清单，不依赖文件名推断规约含义。
+case 输入和预期直接写入 `evaluation-plan.json`；只有无法简洁表示的大型堆或数组才保存独立 fixture。普通运行不得长期创建 `tests/<run-id>`、生成 harness 或 binds 目录。缺少语言版本时记录缺口，不生成占位翻译。
 
-旧报告的路径字符串和原始证据不批量改写。通过结果索引及路径映射解析当前位置，避免破坏已有源文件、目标和证明的哈希。
+结果目录不按对话、日期或重跑累计。每组只有一个活动结果，由 `index.json` 指向。重跑更新活动摘要；失败和修复尝试进入同一摘要的 `attempts`。原始运行树只在临时目录存在到发布审计完成，不提交 Git。
+
+正式 QCP 证明保留原始 Goal、最终 Candidate、编译/假设审计和独立内核检查收据。相同 Goal 哈希直接引用已有证明，不复制目录。历史冻结材料继续由 `arxiv/` 和历史索引管理，不复制进当前组。
 
 ## 3. 四种工具的职责
 
@@ -123,7 +91,7 @@ benchmark/
 ```text
 冻结变体源码、spec、测试输入和预期结果
     ↓
-执行测试，保存逐用例结果、残留 VC、日志与资源数据
+在临时目录执行测试，汇总逐用例状态、残留 VC 哈希与资源数据
     ↓
 对尚未确定的 VC 复用已有检查回执，或运行 ITP
     ├── 证明全部必要义务成立 → 可形成最终 PASS
@@ -133,7 +101,7 @@ benchmark/
 汇总最终结果、预期匹配情况及包含 ITP 的完整开销
 ```
 
-自动阶段的状态保留原样，不能用后来的结论覆盖原始日志。但正式 benchmark 成绩使用执行和 ITP 合并后的最终结果，不能把自动阶段正确率当成完整测试正确率。
+自动阶段的状态保留原样，不能用后来的结论覆盖；长期摘要保存关键诊断和必要日志哈希，不保存可再生日志目录。但正式 benchmark 成绩使用执行和 ITP 合并后的最终结果，不能把自动阶段正确率当成完整测试正确率。
 
 已有决定性结果无需重复 ITP。ITP 不能通过改 spec、改目标、增加无依据假设或编写 `Admitted` 来得到接受结果。
 
@@ -156,15 +124,7 @@ benchmark/
 
 `read` 的 12 个自动 UNKNOWN 来自两个遗漏出口所有权的配置，各 6 条输入。它们的目标要求 `emp`，实际堆中仍有整数单元；正确操作是反证目标，而不是证明错误目标成立。
 
-每条记录保留以下证据：
-
-1. 与实际执行生成的 VC 字节一致的目标副本及 SHA-256。
-2. 入口可满足性证明。
-3. 原始出口 VC 及空间拆分 VC 的反证。
-4. 候选证明源码、编译日志和退出码。
-5. 假设审计；本例 36 项结论均为 `Closed under the global context`。
-6. 独立 `coqchk` 检查命令、退出码及日志。
-7. 模型、token、时间、内存和各次尝试的真实回执。
+每条测试记录长期保存 VC SHA-256、入口可满足性结论、最终证明或反证结论、假设审计、独立 `coqchk` 状态，以及模型/token/时间/RSS/尝试次数摘要。正式 QCP/ITP 证明保留一套原始 Goal 和最终 Candidate；同哈希执行引用该证明。逐模式重复 Goal、编译目录和完整日志只用于当次临时审计，发布后删除；必要错误保存摘要和日志哈希。
 
 证明只引用实际目标定义和经核对的辅助库，不导入生成文件中尚含 `Admitted` 的证明模块。`read` 的 12 次需 ITP 的测试执行分别隔离计量，每次由 gpt-6.1-sol 填写该次的三个证明义务，合计 36 项结论。每次分别编译辅助库、目标、候选证明并运行独立 coqchk；失败修复尝试也计入该次成本。只复用已检查的具体堆辅助库，以前的反证解答未提供给模型。辅助库的历史编写成本不追溯计入本次，因此这是一轮明确记录了复用条件的测量，不是从零构造全部证明的冷启动成本。
 
@@ -419,25 +379,16 @@ modular 只在函数入口应用测试绑定。函数规约、循环不变式和
 空间 SMT OFF/ON 都必须写入结果标识，不能合并为同一种测试。无函数体的
 调用均使用规约实例化，因此 inline 结果也可能依赖外部函数契约。
 
-结果保存 `declaration_call_policy`、`result_scope` 和全部
-`sampling_events`。每次事件记录完整输入约束、选中约束、候选策略与尝试数。
-UNKNOWN 采样没有合法后继，不计为完成执行。只有已有证据证明不可能到达的
-输入分支可跳过；可达调用的矛盾后条件不能用空后继冒充 PASS。
+结果摘要保存 `declaration_call_policy`、`result_scope` 和影响判定的采样事件计数/结论；完整事件轨迹仅在临时回归目录使用。UNKNOWN 没有合法后继时不计完成执行。只有已有证据证明不可能到达的输入分支可跳过；可达调用的矛盾后条件不能用空后继冒充 PASS。
 
-主程序代码与既有输入、逐输入预期保持不变。策略回归产物放在
-`benchmark/results/execution-strategy/`，包括各参数组合的原始日志、
-VC、报告、输入/源码/工具哈希及结果成本 CSV/JSON。CLI、执行器和空间 SMT
-时间为嵌套阶段，不能相加；无模型调用的原生测试 token=0。此项不替代
-主程序 CN/QCP 全称验证，也不自动复用不同原始 VC 的 ITP 证书。
-对于新留下的递归谓词 VC，必须保留 UNKNOWN 并记录具体原因，不能把
-“执行完成”记成“全部 VC 通过”。ITP 仍按每次执行的所有残余 VC 计量。
+策略结果归入该组唯一的 `evidence/inline.json` 和 `evidence/modular.json`，保存模式、判定、成本及输入/源码/工具哈希，不建立全局日期运行树。CLI、执行器和空间 SMT 时间为嵌套阶段，不能相加；无模型调用的原生测试 token=0。此项不替代主程序 CN/QCP 全称验证，也不自动复用不同原始 VC 的 ITP 证书。递归谓词 VC 未决时保留 UNKNOWN 和原因；ITP 仍按每次执行的所有残余 VC 计量。
 
 
 ## Inline VC 存储优化的回归要求（2026-10-19）
 
 存储去重不减少原始证明义务。当前仅对 inline 的完全相同 frozen safety 载荷共享内存；每次出现的节点、位置、目标名、名字映射和判定状态独立保留。`spec_test.vc_storage` 计数只描述存储请求和共享命中，不作为 VC 分母或测试通过数量。非空函数指针规约保守保留原存储，modular 不启用该共享。
 
-修改此层必须对比原始 Goal、proof_auto、goal_check 的完整字节，以及原生 VC 公式/状态、所有 witness 数量、最终分类；仅比较残余 VC 或总 PASS 数量不够。循环专项同时比较启用的实例轨迹，覆盖最后一轮失败、break/continue 和两个独立模式参数。比较只允许规范化输出目录及显式列出的新增诊断字段；不得屏蔽旧字段差异。
+修改此层时必须在临时回归目录对比原始 Goal、proof_auto、goal_check 的完整字节，以及原生 VC 公式/状态、所有 witness 数量、最终分类；长期只保存比较摘要、两侧哈希和差异结论。仅比较残余 VC 或总 PASS 数量不够。循环专项同时比较启用的实例轨迹，覆盖最后一轮失败、break/continue 和两个独立模式参数。比较只允许规范化输出目录及显式列出的新增诊断字段；不得屏蔽旧字段差异。
 
 已有证明仅在原目标与依赖仍匹配时复用。本轮是原生差分回归，没有新调用 ITP 或独立内核证明，不重写历史四工具成本。完整结果见 [本次审计](../benchmark/results/vc-storage-regressions/20261019-audit/summary.md)。
 
@@ -445,7 +396,7 @@ VC、报告、输入/源码/工具哈希及结果成本 CSV/JSON。CLI、执行�
 
 原生输出可附带 `spec_test.branch_evaluation`（`instance-first-branch-query/v1`）。`pure_queries` 是分支可达性纯查询次数，等于 `evaluated_true + evaluated_false + smt_fallback`。前两项是在已有实例代入后的查询副本上直接算出的结果，第三项才进入残余纯公式 SMT 查询；未知不能用于剪枝。空间策略检查仍保留。
 
-这些计数不代表所有 SMT 调用或 C 分支次数，也不能替代原始 VC 数量、证明文件和逐阶段成本。新旧版本比较仅可明确排除该新增诊断字段；仍需比较原有决策、公式、轨迹及完整生成的 Coq 文件，不能据此省略义务或将 UNKNOWN 计成功。
+这些计数不代表所有 SMT 调用或 C 分支次数，也不能替代原始 VC 数量、证明文件和逐阶段成本。新旧版本比较仅可明确排除该新增诊断字段；仍需在当次临时回归中比较原有决策、公式、轨迹及完整生成的 Coq 文件；长期保存比较哈希与结论，不能据此省略义务或将 UNKNOWN 计成功。
 
 
 ### 证明型 VC 的求解时序（2026-10-19）
@@ -454,12 +405,12 @@ VC、报告、输入/源码/工具哈希及结果成本 CSV/JSON。CLI、执行�
 
 求解请求按原节点去重，所有原始义务、源位置、作用域、公式和出现次数保留，提前错误也须保留已产生的义务。spec_test.vc_scheduling 的 solved_witnesses 是已尝试自动求解数量，不是 VALID 数；pending=0 也不等于全部证明成功。策略 inline/modular 与 VC 范围 entry-exit/all-boundaries 仍独立。
 
-精确回归可显式使用 --ignore-runtime-metric branch_evaluation，前提是比较器验证原 schema、完整字段集合、非负整数和 pure_queries=evaluated_true+evaluated_false+smt_fallback，并保存两侧原计数。该共享查询入口也被自动证明调用；减少重复求解会改变计数，不能据此更改逻辑字段。其他旧字段不允许作为运行指标排除；新增诊断仍须证明基线不存在。原始 VC/判定/位置、实例轨迹及 Goal/auto/check 完整字节必须比较。详见 [本次调度审计](../benchmark/results/vc-storage-regressions/20261019-deferred-vc-audit/summary.md)。
+精确回归可显式使用 --ignore-runtime-metric branch_evaluation，前提是比较器验证原 schema、完整字段集合、非负整数和 pure_queries=evaluated_true+evaluated_false+smt_fallback，并保存两侧原计数。该共享查询入口也被自动证明调用；减少重复求解会改变计数，不能据此更改逻辑字段。其他旧字段不允许作为运行指标排除；新增诊断仍须证明基线不存在。原始 VC/判定/位置、实例轨迹及 Goal/auto/check 完整字节必须在临时回归中比较，Git 只保存比较哈希和结论。详见 [本次调度审计](../benchmark/results/vc-storage-regressions/20261019-deferred-vc-audit/summary.md)。
 
 
 ### Modular补充表的发布（2026-10-20）
 
-每组新增执行策略结果放在benchmark/results/<group>/modular/<run-id>/result-cost.md/json/csv，由modular/index.json选择活动补充；全局入口为modular-result-cost-index.md/json。主组表与总索引通过execution_strategy_supplements引用，原complete标志保留原正式范围。新增策略的native_run_complete与evaluation_complete分别报告；原生执行覆盖齐全不等于所有预期已判定。
+每组执行策略结果并入 `benchmark/results/<group>/evidence/modular.json` 和主 `result-cost` 表，不建立 `<run-id>` 子树；全局索引只指向该组活动证据。历史 modular 日期目录只记录旧实验，不作为现行格式。新增策略的native_run_complete与evaluation_complete分别报告；原生执行覆盖齐全不等于所有预期已判定。
 
 结果必须写明execution_strategy、execution_mode和空间SMT模式。UNKNOWN中只有执行已完成且有原始残余VC的项目才列为待ITP执行；采样失败、无可达返回等未完成执行另列BLOCKED，不能凑成ITP任务。未跑的证明阶段时间/RSS为null；历史ITP结论仅比较预期，不能冒充新目标证书。各组原有CN/QCP/Fulminate与inline成本保留；原生时间/RSS/token及新增证明成本在独立补充表按原口径展示。
 
@@ -494,12 +445,6 @@ ITP以整次执行的原始残余目标为单位。自动分解的纯/空间子�
 
 已审查的[前 21 组模板](benchmark-expectation-audit-20261021.md)保存逐例判定依据、源码/绑定哈希及跨模式差异。审查本身不重算时间、RSS 或 token，不改写历史测量。
 
-## 极简证据保留
+## 存储规范的执行
 
-完成并通过发布审计后，每组长期只保留以下数据：组级结果/成本 MD、JSON、CSV；每个 case 的最终预期与状态；各工具阶段时间、峰值 RSS、token 和模型调用数；复现命令；CN/QCP 源哈希；输入/测试 harness 哈希；CN 成功验证摘要；QCP 原始 Goal 哈希及最终内核检查证明收据。inline/modular 和空间 SMT OFF/ON 只保存策略、状态、成本及源/输入哈希。
-
-不长期保存能够由同一源、输入和命令重新生成的目录：重复的 executor/job 快照、instrumented C、每模式的 Goal/auto/manual/check 副本、空日志、重复 toolchain 全仓文件表、driver/worker 源快照及逐阶段目录树。失败修复中只有影响最终成本或结论的次数、时间、RSS、token、退出状态和日志哈希进入摘要；不复制完整临时工作区。
-
-正式 QCP 证明是例外：最终 Candidate、原始 Goal、编译/假设审计和独立内核检查收据必须保留。若新运行的 Goal 哈希与已有正式证明完全相同，摘要直接引用既有证明，不复制第二套 Goal 和证明目录。
-
-发布后运行 `python3 tools/benchmark/compact_group_evidence.py --group <group>`，再运行 `validate_group_evaluation.py`。验证器必须在原始目录删除后仍能检查活动源哈希、CN 成功、QCP Goal/证明绑定、最终状态和成本。压缩前的运行目录只属于临时测量工作区，不提交 Git。
+现行目录、必存字段、禁止提交项和发布顺序统一见 [Benchmark 与 Results 存储规范](benchmark-storage-policy.md)。发布后必须运行 `compact_group_evidence.py` 并再次通过 `validate_group_evaluation.py`；压缩前运行树不进入 Git。
