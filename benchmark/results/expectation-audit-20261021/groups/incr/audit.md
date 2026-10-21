@@ -1,0 +1,113 @@
+# incr 预期审查
+
+审查 103 对输入，18 组 CN/QCP 配对；预期不一致 0。
+
+由源码、规约和绑定推导；没有用工具 PASS/FAIL/UNKNOWN 结果作为预期依据。完整源码摘要、哈希、逐例数值/堆见 audit.json。
+
+| CN 变体 | 用例 | inline | modular | Fulminate |
+|---|---|---|---|---|
+| cn_original:slf0_basic_incr | input_0 | PASS | PASS | PASS |
+| cn_original:slf0_basic_incr | input_1 | PASS | PASS | PASS |
+| cn_original:slf0_basic_incr | input_2 | PASS | PASS | PASS |
+| cn_original:slf0_basic_incr | input_3 | PASS | PASS | PASS |
+| cn_original:slf0_basic_incr | input_4 | PASS | PASS | PASS |
+| cn_original:slf0_basic_incr | input_5 | PASS | PASS | PASS |
+| cn_original:slf0_basic_incr.signed | input_0 | PASS | PASS | PASS |
+| cn_original:slf0_basic_incr.signed | input_1 | PASS | PASS | PASS |
+| cn_original:slf0_basic_incr.signed | input_2 | PASS | PASS | PASS |
+| cn_original:slf0_basic_incr.signed | input_3 | PASS | PASS | PASS |
+| cn_original:slf0_basic_incr.signed | input_4 | PASS | PASS | PASS |
+| cn_original:slf0_basic_incr.signed | input_5 | PASS | PASS | PASS |
+| cn_original:slf0_basic_incr.signed | input_6 | PASS | PASS | PASS |
+| cn_original:slf0_basic_incr.signed.broken | input_0 | ERROR | ERROR | FAIL |
+| cn_original:slf0_basic_incr.signed.broken | input_1 | ERROR | ERROR | FAIL |
+| cn_original:slf0_basic_incr.signed.broken | input_2 | ERROR | ERROR | FAIL |
+| cn_original:slf0_incr.broken | input_0 | ERROR | ERROR | FAIL |
+| cn_original:slf0_incr.broken | input_1 | ERROR | ERROR | FAIL |
+| cn_original:slf0_incr.broken | input_2 | ERROR | ERROR | FAIL |
+| constructed:case_2539813035c8f593 | input_0 | FAIL | FAIL | FAIL |
+| constructed:case_2539813035c8f593 | input_1 | FAIL | FAIL | FAIL |
+| constructed:case_2539813035c8f593 | input_2 | FAIL | FAIL | FAIL |
+| constructed:case_2539813035c8f593 | input_3 | FAIL | FAIL | FAIL |
+| constructed:case_2539813035c8f593 | input_4 | FAIL | FAIL | FAIL |
+| constructed:case_2539813035c8f593 | input_5 | FAIL | FAIL | FAIL |
+| constructed:case_2539813035c8f593 | input_6 | FAIL | FAIL | FAIL |
+| constructed:case_2e28b35274593024 | input_0 | FAIL | FAIL | FAIL |
+| constructed:case_2e28b35274593024 | input_1 | FAIL | FAIL | FAIL |
+| constructed:case_2e28b35274593024 | input_2 | FAIL | FAIL | FAIL |
+| constructed:case_2e28b35274593024 | input_3 | FAIL | FAIL | FAIL |
+| constructed:case_2e28b35274593024 | input_4 | FAIL | FAIL | FAIL |
+| constructed:case_2e28b35274593024 | input_5 | FAIL | FAIL | FAIL |
+| constructed:case_38efbc731a3c4f20 | input_0 | FAIL | FAIL | FAIL |
+| constructed:case_38efbc731a3c4f20 | input_1 | FAIL | FAIL | FAIL |
+| constructed:case_38efbc731a3c4f20 | input_2 | FAIL | FAIL | FAIL |
+| constructed:case_38efbc731a3c4f20 | input_3 | FAIL | FAIL | FAIL |
+| constructed:case_38efbc731a3c4f20 | input_4 | FAIL | FAIL | FAIL |
+| constructed:case_38efbc731a3c4f20 | input_5 | FAIL | FAIL | FAIL |
+| constructed:case_48b6281ad8e51e2c | input_0 | FAIL | FAIL | FAIL |
+| constructed:case_48b6281ad8e51e2c | input_1 | FAIL | FAIL | FAIL |
+| constructed:case_48b6281ad8e51e2c | input_2 | FAIL | FAIL | FAIL |
+| constructed:case_48b6281ad8e51e2c | input_3 | FAIL | FAIL | FAIL |
+| constructed:case_48b6281ad8e51e2c | input_4 | FAIL | FAIL | FAIL |
+| constructed:case_48b6281ad8e51e2c | input_5 | FAIL | FAIL | FAIL |
+| constructed:case_48b6281ad8e51e2c | input_6 | FAIL | FAIL | FAIL |
+| constructed:case_53363fda1fe0903f | input_0 | FAIL | FAIL | FAIL |
+| constructed:case_53363fda1fe0903f | input_1 | FAIL | FAIL | FAIL |
+| constructed:case_53363fda1fe0903f | input_2 | FAIL | FAIL | FAIL |
+| constructed:case_53363fda1fe0903f | input_3 | FAIL | FAIL | FAIL |
+| constructed:case_53363fda1fe0903f | input_4 | FAIL | FAIL | FAIL |
+| constructed:case_53363fda1fe0903f | input_5 | FAIL | FAIL | FAIL |
+| constructed:case_53363fda1fe0903f | input_6 | FAIL | FAIL | FAIL |
+| constructed:case_54414d87268e03c6 | input_0 | ERROR | ERROR | FAIL |
+| constructed:case_54414d87268e03c6 | input_1 | ERROR | ERROR | FAIL |
+| constructed:case_54414d87268e03c6 | input_2 | ERROR | ERROR | FAIL |
+| constructed:case_61eda5643045db24 | input_0 | PASS | PASS | PASS |
+| constructed:case_61eda5643045db24 | input_1 | PASS | PASS | PASS |
+| constructed:case_61eda5643045db24 | input_2 | PASS | PASS | PASS |
+| constructed:case_61eda5643045db24 | input_3 | PASS | PASS | PASS |
+| constructed:case_61eda5643045db24 | input_4 | PASS | PASS | PASS |
+| constructed:case_61eda5643045db24 | input_5 | PASS | PASS | PASS |
+| constructed:case_61eda5643045db24 | input_6 | PASS | PASS | PASS |
+| constructed:case_81cc114e9e38037b | input_0 | FAIL | FAIL | FAIL |
+| constructed:case_81cc114e9e38037b | input_1 | PASS | PASS | PASS |
+| constructed:case_81cc114e9e38037b | input_2 | FAIL | FAIL | FAIL |
+| constructed:case_81cc114e9e38037b | input_3 | FAIL | FAIL | FAIL |
+| constructed:case_81cc114e9e38037b | input_4 | FAIL | FAIL | FAIL |
+| constructed:case_81cc114e9e38037b | input_5 | FAIL | FAIL | FAIL |
+| constructed:case_81cc114e9e38037b | input_6 | FAIL | FAIL | FAIL |
+| constructed:case_8e41085ef0a298c2 | input_0 | FAIL | FAIL | FAIL |
+| constructed:case_8e41085ef0a298c2 | input_1 | FAIL | FAIL | FAIL |
+| constructed:case_8e41085ef0a298c2 | input_2 | FAIL | FAIL | FAIL |
+| constructed:case_8e41085ef0a298c2 | input_3 | FAIL | FAIL | FAIL |
+| constructed:case_8e41085ef0a298c2 | input_4 | FAIL | FAIL | FAIL |
+| constructed:case_8e41085ef0a298c2 | input_5 | FAIL | FAIL | FAIL |
+| constructed:case_9b10a591f9250976 | input_0 | PASS | PASS | PASS |
+| constructed:case_9b10a591f9250976 | input_1 | PASS | PASS | PASS |
+| constructed:case_9b10a591f9250976 | input_2 | PASS | PASS | PASS |
+| constructed:case_9b10a591f9250976 | input_3 | PASS | PASS | PASS |
+| constructed:case_9b10a591f9250976 | input_4 | PASS | PASS | PASS |
+| constructed:case_9b10a591f9250976 | input_5 | PASS | PASS | PASS |
+| constructed:case_a82e1399f86bf9a8 | input_0 | ERROR | ERROR | FAIL |
+| constructed:case_a82e1399f86bf9a8 | input_1 | ERROR | ERROR | FAIL |
+| constructed:case_a82e1399f86bf9a8 | input_2 | ERROR | ERROR | FAIL |
+| constructed:case_b4c6de3f8d0eed42 | input_0 | FAIL | FAIL | FAIL |
+| constructed:case_b4c6de3f8d0eed42 | input_1 | FAIL | FAIL | FAIL |
+| constructed:case_b4c6de3f8d0eed42 | input_2 | FAIL | FAIL | FAIL |
+| constructed:case_b4c6de3f8d0eed42 | input_3 | FAIL | FAIL | FAIL |
+| constructed:case_b4c6de3f8d0eed42 | input_4 | FAIL | FAIL | FAIL |
+| constructed:case_b4c6de3f8d0eed42 | input_5 | FAIL | FAIL | FAIL |
+| constructed:case_b4c6de3f8d0eed42 | input_6 | FAIL | FAIL | FAIL |
+| constructed:case_b560ffdefab53c52 | input_0 | FAIL | FAIL | FAIL |
+| constructed:case_b560ffdefab53c52 | input_1 | FAIL | FAIL | FAIL |
+| constructed:case_b560ffdefab53c52 | input_2 | FAIL | FAIL | FAIL |
+| constructed:case_b560ffdefab53c52 | input_3 | FAIL | FAIL | FAIL |
+| constructed:case_b560ffdefab53c52 | input_4 | FAIL | FAIL | FAIL |
+| constructed:case_b560ffdefab53c52 | input_5 | FAIL | FAIL | FAIL |
+| constructed:case_ccd9a7d918de3930 | input_0 | FAIL | FAIL | FAIL |
+| constructed:case_ccd9a7d918de3930 | input_1 | FAIL | FAIL | FAIL |
+| constructed:case_ccd9a7d918de3930 | input_2 | FAIL | FAIL | FAIL |
+| constructed:case_ccd9a7d918de3930 | input_3 | FAIL | FAIL | FAIL |
+| constructed:case_ccd9a7d918de3930 | input_4 | FAIL | FAIL | FAIL |
+| constructed:case_ccd9a7d918de3930 | input_5 | PASS | PASS | PASS |
+
+CN/QCP full verification is restricted to the selected primary target/module. This audit neither reruns it nor extends certificates to every variant/client.

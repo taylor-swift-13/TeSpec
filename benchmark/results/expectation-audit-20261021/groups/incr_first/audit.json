@@ -1,0 +1,1302 @@
+{
+  "summary": {
+    "group": "incr_first",
+    "case_pairs": 16,
+    "pairings": 2,
+    "function_configurations": 2,
+    "derived_counts": {
+      "inline": {
+        "PASS": 16
+      },
+      "modular": {
+        "PASS": 16
+      },
+      "fulminate": {
+        "PASS": 16
+      }
+    },
+    "mismatches": 0,
+    "non_equivalent_contract_cases": 0,
+    "primary_verification_scope": {
+      "primary_cn_variant": "cn_original:slf7_basic_incr_first",
+      "primary_qcp_variant": "qcp_existing:2ff8722e4b58c01463c5",
+      "function": "incr_first"
+    },
+    "verification_caveat": "CN/QCP full verification is restricted to the selected primary target/module. This audit neither reruns it nor extends certificates to every variant/client."
+  },
+  "pairs": [
+    {
+      "group": "incr_first",
+      "cn_variant": "cn_original:slf7_basic_incr_first",
+      "qcp_variant": "qcp_existing:2ff8722e4b58c01463c5",
+      "cn_source": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_slf7_basic_incr_first/cn/slf7_basic_incr_first.c",
+        "sha256": "2fc4f7c6b48b141e01dcb1ab20a7d4870a0549d765e631359c355b7d6022cd90"
+      },
+      "qcp_source": {
+        "path": "benchmark/programs/incr_first/variants/qcp_existing_2ff8722e4b58c01463c5/qcp/slf7_basic_incr_first.qcp.c",
+        "sha256": "2ff8722e4b58c01463c509ffe19be161b0e83eb539f29141e21c97ffff90a445"
+      },
+      "qcp_functions": {
+        "incr": {
+          "return_type": "void",
+          "parameters": "unsigned int *p",
+          "contract": "/*@ With v Require 0 <= v && v <= 4294967295 && data_at(p, unsigned int, v) Ensure data_at(p, unsigned int, (v+1) % 4294967296) */",
+          "body": "\n  unsigned int n = *p;\n  unsigned int m = n+1;\n  *p = m;\n"
+        },
+        "incr_first": {
+          "return_type": "void",
+          "parameters": "unsigned int *p, unsigned int *q",
+          "contract": "/*@ With v w Require 0 <= v && v <= 4294967295 && 0 <= w && w <= 4294967295 && data_at(p, unsigned int, v) * data_at(q, unsigned int, w) Ensure data_at(p, unsigned int, (v+1) % 4294967296) * data_at(q, unsigned int, w) */",
+          "body": "\n  incr(p);\n"
+        },
+        "incr_first_": {
+          "return_type": "void",
+          "parameters": "unsigned int *p, unsigned int *q",
+          "contract": "/*@ With v Require 0 <= v && v <= 4294967295 && data_at(p, unsigned int, v) Ensure data_at(p, unsigned int, (v+1) % 4294967296) */",
+          "body": "\n  incr(p);\n"
+        }
+      },
+      "cn_specifications": [
+        "/*@ requires take n1 = Owned<unsigned int>(p);\n    ensures take n2 = Owned<unsigned int>(p);\n            n2 == n1 + 1u32;\n@*/",
+        "/*@ requires take n1 = Owned(p);\n             take m1 = Owned(q);\n    ensures  take n2 = Owned(p);\n             take m2 = Owned(q);\n             n2 == n1 + 1u32;\n             m2 == m1;\n@*/",
+        "/*@ requires take n1 = Owned(p);\n    ensures  take n2 = Owned(p);\n             n2 == n1 + 1u32;\n@*/",
+        "/*@ trusted; @*/",
+        "/*@ assert (x == 6u32); @*/",
+        "/*@ assert (y == 11u32); @*/"
+      ],
+      "c_body_differences": {},
+      "alignment": "REVIEWED_TARGET_PAIR",
+      "scope_note": "Comparison concerns each language contract at this target. It is not a claim of arbitrary whole-file contract equivalence.",
+      "manual_derivation": "The strong increment contract updates only p by one modulo 2^32; q is framed. Review includes incr_first_frame and its callee.",
+      "cases": [
+        "pair_0",
+        "pair_1",
+        "pair_2",
+        "pair_3",
+        "pair_4",
+        "pair_5",
+        "pair_6",
+        "pair_7"
+      ]
+    },
+    {
+      "group": "incr_first",
+      "cn_variant": "cn_original:bcp_framerule",
+      "qcp_variant": "qcp_existing:a65e4acfd79b054f256b",
+      "cn_source": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_bcp_framerule/cn/bcp_framerule.c",
+        "sha256": "d4c81ba1f77c886a701093aeee1195a0e153d224c9395f51603a1cf3f39de590"
+      },
+      "qcp_source": {
+        "path": "benchmark/programs/incr_first/variants/qcp_existing_a65e4acfd79b054f256b/qcp/bcp_framerule.qcp.c",
+        "sha256": "a65e4acfd79b054f256bb7ac89c56bd8a9dbba6d187f514a84bcc2b92eed1abd"
+      },
+      "qcp_functions": {
+        "incr_first": {
+          "return_type": "void",
+          "parameters": "unsigned int *p, unsigned int *q",
+          "contract": "/*@ With v Require 0 <= v && v <= 4294967295 && data_at(p,unsigned int,v) Ensure data_at(p,unsigned int,(v+1)%4294967296) */",
+          "body": "\n  unsigned int n = *p;\n  unsigned int m = n+1;\n  *p = m;\n"
+        },
+        "incr_first_frame": {
+          "return_type": "void",
+          "parameters": "unsigned int *p, unsigned int *q",
+          "contract": "/*@ With v w Require 0 <= v && v <= 4294967295 && 0 <= w && w <= 4294967295 && data_at(p,unsigned int,v) * data_at(q,unsigned int,w) Ensure data_at(p,unsigned int,(v+1)%4294967296) * data_at(q,unsigned int,w) */",
+          "body": "\n  incr_first(p, q);\n"
+        }
+      },
+      "cn_specifications": [
+        "/*@ requires take pv = Owned<unsigned int>(p);\n    ensures take pv_ = Owned<unsigned int>(p);\n            pv_ == pv + 1u32;\n@*/",
+        "/*@ requires take pv = Owned<unsigned int>(p);\n             take qv = Owned<unsigned int>(q);\n    ensures take pv_ = Owned<unsigned int>(p);\n            take qv_ = Owned<unsigned int>(q);\n            pv_ == pv + 1u32;\n            qv_ == qv;\n@*/",
+        "/*@ trusted; @*/",
+        "/*@ assert (x == 5u32); @*/",
+        "/*@ assert (y == 6u32); @*/"
+      ],
+      "c_body_differences": {},
+      "alignment": "REVIEWED_TARGET_PAIR",
+      "scope_note": "Comparison concerns each language contract at this target. It is not a claim of arbitrary whole-file contract equivalence.",
+      "manual_derivation": "The strong increment contract updates only p by one modulo 2^32; q is framed. Review includes incr_first_frame and its callee.",
+      "cases": [
+        "pair_0",
+        "pair_1",
+        "pair_2",
+        "pair_3",
+        "pair_4",
+        "pair_5",
+        "pair_6",
+        "pair_7"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "group": "incr_first",
+      "variant": "cn_original:slf7_basic_incr_first",
+      "paired_qcp_variant": "qcp_existing:2ff8722e4b58c01463c5",
+      "case": "pair_0",
+      "function": "incr_first",
+      "qcp_source": {
+        "path": "benchmark/programs/incr_first/variants/qcp_existing_2ff8722e4b58c01463c5/qcp/slf7_basic_incr_first.qcp.c",
+        "sha256": "2ff8722e4b58c01463c509ffe19be161b0e83eb539f29141e21c97ffff90a445"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_slf7_basic_incr_first/cn/slf7_basic_incr_first.c",
+        "sha256": "2fc4f7c6b48b141e01dcb1ab20a7d4870a0549d765e631359c355b7d6022cd90"
+      },
+      "binds": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_slf7_basic_incr_first/tests/20261016-evaluation/pair_0/binds.json",
+        "sha256": "e79bb50468a691d38d336f88b45574d6d3df42050178c0a00ac6346db3ca0d6b"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 0,
+        "w": 0
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_slf7_basic_incr_first/tests/20261016-evaluation/pair_0/fulminate.cn.c",
+        "sha256": "445380953226ab522e5263c4db23d378e1a6967ade64a90bc08ef94e2bf628fe"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 0,
+            "w": 0
+          },
+          "id": "pair_0"
+        },
+        "reason": "The strong increment contract updates only p by one modulo 2^32; q is framed. Review includes incr_first_frame and its callee.",
+        "final_cells": {
+          "4096": 1,
+          "8192": 0
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/incr_first/variants/cn_original_slf7_basic_incr_first/tests/20261016-evaluation/pair_0/fulminate.cn.c",
+            "sha256": "445380953226ab522e5263c4db23d378e1a6967ade64a90bc08ef94e2bf628fe"
+          },
+          "entry_body": "unsigned int a = 0u; unsigned int b = 0u; incr_first(&a, &b); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "incr_first",
+      "variant": "cn_original:slf7_basic_incr_first",
+      "paired_qcp_variant": "qcp_existing:2ff8722e4b58c01463c5",
+      "case": "pair_1",
+      "function": "incr_first",
+      "qcp_source": {
+        "path": "benchmark/programs/incr_first/variants/qcp_existing_2ff8722e4b58c01463c5/qcp/slf7_basic_incr_first.qcp.c",
+        "sha256": "2ff8722e4b58c01463c509ffe19be161b0e83eb539f29141e21c97ffff90a445"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_slf7_basic_incr_first/cn/slf7_basic_incr_first.c",
+        "sha256": "2fc4f7c6b48b141e01dcb1ab20a7d4870a0549d765e631359c355b7d6022cd90"
+      },
+      "binds": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_slf7_basic_incr_first/tests/20261016-evaluation/pair_1/binds.json",
+        "sha256": "98dd078b99a01dbfb44545ce25412c761fdad1c324910f1701411c049d706268"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 1,
+        "w": 0
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_slf7_basic_incr_first/tests/20261016-evaluation/pair_1/fulminate.cn.c",
+        "sha256": "29b468637649e21b4ac10f588c9d343b6e98f50aac5f3e84a6c286304d800344"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 1,
+            "w": 0
+          },
+          "id": "pair_1"
+        },
+        "reason": "The strong increment contract updates only p by one modulo 2^32; q is framed. Review includes incr_first_frame and its callee.",
+        "final_cells": {
+          "4096": 2,
+          "8192": 0
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/incr_first/variants/cn_original_slf7_basic_incr_first/tests/20261016-evaluation/pair_1/fulminate.cn.c",
+            "sha256": "29b468637649e21b4ac10f588c9d343b6e98f50aac5f3e84a6c286304d800344"
+          },
+          "entry_body": "unsigned int a = 1u; unsigned int b = 0u; incr_first(&a, &b); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "incr_first",
+      "variant": "cn_original:slf7_basic_incr_first",
+      "paired_qcp_variant": "qcp_existing:2ff8722e4b58c01463c5",
+      "case": "pair_2",
+      "function": "incr_first",
+      "qcp_source": {
+        "path": "benchmark/programs/incr_first/variants/qcp_existing_2ff8722e4b58c01463c5/qcp/slf7_basic_incr_first.qcp.c",
+        "sha256": "2ff8722e4b58c01463c509ffe19be161b0e83eb539f29141e21c97ffff90a445"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_slf7_basic_incr_first/cn/slf7_basic_incr_first.c",
+        "sha256": "2fc4f7c6b48b141e01dcb1ab20a7d4870a0549d765e631359c355b7d6022cd90"
+      },
+      "binds": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_slf7_basic_incr_first/tests/20261016-evaluation/pair_2/binds.json",
+        "sha256": "b10a5361eac71feaabca1a927afd33ba9d8d506ac4826eca49976522cf19915d"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 0,
+        "w": 1
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_slf7_basic_incr_first/tests/20261016-evaluation/pair_2/fulminate.cn.c",
+        "sha256": "34ed4d20199eccfcbea38e3ff0cb318ebaad6ed1ff8371767f7a50caf0944004"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 0,
+            "w": 1
+          },
+          "id": "pair_2"
+        },
+        "reason": "The strong increment contract updates only p by one modulo 2^32; q is framed. Review includes incr_first_frame and its callee.",
+        "final_cells": {
+          "4096": 1,
+          "8192": 1
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/incr_first/variants/cn_original_slf7_basic_incr_first/tests/20261016-evaluation/pair_2/fulminate.cn.c",
+            "sha256": "34ed4d20199eccfcbea38e3ff0cb318ebaad6ed1ff8371767f7a50caf0944004"
+          },
+          "entry_body": "unsigned int a = 0u; unsigned int b = 1u; incr_first(&a, &b); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "incr_first",
+      "variant": "cn_original:slf7_basic_incr_first",
+      "paired_qcp_variant": "qcp_existing:2ff8722e4b58c01463c5",
+      "case": "pair_3",
+      "function": "incr_first",
+      "qcp_source": {
+        "path": "benchmark/programs/incr_first/variants/qcp_existing_2ff8722e4b58c01463c5/qcp/slf7_basic_incr_first.qcp.c",
+        "sha256": "2ff8722e4b58c01463c509ffe19be161b0e83eb539f29141e21c97ffff90a445"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_slf7_basic_incr_first/cn/slf7_basic_incr_first.c",
+        "sha256": "2fc4f7c6b48b141e01dcb1ab20a7d4870a0549d765e631359c355b7d6022cd90"
+      },
+      "binds": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_slf7_basic_incr_first/tests/20261016-evaluation/pair_3/binds.json",
+        "sha256": "ac3f696f6cfe08168d4368dcf28116419670fd1eeb491d51567988a649ecd5c4"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 5,
+        "w": 11
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_slf7_basic_incr_first/tests/20261016-evaluation/pair_3/fulminate.cn.c",
+        "sha256": "fa5aef568632156083a05752dcc0f129dd87568283fec65e546dd2fedc8f5177"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 5,
+            "w": 11
+          },
+          "id": "pair_3"
+        },
+        "reason": "The strong increment contract updates only p by one modulo 2^32; q is framed. Review includes incr_first_frame and its callee.",
+        "final_cells": {
+          "4096": 6,
+          "8192": 11
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/incr_first/variants/cn_original_slf7_basic_incr_first/tests/20261016-evaluation/pair_3/fulminate.cn.c",
+            "sha256": "fa5aef568632156083a05752dcc0f129dd87568283fec65e546dd2fedc8f5177"
+          },
+          "entry_body": "unsigned int a = 5u; unsigned int b = 11u; incr_first(&a, &b); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "incr_first",
+      "variant": "cn_original:slf7_basic_incr_first",
+      "paired_qcp_variant": "qcp_existing:2ff8722e4b58c01463c5",
+      "case": "pair_4",
+      "function": "incr_first",
+      "qcp_source": {
+        "path": "benchmark/programs/incr_first/variants/qcp_existing_2ff8722e4b58c01463c5/qcp/slf7_basic_incr_first.qcp.c",
+        "sha256": "2ff8722e4b58c01463c509ffe19be161b0e83eb539f29141e21c97ffff90a445"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_slf7_basic_incr_first/cn/slf7_basic_incr_first.c",
+        "sha256": "2fc4f7c6b48b141e01dcb1ab20a7d4870a0549d765e631359c355b7d6022cd90"
+      },
+      "binds": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_slf7_basic_incr_first/tests/20261016-evaluation/pair_4/binds.json",
+        "sha256": "83e6439cb22cea93fdbfab85c06dd100a2e099c66d28d036232f21f35afee81e"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 4294967295,
+        "w": 0
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_slf7_basic_incr_first/tests/20261016-evaluation/pair_4/fulminate.cn.c",
+        "sha256": "1ac03766343b35b02b6cbec66cd07c1ec961aaf20c03ff85a9390614a6cc3923"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 4294967295,
+            "w": 0
+          },
+          "id": "pair_4"
+        },
+        "reason": "The strong increment contract updates only p by one modulo 2^32; q is framed. Review includes incr_first_frame and its callee.",
+        "final_cells": {
+          "4096": 0,
+          "8192": 0
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/incr_first/variants/cn_original_slf7_basic_incr_first/tests/20261016-evaluation/pair_4/fulminate.cn.c",
+            "sha256": "1ac03766343b35b02b6cbec66cd07c1ec961aaf20c03ff85a9390614a6cc3923"
+          },
+          "entry_body": "unsigned int a = 4294967295u; unsigned int b = 0u; incr_first(&a, &b); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "incr_first",
+      "variant": "cn_original:slf7_basic_incr_first",
+      "paired_qcp_variant": "qcp_existing:2ff8722e4b58c01463c5",
+      "case": "pair_5",
+      "function": "incr_first",
+      "qcp_source": {
+        "path": "benchmark/programs/incr_first/variants/qcp_existing_2ff8722e4b58c01463c5/qcp/slf7_basic_incr_first.qcp.c",
+        "sha256": "2ff8722e4b58c01463c509ffe19be161b0e83eb539f29141e21c97ffff90a445"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_slf7_basic_incr_first/cn/slf7_basic_incr_first.c",
+        "sha256": "2fc4f7c6b48b141e01dcb1ab20a7d4870a0549d765e631359c355b7d6022cd90"
+      },
+      "binds": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_slf7_basic_incr_first/tests/20261016-evaluation/pair_5/binds.json",
+        "sha256": "ce7192e25e51285037ad8d81dbc6716dfddd58ae4b6161257795875d1f5dd97c"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 4294967295,
+        "w": 4294967295
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_slf7_basic_incr_first/tests/20261016-evaluation/pair_5/fulminate.cn.c",
+        "sha256": "1746e5d77bde7738abe87e0320dad78414de07ccf20dc6b16dfc91ec9e837e65"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 4294967295,
+            "w": 4294967295
+          },
+          "id": "pair_5"
+        },
+        "reason": "The strong increment contract updates only p by one modulo 2^32; q is framed. Review includes incr_first_frame and its callee.",
+        "final_cells": {
+          "4096": 0,
+          "8192": 4294967295
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/incr_first/variants/cn_original_slf7_basic_incr_first/tests/20261016-evaluation/pair_5/fulminate.cn.c",
+            "sha256": "1746e5d77bde7738abe87e0320dad78414de07ccf20dc6b16dfc91ec9e837e65"
+          },
+          "entry_body": "unsigned int a = 4294967295u; unsigned int b = 4294967295u; incr_first(&a, &b); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "incr_first",
+      "variant": "cn_original:slf7_basic_incr_first",
+      "paired_qcp_variant": "qcp_existing:2ff8722e4b58c01463c5",
+      "case": "pair_6",
+      "function": "incr_first",
+      "qcp_source": {
+        "path": "benchmark/programs/incr_first/variants/qcp_existing_2ff8722e4b58c01463c5/qcp/slf7_basic_incr_first.qcp.c",
+        "sha256": "2ff8722e4b58c01463c509ffe19be161b0e83eb539f29141e21c97ffff90a445"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_slf7_basic_incr_first/cn/slf7_basic_incr_first.c",
+        "sha256": "2fc4f7c6b48b141e01dcb1ab20a7d4870a0549d765e631359c355b7d6022cd90"
+      },
+      "binds": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_slf7_basic_incr_first/tests/20261016-evaluation/pair_6/binds.json",
+        "sha256": "1446804b646d26c98b6856bcffe4d1eb742139063e822c427c05c476919780be"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 2147483648,
+        "w": 2147483647
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_slf7_basic_incr_first/tests/20261016-evaluation/pair_6/fulminate.cn.c",
+        "sha256": "9151c448ee950ecb828a55c11e055cbac8e03d6117775b930081d09324f971a9"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 2147483648,
+            "w": 2147483647
+          },
+          "id": "pair_6"
+        },
+        "reason": "The strong increment contract updates only p by one modulo 2^32; q is framed. Review includes incr_first_frame and its callee.",
+        "final_cells": {
+          "4096": 2147483649,
+          "8192": 2147483647
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/incr_first/variants/cn_original_slf7_basic_incr_first/tests/20261016-evaluation/pair_6/fulminate.cn.c",
+            "sha256": "9151c448ee950ecb828a55c11e055cbac8e03d6117775b930081d09324f971a9"
+          },
+          "entry_body": "unsigned int a = 2147483648u; unsigned int b = 2147483647u; incr_first(&a, &b); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "incr_first",
+      "variant": "cn_original:slf7_basic_incr_first",
+      "paired_qcp_variant": "qcp_existing:2ff8722e4b58c01463c5",
+      "case": "pair_7",
+      "function": "incr_first",
+      "qcp_source": {
+        "path": "benchmark/programs/incr_first/variants/qcp_existing_2ff8722e4b58c01463c5/qcp/slf7_basic_incr_first.qcp.c",
+        "sha256": "2ff8722e4b58c01463c509ffe19be161b0e83eb539f29141e21c97ffff90a445"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_slf7_basic_incr_first/cn/slf7_basic_incr_first.c",
+        "sha256": "2fc4f7c6b48b141e01dcb1ab20a7d4870a0549d765e631359c355b7d6022cd90"
+      },
+      "binds": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_slf7_basic_incr_first/tests/20261016-evaluation/pair_7/binds.json",
+        "sha256": "c29f9b9f2a065638918b8711d9ea43c8bbf50a691e4292be61811726492fc304"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 42,
+        "w": 99
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_slf7_basic_incr_first/tests/20261016-evaluation/pair_7/fulminate.cn.c",
+        "sha256": "c76546c01e5311afc22bfd14fe46ccf831a122f1d707594820e1db0ea95dc268"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 42,
+            "w": 99
+          },
+          "id": "pair_7"
+        },
+        "reason": "The strong increment contract updates only p by one modulo 2^32; q is framed. Review includes incr_first_frame and its callee.",
+        "final_cells": {
+          "4096": 43,
+          "8192": 99
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/incr_first/variants/cn_original_slf7_basic_incr_first/tests/20261016-evaluation/pair_7/fulminate.cn.c",
+            "sha256": "c76546c01e5311afc22bfd14fe46ccf831a122f1d707594820e1db0ea95dc268"
+          },
+          "entry_body": "unsigned int a = 42u; unsigned int b = 99u; incr_first(&a, &b); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "incr_first",
+      "variant": "cn_original:bcp_framerule",
+      "paired_qcp_variant": "qcp_existing:a65e4acfd79b054f256b",
+      "case": "pair_0",
+      "function": "incr_first_frame",
+      "qcp_source": {
+        "path": "benchmark/programs/incr_first/variants/qcp_existing_a65e4acfd79b054f256b/qcp/bcp_framerule.qcp.c",
+        "sha256": "a65e4acfd79b054f256bb7ac89c56bd8a9dbba6d187f514a84bcc2b92eed1abd"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_bcp_framerule/cn/bcp_framerule.c",
+        "sha256": "d4c81ba1f77c886a701093aeee1195a0e153d224c9395f51603a1cf3f39de590"
+      },
+      "binds": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_bcp_framerule/tests/20261016-evaluation/pair_0/binds.json",
+        "sha256": "e79bb50468a691d38d336f88b45574d6d3df42050178c0a00ac6346db3ca0d6b"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 0,
+        "w": 0
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_bcp_framerule/tests/20261016-evaluation/pair_0/fulminate.cn.c",
+        "sha256": "1ab5c5c6228a59c340c5ee157b9b85fad51ab1c6af22c7d0d26f3f9a46a7aeba"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 0,
+            "w": 0
+          },
+          "id": "pair_0"
+        },
+        "reason": "The strong increment contract updates only p by one modulo 2^32; q is framed. Review includes incr_first_frame and its callee.",
+        "final_cells": {
+          "4096": 1,
+          "8192": 0
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/incr_first/variants/cn_original_bcp_framerule/tests/20261016-evaluation/pair_0/fulminate.cn.c",
+            "sha256": "1ab5c5c6228a59c340c5ee157b9b85fad51ab1c6af22c7d0d26f3f9a46a7aeba"
+          },
+          "entry_body": "unsigned int a = 0u; unsigned int b = 0u; incr_first_frame(&a, &b); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "incr_first",
+      "variant": "cn_original:bcp_framerule",
+      "paired_qcp_variant": "qcp_existing:a65e4acfd79b054f256b",
+      "case": "pair_1",
+      "function": "incr_first_frame",
+      "qcp_source": {
+        "path": "benchmark/programs/incr_first/variants/qcp_existing_a65e4acfd79b054f256b/qcp/bcp_framerule.qcp.c",
+        "sha256": "a65e4acfd79b054f256bb7ac89c56bd8a9dbba6d187f514a84bcc2b92eed1abd"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_bcp_framerule/cn/bcp_framerule.c",
+        "sha256": "d4c81ba1f77c886a701093aeee1195a0e153d224c9395f51603a1cf3f39de590"
+      },
+      "binds": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_bcp_framerule/tests/20261016-evaluation/pair_1/binds.json",
+        "sha256": "98dd078b99a01dbfb44545ce25412c761fdad1c324910f1701411c049d706268"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 1,
+        "w": 0
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_bcp_framerule/tests/20261016-evaluation/pair_1/fulminate.cn.c",
+        "sha256": "44ee162abf1cd42eb05d883970de977e435c86540f68b939ae5f9db8e59236db"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 1,
+            "w": 0
+          },
+          "id": "pair_1"
+        },
+        "reason": "The strong increment contract updates only p by one modulo 2^32; q is framed. Review includes incr_first_frame and its callee.",
+        "final_cells": {
+          "4096": 2,
+          "8192": 0
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/incr_first/variants/cn_original_bcp_framerule/tests/20261016-evaluation/pair_1/fulminate.cn.c",
+            "sha256": "44ee162abf1cd42eb05d883970de977e435c86540f68b939ae5f9db8e59236db"
+          },
+          "entry_body": "unsigned int a = 1u; unsigned int b = 0u; incr_first_frame(&a, &b); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "incr_first",
+      "variant": "cn_original:bcp_framerule",
+      "paired_qcp_variant": "qcp_existing:a65e4acfd79b054f256b",
+      "case": "pair_2",
+      "function": "incr_first_frame",
+      "qcp_source": {
+        "path": "benchmark/programs/incr_first/variants/qcp_existing_a65e4acfd79b054f256b/qcp/bcp_framerule.qcp.c",
+        "sha256": "a65e4acfd79b054f256bb7ac89c56bd8a9dbba6d187f514a84bcc2b92eed1abd"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_bcp_framerule/cn/bcp_framerule.c",
+        "sha256": "d4c81ba1f77c886a701093aeee1195a0e153d224c9395f51603a1cf3f39de590"
+      },
+      "binds": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_bcp_framerule/tests/20261016-evaluation/pair_2/binds.json",
+        "sha256": "b10a5361eac71feaabca1a927afd33ba9d8d506ac4826eca49976522cf19915d"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 0,
+        "w": 1
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_bcp_framerule/tests/20261016-evaluation/pair_2/fulminate.cn.c",
+        "sha256": "0302aeea145add3a4111b73254aca0022afffabf0576a500fb06f71cec007e8a"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 0,
+            "w": 1
+          },
+          "id": "pair_2"
+        },
+        "reason": "The strong increment contract updates only p by one modulo 2^32; q is framed. Review includes incr_first_frame and its callee.",
+        "final_cells": {
+          "4096": 1,
+          "8192": 1
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/incr_first/variants/cn_original_bcp_framerule/tests/20261016-evaluation/pair_2/fulminate.cn.c",
+            "sha256": "0302aeea145add3a4111b73254aca0022afffabf0576a500fb06f71cec007e8a"
+          },
+          "entry_body": "unsigned int a = 0u; unsigned int b = 1u; incr_first_frame(&a, &b); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "incr_first",
+      "variant": "cn_original:bcp_framerule",
+      "paired_qcp_variant": "qcp_existing:a65e4acfd79b054f256b",
+      "case": "pair_3",
+      "function": "incr_first_frame",
+      "qcp_source": {
+        "path": "benchmark/programs/incr_first/variants/qcp_existing_a65e4acfd79b054f256b/qcp/bcp_framerule.qcp.c",
+        "sha256": "a65e4acfd79b054f256bb7ac89c56bd8a9dbba6d187f514a84bcc2b92eed1abd"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_bcp_framerule/cn/bcp_framerule.c",
+        "sha256": "d4c81ba1f77c886a701093aeee1195a0e153d224c9395f51603a1cf3f39de590"
+      },
+      "binds": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_bcp_framerule/tests/20261016-evaluation/pair_3/binds.json",
+        "sha256": "ac3f696f6cfe08168d4368dcf28116419670fd1eeb491d51567988a649ecd5c4"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 5,
+        "w": 11
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_bcp_framerule/tests/20261016-evaluation/pair_3/fulminate.cn.c",
+        "sha256": "00eeb151492d7cadbaf73c4c4d76bf1bab52fe82549d9a72d527fcefd372d3f6"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 5,
+            "w": 11
+          },
+          "id": "pair_3"
+        },
+        "reason": "The strong increment contract updates only p by one modulo 2^32; q is framed. Review includes incr_first_frame and its callee.",
+        "final_cells": {
+          "4096": 6,
+          "8192": 11
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/incr_first/variants/cn_original_bcp_framerule/tests/20261016-evaluation/pair_3/fulminate.cn.c",
+            "sha256": "00eeb151492d7cadbaf73c4c4d76bf1bab52fe82549d9a72d527fcefd372d3f6"
+          },
+          "entry_body": "unsigned int a = 5u; unsigned int b = 11u; incr_first_frame(&a, &b); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "incr_first",
+      "variant": "cn_original:bcp_framerule",
+      "paired_qcp_variant": "qcp_existing:a65e4acfd79b054f256b",
+      "case": "pair_4",
+      "function": "incr_first_frame",
+      "qcp_source": {
+        "path": "benchmark/programs/incr_first/variants/qcp_existing_a65e4acfd79b054f256b/qcp/bcp_framerule.qcp.c",
+        "sha256": "a65e4acfd79b054f256bb7ac89c56bd8a9dbba6d187f514a84bcc2b92eed1abd"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_bcp_framerule/cn/bcp_framerule.c",
+        "sha256": "d4c81ba1f77c886a701093aeee1195a0e153d224c9395f51603a1cf3f39de590"
+      },
+      "binds": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_bcp_framerule/tests/20261016-evaluation/pair_4/binds.json",
+        "sha256": "83e6439cb22cea93fdbfab85c06dd100a2e099c66d28d036232f21f35afee81e"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 4294967295,
+        "w": 0
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_bcp_framerule/tests/20261016-evaluation/pair_4/fulminate.cn.c",
+        "sha256": "418262370521cd358efb33fbe67953651f52a7da7b360acb190d075fc5581e5d"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 4294967295,
+            "w": 0
+          },
+          "id": "pair_4"
+        },
+        "reason": "The strong increment contract updates only p by one modulo 2^32; q is framed. Review includes incr_first_frame and its callee.",
+        "final_cells": {
+          "4096": 0,
+          "8192": 0
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/incr_first/variants/cn_original_bcp_framerule/tests/20261016-evaluation/pair_4/fulminate.cn.c",
+            "sha256": "418262370521cd358efb33fbe67953651f52a7da7b360acb190d075fc5581e5d"
+          },
+          "entry_body": "unsigned int a = 4294967295u; unsigned int b = 0u; incr_first_frame(&a, &b); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "incr_first",
+      "variant": "cn_original:bcp_framerule",
+      "paired_qcp_variant": "qcp_existing:a65e4acfd79b054f256b",
+      "case": "pair_5",
+      "function": "incr_first_frame",
+      "qcp_source": {
+        "path": "benchmark/programs/incr_first/variants/qcp_existing_a65e4acfd79b054f256b/qcp/bcp_framerule.qcp.c",
+        "sha256": "a65e4acfd79b054f256bb7ac89c56bd8a9dbba6d187f514a84bcc2b92eed1abd"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_bcp_framerule/cn/bcp_framerule.c",
+        "sha256": "d4c81ba1f77c886a701093aeee1195a0e153d224c9395f51603a1cf3f39de590"
+      },
+      "binds": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_bcp_framerule/tests/20261016-evaluation/pair_5/binds.json",
+        "sha256": "ce7192e25e51285037ad8d81dbc6716dfddd58ae4b6161257795875d1f5dd97c"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 4294967295,
+        "w": 4294967295
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_bcp_framerule/tests/20261016-evaluation/pair_5/fulminate.cn.c",
+        "sha256": "fada402b93f034ac05930b2d911aa9c8c36f23a3cf9c20a0ef5d87863f7f6bfa"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 4294967295,
+            "w": 4294967295
+          },
+          "id": "pair_5"
+        },
+        "reason": "The strong increment contract updates only p by one modulo 2^32; q is framed. Review includes incr_first_frame and its callee.",
+        "final_cells": {
+          "4096": 0,
+          "8192": 4294967295
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/incr_first/variants/cn_original_bcp_framerule/tests/20261016-evaluation/pair_5/fulminate.cn.c",
+            "sha256": "fada402b93f034ac05930b2d911aa9c8c36f23a3cf9c20a0ef5d87863f7f6bfa"
+          },
+          "entry_body": "unsigned int a = 4294967295u; unsigned int b = 4294967295u; incr_first_frame(&a, &b); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "incr_first",
+      "variant": "cn_original:bcp_framerule",
+      "paired_qcp_variant": "qcp_existing:a65e4acfd79b054f256b",
+      "case": "pair_6",
+      "function": "incr_first_frame",
+      "qcp_source": {
+        "path": "benchmark/programs/incr_first/variants/qcp_existing_a65e4acfd79b054f256b/qcp/bcp_framerule.qcp.c",
+        "sha256": "a65e4acfd79b054f256bb7ac89c56bd8a9dbba6d187f514a84bcc2b92eed1abd"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_bcp_framerule/cn/bcp_framerule.c",
+        "sha256": "d4c81ba1f77c886a701093aeee1195a0e153d224c9395f51603a1cf3f39de590"
+      },
+      "binds": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_bcp_framerule/tests/20261016-evaluation/pair_6/binds.json",
+        "sha256": "1446804b646d26c98b6856bcffe4d1eb742139063e822c427c05c476919780be"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 2147483648,
+        "w": 2147483647
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_bcp_framerule/tests/20261016-evaluation/pair_6/fulminate.cn.c",
+        "sha256": "bf79076f5ad2399ec9ac105068f193bbfd31522e2705de55c8c726181d87aa40"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 2147483648,
+            "w": 2147483647
+          },
+          "id": "pair_6"
+        },
+        "reason": "The strong increment contract updates only p by one modulo 2^32; q is framed. Review includes incr_first_frame and its callee.",
+        "final_cells": {
+          "4096": 2147483649,
+          "8192": 2147483647
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/incr_first/variants/cn_original_bcp_framerule/tests/20261016-evaluation/pair_6/fulminate.cn.c",
+            "sha256": "bf79076f5ad2399ec9ac105068f193bbfd31522e2705de55c8c726181d87aa40"
+          },
+          "entry_body": "unsigned int a = 2147483648u; unsigned int b = 2147483647u; incr_first_frame(&a, &b); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "incr_first",
+      "variant": "cn_original:bcp_framerule",
+      "paired_qcp_variant": "qcp_existing:a65e4acfd79b054f256b",
+      "case": "pair_7",
+      "function": "incr_first_frame",
+      "qcp_source": {
+        "path": "benchmark/programs/incr_first/variants/qcp_existing_a65e4acfd79b054f256b/qcp/bcp_framerule.qcp.c",
+        "sha256": "a65e4acfd79b054f256bb7ac89c56bd8a9dbba6d187f514a84bcc2b92eed1abd"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_bcp_framerule/cn/bcp_framerule.c",
+        "sha256": "d4c81ba1f77c886a701093aeee1195a0e153d224c9395f51603a1cf3f39de590"
+      },
+      "binds": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_bcp_framerule/tests/20261016-evaluation/pair_7/binds.json",
+        "sha256": "c29f9b9f2a065638918b8711d9ea43c8bbf50a691e4292be61811726492fc304"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 42,
+        "w": 99
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/incr_first/variants/cn_original_bcp_framerule/tests/20261016-evaluation/pair_7/fulminate.cn.c",
+        "sha256": "e5debe5a884a631eef5e27babe941bff9c4cee0c6664cc8a15c2ff87e97e02cf"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 42,
+            "w": 99
+          },
+          "id": "pair_7"
+        },
+        "reason": "The strong increment contract updates only p by one modulo 2^32; q is framed. Review includes incr_first_frame and its callee.",
+        "final_cells": {
+          "4096": 43,
+          "8192": 99
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/incr_first/variants/cn_original_bcp_framerule/tests/20261016-evaluation/pair_7/fulminate.cn.c",
+            "sha256": "e5debe5a884a631eef5e27babe941bff9c4cee0c6664cc8a15c2ff87e97e02cf"
+          },
+          "entry_body": "unsigned int a = 42u; unsigned int b = 99u; incr_first_frame(&a, &b); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    }
+  ]
+}

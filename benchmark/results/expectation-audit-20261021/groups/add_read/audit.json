@@ -1,0 +1,665 @@
+{
+  "summary": {
+    "group": "add_read",
+    "case_pairs": 8,
+    "pairings": 1,
+    "function_configurations": 1,
+    "derived_counts": {
+      "inline": {
+        "PASS": 8
+      },
+      "modular": {
+        "PASS": 8
+      },
+      "fulminate": {
+        "PASS": 8
+      }
+    },
+    "mismatches": 0,
+    "non_equivalent_contract_cases": 0,
+    "primary_verification_scope": {
+      "primary_cn_variant": "cn_original:add_read",
+      "primary_qcp_variant": "qcp_existing:c018f56b16c92d5c0f4b",
+      "function": "add"
+    },
+    "verification_caveat": "CN/QCP full verification is restricted to the selected primary target/module. This audit neither reruns it nor extends certificates to every variant/client."
+  },
+  "pairs": [
+    {
+      "group": "add_read",
+      "cn_variant": "cn_original:add_read",
+      "qcp_variant": "qcp_existing:c018f56b16c92d5c0f4b",
+      "cn_source": {
+        "path": "benchmark/programs/add_read/variants/cn_original_add_read/cn/add_read.c",
+        "sha256": "03d7dc0f414333514a30551d683583958306e4cac2c770dc5ddf3869fd8336d3"
+      },
+      "qcp_source": {
+        "path": "benchmark/programs/add_read/variants/qcp_existing_c018f56b16c92d5c0f4b/qcp/add_read.qcp.c",
+        "sha256": "c018f56b16c92d5c0f4b90a8ae2e5ad68e6f41f191fb80df43446916b4a42f0c"
+      },
+      "qcp_functions": {
+        "add": {
+          "return_type": "unsigned int",
+          "parameters": "unsigned int *p, unsigned int *q",
+          "contract": "/*@ With v w Require 0 <= v && v <= 4294967295 && 0 <= w && w <= 4294967295 && data_at(p, unsigned int, v) * data_at(q, unsigned int, w) Ensure __return == (v+w) % 4294967296 && data_at(p, unsigned int, v) * data_at(q, unsigned int, w) */",
+          "body": "\n  unsigned int m = *p;\n  unsigned int n = *q;\n  return m+n;\n"
+        }
+      },
+      "cn_specifications": [
+        "/*@ requires take m = Owned<unsigned int>(p);\n             take n = Owned<unsigned int>(q);\n    ensures take m2 = Owned<unsigned int>(p);\n            take n2 = Owned<unsigned int>(q);\n            m == m2 && n == n2;\n            return == m + n;\n@*/",
+        "/*@ trusted; @*/",
+        "/*@ assert (x == 5u32); @*/",
+        "/*@ assert (y == 7u32); @*/",
+        "/*@ assert (res == 12u32); @*/"
+      ],
+      "c_body_differences": {},
+      "alignment": "REVIEWED_TARGET_PAIR",
+      "scope_note": "Comparison concerns each language contract at this target. It is not a claim of arbitrary whole-file contract equivalence.",
+      "manual_derivation": "Two distinct uint cells are read and retained; unsigned addition is modulo 2^32.",
+      "cases": [
+        "pair_0",
+        "pair_1",
+        "pair_2",
+        "pair_3",
+        "pair_4",
+        "pair_5",
+        "pair_6",
+        "pair_7"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "group": "add_read",
+      "variant": "cn_original:add_read",
+      "paired_qcp_variant": "qcp_existing:c018f56b16c92d5c0f4b",
+      "case": "pair_0",
+      "function": "add",
+      "qcp_source": {
+        "path": "benchmark/programs/add_read/variants/qcp_existing_c018f56b16c92d5c0f4b/qcp/add_read.qcp.c",
+        "sha256": "c018f56b16c92d5c0f4b90a8ae2e5ad68e6f41f191fb80df43446916b4a42f0c"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/add_read/variants/cn_original_add_read/cn/add_read.c",
+        "sha256": "03d7dc0f414333514a30551d683583958306e4cac2c770dc5ddf3869fd8336d3"
+      },
+      "binds": {
+        "path": "benchmark/programs/add_read/variants/cn_original_add_read/tests/20261016-evaluation/pair_0/binds.json",
+        "sha256": "e79bb50468a691d38d336f88b45574d6d3df42050178c0a00ac6346db3ca0d6b"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 0,
+        "w": 0
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/add_read/variants/cn_original_add_read/tests/20261016-evaluation/pair_0/fulminate.cn.c",
+        "sha256": "358263aca7193933109459219d25bc4114e676669f76fb5ea9be38a5a82049a8"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 0,
+            "w": 0
+          },
+          "id": "pair_0"
+        },
+        "reason": "Two distinct uint cells are read and retained; unsigned addition is modulo 2^32.",
+        "return_value": 0,
+        "final_cells": {
+          "v": 0,
+          "w": 0
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/add_read/variants/cn_original_add_read/tests/20261016-evaluation/pair_0/fulminate.cn.c",
+            "sha256": "358263aca7193933109459219d25bc4114e676669f76fb5ea9be38a5a82049a8"
+          },
+          "entry_body": "unsigned int left = 0u; unsigned int right = 0u; add(&left, &right); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "add_read",
+      "variant": "cn_original:add_read",
+      "paired_qcp_variant": "qcp_existing:c018f56b16c92d5c0f4b",
+      "case": "pair_1",
+      "function": "add",
+      "qcp_source": {
+        "path": "benchmark/programs/add_read/variants/qcp_existing_c018f56b16c92d5c0f4b/qcp/add_read.qcp.c",
+        "sha256": "c018f56b16c92d5c0f4b90a8ae2e5ad68e6f41f191fb80df43446916b4a42f0c"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/add_read/variants/cn_original_add_read/cn/add_read.c",
+        "sha256": "03d7dc0f414333514a30551d683583958306e4cac2c770dc5ddf3869fd8336d3"
+      },
+      "binds": {
+        "path": "benchmark/programs/add_read/variants/cn_original_add_read/tests/20261016-evaluation/pair_1/binds.json",
+        "sha256": "98dd078b99a01dbfb44545ce25412c761fdad1c324910f1701411c049d706268"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 1,
+        "w": 0
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/add_read/variants/cn_original_add_read/tests/20261016-evaluation/pair_1/fulminate.cn.c",
+        "sha256": "53b0294965dd381f57f3ec168706bf71727196938ea976fac4f4c33be81072c3"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 1,
+            "w": 0
+          },
+          "id": "pair_1"
+        },
+        "reason": "Two distinct uint cells are read and retained; unsigned addition is modulo 2^32.",
+        "return_value": 1,
+        "final_cells": {
+          "v": 1,
+          "w": 0
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/add_read/variants/cn_original_add_read/tests/20261016-evaluation/pair_1/fulminate.cn.c",
+            "sha256": "53b0294965dd381f57f3ec168706bf71727196938ea976fac4f4c33be81072c3"
+          },
+          "entry_body": "unsigned int left = 1u; unsigned int right = 0u; add(&left, &right); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "add_read",
+      "variant": "cn_original:add_read",
+      "paired_qcp_variant": "qcp_existing:c018f56b16c92d5c0f4b",
+      "case": "pair_2",
+      "function": "add",
+      "qcp_source": {
+        "path": "benchmark/programs/add_read/variants/qcp_existing_c018f56b16c92d5c0f4b/qcp/add_read.qcp.c",
+        "sha256": "c018f56b16c92d5c0f4b90a8ae2e5ad68e6f41f191fb80df43446916b4a42f0c"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/add_read/variants/cn_original_add_read/cn/add_read.c",
+        "sha256": "03d7dc0f414333514a30551d683583958306e4cac2c770dc5ddf3869fd8336d3"
+      },
+      "binds": {
+        "path": "benchmark/programs/add_read/variants/cn_original_add_read/tests/20261016-evaluation/pair_2/binds.json",
+        "sha256": "b10a5361eac71feaabca1a927afd33ba9d8d506ac4826eca49976522cf19915d"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 0,
+        "w": 1
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/add_read/variants/cn_original_add_read/tests/20261016-evaluation/pair_2/fulminate.cn.c",
+        "sha256": "f94b714fae220e6318d20ca76c26c7747cd48b1b202f49a3fc2fe97eda478d40"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 0,
+            "w": 1
+          },
+          "id": "pair_2"
+        },
+        "reason": "Two distinct uint cells are read and retained; unsigned addition is modulo 2^32.",
+        "return_value": 1,
+        "final_cells": {
+          "v": 0,
+          "w": 1
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/add_read/variants/cn_original_add_read/tests/20261016-evaluation/pair_2/fulminate.cn.c",
+            "sha256": "f94b714fae220e6318d20ca76c26c7747cd48b1b202f49a3fc2fe97eda478d40"
+          },
+          "entry_body": "unsigned int left = 0u; unsigned int right = 1u; add(&left, &right); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "add_read",
+      "variant": "cn_original:add_read",
+      "paired_qcp_variant": "qcp_existing:c018f56b16c92d5c0f4b",
+      "case": "pair_3",
+      "function": "add",
+      "qcp_source": {
+        "path": "benchmark/programs/add_read/variants/qcp_existing_c018f56b16c92d5c0f4b/qcp/add_read.qcp.c",
+        "sha256": "c018f56b16c92d5c0f4b90a8ae2e5ad68e6f41f191fb80df43446916b4a42f0c"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/add_read/variants/cn_original_add_read/cn/add_read.c",
+        "sha256": "03d7dc0f414333514a30551d683583958306e4cac2c770dc5ddf3869fd8336d3"
+      },
+      "binds": {
+        "path": "benchmark/programs/add_read/variants/cn_original_add_read/tests/20261016-evaluation/pair_3/binds.json",
+        "sha256": "80019ffe210631d28299e253fe5b5824c469017b74cc159eff9ac7fd5c114dd1"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 5,
+        "w": 7
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/add_read/variants/cn_original_add_read/tests/20261016-evaluation/pair_3/fulminate.cn.c",
+        "sha256": "98586c1a312d36fd5335ce20a728c55887d8c334abd70c179e0878fedfb1ed19"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 5,
+            "w": 7
+          },
+          "id": "pair_3"
+        },
+        "reason": "Two distinct uint cells are read and retained; unsigned addition is modulo 2^32.",
+        "return_value": 12,
+        "final_cells": {
+          "v": 5,
+          "w": 7
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/add_read/variants/cn_original_add_read/tests/20261016-evaluation/pair_3/fulminate.cn.c",
+            "sha256": "98586c1a312d36fd5335ce20a728c55887d8c334abd70c179e0878fedfb1ed19"
+          },
+          "entry_body": "unsigned int left = 5u; unsigned int right = 7u; add(&left, &right); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "add_read",
+      "variant": "cn_original:add_read",
+      "paired_qcp_variant": "qcp_existing:c018f56b16c92d5c0f4b",
+      "case": "pair_4",
+      "function": "add",
+      "qcp_source": {
+        "path": "benchmark/programs/add_read/variants/qcp_existing_c018f56b16c92d5c0f4b/qcp/add_read.qcp.c",
+        "sha256": "c018f56b16c92d5c0f4b90a8ae2e5ad68e6f41f191fb80df43446916b4a42f0c"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/add_read/variants/cn_original_add_read/cn/add_read.c",
+        "sha256": "03d7dc0f414333514a30551d683583958306e4cac2c770dc5ddf3869fd8336d3"
+      },
+      "binds": {
+        "path": "benchmark/programs/add_read/variants/cn_original_add_read/tests/20261016-evaluation/pair_4/binds.json",
+        "sha256": "83e6439cb22cea93fdbfab85c06dd100a2e099c66d28d036232f21f35afee81e"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 4294967295,
+        "w": 0
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/add_read/variants/cn_original_add_read/tests/20261016-evaluation/pair_4/fulminate.cn.c",
+        "sha256": "d9d7ba90857941c97cb7a2a7a44bbec98e2989b8f4fcbf073b238c8c4ddbd011"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 4294967295,
+            "w": 0
+          },
+          "id": "pair_4"
+        },
+        "reason": "Two distinct uint cells are read and retained; unsigned addition is modulo 2^32.",
+        "return_value": 4294967295,
+        "final_cells": {
+          "v": 4294967295,
+          "w": 0
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/add_read/variants/cn_original_add_read/tests/20261016-evaluation/pair_4/fulminate.cn.c",
+            "sha256": "d9d7ba90857941c97cb7a2a7a44bbec98e2989b8f4fcbf073b238c8c4ddbd011"
+          },
+          "entry_body": "unsigned int left = 4294967295u; unsigned int right = 0u; add(&left, &right); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "add_read",
+      "variant": "cn_original:add_read",
+      "paired_qcp_variant": "qcp_existing:c018f56b16c92d5c0f4b",
+      "case": "pair_5",
+      "function": "add",
+      "qcp_source": {
+        "path": "benchmark/programs/add_read/variants/qcp_existing_c018f56b16c92d5c0f4b/qcp/add_read.qcp.c",
+        "sha256": "c018f56b16c92d5c0f4b90a8ae2e5ad68e6f41f191fb80df43446916b4a42f0c"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/add_read/variants/cn_original_add_read/cn/add_read.c",
+        "sha256": "03d7dc0f414333514a30551d683583958306e4cac2c770dc5ddf3869fd8336d3"
+      },
+      "binds": {
+        "path": "benchmark/programs/add_read/variants/cn_original_add_read/tests/20261016-evaluation/pair_5/binds.json",
+        "sha256": "e1b4714fa98385ea06f3ae032a30e919762665710ab7f1317b5e149c8cc864a6"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 4294967295,
+        "w": 1
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/add_read/variants/cn_original_add_read/tests/20261016-evaluation/pair_5/fulminate.cn.c",
+        "sha256": "e738c803fc5549756f8b03cb385eb0c173b485364edadcc7c03f1a53c30bc050"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 4294967295,
+            "w": 1
+          },
+          "id": "pair_5"
+        },
+        "reason": "Two distinct uint cells are read and retained; unsigned addition is modulo 2^32.",
+        "return_value": 0,
+        "final_cells": {
+          "v": 4294967295,
+          "w": 1
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/add_read/variants/cn_original_add_read/tests/20261016-evaluation/pair_5/fulminate.cn.c",
+            "sha256": "e738c803fc5549756f8b03cb385eb0c173b485364edadcc7c03f1a53c30bc050"
+          },
+          "entry_body": "unsigned int left = 4294967295u; unsigned int right = 1u; add(&left, &right); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "add_read",
+      "variant": "cn_original:add_read",
+      "paired_qcp_variant": "qcp_existing:c018f56b16c92d5c0f4b",
+      "case": "pair_6",
+      "function": "add",
+      "qcp_source": {
+        "path": "benchmark/programs/add_read/variants/qcp_existing_c018f56b16c92d5c0f4b/qcp/add_read.qcp.c",
+        "sha256": "c018f56b16c92d5c0f4b90a8ae2e5ad68e6f41f191fb80df43446916b4a42f0c"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/add_read/variants/cn_original_add_read/cn/add_read.c",
+        "sha256": "03d7dc0f414333514a30551d683583958306e4cac2c770dc5ddf3869fd8336d3"
+      },
+      "binds": {
+        "path": "benchmark/programs/add_read/variants/cn_original_add_read/tests/20261016-evaluation/pair_6/binds.json",
+        "sha256": "e43bec521b6111f943cb101f450b3e52f831b15ba7bb90bdf3b8c036b3ddd9b3"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 4294967295,
+        "w": 4294967295
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/add_read/variants/cn_original_add_read/tests/20261016-evaluation/pair_6/fulminate.cn.c",
+        "sha256": "56c9c9f410fe655f1c94bc34faa99a0cda0d45f5a20151e8f42d9f55b7501a03"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 4294967295,
+            "w": 4294967295
+          },
+          "id": "pair_6"
+        },
+        "reason": "Two distinct uint cells are read and retained; unsigned addition is modulo 2^32.",
+        "return_value": 4294967294,
+        "final_cells": {
+          "v": 4294967295,
+          "w": 4294967295
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/add_read/variants/cn_original_add_read/tests/20261016-evaluation/pair_6/fulminate.cn.c",
+            "sha256": "56c9c9f410fe655f1c94bc34faa99a0cda0d45f5a20151e8f42d9f55b7501a03"
+          },
+          "entry_body": "unsigned int left = 4294967295u; unsigned int right = 4294967295u; add(&left, &right); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "add_read",
+      "variant": "cn_original:add_read",
+      "paired_qcp_variant": "qcp_existing:c018f56b16c92d5c0f4b",
+      "case": "pair_7",
+      "function": "add",
+      "qcp_source": {
+        "path": "benchmark/programs/add_read/variants/qcp_existing_c018f56b16c92d5c0f4b/qcp/add_read.qcp.c",
+        "sha256": "c018f56b16c92d5c0f4b90a8ae2e5ad68e6f41f191fb80df43446916b4a42f0c"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/add_read/variants/cn_original_add_read/cn/add_read.c",
+        "sha256": "03d7dc0f414333514a30551d683583958306e4cac2c770dc5ddf3869fd8336d3"
+      },
+      "binds": {
+        "path": "benchmark/programs/add_read/variants/cn_original_add_read/tests/20261016-evaluation/pair_7/binds.json",
+        "sha256": "10405ce8fc6fbf9683b2faf96343569dbd7b2ad88e0c89ce1f30fa137ab47fce"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 2147483648,
+        "w": 2147483648
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/add_read/variants/cn_original_add_read/tests/20261016-evaluation/pair_7/fulminate.cn.c",
+        "sha256": "279e38fc9db31e71a1e7406a2d97ec18641acfb83854f7c619011248dcadaf00"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 2147483648,
+            "w": 2147483648
+          },
+          "id": "pair_7"
+        },
+        "reason": "Two distinct uint cells are read and retained; unsigned addition is modulo 2^32.",
+        "return_value": 0,
+        "final_cells": {
+          "v": 2147483648,
+          "w": 2147483648
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/add_read/variants/cn_original_add_read/tests/20261016-evaluation/pair_7/fulminate.cn.c",
+            "sha256": "279e38fc9db31e71a1e7406a2d97ec18641acfb83854f7c619011248dcadaf00"
+          },
+          "entry_body": "unsigned int left = 2147483648u; unsigned int right = 2147483648u; add(&left, &right); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    }
+  ]
+}

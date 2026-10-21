@@ -1,0 +1,814 @@
+{
+  "summary": {
+    "group": "swap",
+    "case_pairs": 10,
+    "pairings": 1,
+    "function_configurations": 1,
+    "derived_counts": {
+      "inline": {
+        "PASS": 10
+      },
+      "modular": {
+        "PASS": 10
+      },
+      "fulminate": {
+        "PASS": 10
+      }
+    },
+    "mismatches": 0,
+    "non_equivalent_contract_cases": 0,
+    "primary_verification_scope": {
+      "primary_cn_variant": "cn_original:swap",
+      "primary_qcp_variant": "qcp_existing:a9b3242282afbd787167",
+      "function": "swap"
+    },
+    "verification_caveat": "CN/QCP full verification is restricted to the selected primary target/module. This audit neither reruns it nor extends certificates to every variant/client."
+  },
+  "pairs": [
+    {
+      "group": "swap",
+      "cn_variant": "cn_original:swap",
+      "qcp_variant": "qcp_existing:a9b3242282afbd787167",
+      "cn_source": {
+        "path": "benchmark/programs/swap/variants/cn_original_swap/cn/swap.c",
+        "sha256": "c202ceebe52e4b3546007dfdfe2db7fb3a4cd5d4ae4ac30f85fa2a98c0b7e575"
+      },
+      "qcp_source": {
+        "path": "benchmark/programs/swap/variants/qcp_existing_a9b3242282afbd787167/qcp/swap.qcp.c",
+        "sha256": "a9b3242282afbd787167ef8c446f5ecfc4aac1348765878d726b19084c68dfaa"
+      },
+      "qcp_functions": {
+        "swap": {
+          "return_type": "void",
+          "parameters": "unsigned int *p, unsigned int *q",
+          "contract": "/*@ With v w Require data_at(p, unsigned int, v) * data_at(q, unsigned int, w) Ensure data_at(p, unsigned int, w) * data_at(q, unsigned int, v) */",
+          "body": "\n  unsigned int m = *p;\n  unsigned int n = *q;\n  *p = n;\n  *q = m;\n"
+        }
+      },
+      "cn_specifications": [
+        "/*@ requires take v = Owned<unsigned int>(p);\n             take w = Owned<unsigned int>(q);\n    ensures  take v2 = Owned<unsigned int>(p);\n             take w2 = Owned<unsigned int>(q);\n             v2 == w && w2 == v;\n@*/",
+        "/*@ trusted; @*/",
+        "/*@ assert (y == 5u32); @*/",
+        "/*@ assert (x == 11u32); @*/"
+      ],
+      "c_body_differences": {},
+      "alignment": "REVIEWED_TARGET_PAIR",
+      "scope_note": "Comparison concerns each language contract at this target. It is not a claim of arbitrary whole-file contract equivalence.",
+      "manual_derivation": "Read both distinct uint cells, then write old q to p and old p to q.",
+      "cases": [
+        "pair_0",
+        "pair_1",
+        "pair_2",
+        "pair_3",
+        "pair_4",
+        "pair_5",
+        "pair_6",
+        "pair_7",
+        "pair_8",
+        "pair_9"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "group": "swap",
+      "variant": "cn_original:swap",
+      "paired_qcp_variant": "qcp_existing:a9b3242282afbd787167",
+      "case": "pair_0",
+      "function": "swap",
+      "qcp_source": {
+        "path": "benchmark/programs/swap/variants/qcp_existing_a9b3242282afbd787167/qcp/swap.qcp.c",
+        "sha256": "a9b3242282afbd787167ef8c446f5ecfc4aac1348765878d726b19084c68dfaa"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/swap/variants/cn_original_swap/cn/swap.c",
+        "sha256": "c202ceebe52e4b3546007dfdfe2db7fb3a4cd5d4ae4ac30f85fa2a98c0b7e575"
+      },
+      "binds": {
+        "path": "benchmark/programs/swap/variants/cn_original_swap/tests/20261016-evaluation/pair_0/binds.json",
+        "sha256": "e79bb50468a691d38d336f88b45574d6d3df42050178c0a00ac6346db3ca0d6b"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 0,
+        "w": 0,
+        "aliased": false
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/swap/variants/cn_original_swap/tests/20261016-evaluation/pair_0/fulminate.cn.c",
+        "sha256": "5c3bf9aea4a235003182a93a60c6363af21232d5b3c18a6aa6e9ec8ffbb928ce"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 0,
+            "w": 0
+          },
+          "id": "pair_0"
+        },
+        "reason": "Read both distinct uint cells, then write old q to p and old p to q.",
+        "final_cells": {
+          "4096": 0,
+          "8192": 0
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/swap/variants/cn_original_swap/tests/20261016-evaluation/pair_0/fulminate.cn.c",
+            "sha256": "5c3bf9aea4a235003182a93a60c6363af21232d5b3c18a6aa6e9ec8ffbb928ce"
+          },
+          "entry_body": "unsigned int a=0u; unsigned int b=0u; swap(&a,&b); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "swap",
+      "variant": "cn_original:swap",
+      "paired_qcp_variant": "qcp_existing:a9b3242282afbd787167",
+      "case": "pair_1",
+      "function": "swap",
+      "qcp_source": {
+        "path": "benchmark/programs/swap/variants/qcp_existing_a9b3242282afbd787167/qcp/swap.qcp.c",
+        "sha256": "a9b3242282afbd787167ef8c446f5ecfc4aac1348765878d726b19084c68dfaa"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/swap/variants/cn_original_swap/cn/swap.c",
+        "sha256": "c202ceebe52e4b3546007dfdfe2db7fb3a4cd5d4ae4ac30f85fa2a98c0b7e575"
+      },
+      "binds": {
+        "path": "benchmark/programs/swap/variants/cn_original_swap/tests/20261016-evaluation/pair_1/binds.json",
+        "sha256": "1a062136990842ca1cdc431a73eb6a07ef2628c747d3b7c0ee991250388afbcd"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 0,
+        "w": 1,
+        "aliased": false
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/swap/variants/cn_original_swap/tests/20261016-evaluation/pair_1/fulminate.cn.c",
+        "sha256": "c9813f543520617d42238e2971c41a4b4f69d3f188a35ed6cd730c99a69fe596"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 0,
+            "w": 1
+          },
+          "id": "pair_1"
+        },
+        "reason": "Read both distinct uint cells, then write old q to p and old p to q.",
+        "final_cells": {
+          "4096": 1,
+          "8192": 0
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/swap/variants/cn_original_swap/tests/20261016-evaluation/pair_1/fulminate.cn.c",
+            "sha256": "c9813f543520617d42238e2971c41a4b4f69d3f188a35ed6cd730c99a69fe596"
+          },
+          "entry_body": "unsigned int a=0u; unsigned int b=1u; swap(&a,&b); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "swap",
+      "variant": "cn_original:swap",
+      "paired_qcp_variant": "qcp_existing:a9b3242282afbd787167",
+      "case": "pair_2",
+      "function": "swap",
+      "qcp_source": {
+        "path": "benchmark/programs/swap/variants/qcp_existing_a9b3242282afbd787167/qcp/swap.qcp.c",
+        "sha256": "a9b3242282afbd787167ef8c446f5ecfc4aac1348765878d726b19084c68dfaa"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/swap/variants/cn_original_swap/cn/swap.c",
+        "sha256": "c202ceebe52e4b3546007dfdfe2db7fb3a4cd5d4ae4ac30f85fa2a98c0b7e575"
+      },
+      "binds": {
+        "path": "benchmark/programs/swap/variants/cn_original_swap/tests/20261016-evaluation/pair_2/binds.json",
+        "sha256": "68e4345e5435df8403d036f41a53939be3102d95c346349016f70013a8c6708a"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 1,
+        "w": 0,
+        "aliased": false
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/swap/variants/cn_original_swap/tests/20261016-evaluation/pair_2/fulminate.cn.c",
+        "sha256": "146b179c07e55a1c0139b6e494f9be2e8c4ab1280a0347e89bf7b556ab682b08"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 1,
+            "w": 0
+          },
+          "id": "pair_2"
+        },
+        "reason": "Read both distinct uint cells, then write old q to p and old p to q.",
+        "final_cells": {
+          "4096": 0,
+          "8192": 1
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/swap/variants/cn_original_swap/tests/20261016-evaluation/pair_2/fulminate.cn.c",
+            "sha256": "146b179c07e55a1c0139b6e494f9be2e8c4ab1280a0347e89bf7b556ab682b08"
+          },
+          "entry_body": "unsigned int a=1u; unsigned int b=0u; swap(&a,&b); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "swap",
+      "variant": "cn_original:swap",
+      "paired_qcp_variant": "qcp_existing:a9b3242282afbd787167",
+      "case": "pair_3",
+      "function": "swap",
+      "qcp_source": {
+        "path": "benchmark/programs/swap/variants/qcp_existing_a9b3242282afbd787167/qcp/swap.qcp.c",
+        "sha256": "a9b3242282afbd787167ef8c446f5ecfc4aac1348765878d726b19084c68dfaa"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/swap/variants/cn_original_swap/cn/swap.c",
+        "sha256": "c202ceebe52e4b3546007dfdfe2db7fb3a4cd5d4ae4ac30f85fa2a98c0b7e575"
+      },
+      "binds": {
+        "path": "benchmark/programs/swap/variants/cn_original_swap/tests/20261016-evaluation/pair_3/binds.json",
+        "sha256": "ac3f696f6cfe08168d4368dcf28116419670fd1eeb491d51567988a649ecd5c4"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 5,
+        "w": 11,
+        "aliased": false
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/swap/variants/cn_original_swap/tests/20261016-evaluation/pair_3/fulminate.cn.c",
+        "sha256": "aeb119a340e0595cbc2eb3053da2a31d710e652348578f268ec6663ce23d2497"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 5,
+            "w": 11
+          },
+          "id": "pair_3"
+        },
+        "reason": "Read both distinct uint cells, then write old q to p and old p to q.",
+        "final_cells": {
+          "4096": 11,
+          "8192": 5
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/swap/variants/cn_original_swap/tests/20261016-evaluation/pair_3/fulminate.cn.c",
+            "sha256": "aeb119a340e0595cbc2eb3053da2a31d710e652348578f268ec6663ce23d2497"
+          },
+          "entry_body": "unsigned int a=5u; unsigned int b=11u; swap(&a,&b); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "swap",
+      "variant": "cn_original:swap",
+      "paired_qcp_variant": "qcp_existing:a9b3242282afbd787167",
+      "case": "pair_4",
+      "function": "swap",
+      "qcp_source": {
+        "path": "benchmark/programs/swap/variants/qcp_existing_a9b3242282afbd787167/qcp/swap.qcp.c",
+        "sha256": "a9b3242282afbd787167ef8c446f5ecfc4aac1348765878d726b19084c68dfaa"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/swap/variants/cn_original_swap/cn/swap.c",
+        "sha256": "c202ceebe52e4b3546007dfdfe2db7fb3a4cd5d4ae4ac30f85fa2a98c0b7e575"
+      },
+      "binds": {
+        "path": "benchmark/programs/swap/variants/cn_original_swap/tests/20261016-evaluation/pair_4/binds.json",
+        "sha256": "fee4dfee5b2f795f7cf5aeb8ae73bf6fa76f7a9e0b5ba35bd274a6eb4ee6b946"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 11,
+        "w": 5,
+        "aliased": false
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/swap/variants/cn_original_swap/tests/20261016-evaluation/pair_4/fulminate.cn.c",
+        "sha256": "3e1c31dea328418e44c39398197821990a24d7c39100da4761f855cdc3f7797f"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 11,
+            "w": 5
+          },
+          "id": "pair_4"
+        },
+        "reason": "Read both distinct uint cells, then write old q to p and old p to q.",
+        "final_cells": {
+          "4096": 5,
+          "8192": 11
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/swap/variants/cn_original_swap/tests/20261016-evaluation/pair_4/fulminate.cn.c",
+            "sha256": "3e1c31dea328418e44c39398197821990a24d7c39100da4761f855cdc3f7797f"
+          },
+          "entry_body": "unsigned int a=11u; unsigned int b=5u; swap(&a,&b); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "swap",
+      "variant": "cn_original:swap",
+      "paired_qcp_variant": "qcp_existing:a9b3242282afbd787167",
+      "case": "pair_5",
+      "function": "swap",
+      "qcp_source": {
+        "path": "benchmark/programs/swap/variants/qcp_existing_a9b3242282afbd787167/qcp/swap.qcp.c",
+        "sha256": "a9b3242282afbd787167ef8c446f5ecfc4aac1348765878d726b19084c68dfaa"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/swap/variants/cn_original_swap/cn/swap.c",
+        "sha256": "c202ceebe52e4b3546007dfdfe2db7fb3a4cd5d4ae4ac30f85fa2a98c0b7e575"
+      },
+      "binds": {
+        "path": "benchmark/programs/swap/variants/cn_original_swap/tests/20261016-evaluation/pair_5/binds.json",
+        "sha256": "2521aad8e6bbb36b236fb4573a0715917de2a4053e7bd267248a2c72f07a7b25"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 4294967295,
+        "w": 0,
+        "aliased": false
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/swap/variants/cn_original_swap/tests/20261016-evaluation/pair_5/fulminate.cn.c",
+        "sha256": "0f7e36723f63511e26de2cc13c089ffa2c21ff314057e0528e6a4943e919cd90"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 4294967295,
+            "w": 0
+          },
+          "id": "pair_5"
+        },
+        "reason": "Read both distinct uint cells, then write old q to p and old p to q.",
+        "final_cells": {
+          "4096": 0,
+          "8192": 4294967295
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/swap/variants/cn_original_swap/tests/20261016-evaluation/pair_5/fulminate.cn.c",
+            "sha256": "0f7e36723f63511e26de2cc13c089ffa2c21ff314057e0528e6a4943e919cd90"
+          },
+          "entry_body": "unsigned int a=4294967295u; unsigned int b=0u; swap(&a,&b); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "swap",
+      "variant": "cn_original:swap",
+      "paired_qcp_variant": "qcp_existing:a9b3242282afbd787167",
+      "case": "pair_6",
+      "function": "swap",
+      "qcp_source": {
+        "path": "benchmark/programs/swap/variants/qcp_existing_a9b3242282afbd787167/qcp/swap.qcp.c",
+        "sha256": "a9b3242282afbd787167ef8c446f5ecfc4aac1348765878d726b19084c68dfaa"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/swap/variants/cn_original_swap/cn/swap.c",
+        "sha256": "c202ceebe52e4b3546007dfdfe2db7fb3a4cd5d4ae4ac30f85fa2a98c0b7e575"
+      },
+      "binds": {
+        "path": "benchmark/programs/swap/variants/cn_original_swap/tests/20261016-evaluation/pair_6/binds.json",
+        "sha256": "798a47b7b9b29634f03bf4aa45ceb80c1cd0fd88905f3a430fe3c4ad6b540e7f"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 0,
+        "w": 4294967295,
+        "aliased": false
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/swap/variants/cn_original_swap/tests/20261016-evaluation/pair_6/fulminate.cn.c",
+        "sha256": "47fff7106538d6e7e7e886f2f731cf31bbf4a7be0086690a7fc8958a9da7f280"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 0,
+            "w": 4294967295
+          },
+          "id": "pair_6"
+        },
+        "reason": "Read both distinct uint cells, then write old q to p and old p to q.",
+        "final_cells": {
+          "4096": 4294967295,
+          "8192": 0
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/swap/variants/cn_original_swap/tests/20261016-evaluation/pair_6/fulminate.cn.c",
+            "sha256": "47fff7106538d6e7e7e886f2f731cf31bbf4a7be0086690a7fc8958a9da7f280"
+          },
+          "entry_body": "unsigned int a=0u; unsigned int b=4294967295u; swap(&a,&b); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "swap",
+      "variant": "cn_original:swap",
+      "paired_qcp_variant": "qcp_existing:a9b3242282afbd787167",
+      "case": "pair_7",
+      "function": "swap",
+      "qcp_source": {
+        "path": "benchmark/programs/swap/variants/qcp_existing_a9b3242282afbd787167/qcp/swap.qcp.c",
+        "sha256": "a9b3242282afbd787167ef8c446f5ecfc4aac1348765878d726b19084c68dfaa"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/swap/variants/cn_original_swap/cn/swap.c",
+        "sha256": "c202ceebe52e4b3546007dfdfe2db7fb3a4cd5d4ae4ac30f85fa2a98c0b7e575"
+      },
+      "binds": {
+        "path": "benchmark/programs/swap/variants/cn_original_swap/tests/20261016-evaluation/pair_7/binds.json",
+        "sha256": "09bacb3ac489becd6b8ce0781930fe31574ed715702efb6062c925ea376d4e6b"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 4294967295,
+        "w": 4294967295,
+        "aliased": false
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/swap/variants/cn_original_swap/tests/20261016-evaluation/pair_7/fulminate.cn.c",
+        "sha256": "d6a1f6c5533136802b336f18b19853790cd835d848e3e731c6105b86e634256a"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 4294967295,
+            "w": 4294967295
+          },
+          "id": "pair_7"
+        },
+        "reason": "Read both distinct uint cells, then write old q to p and old p to q.",
+        "final_cells": {
+          "4096": 4294967295,
+          "8192": 4294967295
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/swap/variants/cn_original_swap/tests/20261016-evaluation/pair_7/fulminate.cn.c",
+            "sha256": "d6a1f6c5533136802b336f18b19853790cd835d848e3e731c6105b86e634256a"
+          },
+          "entry_body": "unsigned int a=4294967295u; unsigned int b=4294967295u; swap(&a,&b); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "swap",
+      "variant": "cn_original:swap",
+      "paired_qcp_variant": "qcp_existing:a9b3242282afbd787167",
+      "case": "pair_8",
+      "function": "swap",
+      "qcp_source": {
+        "path": "benchmark/programs/swap/variants/qcp_existing_a9b3242282afbd787167/qcp/swap.qcp.c",
+        "sha256": "a9b3242282afbd787167ef8c446f5ecfc4aac1348765878d726b19084c68dfaa"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/swap/variants/cn_original_swap/cn/swap.c",
+        "sha256": "c202ceebe52e4b3546007dfdfe2db7fb3a4cd5d4ae4ac30f85fa2a98c0b7e575"
+      },
+      "binds": {
+        "path": "benchmark/programs/swap/variants/cn_original_swap/tests/20261016-evaluation/pair_8/binds.json",
+        "sha256": "3ff23f77ba8618c4e32bf20ef078eb71305809568b92b925205ac60e14d6d5c5"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 2147483648,
+        "w": 2147483647,
+        "aliased": false
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/swap/variants/cn_original_swap/tests/20261016-evaluation/pair_8/fulminate.cn.c",
+        "sha256": "9e21791d21817fd4ab76b04e31fb00c070253d06adf52c5095b1a6da743bc77f"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 2147483648,
+            "w": 2147483647
+          },
+          "id": "pair_8"
+        },
+        "reason": "Read both distinct uint cells, then write old q to p and old p to q.",
+        "final_cells": {
+          "4096": 2147483647,
+          "8192": 2147483648
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/swap/variants/cn_original_swap/tests/20261016-evaluation/pair_8/fulminate.cn.c",
+            "sha256": "9e21791d21817fd4ab76b04e31fb00c070253d06adf52c5095b1a6da743bc77f"
+          },
+          "entry_body": "unsigned int a=2147483648u; unsigned int b=2147483647u; swap(&a,&b); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "swap",
+      "variant": "cn_original:swap",
+      "paired_qcp_variant": "qcp_existing:a9b3242282afbd787167",
+      "case": "pair_9",
+      "function": "swap",
+      "qcp_source": {
+        "path": "benchmark/programs/swap/variants/qcp_existing_a9b3242282afbd787167/qcp/swap.qcp.c",
+        "sha256": "a9b3242282afbd787167ef8c446f5ecfc4aac1348765878d726b19084c68dfaa"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/swap/variants/cn_original_swap/cn/swap.c",
+        "sha256": "c202ceebe52e4b3546007dfdfe2db7fb3a4cd5d4ae4ac30f85fa2a98c0b7e575"
+      },
+      "binds": {
+        "path": "benchmark/programs/swap/variants/cn_original_swap/tests/20261016-evaluation/pair_9/binds.json",
+        "sha256": "a4c6d32d5b55fa65e5bc4f7004d55a29ccb34b09d5e76ca1a6e2cc24403997f5"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "v": 2147483647,
+        "w": 2147483648,
+        "aliased": false
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/swap/variants/cn_original_swap/tests/20261016-evaluation/pair_9/fulminate.cn.c",
+        "sha256": "7f03484dd073e82038b939138683f092203a0fb7f892a04459230cacd1995e93"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096,
+            "q": 8192
+          },
+          "values": {
+            "v": 2147483647,
+            "w": 2147483648
+          },
+          "id": "pair_9"
+        },
+        "reason": "Read both distinct uint cells, then write old q to p and old p to q.",
+        "final_cells": {
+          "4096": 2147483648,
+          "8192": 2147483647
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/swap/variants/cn_original_swap/tests/20261016-evaluation/pair_9/fulminate.cn.c",
+            "sha256": "7f03484dd073e82038b939138683f092203a0fb7f892a04459230cacd1995e93"
+          },
+          "entry_body": "unsigned int a=2147483647u; unsigned int b=2147483648u; swap(&a,&b); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    }
+  ]
+}

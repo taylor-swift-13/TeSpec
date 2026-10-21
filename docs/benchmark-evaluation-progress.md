@@ -295,3 +295,7 @@ teSpec 按用户要求暂缓，本轮未运行；历史两模式各7 UNKNOWN是�
 ## 2026-10-21：translation12 收尾，策略预期分开
 
 用户确认 inline PASS、modular FAIL。补入通用 symbolic modular 空间求解入口和内建有限符号列表，ON 自动给出合法堆反例；OFF 新增完整父目标的合法局部环境全称闭包反例，关联定理与整个字节堆证书均独立 coqchk。21组900对输入、四配置3600次原生重跑后全部符合各自预期，无最终UNKNOWN；inline每模式498 PASS/379 FAIL/23预期ERROR，modular每模式497 PASS/380 FAIL/23预期ERROR。新ITP2次模型、857838token、362.823秒、峰值2101.969MiB，失败及重试已计入。详见[当前记录](benchmark-strategy-expectations-20261021.md)。
+
+## 2026-10-21 前 21 组预期审查
+
+900 对输入的 inline/modular 和 Fulminate 预期已独立审查，未发现新增状态预期错误。array_load 的 42 对增强 QCP 规约测试已标记为不能用于同规约比较；read 的 7 个旧 Fulminate ERROR 仅按预期运行拒绝归一化。详见[审查说明](benchmark-expectation-audit-20261021.md)与[逐组明细](../benchmark/results/expectation-audit-20261021/index.md)。本次不覆盖或重算原实验成本。

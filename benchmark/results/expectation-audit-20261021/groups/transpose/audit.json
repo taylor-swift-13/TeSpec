@@ -1,0 +1,1890 @@
+{
+  "summary": {
+    "group": "transpose",
+    "case_pairs": 24,
+    "pairings": 3,
+    "function_configurations": 3,
+    "derived_counts": {
+      "inline": {
+        "PASS": 24
+      },
+      "modular": {
+        "PASS": 24
+      },
+      "fulminate": {
+        "PASS": 24
+      }
+    },
+    "mismatches": 0,
+    "non_equivalent_contract_cases": 0,
+    "primary_verification_scope": {
+      "primary_cn_variant": "cn_original:transpose",
+      "primary_qcp_variant": "qcp_existing:3f2b378bf563b856a52e",
+      "function": "transpose"
+    },
+    "verification_caveat": "CN/QCP full verification is restricted to the selected primary target/module. This audit neither reruns it nor extends certificates to every variant/client."
+  },
+  "pairs": [
+    {
+      "group": "transpose",
+      "cn_variant": "cn_original:transpose",
+      "qcp_variant": "qcp_existing:3f2b378bf563b856a52e",
+      "cn_source": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose/cn/transpose.c",
+        "sha256": "36a01839f6329be5888ec704327dc32b3f2ee9c3d7e915aeb8831841875e2228"
+      },
+      "qcp_source": {
+        "path": "benchmark/programs/transpose/variants/qcp_existing_3f2b378bf563b856a52e/qcp/transpose.qcp.c",
+        "sha256": "3f2b378bf563b856a52ede94b632d044c0c3174b1b600cb16d72ecdb14e2eb50"
+      },
+      "qcp_functions": {
+        "transpose": {
+          "return_type": "void",
+          "parameters": "struct point *p",
+          "contract": "/*@ With x y Require data_at(&p->x, int, x) * data_at(&p->y, int, y) Ensure data_at(&p->x, int, y) * data_at(&p->y, int, x) */",
+          "body": "\n  int temp_x = p->x;\n  int temp_y = p->y;\n  p->x = temp_y;\n  p->y = temp_x;\n"
+        }
+      },
+      "cn_specifications": [
+        "/*@ requires take s = Owned<struct point>(p);\n    ensures take s2 = Owned<struct point>(p);\n            s2.x == s.y;\n            s2.y == s.x;\n@*/",
+        "/*@ trusted; @*/",
+        "/*@ assert (p.x == 4i32); @*/",
+        "/*@ assert (p.y == 3i32); @*/"
+      ],
+      "c_body_differences": {},
+      "alignment": "REVIEWED_TARGET_PAIR",
+      "scope_note": "Comparison concerns each language contract at this target. It is not a claim of arbitrary whole-file contract equivalence.",
+      "manual_derivation": "Swap two disjoint fields. transpose2 uses the strong swap contract; the false assertion in original transpose.broken is commented out.",
+      "cases": [
+        "point_0",
+        "point_1",
+        "point_2",
+        "point_3",
+        "point_4",
+        "point_5",
+        "point_6",
+        "point_7"
+      ]
+    },
+    {
+      "group": "transpose",
+      "cn_variant": "cn_original:transpose.broken",
+      "qcp_variant": "qcp_existing:e63917a76eff6b79befd",
+      "cn_source": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose.broken/cn/transpose.broken.c",
+        "sha256": "6e42db833f73236847e93c0e9c98743e460f171efb334952fdec93e523b3bc06"
+      },
+      "qcp_source": {
+        "path": "benchmark/programs/transpose/variants/qcp_existing_e63917a76eff6b79befd/qcp/transpose_historical.qcp.c",
+        "sha256": "e63917a76eff6b79befddb1fc986421730d68b796421ec1844ea0b4940901f1c"
+      },
+      "qcp_functions": {
+        "transpose": {
+          "return_type": "void",
+          "parameters": "struct point *p",
+          "contract": "/*@ With x y Require data_at(&p->x,int,x) * data_at(&p->y,int,y) Ensure data_at(&p->x,int,y) * data_at(&p->y,int,x) */",
+          "body": "\n  int temp_x = p->x;\n  int temp_y = p->y;\n  p->x = temp_y;\n  p->y = temp_x;\n"
+        }
+      },
+      "cn_specifications": [
+        "/*@ requires take s = Owned<struct point>(p); \n    ensures take s2 = Owned<struct point>(p); \n            s2.x == s.y;\n            s2.y == s.x; \n@*/",
+        "/*@ assert(false); @*/",
+        "/*@ trusted; @*/",
+        "/*@ assert (p.x == 4i32); @*/",
+        "/*@ assert (p.y == 3i32); @*/"
+      ],
+      "c_body_differences": {},
+      "alignment": "REVIEWED_TARGET_PAIR",
+      "scope_note": "Comparison concerns each language contract at this target. It is not a claim of arbitrary whole-file contract equivalence.",
+      "manual_derivation": "Swap two disjoint fields. transpose2 uses the strong swap contract; the false assertion in original transpose.broken is commented out.",
+      "cases": [
+        "point_0",
+        "point_1",
+        "point_2",
+        "point_3",
+        "point_4",
+        "point_5",
+        "point_6",
+        "point_7"
+      ]
+    },
+    {
+      "group": "transpose",
+      "cn_variant": "cn_original:transpose2",
+      "qcp_variant": "qcp_existing:8ee7d949d0e57a936e02",
+      "cn_source": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose2/cn/transpose2.c",
+        "sha256": "3d776754241500489e840720a1fc450700c9bd41b3b5b0ae2ec43790bfca75e0"
+      },
+      "qcp_source": {
+        "path": "benchmark/programs/transpose/variants/qcp_existing_8ee7d949d0e57a936e02/qcp/transpose2.qcp.c",
+        "sha256": "8ee7d949d0e57a936e026676706af9191ee75bb29a48b59abfd3fe77f93a3612"
+      },
+      "qcp_functions": {
+        "swap": {
+          "return_type": "void",
+          "parameters": "unsigned int *p, unsigned int *q",
+          "contract": "/*@ With v w Require data_at(p, unsigned int, v) * data_at(q, unsigned int, w) Ensure data_at(p, unsigned int, w) * data_at(q, unsigned int, v) */",
+          "body": "\n  unsigned int m = *p;\n  unsigned int n = *q;\n  *p = n;\n  *q = m;\n"
+        },
+        "transpose2": {
+          "return_type": "void",
+          "parameters": "struct upoint *p",
+          "contract": "/*@ With x y Require data_at(&p->x, unsigned int, x) * data_at(&p->y, unsigned int, y) Ensure data_at(&p->x, unsigned int, y) * data_at(&p->y, unsigned int, x) */",
+          "body": "\n  swap(&p->x, &p->y);\n"
+        }
+      },
+      "cn_specifications": [
+        "/*@ requires take v = Owned<unsigned int>(p);\n             take w = Owned<unsigned int>(q);\n    ensures  take v2 = Owned<unsigned int>(p);\n             take w2 = Owned<unsigned int>(q);\n             v2 == w && w2 == v;\n@*/",
+        "/*@ requires take s = Owned<struct upoint>(p);\n    ensures take s2 = Owned<struct upoint>(p);\n            s2.x == s.y;\n            s2.y == s.x;\n@*/",
+        "/*@ trusted; @*/",
+        "/*@ assert (p.x == 4u32); @*/",
+        "/*@ assert (p.y == 3u32); @*/"
+      ],
+      "c_body_differences": {},
+      "alignment": "REVIEWED_TARGET_PAIR",
+      "scope_note": "Comparison concerns each language contract at this target. It is not a claim of arbitrary whole-file contract equivalence.",
+      "manual_derivation": "Swap two disjoint fields. transpose2 uses the strong swap contract; the false assertion in original transpose.broken is commented out.",
+      "cases": [
+        "point_0",
+        "point_1",
+        "point_2",
+        "point_3",
+        "point_4",
+        "point_5",
+        "point_6",
+        "point_7"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "group": "transpose",
+      "variant": "cn_original:transpose",
+      "paired_qcp_variant": "qcp_existing:3f2b378bf563b856a52e",
+      "case": "point_0",
+      "function": "transpose",
+      "qcp_source": {
+        "path": "benchmark/programs/transpose/variants/qcp_existing_3f2b378bf563b856a52e/qcp/transpose.qcp.c",
+        "sha256": "3f2b378bf563b856a52ede94b632d044c0c3174b1b600cb16d72ecdb14e2eb50"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose/cn/transpose.c",
+        "sha256": "36a01839f6329be5888ec704327dc32b3f2ee9c3d7e915aeb8831841875e2228"
+      },
+      "binds": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose/tests/20261016-evaluation/point_0/binds.json",
+        "sha256": "7b21dfbea4616c1e528a3a2f4547b2fbaebf12e19526a00d63ac79311cdc27f6"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "x": 0,
+        "y": 0
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose/tests/20261016-evaluation/point_0/fulminate.cn.c",
+        "sha256": "97a66d13f0037a51f3a0782cb0d9a15a785a8becd4e41e83eedc1733622adcbe"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "x": 0,
+            "y": 0
+          },
+          "id": "point_0"
+        },
+        "reason": "Swap two disjoint fields. transpose2 uses the strong swap contract; the false assertion in original transpose.broken is commented out.",
+        "final_fields": {
+          "x": 0,
+          "y": 0
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/transpose/variants/cn_original_transpose/tests/20261016-evaluation/point_0/fulminate.cn.c",
+            "sha256": "97a66d13f0037a51f3a0782cb0d9a15a785a8becd4e41e83eedc1733622adcbe"
+          },
+          "entry_body": "struct point point = {.x = 0, .y = 0}; transpose(&point); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "transpose",
+      "variant": "cn_original:transpose",
+      "paired_qcp_variant": "qcp_existing:3f2b378bf563b856a52e",
+      "case": "point_1",
+      "function": "transpose",
+      "qcp_source": {
+        "path": "benchmark/programs/transpose/variants/qcp_existing_3f2b378bf563b856a52e/qcp/transpose.qcp.c",
+        "sha256": "3f2b378bf563b856a52ede94b632d044c0c3174b1b600cb16d72ecdb14e2eb50"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose/cn/transpose.c",
+        "sha256": "36a01839f6329be5888ec704327dc32b3f2ee9c3d7e915aeb8831841875e2228"
+      },
+      "binds": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose/tests/20261016-evaluation/point_1/binds.json",
+        "sha256": "70e15881144766f08ba704a7ddc470e540f84ae53633391752da2dcdfb709473"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "x": 1,
+        "y": -1
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose/tests/20261016-evaluation/point_1/fulminate.cn.c",
+        "sha256": "9a4abf16116bef12f64563fea770d26dc3b2a0165a13b192ac6e80635cbba67c"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "x": 1,
+            "y": -1
+          },
+          "id": "point_1"
+        },
+        "reason": "Swap two disjoint fields. transpose2 uses the strong swap contract; the false assertion in original transpose.broken is commented out.",
+        "final_fields": {
+          "x": -1,
+          "y": 1
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/transpose/variants/cn_original_transpose/tests/20261016-evaluation/point_1/fulminate.cn.c",
+            "sha256": "9a4abf16116bef12f64563fea770d26dc3b2a0165a13b192ac6e80635cbba67c"
+          },
+          "entry_body": "struct point point = {.x = 1, .y = -1}; transpose(&point); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "transpose",
+      "variant": "cn_original:transpose",
+      "paired_qcp_variant": "qcp_existing:3f2b378bf563b856a52e",
+      "case": "point_2",
+      "function": "transpose",
+      "qcp_source": {
+        "path": "benchmark/programs/transpose/variants/qcp_existing_3f2b378bf563b856a52e/qcp/transpose.qcp.c",
+        "sha256": "3f2b378bf563b856a52ede94b632d044c0c3174b1b600cb16d72ecdb14e2eb50"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose/cn/transpose.c",
+        "sha256": "36a01839f6329be5888ec704327dc32b3f2ee9c3d7e915aeb8831841875e2228"
+      },
+      "binds": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose/tests/20261016-evaluation/point_2/binds.json",
+        "sha256": "bd1a83b178f479a1f8d1a15a90275b0a911ac9b9d6e1befe48f1862391342f47"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "x": -1,
+        "y": 1
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose/tests/20261016-evaluation/point_2/fulminate.cn.c",
+        "sha256": "5595ec158a999def26f8cc31348a0fbb13db33b015b71e3e0c28199fd4dbe420"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "x": -1,
+            "y": 1
+          },
+          "id": "point_2"
+        },
+        "reason": "Swap two disjoint fields. transpose2 uses the strong swap contract; the false assertion in original transpose.broken is commented out.",
+        "final_fields": {
+          "x": 1,
+          "y": -1
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/transpose/variants/cn_original_transpose/tests/20261016-evaluation/point_2/fulminate.cn.c",
+            "sha256": "5595ec158a999def26f8cc31348a0fbb13db33b015b71e3e0c28199fd4dbe420"
+          },
+          "entry_body": "struct point point = {.x = -1, .y = 1}; transpose(&point); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "transpose",
+      "variant": "cn_original:transpose",
+      "paired_qcp_variant": "qcp_existing:3f2b378bf563b856a52e",
+      "case": "point_3",
+      "function": "transpose",
+      "qcp_source": {
+        "path": "benchmark/programs/transpose/variants/qcp_existing_3f2b378bf563b856a52e/qcp/transpose.qcp.c",
+        "sha256": "3f2b378bf563b856a52ede94b632d044c0c3174b1b600cb16d72ecdb14e2eb50"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose/cn/transpose.c",
+        "sha256": "36a01839f6329be5888ec704327dc32b3f2ee9c3d7e915aeb8831841875e2228"
+      },
+      "binds": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose/tests/20261016-evaluation/point_3/binds.json",
+        "sha256": "7dff1d602c9cfdb92e3e942e5218fcb70a04cb2fa3dfe61b6ef07b5d2bfce013"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "x": 3,
+        "y": 4
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose/tests/20261016-evaluation/point_3/fulminate.cn.c",
+        "sha256": "05952eccde2d90d0033aafb6be4e8cc121144ff915d4f3eb7d84712c278cf8e4"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "x": 3,
+            "y": 4
+          },
+          "id": "point_3"
+        },
+        "reason": "Swap two disjoint fields. transpose2 uses the strong swap contract; the false assertion in original transpose.broken is commented out.",
+        "final_fields": {
+          "x": 4,
+          "y": 3
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/transpose/variants/cn_original_transpose/tests/20261016-evaluation/point_3/fulminate.cn.c",
+            "sha256": "05952eccde2d90d0033aafb6be4e8cc121144ff915d4f3eb7d84712c278cf8e4"
+          },
+          "entry_body": "struct point point = {.x = 3, .y = 4}; transpose(&point); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "transpose",
+      "variant": "cn_original:transpose",
+      "paired_qcp_variant": "qcp_existing:3f2b378bf563b856a52e",
+      "case": "point_4",
+      "function": "transpose",
+      "qcp_source": {
+        "path": "benchmark/programs/transpose/variants/qcp_existing_3f2b378bf563b856a52e/qcp/transpose.qcp.c",
+        "sha256": "3f2b378bf563b856a52ede94b632d044c0c3174b1b600cb16d72ecdb14e2eb50"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose/cn/transpose.c",
+        "sha256": "36a01839f6329be5888ec704327dc32b3f2ee9c3d7e915aeb8831841875e2228"
+      },
+      "binds": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose/tests/20261016-evaluation/point_4/binds.json",
+        "sha256": "76bb230ffda8aa03ef9e4f7fa7dcbeedb885dfedf42da82b92162a8b902530a8"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "x": -2147483648,
+        "y": 2147483647
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose/tests/20261016-evaluation/point_4/fulminate.cn.c",
+        "sha256": "d6a8ab0444ad0b2d94235e8ab3135a2073ab86ce8eb36efef80168899dbb695b"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "x": -2147483648,
+            "y": 2147483647
+          },
+          "id": "point_4"
+        },
+        "reason": "Swap two disjoint fields. transpose2 uses the strong swap contract; the false assertion in original transpose.broken is commented out.",
+        "final_fields": {
+          "x": 2147483647,
+          "y": -2147483648
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/transpose/variants/cn_original_transpose/tests/20261016-evaluation/point_4/fulminate.cn.c",
+            "sha256": "d6a8ab0444ad0b2d94235e8ab3135a2073ab86ce8eb36efef80168899dbb695b"
+          },
+          "entry_body": "struct point point = {.x = (-2147483647 - 1), .y = 2147483647}; transpose(&point); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "transpose",
+      "variant": "cn_original:transpose",
+      "paired_qcp_variant": "qcp_existing:3f2b378bf563b856a52e",
+      "case": "point_5",
+      "function": "transpose",
+      "qcp_source": {
+        "path": "benchmark/programs/transpose/variants/qcp_existing_3f2b378bf563b856a52e/qcp/transpose.qcp.c",
+        "sha256": "3f2b378bf563b856a52ede94b632d044c0c3174b1b600cb16d72ecdb14e2eb50"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose/cn/transpose.c",
+        "sha256": "36a01839f6329be5888ec704327dc32b3f2ee9c3d7e915aeb8831841875e2228"
+      },
+      "binds": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose/tests/20261016-evaluation/point_5/binds.json",
+        "sha256": "bc07a8b1c8a2626fac173897abe4333813edbe4d38d84bfdbaf2ec046ba10c1e"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "x": 2147483647,
+        "y": -2147483648
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose/tests/20261016-evaluation/point_5/fulminate.cn.c",
+        "sha256": "c14581729a15adadc2b6f825d43c5baff0cf80bc9253703638f64bdce4c02fe7"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "x": 2147483647,
+            "y": -2147483648
+          },
+          "id": "point_5"
+        },
+        "reason": "Swap two disjoint fields. transpose2 uses the strong swap contract; the false assertion in original transpose.broken is commented out.",
+        "final_fields": {
+          "x": -2147483648,
+          "y": 2147483647
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/transpose/variants/cn_original_transpose/tests/20261016-evaluation/point_5/fulminate.cn.c",
+            "sha256": "c14581729a15adadc2b6f825d43c5baff0cf80bc9253703638f64bdce4c02fe7"
+          },
+          "entry_body": "struct point point = {.x = 2147483647, .y = (-2147483647 - 1)}; transpose(&point); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "transpose",
+      "variant": "cn_original:transpose",
+      "paired_qcp_variant": "qcp_existing:3f2b378bf563b856a52e",
+      "case": "point_6",
+      "function": "transpose",
+      "qcp_source": {
+        "path": "benchmark/programs/transpose/variants/qcp_existing_3f2b378bf563b856a52e/qcp/transpose.qcp.c",
+        "sha256": "3f2b378bf563b856a52ede94b632d044c0c3174b1b600cb16d72ecdb14e2eb50"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose/cn/transpose.c",
+        "sha256": "36a01839f6329be5888ec704327dc32b3f2ee9c3d7e915aeb8831841875e2228"
+      },
+      "binds": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose/tests/20261016-evaluation/point_6/binds.json",
+        "sha256": "7689d3c78cf5d7b7022c83b23bd69e76eb91661aacf4ef88bf375681744173b7"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "x": -2147483648,
+        "y": -2147483648
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose/tests/20261016-evaluation/point_6/fulminate.cn.c",
+        "sha256": "7db1bd9f765a45b48d6c6ab2077ca76f5dad4471f7b45543991dab140c28e4be"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "x": -2147483648,
+            "y": -2147483648
+          },
+          "id": "point_6"
+        },
+        "reason": "Swap two disjoint fields. transpose2 uses the strong swap contract; the false assertion in original transpose.broken is commented out.",
+        "final_fields": {
+          "x": -2147483648,
+          "y": -2147483648
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/transpose/variants/cn_original_transpose/tests/20261016-evaluation/point_6/fulminate.cn.c",
+            "sha256": "7db1bd9f765a45b48d6c6ab2077ca76f5dad4471f7b45543991dab140c28e4be"
+          },
+          "entry_body": "struct point point = {.x = (-2147483647 - 1), .y = (-2147483647 - 1)}; transpose(&point); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "transpose",
+      "variant": "cn_original:transpose",
+      "paired_qcp_variant": "qcp_existing:3f2b378bf563b856a52e",
+      "case": "point_7",
+      "function": "transpose",
+      "qcp_source": {
+        "path": "benchmark/programs/transpose/variants/qcp_existing_3f2b378bf563b856a52e/qcp/transpose.qcp.c",
+        "sha256": "3f2b378bf563b856a52ede94b632d044c0c3174b1b600cb16d72ecdb14e2eb50"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose/cn/transpose.c",
+        "sha256": "36a01839f6329be5888ec704327dc32b3f2ee9c3d7e915aeb8831841875e2228"
+      },
+      "binds": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose/tests/20261016-evaluation/point_7/binds.json",
+        "sha256": "3e7fa8a8e70518cfb0dc559f3a05d7a2a9bd7e861199dc8b3994bfe2144724c9"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "x": 42,
+        "y": 42
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose/tests/20261016-evaluation/point_7/fulminate.cn.c",
+        "sha256": "5670c5c45d7bbd8df905765f44daaf7fcb9f7680cc4ec4664d582f9a4fc1e1c4"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "x": 42,
+            "y": 42
+          },
+          "id": "point_7"
+        },
+        "reason": "Swap two disjoint fields. transpose2 uses the strong swap contract; the false assertion in original transpose.broken is commented out.",
+        "final_fields": {
+          "x": 42,
+          "y": 42
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/transpose/variants/cn_original_transpose/tests/20261016-evaluation/point_7/fulminate.cn.c",
+            "sha256": "5670c5c45d7bbd8df905765f44daaf7fcb9f7680cc4ec4664d582f9a4fc1e1c4"
+          },
+          "entry_body": "struct point point = {.x = 42, .y = 42}; transpose(&point); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "transpose",
+      "variant": "cn_original:transpose.broken",
+      "paired_qcp_variant": "qcp_existing:e63917a76eff6b79befd",
+      "case": "point_0",
+      "function": "transpose",
+      "qcp_source": {
+        "path": "benchmark/programs/transpose/variants/qcp_existing_e63917a76eff6b79befd/qcp/transpose_historical.qcp.c",
+        "sha256": "e63917a76eff6b79befddb1fc986421730d68b796421ec1844ea0b4940901f1c"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose.broken/cn/transpose.broken.c",
+        "sha256": "6e42db833f73236847e93c0e9c98743e460f171efb334952fdec93e523b3bc06"
+      },
+      "binds": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose.broken/tests/20261016-evaluation/point_0/binds.json",
+        "sha256": "7b21dfbea4616c1e528a3a2f4547b2fbaebf12e19526a00d63ac79311cdc27f6"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "x": 0,
+        "y": 0
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose.broken/tests/20261016-evaluation/point_0/fulminate.cn.c",
+        "sha256": "f03f6f925e9faa36ddfd16ba7f8a6862cce10bcb713435c4fde0311b3d4a3302"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "x": 0,
+            "y": 0
+          },
+          "id": "point_0"
+        },
+        "reason": "Swap two disjoint fields. transpose2 uses the strong swap contract; the false assertion in original transpose.broken is commented out.",
+        "final_fields": {
+          "x": 0,
+          "y": 0
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/transpose/variants/cn_original_transpose.broken/tests/20261016-evaluation/point_0/fulminate.cn.c",
+            "sha256": "f03f6f925e9faa36ddfd16ba7f8a6862cce10bcb713435c4fde0311b3d4a3302"
+          },
+          "entry_body": "struct point point = {.x = 0, .y = 0}; transpose(&point); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "transpose",
+      "variant": "cn_original:transpose.broken",
+      "paired_qcp_variant": "qcp_existing:e63917a76eff6b79befd",
+      "case": "point_1",
+      "function": "transpose",
+      "qcp_source": {
+        "path": "benchmark/programs/transpose/variants/qcp_existing_e63917a76eff6b79befd/qcp/transpose_historical.qcp.c",
+        "sha256": "e63917a76eff6b79befddb1fc986421730d68b796421ec1844ea0b4940901f1c"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose.broken/cn/transpose.broken.c",
+        "sha256": "6e42db833f73236847e93c0e9c98743e460f171efb334952fdec93e523b3bc06"
+      },
+      "binds": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose.broken/tests/20261016-evaluation/point_1/binds.json",
+        "sha256": "70e15881144766f08ba704a7ddc470e540f84ae53633391752da2dcdfb709473"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "x": 1,
+        "y": -1
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose.broken/tests/20261016-evaluation/point_1/fulminate.cn.c",
+        "sha256": "69cfab06cd4ab29d323a4340c5231d221cd3902917fd4501d10e81be5ef8ccd1"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "x": 1,
+            "y": -1
+          },
+          "id": "point_1"
+        },
+        "reason": "Swap two disjoint fields. transpose2 uses the strong swap contract; the false assertion in original transpose.broken is commented out.",
+        "final_fields": {
+          "x": -1,
+          "y": 1
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/transpose/variants/cn_original_transpose.broken/tests/20261016-evaluation/point_1/fulminate.cn.c",
+            "sha256": "69cfab06cd4ab29d323a4340c5231d221cd3902917fd4501d10e81be5ef8ccd1"
+          },
+          "entry_body": "struct point point = {.x = 1, .y = -1}; transpose(&point); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "transpose",
+      "variant": "cn_original:transpose.broken",
+      "paired_qcp_variant": "qcp_existing:e63917a76eff6b79befd",
+      "case": "point_2",
+      "function": "transpose",
+      "qcp_source": {
+        "path": "benchmark/programs/transpose/variants/qcp_existing_e63917a76eff6b79befd/qcp/transpose_historical.qcp.c",
+        "sha256": "e63917a76eff6b79befddb1fc986421730d68b796421ec1844ea0b4940901f1c"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose.broken/cn/transpose.broken.c",
+        "sha256": "6e42db833f73236847e93c0e9c98743e460f171efb334952fdec93e523b3bc06"
+      },
+      "binds": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose.broken/tests/20261016-evaluation/point_2/binds.json",
+        "sha256": "bd1a83b178f479a1f8d1a15a90275b0a911ac9b9d6e1befe48f1862391342f47"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "x": -1,
+        "y": 1
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose.broken/tests/20261016-evaluation/point_2/fulminate.cn.c",
+        "sha256": "a206c15a3480e401e786913749a7f249e428a228ee12423a903e7914dffab23e"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "x": -1,
+            "y": 1
+          },
+          "id": "point_2"
+        },
+        "reason": "Swap two disjoint fields. transpose2 uses the strong swap contract; the false assertion in original transpose.broken is commented out.",
+        "final_fields": {
+          "x": 1,
+          "y": -1
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/transpose/variants/cn_original_transpose.broken/tests/20261016-evaluation/point_2/fulminate.cn.c",
+            "sha256": "a206c15a3480e401e786913749a7f249e428a228ee12423a903e7914dffab23e"
+          },
+          "entry_body": "struct point point = {.x = -1, .y = 1}; transpose(&point); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "transpose",
+      "variant": "cn_original:transpose.broken",
+      "paired_qcp_variant": "qcp_existing:e63917a76eff6b79befd",
+      "case": "point_3",
+      "function": "transpose",
+      "qcp_source": {
+        "path": "benchmark/programs/transpose/variants/qcp_existing_e63917a76eff6b79befd/qcp/transpose_historical.qcp.c",
+        "sha256": "e63917a76eff6b79befddb1fc986421730d68b796421ec1844ea0b4940901f1c"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose.broken/cn/transpose.broken.c",
+        "sha256": "6e42db833f73236847e93c0e9c98743e460f171efb334952fdec93e523b3bc06"
+      },
+      "binds": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose.broken/tests/20261016-evaluation/point_3/binds.json",
+        "sha256": "7dff1d602c9cfdb92e3e942e5218fcb70a04cb2fa3dfe61b6ef07b5d2bfce013"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "x": 3,
+        "y": 4
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose.broken/tests/20261016-evaluation/point_3/fulminate.cn.c",
+        "sha256": "c277a55337cd354d1cbbe7a611db8ff9d996d7cbd5c17470f74e795a3ec05079"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "x": 3,
+            "y": 4
+          },
+          "id": "point_3"
+        },
+        "reason": "Swap two disjoint fields. transpose2 uses the strong swap contract; the false assertion in original transpose.broken is commented out.",
+        "final_fields": {
+          "x": 4,
+          "y": 3
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/transpose/variants/cn_original_transpose.broken/tests/20261016-evaluation/point_3/fulminate.cn.c",
+            "sha256": "c277a55337cd354d1cbbe7a611db8ff9d996d7cbd5c17470f74e795a3ec05079"
+          },
+          "entry_body": "struct point point = {.x = 3, .y = 4}; transpose(&point); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "transpose",
+      "variant": "cn_original:transpose.broken",
+      "paired_qcp_variant": "qcp_existing:e63917a76eff6b79befd",
+      "case": "point_4",
+      "function": "transpose",
+      "qcp_source": {
+        "path": "benchmark/programs/transpose/variants/qcp_existing_e63917a76eff6b79befd/qcp/transpose_historical.qcp.c",
+        "sha256": "e63917a76eff6b79befddb1fc986421730d68b796421ec1844ea0b4940901f1c"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose.broken/cn/transpose.broken.c",
+        "sha256": "6e42db833f73236847e93c0e9c98743e460f171efb334952fdec93e523b3bc06"
+      },
+      "binds": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose.broken/tests/20261016-evaluation/point_4/binds.json",
+        "sha256": "76bb230ffda8aa03ef9e4f7fa7dcbeedb885dfedf42da82b92162a8b902530a8"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "x": -2147483648,
+        "y": 2147483647
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose.broken/tests/20261016-evaluation/point_4/fulminate.cn.c",
+        "sha256": "fb22d2621ff15d57dbe93c53c927ae062eb80d48b9639494ea654f3b5424da44"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "x": -2147483648,
+            "y": 2147483647
+          },
+          "id": "point_4"
+        },
+        "reason": "Swap two disjoint fields. transpose2 uses the strong swap contract; the false assertion in original transpose.broken is commented out.",
+        "final_fields": {
+          "x": 2147483647,
+          "y": -2147483648
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/transpose/variants/cn_original_transpose.broken/tests/20261016-evaluation/point_4/fulminate.cn.c",
+            "sha256": "fb22d2621ff15d57dbe93c53c927ae062eb80d48b9639494ea654f3b5424da44"
+          },
+          "entry_body": "struct point point = {.x = (-2147483647 - 1), .y = 2147483647}; transpose(&point); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "transpose",
+      "variant": "cn_original:transpose.broken",
+      "paired_qcp_variant": "qcp_existing:e63917a76eff6b79befd",
+      "case": "point_5",
+      "function": "transpose",
+      "qcp_source": {
+        "path": "benchmark/programs/transpose/variants/qcp_existing_e63917a76eff6b79befd/qcp/transpose_historical.qcp.c",
+        "sha256": "e63917a76eff6b79befddb1fc986421730d68b796421ec1844ea0b4940901f1c"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose.broken/cn/transpose.broken.c",
+        "sha256": "6e42db833f73236847e93c0e9c98743e460f171efb334952fdec93e523b3bc06"
+      },
+      "binds": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose.broken/tests/20261016-evaluation/point_5/binds.json",
+        "sha256": "bc07a8b1c8a2626fac173897abe4333813edbe4d38d84bfdbaf2ec046ba10c1e"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "x": 2147483647,
+        "y": -2147483648
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose.broken/tests/20261016-evaluation/point_5/fulminate.cn.c",
+        "sha256": "385726e9e35b3b3152d2aad778dde92bd402e00b9b3e20ecfeae76cb67d9c82c"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "x": 2147483647,
+            "y": -2147483648
+          },
+          "id": "point_5"
+        },
+        "reason": "Swap two disjoint fields. transpose2 uses the strong swap contract; the false assertion in original transpose.broken is commented out.",
+        "final_fields": {
+          "x": -2147483648,
+          "y": 2147483647
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/transpose/variants/cn_original_transpose.broken/tests/20261016-evaluation/point_5/fulminate.cn.c",
+            "sha256": "385726e9e35b3b3152d2aad778dde92bd402e00b9b3e20ecfeae76cb67d9c82c"
+          },
+          "entry_body": "struct point point = {.x = 2147483647, .y = (-2147483647 - 1)}; transpose(&point); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "transpose",
+      "variant": "cn_original:transpose.broken",
+      "paired_qcp_variant": "qcp_existing:e63917a76eff6b79befd",
+      "case": "point_6",
+      "function": "transpose",
+      "qcp_source": {
+        "path": "benchmark/programs/transpose/variants/qcp_existing_e63917a76eff6b79befd/qcp/transpose_historical.qcp.c",
+        "sha256": "e63917a76eff6b79befddb1fc986421730d68b796421ec1844ea0b4940901f1c"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose.broken/cn/transpose.broken.c",
+        "sha256": "6e42db833f73236847e93c0e9c98743e460f171efb334952fdec93e523b3bc06"
+      },
+      "binds": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose.broken/tests/20261016-evaluation/point_6/binds.json",
+        "sha256": "7689d3c78cf5d7b7022c83b23bd69e76eb91661aacf4ef88bf375681744173b7"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "x": -2147483648,
+        "y": -2147483648
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose.broken/tests/20261016-evaluation/point_6/fulminate.cn.c",
+        "sha256": "deea79fdfb922ed43e6c26c1c4b8da9f7e1500bbe42464f8809e74723177ad04"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "x": -2147483648,
+            "y": -2147483648
+          },
+          "id": "point_6"
+        },
+        "reason": "Swap two disjoint fields. transpose2 uses the strong swap contract; the false assertion in original transpose.broken is commented out.",
+        "final_fields": {
+          "x": -2147483648,
+          "y": -2147483648
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/transpose/variants/cn_original_transpose.broken/tests/20261016-evaluation/point_6/fulminate.cn.c",
+            "sha256": "deea79fdfb922ed43e6c26c1c4b8da9f7e1500bbe42464f8809e74723177ad04"
+          },
+          "entry_body": "struct point point = {.x = (-2147483647 - 1), .y = (-2147483647 - 1)}; transpose(&point); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "transpose",
+      "variant": "cn_original:transpose.broken",
+      "paired_qcp_variant": "qcp_existing:e63917a76eff6b79befd",
+      "case": "point_7",
+      "function": "transpose",
+      "qcp_source": {
+        "path": "benchmark/programs/transpose/variants/qcp_existing_e63917a76eff6b79befd/qcp/transpose_historical.qcp.c",
+        "sha256": "e63917a76eff6b79befddb1fc986421730d68b796421ec1844ea0b4940901f1c"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose.broken/cn/transpose.broken.c",
+        "sha256": "6e42db833f73236847e93c0e9c98743e460f171efb334952fdec93e523b3bc06"
+      },
+      "binds": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose.broken/tests/20261016-evaluation/point_7/binds.json",
+        "sha256": "3e7fa8a8e70518cfb0dc559f3a05d7a2a9bd7e861199dc8b3994bfe2144724c9"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "x": 42,
+        "y": 42
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose.broken/tests/20261016-evaluation/point_7/fulminate.cn.c",
+        "sha256": "b085abea857b2c3bbf77c4fb30cb1273c47da98dab0e58b7e99023b6c4c3e206"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "x": 42,
+            "y": 42
+          },
+          "id": "point_7"
+        },
+        "reason": "Swap two disjoint fields. transpose2 uses the strong swap contract; the false assertion in original transpose.broken is commented out.",
+        "final_fields": {
+          "x": 42,
+          "y": 42
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/transpose/variants/cn_original_transpose.broken/tests/20261016-evaluation/point_7/fulminate.cn.c",
+            "sha256": "b085abea857b2c3bbf77c4fb30cb1273c47da98dab0e58b7e99023b6c4c3e206"
+          },
+          "entry_body": "struct point point = {.x = 42, .y = 42}; transpose(&point); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "transpose",
+      "variant": "cn_original:transpose2",
+      "paired_qcp_variant": "qcp_existing:8ee7d949d0e57a936e02",
+      "case": "point_0",
+      "function": "transpose2",
+      "qcp_source": {
+        "path": "benchmark/programs/transpose/variants/qcp_existing_8ee7d949d0e57a936e02/qcp/transpose2.qcp.c",
+        "sha256": "8ee7d949d0e57a936e026676706af9191ee75bb29a48b59abfd3fe77f93a3612"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose2/cn/transpose2.c",
+        "sha256": "3d776754241500489e840720a1fc450700c9bd41b3b5b0ae2ec43790bfca75e0"
+      },
+      "binds": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose2/tests/20261016-evaluation/point_0/binds.json",
+        "sha256": "7b21dfbea4616c1e528a3a2f4547b2fbaebf12e19526a00d63ac79311cdc27f6"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "x": 0,
+        "y": 0
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose2/tests/20261016-evaluation/point_0/fulminate.cn.c",
+        "sha256": "ecec86190ee7c875041034a31fa94ba7b65c2f3ca7086633144773d5337dc4f3"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "x": 0,
+            "y": 0
+          },
+          "id": "point_0"
+        },
+        "reason": "Swap two disjoint fields. transpose2 uses the strong swap contract; the false assertion in original transpose.broken is commented out.",
+        "final_fields": {
+          "x": 0,
+          "y": 0
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/transpose/variants/cn_original_transpose2/tests/20261016-evaluation/point_0/fulminate.cn.c",
+            "sha256": "ecec86190ee7c875041034a31fa94ba7b65c2f3ca7086633144773d5337dc4f3"
+          },
+          "entry_body": "struct upoint point = {.x = 0u, .y = 0u}; transpose2(&point); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "transpose",
+      "variant": "cn_original:transpose2",
+      "paired_qcp_variant": "qcp_existing:8ee7d949d0e57a936e02",
+      "case": "point_1",
+      "function": "transpose2",
+      "qcp_source": {
+        "path": "benchmark/programs/transpose/variants/qcp_existing_8ee7d949d0e57a936e02/qcp/transpose2.qcp.c",
+        "sha256": "8ee7d949d0e57a936e026676706af9191ee75bb29a48b59abfd3fe77f93a3612"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose2/cn/transpose2.c",
+        "sha256": "3d776754241500489e840720a1fc450700c9bd41b3b5b0ae2ec43790bfca75e0"
+      },
+      "binds": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose2/tests/20261016-evaluation/point_1/binds.json",
+        "sha256": "790699a632954913987380d8bef4a546b4012cc0277be7a19df8a448072fecf5"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "x": 1,
+        "y": 0
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose2/tests/20261016-evaluation/point_1/fulminate.cn.c",
+        "sha256": "a5fb36e14a48f666a8c11148258b07ef2d304030d1cafc83b5d5695eb0922b86"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "x": 1,
+            "y": 0
+          },
+          "id": "point_1"
+        },
+        "reason": "Swap two disjoint fields. transpose2 uses the strong swap contract; the false assertion in original transpose.broken is commented out.",
+        "final_fields": {
+          "x": 0,
+          "y": 1
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/transpose/variants/cn_original_transpose2/tests/20261016-evaluation/point_1/fulminate.cn.c",
+            "sha256": "a5fb36e14a48f666a8c11148258b07ef2d304030d1cafc83b5d5695eb0922b86"
+          },
+          "entry_body": "struct upoint point = {.x = 1u, .y = 0u}; transpose2(&point); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "transpose",
+      "variant": "cn_original:transpose2",
+      "paired_qcp_variant": "qcp_existing:8ee7d949d0e57a936e02",
+      "case": "point_2",
+      "function": "transpose2",
+      "qcp_source": {
+        "path": "benchmark/programs/transpose/variants/qcp_existing_8ee7d949d0e57a936e02/qcp/transpose2.qcp.c",
+        "sha256": "8ee7d949d0e57a936e026676706af9191ee75bb29a48b59abfd3fe77f93a3612"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose2/cn/transpose2.c",
+        "sha256": "3d776754241500489e840720a1fc450700c9bd41b3b5b0ae2ec43790bfca75e0"
+      },
+      "binds": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose2/tests/20261016-evaluation/point_2/binds.json",
+        "sha256": "4387e19835a1c648be9a3e729a560013f1ad13e32174c1a893328b68842ec1f4"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "x": 0,
+        "y": 1
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose2/tests/20261016-evaluation/point_2/fulminate.cn.c",
+        "sha256": "c97e79450572bd8f0b32b14a37f4ec950e1dc274db4c00f8c77b33adcee97740"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "x": 0,
+            "y": 1
+          },
+          "id": "point_2"
+        },
+        "reason": "Swap two disjoint fields. transpose2 uses the strong swap contract; the false assertion in original transpose.broken is commented out.",
+        "final_fields": {
+          "x": 1,
+          "y": 0
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/transpose/variants/cn_original_transpose2/tests/20261016-evaluation/point_2/fulminate.cn.c",
+            "sha256": "c97e79450572bd8f0b32b14a37f4ec950e1dc274db4c00f8c77b33adcee97740"
+          },
+          "entry_body": "struct upoint point = {.x = 0u, .y = 1u}; transpose2(&point); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "transpose",
+      "variant": "cn_original:transpose2",
+      "paired_qcp_variant": "qcp_existing:8ee7d949d0e57a936e02",
+      "case": "point_3",
+      "function": "transpose2",
+      "qcp_source": {
+        "path": "benchmark/programs/transpose/variants/qcp_existing_8ee7d949d0e57a936e02/qcp/transpose2.qcp.c",
+        "sha256": "8ee7d949d0e57a936e026676706af9191ee75bb29a48b59abfd3fe77f93a3612"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose2/cn/transpose2.c",
+        "sha256": "3d776754241500489e840720a1fc450700c9bd41b3b5b0ae2ec43790bfca75e0"
+      },
+      "binds": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose2/tests/20261016-evaluation/point_3/binds.json",
+        "sha256": "7dff1d602c9cfdb92e3e942e5218fcb70a04cb2fa3dfe61b6ef07b5d2bfce013"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "x": 3,
+        "y": 4
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose2/tests/20261016-evaluation/point_3/fulminate.cn.c",
+        "sha256": "4c59ae0506d55cacaed6297339df1b15bf51370bac799528c17ed1b08e299745"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "x": 3,
+            "y": 4
+          },
+          "id": "point_3"
+        },
+        "reason": "Swap two disjoint fields. transpose2 uses the strong swap contract; the false assertion in original transpose.broken is commented out.",
+        "final_fields": {
+          "x": 4,
+          "y": 3
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/transpose/variants/cn_original_transpose2/tests/20261016-evaluation/point_3/fulminate.cn.c",
+            "sha256": "4c59ae0506d55cacaed6297339df1b15bf51370bac799528c17ed1b08e299745"
+          },
+          "entry_body": "struct upoint point = {.x = 3u, .y = 4u}; transpose2(&point); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "transpose",
+      "variant": "cn_original:transpose2",
+      "paired_qcp_variant": "qcp_existing:8ee7d949d0e57a936e02",
+      "case": "point_4",
+      "function": "transpose2",
+      "qcp_source": {
+        "path": "benchmark/programs/transpose/variants/qcp_existing_8ee7d949d0e57a936e02/qcp/transpose2.qcp.c",
+        "sha256": "8ee7d949d0e57a936e026676706af9191ee75bb29a48b59abfd3fe77f93a3612"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose2/cn/transpose2.c",
+        "sha256": "3d776754241500489e840720a1fc450700c9bd41b3b5b0ae2ec43790bfca75e0"
+      },
+      "binds": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose2/tests/20261016-evaluation/point_4/binds.json",
+        "sha256": "77695f375441b7776e92ba66091c3918379d74ff51c3ccabd91c04377d3012cd"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "x": 4294967295,
+        "y": 0
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose2/tests/20261016-evaluation/point_4/fulminate.cn.c",
+        "sha256": "6563102b4923f9f5fd4159bb4279b31a5f238eebe487597455da9e7125f1c4c3"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "x": 4294967295,
+            "y": 0
+          },
+          "id": "point_4"
+        },
+        "reason": "Swap two disjoint fields. transpose2 uses the strong swap contract; the false assertion in original transpose.broken is commented out.",
+        "final_fields": {
+          "x": 0,
+          "y": 4294967295
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/transpose/variants/cn_original_transpose2/tests/20261016-evaluation/point_4/fulminate.cn.c",
+            "sha256": "6563102b4923f9f5fd4159bb4279b31a5f238eebe487597455da9e7125f1c4c3"
+          },
+          "entry_body": "struct upoint point = {.x = 4294967295u, .y = 0u}; transpose2(&point); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "transpose",
+      "variant": "cn_original:transpose2",
+      "paired_qcp_variant": "qcp_existing:8ee7d949d0e57a936e02",
+      "case": "point_5",
+      "function": "transpose2",
+      "qcp_source": {
+        "path": "benchmark/programs/transpose/variants/qcp_existing_8ee7d949d0e57a936e02/qcp/transpose2.qcp.c",
+        "sha256": "8ee7d949d0e57a936e026676706af9191ee75bb29a48b59abfd3fe77f93a3612"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose2/cn/transpose2.c",
+        "sha256": "3d776754241500489e840720a1fc450700c9bd41b3b5b0ae2ec43790bfca75e0"
+      },
+      "binds": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose2/tests/20261016-evaluation/point_5/binds.json",
+        "sha256": "548d1ccc87298edfb4511c609f3f9d1642f8c7ff3f41d19a4f7cc521ef5296f6"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "x": 0,
+        "y": 4294967295
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose2/tests/20261016-evaluation/point_5/fulminate.cn.c",
+        "sha256": "55516e5026b82193c4bc40511e00305138edc5e690b3d6c0c1701030f3fb8ed1"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "x": 0,
+            "y": 4294967295
+          },
+          "id": "point_5"
+        },
+        "reason": "Swap two disjoint fields. transpose2 uses the strong swap contract; the false assertion in original transpose.broken is commented out.",
+        "final_fields": {
+          "x": 4294967295,
+          "y": 0
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/transpose/variants/cn_original_transpose2/tests/20261016-evaluation/point_5/fulminate.cn.c",
+            "sha256": "55516e5026b82193c4bc40511e00305138edc5e690b3d6c0c1701030f3fb8ed1"
+          },
+          "entry_body": "struct upoint point = {.x = 0u, .y = 4294967295u}; transpose2(&point); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "transpose",
+      "variant": "cn_original:transpose2",
+      "paired_qcp_variant": "qcp_existing:8ee7d949d0e57a936e02",
+      "case": "point_6",
+      "function": "transpose2",
+      "qcp_source": {
+        "path": "benchmark/programs/transpose/variants/qcp_existing_8ee7d949d0e57a936e02/qcp/transpose2.qcp.c",
+        "sha256": "8ee7d949d0e57a936e026676706af9191ee75bb29a48b59abfd3fe77f93a3612"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose2/cn/transpose2.c",
+        "sha256": "3d776754241500489e840720a1fc450700c9bd41b3b5b0ae2ec43790bfca75e0"
+      },
+      "binds": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose2/tests/20261016-evaluation/point_6/binds.json",
+        "sha256": "96eb4b2d7e5ef9894cdde741a2ee2b6684246133e4142b9062a25f3669479892"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "x": 2147483648,
+        "y": 2147483647
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose2/tests/20261016-evaluation/point_6/fulminate.cn.c",
+        "sha256": "fdd3c8cb272e3302a5d783f49b6d33e68d9021de98c43ff1c2fc56e8015c271d"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "x": 2147483648,
+            "y": 2147483647
+          },
+          "id": "point_6"
+        },
+        "reason": "Swap two disjoint fields. transpose2 uses the strong swap contract; the false assertion in original transpose.broken is commented out.",
+        "final_fields": {
+          "x": 2147483647,
+          "y": 2147483648
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/transpose/variants/cn_original_transpose2/tests/20261016-evaluation/point_6/fulminate.cn.c",
+            "sha256": "fdd3c8cb272e3302a5d783f49b6d33e68d9021de98c43ff1c2fc56e8015c271d"
+          },
+          "entry_body": "struct upoint point = {.x = 2147483648u, .y = 2147483647u}; transpose2(&point); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    },
+    {
+      "group": "transpose",
+      "variant": "cn_original:transpose2",
+      "paired_qcp_variant": "qcp_existing:8ee7d949d0e57a936e02",
+      "case": "point_7",
+      "function": "transpose2",
+      "qcp_source": {
+        "path": "benchmark/programs/transpose/variants/qcp_existing_8ee7d949d0e57a936e02/qcp/transpose2.qcp.c",
+        "sha256": "8ee7d949d0e57a936e026676706af9191ee75bb29a48b59abfd3fe77f93a3612"
+      },
+      "cn_source": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose2/cn/transpose2.c",
+        "sha256": "3d776754241500489e840720a1fc450700c9bd41b3b5b0ae2ec43790bfca75e0"
+      },
+      "binds": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose2/tests/20261016-evaluation/point_7/binds.json",
+        "sha256": "28c1c6a4364dcd32e780121e693e167af9175d347fbe375fdd6099674a9d6551"
+      },
+      "recorded": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate_raw": "PASS",
+        "fulminate": "PASS"
+      },
+      "fulminate_legacy_label": false,
+      "initial": {
+        "x": 4294967295,
+        "y": 4294967295
+      },
+      "cn_harness": {
+        "path": "benchmark/programs/transpose/variants/cn_original_transpose2/tests/20261016-evaluation/point_7/fulminate.cn.c",
+        "sha256": "b4953f51efec7dd2110496c2411ad1cac2755cea8e7d4cfa5a9b719f75166206"
+      },
+      "derived": {
+        "inline": "PASS",
+        "modular": "PASS",
+        "fulminate": "PASS"
+      },
+      "matches_recorded": {
+        "inline": true,
+        "modular": true,
+        "fulminate": true
+      },
+      "witness": {
+        "precondition_valid": true,
+        "method": "reviewed aggregate/callee-contract derivation",
+        "input": {
+          "args": {
+            "p": 4096
+          },
+          "values": {
+            "x": 4294967295,
+            "y": 4294967295
+          },
+          "id": "point_7"
+        },
+        "reason": "Swap two disjoint fields. transpose2 uses the strong swap contract; the false assertion in original transpose.broken is commented out.",
+        "final_fields": {
+          "x": 4294967295,
+          "y": 4294967295
+        },
+        "cn_input_alignment": {
+          "verified": true,
+          "harness": {
+            "path": "benchmark/programs/transpose/variants/cn_original_transpose2/tests/20261016-evaluation/point_7/fulminate.cn.c",
+            "sha256": "b4953f51efec7dd2110496c2411ad1cac2755cea8e7d4cfa5a9b719f75166206"
+          },
+          "entry_body": "struct upoint point = {.x = 4294967295u, .y = 4294967295u}; transpose2(&point); return 0;"
+        }
+      },
+      "same_contract_comparison_excluded": false
+    }
+  ]
+}
