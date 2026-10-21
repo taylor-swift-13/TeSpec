@@ -1,0 +1,21 @@
+File "/home/yangfp/teSpec/benchmark/results/array_load/20261021-local-counterexample/attempt-1/proofs/Candidate.v", line 249, characters 11-23:
+Error:
+In environment
+Hmin : -2147483648 <= 1
+Hmax : 1 <= 2147483647
+HS :
+  forall (l2 : list Z) (retval : Z),
+  -2147483648 <= retval ->
+  retval <= 2147483647 ->
+  IntArray.full 4096 3 l2 ** 8192 # Int |-> retval
+  |-- “ 0 = 0 ” && “ -2147483648 <= retval ” && “ retval <= 2147483647 ” &&
+      8192 # Int |-> 0 ** IntArray.full 4096 3 (0 :: 1 :: 2 :: nil)
+sz, sa : model
+J : join sz sa (cm_state cm_heap)
+HZ : (8192 # Int |-> 0) sz
+HA : IntArray.full 4096 3 (0 :: 1 :: 2 :: nil) sa
+p : Mem.addr
+n : ConAssertion.s_mem ?M3073 p <> Noperm
+Unable to unify "ConAssertion.s_mem ?M3075 p = ConAssertion.s_mem ?M3073 p"
+with "cm_heap p = ConAssertion.s_mem sz p".
+

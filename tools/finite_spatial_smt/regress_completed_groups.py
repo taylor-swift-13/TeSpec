@@ -217,7 +217,7 @@ def source_and_binds(row, variants, audit):
     return source, binds
 
 
-def load_baseline(groups=None):
+def load_baseline(groups=None, execution_strategy="inline"):
     audit = Audit()
     index_ref = audit.ref("benchmark/results/group-result-cost-index.json")
     index = load(index_ref["path"])
@@ -250,6 +250,10 @@ def load_baseline(groups=None):
             # Early complete groups predate per-group plans. Their published
             # evidence pointer, current source hashes and frozen row oracle are
             # authoritative; never choose a batch by directory-name recency.
+        active_cases = {}
+        if group != 'read' and plan_path.exists():
+            active_cases = {(pair['cn_variant'], c['id']): c
+                            for pair in plan['pairings'] for c in pair.get('cases', [])}
         for position, item in enumerate(rows):
             row = originals[(item["variant"], item["case"])] if group == "read" else item
             source, binds = source_and_binds(row, variants, audit)
@@ -275,7 +279,17 @@ def load_baseline(groups=None):
                 if state["status"] == "UNKNOWN":
                     require(oracle is not None and oracle["conclusion"] == expected[mode],
                             "Complete group's UNKNOWN lacks a matching checked ITP oracle")
-            task = {"group": group, "ordinal": position, "variant": row["variant"],
+            baseline_expected = dict(expected)
+            current_case = active_cases.get((row['variant'], row['case']), {})
+            strategy_expected = current_case.get('expected_by_execution_strategy', {})
+            if execution_strategy in strategy_expected:
+                value = strategy_expected[execution_strategy]
+                require(value in {'PASS', 'FAIL', 'ERROR'}, 'Invalid strategy expectation')
+                expected = {m: value for m in ('off', 'on')}
+            task = {"execution_strategy": execution_strategy,
+                    "baseline_expected": baseline_expected,
+                    "expected_by_execution_strategy": strategy_expected,
+                    "group": group, "ordinal": position, "variant": row["variant"],
                     "paired_qcp_variant": row["paired_qcp_variant"], "case": row["case"],
                     "initial": row.get("initial"), "source": source, "binds": binds,
                     "expected": expected, "expected_executor_error_contains": guard,
@@ -339,6 +353,15 @@ def classify(baseline, current, expected, guard, oracle, transport_ok=True):
             and new == oracle["conclusion"])
     return {"ok": good, "kind": "IMPROVED_MATCHES_ITP" if good else "UNKNOWN_CONTRADICTS_ORACLE",
             "resolved": good, "certificate_reused": False}
+
+
+def strategy_comparison(comparison, current, expected, transport_ok):
+    """An oracle change never hides entry/transport/execution regressions."""
+    if comparison["kind"] in {"INVOCATION_FAILED", "PRECONDITION_REGRESSION", "EXECUTION_REGRESSION"}:
+        return comparison
+    matched = transport_ok and current.get("status") == expected
+    return {"ok": matched,
+            "kind": "STRATEGY_EXPECTATION_MATCH" if matched else "STRATEGY_EXPECTATION_PENDING"}
 
 
 def resident_kib():
@@ -473,7 +496,11 @@ def run_task(task, mode, out, timeout):
     comparison = classify(task["baseline"][mode], current, task["expected"][mode],
                           task["expected_executor_error_contains"], task["itp_comparison_oracle"],
                           transport_ok=transport_ok)
-    result = {"group": task["group"], "variant": task["variant"],
+    if task.get("baseline_expected", task["expected"])[mode] != task["expected"][mode]:
+        comparison = strategy_comparison(comparison, current, task["expected"][mode], transport_ok)
+    result = {"execution_strategy": task.get("execution_strategy", "inline"),
+              "baseline_expected": task.get("baseline_expected", task["expected"])[mode],
+              "group": task["group"], "variant": task["variant"],
               "paired_qcp_variant": task["paired_qcp_variant"], "case": task["case"], "mode": mode,
               "source": task["source"], "binds": task["binds"],
               "expected": task["expected"][mode], "baseline": task["baseline"][mode],

@@ -20,7 +20,7 @@ def main():
     parser.add_argument("--positive-representatives", action="store_true")
     args = parser.parse_args()
     shared.require(1 <= args.workers <= 4, "workers must be 1..4")
-    tasks, audit, coverage = shared.load_baseline(args.groups)
+    tasks, audit, coverage = shared.load_baseline(args.groups, execution_strategy=args.execution_strategy)
     if args.positive_representatives:
         selected = []
         for group in coverage["selected_groups"]:

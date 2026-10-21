@@ -483,3 +483,7 @@ modular-instantiation=on使用modular-hybrid/v2：采样只在副本上尽力选
 ITP以整次执行的原始残余目标为单位。自动分解的纯/空间子目标可能只是父目标的某个证明方向；若父目标保留其他可成立的分支，不能仅由一个辅助子目标被反证就将整次测试判FAIL。必须审计子目标与原始父目标的逻辑关系，保留未决父目标。当前收集器拒绝translation12初始控制器的这种过度提升，原始回执保留，正式结果为UNKNOWN。实际编译/内核检查仍是有效子目标证据，其时间、RSS与全部模型修复token继续计入，不因最终测试未决而丢弃。
 
 完整记录及修复回归见[边界修复](benchmark-modular-boundary-fix-20261020.md)。
+
+## 2026-10-21：按执行策略设置预期
+
+每个 case 可添加 `expected_by_execution_strategy: {"inline":"PASS","modular":"FAIL"}`。该覆盖只用于 teSpec，对空间 SMT OFF/ON 一致；未填写时保留原 expected/expected_by_tool。覆盖不能据实际输出自动生成，须由待检查语义或用户明确确认；回归产物记录当前策略预期与历史基线预期。translation12 的弱函数规约客户端是首个明确采用此格式的例子。完整父目标的合法局部环境反例与原目标必须有可检查的关联，不能用辅助引理反证替代完整义务。见[实现与实测](benchmark-strategy-expectations-20261021.md)。

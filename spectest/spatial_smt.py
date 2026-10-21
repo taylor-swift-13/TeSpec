@@ -167,8 +167,57 @@ def _checked_contract_samples(case: dict, native: dict) -> bool:
     return counts == sampled_counts and calls == sampled_counts["contract"]
 
 
+def _checked_symbolic_boundaries(case: dict, native: dict, function: str) -> bool:
+    """Admit QCP symbolic contracts and assertions, without sampling or execution claims."""
+    for key, value in (("execution_strategy", "modular"),
+                       ("execution_semantics", "modular-symbolic/v1"),
+                       ("result_scope", "contract-and-invariant-symbolic"),
+                       ("declaration_call_policy", "contract-symbolic/v1")):
+        if native.get(key) != value or case.get(key) != value:
+            return False
+    if native.get("completed") is not True or native.get("scope") != "execution":
+        return False
+    if native.get("sampling_events") != [] or case.get("sampling_events") != []:
+        return False
+    if native.get("annotation_policy") != case.get("annotation_policy"):
+        return False
+    try:
+        if normalize_execution_mode(native.get("mode")) != case.get("mode"):
+            return False
+    except ValueError:
+        return False
+    events = native.get("abstraction_events")
+    if not isinstance(events, list) or events != case.get("abstraction_events"):
+        return False
+    calls = states = 0
+    seen = set()
+    for event in events:
+        if not isinstance(event, dict) or set(event) != {"kind", "function", "count"}:
+            return False
+        kind, fn, count = event["kind"], event["function"], event["count"]
+        if not isinstance(fn, str) or not fn or type(count) is not int or count <= 0:
+            return False
+        if (kind, fn) in seen:
+            return False
+        seen.add((kind, fn))
+        if kind == "contract-use":
+            calls += count
+        elif kind == "contract_state_symbolic" and fn == "contract":
+            states += count
+        elif kind == "modular-assertion" and fn == function:
+            if case.get("mode") != "all-boundaries" or case.get("annotation_policy") != "check-preserve":
+                return False
+        elif kind == "infeasible-call-input":
+            continue
+        else:
+            return False
+    return calls == states
+
+
 def _checked_events(case: dict, native: dict, function: str) -> bool:
-    """Admit unchanged concrete traces or validated contract-only samples."""
+    """Admit concrete traces, validated samples or checked symbolic boundaries."""
+    if native.get("execution_semantics") == "modular-symbolic/v1":
+        return _checked_symbolic_boundaries(case, native, function)
     if (
         native.get("execution_strategy") == "modular"
         or native.get("sampling_events") or case.get("sampling_events")

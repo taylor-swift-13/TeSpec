@@ -29,3 +29,5 @@
 原生与ITP后最终分类均保留；独立逐次ITP成本见各组表。BLOCKED未完成执行不算成功。
 
 2026-10-21 第21组 array_load 跟进：inline67/67，modular66/67；完整父VC诊断通过内核检查，但未解决translation12。见[array_load当前结果](array_load/20261021-parent-analysis/result-cost.md)。
+
+最新收尾：2026-10-21 按 inline/modular 分别设置预期，21 组 900 对输入全部匹配；translation12 inline PASS、modular FAIL。详见[当前结果与成本](strategy-expectations-20261021/index.md)。

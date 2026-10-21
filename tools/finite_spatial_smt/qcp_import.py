@@ -204,14 +204,63 @@ def checked_local_symbols(pre_parts,post_parts,whole_text,semantics):
     return {name:LOCAL_SYMBOL_PREFIX+name for env in pre+post for name in env}
 
 
-def assertions(text,*,local_symbols=None):
+def symbolic_array_lists(parts, whole_text):
+    """Materialize free list parameters only at a builtin exact finite length.
+
+    This is a bijective representation of all lists of that length, not a sample.
+    Ambiguous lengths and variables used as scalars are refused.
+    """
+    lengths = {}
+    for part in parts:
+        for term in split_top(part['spatial'], ';'):
+            name, args = call(term)
+            if name not in {module + '.full' for module in ARRAYS} or len(args) != 3:
+                continue
+            if not re.fullmatch(r'[A-Za-z_]\w*', args[2]):
+                continue
+            n = concrete(args[1])
+            if not 0 <= n <= 128:
+                raise Unsupported('symbolic_array_length_budget')
+            if args[2] in lengths and lengths[args[2]] != n:
+                raise Unsupported('inconsistent_symbolic_array_length')
+            lengths[args[2]] = n
+    lists = {}
+    for name, n in lengths.items():
+        values = [f'qcp_free_list_{name}_{i}' for i in range(n)]
+        if any(re.search(r'\b' + re.escape(v) + r'\b', whole_text) for v in values):
+            raise Unsupported('generated_free_list_collision')
+        lists[name] = values
+    return lists
+
+
+def assertions(text,*,local_symbols=None,free_lists=None):
     result=[]
     for m in assertion_parts(text):
         if m['local'].strip() and local_symbols is None:
             raise Unsupported('local_environment_requires_typed_adapter')
         names=existential_names(m)
         original_pure=split_top(m['pure'],';')
+        bound = set(names)
         names,lists=materialize_list_binders(names,original_pure,m[0])
+        shaped = symbolic_array_lists([m], text)
+        for name, values in shaped.items():
+            if name in bound:
+                # The local binder's shape comes from its own spatial predicate.
+                if name not in lists:
+                    lists[name] = [f'qcp_bound_list_{name}_{i}' for i in range(len(values))]
+                    if any(re.search(r'\b'+re.escape(v)+r'\b',text) for v in lists[name]):
+                        raise Unsupported('generated_bound_list_collision')
+                    names.remove(name)
+                    names.extend(lists[name])
+            elif name in (free_lists or {}):
+                lists[name] = free_lists[name]
+            else:
+                raise Unsupported('free_list_shape_not_constrained_by_antecedent')
+        # A global list constrained by the antecedent may also occur only in
+        # pure consequent terms (equality, Znth, Zlength).
+        for name, values in (free_lists or {}).items():
+            if name not in bound:
+                lists.setdefault(name, values)
         pure=[]
         for p in original_pure:
             p={'prop_false':'False','prop_true':'True'}.get(p,p)
@@ -251,8 +300,13 @@ def import_record(row,*,check_mode=None,local_semantics=None):
     pre_text=row['vc']['path'];post_text=row['vc']['goal']
     pre_parts=assertion_parts(pre_text);post_parts=assertion_parts(post_text)
     symbols=checked_local_symbols(pre_parts,post_parts,pre_text+'\n'+post_text,local_semantics)
-    pre=assertions(pre_text,local_symbols=symbols)
-    post=assertions(post_text,local_symbols=symbols)
+    lists=symbolic_array_lists(pre_parts, pre_text+'\n'+post_text)
+    if lists and len(pre_parts) != 1:
+        raise Unsupported('disjunctive_symbolic_list_shape')
+    lists={name: values for name, values in lists.items()
+           if name not in set(existential_names(pre_parts[0]))}
+    pre=assertions(pre_text,local_symbols=symbols,free_lists=lists)
+    post=assertions(post_text,local_symbols=symbols,free_lists=lists)
     # The bundled PtrArray.storeA uses a literal 4-byte stride, whereas a
     # 64-bit pointer cell is 8 bytes. Do not silently substitute an 8-byte
     # array interpretation until this runtime profile has an explicit adapter.

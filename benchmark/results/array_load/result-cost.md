@@ -60,3 +60,5 @@ ITP 以一次测试执行的所有待处理 VC 为单位，只展示平均开销
 既有完整状态沿用原正式评测范围。[modular 逐次结果与成本](modular/20261020/result-cost.md)：67 对输入，空间 SMT OFF/ON；原生执行齐全=True，全部预期已判定=False。UNKNOWN 与未完成 ITP 单列，不计成功。
 
 2026-10-21 当前执行策略补测：[67 对输入、268 次执行与完整父 VC ITP 诊断](20261021-parent-analysis/result-cost.md)。inline 最终67/67，modular最终66/67，translation12 保留 UNKNOWN；上文历史完成状态不表示当前 modular 已全通过。
+
+2026-10-21 收尾：已按策略拆分预期；inline 67 PASS，modular 66 PASS、1 FAIL，空间 ON/OFF 最终均符合预期。详见[最新结果成本](../strategy-expectations-20261021/groups/array_load/result-cost.md)。

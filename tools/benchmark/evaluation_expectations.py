@@ -2,9 +2,16 @@
 import json
 from test_read_variants import ROOT
 
-def expected(row,tool):
+def expected(row,tool,execution_strategy=None):
     case=row.get('plan_case',row)
-    return case.get('expected_by_tool',{}).get(tool,case.get('expected',row.get('expected_result')))
+    default = case.get('expected_by_tool',{}).get(tool,case.get('expected',row.get('expected_result')))
+    if tool.startswith('tespec'):
+        strategy = execution_strategy or row.get('execution_strategy', 'inline')
+        override = case.get('expected_by_execution_strategy', {}).get(strategy, default)
+        if override not in {'PASS', 'FAIL', 'ERROR'}:
+            raise ValueError('Invalid execution strategy expectation: ' + repr(override))
+        return override
+    return default
 
 def matches(row,tool,status=None,measurement=None):
     m=measurement if measurement is not None else row[tool]
