@@ -69,3 +69,13 @@ evidence, not a fresh rerun of all benchmark groups or Coq proofs.
 ASan checks cover invalid accesses; leak detection was disabled.
 Runtime check found 392 compiled Coq modules and Coq 8.20.1.
 Raw temporary build/replay files were not added to benchmark results.
+
+## Subsequent installed-binary interface check
+
+The per-VC fallback change replayed 22 compact groups on the installed binary.
+This exposed adapter gaps for `verification_conditions`, `{Z_1}` list printing,
+and erased `PTR`; the Python adapter now accepts the checked formats. The replay
+also found pre-existing array_load discrepancies: translation9 returns native
+FAIL in both strategies, while inline translation7/12 remain UNKNOWN. The earlier
+compatibility receipts must not be read as a full installed-binary benchmark pass.
+See docs/spatial-smt.md for scope, negative-writeback protection and focused checks.

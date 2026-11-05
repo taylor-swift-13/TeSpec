@@ -12,6 +12,14 @@ else:
 import z3
 
 
+def normalize_builtin_type_arguments(text):
+    """Accept the native printer's explicit integer type argument syntax only."""
+    text=re.sub(r'(?<![\w.])nil\s*\{\s*Z_1\s*\}', 'nil(Z_1)', text)
+    return re.sub(
+        r'(?<![\w.])(cons|repeat_Z|app|Zlength|Znth)\s*\{\s*Z_1\s*\}\s*\(',
+        lambda m: m[1]+'(Z_1, ', text)
+
+
 def numeral(text):
     value=z3.simplify(integer(Expressions().parse(text)))
     if not z3.is_int_value(value):raise Unsupported('nonconcrete_finite_bound')
@@ -20,6 +28,7 @@ def numeral(text):
 
 def reduce_term(text,lists=None):
     lists=lists or {}
+    text=normalize_builtin_type_arguments(text)
     text=text.replace('&&',' and ').replace('||',' or ')
     text=re.sub(r'!(?!=)',' not ',text).strip()
     try:root=ast.parse(text,mode='eval')
@@ -113,6 +122,7 @@ def pure_terms(text,lists=None):
 def materialize_list_binders(names,pure,whole_text):
     lists={};new_names=list(names)
     for prop in pure:
+        prop=normalize_builtin_type_arguments(prop)
         m=re.fullmatch(r'Zlength\(Z_1,\s*([A-Za-z_]\w*)\)\s*==\s*(.+)',prop.strip())
         if not m or m[1] not in names:continue
         n=numeral(m[2])

@@ -4,6 +4,7 @@ import unittest
 
 from finite_spatial_smt import check, Unsupported
 from qcp_import import import_record, LOCAL_SEMANTICS
+from finite_qcp_terms import list_values, pure_terms, materialize_list_binders
 
 
 LAYOUT = {
@@ -48,10 +49,73 @@ class CheckModeTests(unittest.TestCase):
         q = record(assertion('store(4096,7,signed int)'), assertion())
         self.assertEqual(check(import_record(q, check_mode='exact'))['status'], 'INVALID')
 
-    def test_exact_does_not_enable_other_boundary_kinds(self):
-        for kind in ('call', 'safety', 'precondition', 'assert', None):
-            with self.subTest(kind=kind), self.assertRaises(Unsupported):
-                import_record(record(assertion(), assertion(), kind=kind), check_mode='exact')
+    def test_explicit_mode_does_not_enable_unknown_boundary_kinds(self):
+        for kind in ('call', 'precondition', 'assert', None):
+            for mode in ('exact', 'frame'):
+                with self.subTest(kind=kind, mode=mode), self.assertRaises(Unsupported):
+                    import_record(record(assertion(), assertion(), kind=kind), check_mode=mode)
+
+    def test_nonreturn_families_require_correct_explicit_mode(self):
+        modes = {'entailment': 'exact', 'which_implies': 'exact',
+                 'partial_solve': 'frame', 'safety': 'frame'}
+        for kind, expected in modes.items():
+            for mode in (None, 'exact', 'frame', 'guess'):
+                if mode == expected:
+                    continue
+                with self.subTest(kind=kind, mode=mode), self.assertRaises(Unsupported):
+                    import_record(record(assertion(), assertion(), kind=kind), check_mode=mode)
+
+    def test_which_implies_exact_preserves_owned_remainder(self):
+        pre = assertion('store(4096,7,signed int)')
+        for post, expected in ((pre, 'VALID'), (assertion(), 'INVALID')):
+            with self.subTest(expected=expected):
+                original = record(pre, post, kind='which_implies')
+                saved = copy.deepcopy(original)
+                q = import_record(original, check_mode='exact')
+                self.assertEqual(q['mode'], 'exact')
+                self.assertEqual(check(q)['status'], expected)
+                self.assertEqual(original, saved)
+
+    def test_partial_solve_frames_remainder_but_checks_requested_resource(self):
+        pre = assertion('store(4096,7,signed int);store(4100,9,signed int)')
+        for post, expected in (
+            (assertion('store(4096,7,signed int)'), 'VALID'),
+            (assertion('store(4096,8,signed int)'), 'INVALID'),
+            (assertion('store(4104,7,signed int)'), 'INVALID'),
+        ):
+            with self.subTest(post=post):
+                original = record(pre, post, kind='partial_solve')
+                saved = copy.deepcopy(original)
+                q = import_record(original, check_mode='frame')
+                self.assertEqual(q['mode'], 'frame')
+                self.assertEqual(len(q['pre'][0]['spatial']), 2)
+                self.assertEqual(check(q)['status'], expected)
+                self.assertEqual(original, saved)
+
+    def test_pure_safety_checks_proposition_without_requiring_empty_heap(self):
+        pre = assertion('store(4096,7,signed int)', pure='x == 7')
+        for pure, expected in (('x > 0', 'VALID'), ('x < 0', 'INVALID')):
+            with self.subTest(pure=pure):
+                q = import_record(record(pre, assertion(pure=pure), kind='safety'),
+                                  check_mode='frame')
+                self.assertEqual(q['mode'], 'frame')
+                self.assertEqual(len(q['pre'][0]['spatial']), 1)
+                self.assertEqual(q['post'][0]['spatial'], [])
+                self.assertEqual(check(q)['status'], expected)
+
+    def test_safety_never_discards_local_or_spatial_target_terms(self):
+        pre = assertion('store(4096,7,signed int)', local='Temp p p_addr')
+        for post in (assertion('store(4096,7,signed int)'),
+                     assertion(local='Temp p p_addr'),
+                     assertion(pure='True') + assertion('Dll(4096)')):
+            with self.subTest(post=post), self.assertRaisesRegex(Unsupported, 'safety_goal_not_pure'):
+                import_record(record(pre, post, kind='safety'), check_mode='frame',
+                              local_semantics=LOCAL_SEMANTICS)
+
+    def test_pure_safety_does_not_ignore_unsupported_antecedent(self):
+        with self.assertRaisesRegex(Unsupported, 'unsupported_spatial_predicate:Dll'):
+            import_record(record(assertion('Dll(4096)'), assertion(pure='True'), kind='safety'),
+                          check_mode='frame')
 
     def test_return_cannot_be_weakened_to_frame(self):
         with self.assertRaises(Unsupported):
@@ -60,6 +124,107 @@ class CheckModeTests(unittest.TestCase):
     def test_unknown_local_semantics_rejected_even_if_empty(self):
         with self.assertRaises(Unsupported):
             import_record(record(assertion(), assertion()), check_mode='exact', local_semantics='guess')
+
+
+class NativePrintCompatibilityTests(unittest.TestCase):
+    def test_new_and_old_integer_list_printing_match(self):
+        old = 'cons(Z_1, INT_MAX, cons(Z_1, (- 1), nil(Z_1)))'
+        new = 'cons{Z_1}(INT_MAX, cons{Z_1}((- 1), nil{Z_1}))'
+        self.assertEqual(list_values(new), list_values(old))
+        pre = assertion('IntArray.full(4096,2,' + new + ')')
+        post = assertion('IntArray.full(4096,2,' + old + ')')
+        self.assertEqual(check(import_record(record(pre, post), check_mode='exact'))['status'], 'VALID')
+
+    def test_new_builtin_list_operations(self):
+        self.assertEqual(list_values('app{Z_1}(cons{Z_1}(1,nil{Z_1}),repeat_Z{Z_1}(2,2))'),
+                         ['1','2','2'])
+        self.assertEqual(pure_terms('Zlength{Z_1}(cons{Z_1}(7,nil{Z_1})) == 1'), ['True'])
+        self.assertEqual(pure_terms('Znth{Z_1}(0,cons{Z_1}(7,nil{Z_1}),0) == 7'), ['True'])
+        names, lists = materialize_list_binders(['xs'], ['Zlength{Z_1}(xs) == 2'], '')
+        self.assertEqual(len(names), 2)
+        self.assertEqual(len(lists['xs']), 2)
+
+    def test_generic_syntax_does_not_expand_other_types_or_user_functions(self):
+        for term in ('nil{T_1}', 'cons{T_1}(1,nil{T_1})', 'zeros{Z_1}(2)',
+                     'user.cons{Z_1}(1,nil{Z_1})'):
+            with self.subTest(term=term), self.assertRaises(Unsupported):
+                list_values(term)
+
+    def test_three_argument_pointer_offset_uses_checked_type_size(self):
+        for ctype, size in (('signed char',1), ('signed short',2), ('signed int',4),
+                            ('signed long long',8)):
+            with self.subTest(ctype=ctype):
+                pre = assertion(f'store({4096+2*size},7,{ctype})')
+                post = assertion(f'store(pointer_offset(4096,2,{ctype}),7,{ctype})')
+                original = record(pre, post)
+                saved = copy.deepcopy(original)
+                q = import_record(original, check_mode='exact')
+                self.assertEqual(check(q)['status'], 'VALID')
+                self.assertEqual(original, saved)
+
+    def test_pointer_pointee_width_tracks_32_and_64_bit_layouts(self):
+        for bits, size in ((32,4),(64,8)):
+            with self.subTest(bits=bits):
+                pre = assertion(f'store({4096+size},7,signed int *)')
+                post = assertion('store(pointer_offset(4096,1,signed int *),7,signed int *)')
+                q = import_record(record(pre, post, bits=bits), check_mode='exact')
+                self.assertEqual(check(q)['status'], 'VALID')
+
+    def test_erased_PTR_storage_type_uses_target_pointer_width(self):
+        for bits, size in ((32,4),(64,8)):
+            with self.subTest(bits=bits):
+                pre = assertion(f'store({4096+size},7,PTR)')
+                post = assertion('store(pointer_offset(4096,1,PTR),7,PTR)')
+                q = import_record(record(pre,post,bits=bits),check_mode='exact')
+                self.assertEqual(q['pre'][0]['spatial'][0]['type'], 'ptr')
+                self.assertEqual(q['post'][0]['spatial'][0]['address'], str(4096+size))
+                self.assertEqual(check(q)['status'], 'VALID')
+
+    def test_pointer_offset_legacy_stride_must_match_type(self):
+        pre = assertion('store(4100,7,signed int)')
+        post = assertion('store(pointer_offset(4096,1,4,signed int),7,signed int)')
+        self.assertEqual(check(import_record(record(pre,post),check_mode='exact'))['status'], 'VALID')
+        with self.assertRaisesRegex(Unsupported, 'pointer_offset_stride_type_mismatch'):
+            import_record(record(pre,post.replace(',4,signed int)',',8,signed int)')),
+                          check_mode='exact')
+
+    def test_nested_pointer_offsets_and_pure_occurrences(self):
+        pre = assertion('store(4104,7,signed int)', pure='x == 4104')
+        post = assertion('store(pointer_offset(pointer_offset(4096,1,signed int),1,signed int),7,signed int)',
+                         pure='x == pointer_offset(4096,2,signed int)')
+        self.assertEqual(check(import_record(record(pre,post),check_mode='exact'))['status'], 'VALID')
+
+    def test_unknown_pointer_offset_types_and_layout_are_not_guessed(self):
+        pre = assertion('store(4100,7,signed int)')
+        post = assertion('store(pointer_offset(4096,1,opaque_type),7,signed int)')
+        with self.assertRaisesRegex(Unsupported, 'unknown_qcp_type'):
+            import_record(record(pre,post),check_mode='exact')
+        q = record(pre,post.replace('opaque_type','signed int'))
+        q['layout'].pop('architecture_bits')
+        with self.assertRaisesRegex(Unsupported, 'pointer_offset_layout_not_established'):
+            import_record(q,check_mode='exact')
+
+
+class NativeBinderScopeTests(unittest.TestCase):
+    def test_shared_source_binder_is_not_refuted_as_unrelated_goal_variable(self):
+        q = record(assertion(pure='x == 7', exists='x'), assertion(pure='x == 7'))
+        with self.assertRaisesRegex(Unsupported, 'native_shared_existential_requires_scope_mapping:x'):
+            import_record(q, check_mode='exact')
+
+    def test_independent_target_binder_shadow_is_supported(self):
+        text = assertion(pure='x == 7', exists='x')
+        q = import_record(record(text, text), check_mode='exact')
+        self.assertEqual(check(q)['status'], 'VALID')
+
+    def test_target_shadow_in_one_alternative_does_not_cover_another(self):
+        pre = assertion(pure='x == 7', exists='x')
+        post = assertion(pure='x == 7', exists='x') + assertion(pure='x == 7')
+        with self.assertRaisesRegex(Unsupported, 'native_shared_existential_requires_scope_mapping:x'):
+            import_record(record(pre, post), check_mode='exact')
+
+    def test_scope_check_uses_whole_identifiers(self):
+        q = record(assertion(pure='x == 7', exists='x'), assertion(pure='xx == 7'))
+        self.assertEqual(check(import_record(q, check_mode='exact'))['status'], 'INVALID')
 
 
 class LocalEnvironmentTests(unittest.TestCase):

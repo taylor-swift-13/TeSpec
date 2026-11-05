@@ -99,8 +99,10 @@ separate work. Results retain `certificate: NOT_CHECKED`.
 
 `qcp_import.py` accepts the `PROP / LOCAL / SEP` diagnostic format. Unchecked LOCAL,
 unknown predicates/types, and ambiguous formats are rejected, never ignored.
-Return VCs retain the automatic exact mode. Entailment queries require explicit
-`check_mode="exact"` from the checked concrete-execution adapter. Nonempty LOCAL
+Return VCs retain the automatic exact mode. Entailment and which-implies queries
+require explicit `check_mode="exact"`; partial-solve and pure safety queries require
+explicit `check_mode="frame"`. Safety consequents must have empty LOCAL and SEP.
+These modes come from the native witness semantics, independently of execution events. Nonempty LOCAL
 also requires `local_semantics="same-program-environment/v1"`; only unchanged,
 unambiguous global-expression bindings are admitted and all are encoded as pure
 environment equalities. New/changed target bindings and existential-local
@@ -168,3 +170,14 @@ This standalone teSpec component lives in `tools/finite_spatial_smt/`; it uses t
 
 The current integration test receipt is in `results/20261015-integration/`; the
 earlier `results/20261015/` receipt records the original standalone source version.
+
+The native adapter accepts both legacy list syntax and builtin `{Z_1}` type
+parameters, plus erased `PTR` storage. Three-argument `pointer_offset` obtains its
+stride from the checked storage type and target layout; legacy explicit strides
+are checked for agreement. Source EX names shared freely with a consequent remain
+unsupported until their native shared scope has a dedicated mapping.
+
+The runner attempts every pending VC, including those from interrupted runs, but
+retains execution errors and limits in the aggregate result. A diagnostic exact
+countermodel with disappearing LOCAL bindings is retained without refuting the
+full parent obligation; see `spectest.spatial_smt` and `docs/spatial-smt.md`.

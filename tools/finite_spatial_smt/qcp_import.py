@@ -8,9 +8,9 @@ import ast
 import re
 import z3
 if __package__:
-    from .finite_spatial_smt import Expressions, Unsupported, integer, boolean
+    from .finite_spatial_smt import Expressions, Unsupported, integer, boolean, type_info
 else:
-    from finite_spatial_smt import Expressions, Unsupported, integer, boolean
+    from finite_spatial_smt import Expressions, Unsupported, integer, boolean, type_info
 if __package__:
     from .finite_qcp_terms import list_values, pure_terms, materialize_list_binders
 else:
@@ -20,7 +20,7 @@ else:
 TYPES={'signed int':'i32','unsigned int':'u32','signed I8':'i8','unsigned I8':'u8',
        'signed char':'i8','unsigned char':'u8','signed short':'i16','unsigned short':'u16',
        'signed I64':'i64','unsigned I64':'u64','signed long long':'i64',
-       'unsigned long long':'u64','_Bool':'bool'}
+       'unsigned long long':'u64','_Bool':'bool','PTR':'ptr'}
 ARRAYS={'CharArray':'i8','UCharArray':'u8','ShortArray':'i16','UShortArray':'u16',
         'IntArray':'i32','UIntArray':'u32','Int64Array':'i64','UInt64Array':'u64','PtrArray':'ptr'}
 
@@ -63,6 +63,35 @@ def scalar(text):
         text=f'({scalar(args[0])}) + ({scalar(args[1])}) * ({scalar(args[2])})'
     parsed=z3.simplify(integer(Expressions().parse(text)))
     return str(parsed.as_long()) if z3.is_int_value(parsed) else text
+
+
+def normalize_pointer_offsets(text, bits):
+    """Lower both native pointer-offset print formats using the checked layout.
+
+    This is a local diagnostic-text adaptation, not a mutation of the original
+    query. The legacy explicit stride must agree with the pointee storage type.
+    """
+    pattern=re.compile(r'(?<![\w.])pointer_offset\s*\(')
+    pieces=[];position=0
+    while (match:=pattern.search(text,position)) is not None:
+        if bits not in (32,64):raise Unsupported('pointer_offset_layout_not_established')
+        depth=1;end=match.end()
+        while end<len(text) and depth:
+            if text[end]=='(':depth+=1
+            elif text[end]==')':depth-=1
+            end+=1
+        if depth:raise Unsupported('unbalanced_parentheses')
+        args=split_top(text[match.end():end-1])
+        if len(args) not in (3,4):raise Unsupported('pointer_offset_arity')
+        size=type_info(scalar_type(args[-1]),bits).size
+        if len(args)==4 and concrete(args[2])!=size:
+            raise Unsupported('pointer_offset_stride_type_mismatch')
+        base=normalize_pointer_offsets(args[0],bits)
+        index=normalize_pointer_offsets(args[1],bits)
+        pieces.extend((text[position:match.start()],f'(({base}) + ({index}) * {size})'))
+        position=end
+    pieces.append(text[position:])
+    return ''.join(pieces)
 
 
 def concrete(text):
@@ -278,11 +307,12 @@ def assertions(text,*,local_symbols=None,free_lists=None):
 
 
 def import_record(row,*,check_mode=None,local_semantics=None):
-    """Import a native query only after its exact-heap mode is established.
+    """Import a native query after its exact/frame semantics are established.
 
-    Return VCs retain the existing exact default. The caller must explicitly
-    attest exact mode for entailment queries using the copy-only/check-preserve
-    protocol; an entailment/call kind alone never selects exact versus frame.
+    Return VCs retain the existing exact default. Other known families require
+    explicit mode attestation from the native-protocol adapter. Safety targets
+    must be pure: frame mode makes their empty SEP heap-independent without
+    dropping any antecedent resources or goal terms.
     """
     layout=row.get('layout')
     if not isinstance(layout,dict):raise Unsupported('missing_target_layout')
@@ -292,14 +322,34 @@ def import_record(row,*,check_mode=None,local_semantics=None):
     if kind=='return':
         if check_mode not in (None,'exact'):
             raise Unsupported('unsupported_return_check_mode:'+str(check_mode))
-    elif kind=='entailment':
+    elif kind in ('entailment','which_implies'):
         if check_mode!='exact':
+            raise Unsupported('check_mode_not_established:'+str(kind))
+    elif kind in ('partial_solve','safety'):
+        if check_mode!='frame':
             raise Unsupported('check_mode_not_established:'+str(kind))
     else:
         raise Unsupported('check_mode_not_established:'+str(kind))
-    pre_text=row['vc']['path'];post_text=row['vc']['goal']
+    mode='frame' if kind in ('partial_solve','safety') else 'exact'
+    bits=layout.get('architecture_bits')
+    if bits!=32 and re.search(r'\bPtrArray\.(?:full|undef_full|seg|missing_i)\s*\(',
+                             row['vc']['path']+'\n'+row['vc']['goal']):
+        raise Unsupported('pointer_array_stride_not_established')
+    pre_text=normalize_pointer_offsets(row['vc']['path'],bits)
+    post_text=normalize_pointer_offsets(row['vc']['goal'],bits)
     pre_parts=assertion_parts(pre_text);post_parts=assertion_parts(post_text)
+    if kind=='safety' and any(m['local'].strip() or m['spatial'].strip()
+                              for m in post_parts):
+        raise Unsupported('safety_goal_not_pure')
     symbols=checked_local_symbols(pre_parts,post_parts,pre_text+'\n'+post_text,local_semantics)
+    # Native proof generation can lift source existentials over the whole VC.
+    # Diagnostic text alone does not identify that scope. Never encode a shared
+    # variable as a source-local existential and an unrelated free goal symbol.
+    source_binders={name for part in pre_parts for name in existential_names(part)}
+    for part in post_parts:
+        for name in source_binders-set(existential_names(part)):
+            if re.search(r'\b'+re.escape(name)+r'\b',part[0]):
+                raise Unsupported('native_shared_existential_requires_scope_mapping:'+name)
     lists=symbolic_array_lists(pre_parts, pre_text+'\n'+post_text)
     if lists and len(pre_parts) != 1:
         raise Unsupported('disjunctive_symbolic_list_shape')
@@ -316,4 +366,4 @@ def import_record(row,*,check_mode=None,local_semantics=None):
         raise Unsupported('pointer_array_stride_not_established')
     return {'schema':'finite-spatial-vc/v1',
             'layout':{k:layout.get(k) for k in ('architecture_bits','byte_order','memory_rules')},
-            'mode':'exact','pre':pre,'post':post}
+            'mode':mode,'pre':pre,'post':post}

@@ -31,7 +31,84 @@ def _solve_record(record: dict, timeout_ms: int) -> dict:
         return {"status": "UNKNOWN", "supported": False, "reason": str(error)}
     result = check(vc, timeout_ms=timeout_ms, include_smt=True)
     result["normalized_vc"] = vc
+    if (result.get("status") == "INVALID"
+            and record["vc"].get("kind") in {"entailment", "which_implies"}
+            and _has_unmapped_local_scope(record["vc"])):
+        # A raw entailment countermodel does not establish a countermodel of
+        # the full parent (raw OR strategy obligation) when local scopes differ.
+        # Keep the query and countermodel; do not guess a frame or discard cells.
+        result.update(status="UNKNOWN", solver_status="INVALID",
+                      reason="local_stack_frame_requires_original_obligation_check",
+                      countermodel_scope="diagnostic_entailment_only")
     return result
+
+
+def _has_unmapped_local_scope(obligation: dict) -> bool:
+    from tools.finite_spatial_smt.qcp_import import assertion_parts
+
+    def names(part):
+        return set(re.findall(r"(?:^|;)\s*Temp\s+([A-Za-z_]\w*)\b", part["local"]))
+
+    pre = [names(part) for part in assertion_parts(obligation["path"])]
+    post = [names(part) for part in assertion_parts(obligation["goal"])]
+    return any(left - right for left in pre for right in post)
+
+
+
+def _witness_inventory(executor: dict) -> list:
+    """Read either native inventory format without inventing missing obligations."""
+    if "WitnessList" in executor:
+        return executor["WitnessList"]
+    structured = executor.get("verification_conditions")
+    if (type(executor.get("schema_version")) is not int
+            or executor["schema_version"] != 1 or not isinstance(structured, list)):
+        return []
+    families = {
+        "entailment": "entailment_checker_wit", "safety": "safety_checker_wit",
+        "return_entailment": "return_checker_wit", "partial_solve": "partial_solve_wit",
+        "which_implies": "which_implies_wit", "spec_entailment": "spec_entailment_wit",
+    }
+    witnesses = []
+    for item in structured:
+        if not isinstance(item, dict) or not isinstance(item.get("function"), str):
+            return []
+        conditions = item.get("conditions")
+        if not isinstance(conditions, dict) or set(conditions) != set(families):
+            return []
+        normalized = {}
+        total = automatic = manual_total = 0
+        for kind, counts in conditions.items():
+            if not isinstance(counts, dict):
+                return []
+            size, solved = counts.get("total"), counts.get("auto_solved")
+            manual = counts.get("manual_obligations")
+            if (type(size) is not int or type(solved) is not int
+                    or not 0 <= solved <= size or not isinstance(manual, list)
+                    or size != solved + len(manual)):
+                return []
+            listed = []
+            for obligation in manual:
+                if not isinstance(obligation, dict) or obligation.get("kind") != kind:
+                    return []
+                location = obligation.get("location")
+                if (not isinstance(location, dict)
+                        or not isinstance(location.get("file"), str)
+                        or type(location.get("line")) is not int
+                        or type(location.get("column")) is not int
+                        or not isinstance(obligation.get("goal"), str)):
+                    return []
+                listed.append({"line": location["line"], "column": location["column"],
+                               "fileName": location["file"], "goal": obligation["goal"]})
+            normalized[families[kind]] = {"total": size, "auto_solved": solved,
+                                         "manual": len(manual), "manual_witness": listed}
+            total += size
+            automatic += solved
+            manual_total += len(manual)
+        normalized["total_witness_count"] = {
+            "total": total, "auto_solved": automatic, "manual": manual_total,
+        }
+        witnesses.append({"functionName": item["function"], "Witness": normalized})
+    return witnesses
 
 
 def _return_coverage(executor: dict, original: list, residual: list) -> bool:
@@ -43,7 +120,7 @@ def _return_coverage(executor: dict, original: list, residual: list) -> bool:
     """
     fn = executor.get("functionName")
     manual = executor.get("manual_obligations")
-    witnesses = executor.get("WitnessList")
+    witnesses = _witness_inventory(executor)
     if not isinstance(fn, str) or not isinstance(manual, list) or not manual:
         return False
     returns = [v for v in original if v.get("kind") == "return"]
@@ -168,7 +245,7 @@ def _checked_contract_samples(case: dict, native: dict) -> bool:
 
 
 def _checked_symbolic_boundaries(case: dict, native: dict, function: str) -> bool:
-    """Admit QCP symbolic contracts and assertions, without sampling or execution claims."""
+    """Validate symbolic boundary provenance for the execution verdict only."""
     for key, value in (("execution_strategy", "modular"),
                        ("execution_semantics", "modular-symbolic/v1"),
                        ("result_scope", "contract-and-invariant-symbolic"),
@@ -204,9 +281,11 @@ def _checked_symbolic_boundaries(case: dict, native: dict, function: str) -> boo
             calls += count
         elif kind == "contract_state_symbolic" and fn == "contract":
             states += count
-        elif kind == "modular-assertion" and fn == function:
+        elif kind in {"modular-assertion", "loop-invariant"} and fn == function:
             if case.get("mode") != "all-boundaries" or case.get("annotation_policy") != "check-preserve":
                 return False
+        elif kind == "modular-loop-invariant" and fn == function:
+            continue
         elif kind == "infeasible-call-input":
             continue
         else:
@@ -246,14 +325,14 @@ def _checked_events(case: dict, native: dict, function: str) -> bool:
             return False
         kind, fn, count = event["kind"], event["function"], event["count"]
         if (
-            kind not in {"annotation-check", "inline-call", "contract-check"}
+            kind not in {"annotation-check", "inline-call", "contract-check", "loop-invariant"}
             or not isinstance(fn, str) or not fn
             or type(count) is not int or count <= 0
             or (kind, fn) in seen
         ):
             return False
         seen.add((kind, fn))
-        if kind == "annotation-check" and fn != function:
+        if kind in {"annotation-check", "loop-invariant"} and fn != function:
             return False
         if kind == "inline-call":
             calls[fn] += count
@@ -288,7 +367,7 @@ def _annotation_coverage(executor: dict, case: dict, original: list) -> bool:
         return False
     fn = executor.get("functionName")
     manual = executor.get("manual_obligations")
-    witnesses = executor.get("WitnessList")
+    witnesses = _witness_inventory(executor)
     if (
         not isinstance(fn, str) or not fn
         or not isinstance(manual, list) or not manual
@@ -443,17 +522,14 @@ def refine_case(
         "result_scope": case.get("result_scope"),
     }
     case["spatial_smt"] = info
-    # Never turn executor errors, incomplete executions or entry uncertainty
-    # into a counterexample. Contract samples retain their explicit model scope.
-    if (
-        case.get("status") != "UNKNOWN"
-        or case.get("scope") != "execution"
-        or case.get("execution_completed") is not True
-        or case.get("precondition_result") != "SAT"
-        or case.get("executor_error")
-        or case.get("returncode") != 0
-    ):
-        info["reason"] = "original_execution_not_eligible"
+    # No extra artifact IO or solver startup for already decided VCs. A final
+    # FAIL/ERROR can still contain independent UNKNOWN obligations to attempt.
+    original = case.get("vc_results", [])
+    if not isinstance(original, list) or any(not isinstance(v, dict) for v in original):
+        info["reason"] = "invalid_vc_inventory"
+        return
+    if not any(v.get("status") == "UNKNOWN" for v in original):
+        info["reason"] = "no_unknown_vcs"
         return
     try:
         raw_bytes = stdout_path.read_bytes()
@@ -465,24 +541,43 @@ def refine_case(
             or native.get("query_semantics") != "copy-only/v1"
             or native.get("execution_semantics") not in {*EXECUTION_SEMANTICS.values(), "modular-sampled/v1"}
             or native.get("result_semantics") != "three-valued-conjunction/v1"
-            or native.get("limit_reason")
-            or native.get("vc_results") != case.get("vc_results")
+            or native.get("vc_results") != original
+            or any(v.get("status") not in {"VALID", "INVALID", "UNKNOWN"} for v in original)
         ):
             info["reason"] = "unsupported_executor_protocol"
             return
     except (OSError, ValueError, KeyError, TypeError, AttributeError) as error:
         info["reason"] = "executor_artifact_unavailable:" + str(error)
         return
-    if not _checked_events(case, native, executor.get("functionName")):
-        info["reason"] = "unsupported_execution_events"
-        return
-    original = case["vc_results"]
+    # Provenance and execution coverage constrain the aggregate verdict, not
+    # whether an individual immutable obligation can be handed to the solver.
+    try:
+        events_checked = _checked_events(case, native, executor.get("functionName"))
+    except (TypeError, AttributeError, KeyError, ValueError):
+        events_checked = False
+    result_eligible = (
+        case.get("status") == "UNKNOWN"
+        and case.get("scope") == "execution"
+        and case.get("execution_completed") is True
+        and case.get("precondition_result") == "SAT"
+        and not case.get("executor_error")
+        and case.get("returncode") == 0
+        and not native.get("limit_reason")
+        and events_checked
+    )
+    info["execution_events_checked"] = events_checked
+    info["execution_result_eligible"] = result_eligible
+    if not result_eligible:
+        info["aggregate_preserved_reason"] = (
+            "unsupported_execution_events" if not events_checked
+            else "original_execution_not_eligible"
+        )
     contract_samples = bool(native.get("sampling_events"))
     if contract_samples:
         info["sampling_events_sha256"] = hashlib.sha256(
             json.dumps(native["sampling_events"], sort_keys=True).encode()
         ).hexdigest()
-        info["execution_strategy"] = native["execution_strategy"]
+        info["execution_strategy"] = native.get("execution_strategy")
     try:
         annotation_coverage = (not contract_samples
                                and _annotation_coverage(executor, case, original))
@@ -504,8 +599,16 @@ def refine_case(
         if obligation.get("status") != "UNKNOWN":
             continue
         record = {"layout": case.get("target_layout"), "vc": obligation}
-        if obligation.get("kind") == "entailment" and annotation_coverage:
-            record.update(check_mode="exact", local_semantics="same-program-environment/v1")
+        # Modes follow the native witness solver, not an execution event or
+        # whole-group count: full entailment is exact; partial matching allows
+        # a frame; safety goals are pure (the importer checks their shape).
+        kind = obligation.get("kind")
+        modes = {
+            "return": "exact", "entailment": "exact", "which_implies": "exact",
+            "partial_solve": "frame", "safety": "frame",
+        }
+        if kind in modes:
+            record.update(check_mode=modes[kind], local_semantics="same-program-environment/v1")
         # Dependency errors, parser failures and SMT failures must never be
         # interpreted as invalid bindings or discard the existing ITP task.
         try:
@@ -540,15 +643,15 @@ def refine_case(
     info["wall_seconds"] = time.monotonic() - started
     case["vc_results"] = refined
     states = [v["status"] for v in refined]
-    phases = dict(case["phases"])
+    phases = dict(case.get("phases", {}))
     returns = [v for v in refined if v.get("kind") == "return"]
-    if returns and any(v["status"] == "INVALID" for v in returns):
+    if result_eligible and returns and any(v["status"] == "INVALID" for v in returns):
         phases["postcondition"] = "FAIL"
-    elif returns and all(v["status"] == "VALID" for v in returns):
+    elif result_eligible and returns and all(v["status"] == "VALID" for v in returns):
         # Coverage is checked below before changing the final verdict.
         phases["postcondition"] = "PASS"
     annotations = [v for v in refined if v.get("kind") == "entailment"]
-    if annotation_coverage and annotations:
+    if result_eligible and annotation_coverage and annotations:
         if any(v["status"] == "INVALID" for v in annotations):
             phases["annotations"] = "FAIL"
         elif all(v["status"] == "VALID" for v in annotations):
@@ -574,10 +677,10 @@ def refine_case(
     coverage = coverage or annotation_coverage
     info["residual_coverage"] = coverage
     status = case["status"]
-    if "INVALID" in states:
+    if result_eligible and "INVALID" in states:
         status = "FAIL"
         case["reason"] = "spatial_smt_invalid_path_vc"
-    elif states and all(s == "VALID" for s in states) and complete and coverage:
+    elif result_eligible and states and all(s == "VALID" for s in states) and complete and coverage:
         status = "PASS"
         case["reason"] = "spatial_smt_valid_path_vcs"
     case["phases"] = phases
@@ -596,7 +699,7 @@ def refine_case(
     # Keep proof files/manifest/residual list unchanged as archival certificate
     # inputs. The scheduling list excludes groups fully decided for this test.
     info["itp_required"] = bool(case.get("residual_vcs")) and (
-        status == "UNKNOWN" or "UNKNOWN" in states or not coverage
+        not result_eligible or status == "UNKNOWN" or "UNKNOWN" in states or not coverage
     )
     summary_path = artifact_dir / "summary.json"
     summary_path.write_text(json.dumps(info, indent=2) + "\n", encoding="utf-8")

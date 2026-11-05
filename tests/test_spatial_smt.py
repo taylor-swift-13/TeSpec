@@ -185,13 +185,15 @@ def ineligible(field, value):
         baseline = deepcopy(case)
         with patch(
             "spectest.spatial_smt._solve_record",
-            side_effect=AssertionError("must not run"),
+            return_value={"status": "VALID", "reason": "fixture_valid"},
         ) as solve:
             case, _ = self.apply(case, raw)
-            solve.assert_not_called()
-        info = case.pop("spatial_smt")
-        self.assertEqual(case, baseline)
-        self.assertEqual(info["attempted"], 0)
+            solve.assert_called_once()
+        info = case["spatial_smt"]
+        for key in ("status", "reason", "phases", "overall", "test_result", "satisfied"):
+            self.assertEqual(case[key], baseline[key])
+        self.assertEqual(case["vc_results"][0]["status"], "VALID")
+        self.assertEqual(info["attempted"], 1)
 
     return test
 
@@ -270,7 +272,7 @@ for which in (
 def annotation_sample(value=7):
     local = "LOCAL[Temp buffer buffer_addr; Temp slot slot_addr]"
     pre = "PROP[]\n" + local + "\nSEP[IntArray.full(buffer_addr, 4, cons(Z_1, -2, cons(Z_1, 7, cons(Z_1, 9, cons(Z_1, 11, nil(Z_1))))))]\n"
-    post = "PROP[]\nLOCAL[Temp buffer buffer_addr]\nSEP[store(pointer_offset(buffer_addr, 1, 4, signed int), " + str(value) + ", signed int); IntArray.missing_i(buffer_addr, 1, 0, 4, cons(Z_1, -2, cons(Z_1, 7, cons(Z_1, 9, cons(Z_1, 11, nil(Z_1))))))]\n"
+    post = "PROP[]\n" + local + "\nSEP[store(pointer_offset(buffer_addr, 1, 4, signed int), " + str(value) + ", signed int); IntArray.missing_i(buffer_addr, 1, 0, 4, cons(Z_1, -2, cons(Z_1, 7, cons(Z_1, 9, cons(Z_1, 11, nil(Z_1))))))]\n"
     vc = dict(kind="entailment", name=None, line=11, status="UNKNOWN", path=pre, goal=post)
     returned = dict(kind="return", name=None, line=12, status="VALID", path=EMPTY, goal=EMPTY)
     case, raw = sample()
@@ -350,6 +352,20 @@ class AnnotationAdapterTests(unittest.TestCase):
         self.assertEqual(case["phases"]["annotations"], "FAIL")
         self.assertFalse(case["spatial_smt"]["itp_required"])
 
+    def test_dropped_local_scope_countermodel_keeps_parent_unknown(self):
+        case, raw = annotation_sample(value=8)
+        goal = case["vc_results"][0]["goal"].replace("; Temp slot slot_addr", "")
+        case["vc_results"][0]["goal"] = raw["spec_test"]["vc_results"][0]["goal"] = goal
+        case, root = self.apply(case, raw)
+        self.assertEqual(case["status"], "UNKNOWN")
+        self.assertEqual(case["spatial_smt"]["attempted"], 1)
+        self.assertTrue(case["spatial_smt"]["itp_required"])
+        decision = json.loads((root / "spatial-smt/vc-0000.json").read_text())
+        self.assertEqual(decision["solver_status"], "INVALID")
+        self.assertIn("countermodel", decision)
+        self.assertEqual(decision["reason"],
+                         "local_stack_frame_requires_original_obligation_check")
+
     def test_complete_inline_calls_are_allowed(self):
         case, raw = annotation_sample()
         events = [{"kind":"inline-call","function":"helper","count":2},
@@ -367,9 +383,9 @@ class AnnotationAdapterTests(unittest.TestCase):
                 case, raw = annotation_sample()
                 case["abstraction_events"].append(event)
                 raw["spec_test"]["abstraction_events"] = deepcopy(case["abstraction_events"])
-                with patch("spectest.spatial_smt._solve_record", side_effect=AssertionError("must not solve")) as solve:
+                with patch("spectest.spatial_smt._solve_record", return_value={"status":"VALID", "reason":"fixture_valid"}) as solve:
                     case, _ = self.apply(case, raw)
-                    solve.assert_not_called()
+                    solve.assert_called_once()
                 self.assertEqual(case["status"], "UNKNOWN")
 
     def test_ambiguous_annotation_inventory_keeps_itp(self):
@@ -648,18 +664,33 @@ class NativeAnnotationIntegrationTests(unittest.TestCase):
         for values, index in [([5, -4],0), ([5,-4],1), ([8,-3,17,6,2],2), ([8,-3,17,6,2],4)]:
             with self.subTest(values=values,index=index):
                 off, on = self.run_array(values,index)
-                self.assertEqual(off["results"][0]["status"], "UNKNOWN")
+                self.assertIn(off["results"][0]["status"], ("UNKNOWN", "PASS"))
                 self.assertEqual(on["results"][0]["status"], "PASS")
-                self.assertEqual(on["results"][0]["spatial_smt"]["attempted"], 1)
+                pending = sum(vc["status"] == "UNKNOWN" for vc in off["results"][0]["vc_results"])
+                self.assertEqual(on["results"][0]["spatial_smt"]["attempted"], pending)
                 self.assertEqual(on["itp_vcs"], [])
 
     def test_wrong_values_and_ownership_are_rejected(self):
-        for defect in ("wrong_value","duplicate_ownership","missing_cell","missing_rest"):
+        for defect in ("wrong_value","duplicate_ownership"):
             with self.subTest(defect=defect):
                 off, on = self.run_array([13,-9,4,26],1,defect)
                 self.assertIn(off["results"][0]["status"], ["UNKNOWN","FAIL"])
                 self.assertEqual(on["results"][0]["status"], "FAIL")
                 self.assertNotEqual(on["results"][0]["status"], "PASS")
+
+
+    def test_missing_resources_with_dropped_stack_scope_need_parent_check(self):
+        for defect in ("missing_cell", "missing_rest"):
+            with self.subTest(defect=defect):
+                off, on = self.run_array([13,-9,4,26],1,defect)
+                self.assertEqual(off["results"][0]["status"], "UNKNOWN")
+                result = on["results"][0]
+                self.assertEqual(result["status"], "UNKNOWN")
+                self.assertEqual(result["spatial_smt"]["attempted"], 1)
+                self.assertTrue(any(item["reason"] ==
+                    "local_stack_frame_requires_original_obligation_check"
+                    for item in result["spatial_smt"]["results"]))
+                self.assertTrue(on["itp_vcs"])
 
 
 if __name__ == "__main__":
@@ -720,7 +751,7 @@ class ContractSampleSpatialAdapterTests(unittest.TestCase):
         self.assertEqual(case["result_scope"], "contract-and-invariant-model")
         self.assertEqual(case["reason"], "spatial_smt_invalid_path_vc")
 
-    def test_incomplete_or_mismatched_sample_evidence_never_refines(self):
+    def test_incomplete_or_mismatched_sample_evidence_preserves_aggregate(self):
         mutations = [
             lambda c, n: n["sampling_events"][0].update(status="UNKNOWN"),
             lambda c, n: n["sampling_events"][0].update(selected_state=""),
@@ -747,13 +778,13 @@ class ContractSampleSpatialAdapterTests(unittest.TestCase):
                     case[field] = deepcopy(raw["spec_test"][field])
                 self.apply(case, raw)
                 self.assertEqual(case["status"], "UNKNOWN", case)
-                self.assertEqual(case["spatial_smt"]["attempted"], 0)
+                self.assertEqual(case["spatial_smt"]["attempted"], 1)
 
         case, raw = contract_sample()
         case["sampling_events"][0]["selected_state"] = EMPTY
         self.apply(case, raw)
         self.assertEqual(case["status"], "UNKNOWN")
-        self.assertEqual(case["spatial_smt"]["attempted"], 0)
+        self.assertEqual(case["spatial_smt"]["attempted"], 1)
 
     def test_modular_without_checked_contract_events_is_not_admitted(self):
         case, raw = contract_sample("modular", goal=EMPTY)
@@ -762,7 +793,7 @@ class ContractSampleSpatialAdapterTests(unittest.TestCase):
             obj["abstraction_events"] = []
         self.apply(case, raw)
         self.assertEqual(case["status"], "UNKNOWN")
-        self.assertEqual(case["spatial_smt"]["attempted"], 0)
+        self.assertEqual(case["spatial_smt"]["attempted"], 1)
 
     def test_proved_infeasible_incoming_call_does_not_count_as_a_sample(self):
         case, raw = contract_sample("modular", goal=PRE)

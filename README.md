@@ -45,7 +45,7 @@ modular 报告使用 `modular-symbolic/v1`、`contract-symbolic/v1` 和 `result_
 
 [本次实现与验收记录](docs/evaluation/spec-test-implementation.md)包含两种模式的使用方式、实际测试结果和剩余障碍。
 
-可选 `--spatial-smt` 对剩余有限空间 return VC 进行自动判定；默认关闭，未判定的 VC 继续保留给 ITP。参见[空间 SMT 后端](docs/spatial-smt.md)。
+可选 `--spatial-smt` 逐条尝试原生未决 VC，按各类 VC 的堆语义编码；默认关闭，不支持或证据不完整的 VC 保留给 ITP。参见[空间 SMT 后端](docs/spatial-smt.md)。
 
 ## 使用流程
 
