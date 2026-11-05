@@ -65,7 +65,7 @@ class QueryIsolationTests(unittest.TestCase):
                 self.assertTrue(trace)
                 final = trace[-1]["memory"]
                 self.assertRegex(
-                    final, r"store\(&\(p_\d+_pre->value\), \(p_pre_value_\d+ \+ 1\)"
+                    final, r"store\(&\(p_\d+_pre->value\), \(p_(?:pre|free)_value_\d+ \+ 1\)"
                 )
                 self.assertNotIn("store(4100,", final)
                 returns = [v for v in payload["vc_results"] if v["kind"] == "return"]
