@@ -78,7 +78,10 @@ class RunCertificateTests(unittest.TestCase):
                     function="f",
                     results=cases or [self.case],
                     summary={},
-                    itp_vcs=[dict(case_id="x")],
+                    itp_vcs=[dict(case_id=case["id"], function="f",
+                                  manifest=case.get("vc", {}).get("manifest"),
+                                  goals=list(case.get("residual_vcs", [])))
+                             for case in cases or [self.case]],
                 )
             )
         )
@@ -172,10 +175,19 @@ class RunCertificateTests(unittest.TestCase):
             "Lemma proof_of_result : ~ Goal.result.\n"
             "Proof. intro H. exact H. Qed. End Proofs.\n"
         )
+        frozen = Path(request["manifest"]).parent / "automatic.json"
+        original_manifest = Path(self.case["vc"]["manifest"])
+        frozen_before, manifest_before = frozen.read_bytes(), original_manifest.read_bytes()
         result = check_run_certificates(Path(request["manifest"]), request["manifest_sha256"])
         case = result["results"][0]
         self.assertEqual(case["test_result"], "UNKNOWN", result)
-        self.assertIn("proof_of_unresolved", case["residual_vcs"])
+        self.assertEqual(case["residual_vcs"], ["proof_of_unresolved"])
+        self.assertEqual(result["itp_vcs"], [dict(
+            case_id="x", function="f", manifest=str(original_manifest),
+            goals=["proof_of_unresolved"],
+        )])
+        self.assertEqual(frozen.read_bytes(), frozen_before)
+        self.assertEqual(original_manifest.read_bytes(), manifest_before)
         audit = result["proof_completion"]["certificates"][0]["certificate"]
         self.assertEqual(audit["vc_status"], "INVALID", audit)
         self.assertEqual(audit["stages"][-1]["stage"], "kernel_replay", audit)
@@ -251,6 +263,26 @@ class RunCertificateTests(unittest.TestCase):
         self.assertEqual(result["summary"]["FAIL"], 0)
         self.assertEqual(case["evidence"]["execution_counterexample"], "NOT_ESTABLISHED")
         self.assertTrue(any(v["status"] == "INVALID" for v in case["vc_results"]))
+
+    def test_partial_refutation_updates_only_its_case_pending_goals(self):
+        self.case["residual_vcs"].append("proof_of_pending")
+        Path(self.case["vc"]["manifest"]).write_text(json.dumps(self.vc))
+        other = copy.deepcopy(self.case)
+        other.update(id="y", status="ERROR", reason="qcp_execution_error")
+        other["residual_vcs"] = ["proof_of_other"]
+        request = self.prepare([self.case, other], refute_vcs={"x": "proof_of_result"})
+        result, _ = self.check(request, "NEGATIVE_PROOF", "proof_of_result")
+        self.assertEqual([v["goals"] for v in result["itp_vcs"]],
+                         [["proof_of_pending"], ["proof_of_other"]])
+        self.assertEqual([c["status"] for c in result["results"]], ["UNKNOWN", "ERROR"])
+        self.assertTrue(all(v["manifest"] == self.case["vc"]["manifest"]
+                            for v in result["itp_vcs"]))
+
+    def test_failed_refutation_keeps_all_pending_goals(self):
+        before = list(self.case["residual_vcs"])
+        result, _ = self.check(self.prepare(refute_vcs={"x": "proof_of_result"}), "UNKNOWN")
+        self.assertEqual(result["results"][0]["residual_vcs"], before)
+        self.assertEqual(result["itp_vcs"][0]["goals"], before)
 
     def test_refuted_path_with_unknown_entry_cannot_be_execution_failure(self):
         self.unresolved_entry()

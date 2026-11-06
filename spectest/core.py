@@ -2338,15 +2338,41 @@ def check_vc_proof(
             raise JobError(f"staged Coq dependency was modified: {staged}")
         dependency_files.append(staged)
 
+    stdout_log = vc_dir / "proof_check.stdout.txt"
+    stderr_log = vc_dir / "proof_check.stderr.txt"
+    stdout_parts: list[str] = []
+    stderr_parts: list[str] = []
+    compiled: list[str] = []
+
+    def save_report(report: dict[str, Any]) -> dict[str, Any]:
+        stdout_log.write_text("\n".join(stdout_parts), encoding="utf-8")
+        stderr_log.write_text("\n".join(stderr_parts), encoding="utf-8")
+        report["report"] = str(proof_report)
+        proof_report.write_text(
+            json.dumps(report, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+        return report
+
     prefix = list(coqc_command or _default_coqc_command())
-    version = subprocess.run(
-        [*prefix, "-v"],
-        cwd=separation_logic,
-        capture_output=True,
-        text=True,
-        timeout=min(timeout_seconds, 15),
-        check=False,
-    )
+    try:
+        version = subprocess.run(
+            [*prefix, "-v"],
+            cwd=separation_logic,
+            capture_output=True,
+            text=True,
+            timeout=min(timeout_seconds, 15),
+            check=False,
+        )
+    except subprocess.TimeoutExpired as error:
+        stdout_parts.append(_subprocess_text(error.stdout))
+        stderr_parts.append(_subprocess_text(error.stderr))
+        return save_report({
+            "schema": "qcp-spectest-proof-report/v1", "status": "UNKNOWN",
+            "satisfied": None, "reason": "coq_version_timeout",
+            "case_id": manifest.get("case_id"), "function": manifest.get("function"),
+            "compiled": compiled, "stdout": str(stdout_log), "stderr": str(stderr_log),
+        })
     version_output = version.stdout + "\n" + version.stderr
     if version.returncode != 0 or "version 8.20" not in version_output:
         raise JobError(
@@ -2359,22 +2385,7 @@ def check_vc_proof(
         vc_dir,
         dependency_root if dependency_files else None,
     )
-    stdout_log = vc_dir / "proof_check.stdout.txt"
-    stderr_log = vc_dir / "proof_check.stderr.txt"
-    stdout_parts: list[str] = []
-    stderr_parts: list[str] = []
-    compiled: list[str] = []
     started = time.monotonic()
-
-    def save_report(report: dict[str, Any]) -> dict[str, Any]:
-        stdout_log.write_text("\n".join(stdout_parts), encoding="utf-8")
-        stderr_log.write_text("\n".join(stderr_parts), encoding="utf-8")
-        report["report"] = str(proof_report)
-        proof_report.write_text(
-            json.dumps(report, ensure_ascii=False, indent=2) + "\n",
-            encoding="utf-8",
-        )
-        return report
 
     def compile_unit(compile_path: Path):
         command = [*prefix, *load_paths, str(compile_path)]

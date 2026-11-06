@@ -320,9 +320,13 @@ def check_run_certificates(
     counts = Counter(c["status"] for c in result["results"])
     for status in ("PASS", "FAIL", "UNKNOWN", "ERROR", "INVALID"):
         result["summary"][status] = counts[status]
-    pending = {c["id"] for c in result["results"] if c.get("residual_vcs")}
+    pending = {c["id"]: c["residual_vcs"] for c in result["results"]
+               if c.get("residual_vcs")}
+    # A selected refutation can leave other goals pending in the same case.
+    # Keep the original manifest as evidence, but dispatch only current goals.
     result["itp_vcs"] = [
-        v for v in result.get("itp_vcs", []) if v["case_id"] in pending
+        dict(v, goals=list(pending[v["case_id"]]))
+        for v in result.get("itp_vcs", []) if v["case_id"] in pending
     ]
     result["proof_completion"] = {
         "run_manifest_sha256": expected_digest,

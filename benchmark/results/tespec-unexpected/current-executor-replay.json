@@ -399,17 +399,21 @@
     "reproduction": "TESPEC_COQ_INTEGRATION=1 SAC_SYMEXEC=$PWD/bin/tespec-symexec PYTHONPATH=tests python3 -m unittest test_vc_prelude"
   },
   "vc_writeback_audit": {
-    "scope": "Focused engineering regression; no benchmark program/specification/expectation or formal cost changed. The native binary and sac source are unchanged from native_fix.",
+    "scope": "Focused engineering regression; no benchmark program/specification/expectation or formal cost changed. Native binary and sac source unchanged. Array controls below are retained from the preceding writeback regression; this follow-up reruns the listed 270 tests.",
     "fixes": [
       "The return-only spatial-SMT PASS path now checks the original source, on-disk manifest, Coq hashes, residual inventory and parent interface; mismatch preserves UNKNOWN and ITP.",
       "The legacy check-proof entry rejects forbidden proof commands on the same line and audits transitive assumptions against the complete original VC_Correct interface, including trusted-name identity checks.",
-      "A rejected or failed proof retry cannot retain a previous proof_report.json PASS; compile failure or timeout writes UNKNOWN."
+      "A rejected or failed proof retry cannot retain a previous proof_report.json PASS; compile failure or timeout writes UNKNOWN.",
+      "After a selected VC refutation, synchronize top-level ITP task goals with each case current residuals; do not redispatch refuted parents or split goals, and preserve frozen evidence.",
+      "Persist UNKNOWN when the Coq version probe times out instead of leaking TimeoutExpired without a result."
     ],
     "source_sha256": {
-      "spectest/core.py": "87456501b068bee084be341b0e99c6d528da79a0e2e51ddcc7303aa6d36a2d53",
+      "spectest/core.py": "96073f2ccc4e4a27d21bb041cb01c7b8608dcc1850cffe774c7ff3f27b87a5ff",
       "spectest/spatial_smt.py": "d49ad29c3ada57e1e8e5c2f88c7aed9183d2344e134aea7b3f7e89e2213dff65",
-      "tests/test_legacy_proof_replay.py": "f9c87ebd91fc0a396818914d9e9929ca0400adcfa8c069336ede27476c65915f",
-      "tests/test_spatial_return_binding.py": "c5bb24851ba92c94341656d944219c3a17c75c6c5c53a169d4e68470a6309acb"
+      "tests/test_legacy_proof_replay.py": "14deee739d87e2af9b0a935f11bdf4fa33dd3829a91eda1d4b8cd1a3d4e2c819",
+      "tests/test_spatial_return_binding.py": "c5bb24851ba92c94341656d944219c3a17c75c6c5c53a169d4e68470a6309acb",
+      "spectest/run_certificates.py": "b5761c3250844877812d5177b0fcea35f7b686342ddca91f64ae56e0911399d4",
+      "tests/test_run_certificates.py": "0d7ec4fff78126ebe9d4a4ecf7d201d2549db67b21b374516a324cc5bb321c4c"
     },
     "checks": [
       {
@@ -418,34 +422,18 @@
         "passed": 160,
         "skipped": 0,
         "result": "PASS",
-        "log_sha256": "766624dfa241941fba4adbb17c0c2ecadd24e8bf58ed152875845ecd9f2d517b"
+        "log_sha256": "3d75207a4050ab736cd196312cbab5fa3f7313c6cd6f23b5f8a30b8736f4a555"
       },
       {
-        "check": "legacy proof replay including actual Coq controls",
-        "total": 9,
-        "passed": 9,
+        "check": "proof inputs, replay, partial-refutation tasks and cache, including actual Coq controls",
+        "total": 110,
+        "passed": 110,
         "skipped": 0,
         "result": "PASS",
-        "log_sha256": "f60208a267d18449b7a7adc7307ca193680593eca0f079065a35ed2ea1b5cc05"
-      },
-      {
-        "check": "existing proof input, reconciliation and cache checks",
-        "total": 98,
-        "passed": 95,
-        "skipped": 3,
-        "result": "PASS",
-        "log_sha256": "7f16bc70b04fc40142e0c3eac9501ac8e7724ef498d9ba7165a2ab210d29ca5c"
-      },
-      {
-        "check": "separate execution of the three integration checks skipped above",
-        "total": 3,
-        "passed": 3,
-        "skipped": 0,
-        "result": "PASS",
-        "log_sha256": "f03b91fe5c7bc103740dd404b6630244f67ccfbe30550d8c762218348a4aec6c"
+        "log_sha256": "cbc079a75362b8a3ab3261a3414e8acf3bee12c01294e86b7c637e81a32b1a05"
       }
     ],
-    "unique_tests_passed": 267,
+    "unique_tests_passed": 270,
     "array_controls": [
       {
         "case": "original_client_translation7_only_entry",
@@ -488,13 +476,20 @@
       "closed valid proof PASS; wrong retry UNKNOWN",
       "unapproved dependency axiom rejected",
       "allowed classical axiom accepted with full identity recorded",
-      "runtime-like task axiom rejected"
+      "runtime-like task axiom rejected",
+      "real slow version-probe subprocess returns UNKNOWN and replaces old PASS"
     ],
     "legacy_check_scope": "Coq compilation and transitive assumption audit; independent_kernel_replay=NOT_RUN. The separate three existing complete-certificate controls do run independent kernel checks.",
     "reproduction": {
       "proof": "TESPEC_COQ_INTEGRATION=1 PYTHONPATH=tests python3 -m unittest test_legacy_proof_replay",
-      "return": "SAC_SYMEXEC=$PWD/bin/tespec-symexec PYTHONPATH=tests python3 -m unittest test_spatial_return_binding"
+      "return": "SAC_SYMEXEC=$PWD/bin/tespec-symexec PYTHONPATH=tests python3 -m unittest test_spatial_return_binding",
+      "pending": "TESPEC_COQ_INTEGRATION=1 PYTHONPATH=tests python3 -m unittest test_run_certificates"
     },
-    "raw_temporary_runs_retained_in_git": false
+    "raw_temporary_runs_retained_in_git": false,
+    "partial_refutation_controls": [
+      "actual independent kernel refutation removes only proved targets from pending goals",
+      "multiple cases update independently; failed proofs retain all pending targets",
+      "original manifest and frozen automatic report stay byte-identical; execution remains UNKNOWN without reachability evidence"
+    ]
   }
 }

@@ -6,6 +6,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -80,6 +81,18 @@ class LegacyProofReplayTests(unittest.TestCase):
         with self.assertRaisesRegex(JobError, "generated VC file was modified"):
             self.check()
         self.assertFalse(self.saved.exists())
+
+    def test_version_timeout_persists_unknown_instead_of_raising(self):
+        self.stale_pass()
+        probe = self.folder / "slow_version.py"
+        probe.write_text("import time\nprint('version probe started', flush=True)\ntime.sleep(5)\n")
+        report = check_vc_proof(
+            self.manifest, coqc_command=[sys.executable, str(probe)], timeout_seconds=0.2)
+        self.assertEqual(report["status"], "UNKNOWN")
+        self.assertEqual(report["reason"], "coq_version_timeout")
+        self.assertEqual(report["compiled"], [])
+        self.assertIsNone(report["satisfied"])
+        self.assertEqual(json.loads(self.saved.read_text()), report)
 
     def test_compile_failure_persists_unknown_instead_of_old_pass(self):
         self.stale_pass()

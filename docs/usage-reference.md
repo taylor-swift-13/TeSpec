@@ -246,10 +246,14 @@ python3 -m spectest check-proof PATH/TO/vc/manifest.json
 逐目标执行 `Print Assumptions`，核对允许的既有库假设及其完整身份；从依赖文件
 导入的未批准公理同样不能产生 PASS。报告保存实际假设，不把有库假设的证明标为 Closed。
 
-每次检查先移除旧 `proof_report.json`；编译失败或超时写回 UNKNOWN，输入校验拒绝
+每次检查先移除旧 `proof_report.json`；版本探测超时、编译失败或超时均写回 UNKNOWN，输入校验拒绝
 也不会留下旧 PASS。`check-proof` 的 PASS 表示 Coq 编译和假设审计通过，
 `independent_kernel_replay` 为 `NOT_RUN`；它不表示 QCP 自动证明或独立内核复核。
 需要独立 `coqchk` 的完整证据时使用完整证书检查流程。
+
+完整证书流程处理部分 VC 后，顶层 `itp_vcs.goals` 与该 case 当前的 `residual_vcs`
+同步；已反证的目标及其 split 子目标不重复派发，未决目标继续保留。原始 manifest
+和冻结报告不修改。仅反证一个 VC 且未建立可达性时，整次执行仍保持 UNKNOWN。
 
 ## Codex skill
 
