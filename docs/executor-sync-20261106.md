@@ -3,10 +3,10 @@
 Canonical source: /home/yangfp/sac_c_parser, branch tespec.
 Deployed binary: bin/tespec-symexec. Provenance: bin/tespec-symexec.build.json.
 
-- sac_revision: b36b30773cf5dd9c1cb090997c0004dd4940e659
+- sac_revision: 87cdda683ba189c1fab03a9058d753a30fca1329
 - sac_master_base: 1cde2a4b2069c41b6a7a1fa29bf6a2492c7a34f1
 - smt_revision: 3098d53575ad2a99f9f561ec4e10233c98f44fd3
-- binary_sha256: 09987e13f52a78c83925e5a67ee0d6cd05bf657eb3f94d17c4f70e3dfa74fed5
+- binary_sha256: e990f9c363e62a37476b3959a1c19ebe0d1efa69564a381957383dab69014f67
 - source_dirty: False
 
 Installed and build binary hashes match. The tracked source and SMT trees were
@@ -113,7 +113,7 @@ for status, source/VC hashes, native resource measurements and test-log hashes.
 
 ## Inline helper binding and recursive frame fixes
 
-Current sac source: `b36b30773cf5dd9c1cb090997c0004dd4940e659` (local commit only).
+That revision: `b36b30773cf5dd9c1cb090997c0004dd4940e659` (local commit only).
 QCP's existing call-result instance map now retains original With IDs alongside
 inferred and explicit `where(...)` values. Each inline invocation uses its own
 map; simultaneous substitution protects outer symbolic values during recursion.
@@ -135,3 +135,38 @@ assertions, explicit/named contracts, invariants and symbolic recursive swaps.
 The six array_load controls above still match their original expectations.
 No benchmark source/expectation changed and no full-group, ITP or Coq proof rerun
 is claimed. The existing compact receipt contains updated hashes and check totals.
+
+## Which-implies observation applicability
+
+Current local sac revision: `87cdda683ba189c1fab03a9058d753a30fca1329`.
+Observation previously checked only the annotation's own pre/post implication,
+so an impossible premise or missing required heap could pass vacuously. It now
+uses QCP matching against the current state first, with per-call With values
+instantiated on the observation copy. Proof aliases are not registered globally
+by observation-only matching. The live state is never replaced by the annotation.
+
+An opaque predicate can prevent matching without disproving applicability. Such
+failures retain the actual frame-existence obligation `P |-- EX with, Q ** truep`,
+using the selected memory model's qualified constant, and continue execution.
+They do not fabricate partial-solve success. Space SMT can reject the simple
+impossible/missing-resource controls; opaque obligations remain UNKNOWN for ITP.
+The importer only accepts this constant as a nullary top-level positive SEP goal,
+with an established 32/64-bit memory model; source or ambiguous uses are rejected.
+
+Final checks passed: 608 sac regressions, 157 teSpec regressions, 147 spatial importer
+regressions, and 65 ASan regressions (`detect_leaks=0`). The ten new observation
+controls include positive/negative premises, helper bindings, frame preservation,
+opaque predicates and unchanged entry-exit/modular behavior. The same six original
+array controls above retain their expected results. No benchmark expectation or
+formal group cost changed; temporary replay trees are not committed.
+
+The native Goal printer also imports `SimpleC.Verification.VCPrelude`, which was
+missing from the pinned runtime. A compatibility module now re-exports existing
+runtime definitions with the required build/load-path entry; it adds no assumptions
+and does not rewrite generated goals. Both a pure original Goal and the new frame
+Goal compile unchanged. The pure control's entire three-target `VC_Correct`
+interface is proved, all three assumption audits are closed, and full recursive
+`coqchk` passes. Its first 90-second check timed out; the same check passed with a
+300-second budget (122.570 seconds for the test). Nineteen other runtime checks
+passed on the first run. These are twenty covered checks, not twenty checks passed
+in the initial invocation, and not a fresh benchmark proof/cost evaluation.

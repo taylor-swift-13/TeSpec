@@ -1,6 +1,6 @@
 {
   "schema": "tespec-focused-regression/v2",
-  "scope": "Engineering regression only. Prior 1802-run replay is historical; the current binary was rerun on the six targeted configurations below. No CN/Fulminate, ITP or Coq kernel rerun; no formal group results or costs replaced.",
+  "scope": "Engineering regression only. Prior 1802-run replay is historical; current binary was rerun on the six targeted configurations below and the listed regression suites. No CN/Fulminate or group ITP rerun; no formal group results or costs replaced. Coq bridge checks, when listed, apply only to their dedicated original-VC control.",
   "previous_replay": {
     "baseline_commit": "f20af231955ba113f5a1f4d79508cc0d56a24765",
     "summary": {
@@ -77,15 +77,18 @@
     }
   },
   "native_fix": {
-    "sac_revision": "b36b30773cf5dd9c1cb090997c0004dd4940e659",
-    "binary_sha256": "09987e13f52a78c83925e5a67ee0d6cd05bf657eb3f94d17c4f70e3dfa74fed5",
+    "sac_revision": "87cdda683ba189c1fab03a9058d753a30fca1329",
+    "binary_sha256": "e990f9c363e62a37476b3959a1c19ebe0d1efa69564a381957383dab69014f67",
     "source_dirty": false,
     "changes": [
       "Bind body annotation With references to the selected entry contract before semantic analysis.",
       "Prepare fresh observation goals with actual local addresses and existing scalar local frames after template lowering; do not modify live state or complete arbitrary user heaps.",
       "Carry original With IDs and inferred or explicit where(...) values through each inline invocation; preserve existing QCP call witnesses.",
       "Resolve same-name/same-type With aliases only within the current callee and substitute simultaneously to isolate repeated, nested and recursive calls.",
-      "Resolve callee annotation addresses before merging caller resources; remove shadowed caller LOCAL bindings while retaining every frame SEP/PROP and original stack address."
+      "Resolve callee annotation addresses before merging caller resources; remove shadowed caller LOCAL bindings while retaining every frame SEP/PROP and original stack address.",
+      "Check observed which-implies applicability against the actual current state using QCP matching; instantiate helper With values before checking its pre/post.",
+      "When matching is unresolved, retain the original entailment to the existential precondition separated from the actual memory-model truep. Continue live execution unchanged; never manufacture a successful partial-solve witness.",
+      "Import a qualified nullary memory-model truep only as a positive top-level goal SEP frame; reject antecedent, mixed-mode, nested and mismatched-model uses."
     ],
     "source_input_and_expectations_unchanged": true,
     "reproduction": "Use the named array_load case from benchmark/programs/array_load/evaluation-plan.json, its original variant source/bindings/includes, execution_mode=all-boundaries, recorded execution_strategy and spatial_smt=true.",
@@ -107,7 +110,7 @@
         "previous_status": "UNKNOWN",
         "precondition": "SAT",
         "execution_completed": true,
-        "raw_json_sha256": "f94f96ace81ec15aa354711b65e62009a45fbd6fa54346d6c82159622c6f77df",
+        "raw_json_sha256": "6526b20e006cf181cc0b66d4947145ab200c0234058d6c9141e73e0dbea0b675",
         "original_vc_sha256": {
           "goal": "d7f285242b9901c765b18ffb61ee378dc0a2eb9d0b67c6837c43aef771cf95c7",
           "proof_auto": "dc4ab453764552551bd2908fabe1dac4ee6df204f9e39d604c66528c5778cef0",
@@ -115,10 +118,10 @@
           "goal_check": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e"
         },
         "native_resources": {
-          "wall_seconds": 0.017297,
-          "cpu_seconds": 0.01,
+          "wall_seconds": 0.018067,
+          "cpu_seconds": 0.0,
           "measurement": "GNU time; executor and children; maximum process RSS",
-          "peak_rss_kib": 7812
+          "peak_rss_kib": 7860
         }
       },
       {
@@ -138,7 +141,7 @@
         "previous_status": "PASS",
         "precondition": "SAT",
         "execution_completed": true,
-        "raw_json_sha256": "0a42f9fcad7639a1cc076b8cea54a208418e718e5e6f6098e3a1c71a748fd0b1",
+        "raw_json_sha256": "fbccc1b5ac41b2071ed7412eaa2471c26d47969a3469f5c129421899da35bcb0",
         "original_vc_sha256": {
           "goal": "a29666a7a8011ec25e3fde8ca97331aa32dce509600c653c303bdeb14e23319f",
           "proof_auto": "0bbb7a193f7e5765d34d3ee3cbc593c4532cfe5dc4a530b73989fb1a4b552e80",
@@ -146,10 +149,10 @@
           "goal_check": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e"
         },
         "native_resources": {
-          "wall_seconds": 0.031559,
+          "wall_seconds": 0.034279,
           "cpu_seconds": 0.02,
           "measurement": "GNU time; executor and children; maximum process RSS",
-          "peak_rss_kib": 8716
+          "peak_rss_kib": 8688
         }
       },
       {
@@ -173,7 +176,7 @@
         "previous_status": "FAIL",
         "precondition": "SAT",
         "execution_completed": true,
-        "raw_json_sha256": "373b15913e287ae4b3d82acb1d3474a85d3497485a9b93ca53bcb5f2c213ce4a",
+        "raw_json_sha256": "a9f7ab7509fd84bdb317ed08032af7bce069be86b8e90e2f8cedf3d14cbf4bcc",
         "original_vc_sha256": {
           "goal": "b18bcc6d5cdf286799f171bbcf7531d15251ce3328064dd416bba5584729d30b",
           "proof_auto": "a9ee882f074e6bf012463182d749ef3ca61110bff0d9d5be166b220b56decffa",
@@ -181,10 +184,10 @@
           "goal_check": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e"
         },
         "native_resources": {
-          "wall_seconds": 0.016186,
-          "cpu_seconds": 0.01,
+          "wall_seconds": 0.018948,
+          "cpu_seconds": 0.0,
           "measurement": "GNU time; executor and children; maximum process RSS",
-          "peak_rss_kib": 7804
+          "peak_rss_kib": 7948
         }
       },
       {
@@ -208,7 +211,7 @@
         "previous_status": "FAIL",
         "precondition": "SAT",
         "execution_completed": true,
-        "raw_json_sha256": "48f1f536500bbf2a2ea664326f7d9596fe903374e4cc85a550a3e429ce48ae57",
+        "raw_json_sha256": "0d718438f4264dac5803b7d90cd3a32003a99f67fdf9871c908cc577c386ae93",
         "original_vc_sha256": {
           "goal": "6b801a6ac5f7ad16513a048867adb6e1af5eb47fdc4e4f5348fc9df11f117feb",
           "proof_auto": "a8189fbc02ed1ba94b0201b7a909e73bfe3aa8f7dc2f9ac7258aa33f345d9fd2",
@@ -216,10 +219,10 @@
           "goal_check": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e"
         },
         "native_resources": {
-          "wall_seconds": 0.040874,
+          "wall_seconds": 0.045237,
           "cpu_seconds": 0.03,
           "measurement": "GNU time; executor and children; maximum process RSS",
-          "peak_rss_kib": 8696
+          "peak_rss_kib": 8588
         }
       },
       {
@@ -239,7 +242,7 @@
         "previous_status": "UNKNOWN",
         "precondition": "SAT",
         "execution_completed": true,
-        "raw_json_sha256": "beda0aef342601f164948eb252a7b1288bb1ddc10b970a53d014aeb2cdfdc8bb",
+        "raw_json_sha256": "e792cff2cfa4cf6504ea1dd126cb94bf56b51c0697a809cff11a089f48c93fd5",
         "original_vc_sha256": {
           "goal": "4493c40c858e0d8e34d45fc7d495e5afafb08e8f7e8e94e3aed7135d6451f6ad",
           "proof_auto": "dc4ab453764552551bd2908fabe1dac4ee6df204f9e39d604c66528c5778cef0",
@@ -247,10 +250,10 @@
           "goal_check": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e"
         },
         "native_resources": {
-          "wall_seconds": 0.01595,
+          "wall_seconds": 0.018379,
           "cpu_seconds": 0.0,
           "measurement": "GNU time; executor and children; maximum process RSS",
-          "peak_rss_kib": 7820
+          "peak_rss_kib": 7692
         }
       },
       {
@@ -270,7 +273,7 @@
         "previous_status": "FAIL",
         "precondition": "SAT",
         "execution_completed": true,
-        "raw_json_sha256": "fe3dc68fba042b907c0fa0c2180100cdf52a28d3453bc912242a7150763f4893",
+        "raw_json_sha256": "5fbfe64e6dbfe7f3d3b6f6de70a592bbf582463b51a01f691b51da360496bc95",
         "original_vc_sha256": {
           "goal": "bcdb5dd8b9ad0d12f9e22756f321e0c249230e9c37cdaa9a52589a21801ee8de",
           "proof_auto": "0d0ef89f4aa8411b137f11b60bc4ee49f036cba32cfd11553849dbeb6443f7b2",
@@ -278,10 +281,10 @@
           "goal_check": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e"
         },
         "native_resources": {
-          "wall_seconds": 0.03262,
+          "wall_seconds": 0.032809,
           "cpu_seconds": 0.02,
           "measurement": "GNU time; executor and children; maximum process RSS",
-          "peak_rss_kib": 8460
+          "peak_rss_kib": 8636
         }
       }
     ],
@@ -291,29 +294,28 @@
         "tests": 608,
         "skipped": 0,
         "result": "PASS",
-        "log_sha256": "ca231b41bb019d57ecc441375e46d95f8e532f538857c1ab5c795c9465656f9d"
+        "log_sha256": "21942938155bf232a5168bae19f160415539be96d9343324290709dfcd49369f"
       },
       {
         "check": "teSpec targeted regressions on installed binary",
+        "tests": 157,
+        "skipped": 0,
+        "result": "PASS",
+        "log_sha256": "f496672db1541b2f1c5093c249a18a2dd65b19ca12411fdc5935220410bbf66d"
+      },
+      {
+        "check": "ASan call, strategy and observation regressions (detect_leaks=0)",
+        "tests": 65,
+        "skipped": 0,
+        "result": "PASS",
+        "log_sha256": "f79f0ed0104618347ef3893f6e6a8a0253f9dfa5779fcbada789bb28f0488ac0"
+      },
+      {
+        "check": "finite spatial importer regressions",
         "tests": 147,
         "skipped": 0,
         "result": "PASS",
-        "log_sha256": "9b8d627a7e47e5c37220536f9fab80f0942cba40e259d08498186710354c0182"
-      },
-      {
-        "check": "ASan existing call/strategy regressions (detect_leaks=0)",
-        "tests": 39,
-        "skipped": 0,
-        "result": "PASS",
-        "log_sha256": "a38a721ed538d5cda48bfbe03ddba974035da798f66334c3cdc6075b30e829ac"
-      },
-      {
-        "check": "ASan entry and annotation regressions (detect_leaks=0)",
-        "tests": 16,
-        "skipped": 0,
-        "result": "PASS",
-        "log_sha256": "06cc4fb8261d2e43fabd141573df9a365f4c4e0a1b9206a571674ab005747b4b",
-        "execution_configurations": 36
+        "log_sha256": "12945e5648515f448a306e36db665eb7f123d9f5f3d125f93eb5e133b3a790b0"
       }
     ],
     "itp": "NOT_RUN; all six expected execution statuses decided automatically; no Coq certificate claimed.",
@@ -335,10 +337,65 @@
       ],
       "source_program_expectations": "No benchmark expectation changed; wrong assertions remain rejected.",
       "reproduction": "SAC_SYMEXEC=$PWD/bin/tespec-symexec PYTHONPATH=tests python3 -m unittest test_entry_and_annotation_scope"
+    },
+    "which_implies_regression": {
+      "test_file": "tests/test_which_implies_observation.py",
+      "test_source_sha256": "abb7cee149a83883e66ec2cda04c1bfa0411074715d9e5f0219b3b95e061935c",
+      "methods": 10,
+      "execution_configurations": 10,
+      "result": "PASS",
+      "coverage": [
+        "impossible pure premise: FAIL",
+        "missing heap premise: FAIL",
+        "helper With substitution: PASS; wrong post: FAIL",
+        "external frame retained and live heap unchanged",
+        "entry-exit and modular controls unchanged",
+        "opaque premise: complete execution, UNKNOWN, original Coq obligation retained"
+      ],
+      "reproduction": "SAC_SYMEXEC=$PWD/bin/tespec-symexec PYTHONPATH=tests python3 -m unittest test_which_implies_observation"
     }
   },
   "open_cases": [],
   "open_cases_scope": "Only the four discrepancies identified in previous_replay; this is not a claim that all benchmark groups or recursive predicates are supported.",
   "formal_group_results_replaced": false,
-  "raw_temporary_runs_retained_in_git": false
+  "raw_temporary_runs_retained_in_git": false,
+  "coq_runtime_bridge": {
+    "issue": "Current native Goal imports SimpleC.Verification.VCPrelude, absent from the pinned runtime and load-path mapping.",
+    "fix": "Re-export the existing runtime through that module; add its build and load-path entries without rewriting generated goals or adding assumptions.",
+    "test_file": "tests/test_vc_prelude.py",
+    "test_source_sha256": "ce64c08d10b6de08e52fabba684fc6eb876f384d8ed5ead71f53e18c64e0ff75",
+    "runtime_checks": {
+      "total_tests_covered": 20,
+      "passed": 20,
+      "skipped": 0,
+      "first_attempt": {
+        "tests": 20,
+        "passed": 19,
+        "errors": 1,
+        "reason": "Full recursive coqchk exceeded the initial 90-second budget; no logical rejection.",
+        "log_sha256": "5d712a0518a29cd2b7370df987dcf3dabd5152c868119f427abc411444e7f70e"
+      },
+      "retry": {
+        "tests": 1,
+        "result": "PASS",
+        "timeout_seconds": 300,
+        "elapsed_seconds": 122.57,
+        "log_sha256": "d6fd232c06c887733678e4bbbc10207a95d487839ead4a0501788a782f71430c"
+      }
+    },
+    "pure_control": {
+      "original_goal_unchanged": true,
+      "complete_vc_correct_interface": true,
+      "proved_targets": 3,
+      "closed_under_global_context": 3,
+      "independent_coqchk": "PASS; complete recursive dependency check, no -norec or -admit"
+    },
+    "frame_control": {
+      "original_goal_unchanged": true,
+      "coqc": "PASS",
+      "proof": "NOT_CLAIMED"
+    },
+    "scope": "Dedicated integration controls only; not a new benchmark proof or formal group-cost measurement.",
+    "reproduction": "TESPEC_COQ_INTEGRATION=1 SAC_SYMEXEC=$PWD/bin/tespec-symexec PYTHONPATH=tests python3 -m unittest test_vc_prelude"
+  }
 }

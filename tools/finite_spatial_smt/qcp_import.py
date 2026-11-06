@@ -306,6 +306,48 @@ def assertions(text,*,local_symbols=None,free_lists=None):
     return result
 
 
+
+def lower_consequent_truep(pre_parts, post_parts, post_text, layout):
+    """Recognize only the native, nullary Coq constant in a positive SEP goal.
+
+    P |-- Q ** memory_rules.truep asks for a subheap satisfying Q. The finite encoder's
+    frame mode expresses that exact formula; it is not an inferred user frame.
+    A source containing truep would describe arbitrary extra heap and is outside
+    our finite-source encoding. Mixed exact/frame disjuncts need per-branch modes.
+    """
+    token = re.compile(r'(?<![\w.])(?:CRules|naive_C_Rules(?:32|64)?)\.truep(?![\w.])')
+    if not any(token.search(part[0]) for part in pre_parts + post_parts):
+        return post_text, False
+    bits = layout.get('architecture_bits')
+    models = {32: {'naive_C_Rules'}, 64: {'naive_C_Rules64'}}
+    if type(bits) is not int or bits not in models or layout.get('memory_rules') not in models[bits]:
+        raise Unsupported('truep_memory_profile_not_established')
+    truep_name = layout['memory_rules'] + '.truep'
+    if any(token.search(part[0]) for part in pre_parts):
+        raise Unsupported('antecedent_truep_not_supported')
+    framed = []
+    rewritten = []
+    for part in post_parts:
+        if any(token.search(part[field]) for field in ('ex', 'pure', 'local')):
+            raise Unsupported('truep_not_top_level_goal_sep')
+        terms = split_top(part['spatial'], ';')
+        has_truep = False
+        kept = []
+        for term in terms:
+            if term == truep_name:
+                has_truep = True
+            elif token.search(term):
+                raise Unsupported('truep_not_nullary_goal_sep')
+            else:
+                kept.append(term)
+        framed.append(has_truep)
+        rewritten.append(part['ex'] + 'PROP[' + part['pure'] + ']\nLOCAL['
+                         + part['local'] + ']\nSEP[' + ';'.join(kept) + ']\n')
+    if any(framed) and not all(framed):
+        raise Unsupported('mixed_exact_and_frame_consequents')
+    return (''.join(rewritten), True) if any(framed) else (post_text, False)
+
+
 def import_record(row,*,check_mode=None,local_semantics=None):
     """Import a native query after its exact/frame semantics are established.
 
@@ -341,6 +383,10 @@ def import_record(row,*,check_mode=None,local_semantics=None):
     if kind=='safety' and any(m['local'].strip() or m['spatial'].strip()
                               for m in post_parts):
         raise Unsupported('safety_goal_not_pure')
+    post_text, framed_goal = lower_consequent_truep(pre_parts, post_parts, post_text, layout)
+    if framed_goal:
+        mode = 'frame'
+        post_parts = assertion_parts(post_text)
     symbols=checked_local_symbols(pre_parts,post_parts,pre_text+'\n'+post_text,local_semantics)
     # Native proof generation can lift source existentials over the whole VC.
     # Diagnostic text alone does not identify that scope. Never encode a shared

@@ -126,6 +126,98 @@ class CheckModeTests(unittest.TestCase):
             import_record(record(assertion(), assertion()), check_mode='exact', local_semantics='guess')
 
 
+class NativeTruepGoalTests(unittest.TestCase):
+    def imported(self, pre, post):
+        return import_record(record(pre, post), check_mode='exact')
+
+    def test_nullary_truep_accepts_only_an_owned_subheap(self):
+        pre = assertion('store(4096,7,signed int);store(4100,9,signed int)')
+        for goal, expected in (
+            ('store(4096,7,signed int);naive_C_Rules.truep', 'VALID'),
+            ('naive_C_Rules.truep;store(4096,8,signed int)', 'INVALID'),
+            ('store(4104,7,signed int);naive_C_Rules.truep', 'INVALID'),
+        ):
+            with self.subTest(goal=goal):
+                original = record(pre, assertion(goal))
+                saved = copy.deepcopy(original)
+                query = import_record(original, check_mode='exact')
+                self.assertEqual(query['mode'], 'frame')
+                self.assertEqual(len(query['pre'][0]['spatial']), 2)
+                self.assertEqual(len(query['post'][0]['spatial']), 1)
+                self.assertEqual(check(query)['status'], expected)
+                self.assertEqual(original, saved)
+
+    def test_truep_uses_the_selected_memory_model(self):
+        pre = assertion('store(4096,7,signed int)')
+        for bits, model in ((32, 'naive_C_Rules'), (64, 'naive_C_Rules64')):
+            with self.subTest(bits=bits, model=model):
+                q = record(pre, assertion(model + '.truep'), bits=bits)
+                q['layout']['memory_rules'] = model
+                self.assertEqual(check(import_record(q, check_mode='exact'))['status'], 'VALID')
+        q = record(pre, assertion('naive_C_Rules.truep'))
+        q['layout']['memory_rules'] = 'user_Rules'
+        with self.assertRaisesRegex(Unsupported, 'truep_memory_profile_not_established'):
+            import_record(q, check_mode='exact')
+
+    def test_nonexistent_32_bit_model_alias_is_rejected(self):
+        q = record(assertion('store(4096,7,signed int)'),
+                   assertion('naive_C_Rules32.truep'))
+        q['layout']['memory_rules'] = 'naive_C_Rules32'
+        with self.assertRaisesRegex(Unsupported, 'truep_memory_profile_not_established'):
+            import_record(q, check_mode='exact')
+
+    def test_truep_alone_accepts_remainder_but_keeps_pure_goal(self):
+        pre = assertion('store(4096,7,signed int)', pure='v == 7')
+        for pure, expected in (('v == 7', 'VALID'), ('v == 8', 'INVALID')):
+            with self.subTest(pure=pure):
+                query = self.imported(pre, assertion('naive_C_Rules.truep', pure=pure))
+                self.assertEqual(check(query)['status'], expected)
+
+    def test_frame_goal_keeps_existential_value_constraints(self):
+        pre = assertion('store(4096,7,signed int);store(4100,9,signed int)')
+        for pure, expected in (('w == 7', 'VALID'), ('w == 8', 'INVALID')):
+            with self.subTest(pure=pure):
+                post = assertion('store(4096,w,signed int);naive_C_Rules.truep',
+                                 pure=pure, exists='w')
+                self.assertEqual(check(self.imported(pre, post))['status'], expected)
+
+    def test_all_framed_alternatives_preserve_disjunction(self):
+        pre = assertion('store(4096,7,signed int);store(4100,9,signed int)')
+        post = assertion('store(4096,8,signed int);naive_C_Rules.truep')
+        post += assertion('store(4096,7,signed int);naive_C_Rules.truep')
+        self.assertEqual(check(self.imported(pre, post))['status'], 'VALID')
+
+    def test_mixed_exact_frame_alternatives_are_not_weakened(self):
+        pre = assertion('store(4096,7,signed int);store(4100,9,signed int)')
+        post = assertion('store(4096,8,signed int);naive_C_Rules.truep')
+        post += assertion('store(4096,7,signed int)')
+        with self.assertRaisesRegex(Unsupported, 'mixed_exact_and_frame_consequents'):
+            self.imported(pre, post)
+
+    def test_source_truep_never_becomes_a_finite_empty_heap(self):
+        for source in ('naive_C_Rules.truep', 'store(4096,7,signed int);naive_C_Rules.truep'):
+            with self.subTest(source=source), self.assertRaisesRegex(
+                    Unsupported, 'antecedent_truep_not_supported'):
+                self.imported(assertion(source), assertion())
+
+    def test_truep_requires_exact_nullary_qualified_native_constant(self):
+        for term in ('TT', 'TT()', 'truep', 'truep()', 'user.truep()',
+                     'CRules.truep', 'naive_C_Rules64.truep',
+                     'naive_C_Rules.truep()', 'naive_C_Rules.truep(7)', 'naive_C_Rules.truep{Z_1}',
+                     'naive_C_Rules.truep{Z_1}(7)', 'opaque(naive_C_Rules.truep)',
+                     'store(4096,naive_C_Rules.truep,signed int)'):
+            with self.subTest(term=term), self.assertRaises(Unsupported):
+                self.imported(assertion(), assertion(term))
+
+    def test_truep_in_pure_or_local_is_not_a_spatial_frame(self):
+        for post in (assertion(pure='naive_C_Rules.truep'),
+                     assertion(pure='!naive_C_Rules.truep'),
+                     assertion(local='Temp p naive_C_Rules.truep')):
+            with self.subTest(post=post), self.assertRaisesRegex(
+                    Unsupported, 'truep_not_top_level_goal_sep'):
+                self.imported(assertion(), post)
+
+
 class NativePrintCompatibilityTests(unittest.TestCase):
     def test_new_and_old_integer_list_printing_match(self):
         old = 'cons(Z_1, INT_MAX, cons(Z_1, (- 1), nil(Z_1)))'

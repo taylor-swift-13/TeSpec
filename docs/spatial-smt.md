@@ -37,6 +37,7 @@ VC 清单一致，协议缺失或损坏时不能猜测公式。
 | --- | --- |
 | return、entailment、which_implies | exact，保留完整堆义务 |
 | partial_solve | frame，允许剩余资源 |
+| 后件显式为 `Q ** memory_rules.truep` 的 entailment | frame；原始公式本身要求存在满足 Q 的子堆 |
 | safety | 纯后件，按 frame 编码；后件 LOCAL/SEP 非空则拒绝导入 |
 | 其他或语义无法确认 | 逐条记录 UNKNOWN，保留 ITP |
 
@@ -149,3 +150,20 @@ translation12 为 inline PASS、modular FAIL，全部符合原有预期且无需
 
 当前发布版本通过 147 项 teSpec、608 项 sac 回归；16 项入口/断言测试的 36 个配置
 另经 ASan 检查。translation7/9/12 的六个控制结果保持原预期。未重跑整组评测或 ITP。
+
+## Which-implies 前件适用性
+
+inline 的观察检查同时保留当前状态对注解前件的适用性检查和注解自身的蕴含检查。
+QCP 匹配无法决定前件时，生成真实的 `P |-- EX with, Q ** memory_rules.truep`，
+继续原执行；不会伪造匹配成功或丢弃这条义务。空间后端仅将已确认内存模型的无参
+`naive_C_Rules.truep` / `naive_C_Rules64.truep` 顶层后件 SEP 解释为 frame。
+前件 truep、模型不匹配、嵌套/带参使用、exact/frame 混合析取均保留 UNKNOWN。
+
+不可能的纯前件和缺资源前件现在为 FAIL；不透明谓词的前件保留 UNKNOWN 和原始 Coq
+证明任务。原有反例写回保护及其他义务覆盖检查继续生效。147 项导入器回归和新增
+10 个原生观察控制通过，完整定向 teSpec 套件为 157 项；不覆盖历史正式评测结果。
+
+生成的原始 Goal 通过补齐运行时 `SimpleC.Verification.VCPrelude` 导入入口恢复可编译。
+兼容入口只重新导出现有定义；不改原始 Goal、不加入新假设。专用纯控制例的三个原始
+目标完成证明、闭合假设审计和递归 `coqchk`；frame 控制仅核对原样编译，不宣称它已证明。
+这项兼容检查不将空间 SMT 的 `NOT_CHECKED` 改写为 Coq 证书。

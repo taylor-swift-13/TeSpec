@@ -2196,6 +2196,7 @@ def _coq_load_path_args(
     mappings = (
         ("-R", "flocq/src", "Flocq"),
         ("-R", "SeparationLogic", "SimpleC.SL"),
+        ("-Q", "Verification", "SimpleC.Verification"),
         ("-R", "unifysl", "Logic"),
         ("-R", "sets", "SetsClass"),
         ("-R", "compcert_lib", "compcert.lib"),

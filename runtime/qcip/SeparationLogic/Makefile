@@ -80,11 +80,11 @@ endef
 endif
 
 DIRS = \
-	Common auxlibs compcert_lib SeparationLogic sets unifysl StrategyLib fixedpoints MonadLib examples MaxMinLib GraphLib listlib tracelib algorithms coq-record-update
+	Common auxlibs compcert_lib SeparationLogic Verification sets unifysl StrategyLib fixedpoints MonadLib examples MaxMinLib GraphLib listlib tracelib algorithms coq-record-update
  
-COQ_FLAG = -R flocq/src Flocq -R SeparationLogic SimpleC.SL -R unifysl Logic -R sets SetsClass -R compcert_lib compcert.lib -R auxlibs AUXLib -R examples SimpleC.EE -R stdlib SimpleC.StdLib -R StrategyLib SimpleC.StrategyLib -R Common SimpleC.Common -R fixedpoints FP -R MonadLib MonadLib -R listlib ListLib -R MaxMinLib MaxMinLib -R GraphLib GraphLib -R SumLib SumLib -R tracelib TraceLib -R coq-record-update/src RecordUpdate -Q algorithms Algorithms
+COQ_FLAG = -R flocq/src Flocq -R SeparationLogic SimpleC.SL -Q Verification SimpleC.Verification -R unifysl Logic -R sets SetsClass -R compcert_lib compcert.lib -R auxlibs AUXLib -R examples SimpleC.EE -R stdlib SimpleC.StdLib -R StrategyLib SimpleC.StrategyLib -R Common SimpleC.Common -R fixedpoints FP -R MonadLib MonadLib -R listlib ListLib -R MaxMinLib MaxMinLib -R GraphLib GraphLib -R SumLib SumLib -R tracelib TraceLib -R coq-record-update/src RecordUpdate -Q algorithms Algorithms
 
-DEP_FLAG = -R flocq/src Flocq -R SeparationLogic SimpleC.SL -R unifysl Logic -R sets SetsClass -R compcert_lib compcert.lib -R auxlibs AUXLib -R examples SimpleC.EE -R stdlib SimpleC.StdLib -R StrategyLib SimpleC.StrategyLib -R Common SimpleC.Common -R fixedpoints FP -R MonadLib MonadLib -R listlib ListLib -R MaxMinLib MaxMinLib -R GraphLib GraphLib -R SumLib SumLib -R tracelib TraceLib -R coq-record-update/src RecordUpdate -Q algorithms Algorithms
+DEP_FLAG = -R flocq/src Flocq -R SeparationLogic SimpleC.SL -Q Verification SimpleC.Verification -R unifysl Logic -R sets SetsClass -R compcert_lib compcert.lib -R auxlibs AUXLib -R examples SimpleC.EE -R stdlib SimpleC.StdLib -R StrategyLib SimpleC.StrategyLib -R Common SimpleC.Common -R fixedpoints FP -R MonadLib MonadLib -R listlib ListLib -R MaxMinLib MaxMinLib -R GraphLib GraphLib -R SumLib SumLib -R tracelib TraceLib -R coq-record-update/src RecordUpdate -Q algorithms Algorithms
 
 Common_FILES = \
   CTypes.v COps.v Notations.v
@@ -557,6 +557,7 @@ LiteOS_FILE = \
 EXAMPLE = \
 	$(Flocq_FILES:%.v=flocq/src/%.v) \
 	$(SL_FILES:%.v=SeparationLogic/%.v) \
+	Verification/VCPrelude.v \
 	$(FIXPOINT_FILES:%.v=fixedpoints/%.v) \
 	$(Common_FILES:%.v=Common/%.v) \
 	$(MONAD_FILES:%.v=%.v) \
@@ -581,6 +582,7 @@ FLOCQ_EXAMPLE = \
 
 CORE_PROJECT_EXAMPLE = \
 	$(SL_FILES:%.v=SeparationLogic/%.v) \
+	Verification/VCPrelude.v \
 	$(FIXPOINT_FILES:%.v=fixedpoints/%.v) \
 	$(Common_FILES:%.v=Common/%.v) \
 	$(MONAD_FILES:%.v=%.v) \
@@ -833,7 +835,7 @@ clean:
 	@$(MAKE) clean-deps
 
 clean-core:
-	@$(call REMOVE_TREE_OUTPUTS,flocq/src Common auxlibs compcert_lib SeparationLogic sets StrategyLib fixedpoints MonadLib MaxMinLib GraphLib SumLib listlib coq-record-update tracelib algorithms)
+	@$(call REMOVE_TREE_OUTPUTS,flocq/src Common auxlibs compcert_lib SeparationLogic Verification sets StrategyLib fixedpoints MonadLib MaxMinLib GraphLib SumLib listlib coq-record-update tracelib algorithms)
 	@$(call REMOVE_FILES,$(UNIFY_OUTPUTS))
 	@$(call REMOVE_FILES,coq-record-update/.depend coq-record-update/.Makefile.coq.d tracelib/.depend algorithms/.depend)
 	@$(call REMOVE_FILES,.depend.core.flocq .depend.core.flocq.tmp .depend.core.project .depend.core.project.tmp .depend.core .depend.core.tmp .depend.tmp .depend)
