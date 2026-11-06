@@ -3,10 +3,10 @@
 Canonical source: /home/yangfp/sac_c_parser, branch tespec.
 Deployed binary: bin/tespec-symexec. Provenance: bin/tespec-symexec.build.json.
 
-- sac_revision: db632c3cebe0cfa9315d076e433e5879f7d9c077
+- sac_revision: b36b30773cf5dd9c1cb090997c0004dd4940e659
 - sac_master_base: 1cde2a4b2069c41b6a7a1fa29bf6a2492c7a34f1
 - smt_revision: 3098d53575ad2a99f9f561ec4e10233c98f44fd3
-- binary_sha256: 75a4c4fd30096a376f7437abd935cf6e97b71152ed369c197d14bfa34d61b9b1
+- binary_sha256: 09987e13f52a78c83925e5a67ee0d6cd05bf657eb3f94d17c4f70e3dfa74fed5
 - source_dirty: False
 
 Installed and build binary hashes match. The tracked source and SMT trees were
@@ -82,7 +82,7 @@ See docs/spatial-smt.md for scope, negative-writeback protection and focused che
 
 ## Native entry and annotation fixes
 
-The deployed binary now uses sac `db632c3cebe0cfa9315d076e433e5879f7d9c077`.
+The first native fix was introduced in sac `db632c3cebe0cfa9315d076e433e5879f7d9c077`.
 Body annotations bind `With` variables to the selected entry specification before
 semantic analysis captures their IDs. Fresh observation goals again resolve local
 addresses and retain unmentioned C scalar local storage after template lowering.
@@ -110,3 +110,28 @@ No new ITP/Coq proof or performance evaluation is claimed. sac was committed loc
 only; teSpec carries the binary, provenance, regressions and compact receipt.
 See [current executor receipt](../benchmark/results/tespec-unexpected/current-executor-replay.json)
 for status, source/VC hashes, native resource measurements and test-log hashes.
+
+## Inline helper binding and recursive frame fixes
+
+Current sac source: `b36b30773cf5dd9c1cb090997c0004dd4940e659` (local commit only).
+QCP's existing call-result instance map now retains original With IDs alongside
+inferred and explicit `where(...)` values. Each inline invocation uses its own
+map; simultaneous substitution protects outer symbolic values during recursion.
+Same-name aliases are limited to same-type With binders in the current callee's
+specifications. This fixes correct helper assertions that previously reported FAIL,
+including selection of a non-last named specification.
+
+A further symbolic-recursion control exposed caller stack cells being renamed to
+callee addresses when an assertion omitted a parameter. Callee-local annotation
+preparation now precedes caller-frame merging. Only shadowed LOCAL entries are
+removed from that frame copy; its SEP/PROP and old stack addresses are preserved.
+Unmentioned local scalar storage is added after the merge to avoid duplication.
+Actual execution states and original witness storage remain unchanged.
+
+Final installed-binary checks: **608 sac tests and 147 teSpec tests passed**, no
+skips. ASan (`detect_leaks=0`) passed 39 existing call/strategy tests and 16 entry/
+annotation methods covering 36 configurations, including positive and negative
+assertions, explicit/named contracts, invariants and symbolic recursive swaps.
+The six array_load controls above still match their original expectations.
+No benchmark source/expectation changed and no full-group, ITP or Coq proof rerun
+is claimed. The existing compact receipt contains updated hashes and check totals.

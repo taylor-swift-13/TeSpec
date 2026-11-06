@@ -122,3 +122,174 @@ class EntryAndAnnotationScopeTests(unittest.TestCase):
         self.assertEqual(case["precondition_result"], "SAT", case)
         self.assertTrue(case["execution_completed"], case)
         self.assertEqual(case["status"], "PASS", case)
+
+    @staticmethod
+    def logical_helper_source(wrong=False):
+        relation = "n == k + 1" if wrong else "n == k"
+        return (
+            "int helper(int n) /*@ With k Require n == k && emp "
+            "Ensure __return == k && emp */ { /*@ Assert " + relation
+            + " && emp */ return n; }\n"
+            "int sample(int n) /*@ Require emp Ensure __return == n && emp */ "
+            "{ return helper(n); }\n"
+        )
+
+    def test_inline_helper_binds_its_own_logical_value(self):
+        for value in (3, 9):
+            with self.subTest(value=value):
+                case = self.run_source(self.logical_helper_source(), args={"n": value})
+                self.assertEqual(case["precondition_result"], "SAT", case)
+                self.assertTrue(case["execution_completed"], case)
+                self.assertEqual(case["status"], "PASS", case)
+
+    def test_inline_helper_rejects_wrong_logical_value_assertion(self):
+        for value in (3, 9):
+            with self.subTest(value=value):
+                case = self.run_source(self.logical_helper_source(wrong=True),
+                                       args={"n": value})
+                self.assertEqual(case["precondition_result"], "SAT", case)
+                self.assertEqual(case["status"], "FAIL", case)
+                self.assertTrue(any(vc["status"] != "VALID"
+                                    for vc in case["vc_results"]), case)
+
+    def test_inline_helper_calls_do_not_share_same_named_bindings(self):
+        source = (
+            "int helper(int n) /*@ With k Require n == k && emp "
+            "Ensure __return == k && emp */ { /*@ Assert n == k && emp */ return n; }\n"
+            "int sample(int n) /*@ With k Require n == k && 0 <= k && k <= 10 && emp "
+            "Ensure __return == k + 1 && emp */ { int first = helper(n); "
+            "int second = helper(n + 1); "
+            "/*@ Assert n == k && first == k && second == k + 1 && emp */ "
+            "return second; }\n"
+        )
+        for value in (3, 9):
+            with self.subTest(value=value):
+                case = self.run_source(source, args={"n": value}, values={"k": value})
+                self.assertEqual(case["precondition_result"], "SAT", case)
+                self.assertTrue(case["execution_completed"], case)
+                self.assertEqual(case["status"], "PASS", case)
+
+    def test_inline_nested_helpers_restore_same_named_caller_binding(self):
+        source = (
+            "int leaf(int n) /*@ With k Require n == k && emp "
+            "Ensure __return == k && emp */ { /*@ Assert n == k && emp */ return n; }\n"
+            "int helper(int n) /*@ With k Require n == k && 0 <= k && k <= 20 && emp "
+            "Ensure __return == k + 1 && emp */ { int got = leaf(n + 1); "
+            "/*@ Assert n == k && got == k + 1 && emp */ return got; }\n"
+            "int sample(int n) /*@ With k Require n == k && 0 <= k && k <= 10 && emp "
+            "Ensure __return == k + 2 && emp */ { int got = helper(n + 1); "
+            "/*@ Assert n == k && got == k + 2 && emp */ return got; }\n"
+        )
+        for value in (3, 9):
+            with self.subTest(value=value):
+                case = self.run_source(source, args={"n": value}, values={"k": value})
+                self.assertEqual(case["precondition_result"], "SAT", case)
+                self.assertTrue(case["execution_completed"], case)
+                self.assertEqual(case["status"], "PASS", case)
+
+    def test_inline_recursive_calls_restore_logical_binding_on_return(self):
+        source = (
+            "int helper(int n) /*@ With k Require n == k && 0 <= k && k <= 3 && emp "
+            "Ensure __return == k && emp */ { /*@ Assert n == k && emp */ "
+            "if (n == 0) return 0; int got = helper(n - 1); "
+            "/*@ Assert n == k && got == k - 1 && emp */ return got + 1; }\n"
+            "int sample(int n) /*@ With k Require n == k && 0 <= k && k <= 3 && emp "
+            "Ensure __return == k && emp */ { int got = helper(n); "
+            "/*@ Assert n == k && got == k && emp */ return got; }\n"
+        )
+        for value in (1, 3):
+            with self.subTest(value=value):
+                case = self.run_source(source, args={"n": value}, values={"k": value})
+                self.assertEqual(case["precondition_result"], "SAT", case)
+                self.assertTrue(case["execution_completed"], case)
+                self.assertEqual(case["status"], "PASS", case)
+
+    def test_inline_helper_uses_explicit_where_value(self):
+        for chosen, expected in ((3, "PASS"), (4, "FAIL")):
+            source = (
+                "int helper(int n) /*@ With k Require 0 <= k && k <= 10 && emp "
+                "Ensure __return == n && emp */ { /*@ Assert n == k && emp */ return n; }\n"
+                "int sample(int n) /*@ Require emp Ensure __return == n && emp */ "
+                "{ return helper(n) /*@ where k = " + str(chosen) + " */; }\n"
+            )
+            with self.subTest(chosen=chosen, expected=expected):
+                case = self.run_source(source, args={"n": 3})
+                self.assertEqual(case["precondition_result"], "SAT", case)
+                self.assertTrue(case["execution_completed"], case)
+                self.assertEqual(case["status"], expected, case)
+
+    def test_inline_named_helper_spec_selection_is_order_independent(self):
+        specs = [
+            "/*@ one With k Require n == k && k == 1 && emp Ensure __return == k && emp */",
+            "/*@ two With k Require n == k && k == 2 && emp Ensure __return == k && emp */",
+        ]
+        for order in (specs, list(reversed(specs))):
+            for chosen, value in (("one", 1), ("two", 2)):
+                source = (
+                    "int helper(int n) " + "\n".join(order)
+                    + " { /*@ Assert n == k && emp */ return n; }\n"
+                    "int sample(int n) /*@ Require emp Ensure __return == n && emp */ "
+                    "{ return helper(n) /*@ where(" + chosen + ") */; }\n"
+                )
+                with self.subTest(first=order[0], chosen=chosen):
+                    case = self.run_source(source, args={"n": value})
+                    self.assertEqual(case["precondition_result"], "SAT", case)
+                    self.assertTrue(case["execution_completed"], case)
+                    self.assertEqual(case["status"], "PASS", case)
+
+    def test_inline_helper_loop_invariant_uses_callee_binding(self):
+        for relation, expected in (("n == k", "PASS"), ("n == k + 1", "FAIL")):
+            source = (
+                "int helper(int n) /*@ With k Require n == k && 0 <= k && k <= 3 && emp "
+                "Ensure __return == k && emp */ { int i = 0; "
+                "/*@ Inv " + relation + " && 0 <= i && i <= k && emp */ "
+                "while (i < n) { i++; } return i; }\n"
+                "int sample(int n) /*@ Require 0 <= n && n <= 3 && emp "
+                "Ensure __return == n && emp */ { return helper(n); }\n"
+            )
+            with self.subTest(relation=relation, expected=expected):
+                case = self.run_source(source, args={"n": 2})
+                self.assertEqual(case["precondition_result"], "SAT", case)
+                self.assertTrue(case["execution_completed"], case)
+                self.assertEqual(case["status"], expected, case)
+
+    def test_inline_named_helper_alias_does_not_accept_wrong_assertion(self):
+        source = (
+            "int helper(int n) "
+            "/*@ one With k Require n == k && k == 1 && emp Ensure __return == k && emp */ "
+            "/*@ two With k Require n == k && k == 2 && emp Ensure __return == k && emp */ "
+            "{ /*@ Assert n == k + 1 && emp */ return n; }\n"
+            "int sample(int n) /*@ Require emp Ensure __return == n && emp */ "
+            "{ return helper(n) /*@ where(one) */; }\n"
+        )
+        case = self.run_source(source, args={"n": 1})
+        self.assertEqual(case["precondition_result"], "SAT", case)
+        self.assertTrue(case["execution_completed"], case)
+        self.assertEqual(case["status"], "FAIL", case)
+
+    def test_inline_symbolic_recursive_swap_preserves_outer_frame(self):
+        contract = (
+            "/*@ With x y Require 0 <= n && n <= 1 && a == x && b == y "
+            "&& 0 <= x && x <= 10 && 0 <= y && y <= 10 && emp "
+            "Ensure __return == 0 && emp */"
+        )
+        for wrapped in (False, True):
+            function = "helper" if wrapped else "sample"
+            source = (
+                "int " + function + "(int n, int a, int b) " + contract + " { "
+                "/*@ Assert a == x && b == y && emp */ "
+                "if (n > 0) " + function + "(n - 1, b, a); "
+                "/*@ Assert a == x && b == y && emp */ return 0; }\n"
+            )
+            if wrapped:
+                source += ("int sample(int n, int a, int b) " + contract
+                           + " { return helper(n, a, b); }\n")
+            with self.subTest(wrapped=wrapped):
+                case = self.run_source(
+                    source,
+                    args={"n": 1, "a": {"symbolic": True}, "b": {"symbolic": True}},
+                    values={"x": {"symbolic": True}, "y": {"symbolic": True}},
+                )
+                self.assertEqual(case["precondition_result"], "SAT", case)
+                self.assertTrue(case["execution_completed"], case)
+                self.assertEqual(case["status"], "PASS", case)
