@@ -88,6 +88,43 @@ class NativeReturnArtifactBindingTests(unittest.TestCase):
                     finally:
                         path.write_bytes(original)
 
+    def test_invalid_return_cannot_overwrite_execution_after_binding_failure(self):
+        source = self.folder / "sample.c"
+        source.write_text(source.read_text().replace("data_at(p+1,int,9)",
+                                                     "data_at(p+1,int,8)"))
+        self.case = run_job(self.folder / "job.json", self.folder / "run")["results"][0]
+        self.raw_bytes = self.raw.read_bytes()
+        self.assertEqual(self.case["status"], "UNKNOWN")
+        control = self.refine("negative-control")
+        self.assertEqual(control["status"], "FAIL")
+        self.assertEqual(control["phases"]["postcondition"], "FAIL")
+        self.assertFalse(control["spatial_smt"]["itp_required"])
+        before = {key: deepcopy(self.case[key]) for key in
+                  ("status", "overall", "test_result", "satisfied", "reason", "phases")}
+        paths = {"goal": Path(self.case["vc"]["files"]["goal"]),
+                 "source": Path(self.case["generated_source"])}
+        for name, path in paths.items():
+            original = path.read_bytes()
+            for action in ("missing", "changed"):
+                with self.subTest(file=name, action=action):
+                    try:
+                        if action == "missing":
+                            path.unlink()
+                        elif name == "source":
+                            path.write_bytes(original.replace(b"data_at(p+1,int,8)",
+                                                              b"data_at(p+1,int,9)"))
+                        else:
+                            path.write_bytes(original + b"\n(* changed original goal *)\n")
+                        case = self.refine("negative-" + name + "-" + action)
+                        self.assertTrue(any(v["status"] == "INVALID" for v in case["vc_results"]))
+                        self.assertEqual({key: case[key] for key in before}, before)
+                        self.assertTrue(case["spatial_smt"]["itp_required"])
+                        self.assertFalse(case["spatial_smt"]["execution_result_eligible"])
+                        self.assertEqual(case["spatial_smt"]["aggregate_preserved_reason"],
+                                         "original_artifact_binding_failed")
+                    finally:
+                        path.write_bytes(original)
+
     def test_missing_manifest_does_not_use_unit_fixture_bypass(self):
         self.case.pop("vc")
         case = self.refine("no-manifest")

@@ -34,7 +34,7 @@ def _qcp_comments(text: str):
             yield match, match.group()[3:-2]
 
 
-def read_source_text(path: Path) -> str:
+def _read_source_snapshot(path: Path) -> tuple[str, str]:
     """Decode C sources without silently replacing specification text.
 
     QCIP corpora contain both UTF-8 and legacy GBK-family source files.
@@ -51,7 +51,7 @@ def read_source_text(path: Path) -> str:
     failures: list[str] = []
     for encoding in _C_SOURCE_ENCODINGS:
         try:
-            return data.decode(encoding)
+            return data.decode(encoding), hashlib.sha256(data).hexdigest()
         except UnicodeDecodeError as error:
             failures.append(f"{encoding}: byte {error.start}")
     raise JobError(
@@ -61,6 +61,10 @@ def read_source_text(path: Path) -> str:
         + "; ".join(failures)
         + ")"
     )
+
+
+def read_source_text(path: Path) -> str:
+    return _read_source_snapshot(path)[0]
 
 
 def _relocate_strategy_includes(source: str, original: Path) -> str:
@@ -1856,9 +1860,15 @@ def run_job(
     spatial_smt: bool | None = None, spatial_smt_timeout_ms: int | None = None,
 ) -> dict[str, Any]:
     job_path = job_path.expanduser().resolve()
+    output_dir = output_override.expanduser().resolve() if output_override is not None else None
+    # A retry must not expose a previous successful report when validation or
+    # execution fails. Keep original artifacts; only retire the old verdict.
+    if output_dir is not None:
+        (output_dir / "report.json").unlink(missing_ok=True)
     try:
-        job = json.loads(job_path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as error:
+        job_bytes = job_path.read_bytes()
+        job = json.loads(job_bytes.decode("utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as error:
         raise JobError(f"cannot read job file {job_path}: {error}") from error
     job = _require_object(job, "job")
     if spatial_smt is not None or spatial_smt_timeout_ms is not None:
@@ -1868,19 +1878,24 @@ def run_job(
         if spatial_smt_timeout_ms is not None:
             job["qcp"]["spatial_smt_timeout_ms"] = spatial_smt_timeout_ms
     base = job_path.parent
+    if output_dir is None:
+        output_dir = _resolve(base, job.get("output_dir", ".spectest"), "output_dir")
+        (output_dir / "report.json").unlink(missing_ok=True)
 
     source_path = _resolve(base, job.get("source"), "source")
-    source = read_source_text(source_path)
+    source, source_sha256 = _read_source_snapshot(source_path)
     function = job.get("function")
     if not isinstance(function, str):
         raise JobError("function must be a string")
     spec_file_value = job.get("spec_file")
     spec_file_path: Path | None = None
+    spec_sha256 = None
     if spec_file_value is not None:
         spec_file_path = _resolve(base, spec_file_value, "spec_file")
+        spec_text, spec_sha256 = _read_source_snapshot(spec_file_path)
         source = attach_spec_to_source(
             source,
-            read_source_text(spec_file_path),
+            spec_text,
             function,
         )
 
@@ -1889,11 +1904,6 @@ def run_job(
         raise JobError("binds must be a non-empty array")
     bind_cases = _parse_bind_cases(raw_binds, job.get("spec"))
 
-    output_dir = (
-        output_override.expanduser().resolve()
-        if output_override is not None
-        else _resolve(base, job.get("output_dir", ".spectest"), "output_dir")
-    )
     output_dir.mkdir(parents=True, exist_ok=True)
     config = _parse_qcp_config(job, base, source_path.parent)
     signature_source = source_with_local_includes(
@@ -1901,6 +1911,16 @@ def run_job(
         config.include_dirs,
         primary_source=source,
     )
+
+    provenance = _report_provenance(
+        source_path, job_path, config.binary, config.qcip_root, signature_source, spec_file_path)
+    provenance.update(source_sha256=source_sha256,
+                      job_sha256=hashlib.sha256(job_bytes).hexdigest(),
+                      spec_sha256=spec_sha256)
+    inputs = {"source_sha256": source_path, "job_sha256": job_path,
+              "binary_sha256": config.binary}
+    if spec_file_path is not None:
+        inputs["spec_sha256"] = spec_file_path
 
     results: list[dict[str, Any]] = []
     started = time.monotonic()
@@ -2075,6 +2095,15 @@ def run_job(
                         timeout_ms=config.spatial_smt_timeout_ms)
         results.append(case_result)
 
+    # Do not publish a verdict for old execution bytes under newly edited inputs.
+    for name, path in inputs.items():
+        try:
+            unchanged = _sha256(path) == provenance[name]
+        except OSError as error:
+            raise JobError(f"run input unavailable during execution: {path}") from error
+        if not unchanged:
+            raise JobError(f"run input changed during execution: {path}")
+
     counts = {
         status: sum(result["status"] == status for result in results)
         for status in ("PASS", "FAIL", "UNKNOWN", "ERROR", "INVALID")
@@ -2099,14 +2128,7 @@ def run_job(
         "spec_file": str(spec_file_path) if spec_file_path is not None else None,
         "function": function,
         "qcp_binary": str(config.binary),
-        "provenance": _report_provenance(
-            source_path,
-            job_path,
-            config.binary,
-            config.qcip_root,
-            signature_source,
-            spec_file_path,
-        ),
+        "provenance": provenance,
         "vc_policy": {
             "mode": config.execution_mode,
             "execution_strategy": config.execution_strategy,
@@ -2236,7 +2258,8 @@ def check_vc_proof(
     proof_report = manifest_path.parent / "proof_report.json"
     proof_report.unlink(missing_ok=True)
     try:
-        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        manifest_bytes = manifest_path.read_bytes()
+        manifest = json.loads(manifest_bytes)
     except (OSError, json.JSONDecodeError) as error:
         raise JobError(f"cannot read VC manifest {manifest_path}: {error}") from error
     manifest = _require_object(manifest, "VC manifest")
@@ -2260,20 +2283,25 @@ def check_vc_proof(
         raise JobError("all VC files must be direct children of the manifest directory")
 
     immutable = _require_object(manifest.get("immutable_sha256"), "VC immutable_sha256")
+    input_hashes = {manifest_path: hashlib.sha256(manifest_bytes).hexdigest()}
     for name in ("goal", "proof_auto", "goal_check"):
         expected = immutable.get(name)
         if not isinstance(expected, str) or _sha256(files[name]) != expected:
             raise JobError(f"generated VC file was modified: {files[name]}")
+        input_hashes[files[name]] = expected
 
     # Import lazily: the complete-certificate checker shares our load-path helper.
     # Coq commands need not start a line; reuse its token-level escape checks.
     from .certificates import (
         ASSUMPTION_IDENTITIES, IDENT, QUALIFIED, TRUSTED_ASSUMPTIONS,
-        assumptions_from_output, check_candidate_commands,
+        assumption_audit_from_output, check_candidate_commands,
         check_dependency_namespace, goal_interface,
     )
 
-    manual = files["proof_manual"].read_text(encoding="utf-8", errors="replace")
+    manual_bytes = files["proof_manual"].read_bytes()
+    manual = manual_bytes.decode("utf-8", errors="replace")
+    manual_sha256 = hashlib.sha256(manual_bytes).hexdigest()
+    input_hashes[files["proof_manual"]] = manual_sha256
     check_candidate_commands(manual)
     forbidden = _FORBIDDEN_MANUAL_PROOF.search(manual)
     if forbidden is not None:
@@ -2336,7 +2364,10 @@ def check_vc_proof(
             raise JobError(f"invalid or missing staged Coq dependency: {staged}")
         if _sha256(staged) != expected:
             raise JobError(f"staged Coq dependency was modified: {staged}")
+        input_hashes[staged] = expected
         dependency_files.append(staged)
+
+    entries = goal_interface(files["goal"].read_text(encoding="utf-8"))
 
     stdout_log = vc_dir / "proof_check.stdout.txt"
     stderr_log = vc_dir / "proof_check.stderr.txt"
@@ -2427,7 +2458,6 @@ def check_vc_proof(
 
     # Compile a controller-owned interface and audit its transitive assumptions.
     # User libraries may contain assumptions even when the edited proof has none.
-    entries = goal_interface(files["goal"].read_text(encoding="utf-8"))
     modules = [files[name].stem for name in ("goal", "proof_auto", "proof_manual")]
     if any(re.fullmatch(IDENT, module) is None for module in modules):
         raise JobError("unsupported generated Coq module name")
@@ -2450,10 +2480,12 @@ def check_vc_proof(
         # Print Assumptions writes stdout. Appending separately captured stderr
         # would move earlier warnings into the final axiom block.
         audit = outcome.stdout
-        observed = assumptions_from_output(audit)
+        observed, unsupported = assumption_audit_from_output(audit)
         assumptions = sorted(observed)
         blocks = audit.count("Axioms:") + audit.count("Closed under the global context")
-        if blocks != len(entries) or ("Axioms:" in audit and not observed):
+        if unsupported:
+            audit_reason = "unsupported_assumption_records"
+        elif blocks != len(entries) or ("Axioms:" in audit and not observed):
             audit_reason = "assumption_audit_incomplete"
         elif observed - TRUSTED_ASSUMPTIONS:
             audit_reason = "unapproved_transitive_assumptions"
@@ -2473,6 +2505,19 @@ def check_vc_proof(
             if identities != [ASSUMPTION_IDENTITIES[name] for name in assumptions]:
                 audit_reason = "assumption_identity_mismatch"
 
+    # coqc may have consumed an older file while an editor or another task
+    # changes its source. Never attach that compiled proof to the changed inputs.
+    changed_inputs = []
+    for input_path, expected in input_hashes.items():
+        try:
+            unchanged = _sha256(input_path) == expected
+        except OSError:
+            unchanged = False
+        if not unchanged:
+            changed_inputs.append(str(input_path))
+    if changed_inputs:
+        audit_reason = "proof_inputs_changed_during_check"
+
     report = {
         "schema": "qcp-spectest-proof-report/v1",
         "status": "UNKNOWN" if audit_reason else "PASS",
@@ -2482,6 +2527,9 @@ def check_vc_proof(
         "function": manifest.get("function"),
         "residual_goals": residual_goals,
         "compiled": compiled,
+        "manifest_sha256": input_hashes[manifest_path],
+        "proof_manual_sha256": manual_sha256,
+        "changed_inputs": changed_inputs,
         "coq_version": version_output.strip().splitlines()[0],
         "duration_seconds": round(time.monotonic() - started, 6),
         "stdout": str(stdout_log), "stderr": str(stderr_log),
@@ -2489,6 +2537,7 @@ def check_vc_proof(
         "independent_kernel_replay": "NOT_RUN",
         "assumptions": assumptions,
         "assumptions_audited_goals": blocks,
+        "unsupported_assumption_records": unsupported,
         "assumption_identities": identities,
         "unexpected_assumptions": sorted(set(assumptions) - TRUSTED_ASSUMPTIONS),
     }

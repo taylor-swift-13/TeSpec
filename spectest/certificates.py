@@ -239,14 +239,50 @@ def prepare_certificate(
     }
 
 
+def assumption_audit_from_output(text: str) -> tuple[set[str], list[str]]:
+    """Read every Coq 8.20 assumption entry, including non-type kernel flags.
+
+    printer.ml emits ordinary constants as name : type, but disabled checks as
+    guarded/positive/unsafe-hierarchy records and additional Theory lines. Such
+    records cannot disappear merely because another entry is an allowed axiom.
+    Names are retained verbatim: Coq identifiers also permit Unicode and primes.
+    """
+    observed, unsupported = set(), []
+    section = None
+    headings = {"Axioms:", "Theory:", "Section Variables:",
+                "Opaque constants:", "Transparent constants:"}
+    lines = text.splitlines()
+    for index, line in enumerate(lines):
+        value = line.strip()
+        if value == "Closed under the global context":
+            section = None
+        elif value in headings:
+            section = value
+        elif section is not None and value:
+            if section != "Axioms:":
+                unsupported.append(section + " " + value)
+                continue
+            if line[0].isspace():
+                # Pretty-printed type continuations are indented. Audit callers
+                # set a wide line width; also accept a name followed by newline :.
+                continue
+            entry = re.match(r"^([^\s:]+)\s*:", line)
+            if entry:
+                observed.add(entry.group(1))
+                continue
+            if (re.fullmatch(r"[^\s:]+", value)
+                    and index + 1 < len(lines)
+                    and lines[index + 1].lstrip().startswith(":")):
+                observed.add(value)
+                continue
+            # Includes Coq's guardedness, positivity, TypeInType and UIP flags,
+            # and any unrecognized non-type entry. Fail closed at the caller.
+            unsupported.append(value)
+    return observed, unsupported
+
+
 def assumptions_from_output(text: str) -> set[str]:
-    observed = set()
-    # Import diagnostics precede Print Assumptions and are not axiom entries.
-    # Within an axiom block, retain every identifier (even one named Warning).
-    for block in text.split("Axioms:\n")[1:]:
-        block = block.split("Closed under the global context", 1)[0]
-        observed.update(re.findall(rf"(?m)^({QUALIFIED})\s*:", block))
-    return observed
+    return assumption_audit_from_output(text)[0]
 
 
 def check_candidate_commands(source: str) -> None:
@@ -412,10 +448,13 @@ def check_certificate(
         ):
             return finish("coq_compile_failed_or_timeout")
     audit = (out / "compile_Assumptions.v.log").read_text()
-    observed = assumptions_from_output(audit)
+    observed, unsupported = assumption_audit_from_output(audit)
     blocks = audit.count("Axioms:") + audit.count("Closed under the global context")
     report["assumptions"] = sorted(observed)
     report["assumptions_audited_goals"] = blocks
+    report["unsupported_assumption_records"] = unsupported
+    if unsupported:
+        return finish("unsupported_assumption_records")
     if blocks != len(entries) or ("Axioms:" in audit and not observed):
         return finish("assumption_audit_incomplete")
     # The built-in ceiling prevents a manifest from silently trusting arbitrary axioms.
@@ -491,41 +530,45 @@ def check_certificate(
         else:
             report["kernel_replay_mode"] = "checked-dependency-reuse"
             report["kernel_dependency_reuse"] = coverage
-    if digest(out / "Candidate.v") != report["candidate_sha256"]:
-        return finish("candidate_changed_during_check")
-    if digest(path) != expected_digest:
-        return finish("manifest_changed_during_check")
-    for name, expected in manifest["immutable_sha256"].items():
-        if digest(out / name) != expected:
-            return finish("immutable_input_changed_during_check")
-    if any(
-        digest(out / item["file"]) != item["sha256"]
-        for item in manifest["dependencies"]
-    ):
-        return finish("dependency_changed_during_check")
-    if tree_digest(runtime) != manifest["runtime_sha256"]:
-        return finish("runtime_changed_during_check")
-    if kernel_cache is not None:
-        if digest(checker) != checker_digest:
-            return finish("kernel_checker_changed_during_check")
-        if partial:
-            if not kernel_cache.ready(identity):
-                return finish("checked_dependency_changed_during_check")
-        else:
-            kernel_cache._record_checked_closure(
-                kernel_log,
-                identity,
-                fresh_modules,
-                origin={
-                    "manifest_sha256": expected_digest,
-                    "goal_sha256": report["original_goal_sha256"],
-                    "candidate_sha256": report["candidate_sha256"],
-                    "kernel_log_sha256": hashlib.sha256(
-                        kernel_log.encode()
-                    ).hexdigest(),
-                    "checker_sha256": checker_digest,
-                },
-            )
+    try:
+        if digest(out / "Candidate.v") != report["candidate_sha256"]:
+            return finish("candidate_changed_during_check")
+        if digest(path) != expected_digest:
+            return finish("manifest_changed_during_check")
+        for name, expected in manifest["immutable_sha256"].items():
+            if digest(out / name) != expected:
+                return finish("immutable_input_changed_during_check")
+        if any(
+            digest(out / item["file"]) != item["sha256"]
+            for item in manifest["dependencies"]
+        ):
+            return finish("dependency_changed_during_check")
+        if tree_digest(runtime) != manifest["runtime_sha256"]:
+            return finish("runtime_changed_during_check")
+        if kernel_cache is not None:
+            if digest(checker) != checker_digest:
+                return finish("kernel_checker_changed_during_check")
+            if partial:
+                if not kernel_cache.ready(identity):
+                    return finish("checked_dependency_changed_during_check")
+            else:
+                kernel_cache._record_checked_closure(
+                    kernel_log,
+                    identity,
+                    fresh_modules,
+                    origin={
+                        "manifest_sha256": expected_digest,
+                        "goal_sha256": report["original_goal_sha256"],
+                        "candidate_sha256": report["candidate_sha256"],
+                        "kernel_log_sha256": hashlib.sha256(
+                            kernel_log.encode()
+                        ).hexdigest(),
+                        "checker_sha256": checker_digest,
+                    },
+                )
+    except OSError as error:
+        report["unavailable_evidence"] = str(error.filename) if error.filename else str(error)
+        return finish("evidence_unavailable_during_check")
     if refute:
         report["status"] = "UNKNOWN"
         report["vc_status"] = "INVALID"

@@ -578,6 +578,7 @@ def refine_case(
             json.dumps(native["sampling_events"], sort_keys=True).encode()
         ).hexdigest()
         info["execution_strategy"] = native.get("execution_strategy")
+    artifact_binding_failed = False
     try:
         annotation_coverage = (not contract_samples
                                and _annotation_coverage(executor, case, original))
@@ -588,6 +589,7 @@ def refine_case(
             info["annotation_artifact_binding"] = _obligation_artifacts(case, executor)
         except (OSError, ValueError, TypeError, KeyError, AttributeError) as error:
             annotation_coverage = False
+            artifact_binding_failed = True
             info["annotation_coverage_reason"] = "original_artifact_binding_failed:" + str(error)
     else:
         info["annotation_coverage_reason"] = "unsupported_or_ambiguous_obligation_group"
@@ -643,6 +645,27 @@ def refine_case(
     info["wall_seconds"] = time.monotonic() - started
     case["vc_results"] = refined
     states = [v["status"] for v in refined]
+    try:
+        coverage = _return_coverage(executor, original, case.get("residual_vcs", []))
+    except (TypeError, AttributeError):
+        coverage = False
+    if coverage:
+        try:
+            info["return_artifact_binding"] = _obligation_artifacts(case, executor)
+        except (OSError, ValueError, TypeError, KeyError, AttributeError) as error:
+            coverage = False
+            artifact_binding_failed = True
+            info["return_coverage_reason"] = "original_artifact_binding_failed:" + str(error)
+    info["return_residual_coverage"] = coverage
+    coverage = coverage or annotation_coverage
+    info["residual_coverage"] = coverage
+    if artifact_binding_failed:
+        # A countermodel of the saved diagnostic VC is not evidence for a case
+        # whose original source/proof artifacts failed their identity check.
+        # Keep individual VC decisions, but preserve all execution-level fields.
+        result_eligible = False
+        info["execution_result_eligible"] = False
+        info["aggregate_preserved_reason"] = "original_artifact_binding_failed"
     phases = dict(case.get("phases", {}))
     returns = [v for v in refined if v.get("kind") == "return"]
     if result_eligible and returns and any(v["status"] == "INVALID" for v in returns):
@@ -669,19 +692,6 @@ def refine_case(
             )
         )
     )
-    try:
-        coverage = _return_coverage(executor, original, case.get("residual_vcs", []))
-    except (TypeError, AttributeError):
-        coverage = False
-    if coverage:
-        try:
-            info["return_artifact_binding"] = _obligation_artifacts(case, executor)
-        except (OSError, ValueError, TypeError, KeyError, AttributeError) as error:
-            coverage = False
-            info["return_coverage_reason"] = "original_artifact_binding_failed:" + str(error)
-    info["return_residual_coverage"] = coverage
-    coverage = coverage or annotation_coverage
-    info["residual_coverage"] = coverage
     status = case["status"]
     if result_eligible and "INVALID" in states:
         status = "FAIL"

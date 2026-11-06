@@ -2,11 +2,14 @@ from __future__ import annotations
 
 import json
 import os
+import subprocess
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from spectest.certificates import (
+    assumption_audit_from_output,
     assumptions_from_output,
     check_candidate_commands,
     check_certificate,
@@ -91,6 +94,34 @@ End VC_Correct.
             ),
             set(),
         )
+
+    def test_all_printed_axiom_names_are_preserved(self):
+        observed, unsupported = assumption_audit_from_output(
+            "Axioms:\nUnsafe.α : False\nUnsafe.bad' : False\n"
+            "Classical_Prop.classic : forall P : Prop, P \/ ~ P\n")
+        self.assertEqual(observed, {"Unsafe.α", "Unsafe.bad'", "Classical_Prop.classic"})
+        self.assertEqual(unsupported, [])
+
+    def test_kernel_flags_and_unknown_records_cannot_hide_beside_allowed_axiom(self):
+        for entry in ("Unsafe.loop is assumed to be guarded.",
+                      "Unsafe.bad is assumed to be positive.",
+                      "Unsafe.type relies on an unsafe hierarchy.",
+                      "Unsafe.ind relies on definitional UIP.",
+                      "a new unrecognized axiom entry"):
+            with self.subTest(entry=entry):
+                observed, unsupported = assumption_audit_from_output(
+                    "Axioms:\n" + entry + "\nClassical_Prop.classic : forall P, P \/ ~ P\n")
+                self.assertEqual(observed, {"Classical_Prop.classic"})
+                self.assertEqual(unsupported, [entry])
+
+    def test_unapproved_theory_flags_are_retained(self):
+        for entry in ("Set is impredicative",
+                      "Rewrite rules are allowed (subject reduction might be broken)",
+                      "Type hierarchy is collapsed (logic is inconsistent)"):
+            with self.subTest(entry=entry):
+                _, unsupported = assumption_audit_from_output(
+                    "Axioms:\nClassical_Prop.classic : forall P, P \/ ~ P\nTheory:\n" + entry)
+                self.assertEqual(unsupported, ["Theory: " + entry])
 
     def prepare_fixture(self, root, layout=None):
         vc = root / "original"
@@ -208,11 +239,43 @@ class CertificateKernelTests(unittest.TestCase):
             prepared = prepare_certificate(original, root / "bundle", refute=refute)
             candidate = Path(prepared["editable"])
             candidate.write_text(proof)
-            return check_certificate(
+            report = check_certificate(
                 Path(prepared["manifest"]),
                 prepared["manifest_sha256"],
                 kernel_cache=kernel_cache,
             )
+            saved = Path(prepared["manifest"]).parent / "certificate-report.json"
+            self.assertEqual(json.loads(saved.read_text()), report)
+            return report
+
+    def test_evidence_deleted_after_kernel_check_produces_unknown_report(self):
+        real_popen = subprocess.Popen
+        for relative in ("Candidate.v", "manifest.json", "Goal.v", "dependencies/Extra.v"):
+            with self.subTest(file=relative):
+                deleted = []
+                def launch(*args, **kwargs):
+                    process = real_popen(*args, **kwargs)
+                    if "coqchk" in args[0]:
+                        original_wait = process.wait
+                        def finish_and_delete(*wait_args, **wait_kwargs):
+                            code = original_wait(*wait_args, **wait_kwargs)
+                            if code == 0 and not deleted:
+                                target = Path(kwargs["cwd"]) / relative
+                                target.unlink()
+                                deleted.append(str(target))
+                            return code
+                        process.wait = finish_and_delete
+                    return process
+                with patch("spectest.certificates.subprocess.Popen", side_effect=launch):
+                    report = self.check_fixture(
+                        "True", "Require Import Goal. Module Proofs. "
+                        "Lemma proof_of_required : Goal.required. Proof. exact I. Qed. End Proofs.",
+                        {"Extra": "Definition unused : nat := 0.\n"})
+                self.assertEqual(report["status"], "UNKNOWN", report)
+                self.assertEqual(report["reason"], "evidence_unavailable_during_check")
+                self.assertEqual(report["unavailable_evidence"], deleted[0])
+                self.assertEqual(report["stages"][-1]["stage"], "kernel_replay")
+                self.assertEqual(report["stages"][-1]["exit_code"], 0)
 
     def test_checked_reuse_still_checks_a_changed_proof(self):
         cache = KernelReplayCache()
@@ -303,6 +366,42 @@ class CertificateKernelTests(unittest.TestCase):
         )
         self.assertEqual(report["status"], "UNKNOWN")
         self.assertEqual(report["stages"][-1]["stage"], "compile_Coverage.v")
+
+    def test_unicode_or_primed_axiom_is_not_hidden_by_allowed_classic(self):
+        for name in ("α", "bad'"):
+            with self.subTest(name=name):
+                report = self.check_fixture(
+                    "False", "Require Import Goal Unsafe. Module Proofs. "
+                    "Lemma proof_of_required : Goal.required. Proof. exact bogus. Qed. End Proofs.",
+                    {"Unsafe": "Require Import Coq.Logic.Classical_Prop.\n"
+                     + f"Axiom {name} : False.\nLemma bogus : False.\n"
+                     + f"Proof. destruct (classic True); exact {name}. Qed.\n"})
+                self.assertEqual(report["status"], "UNKNOWN", report)
+                self.assertEqual(report["reason"], "unapproved_transitive_assumptions")
+                self.assertTrue(any(item.endswith(name) for item in report["unexpected_assumptions"]))
+
+    def test_unchecked_guardedness_is_not_hidden_by_allowed_classic(self):
+        report = self.check_fixture(
+            "False", "Require Import Goal Unsafe. Module Proofs. "
+            "Lemma proof_of_required : Goal.required. Proof. exact bogus. Qed. End Proofs.",
+            {"Unsafe": "Require Import Coq.Logic.Classical_Prop.\nUnset Guard Checking.\n"
+             "Fixpoint loop (n:nat) : False := loop n.\nLemma bogus : False.\n"
+             "Proof. destruct (classic True); exact (loop 0). Qed.\n"})
+        self.assertEqual(report["status"], "UNKNOWN", report)
+        self.assertEqual(report["reason"], "unsupported_assumption_records")
+        self.assertTrue(any("assumed to be guarded" in item
+                            for item in report["unsupported_assumption_records"]))
+        self.assertEqual(report["stages"][-1]["stage"], "compile_Assumptions.v")
+
+    def test_trusted_classic_still_passes_complete_kernel_check(self):
+        report = self.check_fixture(
+            "forall P : Prop, P \/ ~ P",
+            "Require Import Goal Coq.Logic.Classical_Prop. Module Proofs. "
+            "Lemma proof_of_required : Goal.required. Proof. exact classic. Qed. End Proofs.")
+        self.assertEqual(report["status"], "PASS", report)
+        self.assertEqual(report["assumptions"], ["Classical_Prop.classic"])
+        self.assertEqual(report["unsupported_assumption_records"], [])
+        self.assertEqual(report["stages"][-1]["stage"], "kernel_replay")
 
     def test_imported_axiom_is_not_a_certificate(self):
         report = self.check_fixture(

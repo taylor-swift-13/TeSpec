@@ -399,41 +399,58 @@
     "reproduction": "TESPEC_COQ_INTEGRATION=1 SAC_SYMEXEC=$PWD/bin/tespec-symexec PYTHONPATH=tests python3 -m unittest test_vc_prelude"
   },
   "vc_writeback_audit": {
-    "scope": "Focused engineering regression; no benchmark program/specification/expectation or formal cost changed. Native binary and sac source unchanged. Array controls below are retained from the preceding writeback regression; this follow-up reruns the listed 270 tests.",
+    "scope": "Focused engineering regression; benchmark programs, specifications, expectations and formal group costs are unchanged. Native binary and sac source are unchanged. Historical array controls remain below; this final sweep reruns 300 tests and separately checks seven ASan branch/return controls.",
     "fixes": [
       "The return-only spatial-SMT PASS path now checks the original source, on-disk manifest, Coq hashes, residual inventory and parent interface; mismatch preserves UNKNOWN and ITP.",
       "The legacy check-proof entry rejects forbidden proof commands on the same line and audits transitive assumptions against the complete original VC_Correct interface, including trusted-name identity checks.",
       "A rejected or failed proof retry cannot retain a previous proof_report.json PASS; compile failure or timeout writes UNKNOWN.",
       "After a selected VC refutation, synchronize top-level ITP task goals with each case current residuals; do not redispatch refuted parents or split goals, and preserve frozen evidence.",
-      "Persist UNKNOWN when the Coq version probe times out instead of leaking TimeoutExpired without a result."
+      "Persist UNKNOWN when the Coq version probe times out instead of leaking TimeoutExpired without a result.",
+      "Reject transitive unchecked Coq kernel assumptions and preserve Unicode/primed assumption names, even when mixed with allowed classical axioms; both proof entry points share the complete audit.",
+      "Recheck legacy proof manifest, candidate, immutable files and dependencies after compilation/audit; changed or missing inputs yield UNKNOWN with pinned input hashes.",
+      "A full certificate whose evidence disappears during its final integrity check now saves UNKNOWN instead of exiting without a report.",
+      "An explicit original-artifact binding failure blocks spatial-SMT FAIL as well as PASS and preserves execution phases; individual diagnostic countermodels are retained.",
+      "Retire a previous run report once the retry output is known, including configuration/binding rejection; preserve original evidence files.",
+      "Pin source/job/spec hashes to loaded bytes and recheck primary inputs and binary before publishing a run report, rejecting changes during execution."
     ],
     "source_sha256": {
-      "spectest/core.py": "96073f2ccc4e4a27d21bb041cb01c7b8608dcc1850cffe774c7ff3f27b87a5ff",
-      "spectest/spatial_smt.py": "d49ad29c3ada57e1e8e5c2f88c7aed9183d2344e134aea7b3f7e89e2213dff65",
-      "tests/test_legacy_proof_replay.py": "14deee739d87e2af9b0a935f11bdf4fa33dd3829a91eda1d4b8cd1a3d4e2c819",
-      "tests/test_spatial_return_binding.py": "c5bb24851ba92c94341656d944219c3a17c75c6c5c53a169d4e68470a6309acb",
+      "spectest/core.py": "4acf12c6349c111a0021a88efc19804789f7e5c290221699107898e0f74f5ce1",
+      "spectest/spatial_smt.py": "8a2cde2307741a5b83c873fac8be0f7c23664a5b829cbfff6afab870d25aeef9",
+      "tests/test_legacy_proof_replay.py": "fd1e3525093fa3d66667cbba90f6ab67193ffdc6e4f44de50ebdc1f64ae9507e",
+      "tests/test_spatial_return_binding.py": "d51b587d0b7e0d7473c8babe2107b9b6861e35a29baba761d91d0661dca8503a",
       "spectest/run_certificates.py": "b5761c3250844877812d5177b0fcea35f7b686342ddca91f64ae56e0911399d4",
-      "tests/test_run_certificates.py": "0d7ec4fff78126ebe9d4a4ecf7d201d2549db67b21b374516a324cc5bb321c4c"
+      "tests/test_run_certificates.py": "0d7ec4fff78126ebe9d4a4ecf7d201d2549db67b21b374516a324cc5bb321c4c",
+      "spectest/certificates.py": "8b602350d7885fec5646590d284a99ca6f216a2909d9406f513d5d32606921fe",
+      "tests/test_certificates.py": "3f1edd35ab811d05d157610df35bc997b4c9fb3570f0351333ce5ec24a6d575a",
+      "tests/test_run_report_retries.py": "d88bc57e5eef636f699f6ff99df604505d9b5be6e3b9e9dcb9cb2b079fa9a638"
     },
     "checks": [
       {
-        "check": "native and spatial writeback regressions",
-        "total": 160,
-        "passed": 160,
+        "check": "native execution, spatial writeback, run retry and preflight regressions",
+        "total": 169,
+        "passed": 169,
         "skipped": 0,
         "result": "PASS",
-        "log_sha256": "3d75207a4050ab736cd196312cbab5fa3f7313c6cd6f23b5f8a30b8736f4a555"
+        "log_sha256": "fdeb757c005f5b54e53e50fb23d8799cdafdd1d546ef6b10655e304660d468c6"
       },
       {
-        "check": "proof inputs, replay, partial-refutation tasks and cache, including actual Coq controls",
-        "total": 110,
-        "passed": 110,
+        "check": "existing input, controller reconciliation and kernel-cache regressions",
+        "total": 88,
+        "passed": 88,
         "skipped": 0,
         "result": "PASS",
-        "log_sha256": "cbc079a75362b8a3ab3261a3414e8acf3bee12c01294e86b7c637e81a32b1a05"
+        "log_sha256": "fddfb22de5b9cb96944410e4b3a8b80d3d716e811dac9b2e72ed54837660ae14"
+      },
+      {
+        "check": "legacy and complete proof audit regressions, including real Coq/coqchk positive and negative controls",
+        "total": 43,
+        "passed": 43,
+        "skipped": 0,
+        "result": "PASS",
+        "log_sha256": "018a2309407b64fab411b683621739f0f1c6ac5223ca01220c40894d9b993d2c"
       }
     ],
-    "unique_tests_passed": 270,
+    "unique_tests_passed": 300,
     "array_controls": [
       {
         "case": "original_client_translation7_only_entry",
@@ -479,17 +496,32 @@
       "runtime-like task axiom rejected",
       "real slow version-probe subprocess returns UNKNOWN and replaces old PASS"
     ],
-    "legacy_check_scope": "Coq compilation and transitive assumption audit; independent_kernel_replay=NOT_RUN. The separate three existing complete-certificate controls do run independent kernel checks.",
+    "legacy_check_scope": "Legacy proof checking performs Coq compilation and transitive assumption audit, with independent_kernel_replay=NOT_RUN. The complete-certificate regression controls independently execute coqchk.",
     "reproduction": {
-      "proof": "TESPEC_COQ_INTEGRATION=1 PYTHONPATH=tests python3 -m unittest test_legacy_proof_replay",
+      "proof": "TESPEC_COQ_INTEGRATION=1 PYTHONPATH=tests python3 -m unittest test_legacy_proof_replay test_certificates",
       "return": "SAC_SYMEXEC=$PWD/bin/tespec-symexec PYTHONPATH=tests python3 -m unittest test_spatial_return_binding",
-      "pending": "TESPEC_COQ_INTEGRATION=1 PYTHONPATH=tests python3 -m unittest test_run_certificates"
+      "pending": "TESPEC_COQ_INTEGRATION=1 PYTHONPATH=tests python3 -m unittest test_run_certificates",
+      "run_retries": "SAC_SYMEXEC=$PWD/bin/tespec-symexec PYTHONPATH=tests python3 -m unittest test_run_report_retries"
     },
     "raw_temporary_runs_retained_in_git": false,
     "partial_refutation_controls": [
       "actual independent kernel refutation removes only proved targets from pending goals",
       "multiple cases update independently; failed proofs retain all pending targets",
       "original manifest and frozen automatic report stay byte-identical; execution remains UNKNOWN without reachability evidence"
-    ]
+    ],
+    "proof_integrity_controls": [
+      "False via an unchecked recursive definition mixed with classic: UNKNOWN",
+      "False via Unicode or primed axioms mixed with classic: UNKNOWN in both proof paths",
+      "closed proof and approved classic proof: PASS; complete path also passes coqchk",
+      "concurrent input modification/deletion: no stale PASS; original goals are not weakened"
+    ],
+    "native_branch_audit": {
+      "configurations": 7,
+      "result": "PASS",
+      "asan": "detect_leaks=0; no invalid memory access reported",
+      "all_queued_witnesses_solved": true,
+      "summary_sha256": "289146239949c63459e3736db8422ffdc797057a07b6cbc4ecf842ae83b10def"
+    },
+    "final_review": "No further reproducible obvious defect was found in the reviewed VC scheduling, spatial encoding/writeback and proof-evidence paths; this is not a proof that the entire tool is defect-free."
   }
 }

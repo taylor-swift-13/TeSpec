@@ -230,8 +230,12 @@ constructor 的多态实参；`type_args` 用于明确记录/校验输入意图�
 
 - `PASS`：QCP/SMT 已关闭全部 VC；
 - `FAIL`：QCP 得到确定的不一致 obligation；
-- `UNKNOWN`：路径上限或尚未关闭的 VC，不等于 spec 错误；
-- `ERROR`：job、parser、执行器、超时或环境错误。
+- `UNKNOWN`：路径上限、求解/证明超时或尚未关闭的 VC，不等于 spec 错误；
+- `ERROR`：job、parser、执行器或环境错误。
+
+已知输出目录的重试会先撤下旧 `report.json`，不删除原证明产物。程序、job 和外置规约的
+哈希来自实际读取的字节；发布报告前复核这些输入及执行器二进制，执行中发生变更或
+删除则拒绝发布结果，避免把旧执行的 PASS 关联到新输入。
 
 QCP/SMT 未关闭的目标保存到 `vc/manifest.json`，结果为
 `UNKNOWN / residual_vc_requires_proof`。只允许修改 manifest 指定的
@@ -245,6 +249,10 @@ python3 -m spectest check-proof PATH/TO/vc/manifest.json
 命令写在同一行也会检查。Coq 8.20 编译后，受控模块核对完整原始 `VC_Correct` 接口，
 逐目标执行 `Print Assumptions`，核对允许的既有库假设及其完整身份；从依赖文件
 导入的未批准公理同样不能产生 PASS。报告保存实际假设，不把有库假设的证明标为 Closed。
+假设名完整保留 Unicode 和撇号。Coq 标出的未检查 guardedness、positivity、unsafe
+hierarchy、UIP/额外 Theory 或无法识别的审计记录均明确拒绝，不能被同时出现的
+允许公理掩盖。编译/审计结束后复核 manifest、证明和依赖哈希；变化或证据缺失时
+保存 UNKNOWN。完整证书流程也在内核检查结束后处理证据缺失，不保留陈旧 PASS。
 
 每次检查先移除旧 `proof_report.json`；版本探测超时、编译失败或超时均写回 UNKNOWN，输入校验拒绝
 也不会留下旧 PASS。`check-proof` 的 PASS 表示 Coq 编译和假设审计通过，
