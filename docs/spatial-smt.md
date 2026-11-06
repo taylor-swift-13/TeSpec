@@ -74,8 +74,9 @@ VC 清单一致，协议缺失或损坏时不能猜测公式。
   manual 条目、UNKNOWN 记录和 witness 的 total/manual/auto 计数须严格一致。
   同时读取旧 WitnessList 和新 schema_version=1 的 verification_conditions，不补造缺失义务。
   原始记录可能去重、manual 分支可能聚合；不一致时保留 UNKNOWN，不放宽为集合包含。
-- 原始 Coq 文件的目标定义、manual 声明、模块接口和 residual 清单必须完整对应，
-  同时核对不可变文件哈希、案例 ID、函数、生成源码和三方布局。不能关联的额外义务保留 ITP。
+- return-only 与中间断言路径都核对原始 Coq 目标定义、manual 声明、模块接口和 residual 清单，
+  同时核对磁盘 manifest、不可变文件哈希、案例 ID、函数、生成源码和三方布局。
+  文件缺失、修改或不能关联的额外义务会阻止回写 PASS、保留 ITP；单条 VC 的求解结果仍保存。
 - 只证明部分 VC 不足以产生 PASS；无法关联的额外 Coq 义务仍交给 ITP。
 
 ## 产物与证据
@@ -97,6 +98,7 @@ VC 清单一致，协议缺失或损坏时不能猜测公式。
 ## 测试位置
 
 - 主流程集成回归：`tests/test_spatial_smt.py`。
+- return 原始产物绑定回归：`tests/test_spatial_return_binding.py`，实际原生正例及文件缺失/修改负例。
 - 编码模块单元测试：`tools/finite_spatial_smt/test_*.py`，包括通用 missing_i 和 LOCAL 的正反例。
 - 已完成组实际回归：`tools/finite_spatial_smt/regress_completed_groups.py`，读取发布的基线并
   在全新目录实际执行 OFF/ON，不覆盖旧源、预期或证据。旧 UNKNOWN 的新判定对照既有 ITP，

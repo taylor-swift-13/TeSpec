@@ -442,7 +442,7 @@ def _annotation_coverage(executor: dict, case: dict, original: list) -> bool:
     return True
 
 
-def _annotation_artifacts(case: dict, executor: dict) -> dict:
+def _obligation_artifacts(case: dict, executor: dict) -> dict:
     """Bind group coverage to generated declarations, without proving Coq lemmas."""
     manifest = case.get("vc", {})
     if (manifest.get("schema") != "qcp-spectest-vc-manifest/v1"
@@ -585,7 +585,7 @@ def refine_case(
         annotation_coverage = False
     if annotation_coverage:
         try:
-            info["annotation_artifact_binding"] = _annotation_artifacts(case, executor)
+            info["annotation_artifact_binding"] = _obligation_artifacts(case, executor)
         except (OSError, ValueError, TypeError, KeyError, AttributeError) as error:
             annotation_coverage = False
             info["annotation_coverage_reason"] = "original_artifact_binding_failed:" + str(error)
@@ -673,6 +673,12 @@ def refine_case(
         coverage = _return_coverage(executor, original, case.get("residual_vcs", []))
     except (TypeError, AttributeError):
         coverage = False
+    if coverage:
+        try:
+            info["return_artifact_binding"] = _obligation_artifacts(case, executor)
+        except (OSError, ValueError, TypeError, KeyError, AttributeError) as error:
+            coverage = False
+            info["return_coverage_reason"] = "original_artifact_binding_failed:" + str(error)
     info["return_residual_coverage"] = coverage
     coverage = coverage or annotation_coverage
     info["residual_coverage"] = coverage

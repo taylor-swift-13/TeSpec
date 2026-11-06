@@ -8,6 +8,7 @@ import re
 import signal
 import shutil
 import subprocess
+import tempfile
 import time
 from dataclasses import dataclass
 from functools import lru_cache
@@ -2231,6 +2232,9 @@ def check_vc_proof(
     """Compile a model- or human-filled residual proof without using an LLM."""
 
     manifest_path = manifest_path.expanduser().resolve()
+    # A rejected or unfinished retry must never leave a previous PASS on disk.
+    proof_report = manifest_path.parent / "proof_report.json"
+    proof_report.unlink(missing_ok=True)
     try:
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as error:
@@ -2261,12 +2265,22 @@ def check_vc_proof(
         if not isinstance(expected, str) or _sha256(files[name]) != expected:
             raise JobError(f"generated VC file was modified: {files[name]}")
 
+    # Import lazily: the complete-certificate checker shares our load-path helper.
+    # Coq commands need not start a line; reuse its token-level escape checks.
+    from .certificates import (
+        ASSUMPTION_IDENTITIES, IDENT, QUALIFIED, TRUSTED_ASSUMPTIONS,
+        assumptions_from_output, check_candidate_commands,
+        check_dependency_namespace, goal_interface,
+    )
+
     manual = files["proof_manual"].read_text(encoding="utf-8", errors="replace")
+    check_candidate_commands(manual)
     forbidden = _FORBIDDEN_MANUAL_PROOF.search(manual)
     if forbidden is not None:
         token = forbidden.group(0).strip().split()[0]
         raise JobError(f"manual proof still contains a forbidden proof escape: {token}")
     automatic = files["proof_auto"].read_text(encoding="utf-8", errors="replace")
+    check_candidate_commands(automatic)
     if _FORBIDDEN_MANUAL_PROOF.search(automatic):
         raise JobError(
             "automatic proof contains unchecked placeholders; "
@@ -2313,6 +2327,7 @@ def check_vc_proof(
             or not isinstance(expected, str)
         ):
             raise JobError(f"invalid VC manifest coq_dependencies[{index}]")
+        check_dependency_namespace(module, separation_logic)
         staged = Path(staged_raw).expanduser().resolve()
         expected_path = (
             dependency_root / Path(*module.split(".")).with_suffix(".v")
@@ -2350,77 +2365,120 @@ def check_vc_proof(
     stderr_parts: list[str] = []
     compiled: list[str] = []
     started = time.monotonic()
-    compile_units = [
-        *((f"dependency:{path.stem}", path) for path in dependency_files),
-        *(
-            (name, files[name])
-            for name in ("goal", "proof_auto", "proof_manual", "goal_check")
-        ),
-    ]
-    for name, compile_path in compile_units:
+
+    def save_report(report: dict[str, Any]) -> dict[str, Any]:
+        stdout_log.write_text("\n".join(stdout_parts), encoding="utf-8")
+        stderr_log.write_text("\n".join(stderr_parts), encoding="utf-8")
+        report["report"] = str(proof_report)
+        proof_report.write_text(
+            json.dumps(report, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+        return report
+
+    def compile_unit(compile_path: Path):
         command = [*prefix, *load_paths, str(compile_path)]
         try:
             completed = subprocess.run(
-                command,
-                cwd=separation_logic,
-                capture_output=True,
-                text=True,
-                timeout=timeout_seconds,
-                check=False,
+                command, cwd=separation_logic, capture_output=True, text=True,
+                timeout=timeout_seconds, check=False,
             )
         except subprocess.TimeoutExpired as error:
             stdout_parts.append(_subprocess_text(error.stdout))
             stderr_parts.append(_subprocess_text(error.stderr))
-            stdout_log.write_text("\n".join(stdout_parts), encoding="utf-8")
-            stderr_log.write_text("\n".join(stderr_parts), encoding="utf-8")
-            return {
-                "schema": "qcp-spectest-proof-report/v1",
-                "status": "UNKNOWN",
-                "satisfied": None,
-                "reason": "coq_proof_timeout",
-                "failed_file": str(compile_path),
-                "compiled": compiled,
-                "stdout": str(stdout_log),
-                "stderr": str(stderr_log),
-            }
+            return save_report({
+                "schema": "qcp-spectest-proof-report/v1", "status": "UNKNOWN",
+                "satisfied": None, "reason": "coq_proof_timeout",
+                "failed_file": str(compile_path), "compiled": compiled,
+                "stdout": str(stdout_log), "stderr": str(stderr_log),
+            })
         stdout_parts.append(f"$ {' '.join(command)}\n{completed.stdout}")
         stderr_parts.append(f"$ {' '.join(command)}\n{completed.stderr}")
         if completed.returncode != 0:
-            stdout_log.write_text("\n".join(stdout_parts), encoding="utf-8")
-            stderr_log.write_text("\n".join(stderr_parts), encoding="utf-8")
-            return {
-                "schema": "qcp-spectest-proof-report/v1",
-                "status": "UNKNOWN",
-                "satisfied": None,
-                "reason": "coq_proof_failed",
-                "returncode": completed.returncode,
-                "failed_file": str(compile_path),
-                "compiled": compiled,
-                "stdout": str(stdout_log),
+            return save_report({
+                "schema": "qcp-spectest-proof-report/v1", "status": "UNKNOWN",
+                "satisfied": None, "reason": "coq_proof_failed",
+                "returncode": completed.returncode, "failed_file": str(compile_path),
+                "compiled": compiled, "stdout": str(stdout_log),
                 "stderr": str(stderr_log),
-            }
+            })
         compiled.append(str(compile_path))
+        return completed
 
-    stdout_log.write_text("\n".join(stdout_parts), encoding="utf-8")
-    stderr_log.write_text("\n".join(stderr_parts), encoding="utf-8")
+    compile_units = [
+        *dependency_files,
+        *(files[name] for name in ("goal", "proof_auto", "proof_manual", "goal_check")),
+    ]
+    for compile_path in compile_units:
+        outcome = compile_unit(compile_path)
+        if isinstance(outcome, dict):
+            return outcome
+
+    # Compile a controller-owned interface and audit its transitive assumptions.
+    # User libraries may contain assumptions even when the edited proof has none.
+    entries = goal_interface(files["goal"].read_text(encoding="utf-8"))
+    modules = [files[name].stem for name in ("goal", "proof_auto", "proof_manual")]
+    if any(re.fullmatch(IDENT, module) is None for module in modules):
+        raise JobError("unsupported generated Coq module name")
+    imports = "Require Import " + " ".join(modules) + ".\n"
+    assumptions = []
+    identities = []
+    audit_reason = None
+    with tempfile.TemporaryDirectory(prefix="tespec-proof-audit-") as audit_directory:
+        audit_path = Path(audit_directory) / "LegacyAssumptions.v"
+        audit_path.write_text(
+            imports + f"Module Checked : {modules[0]}.VC_Correct.\n"
+            + f"Include {modules[1]}.\nInclude {modules[2]}.\nEnd Checked.\n"
+            + "Set Printing Width 1000000.\n"
+            + "".join(f"Print Assumptions Checked.{name}.\n" for name, _ in entries),
+            encoding="utf-8",
+        )
+        outcome = compile_unit(audit_path)
+        if isinstance(outcome, dict):
+            return outcome
+        # Print Assumptions writes stdout. Appending separately captured stderr
+        # would move earlier warnings into the final axiom block.
+        audit = outcome.stdout
+        observed = assumptions_from_output(audit)
+        assumptions = sorted(observed)
+        blocks = audit.count("Axioms:") + audit.count("Closed under the global context")
+        if blocks != len(entries) or ("Axioms:" in audit and not observed):
+            audit_reason = "assumption_audit_incomplete"
+        elif observed - TRUSTED_ASSUMPTIONS:
+            audit_reason = "unapproved_transitive_assumptions"
+        elif observed:
+            # Match the identities, not merely Print Assumptions' abbreviated names.
+            identity_path = Path(audit_directory) / "LegacyAssumptionIdentities.v"
+            identity_path.write_text(
+                imports + "".join(f"Locate {name}.\n" for name in assumptions),
+                encoding="utf-8",
+            )
+            outcome = compile_unit(identity_path)
+            if isinstance(outcome, dict):
+                return outcome
+            identities = re.findall(
+                rf"(?m)^Constant ({QUALIFIED})\s*$", outcome.stdout,
+            )
+            if identities != [ASSUMPTION_IDENTITIES[name] for name in assumptions]:
+                audit_reason = "assumption_identity_mismatch"
+
     report = {
         "schema": "qcp-spectest-proof-report/v1",
-        "status": "PASS",
-        "satisfied": True,
-        "reason": "residual_vc_proved_by_coq",
+        "status": "UNKNOWN" if audit_reason else "PASS",
+        "satisfied": None if audit_reason else True,
+        "reason": audit_reason or "residual_vc_proved_by_coq",
         "case_id": manifest.get("case_id"),
         "function": manifest.get("function"),
         "residual_goals": residual_goals,
         "compiled": compiled,
         "coq_version": version_output.strip().splitlines()[0],
         "duration_seconds": round(time.monotonic() - started, 6),
-        "stdout": str(stdout_log),
-        "stderr": str(stderr_log),
+        "stdout": str(stdout_log), "stderr": str(stderr_log),
+        "check_scope": "coq-compilation-and-assumption-audit",
+        "independent_kernel_replay": "NOT_RUN",
+        "assumptions": assumptions,
+        "assumptions_audited_goals": blocks,
+        "assumption_identities": identities,
+        "unexpected_assumptions": sorted(set(assumptions) - TRUSTED_ASSUMPTIONS),
     }
-    proof_report = vc_dir / "proof_report.json"
-    proof_report.write_text(
-        json.dumps(report, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
-    report["report"] = str(proof_report)
-    return report
+    return save_report(report)

@@ -397,5 +397,104 @@
     },
     "scope": "Dedicated integration controls only; not a new benchmark proof or formal group-cost measurement.",
     "reproduction": "TESPEC_COQ_INTEGRATION=1 SAC_SYMEXEC=$PWD/bin/tespec-symexec PYTHONPATH=tests python3 -m unittest test_vc_prelude"
+  },
+  "vc_writeback_audit": {
+    "scope": "Focused engineering regression; no benchmark program/specification/expectation or formal cost changed. The native binary and sac source are unchanged from native_fix.",
+    "fixes": [
+      "The return-only spatial-SMT PASS path now checks the original source, on-disk manifest, Coq hashes, residual inventory and parent interface; mismatch preserves UNKNOWN and ITP.",
+      "The legacy check-proof entry rejects forbidden proof commands on the same line and audits transitive assumptions against the complete original VC_Correct interface, including trusted-name identity checks.",
+      "A rejected or failed proof retry cannot retain a previous proof_report.json PASS; compile failure or timeout writes UNKNOWN."
+    ],
+    "source_sha256": {
+      "spectest/core.py": "87456501b068bee084be341b0e99c6d528da79a0e2e51ddcc7303aa6d36a2d53",
+      "spectest/spatial_smt.py": "d49ad29c3ada57e1e8e5c2f88c7aed9183d2344e134aea7b3f7e89e2213dff65",
+      "tests/test_legacy_proof_replay.py": "f9c87ebd91fc0a396818914d9e9929ca0400adcfa8c069336ede27476c65915f",
+      "tests/test_spatial_return_binding.py": "c5bb24851ba92c94341656d944219c3a17c75c6c5c53a169d4e68470a6309acb"
+    },
+    "checks": [
+      {
+        "check": "native and spatial writeback regressions",
+        "total": 160,
+        "passed": 160,
+        "skipped": 0,
+        "result": "PASS",
+        "log_sha256": "766624dfa241941fba4adbb17c0c2ecadd24e8bf58ed152875845ecd9f2d517b"
+      },
+      {
+        "check": "legacy proof replay including actual Coq controls",
+        "total": 9,
+        "passed": 9,
+        "skipped": 0,
+        "result": "PASS",
+        "log_sha256": "f60208a267d18449b7a7adc7307ca193680593eca0f079065a35ed2ea1b5cc05"
+      },
+      {
+        "check": "existing proof input, reconciliation and cache checks",
+        "total": 98,
+        "passed": 95,
+        "skipped": 3,
+        "result": "PASS",
+        "log_sha256": "7f16bc70b04fc40142e0c3eac9501ac8e7724ef498d9ba7165a2ab210d29ca5c"
+      },
+      {
+        "check": "separate execution of the three integration checks skipped above",
+        "total": 3,
+        "passed": 3,
+        "skipped": 0,
+        "result": "PASS",
+        "log_sha256": "f03b91fe5c7bc103740dd404b6630244f67ccfbe30550d8c762218348a4aec6c"
+      }
+    ],
+    "unique_tests_passed": 267,
+    "array_controls": [
+      {
+        "case": "original_client_translation7_only_entry",
+        "strategy": "inline",
+        "expected": "PASS",
+        "actual": "PASS"
+      },
+      {
+        "case": "original_client_translation7_only_entry",
+        "strategy": "modular",
+        "expected": "PASS",
+        "actual": "PASS"
+      },
+      {
+        "case": "original_client_translation9_only_entry",
+        "strategy": "inline",
+        "expected": "PASS",
+        "actual": "PASS"
+      },
+      {
+        "case": "original_client_translation9_only_entry",
+        "strategy": "modular",
+        "expected": "PASS",
+        "actual": "PASS"
+      },
+      {
+        "case": "original_client_translation12_only_entry",
+        "strategy": "inline",
+        "expected": "PASS",
+        "actual": "PASS"
+      },
+      {
+        "case": "original_client_translation12_only_entry",
+        "strategy": "modular",
+        "expected": "FAIL",
+        "actual": "FAIL"
+      }
+    ],
+    "legacy_proof_controls": [
+      "closed valid proof PASS; wrong retry UNKNOWN",
+      "unapproved dependency axiom rejected",
+      "allowed classical axiom accepted with full identity recorded",
+      "runtime-like task axiom rejected"
+    ],
+    "legacy_check_scope": "Coq compilation and transitive assumption audit; independent_kernel_replay=NOT_RUN. The separate three existing complete-certificate controls do run independent kernel checks.",
+    "reproduction": {
+      "proof": "TESPEC_COQ_INTEGRATION=1 PYTHONPATH=tests python3 -m unittest test_legacy_proof_replay",
+      "return": "SAC_SYMEXEC=$PWD/bin/tespec-symexec PYTHONPATH=tests python3 -m unittest test_spatial_return_binding"
+    },
+    "raw_temporary_runs_retained_in_git": false
   }
 }

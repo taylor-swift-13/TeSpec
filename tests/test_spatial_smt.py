@@ -1,6 +1,7 @@
 """Opt-in adapter tests, separate from program benchmark measurements."""
 
 from copy import deepcopy
+from contextlib import nullcontext
 import json
 import hashlib
 from pathlib import Path
@@ -39,6 +40,7 @@ def sample(goal=EMPTY):
         "goal": goal,
     }
     case = {
+        "_mock_return_artifact_binding": True,
         "status": "UNKNOWN",
         "overall": "UNKNOWN",
         "test_result": "UNKNOWN",
@@ -106,7 +108,14 @@ class SpatialAdapterTests(unittest.TestCase):
             mutate(case, raw)
             stdout.write_text(json.dumps(raw))
             saved = stdout.read_bytes()
-        refine_case(case, stdout, root / "spatial-smt", timeout_ms=2000)
+        # This helper's hand-written return protocol fixtures intentionally have
+        # no native Coq output. Isolate protocol tests with an explicit mock;
+        # annotation and native integration tests exercise real artifact binding.
+        mock_binding = case.pop("_mock_return_artifact_binding", False)
+        binding = patch("spectest.spatial_smt._obligation_artifacts",
+                        return_value={"scope": "unit-test-artifact-binding"}) if mock_binding else nullcontext()
+        with binding:
+            refine_case(case, stdout, root / "spatial-smt", timeout_ms=2000)
         self.assertEqual(stdout.read_bytes(), saved)
         self.assertEqual(case["residual_vcs"], residuals)
         return case, root
@@ -276,6 +285,7 @@ def annotation_sample(value=7):
     vc = dict(kind="entailment", name=None, line=11, status="UNKNOWN", path=pre, goal=post)
     returned = dict(kind="return", name=None, line=12, status="VALID", path=EMPTY, goal=EMPTY)
     case, raw = sample()
+    case.pop("_mock_return_artifact_binding")
     case.update(mode="all-boundaries", annotation_policy="check-preserve", _synthetic_coq_fixture=True)
     case["phases"].update(postcondition="PASS", annotations="UNKNOWN")
     case["vc_results"] = [vc, returned]

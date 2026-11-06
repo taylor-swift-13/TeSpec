@@ -241,9 +241,15 @@ QCP/SMT 未关闭的目标保存到 `vc/manifest.json`，结果为
 python3 -m spectest check-proof PATH/TO/vc/manifest.json
 ```
 
-检查器验证其余 Coq 文件哈希，拒绝 `Admitted`、`Abort`、新公理等绕过方式，并用
-Coq 8.20 编译完整证明。`check-proof` 的 PASS 表示 manual residual 已通过
-Coq 检查；它不被重新标记成 QCP 自动证明。
+检查器验证其余 Coq 文件哈希，拒绝 `Admitted`、`Abort`、新公理和关闭检查等绕过方式，
+命令写在同一行也会检查。Coq 8.20 编译后，受控模块核对完整原始 `VC_Correct` 接口，
+逐目标执行 `Print Assumptions`，核对允许的既有库假设及其完整身份；从依赖文件
+导入的未批准公理同样不能产生 PASS。报告保存实际假设，不把有库假设的证明标为 Closed。
+
+每次检查先移除旧 `proof_report.json`；编译失败或超时写回 UNKNOWN，输入校验拒绝
+也不会留下旧 PASS。`check-proof` 的 PASS 表示 Coq 编译和假设审计通过，
+`independent_kernel_replay` 为 `NOT_RUN`；它不表示 QCP 自动证明或独立内核复核。
+需要独立 `coqchk` 的完整证据时使用完整证书检查流程。
 
 ## Codex skill
 
