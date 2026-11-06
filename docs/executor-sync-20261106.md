@@ -3,10 +3,10 @@
 Canonical source: /home/yangfp/sac_c_parser, branch tespec.
 Deployed binary: bin/tespec-symexec. Provenance: bin/tespec-symexec.build.json.
 
-- sac_revision: 020aae13fbe120bf278f26d31a989f8439e86548
+- sac_revision: db632c3cebe0cfa9315d076e433e5879f7d9c077
 - sac_master_base: 1cde2a4b2069c41b6a7a1fa29bf6a2492c7a34f1
 - smt_revision: 3098d53575ad2a99f9f561ec4e10233c98f44fd3
-- binary_sha256: b8c6cf3a277cd782f23ad6775576d6fd5a7212d3ae5a8ad13acbba30e948e481
+- binary_sha256: 75a4c4fd30096a376f7437abd935cf6e97b71152ed369c197d14bfa34d61b9b1
 - source_dirty: False
 
 Installed and build binary hashes match. The tracked source and SMT trees were
@@ -26,7 +26,7 @@ rewriting is mode-gated. The installed binary comes from the canonical branch.
 The query-isolation test accepts pre_value and upstream free_value names for the
 same symbolic witness. Status expectations were unchanged.
 
-## Verification receipts
+## Initial merge verification receipts (020aae13fbe1)
 
 ```json
 [
@@ -79,3 +79,34 @@ also found pre-existing array_load discrepancies: translation9 returns native
 FAIL in both strategies, while inline translation7/12 remain UNKNOWN. The earlier
 compatibility receipts must not be read as a full installed-binary benchmark pass.
 See docs/spatial-smt.md for scope, negative-writeback protection and focused checks.
+
+## Native entry and annotation fixes
+
+The deployed binary now uses sac `db632c3cebe0cfa9315d076e433e5879f7d9c077`.
+Body annotations bind `With` variables to the selected entry specification before
+semantic analysis captures their IDs. Fresh observation goals again resolve local
+addresses and retain unmentioned C scalar local storage after template lowering.
+The live execution state and arbitrary user heap are not completed or rewritten.
+The changes are gated to teSpec; ordinary QCP and master were not modified.
+
+Installed-binary focused replay (all-boundaries, spatial SMT enabled):
+
+| Original array_load case | inline | modular |
+| --- | --- | --- |
+| translation7 | PASS | PASS |
+| translation9 | PASS | PASS |
+| translation12 | PASS | FAIL |
+
+All six match their existing expectations. No benchmark source, specification,
+input or expectation changed. The prior four open discrepancies are resolved;
+this does not claim a new complete 22-group replay or 45-group completion.
+
+Validation: 608 sac regressions and 137 teSpec targeted regressions passed with
+no skipped tests; the six new test methods cover 15 configurations and also pass
+with ASan (`detect_leaks=0`). Tests include specification selection/order,
+C-variable shadowing, wrong alias assertions and missing external heap.
+The installed binary matches the canonical Release build from clean tracked source.
+No new ITP/Coq proof or performance evaluation is claimed. sac was committed locally
+only; teSpec carries the binary, provenance, regressions and compact receipt.
+See [current executor receipt](../benchmark/results/tespec-unexpected/current-executor-replay.json)
+for status, source/VC hashes, native resource measurements and test-log hashes.

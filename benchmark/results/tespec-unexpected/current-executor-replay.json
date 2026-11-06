@@ -1,229 +1,314 @@
 {
-  "schema": "tespec-focused-regression/v1",
-  "baseline_commit": "f20af231955ba113f5a1f4d79508cc0d56a24765",
-  "scope": "Real native runs on current binary with spatial disabled, then old/new spatial refiners on identical original cases and VCs. No ITP/CN/Fulminate rerun or certificate reuse. Fallback timing serial, backend imports preloaded in both versions, development load uncontrolled.",
-  "summary": {
-    "groups": 22,
-    "case_pairs": 901,
-    "executions": 1802,
-    "baseline_statuses": {
-      "PASS": 992,
-      "FAIL": 760,
-      "UNKNOWN": 4,
-      "ERROR": 46
+  "schema": "tespec-focused-regression/v2",
+  "scope": "Engineering regression only. Prior 1802-run replay is historical; the current binary was rerun on the six targeted configurations below. No CN/Fulminate, ITP or Coq kernel rerun; no formal group results or costs replaced.",
+  "previous_replay": {
+    "baseline_commit": "f20af231955ba113f5a1f4d79508cc0d56a24765",
+    "summary": {
+      "groups": 22,
+      "case_pairs": 901,
+      "executions": 1802,
+      "baseline_statuses": {
+        "PASS": 992,
+        "FAIL": 760,
+        "UNKNOWN": 4,
+        "ERROR": 46
+      },
+      "candidate_statuses": {
+        "PASS": 993,
+        "FAIL": 761,
+        "UNKNOWN": 2,
+        "ERROR": 46
+      },
+      "baseline_expected_matches": 1796,
+      "candidate_expected_matches": 1798,
+      "differences": [
+        {
+          "key": "array_load/07/modular/original_client_translation7_only_entry",
+          "group": "array_load",
+          "strategy": "modular",
+          "variant": "cn_original:array_load.broken",
+          "case": "original_client_translation7_only_entry",
+          "expected": "PASS",
+          "baseline_fallback_seconds": 0.0014264790079323575,
+          "native_task_seconds": 0.04379667199100368,
+          "baseline_status": "UNKNOWN",
+          "candidate_status": "PASS",
+          "baseline_attempted": 1,
+          "candidate_attempted": 1,
+          "candidate_fallback_seconds": 0.020352460007416084,
+          "candidate_reason": "spatial_smt_valid_path_vcs",
+          "vc_sha256_unchanged": true
+        },
+        {
+          "key": "array_load/16/modular/original_client_translation12_only_entry",
+          "group": "array_load",
+          "strategy": "modular",
+          "variant": "cn_original:array_load.broken",
+          "case": "original_client_translation12_only_entry",
+          "expected": "FAIL",
+          "baseline_fallback_seconds": 0.003110538993496448,
+          "native_task_seconds": 0.03812209900934249,
+          "baseline_status": "UNKNOWN",
+          "candidate_status": "FAIL",
+          "baseline_attempted": 4,
+          "candidate_attempted": 4,
+          "candidate_fallback_seconds": 0.14701990199682768,
+          "candidate_reason": "spatial_smt_invalid_path_vc",
+          "vc_sha256_unchanged": true
+        }
+      ],
+      "regressions": [],
+      "invalid_vc": [],
+      "all_original_vc_sha256_unchanged": true,
+      "expected_errors_checked": 46,
+      "expected_errors_preserved": true,
+      "baseline_fallback_seconds": 0.4020095425657928,
+      "candidate_fallback_seconds": 0.9931087569857482,
+      "candidate_wall_seconds": 5.141624007999781,
+      "scope": "Real native runs on current binary with spatial disabled, then old/new spatial refiners on identical original cases and VCs. No ITP/CN/Fulminate rerun or certificate reuse. Fallback timing serial, backend imports preloaded in both versions, development load uncontrolled.",
+      "binary_sha256": "b8c6cf3a277cd782f23ad6775576d6fd5a7212d3ae5a8ad13acbba30e948e481",
+      "candidate_source_sha256": "50512c5dbe436658a7889b353cf1e7a70e76f264ecebc0c56f07763fffbaab25",
+      "baseline_source_sha256": "ab652bce46971cd5b6ac2c046b2bbb33e02ab1429b2fedde0e900db4fc872c63"
     },
-    "candidate_statuses": {
-      "PASS": 993,
-      "FAIL": 761,
-      "UNKNOWN": 2,
-      "ERROR": 46
-    },
-    "baseline_expected_matches": 1796,
-    "candidate_expected_matches": 1798,
-    "differences": [
+    "checks": {
+      "adapter_tests": 78,
+      "importer_tests": 137,
+      "passed": true
+    }
+  },
+  "native_fix": {
+    "sac_revision": "db632c3cebe0cfa9315d076e433e5879f7d9c077",
+    "binary_sha256": "75a4c4fd30096a376f7437abd935cf6e97b71152ed369c197d14bfa34d61b9b1",
+    "source_dirty": false,
+    "changes": [
+      "Bind body annotation With references to the selected entry contract before semantic analysis.",
+      "Prepare fresh observation goals with actual local addresses and existing scalar local frames after template lowering; do not modify live state or complete arbitrary user heaps."
+    ],
+    "source_input_and_expectations_unchanged": true,
+    "reproduction": "Use the named array_load case from benchmark/programs/array_load/evaluation-plan.json, its original variant source/bindings/includes, execution_mode=all-boundaries, recorded execution_strategy and spatial_smt=true.",
+    "cases": [
       {
-        "key": "array_load/07/modular/original_client_translation7_only_entry",
-        "group": "array_load",
-        "strategy": "modular",
-        "variant": "cn_original:array_load.broken",
         "case": "original_client_translation7_only_entry",
+        "strategy": "inline",
         "expected": "PASS",
-        "baseline_fallback_seconds": 0.0014264790079323575,
-        "native_task_seconds": 0.04379667199100368,
-        "baseline_status": "UNKNOWN",
-        "candidate_status": "PASS",
-        "baseline_attempted": 1,
-        "candidate_attempted": 1,
-        "candidate_fallback_seconds": 0.020352460007416084,
-        "candidate_reason": "spatial_smt_valid_path_vcs",
-        "vc_sha256_unchanged": true
+        "actual": "PASS",
+        "native_status": "UNKNOWN",
+        "reason": "spatial_smt_valid_path_vcs",
+        "source": "benchmark/programs/array_load/variants/qcp_existing_601105f7c1b14876ab6b/qcp/array_load_strong_client.qcp.c",
+        "source_sha256": "4f5693bc26ea462e435f686538a8de757ca22ba41a0002ed9330e82593ca22bd",
+        "generated_source_sha256": "4f5693bc26ea462e435f686538a8de757ca22ba41a0002ed9330e82593ca22bd",
+        "arguments": {},
+        "bindings": {},
+        "raw_vc_count": 21,
+        "itp_count": 0,
+        "previous_status": "UNKNOWN",
+        "precondition": "SAT",
+        "execution_completed": true,
+        "raw_json_sha256": "f61904d40560084b5a1060d17affbbc4908f8222079df420f5724e38bb1f3c1a",
+        "original_vc_sha256": {
+          "goal": "d7f285242b9901c765b18ffb61ee378dc0a2eb9d0b67c6837c43aef771cf95c7",
+          "proof_auto": "dc4ab453764552551bd2908fabe1dac4ee6df204f9e39d604c66528c5778cef0",
+          "proof_manual": "73213670bf881b929dabc475fa89e2915759dca30b2e41f71307fd2f2ede1f5f",
+          "goal_check": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e"
+        },
+        "native_resources": {
+          "wall_seconds": 0.017255,
+          "cpu_seconds": 0.01,
+          "measurement": "GNU time; executor and children; maximum process RSS",
+          "peak_rss_kib": 7808
+        }
       },
       {
-        "key": "array_load/16/modular/original_client_translation12_only_entry",
-        "group": "array_load",
+        "case": "original_client_translation7_only_entry",
         "strategy": "modular",
-        "variant": "cn_original:array_load.broken",
+        "expected": "PASS",
+        "actual": "PASS",
+        "native_status": "UNKNOWN",
+        "reason": "spatial_smt_valid_path_vcs",
+        "source": "benchmark/programs/array_load/variants/qcp_existing_601105f7c1b14876ab6b/qcp/array_load_strong_client.qcp.c",
+        "source_sha256": "4f5693bc26ea462e435f686538a8de757ca22ba41a0002ed9330e82593ca22bd",
+        "generated_source_sha256": "4f5693bc26ea462e435f686538a8de757ca22ba41a0002ed9330e82593ca22bd",
+        "arguments": {},
+        "bindings": {},
+        "raw_vc_count": 18,
+        "itp_count": 0,
+        "previous_status": "PASS",
+        "precondition": "SAT",
+        "execution_completed": true,
+        "raw_json_sha256": "b68580ecd2aafeddb5e9a857731f3cf661b94ae7cc32a60e41b9cc12c1e438ac",
+        "original_vc_sha256": {
+          "goal": "a29666a7a8011ec25e3fde8ca97331aa32dce509600c653c303bdeb14e23319f",
+          "proof_auto": "0bbb7a193f7e5765d34d3ee3cbc593c4532cfe5dc4a530b73989fb1a4b552e80",
+          "proof_manual": "0df775e901d94907252b33685355ec92cdf14c8098036aa427f90530dcf019ba",
+          "goal_check": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e"
+        },
+        "native_resources": {
+          "wall_seconds": 0.034114,
+          "cpu_seconds": 0.02,
+          "measurement": "GNU time; executor and children; maximum process RSS",
+          "peak_rss_kib": 8636
+        }
+      },
+      {
+        "case": "original_client_translation9_only_entry",
+        "strategy": "inline",
+        "expected": "PASS",
+        "actual": "PASS",
+        "native_status": "PASS",
+        "reason": "qcp_full_auto_passed",
+        "source": "benchmark/programs/array_load/variants/qcp_existing_b81e3635ab64c5e76ceb/qcp/array_client_bound.qcp.c",
+        "source_sha256": "71b6b7057ac4869f74bf081b3896e3280bec1b48074db23c531dab54fa15180a",
+        "generated_source_sha256": "fde085eb15f6e4ae7ca6d4e2f102951aed06e63807197cc470b611a3f8c005b9",
+        "arguments": {
+          "a": 4096
+        },
+        "bindings": {
+          "a0": 4096
+        },
+        "raw_vc_count": 19,
+        "itp_count": 0,
+        "previous_status": "FAIL",
+        "precondition": "SAT",
+        "execution_completed": true,
+        "raw_json_sha256": "04e4b02df6b9d85f8ee2ffcc7efdceccc84c2507bc3f87bb564f183ff221859a",
+        "original_vc_sha256": {
+          "goal": "b18bcc6d5cdf286799f171bbcf7531d15251ce3328064dd416bba5584729d30b",
+          "proof_auto": "a9ee882f074e6bf012463182d749ef3ca61110bff0d9d5be166b220b56decffa",
+          "proof_manual": "0a130a1cf1b25a426065030864225b4d9ecfde9d833b976d85016250c776096a",
+          "goal_check": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e"
+        },
+        "native_resources": {
+          "wall_seconds": 0.01804,
+          "cpu_seconds": 0.01,
+          "measurement": "GNU time; executor and children; maximum process RSS",
+          "peak_rss_kib": 7828
+        }
+      },
+      {
+        "case": "original_client_translation9_only_entry",
+        "strategy": "modular",
+        "expected": "PASS",
+        "actual": "PASS",
+        "native_status": "PASS",
+        "reason": "qcp_full_auto_passed",
+        "source": "benchmark/programs/array_load/variants/qcp_existing_b81e3635ab64c5e76ceb/qcp/array_client_bound.qcp.c",
+        "source_sha256": "71b6b7057ac4869f74bf081b3896e3280bec1b48074db23c531dab54fa15180a",
+        "generated_source_sha256": "fde085eb15f6e4ae7ca6d4e2f102951aed06e63807197cc470b611a3f8c005b9",
+        "arguments": {
+          "a": 4096
+        },
+        "bindings": {
+          "a0": 4096
+        },
+        "raw_vc_count": 16,
+        "itp_count": 0,
+        "previous_status": "FAIL",
+        "precondition": "SAT",
+        "execution_completed": true,
+        "raw_json_sha256": "8ce8d6a789ef6b8fe2dbf28330a0ef8b5fa53108ede7f74ecbdb1b40fb6c2605",
+        "original_vc_sha256": {
+          "goal": "6b801a6ac5f7ad16513a048867adb6e1af5eb47fdc4e4f5348fc9df11f117feb",
+          "proof_auto": "a8189fbc02ed1ba94b0201b7a909e73bfe3aa8f7dc2f9ac7258aa33f345d9fd2",
+          "proof_manual": "0a130a1cf1b25a426065030864225b4d9ecfde9d833b976d85016250c776096a",
+          "goal_check": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e"
+        },
+        "native_resources": {
+          "wall_seconds": 0.041232,
+          "cpu_seconds": 0.03,
+          "measurement": "GNU time; executor and children; maximum process RSS",
+          "peak_rss_kib": 8608
+        }
+      },
+      {
         "case": "original_client_translation12_only_entry",
+        "strategy": "inline",
+        "expected": "PASS",
+        "actual": "PASS",
+        "native_status": "UNKNOWN",
+        "reason": "spatial_smt_valid_path_vcs",
+        "source": "benchmark/programs/array_load/variants/qcp_existing_f78ba1fe72ebdd4fb877/qcp/array_load_weak_client.qcp.c",
+        "source_sha256": "4d22c8da03fd34ea9f6010a56f0601ae254b9655ebee03c6a609be4f51bcb144",
+        "generated_source_sha256": "4d22c8da03fd34ea9f6010a56f0601ae254b9655ebee03c6a609be4f51bcb144",
+        "arguments": {},
+        "bindings": {},
+        "raw_vc_count": 21,
+        "itp_count": 0,
+        "previous_status": "UNKNOWN",
+        "precondition": "SAT",
+        "execution_completed": true,
+        "raw_json_sha256": "42d32f21defddc816ec0040d32aab6b31073095580d7ec2b7e6a8b05d3c0cb5d",
+        "original_vc_sha256": {
+          "goal": "4493c40c858e0d8e34d45fc7d495e5afafb08e8f7e8e94e3aed7135d6451f6ad",
+          "proof_auto": "dc4ab453764552551bd2908fabe1dac4ee6df204f9e39d604c66528c5778cef0",
+          "proof_manual": "73213670bf881b929dabc475fa89e2915759dca30b2e41f71307fd2f2ede1f5f",
+          "goal_check": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e"
+        },
+        "native_resources": {
+          "wall_seconds": 0.016248,
+          "cpu_seconds": 0.0,
+          "measurement": "GNU time; executor and children; maximum process RSS",
+          "peak_rss_kib": 7848
+        }
+      },
+      {
+        "case": "original_client_translation12_only_entry",
+        "strategy": "modular",
         "expected": "FAIL",
-        "baseline_fallback_seconds": 0.003110538993496448,
-        "native_task_seconds": 0.03812209900934249,
-        "baseline_status": "UNKNOWN",
-        "candidate_status": "FAIL",
-        "baseline_attempted": 4,
-        "candidate_attempted": 4,
-        "candidate_fallback_seconds": 0.14701990199682768,
-        "candidate_reason": "spatial_smt_invalid_path_vc",
-        "vc_sha256_unchanged": true
+        "actual": "FAIL",
+        "native_status": "UNKNOWN",
+        "reason": "spatial_smt_invalid_path_vc",
+        "source": "benchmark/programs/array_load/variants/qcp_existing_f78ba1fe72ebdd4fb877/qcp/array_load_weak_client.qcp.c",
+        "source_sha256": "4d22c8da03fd34ea9f6010a56f0601ae254b9655ebee03c6a609be4f51bcb144",
+        "generated_source_sha256": "4d22c8da03fd34ea9f6010a56f0601ae254b9655ebee03c6a609be4f51bcb144",
+        "arguments": {},
+        "bindings": {},
+        "raw_vc_count": 18,
+        "itp_count": 0,
+        "previous_status": "FAIL",
+        "precondition": "SAT",
+        "execution_completed": true,
+        "raw_json_sha256": "d08c0c9e0b91975b4f372ea5c92cd6c2f1f73063915a6ad63e1fbcf7fd975eed",
+        "original_vc_sha256": {
+          "goal": "bcdb5dd8b9ad0d12f9e22756f321e0c249230e9c37cdaa9a52589a21801ee8de",
+          "proof_auto": "0d0ef89f4aa8411b137f11b60bc4ee49f036cba32cfd11553849dbeb6443f7b2",
+          "proof_manual": "53f33f8b14e304007d106e737cabbd81002456710389bf492883d7d9c85b48d6",
+          "goal_check": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e"
+        },
+        "native_resources": {
+          "wall_seconds": 0.031214,
+          "cpu_seconds": 0.02,
+          "measurement": "GNU time; executor and children; maximum process RSS",
+          "peak_rss_kib": 8640
+        }
       }
     ],
-    "regressions": [],
-    "invalid_vc": [],
-    "all_original_vc_sha256_unchanged": true,
-    "expected_errors_checked": 46,
-    "expected_errors_preserved": true,
-    "baseline_fallback_seconds": 0.4020095425657928,
-    "candidate_fallback_seconds": 0.9931087569857482,
-    "candidate_wall_seconds": 5.141624007999781,
-    "scope": "Real native runs on current binary with spatial disabled, then old/new spatial refiners on identical original cases and VCs. No ITP/CN/Fulminate rerun or certificate reuse. Fallback timing serial, backend imports preloaded in both versions, development load uncontrolled.",
-    "binary_sha256": "b8c6cf3a277cd782f23ad6775576d6fd5a7212d3ae5a8ad13acbba30e948e481",
-    "candidate_source_sha256": "50512c5dbe436658a7889b353cf1e7a70e76f264ecebc0c56f07763fffbaab25",
-    "baseline_source_sha256": "ab652bce46971cd5b6ac2c046b2bbb33e02ab1429b2fedde0e900db4fc872c63"
+    "checks": [
+      {
+        "check": "sac existing regressions",
+        "tests": 608,
+        "result": "PASS",
+        "log_sha256": "721fb1ff96d3de77eca925881b9e237be764bb47765701f81b8dae0bb61374de"
+      },
+      {
+        "check": "teSpec targeted regressions on installed binary",
+        "tests": 137,
+        "skipped": 0,
+        "result": "PASS",
+        "log_sha256": "9ba472f29aa7c823ea24dc99fbb56f3c12477a74b63ccd9e224f56ad2f043ad2"
+      },
+      {
+        "check": "ASan entry and annotation regressions (detect_leaks=0)",
+        "tests": 6,
+        "execution_configurations": 15,
+        "result": "PASS",
+        "log_sha256": "4928567fa322521a81cb3ff5c06e85e242de7cd332323221dca39b3bc91f6305"
+      }
+    ],
+    "itp": "NOT_RUN; all six expected execution statuses decided automatically; no Coq certificate claimed.",
+    "certificate": "NOT_CHECKED"
   },
-  "open_cases": [
-    {
-      "key": "array_load/07/inline/original_client_translation7_only_entry",
-      "group": "array_load",
-      "strategy": "inline",
-      "variant": "cn_original:array_load.broken",
-      "case": "original_client_translation7_only_entry",
-      "expected": "PASS",
-      "baseline_fallback_seconds": 0.0034178459900431335,
-      "native_task_seconds": 0.029943275992991403,
-      "baseline_status": "UNKNOWN",
-      "candidate_status": "UNKNOWN",
-      "baseline_attempted": 5,
-      "candidate_attempted": 5,
-      "candidate_fallback_seconds": 0.2034392040077364,
-      "candidate_reason": "residual_vc_requires_proof",
-      "vc_sha256_unchanged": true,
-      "native_status": "UNKNOWN",
-      "precondition": "SAT",
-      "execution_completed": true,
-      "input_plan": "benchmark/programs/array_load/evaluation-plan.json",
-      "arguments": {},
-      "bindings": {},
-      "source_sha256": "4f5693bc26ea462e435f686538a8de757ca22ba41a0002ed9330e82593ca22bd",
-      "generated_source_sha256": "4f5693bc26ea462e435f686538a8de757ca22ba41a0002ed9330e82593ca22bd",
-      "original_vc_sha256": {
-        "goal": "9ba38c2e446cbe1867f7a34b5bb605057f5b4c31a0ea49e220fbdc3fa882be85",
-        "proof_auto": "b30566bbdf4f35308b48881a0ed931994bb9dd6469e225c3dcdc33b4ae7371d6",
-        "proof_manual": "f594a3b4f3142e155a6182cf194e22aba55f876a576373a5985b0c6c89e60c62",
-        "goal_check": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e"
-      },
-      "raw_json_sha256": "7dd302df3c23d27524f4658032e4e0e91b03de77eee4ff78f96d7a348a46d9d1",
-      "itp": "NOT_RUN; no complete proof or refutation claimed for these new goals",
-      "cause": "Local stack scope changes across diagnostic entailment; raw countermodel not used as a full parent-VC refutation.",
-      "reproduction": "Run the named case/variant from input_plan with the recorded strategy, all-boundaries and --spatial-smt; preserve the plan bindings and includes."
-    },
-    {
-      "key": "array_load/11/inline/original_client_translation9_only_entry",
-      "group": "array_load",
-      "strategy": "inline",
-      "variant": "cn_original:array_load.broken",
-      "case": "original_client_translation9_only_entry",
-      "expected": "PASS",
-      "baseline_fallback_seconds": 1.347600482404232e-05,
-      "native_task_seconds": 0.03404196599149145,
-      "baseline_status": "FAIL",
-      "candidate_status": "FAIL",
-      "baseline_attempted": 0,
-      "candidate_attempted": 0,
-      "candidate_fallback_seconds": 2.0399005734361708e-05,
-      "candidate_reason": "invalid_path_vc",
-      "vc_sha256_unchanged": true,
-      "native_status": "FAIL",
-      "precondition": "SAT",
-      "execution_completed": true,
-      "input_plan": "benchmark/programs/array_load/evaluation-plan.json",
-      "arguments": {
-        "a": 4096
-      },
-      "bindings": {
-        "a0": 4096
-      },
-      "source_sha256": "71b6b7057ac4869f74bf081b3896e3280bec1b48074db23c531dab54fa15180a",
-      "generated_source_sha256": "fde085eb15f6e4ae7ca6d4e2f102951aed06e63807197cc470b611a3f8c005b9",
-      "original_vc_sha256": {
-        "goal": "d4c5fa0a6c4346a9e4c83e96aec4d73456e6874adca39464d4b9a8e30a5b8094",
-        "proof_auto": "d3d2dbf5d8d22547778cdb3b0ad14a0ad7ba212c939dff914089ea8418ed0856",
-        "proof_manual": "7b038aaa3b54f310d8794757806bc773f9b8dbff34a8d27334d6dfaf1f725af6",
-        "goal_check": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e"
-      },
-      "raw_json_sha256": "75abfd940f64a70a6ef19609552b5cb529e803da8ce2fc99a60e5829702c64c4",
-      "itp": "NOT_RUN; no complete proof or refutation claimed for these new goals",
-      "cause": "Native entry/annotation state loses the a0=4096 correlation; existing native INVALID, not introduced by spatial fallback.",
-      "reproduction": "Run the named case/variant from input_plan with the recorded strategy, all-boundaries and --spatial-smt; preserve the plan bindings and includes."
-    },
-    {
-      "key": "array_load/11/modular/original_client_translation9_only_entry",
-      "group": "array_load",
-      "strategy": "modular",
-      "variant": "cn_original:array_load.broken",
-      "case": "original_client_translation9_only_entry",
-      "expected": "PASS",
-      "baseline_fallback_seconds": 1.215300289914012e-05,
-      "native_task_seconds": 0.055155109002953395,
-      "baseline_status": "FAIL",
-      "candidate_status": "FAIL",
-      "baseline_attempted": 0,
-      "candidate_attempted": 1,
-      "candidate_fallback_seconds": 0.017982642006245442,
-      "candidate_reason": "invalid_path_vc",
-      "vc_sha256_unchanged": true,
-      "native_status": "FAIL",
-      "precondition": "SAT",
-      "execution_completed": true,
-      "input_plan": "benchmark/programs/array_load/evaluation-plan.json",
-      "arguments": {
-        "a": 4096
-      },
-      "bindings": {
-        "a0": 4096
-      },
-      "source_sha256": "71b6b7057ac4869f74bf081b3896e3280bec1b48074db23c531dab54fa15180a",
-      "generated_source_sha256": "fde085eb15f6e4ae7ca6d4e2f102951aed06e63807197cc470b611a3f8c005b9",
-      "original_vc_sha256": {
-        "goal": "3fa25b54174d12c78d2ec00dba09c3398fb8482640693c836a8665c840da6963",
-        "proof_auto": "8aca456555038a9bb3727c551d6c6acc335c595d41b89d3c9235ba5090488ec7",
-        "proof_manual": "6c58c74848c570a4bfdd79dc6100146302ae9943cca7c508664950deecb2dc12",
-        "goal_check": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e"
-      },
-      "raw_json_sha256": "214b025816037222e240856658576f9b67cbf07d85333804c23df41b5ad8238d",
-      "itp": "NOT_RUN; no complete proof or refutation claimed for these new goals",
-      "cause": "Native entry/annotation state loses the a0=4096 correlation; existing native INVALID, not introduced by spatial fallback.",
-      "reproduction": "Run the named case/variant from input_plan with the recorded strategy, all-boundaries and --spatial-smt; preserve the plan bindings and includes."
-    },
-    {
-      "key": "array_load/16/inline/original_client_translation12_only_entry",
-      "group": "array_load",
-      "strategy": "inline",
-      "variant": "cn_original:array_load.broken",
-      "case": "original_client_translation12_only_entry",
-      "expected": "PASS",
-      "baseline_fallback_seconds": 0.0021232099970802665,
-      "native_task_seconds": 0.029714652002439834,
-      "baseline_status": "UNKNOWN",
-      "candidate_status": "UNKNOWN",
-      "baseline_attempted": 5,
-      "candidate_attempted": 5,
-      "candidate_fallback_seconds": 0.19619246300135273,
-      "candidate_reason": "residual_vc_requires_proof",
-      "vc_sha256_unchanged": true,
-      "native_status": "UNKNOWN",
-      "precondition": "SAT",
-      "execution_completed": true,
-      "input_plan": "benchmark/programs/array_load/evaluation-plan.json",
-      "arguments": {},
-      "bindings": {},
-      "source_sha256": "4d22c8da03fd34ea9f6010a56f0601ae254b9655ebee03c6a609be4f51bcb144",
-      "generated_source_sha256": "4d22c8da03fd34ea9f6010a56f0601ae254b9655ebee03c6a609be4f51bcb144",
-      "original_vc_sha256": {
-        "goal": "9c74f7c34479243007e78b5e6e2e9e0863efb5e27a350f723b60d9eb0e30c394",
-        "proof_auto": "b30566bbdf4f35308b48881a0ed931994bb9dd6469e225c3dcdc33b4ae7371d6",
-        "proof_manual": "f594a3b4f3142e155a6182cf194e22aba55f876a576373a5985b0c6c89e60c62",
-        "goal_check": "2f2011f0b89bb886108684903de7fa12252bb6994ecc4024b79fe191e754c74e"
-      },
-      "raw_json_sha256": "0a81e9579b3c1362eec84b7b3b72a893915c15279ebf92e3a69eeabb2757f4de",
-      "itp": "NOT_RUN; no complete proof or refutation claimed for these new goals",
-      "cause": "Local stack scope changes across diagnostic entailment; raw countermodel not used as a full parent-VC refutation.",
-      "reproduction": "Run the named case/variant from input_plan with the recorded strategy, all-boundaries and --spatial-smt; preserve the plan bindings and includes."
-    }
-  ],
-  "checks": {
-    "adapter_tests": 78,
-    "importer_tests": 137,
-    "passed": true
-  },
+  "open_cases": [],
+  "open_cases_scope": "Only the four discrepancies identified in previous_replay; this is not a claim that all benchmark groups or recursive predicates are supported.",
   "formal_group_results_replaced": false,
   "raw_temporary_runs_retained_in_git": false
 }

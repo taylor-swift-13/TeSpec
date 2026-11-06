@@ -107,7 +107,7 @@ VC 清单一致，协议缺失或损坏时不能猜测公式。
 
 这些组件测试不计入程序 benchmark，也不覆盖历史 benchmark 测试分类。
 
-## 2026-11-06 接入检查
+## 2026-11-06 Python 接入检查（原执行器 020aae13fbe1）
 
 - 78 项调度、真实循环、结构化义务清单及原生集成回归通过；137 项导入器回归通过。
 - 22 组、901 输入对的 inline/modular 共 1802 次原生运行，同一批不可变结果分别
@@ -115,7 +115,7 @@ VC 清单一致，协议缺失或损坏时不能猜测公式。
   CN/Fulminate、ITP 或内核证明，也不覆盖正式组成本。
 - 旧后端已符合预期的 1796 条全部保持；modular translation7 和 translation12
   分别由 UNKNOWN 转为 PASS、FAIL。最终 1798/1802 匹配。
-- 仍有四条既存缺口：translation9 两策略原生 FAIL（预期 PASS），inline
+- 该轮发现四条既存缺口（已由下述原生修复解决）：translation9 两策略原生 FAIL（预期 PASS），inline
   translation7/12 为 UNKNOWN（预期 PASS）。局部栈作用域不完整的反例没有误报 FAIL。
   此次不修改它们的程序、规约或预期，也不声称全量 benchmark 已通过。
 - 热后端的 1802 次调用总耗时由约 0.402 秒变为 0.993 秒；有未决 VC 的调用中位数
@@ -124,6 +124,18 @@ VC 清单一致，协议缺失或损坏时不能猜测公式。
 - 曾运行的更大组件套件中，旧 `test_no_unconstrained_list_length_guess` 断言
   与已存在的有限列表展开行为不符；已用隔离 HEAD 复现，未改该旧测试或实验预期。
 
-本次只改 Python 接入与测试，执行器二进制和 sac 源码保持不变。临时回放树不提交。
+该轮只改 Python 接入与测试，未修改执行器二进制和 sac 源码。临时回放树不提交。
 
 最小回归与异常收据：[current-executor-replay.json](../benchmark/results/tespec-unexpected/current-executor-replay.json)。
+
+## 原生绑定与断言目标修复（db632c3ceb）
+
+后续原生修复在函数体语义分析前绑定所选入口规约的 With 变量，避免断言捕获
+其他规约的同名变量 ID；并在模板展开后恢复观察目标的局部地址映射与已有 C 标量
+栈资源。不会改写实际执行状态、补齐任意用户堆或删除原始证明义务。
+
+新发布二进制定向复核 translation7/9/12 的 inline/modular 共六次：前两者均 PASS，
+translation12 为 inline PASS、modular FAIL，全部符合原有预期且无需 ITP。
+137 项 teSpec 定向回归、608 项 sac 回归通过；新增六项回归含 15 个执行配置，
+另经 ASan 检查。该次不重跑 1802 次历史回放，不覆盖正式组成本或证明证书。
+上述反例作用域保护仍保留；递归谓词等能力边界没有扩大。
