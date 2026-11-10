@@ -60,9 +60,15 @@ def path_in(root, value):
 
 def ref(root, value):
     need(isinstance(value, dict), "Expected a path/SHA-256 evidence reference")
+    expected = hash_value(value.get("sha256"), str(value.get("path")))
+    if value.get("path") == "bin/tespec-symexec":
+        path = (root / value["path"]).resolve()
+        need(path.is_relative_to(root.resolve()), "Binary evidence escapes repository")
+        if not path.is_file() or digest(path) != expected:
+            from historical_binary import historical_binary
+            return historical_binary(root, value["path"], expected)
     path = path_in(root, value.get("path"))
-    need(digest(path) == hash_value(value.get("sha256"), str(path)),
-         "Evidence hash mismatch: " + str(path))
+    need(digest(path) == expected, "Evidence hash mismatch: " + str(path))
     return path
 
 

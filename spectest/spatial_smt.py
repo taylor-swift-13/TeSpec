@@ -246,9 +246,14 @@ def _checked_contract_samples(case: dict, native: dict) -> bool:
 
 def _checked_symbolic_boundaries(case: dict, native: dict, function: str) -> bool:
     """Validate symbolic boundary provenance for the execution verdict only."""
-    for key, value in (("execution_strategy", "modular"),
-                       ("execution_semantics", "modular-symbolic/v1"),
-                       ("result_scope", "contract-and-invariant-symbolic"),
+    strategy = native.get("execution_strategy")
+    if not isinstance(strategy, str) or strategy not in EXECUTION_SEMANTICS:
+        return False
+    scope = ("inline-with-symbolic-contracts" if strategy == "inline"
+             else "contract-and-invariant-symbolic")
+    for key, value in (("execution_strategy", strategy),
+                       ("execution_semantics", EXECUTION_SEMANTICS[strategy]),
+                       ("result_scope", scope),
                        ("declaration_call_policy", "contract-symbolic/v1")):
         if native.get(key) != value or case.get(key) != value:
             return False
@@ -267,6 +272,7 @@ def _checked_symbolic_boundaries(case: dict, native: dict, function: str) -> boo
     if not isinstance(events, list) or events != case.get("abstraction_events"):
         return False
     calls = states = 0
+    inline_calls, inline_contracts = Counter(), Counter()
     seen = set()
     for event in events:
         if not isinstance(event, dict) or set(event) != {"kind", "function", "count"}:
@@ -281,21 +287,32 @@ def _checked_symbolic_boundaries(case: dict, native: dict, function: str) -> boo
             calls += count
         elif kind == "contract_state_symbolic" and fn == "contract":
             states += count
+        elif strategy == "inline" and kind in {"inline-call", "contract-check"}:
+            (inline_calls if kind == "inline-call" else inline_contracts)[fn] += count
+        elif strategy == "inline" and kind == "annotation-check" and fn == function:
+            if case.get("mode") != "all-boundaries" or case.get("annotation_policy") != "check-preserve":
+                return False
         elif kind in {"modular-assertion", "loop-invariant"} and fn == function:
+            if kind == "modular-assertion" and strategy != "modular":
+                return False
             if case.get("mode") != "all-boundaries" or case.get("annotation_policy") != "check-preserve":
                 return False
         elif kind == "modular-loop-invariant" and fn == function:
+            if strategy != "modular":
+                return False
             continue
         elif kind == "infeasible-call-input":
             continue
         else:
             return False
-    return calls == states
+    return (calls == states and inline_calls == inline_contracts
+            and (strategy != "inline" or calls > 0))
 
 
 def _checked_events(case: dict, native: dict, function: str) -> bool:
     """Admit concrete traces, validated samples or checked symbolic boundaries."""
-    if native.get("execution_semantics") == "modular-symbolic/v1":
+    if (native.get("execution_semantics") == "modular-symbolic/v1"
+            or native.get("result_scope") == "inline-with-symbolic-contracts"):
         return _checked_symbolic_boundaries(case, native, function)
     if (
         native.get("execution_strategy") == "modular"

@@ -35,11 +35,11 @@ TeSpec 先检查实例化的 Require 是否可满足，再检查安全性和 Ens
 
 例如：`python3 -m spectest run input.c --function f --binds binds.json --execution-strategy modular --execution-mode all-boundaries --output-dir out`。
 
-无函数体的被调用函数在两种策略中都使用契约；modular 保留符号后状态，inline 沿用原有契约采样。没有契约时不能继续调用。作为检查目标的只有声明的函数仍只检查 Require，安全性和 Ensure 为 NOT_RUN。旧模式名称 `expand` / `no-expand` 仍分别是 `entry-exit` / `all-boundaries` 的输入别名。
+无函数体的被调用函数在两种策略中都使用契约，保留 QCP 符号后状态和调用者已有资源；调用前后均不采样。入口测试输入仍固定，有函数体的 inline 调用仍展开执行。没有契约时不能继续调用。作为检查目标的只有声明的函数仍只检查 Require，安全性和 Ensure 为 NOT_RUN。旧模式名称 `expand` / `no-expand` 仍分别是 `entry-exit` / `all-boundaries` 的输入别名。
 
 模块化执行保留入口测试绑定、旧值关系、未修改资源及地址分离，在边界使用规约或不变式的符号状态。循环体与出口分别保留不变式加守卫/退出条件，不再选择具体值；所有原始证明义务保留。`--modular-instantiation` 及对应配置字段已删除；直接使用 `--execution-strategy modular`。
 
-modular 报告使用 `modular-symbolic/v1`、`contract-symbolic/v1` 和 `result_scope=contract-and-invariant-symbolic`，`sampling_events=[]`。这是固定入口下的模块化检查，不能据此声称真实函数体的完整运行已被验证。只有 inline 的声明调用仍可能产生采样事件；其有限候选搜索语义保持不变。入口不可满足为 INVALID；剩余 VC 为 UNKNOWN；自动流程不启动证明 Agent。
+modular 报告使用 `modular-symbolic/v1`、`contract-symbolic/v1` 和 `result_scope=contract-and-invariant-symbolic`，`sampling_events=[]`。这是固定入口下的模块化检查，不能据此声称真实函数体的完整运行已被验证。inline 的声明调用同样使用 `contract-symbolic/v1`，发生这类调用时报告 `result_scope=inline-with-symbolic-contracts`；没有规约调用时仍为 `concrete-execution`。两种策略的 `sampling_events` 均为空，不能把符号规约结果称为重新选取的一次具体执行。入口不可满足为 INVALID；剩余 VC 为 UNKNOWN；自动流程不启动证明 Agent。
 
 新默认执行器为 `bin/tespec-symexec`，旧的 `bin/qcp-symexec` 保留给已冻结的历史实验。运行目录只保留 `report.json` 和 `artifacts/`；每例记录分阶段结果、VC、墙钟时间、CPU 时间和最大进程 RSS。
 

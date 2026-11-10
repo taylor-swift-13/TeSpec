@@ -28,13 +28,10 @@ def native_result(strategy="inline", mode="entry-exit"):
             "mode": mode,
             "execution_strategy": strategy,
             "execution_semantics": EXECUTION_SEMANTICS[strategy],
-            "declaration_call_policy": "contract-sample/v1",
-            "result_scope": "contract-and-invariant-model",
-            "sampling_events": [{
-                "kind": "contract-sample", "function": "external",
-                "instance": {"return": 6}, "constraints": "5 <= return <= 7",
-            }],
-            "abstraction_events": [{"kind": "contract-sample", "function": "external"}],
+            "declaration_call_policy": "contract-symbolic/v1",
+            "result_scope": "inline-with-symbolic-contracts",
+            "sampling_events": [],
+            "abstraction_events": [{"kind": "contract-use", "function": "external"}],
             "scope": "execution",
             "completed": True,
             "overall": "PASS",
@@ -122,7 +119,7 @@ class ExecutionStrategyTests(unittest.TestCase):
                         ])
                         self.assertEqual(code, 0)
 
-    def test_sampled_native_metadata_is_preserved_in_both_strategies(self):
+    def test_symbolic_contract_metadata_is_preserved_in_both_strategies(self):
         for strategy in ("inline", "modular"):
             for mode in ("entry-exit", "all-boundaries"):
                 payload = native_result(strategy, mode)
@@ -132,8 +129,8 @@ class ExecutionStrategyTests(unittest.TestCase):
                     self.assertEqual(result["status"], "PASS")
                     self.assertEqual(result["execution_strategy"], strategy)
                     self.assertEqual(result["execution_semantics"], EXECUTION_SEMANTICS[strategy])
-                    self.assertEqual(result["declaration_call_policy"], "contract-symbolic/v1" if strategy == "modular" else "contract-sample/v1")
-                    self.assertEqual(result["result_scope"], "contract-and-invariant-symbolic" if strategy == "modular" else "contract-and-invariant-model")
+                    self.assertEqual(result["declaration_call_policy"], "contract-symbolic/v1")
+                    self.assertEqual(result["result_scope"], "contract-and-invariant-symbolic" if strategy == "modular" else "inline-with-symbolic-contracts")
                     self.assertEqual(result["sampling_events"],
                                      payload["spec_test"]["sampling_events"])
                     self.assertEqual(result["abstraction_events"],
@@ -225,7 +222,7 @@ class ExecutionStrategyTests(unittest.TestCase):
                         self.assertEqual(policy["mode"], mode)
                         self.assertEqual(policy["execution_strategy"], strategy)
                         self.assertEqual(policy["execution_semantics"], EXECUTION_SEMANTICS[strategy])
-                        self.assertEqual(policy["declaration_calls"], "retain_symbolic_contract_postconditions" if strategy == "modular" else "sample_contract_postconditions")
+                        self.assertEqual(policy["declaration_calls"], "retain_symbolic_contract_postconditions")
                         self.assertEqual(policy["defined_function_calls"],
                                          "execute_bodies" if strategy == "inline" else "retain_symbolic_contract_postconditions")
                         self.assertEqual(report["results"][0]["sampling_events"],
@@ -265,15 +262,12 @@ class NativeExecutionStrategyTests(unittest.TestCase):
             return case, raw
 
     def assert_boundary_policy(self, case, kind):
-        if case["execution_strategy"] == "modular":
-            self.assertEqual(case["result_scope"], "contract-and-invariant-symbolic", case)
-            self.assertEqual(case["declaration_call_policy"], "contract-symbolic/v1", case)
-            self.assertEqual(case["sampling_events"], [], case)
-            kind = "contract-use" if kind == "contract-sample" else kind
-        else:
-            self.assertEqual(case["result_scope"], "contract-and-invariant-model", case)
-            self.assertTrue(case["sampling_events"], case)
-            self.assertTrue(any(event.get("status") == "SAMPLED" for event in case["sampling_events"]), case)
+        scope = ("contract-and-invariant-symbolic" if case["execution_strategy"] == "modular"
+                 else "inline-with-symbolic-contracts")
+        self.assertEqual(case["result_scope"], scope, case)
+        self.assertEqual(case["declaration_call_policy"], "contract-symbolic/v1", case)
+        self.assertEqual(case["sampling_events"], [], case)
+        kind = "contract-use" if kind == "contract-sample" else kind
         self.assertTrue(any(event.get("kind") == kind for event in case["abstraction_events"]), case)
 
     def test_symbolic_modular_keeps_range_and_all_original_obligations(self):
@@ -352,7 +346,7 @@ class NativeExecutionStrategyTests(unittest.TestCase):
                         self.assertFalse(any(event.get("kind") == "contract-sample"
                                              for event in case["abstraction_events"]), case)
 
-    def test_bodyless_range_uses_symbolic_contract_in_modular(self):
+    def test_bodyless_range_uses_symbolic_contract_in_both_strategies(self):
         source = (
             "int external(int x) /*@ Require x == 5 && emp Ensure "
             "x <= __return && __return <= x + 2 && emp */;\n"
@@ -365,7 +359,7 @@ class NativeExecutionStrategyTests(unittest.TestCase):
                 with self.subTest(mode=mode, strategy=strategy):
                     case, _ = self.run_source(source, strategy, mode)
                     self.assertEqual(case["status"], "PASS", case)
-                    self.assertEqual(case["declaration_call_policy"], "contract-symbolic/v1" if strategy == "modular" else "contract-sample/v1")
+                    self.assertEqual(case["declaration_call_policy"], "contract-symbolic/v1")
                     self.assert_boundary_policy(case, "contract-sample")
 
     def test_assertion_vc_policy_stays_independent_of_state_strategy(self):

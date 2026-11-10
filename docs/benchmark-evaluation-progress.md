@@ -337,3 +337,13 @@ CN在已审查兼容依赖下主程序通过；QCP17个原始VC和额外强左�
 teSpec原生14PASS/34UNKNOWN，24次逐执行ITP后38PASS/10UNKNOWN；modular两模式各12/12，inline两模式各7/12。剩余5个非空输入×空间OFF/ON在malloc_node调用前因外部DLL谓词未展开而采样失败，无完整原Goal可交ITP；输入合法性已有modular正式SAT证据，不能把另一模式证明写成inline成功。异常逐例保存在[专门台账](../benchmark/results/tespec-unexpected/dll_add-current.json)。
 
 全部实际修复、编译失败和诊断费用保留。一条模型调用超时未产出usage，任务对应ephemeral日志也无记录；实际时间/RSS保存，token为null和已知下界，后续成功review不回填旧用量。因此未宣称资源完整，完整组仍23/45（908对）。组内只保留当前结果/成本、按内容哈希去重的必要证明、历史费用摘要；详见[结果成本表](../benchmark/results/dll_add/result-cost.md)。
+
+## 2026-11-11：规约调用取消采样后的修复回归
+
+inline 无函数体调用与 modular 统一使用 QCP 符号规约传递，调用前后均不采样；入口输入仍固定。已部署二进制对应外部 sac/tespec 本地提交 `1aea29045faf`，master 未改，sac 未 push。
+
+前23组3632次原生新旧对照中，2005 PASS、1459 FAIL、92 ERROR、62 UNKNOWN 保持原判定，14次 singleton UNKNOWN→PASS；没有旧PASS退化或执行完成丢失。3618次原始Coq文件逐字一致，14次变化明确保存新旧哈希，不转移旧证明。另有608项sac测试及135项定向测试（含ASan）通过；候选执行器广测中3个既有测试的5项子失败已与旧版对照，未改断言、未计作本次通过。
+
+dll_add 的48次原生执行现在全部完成，28 PASS、20 UNKNOWN。原先10次inline非空采样阻塞已消除；20次非空输入的入口SAT义务仍需正式证明。本次没有重新跑ITP、CN、Fulminate，也没有把新目标套用旧证书。原四工具正式批次与成本保持原二进制身份，完整组计数不因此增加。所有旧版/最终版回归和首候选诊断成本单列在[紧凑修复回执](../benchmark/results/tespec-unexpected/contract-symbolic-replay.json)，不作为受控性能比较。
+
+升级后的历史证据定位也已核验：singleton 的28个原结论和14份原证书保持不变，固定 Git 版本的旧二进制字节审计通过；dll_add 旧正式批次仍按 PARTIAL 发布。新增8项历史证据读取/拒绝测试通过，未重跑证明。

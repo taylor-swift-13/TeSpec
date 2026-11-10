@@ -20,7 +20,8 @@ from pathlib import Path
 import sys
 payload = Path(sys.argv[1]).read_bytes()
 required = (b"--spec-test", b"--execution-strategy", b"copy-only/v1",
-            b"post-execution-witness-smt/v1", b"modular-symbolic/v1")
+            b"post-execution-witness-smt/v1", b"modular-symbolic/v1",
+            b"inline-with-symbolic-contracts", b"contract-symbolic/v1")
 missing = [item.decode() for item in required if item not in payload]
 if missing:
     raise SystemExit("Executor lacks required teSpec capabilities: " + ", ".join(missing))
@@ -77,6 +78,20 @@ for key in ("execution_semantics_by_strategy", "declaration_call_policy",
             "modular_boundary_policy", "removed_options"):
     if key in previous:
         metadata[key] = previous[key]
+# Required binary markers above identify the unified symbolic-call interface.
+# Do not carry the removed inline sampler's semantic claims into a new build.
+metadata.update({
+    "declaration_call_policy": "contract-symbolic/v1",
+    "declaration_call_policy_by_strategy": {
+        "inline": "contract-symbolic/v1", "modular": "contract-symbolic/v1"
+    },
+    "sampling_policy": "none",
+    "boundary_instance_normalization": (
+        "Entry inputs remain instantiated; all contract calls preserve QCP "
+        "symbolic states, frame correlations and C return-type constraints "
+        "without pre/post sampling. Body inlining is unchanged."
+    ),
+})
 binary.with_name(binary.name + ".build.json").write_text(json.dumps(metadata, indent=2) + "\n")
 PYMETA
 

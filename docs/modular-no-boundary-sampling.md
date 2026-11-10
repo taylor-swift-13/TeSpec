@@ -1,8 +1,22 @@
 # 移除 modular 边界采样
 
-用户确认删除 modular 边界的选值采样。修改在唯一 teSpec/main 工作树交付；外部 sac 只本地修改、构建，不提交或推送源码。
+本文记录移除边界采样的演进。当前在 teSpec/main 唯一工作树交付；sac 源码仅在外部 tespec 分支本地提交，不 push，不修改 master。
 
-## 当前行为
+## 2026-11-11：所有函数规约调用统一保留符号状态
+
+函数入口继续应用给定的参数、逻辑值和堆输入。inline 仍展开有函数体的调用；无函数体的调用直接使用函数规约。modular 仍复用函数规约、循环不变式和 assertion。执行策略与 `entry-exit / all-boundaries` 的 VC 范围选择保持独立。
+
+所有规约调用均不再在调用前固定整堆或调用后选值。QCP 的 `FuncCallExec` 负责资源传递，保留已有 frame、分离关系和逻辑关联；返回值仅加入 C 类型范围，不绑定一个新数值。这样，inline 的声明调用不再因调用者保留了外部 DLL 谓词而在旧采样器中中止。
+
+必要的在线 SMT、条件判断和不可达分支剪除保持。先添加返回类型范围，再判断后置分支；只删除已证明不可能的分支，未知分支保留。若调用的后置规约没有任何后继，包括后续 QCP 剪枝证明所有后继为假，记录 `contract_postcondition_inconsistent` 并保持 UNKNOWN，原有安全性 witness 保留。执行过程中不调用 ITP。
+
+两种策略统一报告 `declaration_call_policy=contract-symbolic/v1`、`sampling_events=[]`。modular 的 scope 仍为 `contract-and-invariant-symbolic`；inline 若实际使用规约调用，scope 为 `inline-with-symbolic-contracts`，否则为 `concrete-execution`。`contract_state_symbolic` 只统计剪枝后存活的后继，防止不可能的分支污染空间 SMT 的来源审计。空间 SMT 仍核验模式、事件与原 VC，未扩大可解释的堆谓词范围。
+
+当前回归及缺口见 [符号规约调用回归](../benchmark/results/tespec-unexpected/contract-symbolic-replay.json)。这是执行器修复的原生回归，不是重新完成全部 benchmark 的 ITP 或成本评测；旧正式数据保留原二进制与证明身份，变化后的 VC 不自动继承旧证书。
+
+历史证据若按旧 SHA 引用共享的执行器路径，审计通过 [固定版本清单](../benchmark/results/toolchain-artifacts.json) 读取指定 Git commit 的原始二进制字节，并重新核对 SHA；不会执行旧二进制。未登记版本、其他文件的哈希不匹配或损坏字节仍拒绝。旧证明、结论和费用不变，结果目录不重复保存旧二进制。
+
+## 2026-10-20 行为（历史）
 
 入口仍应用测试的给定值。函数调用使用 QCP 规约传递资源和符号后状态；循环使用不变式加分支条件；assertion 检查对应原始义务并保留其后继状态。不在任何 modular 边界搜索或选择新值，所有原始 witness 保留。
 

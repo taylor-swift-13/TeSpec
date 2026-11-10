@@ -8,7 +8,6 @@ from __future__ import annotations
 import json
 import os
 from pathlib import Path
-import re
 import subprocess
 import tempfile
 import unittest
@@ -90,6 +89,50 @@ int sample(void)
 { return external_value(0); }
 """
 
+FIXTURES["range_not_singleton"] = """int external_value(void)
+/*@ Require emp Ensure 100000 <= __return && __return <= 100002 && emp */;
+int sample(void)
+/*@ Require emp Ensure __return == 100001 && emp */
+{ return external_value(); }
+"""
+FIXTURES["unconstrained_return_not_zero"] = """int external_value(void)
+/*@ Require emp Ensure emp */;
+int sample(void)
+/*@ Require emp Ensure __return == 0 && emp */
+{ return external_value(); }
+"""
+
+FIXTURES["opaque_frame"] = """/*@ Extern Coq (opaque : Z -> Assertion) */
+int *fresh(void)
+/*@ Require emp Ensure __return != 0 && undef_data_at(__return, int) */;
+void release(int *p)
+/*@ Require undef_data_at(p, int) Ensure emp */;
+int sample(int *q)
+/*@ Require q == 4096 && data_at(q, int, 9) * opaque(7)
+    Ensure __return == 9 && data_at(q, int, 9) * opaque(7) */
+{ int *p = fresh(); *p = 1; release(p); return *q; }
+"""
+
+FIXTURES["unsigned_byte_return"] = """unsigned char external_byte(void)
+/*@ Require emp Ensure emp */;
+int sample(void)
+/*@ Require emp Ensure 0 <= __return && __return <= 255 && emp */
+{ return external_byte(); }
+"""
+
+FIXTURES["out_of_int_return"] = """int external_value(void)
+/*@ Require emp Ensure __return == 2147483648 && emp */;
+int sample(void)
+/*@ Require emp Ensure __return == 0 && emp */
+{ external_value(); return 0; }
+"""
+FIXTURES["unreachable_inconsistent_call"] = """int external_value(void)
+/*@ Require emp Ensure __return < 0 && __return >= 0 && emp */;
+int sample(int x)
+/*@ Require x == 0 && emp Ensure __return == 0 && emp */
+{ if (x != 0) return external_value(); return 0; }
+"""
+
 
 @unittest.skipUnless(CANDIDATE, "set SAC_SYMEXEC to run native contract-instance checks")
 class ContractInstantiationTests(unittest.TestCase):
@@ -100,16 +143,20 @@ class ContractInstantiationTests(unittest.TestCase):
             result = subprocess.run(
                 [str(Path(CANDIDATE).resolve()), "--input-file=" + str(source),
                  "--spec-test", "--function=sample", "--full-auto", "--Json-output",
-                 "--no-strategy-gen", "--arch=32", "--execution-strategy=" + strategy,
+                 "--no-strategy-gen", "--emit-residual-vc",
+                 "--coq-output-dir=" + str(Path(temporary) / "vc"),
+                 "--arch=32", "--execution-strategy=" + strategy,
                  "--annotation-policy=" + policy],
                 capture_output=True, text=True, timeout=20,
             )
-            self.assertIn(result.returncode, (0, 1), result.stderr)
+            self.assertIn(result.returncode, (0, 1, 3) if name == "opaque_frame" else (0, 1), result.stderr)
+            if result.returncode == 3:
+                self.assertEqual(json.loads(result.stdout)["spec_test"]["precondition_result"], "UNKNOWN")
             report = json.loads(result.stdout)
             native = report["spec_test"]
             self.assertEqual(native["execution_strategy"], strategy)
             self.assertEqual(native["annotation_policy"], policy)
-            self.assertEqual(native["declaration_call_policy"], "contract-symbolic/v1" if strategy == "modular" else "contract-sample/v1")
+            self.assertEqual(native["declaration_call_policy"], "contract-symbolic/v1")
             return native, report
 
     def test_native_rejects_removed_modular_sampling_option(self):
@@ -132,134 +179,98 @@ class ContractInstantiationTests(unittest.TestCase):
                     results.append(self.run_fixture(name, strategy, policy))
         return results
 
-    def assert_successful_samples(self, native):
+    def assert_symbolic_success(self, native):
         self.assertEqual(native["overall"], "PASS", native)
         self.assertTrue(native["completed"], native)
         self.assertIsNone(native["limit_reason"], native)
-        events = native["sampling_events"]
-        if native["execution_strategy"] == "modular":
-            self.assertEqual(events, [], native)
-            return
-        self.assertTrue(events, native)
-        self.assertTrue(all(event["status"] == "SAMPLED" for event in events), events)
-        self.assertTrue(all(event["selected_state"] for event in events), events)
-        self.assertIn("contract-prestate", {event["kind"] for event in events})
-        self.assertIn("contract", {event["kind"] for event in events})
+        self.assertEqual(native["sampling_events"], [], native)
 
-    def test_wide_range_uses_constraints_outside_small_candidate_constants(self):
+    def test_wide_return_range_remains_constrained(self):
         for native, _ in self.variants("wide_range"):
-            self.assert_successful_samples(native)
-            if native["execution_strategy"] == "modular":
-                self.assertEqual(native["sampling_events"], [])
-                continue
-            chosen = re.findall(r"retval_\d+ == (\d+)",
-                                "\n".join(e["selected_state"] for e in native["sampling_events"]))
-            self.assertTrue(chosen, native)
-            self.assertTrue(all(100000 <= int(value) <= 100002 for value in chosen))
+            self.assert_symbolic_success(native)
 
     def test_caller_argument_and_old_value_remain_bound(self):
         for native, _ in self.variants("old_input_range"):
-            self.assert_successful_samples(native)
+            self.assert_symbolic_success(native)
 
     def test_postcondition_uses_old_heap_value_without_overwriting_it(self):
         for native, _ in self.variants("old_heap_value"):
-            self.assert_successful_samples(native)
+            self.assert_symbolic_success(native)
 
-    def test_weak_emp_contract_still_selects_a_concrete_c_return(self):
+    def test_weak_emp_contract_keeps_a_symbolic_c_return(self):
         for native, _ in self.variants("weak_return"):
-            self.assert_successful_samples(native)
-            if native["execution_strategy"] == "modular":
-                self.assertEqual(native["sampling_events"], [])
-                continue
-            selected = "\n".join(event["selected_state"]
-                                   for event in native["sampling_events"]
-                                   if event["kind"] == "contract")
-            self.assertRegex(selected, r"retval_\d+ == (?:\(- \d+\)|\d+)")
+            self.assert_symbolic_success(native)
+
+    def test_weak_unsigned_byte_contract_retains_c_return_range(self):
+        for native, _ in self.variants("unsigned_byte_return"):
+            self.assert_symbolic_success(native)
+
+    def test_symbolic_returns_do_not_gain_sampled_equalities(self):
+        for name in ("range_not_singleton", "unconstrained_return_not_zero"):
+            for native, _ in self.variants(name):
+                # Neither contract entails the caller's singleton result. A
+                # sampled satisfying value must not make this a successful test.
+                self.assertIn(native["overall"], ("FAIL", "UNKNOWN"), native)
+                self.assertEqual(native["sampling_events"], [], native)
 
     def test_allocation_and_release_preserve_unrelated_frame_value(self):
         for native, _ in self.variants("frame"):
-            self.assert_successful_samples(native)
-            for event in native["sampling_events"]:
-                self.assertRegex(event["selected_state"], r"q_\d+_pre == 4096")
-                self.assertRegex(event["selected_state"], r"store\(q_\d+_pre, 9, signed int\)")
+            self.assert_symbolic_success(native)
+
+    def test_external_calls_preserve_an_opaque_unrelated_frame(self):
+        for native, _ in self.variants("opaque_frame"):
+            self.assertTrue(native["completed"], native)
+            self.assertIsNone(native["limit_reason"], native)
+            self.assertEqual(native["sampling_events"], [], native)
+            self.assertEqual(native["phases"]["postcondition"], "PASS", native)
+            # The opaque entry predicate may still require an independent SAT
+            # proof; carrying its exact frame must not manufacture that proof.
+            self.assertIn(native["overall"], ("PASS", "UNKNOWN"), native)
 
     def test_fresh_objects_and_preexisting_local_frame_are_disjoint(self):
+        # Both allocations must remain separate resources: aliasing either one
+        # with the other or the caller's result local invalidates this result.
         for native, _ in self.variants("double_alloc"):
-            self.assert_successful_samples(native)
-            if native["execution_strategy"] == "modular":
-                self.assertEqual(native["sampling_events"], [])
-                continue
-            returned = {}
-            local_values = set()
-            for event in native["sampling_events"]:
-                selected = event["selected_state"]
-                for identifier, value in re.findall(r"(retval_\d+) == (\d+)", selected):
-                    value = int(value)
-                    self.assertEqual(returned.setdefault(identifier, value), value)
-                locals_here = re.findall(r"result_\d+_addr == (\d+)", selected)
-                if locals_here:
-                    # This frame cell exists before release consumes either
-                    # allocation. Post-only sampling used to alias freed data.
-                    if not local_values:
-                        self.assertEqual(event["kind"], "contract-prestate")
-                    local_values.update(map(int, locals_here))
-            self.assertEqual(len(returned), 2, returned)
-            self.assertEqual(len(set(returned.values())), 2, returned)
-            self.assertEqual(len(local_values), 1, local_values)
-            self.assertFalse(local_values.intersection(returned.values()))
+            self.assert_symbolic_success(native)
 
     def test_impossible_postcondition_is_not_a_vacuous_pass(self):
         for native, _ in self.variants("contradictory_post"):
             self.assertEqual(native["overall"], "UNKNOWN", native)
-            if native["execution_strategy"] == "modular":
-                # Symbolic continuation may reach the syntactic exit, but an
-                # inconsistent contract must keep the whole test UNKNOWN.
-                self.assertEqual(native["limit_reason"], "contract_postcondition_inconsistent")
-                self.assertEqual(native["sampling_events"], [])
-            else:
-                self.assertFalse(native["completed"], native)
-                self.assertEqual(native["limit_reason"], "contract_instantiation_unknown")
-                self.assertTrue(any(event["status"] == "UNKNOWN"
-                                    for event in native["sampling_events"]))
+            self.assertEqual(native["limit_reason"], "contract_postcondition_inconsistent")
+            self.assertEqual(native["sampling_events"], [], native)
 
-    def test_infeasible_conditional_post_sibling_does_not_poison_valid_sample(self):
+    def test_out_of_c_int_return_range_is_an_inconsistent_contract(self):
+        for native, _ in self.variants("out_of_int_return"):
+            self.assertEqual(native["overall"], "UNKNOWN", native)
+            self.assertEqual(native["limit_reason"], "contract_postcondition_inconsistent")
+            self.assertEqual(native["sampling_events"], [], native)
+
+    def test_proved_unreachable_inconsistent_call_does_not_poison_return(self):
+        for native, _ in self.variants("unreachable_inconsistent_call"):
+            self.assert_symbolic_success(native)
+            self.assertFalse(any(event["kind"] == "contract-use"
+                                 for event in native["abstraction_events"]), native)
+
+    def test_infeasible_conditional_post_sibling_does_not_poison_valid_path(self):
         for native, _ in self.variants("conditional_return"):
-            self.assert_successful_samples(native)
-            if native["execution_strategy"] == "modular":
-                self.assertEqual(native["sampling_events"], [])
-                continue
-            post_samples = [event for event in native["sampling_events"]
-                            if event["kind"] == "contract"]
-            self.assertEqual(len(post_samples), 1, native)
+            self.assert_symbolic_success(native)
+            events = native["abstraction_events"]
+            self.assertEqual(sum(e["count"] for e in events if e["kind"] == "contract-use"), 1)
+            self.assertEqual(sum(e["count"] for e in events if e["kind"] == "contract_state_symbolic"), 1)
 
     def test_entirely_infeasible_post_disjunction_remains_unknown(self):
         for native, _ in self.variants("all_false_alternatives"):
             self.assertEqual(native["overall"], "UNKNOWN", native)
-            if native["execution_strategy"] == "modular":
-                # Symbolic continuation may reach the syntactic exit, but an
-                # inconsistent contract must keep the whole test UNKNOWN.
-                self.assertEqual(native["limit_reason"], "contract_postcondition_inconsistent")
-                self.assertEqual(native["sampling_events"], [])
-            else:
-                self.assertFalse(native["completed"], native)
-                self.assertEqual(native["limit_reason"], "contract_instantiation_unknown")
-                self.assertTrue(any(event["status"] == "UNKNOWN"
-                                    for event in native["sampling_events"]))
+            self.assertEqual(native["limit_reason"], "contract_postcondition_inconsistent")
+            self.assertEqual(native["sampling_events"], [], native)
 
-    def test_sampling_does_not_initialize_uninitialized_resources(self):
+    def test_contract_application_does_not_initialize_undefined_resources(self):
         for native, report in self.variants("undef_read"):
             self.assertEqual(native["overall"], "ERROR", native)
             self.assertFalse(native["completed"], native)
             self.assertIn("does not prove readable memory",
                           report["errormessage"]["Main Error Message"])
-            if native["execution_strategy"] == "modular":
-                self.assertEqual(native["sampling_events"], [])
-                continue
-            allocations = [event for event in native["sampling_events"]
-                           if event["kind"] == "contract"]
-            self.assertTrue(allocations, native)
-            self.assertRegex(allocations[0]["selected_state"],
-                             r"has_permission\(retval_\d+, signed int\)")
+            self.assertEqual(native["sampling_events"], [], native)
 
 
 if __name__ == "__main__":

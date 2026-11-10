@@ -813,3 +813,57 @@ class ContractSampleSpatialAdapterTests(unittest.TestCase):
         self.apply(case, raw)
         self.assertEqual(case["status"], "PASS", case)
         self.assertEqual(case["result_scope"], "contract-and-invariant-model")
+
+
+class ContractSymbolicSpatialAdapterTests(unittest.TestCase):
+    apply = SpatialAdapterTests.apply
+
+    def symbolic(self, strategy="inline", mode="entry-exit", goal=PRE):
+        case, raw = contract_sample(strategy, mode, goal)
+        fields = {
+            "execution_semantics": "inline-preserve/v1" if strategy == "inline" else "modular-symbolic/v1",
+            "result_scope": "inline-with-symbolic-contracts" if strategy == "inline" else "contract-and-invariant-symbolic",
+            "declaration_call_policy": "contract-symbolic/v1",
+            "sampling_events": [],
+            "abstraction_events": [
+                {"kind": "contract-use", "function": "external", "count": 1},
+                {"kind": "contract_state_symbolic", "function": "contract", "count": 1},
+            ],
+        }
+        case.update(deepcopy(fields)); raw["spec_test"].update(deepcopy(fields))
+        return case, raw
+
+    def test_symbolic_contracts_refine_existing_finite_heap_vcs(self):
+        for strategy in ("inline", "modular"):
+            for mode in ("entry-exit", "all-boundaries"):
+                with self.subTest(strategy=strategy, mode=mode):
+                    case, raw = self.symbolic(strategy, mode)
+                    self.apply(case, raw)
+                    self.assertEqual(case["status"], "PASS", case)
+                    self.assertEqual(case["sampling_events"], [])
+
+    def test_symbolic_inline_admission_rejects_bad_or_sampled_metadata(self):
+        mutations = [
+            {"execution_strategy": []},
+            {"declaration_call_policy": "contract-sample/v1"},
+            {"sampling_events": [{"status": "SAMPLED"}]},
+            {"abstraction_events": []},
+            {"execution_semantics": "modular-symbolic/v1"},
+            {"abstraction_events": [{"kind": "contract-use", "function": "external", "count": 2},
+                                    {"kind": "contract_state_symbolic", "function": "contract", "count": 1}]},
+            {"abstraction_events": [{"kind": "contract-use", "function": "external", "count": 1},
+                                    {"kind": "contract_state_symbolic", "function": "contract", "count": 1},
+                                    {"kind": "inline-call", "function": "helper", "count": 1}]},
+        ]
+        for mutation in mutations:
+            with self.subTest(mutation=mutation):
+                case, raw = self.symbolic()
+                case.update(deepcopy(mutation)); raw["spec_test"].update(deepcopy(mutation))
+                self.apply(case, raw)
+                self.assertEqual(case["status"], "UNKNOWN", case)
+
+    def test_symbolic_call_does_not_admit_opaque_heap_predicates(self):
+        case, raw = self.symbolic(goal="PROP[]\nLOCAL[]\nSEP[opaque(4096)]\n")
+        self.apply(case, raw)
+        self.assertEqual(case["status"], "UNKNOWN", case)
+        self.assertTrue(case["spatial_smt"]["itp_required"], case)

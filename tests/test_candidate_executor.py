@@ -1161,9 +1161,8 @@ end."""
                 mode,
             )
             self.assertEqual(result["status"], "PASS", result)
-            self.assertEqual(result["declaration_call_policy"], "contract-sample/v1")
-            self.assertTrue(any(event["status"] == "SAMPLED"
-                                for event in result["sampling_events"]), result)
+            self.assertEqual(result["declaration_call_policy"], "contract-symbolic/v1")
+            self.assertEqual(result["sampling_events"], [], result)
             result = self.run_source(
                 "int external(int x);\n"
                 "int sample(void) /*@ Require emp Ensure __return == 3 && emp */ "
