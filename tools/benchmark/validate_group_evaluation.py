@@ -40,6 +40,10 @@ def validate_compact(ROOT,g,b,manifest,idx,evaluation,nativepath,proofpath,data)
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--group',required=True);p.add_argument('--run-id');p.add_argument('--native-receipt');p.add_argument('--qcp-receipt');p.add_argument('--allow-partial',action='store_true');a=p.parse_args();g=ROOT/'benchmark/programs'/a.group;b=ROOT/'benchmark/results'/a.group;manifest=load(g/'manifest.json');idx=load(b/'index.json')
+    if idx.get('current_evaluation'):
+        from validate_current_group_evidence import audit_current_group
+        audit_current_group(a.group, ROOT, idx, allow_partial=a.allow_partial)
+        return
     if idx.get('canonical_evaluation'):
         from validate_canonical_group import audit_canonical_group
         audit_canonical_group(a.group, ROOT, idx, allow_partial=a.allow_partial)

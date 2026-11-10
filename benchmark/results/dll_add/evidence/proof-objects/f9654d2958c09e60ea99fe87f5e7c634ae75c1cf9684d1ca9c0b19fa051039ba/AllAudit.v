@@ -1,0 +1,24 @@
+Require Import Candidate FiniteEntryHeap ReferenceCandidate.
+Print Assumptions resolved_add_precondition_wit_1.
+Print Assumptions FiniteEntryHeap.entry_mem.
+Print Assumptions FiniteEntryHeap.entry_state.
+Print Assumptions FiniteEntryHeap.entry_state_join.
+Print Assumptions FiniteEntryHeap.entry_state_emp.
+Print Assumptions FiniteEntryHeap.entry_state_byte.
+Print Assumptions FiniteEntryHeap.entry_state_sep.
+Print Assumptions FiniteEntryHeap.entry_mem_absent.
+Print Assumptions FiniteEntryHeap.entry_mem_app_join.
+Print Assumptions FiniteEntryHeap.entry_mem_sep.
+Print Assumptions FiniteEntryHeap.entry_word.
+Print Assumptions FiniteEntryHeap.entry_word_store.
+Print Assumptions ReferenceCandidate.actual_current_bytes.
+Print Assumptions ReferenceCandidate.actual_left_bytes.
+Print Assumptions ReferenceCandidate.actual_last_bytes.
+Print Assumptions ReferenceCandidate.actual_right_bytes.
+Print Assumptions ReferenceCandidate.actual_entry_bytes.
+Print Assumptions ReferenceCandidate.actual_current_heap.
+Print Assumptions ReferenceCandidate.actual_left_heap.
+Print Assumptions ReferenceCandidate.actual_last_heap.
+Print Assumptions ReferenceCandidate.actual_right_heap.
+Print Assumptions ReferenceCandidate.actual_entry_heap.
+Print Assumptions ReferenceCandidate.resolved_add_precondition_wit_1.

@@ -1,0 +1,19 @@
+Require Import Candidate FiniteEntryHeap.
+Print Assumptions interior_left_bytes.
+Print Assumptions interior_right_bytes.
+Print Assumptions interior_entry_bytes.
+Print Assumptions interior_left_heap.
+Print Assumptions interior_right_heap.
+Print Assumptions interior_entry_heap.
+Print Assumptions resolved_add_precondition_wit_1.
+Print Assumptions FiniteEntryHeap.entry_mem.
+Print Assumptions FiniteEntryHeap.entry_state.
+Print Assumptions FiniteEntryHeap.entry_state_join.
+Print Assumptions FiniteEntryHeap.entry_state_emp.
+Print Assumptions FiniteEntryHeap.entry_state_byte.
+Print Assumptions FiniteEntryHeap.entry_state_sep.
+Print Assumptions FiniteEntryHeap.entry_mem_absent.
+Print Assumptions FiniteEntryHeap.entry_mem_app_join.
+Print Assumptions FiniteEntryHeap.entry_mem_sep.
+Print Assumptions FiniteEntryHeap.entry_word.
+Print Assumptions FiniteEntryHeap.entry_word_store.

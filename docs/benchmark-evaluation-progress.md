@@ -327,3 +327,13 @@ teSpec 按用户要求暂缓，本轮未运行；历史两模式各7 UNKNOWN是�
 QCP 重新生成的原始 Goal 哈希为 `96d87968c1b8b5bacd4a2175309983eb1d47f889c3be9bf7c3c39cabbeb4c719`，与既有三义务证明收据逐字节一致，因此复用已完成的 gpt-6.1-sol 证明填写、Coq 编译与假设审计、独立 `coqchk`：3/3 义务全局封闭，无新增公理。既有实际 token 为 54,857，各阶段时间与峰值 RSS 继续由同一证明收据计入，不重复调用模型。
 
 唯一无参合法入口重新运行 Fulminate、teSpec inline 空间 SMT OFF/ON，均为 PASS 且符合冻结预期；另用标准策略回归器运行 inline/modular × OFF/ON 共 4 次，也全部 PASS、无 UNKNOWN、无需 ITP、源和输入哈希不变。正式发布验证通过全部源、日志、原始 VC、证明与成本哈希检查。当前完整 **22/45**，尚缺 23 组；完整结果见 [第 22 组结果与成本表](../benchmark/results/const_example_lessgood/result-cost.md)。
+
+## 2026-11-10：第24组 dll_add 当前评测
+
+本轮使用gpt-6.1-sol，补充5类非空链表拓扑，保持原C/spec和逐输入预期。24个CN配对记录对应12个不同QCP输入；Fulminate24/24PASS，teSpec四配置实际48次，成本不因两个CN配对重复计算。
+
+CN在已审查兼容依赖下主程序通过；QCP17个原始VC和额外强左分支义务全部通过Coq编译、逐目标假设审计、独立完整coqchk，3次模型调用423525token。QCP保留原抽象地址定义，teSpec采用显式32位ABI依赖；不宣称两套地址语义等价。QCP证明依赖原地址解释参数及既有运行库的标准函数/命题外延性，不标为全局封闭。
+
+teSpec原生14PASS/34UNKNOWN，24次逐执行ITP后38PASS/10UNKNOWN；modular两模式各12/12，inline两模式各7/12。剩余5个非空输入×空间OFF/ON在malloc_node调用前因外部DLL谓词未展开而采样失败，无完整原Goal可交ITP；输入合法性已有modular正式SAT证据，不能把另一模式证明写成inline成功。异常逐例保存在[专门台账](../benchmark/results/tespec-unexpected/dll_add-current.json)。
+
+全部实际修复、编译失败和诊断费用保留。一条模型调用超时未产出usage，任务对应ephemeral日志也无记录；实际时间/RSS保存，token为null和已知下界，后续成功review不回填旧用量。因此未宣称资源完整，完整组仍23/45（908对）。组内只保留当前结果/成本、按内容哈希去重的必要证明、历史费用摘要；详见[结果成本表](../benchmark/results/dll_add/result-cost.md)。

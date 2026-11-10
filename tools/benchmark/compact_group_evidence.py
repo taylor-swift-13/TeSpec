@@ -70,6 +70,11 @@ def main():
     manifest = load(manifest_path)
     index_path = base / "index.json"
     index = load(index_path)
+    if index.get("current_evaluation"):
+        from validate_current_group_evidence import audit_current_group
+        audit_current_group(args.group, ROOT, index, allow_partial=True)
+        print(json.dumps({"group": args.group, "retention": "already compact current evidence; no run trees created"}))
+        return
     evaluation_path = ROOT / index["evaluation"]
     native_path = ROOT / index["native_receipt"]
     proof_path = ROOT / index["qcp_receipt"]

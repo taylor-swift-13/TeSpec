@@ -213,6 +213,206 @@
             "contract_scope": "Original annotated add postcondition preserves shape but does not constrain inserted payload. orig.broken has NO add contract; legal C implementation test, cannot count absent contract as checked. QCP supplied explicit correct contract.",
             "coverage": "Empty-list path only; nonempty predecessor/successor cases pending; not complete group."
           }
+        },
+        {
+          "id": "singleton_node",
+          "value": {
+            "element": 7,
+            "list": [
+              10
+            ],
+            "current_index": 0
+          },
+          "expected": "PASS",
+          "cn_body": "struct node *a=malloc_node(); a->data=10; a->prev=0; a->next=0; struct node *z=add(7,a); int oracle_ok=(z->data==7 && z->prev==a && z->next==0 && a->data==10 && a->prev==0 && a->next==z); free_node(z); free_node(a); if (!oracle_ok) return 91;",
+          "binds": {
+            "args": {
+              "element": 7,
+              "n": 4096
+            },
+            "values": {
+              "e": 7,
+              "h": 10,
+              "p": 0,
+              "q": 0,
+              "ll": [],
+              "lr": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "semantic_result": "Insert a fresh node carrying7 after the current node carrying10, preserve all existing payloads and reciprocal links, and return the fresh node.",
+            "contract_scope": "Annotated CN add preserves shape but does not constrain inserted payload; orig.broken has no add contract. QCP explicitly requires inserted payload equality. Separate driver-only payload/link oracle, no add contract change; oracle failure returns91 after cleanup.",
+            "coverage": "Reviewed finite reciprocal nonempty DLL topology: singleton_node. Recursive existential links are constrained by the original DLL predicates and separation."
+          },
+          "expected_by_execution_strategy": {
+            "inline": "PASS",
+            "modular": "PASS"
+          }
+        },
+        {
+          "id": "head_one_successor",
+          "value": {
+            "element": 7,
+            "list": [
+              10,
+              20
+            ],
+            "current_index": 0
+          },
+          "expected": "PASS",
+          "cn_body": "struct node *a=malloc_node(); struct node *b=malloc_node(); a->data=10; a->prev=0; a->next=b; b->data=20; b->prev=a; b->next=0; struct node *z=add(7,a); int oracle_ok=(z->data==7 && z->prev==a && z->next==b && a->data==10 && a->prev==0 && a->next==z && b->data==20 && b->prev==z && b->next==0); free_node(z); free_node(a); free_node(b); if (!oracle_ok) return 91;",
+          "binds": {
+            "args": {
+              "element": 7,
+              "n": 4096
+            },
+            "values": {
+              "e": 7,
+              "h": 10,
+              "p": 0,
+              "q": 12288,
+              "ll": [],
+              "lr": [
+                20
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "semantic_result": "Insert a fresh node carrying7 after the current node carrying10, preserve all existing payloads and reciprocal links, and return the fresh node.",
+            "contract_scope": "Annotated CN add preserves shape but does not constrain inserted payload; orig.broken has no add contract. QCP explicitly requires inserted payload equality. Separate driver-only payload/link oracle, no add contract change; oracle failure returns91 after cleanup.",
+            "coverage": "Reviewed finite reciprocal nonempty DLL topology: head_one_successor. Recursive existential links are constrained by the original DLL predicates and separation."
+          },
+          "expected_by_execution_strategy": {
+            "inline": "PASS",
+            "modular": "PASS"
+          }
+        },
+        {
+          "id": "tail_one_predecessor",
+          "value": {
+            "element": 7,
+            "list": [
+              30,
+              10
+            ],
+            "current_index": 1
+          },
+          "expected": "PASS",
+          "cn_body": "struct node *a=malloc_node(); struct node *b=malloc_node(); a->data=30; a->prev=0; a->next=b; b->data=10; b->prev=a; b->next=0; struct node *z=add(7,b); int oracle_ok=(z->data==7 && z->prev==b && z->next==0 && a->data==30 && a->prev==0 && a->next==b && b->data==10 && b->prev==a && b->next==z); free_node(z); free_node(a); free_node(b); if (!oracle_ok) return 91;",
+          "binds": {
+            "args": {
+              "element": 7,
+              "n": 4096
+            },
+            "values": {
+              "e": 7,
+              "h": 10,
+              "p": 8192,
+              "q": 0,
+              "ll": [
+                30
+              ],
+              "lr": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "semantic_result": "Insert a fresh node carrying7 after the current node carrying10, preserve all existing payloads and reciprocal links, and return the fresh node.",
+            "contract_scope": "Annotated CN add preserves shape but does not constrain inserted payload; orig.broken has no add contract. QCP explicitly requires inserted payload equality. Separate driver-only payload/link oracle, no add contract change; oracle failure returns91 after cleanup.",
+            "coverage": "Reviewed finite reciprocal nonempty DLL topology: tail_one_predecessor. Recursive existential links are constrained by the original DLL predicates and separation."
+          },
+          "expected_by_execution_strategy": {
+            "inline": "PASS",
+            "modular": "PASS"
+          }
+        },
+        {
+          "id": "interior_neighbors",
+          "value": {
+            "element": 7,
+            "list": [
+              30,
+              10,
+              20
+            ],
+            "current_index": 1
+          },
+          "expected": "PASS",
+          "cn_body": "struct node *a=malloc_node(); struct node *b=malloc_node(); struct node *c=malloc_node(); a->data=30; a->prev=0; a->next=b; b->data=10; b->prev=a; b->next=c; c->data=20; c->prev=b; c->next=0; struct node *z=add(7,b); int oracle_ok=(z->data==7 && z->prev==b && z->next==c && a->data==30 && a->prev==0 && a->next==b && b->data==10 && b->prev==a && b->next==z && c->data==20 && c->prev==z && c->next==0); free_node(z); free_node(a); free_node(b); free_node(c); if (!oracle_ok) return 91;",
+          "binds": {
+            "args": {
+              "element": 7,
+              "n": 4096
+            },
+            "values": {
+              "e": 7,
+              "h": 10,
+              "p": 8192,
+              "q": 12288,
+              "ll": [
+                30
+              ],
+              "lr": [
+                20
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "semantic_result": "Insert a fresh node carrying7 after the current node carrying10, preserve all existing payloads and reciprocal links, and return the fresh node.",
+            "contract_scope": "Annotated CN add preserves shape but does not constrain inserted payload; orig.broken has no add contract. QCP explicitly requires inserted payload equality. Separate driver-only payload/link oracle, no add contract change; oracle failure returns91 after cleanup.",
+            "coverage": "Reviewed finite reciprocal nonempty DLL topology: interior_neighbors. Recursive existential links are constrained by the original DLL predicates and separation."
+          },
+          "expected_by_execution_strategy": {
+            "inline": "PASS",
+            "modular": "PASS"
+          }
+        },
+        {
+          "id": "interior_two_successors",
+          "value": {
+            "element": 7,
+            "list": [
+              30,
+              10,
+              20,
+              40
+            ],
+            "current_index": 1
+          },
+          "expected": "PASS",
+          "cn_body": "struct node *a=malloc_node(); struct node *b=malloc_node(); struct node *c=malloc_node(); struct node *d=malloc_node(); a->data=30; a->prev=0; a->next=b; b->data=10; b->prev=a; b->next=c; c->data=20; c->prev=b; c->next=d; d->data=40; d->prev=c; d->next=0; struct node *z=add(7,b); int oracle_ok=(z->data==7 && z->prev==b && z->next==c && a->data==30 && a->prev==0 && a->next==b && b->data==10 && b->prev==a && b->next==z && c->data==20 && c->prev==z && c->next==d && d->data==40 && d->prev==c && d->next==0); free_node(z); free_node(a); free_node(b); free_node(c); free_node(d); if (!oracle_ok) return 91;",
+          "binds": {
+            "args": {
+              "element": 7,
+              "n": 4096
+            },
+            "values": {
+              "e": 7,
+              "h": 10,
+              "p": 8192,
+              "q": 12288,
+              "ll": [
+                30
+              ],
+              "lr": [
+                20,
+                40
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "semantic_result": "Insert a fresh node carrying7 after the current node carrying10, preserve all existing payloads and reciprocal links, and return the fresh node.",
+            "contract_scope": "Annotated CN add preserves shape but does not constrain inserted payload; orig.broken has no add contract. QCP explicitly requires inserted payload equality. Separate driver-only payload/link oracle, no add contract change; oracle failure returns91 after cleanup.",
+            "coverage": "Reviewed finite reciprocal nonempty DLL topology: interior_two_successors. Recursive existential links are constrained by the original DLL predicates and separation."
+          },
+          "expected_by_execution_strategy": {
+            "inline": "PASS",
+            "modular": "PASS"
+          }
         }
       ]
     },
@@ -423,11 +623,258 @@
             "contract_scope": "Original annotated add postcondition preserves shape but does not constrain inserted payload. orig.broken has NO add contract; legal C implementation test, cannot count absent contract as checked. QCP supplied explicit correct contract.",
             "coverage": "Empty-list path only; nonempty predecessor/successor cases pending; not complete group."
           }
+        },
+        {
+          "id": "singleton_node",
+          "value": {
+            "element": 7,
+            "list": [
+              10
+            ],
+            "current_index": 0
+          },
+          "expected": "PASS",
+          "cn_body": "struct node *a=malloc_node(); a->data=10; a->prev=0; a->next=0; struct node *z=add(7,a); int oracle_ok=(z->data==7 && z->prev==a && z->next==0 && a->data==10 && a->prev==0 && a->next==z); free_node(z); free_node(a); if (!oracle_ok) return 91;",
+          "binds": {
+            "args": {
+              "element": 7,
+              "n": 4096
+            },
+            "values": {
+              "e": 7,
+              "h": 10,
+              "p": 0,
+              "q": 0,
+              "ll": [],
+              "lr": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "semantic_result": "Insert a fresh node carrying7 after the current node carrying10, preserve all existing payloads and reciprocal links, and return the fresh node.",
+            "contract_scope": "Annotated CN add preserves shape but does not constrain inserted payload; orig.broken has no add contract. QCP explicitly requires inserted payload equality. Separate driver-only payload/link oracle, no add contract change; oracle failure returns91 after cleanup.",
+            "coverage": "Reviewed finite reciprocal nonempty DLL topology: singleton_node. Recursive existential links are constrained by the original DLL predicates and separation."
+          },
+          "expected_by_execution_strategy": {
+            "inline": "PASS",
+            "modular": "PASS"
+          }
+        },
+        {
+          "id": "head_one_successor",
+          "value": {
+            "element": 7,
+            "list": [
+              10,
+              20
+            ],
+            "current_index": 0
+          },
+          "expected": "PASS",
+          "cn_body": "struct node *a=malloc_node(); struct node *b=malloc_node(); a->data=10; a->prev=0; a->next=b; b->data=20; b->prev=a; b->next=0; struct node *z=add(7,a); int oracle_ok=(z->data==7 && z->prev==a && z->next==b && a->data==10 && a->prev==0 && a->next==z && b->data==20 && b->prev==z && b->next==0); free_node(z); free_node(a); free_node(b); if (!oracle_ok) return 91;",
+          "binds": {
+            "args": {
+              "element": 7,
+              "n": 4096
+            },
+            "values": {
+              "e": 7,
+              "h": 10,
+              "p": 0,
+              "q": 12288,
+              "ll": [],
+              "lr": [
+                20
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "semantic_result": "Insert a fresh node carrying7 after the current node carrying10, preserve all existing payloads and reciprocal links, and return the fresh node.",
+            "contract_scope": "Annotated CN add preserves shape but does not constrain inserted payload; orig.broken has no add contract. QCP explicitly requires inserted payload equality. Separate driver-only payload/link oracle, no add contract change; oracle failure returns91 after cleanup.",
+            "coverage": "Reviewed finite reciprocal nonempty DLL topology: head_one_successor. Recursive existential links are constrained by the original DLL predicates and separation."
+          },
+          "expected_by_execution_strategy": {
+            "inline": "PASS",
+            "modular": "PASS"
+          }
+        },
+        {
+          "id": "tail_one_predecessor",
+          "value": {
+            "element": 7,
+            "list": [
+              30,
+              10
+            ],
+            "current_index": 1
+          },
+          "expected": "PASS",
+          "cn_body": "struct node *a=malloc_node(); struct node *b=malloc_node(); a->data=30; a->prev=0; a->next=b; b->data=10; b->prev=a; b->next=0; struct node *z=add(7,b); int oracle_ok=(z->data==7 && z->prev==b && z->next==0 && a->data==30 && a->prev==0 && a->next==b && b->data==10 && b->prev==a && b->next==z); free_node(z); free_node(a); free_node(b); if (!oracle_ok) return 91;",
+          "binds": {
+            "args": {
+              "element": 7,
+              "n": 4096
+            },
+            "values": {
+              "e": 7,
+              "h": 10,
+              "p": 8192,
+              "q": 0,
+              "ll": [
+                30
+              ],
+              "lr": []
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "semantic_result": "Insert a fresh node carrying7 after the current node carrying10, preserve all existing payloads and reciprocal links, and return the fresh node.",
+            "contract_scope": "Annotated CN add preserves shape but does not constrain inserted payload; orig.broken has no add contract. QCP explicitly requires inserted payload equality. Separate driver-only payload/link oracle, no add contract change; oracle failure returns91 after cleanup.",
+            "coverage": "Reviewed finite reciprocal nonempty DLL topology: tail_one_predecessor. Recursive existential links are constrained by the original DLL predicates and separation."
+          },
+          "expected_by_execution_strategy": {
+            "inline": "PASS",
+            "modular": "PASS"
+          }
+        },
+        {
+          "id": "interior_neighbors",
+          "value": {
+            "element": 7,
+            "list": [
+              30,
+              10,
+              20
+            ],
+            "current_index": 1
+          },
+          "expected": "PASS",
+          "cn_body": "struct node *a=malloc_node(); struct node *b=malloc_node(); struct node *c=malloc_node(); a->data=30; a->prev=0; a->next=b; b->data=10; b->prev=a; b->next=c; c->data=20; c->prev=b; c->next=0; struct node *z=add(7,b); int oracle_ok=(z->data==7 && z->prev==b && z->next==c && a->data==30 && a->prev==0 && a->next==b && b->data==10 && b->prev==a && b->next==z && c->data==20 && c->prev==z && c->next==0); free_node(z); free_node(a); free_node(b); free_node(c); if (!oracle_ok) return 91;",
+          "binds": {
+            "args": {
+              "element": 7,
+              "n": 4096
+            },
+            "values": {
+              "e": 7,
+              "h": 10,
+              "p": 8192,
+              "q": 12288,
+              "ll": [
+                30
+              ],
+              "lr": [
+                20
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "semantic_result": "Insert a fresh node carrying7 after the current node carrying10, preserve all existing payloads and reciprocal links, and return the fresh node.",
+            "contract_scope": "Annotated CN add preserves shape but does not constrain inserted payload; orig.broken has no add contract. QCP explicitly requires inserted payload equality. Separate driver-only payload/link oracle, no add contract change; oracle failure returns91 after cleanup.",
+            "coverage": "Reviewed finite reciprocal nonempty DLL topology: interior_neighbors. Recursive existential links are constrained by the original DLL predicates and separation."
+          },
+          "expected_by_execution_strategy": {
+            "inline": "PASS",
+            "modular": "PASS"
+          }
+        },
+        {
+          "id": "interior_two_successors",
+          "value": {
+            "element": 7,
+            "list": [
+              30,
+              10,
+              20,
+              40
+            ],
+            "current_index": 1
+          },
+          "expected": "PASS",
+          "cn_body": "struct node *a=malloc_node(); struct node *b=malloc_node(); struct node *c=malloc_node(); struct node *d=malloc_node(); a->data=30; a->prev=0; a->next=b; b->data=10; b->prev=a; b->next=c; c->data=20; c->prev=b; c->next=d; d->data=40; d->prev=c; d->next=0; struct node *z=add(7,b); int oracle_ok=(z->data==7 && z->prev==b && z->next==c && a->data==30 && a->prev==0 && a->next==b && b->data==10 && b->prev==a && b->next==z && c->data==20 && c->prev==z && c->next==d && d->data==40 && d->prev==c && d->next==0); free_node(z); free_node(a); free_node(b); free_node(c); free_node(d); if (!oracle_ok) return 91;",
+          "binds": {
+            "args": {
+              "element": 7,
+              "n": 4096
+            },
+            "values": {
+              "e": 7,
+              "h": 10,
+              "p": 8192,
+              "q": 12288,
+              "ll": [
+                30
+              ],
+              "lr": [
+                20,
+                40
+              ]
+            }
+          },
+          "precondition_valid": true,
+          "oracle": {
+            "semantic_result": "Insert a fresh node carrying7 after the current node carrying10, preserve all existing payloads and reciprocal links, and return the fresh node.",
+            "contract_scope": "Annotated CN add preserves shape but does not constrain inserted payload; orig.broken has no add contract. QCP explicitly requires inserted payload equality. Separate driver-only payload/link oracle, no add contract change; oracle failure returns91 after cleanup.",
+            "coverage": "Reviewed finite reciprocal nonempty DLL topology: interior_two_successors. Recursive existential links are constrained by the original DLL predicates and separation."
+          },
+          "expected_by_execution_strategy": {
+            "inline": "PASS",
+            "modular": "PASS"
+          }
         }
       ]
     }
   ],
-  "expectation_basis": "All three existing records covered on seven legal empty-list inserted payloads; corrected QCP contract not assumed equivalent to unannotated orig.broken CN. Identical implementations do not make orig.broken an incorrect implementation. Preserve weaker annotated CN postcondition; no retrofitted runtime contract. Nonempty topology path remains pending. Two CN pairings repeat the same seven QCP states, not fourteen distinct QCP states.",
+  "expectation_basis": "Three existing language records, two CN pairings and one shared QCP source. Seven legal empty-list signed-int payload cases are preserved exactly; five reviewed nonempty topologies cover singleton, head with successor, tail with predecessor, interior neighbors and interior with two successors. All correct-body semantic expectations are PASS in both inline and modular strategies; actual native states remain separately recorded. Annotated CN has a weaker payload postcondition and orig.broken has no add contract. Equal QCP source and binds are executed once per strategy/mode and referenced by both CN pairings.",
   "cn_trust_qualification": "Annotated original add core untrusted; allocation/free external contracts assumed. Unannotated orig.broken has no corresponding input/output ownership contract and cannot be counted as contract-checked.",
-  "cn_acceptance_verdict": "ACCEPTED_UNTRUSTED_ORIGINAL_FUNCTION_MODULE_WITH_HEADERS"
+  "cn_acceptance_verdict": "ACCEPTED_UNTRUSTED_ORIGINAL_FUNCTION_MODULE_WITH_HEADERS",
+  "reviewed_coverage": {
+    "case_pair_records": 24,
+    "cn_pairings": 2,
+    "cases_per_pairing": 12,
+    "unique_qcp_inputs": 12,
+    "qcp_execution_strategies": [
+      "inline",
+      "modular"
+    ],
+    "spatial_smt_modes": [
+      "off",
+      "on"
+    ],
+    "actual_qcp_executions": 48,
+    "empty_list_cases_per_pairing": 7,
+    "nonempty_topology_cases_per_pairing": 5,
+    "nonempty_topologies": [
+      "singleton_node",
+      "head_one_successor",
+      "tail_one_predecessor",
+      "interior_neighbors",
+      "interior_two_successors"
+    ],
+    "covers_current_nonnull": true,
+    "covers_predecessor_null_and_nonnull": true,
+    "covers_successor_null_and_nonnull": true,
+    "covers_successor_next_null_and_nonnull": true,
+    "finite_test_coverage_is_universal_verification": false
+  },
+  "qcp_execution_deduplication": {
+    "policy": "EXACT_SOURCE_AND_BINDS_SHARED_EXECUTION",
+    "key_fields": [
+      "qcp_source_sha256",
+      "function",
+      "binds_sha256",
+      "execution_strategy",
+      "spatial_smt_mode"
+    ],
+    "primary_pairing_cn_variant": "cn_original:Dbl_Linked_List__add",
+    "referencing_pairing_cn_variant": "cn_original:Dbl_Linked_List__add_orig.broken",
+    "pair_record_count": 24,
+    "unique_input_count": 12,
+    "actual_execution_count": 48,
+    "logical_strategy_mode_record_count": 96,
+    "cost_counting": "Count each actual shared QCP execution and all its attempts once; preserve references from both CN pairing records. Separate Fulminate execution remains required for each CN variant/input.",
+    "condition": "Both pairings have the same QCP variant, function, case IDs and complete binds. Different source, bind, function, dependency or execution configuration identities must not share an execution."
+  }
 }

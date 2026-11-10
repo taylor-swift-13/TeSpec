@@ -450,3 +450,11 @@ ITP以整次执行的原始残余目标为单位。自动分解的纯/空间子�
 ## 存储规范的执行
 
 现行目录、必存字段、禁止提交项和发布顺序统一见 [Benchmark 与 Results 存储规范](benchmark-storage-policy.md)。发布后必须运行 `compact_group_evidence.py` 并再次通过 `validate_group_evaluation.py`；压缩前运行树不进入 Git。
+
+### 同一QCP输入映射多个CN记录与模型用量缺失
+
+若多个CN变体共享完全相同的QCP源、绑定、依赖和模式，可以在输入计划明确记录共享执行映射；保留所有CN配对覆盖，实际QCP/teSpec执行及ITP费用只收一次。分别报告配对记录、不同QCP输入、实际执行次数和映射后的判定记录，不能把映射条数当作独立运行。
+
+模型超时若没有实际usage事件，保留已测时间/RSS、事件哈希和缺失原因，token必须为null；总量给已知下界，并令resource_metrics_complete=false。后续成功review是新调用，不能替代旧尝试的未知token。对原Goal证明成功与全部历史成本完整分别判断。
+
+证明对象按内容SHA去重。重建Coq工作目录时，使用proof_files字典的原模块文件名及依赖module字段恢复文件名；对象路径末尾只表示第一次保存时的名称，不决定Coq模块身份。例如同字节的ReferenceCandidate.v可引用已存Candidate.v对象，不能因此改写Require Import中的模块名。

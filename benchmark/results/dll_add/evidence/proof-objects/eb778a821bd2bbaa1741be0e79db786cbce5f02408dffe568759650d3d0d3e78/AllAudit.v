@@ -1,0 +1,16 @@
+Require Import Candidate.
+Print Assumptions entry_mem.
+Print Assumptions entry_state.
+Print Assumptions entry_state_join.
+Print Assumptions entry_state_emp.
+Print Assumptions entry_state_byte.
+Print Assumptions entry_state_sep.
+Print Assumptions entry_mem_absent.
+Print Assumptions entry_mem_app_join.
+Print Assumptions entry_mem_sep.
+Print Assumptions entry_word.
+Print Assumptions entry_word_store.
+Print Assumptions singleton_bytes.
+Print Assumptions singleton_fields.
+Print Assumptions singleton_entry_heap.
+Print Assumptions resolved_add_precondition_wit_1.
