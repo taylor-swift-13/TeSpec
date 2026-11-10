@@ -4,7 +4,7 @@
 
 ## 当前汇总
 
-当前按用户要求仅整理已有 benchmark、结果、成本与证明证据，不继续启动实验。
+用户已授权继续使用 gpt-6.1-sol 评测第 23 组 singleton；仅整理的暂停已解除。
 
 当前已归档完整 **22/45 组，共 901 对“变体×输入”**，还有 **23 组未完整**。22 组均已有四工具结果与成本表，包含必要的 QCP 全称证明、测试 ITP、编译审计及独立内核检查。完整表示评测与证据收齐，不表示每个工具都符合预期：这些已归档结果中，Fulminate 为 889/901 预期匹配，teSpec 完整测试为 901/901。权威入口为 [全局结果成本索引](../benchmark/results/group-result-cost-index.json)。
 
@@ -12,9 +12,17 @@
 
 上述数量是已发布的完整评测范围。最近执行器、VC 求解与写回修复的工程回归没有重跑全部 CN/Fulminate、组级 ITP 及完整成本测量，因此不能称为“最新工具版本已完成全部 22 组四工具重测”。工程回归与正式组结果分别保留，见 [当前工程回归收据](../benchmark/results/tespec-unexpected/current-executor-replay.json)。
 
-下一组继续 `Dbl_Linked_List__singleton`：先核对可复用的 CN/QCP/Fulminate 证据，并补测当前 teSpec 的 7 个合法输入、inline/modular 和空间 SMT OFF/ON；其已发布结果仍有 DLL 返回 VC 未消解，尚未计入完整组。
+第 23 组 `Dbl_Linked_List__singleton` 已核对并复用哈希匹配的 CN/QCP/Fulminate 证据；当前 teSpec 的 28 次原生执行已完成，正在逐执行补齐 inline 的 ITP，尚未计入完整组。
 
 本次 singleton 当前原生补测已完成 7 输入 × 两策略 × 空间 SMT OFF/ON 共 28 次：modular 两模式各 7 PASS，inline 两模式各 7 UNKNOWN，均已执行到出口，缺口为 Dll 返回 VC 的逐执行 ITP。时间、峰值 RSS 和源／VC 哈希已写入[当前结果成本表](../benchmark/results/Dbl_Linked_List__singleton/result-cost.md)，没有新增完整组。
+
+<!-- singleton-current-itp-progress -->
+当前 ABI 上下文原生执行为 14 PASS、14 UNKNOWN；包含已审计强证明后的最终结果为 **16 PASS、12 UNKNOWN**。已观测强证明内核完成 2/14，满足完整审计及限定上下文 resolution 的 2/14。
+
+当前上下文已关闭 6 次 gpt-6.1-sol 调用、5 次检查；连同上下文修复共 10 次模型调用、1,168,608 token。旧 4 次调用、6 次检查的全部成本计入相应执行；旧父 VC 成功不转移为新 ABI 证明。未关闭阶段不估算，两个旧失败 RSS 缺失保持缺失。ABI 库准备另计每组一次 0.45 秒、17244 KiB、0 token，纳入组已测工作量，不进入14次ITP均值。新显式 ABI 上下文的修复已限定确认；旧上下文仍 NOT_CERTIFIED。历史 QCP 仍绑定旧抽象地址上下文。
+
+[当前逐执行成本与证据](../benchmark/results/Dbl_Linked_List__singleton/evidence/itp/abi-context/progress.json) · [上下文与费用映射](../benchmark/results/Dbl_Linked_List__singleton/evidence/itp/context-transition.json)。完整进度仍为 **22/45 组、901 对输入**。
+<!-- /singleton-current-itp-progress -->
 
 | 组 | 配置／语言记录 | 测试对 | Fulminate 预期匹配 | teSpec OFF／ON 预期匹配 | 完整成本 |
 |---|---:|---:|---:|---:|---|

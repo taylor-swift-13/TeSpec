@@ -1,30 +1,12 @@
 # Dbl_Linked_List__singleton：结果与成本表
 
-完整状态：待补齐。共 7 对原有输入，2 条语言记录；当前全局完整进度仍为 **22/45**。
+当前 ABI 上下文原生执行为 14 PASS、14 UNKNOWN；包含已审计强证明后的最终结果为 **16 PASS、12 UNKNOWN**。已观测强证明内核完成 2/14，满足完整审计及限定上下文 resolution 的 2/14。
 
-当前版本 `ac167d0301` 已实际完成 7 输入 × inline/modular × 空间 SMT OFF/ON，共 28 次执行。全部入口 SAT、全部执行到出口。modular 两模式各 7 PASS；inline 两模式各 7 UNKNOWN，均剩原始 `proof_of_singleton_return_wit_1`。空间 SMT 明确报告 `unsupported_spatial_predicate:Dll`。旧 malloc 缺函数体已经不是当前阻塞。
+当前上下文已关闭 6 次 gpt-6.1-sol 调用、5 次检查；连同上下文修复共 10 次模型调用、1,168,608 token。旧 4 次调用、6 次检查的全部成本计入相应执行；旧父 VC 成功不转移为新 ABI 证明。未关闭阶段不估算，两个旧失败 RSS 缺失保持缺失。ABI 库准备另计每组一次 0.45 秒、17244 KiB、0 token，纳入组已测工作量，不进入14次ITP均值。新显式 ABI 上下文的修复已限定确认；旧上下文仍 NOT_CERTIFIED。历史 QCP 仍绑定旧抽象地址上下文。
 
-CN 已验证原函数体（使用既有兼容头）；Fulminate 7/7；QCP 原始 4 个全称 VC 的既有内核证据保留，本轮没有重跑。inline 的 14 次执行仍须分别完成 ITP、编译／假设审计、独立内核检查及实际模型计量，故本组不计完成。
+[当前逐执行成本与证据](evidence/itp/abi-context/progress.json) · [上下文与费用映射](evidence/itp/context-transition.json)。完整进度仍为 **22/45 组、901 对输入**。
 
-当前原生阶段的时间和峰值 RSS 如下；token 实测为 0，因为没有调用模型。ITP 未执行的数据保持缺失，不能填 0。每行 RSS 同时列出逐次峰值均值和最大值；CLI 包含执行器与空间 SMT，不能把嵌套阶段重复相加。逐输入状态、源／VC／日志哈希和复现命令只保留在一份[当前证据](evidence/tespec-native.json)。
-
-| 策略 | 空间 SMT | PASS / UNKNOWN | 预期匹配 | 平均时间（秒） | 平均峰值 RSS（MiB） | 最大峰值 RSS（MiB） |
-|---|---|---:|---:|---:|---:|---:|
-| inline | off | 0 / 7 | 0/7 | 0.458471 | 20.4023 | 20.6523 |
-| inline | on | 0 / 7 | 0/7 | 0.464123 | 47.2221 | 47.4141 |
-| modular | off | 7 / 0 | 7/7 | 0.335116 | 20.3460 | 20.5469 |
-| modular | on | 7 / 0 | 7/7 | 0.347073 | 20.4258 | 20.6094 |
-
-## 已有四工具结果与历史测量
-
-下列保留既有主程序证据、失败修复成本及旧 teSpec 测量；旧 UNKNOWN 原因和时间不代表本轮当前执行。当前状态及新增成本以上表和 JSON 的 `latest_native_recheck` 为准。
-
-| 工具 | 范围 | 结果／预期匹配 | 测试对数 |
-|---|---|---|---:|
-| cn | 主程序全称验证一次 | VERIFIED_WITH_COMPAT_HEADERS | — |
-| qcp | 主程序全称验证一次 | VERIFIED_KERNEL_CHECKED | — |
-| fulminate | 各变体的有限测试 | 7/7 | 7 |
-| tespec | 各变体的有限测试 | 0/7 | 7 |
+各原生行是当前模式的逐执行均值；ITP 行是已尝试执行的暂计均值，包含所有旧上下文和新上下文失败/成功尝试，不是最终 14 次均值。峰值不相加；有历史缺失时保持缺失。
 
 | 工具 | 阶段 | 时间（秒） | 峰值进程内存（MiB） | token | 口径 |
 |---|---|---:|---:|---:|---|
@@ -36,42 +18,12 @@ CN 已验证原函数体（使用既有兼容头）；Fulminate 7/7；QCP 原始
 | qcp | ITP 平均合计 | 423.0585 | 1766.8867 | 591827.0000 | 一次主程序验证 |
 | fulminate | 插桩、编译与首次执行 | 2.2581 | 45.6875 | 0.0000 | 已测工作总量 |
 | fulminate | 单独运行测试 | 0.0252 | 1.1133 | 0.0000 | 已测工作总量 |
-| tespec | 测试执行、VC 生成与自动处理 | 1.6050 | 19.4648 | 0.0000 | 已测工作总量 |
-| tespec | agent 填写证明 | 待补齐 | 待补齐 | 待补齐 | PENDING_PER_EXECUTION_MEAN |
-| tespec | Coq 编译与假设审计 | 待补齐 | 待补齐 | 待补齐 | PENDING_PER_EXECUTION_MEAN |
-| tespec | 独立内核检查 | 待补齐 | 待补齐 | 待补齐 | PENDING_PER_EXECUTION_MEAN |
-| tespec | ITP 平均合计 | 待补齐 | 待补齐 | 待补齐 | PENDING_PER_EXECUTION_MEAN |
-| tespec --spatial-smt | 测试执行、VC 生成与空间 SMT | 0.1648 | 19.4157 | 0.0000 | 每次测试执行均值；内存为逐次峰值均值 |
-| tespec --spatial-smt | agent 填写证明 | 待补齐 | 待补齐 | 待补齐 | PENDING_PER_EXECUTION_MEAN |
-| tespec --spatial-smt | Coq 编译与假设审计 | 待补齐 | 待补齐 | 待补齐 | PENDING_PER_EXECUTION_MEAN |
-| tespec --spatial-smt | 独立内核检查 | 待补齐 | 待补齐 | 待补齐 | PENDING_PER_EXECUTION_MEAN |
-| tespec --spatial-smt | ITP 平均合计 | 待补齐 | 待补齐 | 待补齐 | PENDING_PER_EXECUTION_MEAN |
-| cn | 旧主验证失败（20261016） | 0.1147 | 41.8906 | 0.0000 | 1 次额外尝试总量；不纳入正式输入均值 |
-| fulminate | 旧插桩失败（20261016） | 0.5017 | 43.3047 | 0.0000 | 7 次额外尝试总量；不纳入正式输入均值 |
-| cn | 旧依赖复查失败 | 0.1149 | 42.1758 | 0.0000 | 1 次额外复查总量；历史记录 |
-| fulminate | 旧依赖插桩复查失败 | 0.4519 | 42.9141 | 0.0000 | 7 次额外复查总量；历史记录 |
-| tespec | 历史 OFF 缺分配器复查 | 1.5546 | 23.4102 | 0.0000 | 7 次额外复查总量；历史记录 |
-| tespec --spatial-smt | 历史 ON 缺分配器复查 | 1.1543 | 23.3320 | 0.0000 | 7 次额外复查总量；历史记录 |
-| cn | 兼容修复首轮失败（整数域） | 0.0648 | 45.5859 | 0.0000 | 1 次额外尝试总量；不纳入正式输入均值 |
-| fulminate | 链接包装器首轮失败 | 0.1155 | 44.3672 | 0.0000 | 1 次额外尝试总量；不纳入正式输入均值 |
-| fulminate | 运行时先导输入成功 | 0.4159 | 44.8477 | 0.0000 | 1 次额外尝试总量；不纳入正式输入均值 |
-| fulminate | 负控插桩、编译与首次执行 | 0.3156 | 45.5273 | 0.0000 | 1 次额外尝试总量；不纳入正式输入均值 |
-| fulminate | 负控单独执行 | 0.0041 | 1.3789 | 0.0000 | 1 次额外尝试总量；不纳入正式输入均值 |
-
-ITP 以一次测试执行的所有待处理 VC 为单位，只展示平均开销；read 的 12 次所需 ITP 各自独立测量后取平均。内存不将总峰值除以次数；read ITP 展示逐次实测峰值的平均值。ITP 合计行与其三个分项重叠，不能再次相加。CN/QCP 与两种测试工具的对象和次数不同。
-
-缺测记为待补齐，不表示已有历史证据作废；须绑定匹配证据后发布。原始证据、计量来源与缺项见 [result-cost.json](result-cost.json)，成本 CSV 见 [result-cost.csv](result-cost.csv)。
-
-补充的源修订／失败诊断成本单列，见 [补充成本来源](supplementary-costs.json)；不改变主成功测量均值，也不重复计入已统计的 ITP 阶段。
-
-## teSpec 空间 SMT 模式
-
-| 项目 | 关闭 | 开启 |
-|---|---:|---:|
-| 原生 PASS / FAIL / UNKNOWN / ERROR | 0 / 0 / 7 / 0 | 0 / 0 / 7 / 0 |
-| 最终预期匹配（含所需 ITP） | 0/7 | 0/7 |
-| 每次执行平均时间（秒） | 0.229285 | 0.164811 |
-| 平均单次峰值 RSS（MiB） | 19.4124 | 19.4157 |
-| 需 ITP 判定的执行数 | 7 | 7 |
-
-模式逐次结果、成本和证书范围见 [模式对照](20261016-evaluation/comparison.md)。无需 ITP 时成本记 0，均值和峰值不适用。SMT 决策不作为 Coq 证书。
+| tespec group setup | 确定性 ABI 库准备 | 0.4500 | 16.8398 | 0.0000 | 每组一次；不进入14次ITP均值 |
+| tespec inline spatial-off | 当前 ABI 原生测试 | 0.9047 | 20.3806 | 0.0000 | 每次执行均值 |
+| tespec inline spatial-on | 当前 ABI 原生测试 | 1.0622 | 47.1356 | 0.0000 | 每次执行均值 |
+| tespec modular spatial-off | 当前 ABI 原生测试 | 0.8362 | 20.2907 | 0.0000 | 每次执行均值 |
+| tespec modular spatial-on | 当前 ABI 原生测试 | 0.6933 | 20.3834 | 0.0000 | 每次执行均值 |
+| tespec context-repair | 旧上下文原生执行（计入总成本） | 0.4012 | 27.0991 | 0.0000 | 28 次旧执行均值 |
+| tespec cumulative ITP | agent | 774.7553 | 239.9167 | 389536.0000 | 已尝试 3/14 次执行的暂计均值，含旧上下文；不是最终均值 |
+| tespec cumulative ITP | coq_compile_and_assumption_audit | 97.6036 | 542.2812 | 0.0000 | 已尝试 3/14 次执行的暂计均值，含旧上下文；不是最终均值 |
+| tespec cumulative ITP | independent_kernel_check | 2380.7127 | 待补齐 | 0.0000 | 已尝试 2/14 次执行的暂计均值，含旧上下文；不是最终均值 |

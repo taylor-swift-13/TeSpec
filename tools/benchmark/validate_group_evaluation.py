@@ -39,7 +39,11 @@ def validate_compact(ROOT,g,b,manifest,idx,evaluation,nativepath,proofpath,data)
     print(f'PASS {manifest["program_group"]}: compact durable evidence, exact source/proof hashes, full primary verification and inline/modular OFF/ON decisions.')
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--group',required=True);p.add_argument('--run-id');p.add_argument('--native-receipt');p.add_argument('--qcp-receipt');a=p.parse_args();g=ROOT/'benchmark/programs'/a.group;b=ROOT/'benchmark/results'/a.group;manifest=load(g/'manifest.json');idx=load(b/'index.json')
+    p=argparse.ArgumentParser();p.add_argument('--group',required=True);p.add_argument('--run-id');p.add_argument('--native-receipt');p.add_argument('--qcp-receipt');p.add_argument('--allow-partial',action='store_true');a=p.parse_args();g=ROOT/'benchmark/programs'/a.group;b=ROOT/'benchmark/results'/a.group;manifest=load(g/'manifest.json');idx=load(b/'index.json')
+    if idx.get('canonical_evaluation'):
+        from validate_canonical_group import audit_canonical_group
+        audit_canonical_group(a.group, ROOT, idx, allow_partial=a.allow_partial)
+        return
     if idx.get('durable_evidence'):
         from compact_published_groups import audit_compacted_group
         audit_compacted_group(a.group, ROOT)
