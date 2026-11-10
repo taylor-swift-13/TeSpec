@@ -2,7 +2,7 @@
   "schema": "tespec-grouped-benchmark/v1",
   "program_group": "Dbl_Linked_List__singleton",
   "primary_variant": "cn_original:Dbl_Linked_List__singleton",
-  "primary_selection_status": "CN_COMPAT_VERIFIED_QCP_KERNEL_CHECKED_TESPEC_ALLOCATOR_DEFERRED",
+  "primary_selection_status": "CN_COMPAT_VERIFIED_QCP_LEGACY_KERNEL_CHECKED_TESPEC_ABI_VERDICTS_CHECKED_COST_INCOMPLETE",
   "verification_policy": "Only designated primary requires CN/QCP formal verification; reuse matching archived proofs. Other variants require testing only.",
   "variants": [
     {
@@ -40,11 +40,27 @@
     "qcp_status": "VERIFIED_KERNEL_CHECKED",
     "paired_qcp_variant": "qcp_existing:8f229e47d6649f2a2eb8"
   },
-  "test_modes_statistics": "benchmark/results/Dbl_Linked_List__singleton/20261016-evaluation/statistics.json",
+  "test_modes_statistics": "benchmark/results/Dbl_Linked_List__singleton/tespec/statistics.json",
   "latest_tool_repair": "benchmark/results/Dbl_Linked_List__singleton/20261018-cn-fulminate-repair/publication.json",
   "evaluation_notes": [
-    "2026-10-18：CN 5.2 兼容头文件下，原 singleton 与 IntList_nil、IntList_cons 均验证通过；分配器契约仍是外部前提。Fulminate 原有 7 个输入全部 PASS。",
-    "teSpec 按用户要求暂缓分配器支持，本轮新增执行 0 次。下表 OFF/ON 各 7 UNKNOWN 为保留的历史结果，不能计为成功；旧统计“需 ITP 7 次”实际是执行在 malloc_node 处中止，没有可提交 ITP 的残余 VC。",
-    "QCP 既有 4 个原始全称 VC 证书及成本保持不变；该证书以分配器契约为前提。完整组计数仍为 21/45。修复范围与复现步骤见 docs/benchmark-singleton-cn-fulminate-repair-20261018.md。"
-  ]
+    "CN 复用源与依赖哈希匹配的主程序验证证据；分配器规约仍是外部假设。QCP 原始 4 个全称 VC 仅在 b1 抽象地址上下文核证；teSpec 测试使用 c6 显式 ABI 上下文。未提供跨上下文等价证书，旧 QCP 证书不作为当前 ABI 谓词的全称证明。",
+    "7 个原有合法输入，inline/modular × 空间 SMT OFF/ON 共 28 次执行。14 次 inline 原生 UNKNOWN 各自完成独立 ITP；modular 14 次原生 PASS。",
+    "每次执行的全部原始残余 VC 为一个 ITP 任务；实际模型 gpt-6.1-sol，所有证明修复尝试均计入。未改变输入、预期或源程序。",
+    "QCP 原始 4 个目标中 1 个 Closed，3 个使用原有 eval_addr_expr 参数；没有新增证明公理。具体 ITP 假设逐证书披露。",
+    "当前 teSpec 使用显式目标 ABI 重解释 DLL，ITP 直接证明原始左侧 Dll 蕴含，再用固定 or_introl 包装证明父 VC。旧 QCP 全称证书仍只证明旧抽象地址定义；两种定义的等价性未获证明。旧上下文所有尝试并入当前逐执行成本，未增加输入分母。",
+    "历史 ITP 失败或中断尝试的时间、RSS 有缺项，判定完成但不计完整组。 "
+  ],
+  "historical_allocator_deferred_display": {
+    "primary_selection_status": "CN_COMPAT_VERIFIED_QCP_KERNEL_CHECKED_TESPEC_ALLOCATOR_DEFERRED",
+    "evaluation_notes": [
+      "2026-10-18：CN 5.2 兼容头文件下，原 singleton 与 IntList_nil、IntList_cons 均验证通过；分配器契约仍是外部前提。Fulminate 原有 7 个输入全部 PASS。",
+      "teSpec 按用户要求暂缓分配器支持，本轮新增执行 0 次。下表 OFF/ON 各 7 UNKNOWN 为保留的历史结果，不能计为成功；旧统计“需 ITP 7 次”实际是执行在 malloc_node 处中止，没有可提交 ITP 的残余 VC。",
+      "QCP 既有 4 个原始全称 VC 证书及成本保持不变；该证书以分配器契约为前提。完整组计数仍为 21/45。修复范围与复现步骤见 docs/benchmark-singleton-cn-fulminate-repair-20261018.md。"
+    ],
+    "test_modes_statistics": "benchmark/results/Dbl_Linked_List__singleton/20261016-evaluation/statistics.json"
+  },
+  "canonical_evaluation": {
+    "path": "benchmark/results/Dbl_Linked_List__singleton/evidence/tespec-native.json",
+    "sha256": "4f39322fe7142b55abd189ced2f78021f742e074413b7b58d81f2df03c14872e"
+  }
 }

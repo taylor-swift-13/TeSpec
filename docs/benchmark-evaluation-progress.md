@@ -12,16 +12,16 @@
 
 上述数量是已发布的完整评测范围。最近执行器、VC 求解与写回修复的工程回归没有重跑全部 CN/Fulminate、组级 ITP 及完整成本测量，因此不能称为“最新工具版本已完成全部 22 组四工具重测”。工程回归与正式组结果分别保留，见 [当前工程回归收据](../benchmark/results/tespec-unexpected/current-executor-replay.json)。
 
-第 23 组 `Dbl_Linked_List__singleton` 已核对并复用哈希匹配的 CN/QCP/Fulminate 证据；当前 teSpec 的 28 次原生执行已完成，正在逐执行补齐 inline 的 ITP，尚未计入完整组。
+第 23 组 `Dbl_Linked_List__singleton` 已完成 7 个合法输入、inline/modular × 空间 SMT OFF/ON 共 28 次判定，最终 **28 PASS、0 UNKNOWN**。modular 的 14 次原生 PASS；inline 的 14 次原生 UNKNOWN 均逐执行完成原始 Dll 蕴含和父 VC 的 ITP、Coq 编译与假设审计、独立完整内核检查，未修改输入或预期。
 
-本次 singleton 当前原生补测已完成 7 输入 × 两策略 × 空间 SMT OFF/ON 共 28 次：modular 两模式各 7 PASS，inline 两模式各 7 UNKNOWN，均已执行到出口，缺口为 Dll 返回 VC 的逐执行 ITP。时间、峰值 RSS 和源／VC 哈希已写入[当前结果成本表](../benchmark/results/Dbl_Linked_List__singleton/result-cost.md)，没有新增完整组。
+CN 与 Fulminate 已核对既有证据，Fulminate 为 7/7；QCP 原始 4 个全称 VC 的历史证书仍限于旧抽象地址上下文，不作为当前显式 ABI 谓词的全称证明。四工具结果、逐阶段成本与必要证据见[第 23 组结果成本表](../benchmark/results/Dbl_Linked_List__singleton/result-cost.md)。历史失败和文件系统中断留下 9 项时间／RSS 缺失，保持 null；本组判定已完成、成本未完整，因此完整计数仍为 **22/45**。
 
 <!-- singleton-current-itp-progress -->
-当前 ABI 上下文原生执行为 14 PASS、14 UNKNOWN；包含已审计强证明后的最终结果为 **21 PASS、7 UNKNOWN**。已观测强证明内核完成 7/14，满足完整审计及限定上下文 resolution 的 7/14。
+本组实际使用 `gpt-6.1-sol`，当前 ABI 上下文 19 次模型调用、20 次检查；包含旧上下文全部修复尝试后，共 23 次模型调用、26 次检查、2,215,390 tokens。每次执行的全部残余 VC 为一个 ITP 任务，最终展示 14 次任务的均值。失败、中断和成功重放分别保留，旧父 VC 成功不转移为新 ABI 证明。
 
-当前上下文已关闭 11 次 gpt-6.1-sol 调用、12 次检查；连同上下文修复共 15 次模型调用、1,594,610 token。旧 4 次调用、6 次检查的全部成本计入相应执行；旧父 VC 成功不转移为新 ABI 证明。未关闭阶段不估算，两个旧失败 RSS 缺失保持缺失。ABI 库准备另计每组一次 0.45 秒、17244 KiB、0 token，纳入组已测工作量，不进入14次ITP均值。本轮保留 1 次文件系统中断：原模型只计一次，幸存编译 CPU 与逐阶段 RSS 如实保留；缺失整次墙钟与峰值保持 null，累计墙钟仅报告已测下界，不算失败或成功。6份丢失报告已实际补跑（合计 1.588379 秒），新证书绑定各自恢复报告；原c84快照、已有证明与旧费用保留。恢复准备另计 5.01 秒，不进入ITP均值。新显式 ABI 上下文的修复已限定确认；旧上下文仍 NOT_CERTIFIED。历史 QCP 仍绑定旧抽象地址上下文。
+两次旧超时缺 RSS；一次文件系统中断缺 6 个阶段墙钟及整次峰值，不能以 CPU 或后续重放补写。6 份丢失报告已经按原输入实际补跑，合计 1.588379 秒并计入对应原生执行费用。ABI 库准备 0.45 秒、恢复准备 5.01 秒分别按组计一次，不进入逐执行 ITP 均值。
 
-[当前逐执行成本与证据](../benchmark/results/Dbl_Linked_List__singleton/evidence/itp/abi-context/progress.json) · [上下文与费用映射](../benchmark/results/Dbl_Linked_List__singleton/evidence/itp/context-transition.json)。完整进度仍为 **22/45 组、901 对输入**。
+[当前逐执行结果与证据](../benchmark/results/Dbl_Linked_List__singleton/evidence/tespec-native.json) · [上下文与费用映射](../benchmark/results/Dbl_Linked_List__singleton/evidence/itp/context-transition.json)。旧 QCP 抽象地址上下文与当前 teSpec 显式 ABI 上下文的等价性未获证明；两类证据分别限定范围。
 <!-- /singleton-current-itp-progress -->
 
 | 组 | 配置／语言记录 | 测试对 | Fulminate 预期匹配 | teSpec OFF／ON 预期匹配 | 完整成本 |

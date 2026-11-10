@@ -14,6 +14,7 @@ import json
 from pathlib import Path
 import re
 import statistics
+import subprocess
 from validate_canonical_group import (
     ROOT, audit_canonical_group, audit_cn, audit_fulminate, audit_qcp, audit_itp, ref as disk_ref,
     check_candidate_commands, digest, goal_interface, load, measurement,
@@ -136,6 +137,15 @@ def prepared_evidence_reader(pub):
         def read_text(self, encoding=None, errors=None):
             return self.read_bytes().decode(encoding or "utf-8", errors or "strict")
 
+        def open(self, mode="r", buffering=-1, encoding=None, errors=None, newline=None):
+            path = Path(self).resolve()
+            if path in pub.files:
+                need(mode in ("r", "rt", "rb"), "Prepared evidence overlay is read-only")
+                content = pub.files[path]
+                return io.BytesIO(content) if "b" in mode else io.StringIO(
+                    content.decode(encoding or "utf-8", errors or "strict"), newline=newline)
+            return super().open(mode, buffering, encoding, errors, newline)
+
         def stat(self, *args, **kwargs):
             path = Path(self).resolve()
             if path in pub.files:
@@ -157,6 +167,88 @@ def prepared_evidence_reader(pub):
 def audit_prepared_execution(pub, receipt_ref, row, allow_partial=False):
     """Full read-only ITP audit, including durable recovery references."""
     return audit_itp(ROOT, receipt_ref, row, allow_partial=allow_partial, evidence_reader=prepared_evidence_reader(pub))
+
+
+def audit_prepared_publication(pub, index, allow_partial=False):
+    """Run the complete group auditor against pending bytes, without writes."""
+    evidence = prepared_evidence_reader(pub)(ROOT, index["canonical_evaluation"])
+    return audit_canonical_group(GROUP, type(evidence)(ROOT), index, allow_partial=allow_partial)
+
+
+def freeze_resolution_receipt(pub, review_path, review, rows):
+    """Keep the exact certificate named at resolution, independent of cost updates."""
+    first = review["first_strong_certificate"]
+    original = first["durable_receipt"]
+    path = (ROOT / original["path"]).resolve()
+    need(path.is_relative_to(BASE / "evidence/itp"), "Resolution receipt escapes group proof evidence")
+    expected = original["sha256"]
+    content = path.read_bytes() if path.is_file() else b""
+    if hashlib.sha256(content).hexdigest() != expected:
+        recovered = subprocess.run(["git", "show", "HEAD:" + original["path"]], cwd=ROOT, capture_output=True)
+        need(recovered.returncode == 0 and hashlib.sha256(recovered.stdout).hexdigest() == expected,
+             "Exact review-bound receipt is unavailable; do not substitute a different certificate")
+        content = recovered.stdout
+    existing = sorted((BASE / "evidence/itp/objects" / expected).glob("*"))
+    target = existing[0] if existing else BASE / "evidence/itp/objects" / expected / "resolution-first-receipt.json"
+    frozen = pub.put(target, content)
+    row_index = first["native_row_index"]
+    need(type(row_index) is int and 0 <= row_index < len(rows), "Invalid resolution execution")
+    receipt = audit_prepared_execution(pub, frozen, rows[row_index], allow_partial=True)
+    need(receipt.get("proof_profile") == PROFILE and receipt.get("native_row_index") == row_index and
+         receipt.get("original_native_results_sha256") == review["resolution_native_results_sha256"] and
+         canonical_sha(receipt["abi_context"]) == review["resolution_abi_context_sha256"] and
+         receipt.get("strong_left_attestation_sha256") == first["strong_left_attestation_sha256"],
+         "Resolution snapshot has a different proof scope or native/ABI binding")
+    need(any(c.get("status") == "PASS" and c.get("controller_receipt_sha256") == first["controller_receipt_sha256"] and
+             c.get("certificate_report_sha256") == first["certificate_report_sha256"] and
+             c.get("candidate_sha256") == first["candidate_sha256"] for c in receipt["checks"]),
+         "Resolution snapshot does not contain the originally checked certificate")
+    updated = copy.deepcopy(review)
+    updated["first_strong_certificate"]["durable_receipt"] = frozen
+    return pub.json(review_path, updated, compact=True)
+
+
+def refresh_progress_links(pub, review_ref, by_row, receipts):
+    """Retain measured progress values and rebind its superseded receipt views."""
+    path = BASE / "evidence/itp/abi-context/progress.json"
+    if not path.is_file():
+        return None
+    old_ref, progress = reference(path), load(path)
+    need(progress["original_entailment_completed_executions"] == len(receipts) == 14 and
+         len(progress["executions"]) == 14, "Cannot retire incomplete progress as a completed proof view")
+    need(progress["active_context_model_calls"] == sum(r["active_metrics"]["total"]["model_calls"] for r in receipts) and
+         progress["active_context_check_attempts"] == sum(len(r["checks"]) for r in receipts) and
+         progress["active_context_tokens"] == sum(r["active_metrics"]["agent"]["tokens"] for r in receipts),
+         "Progress and final receipts describe different active attempts")
+    by_execution = {r["execution_index"]: r for r in receipts}
+    need({e["execution_index"] for e in progress["executions"]} == set(by_execution), "Progress execution inventory differs")
+    for entry in progress["executions"]:
+        receipt = by_execution[entry["execution_index"]]
+        need(entry["status"] == receipt["status"] == "PASS" and entry["native_row_index"] == receipt["native_row_index"],
+             "Progress/final proof execution identity differs")
+        entry["receipt"] = by_row[entry["native_row_index"]]
+    progress["semantic_review"] = review_ref
+    progress["receipt_metrics_scope"] = "Receipt active_metrics is ABI-context-only; receipt metrics includes legacy context repair. Saved progress cost summaries are unchanged and are not added to final costs."
+    return old_ref, pub.json(path, progress, compact=True)
+
+
+def replace_progress_references(pub, replacement):
+    if replacement is None:
+        return
+    old, new = replacement
+    def rewrite(value):
+        if isinstance(value, dict):
+            if value.get("path") == old["path"] and value.get("sha256") == old["sha256"]:
+                return {**value, **new}
+            return {k: rewrite(v) for k, v in value.items()}
+        return [rewrite(v) for v in value] if isinstance(value, list) else value
+    for path, content in list(pub.files.items()):
+        if path.suffix != ".json" or path.is_relative_to(BASE / "evidence/itp/objects"):
+            continue
+        value = json.loads(content)
+        updated = rewrite(value)
+        if updated != value:
+            pub.files[path] = encoded(updated, compact=True)
 
 
 def persist_interruption(pub, path, raw, task, native_sha256, model):
@@ -614,6 +706,8 @@ def prepare(itp_root, model_root, native_path, task_overrides=None):
         row["matches_expected"] = row["final_status"] == row["expected"]
         rows.append(row)
     need(all(r["matches_expected"] for r in rows), "Final mismatch remains")
+    layout_review_ref = freeze_resolution_receipt(pub, layout_audit, review, rows) if strong else reference(layout_audit)
+    progress_replacement = refresh_progress_links(pub, layout_review_ref, by_row, receipts) if strong else None
     shared_setup = prepare_shared_setup(pub, transition, task_overrides)
     workload = group_workload(rows, receipts, shared_setup)
     statistics_itp, modes = aggregate_itp(receipts), mode_statistics(rows, receipts)
@@ -646,7 +740,7 @@ def prepare(itp_root, model_root, native_path, task_overrides=None):
         "runs": rows, "scope": "Seven original legal input pairs across inline/modular and spatial SMT OFF/ON. Four configurations do not multiply the input-pair denominator. CN/QCP prove only the primary program under its recorded allocator contracts."}
     if strong:
         evaluation.update(proof_profile=PROFILE, context_transition=transition_ref,
-            abi_context=tasks[0]["abi_context"], semantic_review=reference(layout_audit),
+            abi_context=tasks[0]["abi_context"], semantic_review=layout_review_ref,
             native_cost_scope="Each logical execution includes legacy and ABI native attempts once; input denominator unchanged.")
     if overrides is not None:
         evaluation["task_overrides"] = pub.object(task_overrides, "tasks-overrides.json")
@@ -663,6 +757,7 @@ def prepare(itp_root, model_root, native_path, task_overrides=None):
                "complete": resources_complete, "verdict_complete": True, "resource_metrics_complete": resources_complete}
     stats = {"schema": "tespec-group-test-costs/v1", "program_group": GROUP,
              "complete": resources_complete, "verdict_complete": True, "resource_metrics_complete": resources_complete,
+              "group_shared_setup": shared_setup, "tespec_group_workload": workload,
              "missing_measurements": missing, "case_pairs": 7, "executions": 28,
              "tokens": statistics_itp["stages"]["total"]["tokens_total"],
              "model_calls": statistics_itp["model_calls"], "itp_required_executions": 14,
@@ -685,6 +780,21 @@ def prepare(itp_root, model_root, native_path, task_overrides=None):
     table.pop("current_missing_measurements", None)
     need([r["tool"] for r in previous_costs[:8]] == ["cn", "qcp", "qcp", "qcp", "qcp", "qcp", "fulminate", "fulminate"],
          "Historical tool rows changed")
+    if not table.get("canonical_evaluation") and "pre_context_transition_cost_views" in table:
+        # The progress publisher replaces the active native/ITP display rows.
+        # Recover the original 33-row partition from its frozen display snapshot;
+        # none of these views is added to the independently reconstructed costs.
+        saved = table["pre_context_transition_cost_views"]["costs"]
+        need(len(saved) == 28 and [r["stage"] for r in saved[25:]] ==
+             ["agent", "coq_compile_and_assumption_audit", "independent_kernel_check"] and
+             all(r["tool"] == "tespec current ITP" and r.get("source") ==
+                 rel(BASE / "evidence/itp/legacy-context/progress.json") for r in saved[25:]),
+             "Preserved historical ITP summary layout changed")
+        need([r["tool"] for r in saved[21:25]] ==
+             ["tespec inline spatial-off", "tespec inline spatial-on", "tespec modular spatial-off", "tespec modular spatial-on"] and
+             all(r.get("status") == "MEASURED_NATIVE_ONLY" and r.get("source") == rel(CANONICAL) for r in saved[21:25]),
+             "Preserved historical native display layout changed")
+        previous_costs = previous_costs[:8] + copy.deepcopy(saved[:25])
     if table.get("canonical_evaluation"):
         need(len(previous_costs) in (16, 17, 18) and "historical_attempts" in table, "Partial publication cost layout changed")
         require_hash(ROOT / table["canonical_evaluation"]["path"], table["canonical_evaluation"]["sha256"], "previous canonical publication")
@@ -715,7 +825,7 @@ def prepare(itp_root, model_root, native_path, task_overrides=None):
         missing_measurements=missing, measurement_environment=MEASUREMENT_ENVIRONMENT, canonical_evaluation=evaluation_ref, latest_native_recheck=latest,
         group_shared_setup=shared_setup, tespec_group_workload=workload,
         itp_statistics=statistics_itp, test_modes={"statistics": rel(BASE / "tespec/statistics.json"), "modes": modes},
-        evaluation_notes=["CN 与 QCP 复用源与依赖哈希匹配的主程序验证证据；分配器规约是共同的外部假设。",
+        evaluation_notes=["CN 复用源与依赖哈希匹配的主程序验证证据；分配器规约仍是外部假设。QCP 原始 4 个全称 VC 仅在 b1 抽象地址上下文核证；teSpec 测试使用 c6 显式 ABI 上下文。未提供跨上下文等价证书，旧 QCP 证书不作为当前 ABI 谓词的全称证明。",
             "7 个原有合法输入，inline/modular × 空间 SMT OFF/ON 共 28 次执行。14 次 inline 原生 UNKNOWN 各自完成独立 ITP；modular 14 次原生 PASS。",
             "每次执行的全部原始残余 VC 为一个 ITP 任务；实际模型 gpt-6.1-sol，所有证明修复尝试均计入。未改变输入、预期或源程序。",
             "QCP 原始 4 个目标中 1 个 Closed，3 个使用原有 eval_addr_expr 参数；没有新增证明公理。具体 ITP 假设逐证书披露。"],
@@ -767,7 +877,7 @@ def prepare(itp_root, model_root, native_path, task_overrides=None):
     index.pop("current_missing_measurements", None)
     index.update(complete=resources_complete, verdict_complete=True, resource_metrics_complete=resources_complete,
         canonical_evaluation=evaluation_ref, evaluation=evaluation_ref["path"], latest_native_recheck=latest,
-        tespec_current_run_status="ALL_EXPECTED_MATCHED" if resources_complete else "VERDICTS_CHECKED_COST_RSS_GAP",
+        tespec_current_run_status="ALL_EXPECTED_MATCHED" if resources_complete else "VERDICTS_CHECKED_COST_RESOURCE_GAP",
         missing_measurements=missing)
     index["per_tool_evidence"]["tespec"] = evaluation_ref["path"]
     if "latest_tespec_native_retest" in index:
@@ -780,19 +890,24 @@ def prepare(itp_root, model_root, native_path, task_overrides=None):
     for name in ("tespec_current_run", "current_native_retest"):
         if name in gap:
             gap["historical_" + name] = gap.pop(name)
+    if "teSpec execution remains blocked" in gap.get("concrete_scope_qualification", ""):
+        gap.setdefault("historical_concrete_scope_qualification", gap["concrete_scope_qualification"])
     gap.update(status="RESOLVED" if resources_complete else "VERDICT_COMPLETE_RESOURCE_COST_GAP",
         complete=resources_complete, verdict_complete=True, resource_metrics_complete=resources_complete,
         active_gap=not resources_complete, missing_measurements=missing,
         latest_native_recheck=latest, canonical_evaluation=evaluation_ref,
+        concrete_scope_qualification="All 7 original inputs completed 28 teSpec mode executions in the explicit ABI context. Historical QCP verification remains scoped to abstract-address definitions; allocator contracts remain external assumptions.",
         issue_details_scope="Historical attempts only; current verdicts all proved. Any current cost gap is explicitly listed in missing_measurements.",
         tespec_current_run={"status": "ALL_EXPECTED_MATCHED", "executions": 28, "case_pairs": 7,
                             "completed_independent_itp_executions": 14, "pending_itp_executions": 0})
     pub.json(BASE / "coverage-gap.json", gap)
-    group_manifest.update(primary_selection_status="CN_COMPAT_VERIFIED_QCP_KERNEL_CHECKED_TESPEC_VERDICTS_CHECKED",
+    group_manifest.update(primary_selection_status="CN_COMPAT_VERIFIED_QCP_LEGACY_KERNEL_CHECKED_TESPEC_ABI_VERDICTS_CHECKED" +
+        ("" if resources_complete else "_COST_INCOMPLETE"),
         current_coverage_gap=None if resources_complete else rel(BASE / "coverage-gap.json"),
         canonical_evaluation=evaluation_ref, test_modes_statistics=rel(BASE / "tespec/statistics.json"),
-        evaluation_notes=table["evaluation_notes"] + ([] if resources_complete else ["当前 ITP 超时尝试的 RSS 缺失，判定完成但不计完整组。 "]))
+        evaluation_notes=table["evaluation_notes"] + ([] if resources_complete else ["历史 ITP 失败或中断尝试的时间、RSS 有缺项，判定完成但不计完整组。 "]))
     pub.json(group_manifest_path, group_manifest)
+    replace_progress_references(pub, progress_replacement)
     return pub, evaluation, index
 
 
@@ -818,9 +933,13 @@ def update_global(evaluation, evaluation_ref):
     summary = table.setdefault("current_completion_summary", {})
     if "next_group_current_itp_progress" in summary:
         summary["last_group_historical_itp_progress"] = summary.pop("next_group_current_itp_progress")
+    historical_progress = load(BASE / "result-cost.json").get("historical_itp_progress")
+    if historical_progress is not None:
+        disk_ref(ROOT, historical_progress)
+        summary["last_group_historical_itp_progress"] = historical_progress
     summary.update(complete_groups=count, groups_total=45, incomplete_groups=45-count,
         complete_group_case_pairs=pairs,
-        scope="Published complete four-tool result/proof/cost evaluations. A proved verdict with missing attempt RSS is not a complete group. Existing 22 groups were not rerun by this publication.",
+        scope="Published complete four-tool result/proof/cost evaluations. A proved verdict with missing attempt wall time or RSS is not a complete group. Existing 22 groups were not rerun by this publication.",
         last_evaluated_group=GROUP, last_group_verdict_complete=True,
         last_group_resource_metrics_complete=evaluation["resource_metrics_complete"],
         current_instruction="Continue user-authorized group 23 evaluation using gpt-6.1-sol; prior organize-only pause was lifted.")
@@ -838,13 +957,13 @@ def update_global(evaluation, evaluation_ref):
     markdown = md_path.read_text()
     prefix = f"| [{GROUP}]({GROUP}/result-cost.md) | "
     candidates = [line for line in markdown.splitlines() if line.startswith(prefix)]
-    need(len(candidates) == 1 and candidates[0] in [prefix + value + " |" for value in ("待补齐", "判定已完成；成本缺 RSS")],
+    need(len(candidates) == 1 and candidates[0] in [prefix + value + " |" for value in ("待补齐", "判定已完成；成本缺 RSS", "判定已完成；成本有缺项")],
          "Global display row changed")
-    pub.put(md_path, markdown.replace(candidates[0], prefix + ("已齐全" if complete else "判定已完成；成本缺 RSS") + " |"))
+    pub.put(md_path, markdown.replace(candidates[0], prefix + ("已齐全" if complete else "判定已完成；成本有缺项") + " |"))
     path = ROOT / "benchmark/results/index.json"
     index = load(path)
     index.update(complete_current_groups=count, pending_current_groups=45-count,
-        coverage=f"{count}/45 groups have complete current result/proof/cost tables ({pairs} input pairs). The singleton current verdicts match all 28 configurations; missing failed-attempt RSS, if present, does not count as complete.")
+        coverage=f"{count}/45 groups have complete current result/proof/cost tables ({pairs} input pairs). The singleton current verdicts match all 28 configurations; missing failed/interrupted-attempt wall time or RSS, if present, does not count as complete.")
     if not any(item["group"] == GROUP for item in index["current_groups"]):
         index["current_groups"].append({"group": GROUP, "index": rel(BASE / "index.json")})
     index["current_singleton_summary"] = {"evidence": evaluation_ref, "case_pairs": 7, "executions": 28,
@@ -875,6 +994,7 @@ def main():
     parser.add_argument("--allow-partial", action="store_true", help="Explicitly publish proved verdicts with disclosed failed-attempt cost gaps; never count the group complete")
     args = parser.parse_args()
     pub, evaluation, index = prepare(args.itp_root.resolve(), args.model_root.resolve(), args.native_results.resolve(), args.task_overrides.resolve() if args.task_overrides else None)
+    audit_prepared_publication(pub, index, allow_partial=not args.apply or args.allow_partial)
     if not args.apply:
         print(json.dumps({"preflight": "PASS", "files_planned": len(pub.files), "writes": 0,
                           "verdict_complete": True, "resource_metrics_complete": evaluation["resource_metrics_complete"],

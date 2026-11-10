@@ -617,6 +617,28 @@ def audit_itp(root, receipt_ref, row, allow_partial=False, evidence_reader=None)
     return receipt
 
 
+def audit_resolution_certificate(root, review, data):
+    """Audit the frozen first strong certificate as scope evidence, never as cost."""
+    first = review.get("first_strong_certificate", {})
+    position = first.get("native_row_index")
+    need(type(position) is int and 0 <= position < len(data["runs"]),
+         "Semantic resolution has no valid first-certificate execution")
+    receipt = audit_itp(root, first.get("durable_receipt"), data["runs"][position], allow_partial=True)
+    need(receipt.get("proof_profile") == PROFILE and receipt.get("native_row_index") == position,
+         "Semantic resolution first certificate has a different proof scope")
+    need(receipt.get("baseline_native_results_sha256") == data["original_native_results_sha256"]
+         and canonical_sha(receipt.get("abi_context")) == review["resolution_abi_context_sha256"],
+         "Semantic resolution first certificate has a different native/ABI context")
+    need(receipt.get("selected_check_sha256") == first.get("controller_receipt_sha256"),
+         "Semantic resolution first controller differs from its checked certificate")
+    selected = [check for check in receipt["checks"]
+                if check.get("controller_receipt_sha256") == receipt["selected_check_sha256"]]
+    need(len(selected) == 1 and selected[0].get("certificate_report_sha256") == first.get("certificate_report_sha256")
+         and receipt["candidate"]["sha256"] == first.get("candidate_sha256")
+         and receipt.get("strong_left_attestation_sha256") == first.get("strong_left_attestation_sha256"),
+         "Semantic resolution first proof identity differs from its durable certificate")
+
+
 def audit_canonical_group(group, root=ROOT, index=None, allow_partial=False):
     root = root.resolve()
     base = root / "benchmark/results" / group
@@ -654,6 +676,7 @@ def audit_canonical_group(group, root=ROOT, index=None, allow_partial=False):
         need(review.get("status") == "RESOLVED_FOR_EXPLICIT_ABI_CONTEXT" and review.get("resolution_native_results_sha256") == data["original_native_results_sha256"], "Strong semantic review is not resolved for this native run")
         need(review.get("legacy_review_snapshot") == transition["semantic_review"], "Resolved review lacks frozen legacy audit reference")
         need(review.get("resolution_abi_context_sha256") == canonical_sha(data["abi_context"]) and review.get("legacy_context_status") == "NOT_CERTIFIED", "Strong resolution context differs")
+        audit_resolution_certificate(root, review, data)
     overrides_by_index = {}
     if data.get("task_overrides"):
         overrides = load(ref(root, data["task_overrides"]))

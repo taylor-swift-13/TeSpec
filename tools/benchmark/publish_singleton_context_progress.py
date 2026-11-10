@@ -481,7 +481,14 @@ def prepare(args):
         'infrastructure_interrupted_checks': interrupted, 'missing_prerequisites': progress['missing_prerequisites'],
         'missing_measurements': progress['missing_measurements'], 'final_14_execution_means': None,
         'scope': 'Cumulative ITP includes all context repair calls/checks. Native cost includes both contexts. Stage totals are not a completed end-to-end duration; unclosed work is pending.'})
+    current_notes = [
+        'CN 兼容验证与 Fulminate 原有 7 个合法输入结果保留；分配器契约仍是外部前提。',
+        'QCP 原始 4 个全称 VC 仅在 b1 抽象地址上下文核证；teSpec 测试使用 c6 显式 ABI 上下文。未提供跨上下文等价证书，旧 QCP 证书不作为当前 ABI 谓词的全称证明。',
+        f'当前 7 个输入已完成 inline/modular × 空间 SMT OFF/ON 共 28 次原生执行；强 ITP 已审计 {completed}/14，最终 {14+completed} PASS、{14-completed} UNKNOWN。成本缺项保留，当前组尚未计完整。']
     table = load(BASE / 'result-cost.json')
+    if any('暂缓分配器支持' in note for note in table.get('evaluation_notes', [])):
+        table.setdefault('historical_allocator_deferred_evaluation_notes', table['evaluation_notes'])
+    table['evaluation_notes'] = current_notes
     old_costs = table['costs']
     need([r['tool'] for r in old_costs[:8]] == ['cn', 'qcp', 'qcp', 'qcp', 'qcp', 'qcp', 'fulminate', 'fulminate'], 'Primary tool costs changed')
     if 'pre_context_transition_cost_views' not in table:
@@ -539,7 +546,26 @@ def prepare(args):
         if name == 'index.json':
             value['evaluation'] = native_ref['path']
             value['per_tool_evidence']['tespec'] = native_ref['path']
+        else:
+            if value.get('tespec_current_run', {}).get('status') == 'SKIPPED_BY_USER':
+                value.setdefault('historical_allocator_deferred_display', {
+                    'tespec_current_run': value['tespec_current_run'],
+                    'concrete_scope_qualification': value.get('concrete_scope_qualification')})
+            value.update(tespec_current_run={'status': 'ABI_STRONG_LEFT_ITP_PENDING',
+                'executions': 28, 'case_pairs': 7, 'completed_executions': 28,
+                'residual_vc_tasks_available': 14, 'completed_independent_itp_executions': completed,
+                'pending_itp_executions': 14-completed, 'final_status_counts': final_counts,
+                'latest_execution_evidence': native_ref['path']},
+                concrete_scope_qualification='All 7 original inputs completed 28 teSpec mode executions in the explicit ABI context. Remaining gaps concern strong ITP and cost evidence, not a deferred allocator. Historical QCP verification remains scoped to abstract-address definitions; allocator contracts remain external assumptions.')
         pub.json(BASE / name, value)
+    manifest_path = ROOT / 'benchmark/programs' / GROUP / 'manifest.json'
+    manifest = load(manifest_path)
+    if 'ALLOCATOR_DEFERRED' in manifest.get('primary_selection_status', ''):
+        manifest.setdefault('historical_allocator_deferred_display', {key: manifest.get(key) for key in
+            ('primary_selection_status', 'evaluation_notes', 'test_modes_statistics')})
+    manifest.update(primary_selection_status='CN_COMPAT_VERIFIED_QCP_LEGACY_KERNEL_CHECKED_TESPEC_ABI_ITP_PENDING',
+        test_modes_statistics=rel(BASE / 'tespec/statistics.json'), evaluation_notes=current_notes)
+    pub.json(manifest_path, manifest)
     detail = (f"当前 ABI 上下文原生执行为 14 PASS、14 UNKNOWN；包含已审计强证明后的最终结果为 **{14+completed} PASS、{14-completed} UNKNOWN**。"
         f"已观测强证明内核完成 {observed}/14，满足完整审计及限定上下文 resolution 的 {completed}/14。\n\n"
         f"当前上下文已关闭 {len(active_models)} 次 gpt-6.1-sol 调用、{len(active_checks)} 次检查；"
