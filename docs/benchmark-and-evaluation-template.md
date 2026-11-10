@@ -155,6 +155,8 @@ case 输入和预期直接写入 `evaluation-plan.json`；只有无法简洁表�
 
 结论完整性与资源完整性分别标记：`verdict_complete` 与 `resource_metrics_complete`。任一必需数据缺失时，不把对应标记写成完成。
 
+用户要求对缺测重新运行时，可发布明确标识的 `whole-check-remeasurement/v1` 当前测量集合：冻结原 Goal、Candidate、依赖和目标，对缺测 checker 按完整调用重新计量；当前成本选择整项采用新的时间与 RSS，不能把旧时间和新 RSS 拼成一次观测。原模型调用与其实际 token、其他完整检查继续计入；仅重放证明检查时新增模型调用和 token 为 0。此时完成标记仅依据显式的当前选择口径，并分别保存 `current_resource_metrics_complete` 与 `historical_cumulative_resource_metrics_complete`；全部实际成本包含旧尝试与新重跑各一次，原缺失值保持 null，仍不完整的历史总量只报告已测下界。重跑不增加独立输入或 ITP 执行分母，不改变既有证明结论；结果表须注明“复用同证明的分阶段重测口径”。
+
 ## 8. read 的基准结果
 
 以下为本模板对应的固定数据，不是其他程序组的目标成绩。

@@ -643,6 +643,9 @@ def audit_canonical_group(group, root=ROOT, index=None, allow_partial=False):
     root = root.resolve()
     base = root / "benchmark/results" / group
     index = load(base / "index.json") if index is None else index
+    if index.get("measurement_profile") is not None:
+        from singleton_resource_remeasurement_audit import audit_remeasured_group
+        return audit_remeasured_group(group, root, index)
     data = load(ref(root, index["canonical_evaluation"]))
     need(data.get("schema") == SCHEMA and data.get("group", data.get("program_group")) == group,
          "Wrong canonical evaluation schema/group")
