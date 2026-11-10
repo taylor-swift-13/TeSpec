@@ -1194,3 +1194,5 @@
 ## 2026-10-20 modular补充批次（独立计数）
 
 本页上方计数沿用原历史评测范围。新增modular批次的72次原生UNKNOWN中，58次经逐执行实际模型审阅、Coq编译/假设审计和独立内核检查后按预期FAIL成功检出；仍有14次array_load客户端在实例化阶段未完成，无原始全执行Goal可交ITP。原生分类保持，最终与证明成本见[本批专项台账](recheck-20261020-completed-modular.json)及[modular结果成本总表](../modular-result-cost-index.md)。
+
+当前 singleton 逐策略复测见 [唯一活动证据](../Dbl_Linked_List__singleton/evidence/tespec-native.json)：7 输入、28 次执行，modular 14 PASS、inline 14 UNKNOWN（Dll 返回 VC 待逐执行 ITP）。旧扫描聚合数字保留其历史口径，不能据此声称当前仍缺 malloc 执行体；当前覆盖由 index.json 的 current_group_rechecks 指向。

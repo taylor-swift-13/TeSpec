@@ -2,6 +2,20 @@
 
 在唯一 `/home/yangfp/teSpec` 工作树的 `main` 上依次完成各组。只有主程序做 CN/QCP 全称验证；其他变体逐输入测试。复用输入哈希匹配的既有证据，补测缺少的成本阶段。正式状态以 `benchmark/results/group-result-cost-index.json` 为准。
 
+## 当前汇总
+
+当前按用户要求仅整理已有 benchmark、结果、成本与证明证据，不继续启动实验。
+
+当前已归档完整 **22/45 组，共 901 对“变体×输入”**，还有 **23 组未完整**。22 组均已有四工具结果与成本表，包含必要的 QCP 全称证明、测试 ITP、编译审计及独立内核检查。完整表示评测与证据收齐，不表示每个工具都符合预期：这些已归档结果中，Fulminate 为 889/901 预期匹配，teSpec 完整测试为 901/901。权威入口为 [全局结果成本索引](../benchmark/results/group-result-cost-index.json)。
+
+45 组都曾扫描或尝试运行，不能据此称为 45 组完整。下文及夜间状态中的 **20 组**是 2026-10-16 截止时的历史计数；补齐 `array_load` 后为 **21 组**，补齐 `const_example_lessgood` 后为当前 **22 组**。前 21 组的 inline/modular、空间 SMT OFF/ON 补充评测覆盖 900 对输入；第 22 组再增加 1 对。
+
+上述数量是已发布的完整评测范围。最近执行器、VC 求解与写回修复的工程回归没有重跑全部 CN/Fulminate、组级 ITP 及完整成本测量，因此不能称为“最新工具版本已完成全部 22 组四工具重测”。工程回归与正式组结果分别保留，见 [当前工程回归收据](../benchmark/results/tespec-unexpected/current-executor-replay.json)。
+
+下一组继续 `Dbl_Linked_List__singleton`：先核对可复用的 CN/QCP/Fulminate 证据，并补测当前 teSpec 的 7 个合法输入、inline/modular 和空间 SMT OFF/ON；其已发布结果仍有 DLL 返回 VC 未消解，尚未计入完整组。
+
+本次 singleton 当前原生补测已完成 7 输入 × 两策略 × 空间 SMT OFF/ON 共 28 次：modular 两模式各 7 PASS，inline 两模式各 7 UNKNOWN，均已执行到出口，缺口为 Dll 返回 VC 的逐执行 ITP。时间、峰值 RSS 和源／VC 哈希已写入[当前结果成本表](../benchmark/results/Dbl_Linked_List__singleton/result-cost.md)，没有新增完整组。
+
 | 组 | 配置／语言记录 | 测试对 | Fulminate 预期匹配 | teSpec OFF／ON 预期匹配 | 完整成本 |
 |---|---:|---:|---:|---:|---|
 | read | 10／13 | 61 | 60/61 | 61/61、61/61 | 已有完整模板 |

@@ -1,14 +1,23 @@
 # Dbl_Linked_List__singleton：结果与成本表
 
-完整状态：待补齐。语言版本记录 2 条；主程序：cn_original:Dbl_Linked_List__singleton。
+完整状态：待补齐。共 7 对原有输入，2 条语言记录；当前全局完整进度仍为 **22/45**。
 
-本组尚未完成；已测失败尝试和未运行阶段分别保留，见 [覆盖缺口](coverage-gap.json)。
+当前版本 `ac167d0301` 已实际完成 7 输入 × inline/modular × 空间 SMT OFF/ON，共 28 次执行。全部入口 SAT、全部执行到出口。modular 两模式各 7 PASS；inline 两模式各 7 UNKNOWN，均剩原始 `proof_of_singleton_return_wit_1`。空间 SMT 明确报告 `unsupported_spatial_predicate:Dll`。旧 malloc 缺函数体已经不是当前阻塞。
 
-2026-10-18：CN 5.2 兼容头文件下，原 singleton 与 IntList_nil、IntList_cons 均验证通过；分配器契约仍是外部前提。Fulminate 原有 7 个输入全部 PASS。
+CN 已验证原函数体（使用既有兼容头）；Fulminate 7/7；QCP 原始 4 个全称 VC 的既有内核证据保留，本轮没有重跑。inline 的 14 次执行仍须分别完成 ITP、编译／假设审计、独立内核检查及实际模型计量，故本组不计完成。
 
-teSpec 按用户要求暂缓分配器支持，本轮新增执行 0 次。下表 OFF/ON 各 7 UNKNOWN 为保留的历史结果，不能计为成功；旧统计“需 ITP 7 次”实际是执行在 malloc_node 处中止，没有可提交 ITP 的残余 VC。
+当前原生阶段的时间和峰值 RSS 如下；token 实测为 0，因为没有调用模型。ITP 未执行的数据保持缺失，不能填 0。每行 RSS 同时列出逐次峰值均值和最大值；CLI 包含执行器与空间 SMT，不能把嵌套阶段重复相加。逐输入状态、源／VC／日志哈希和复现命令只保留在一份[当前证据](evidence/tespec-native.json)。
 
-QCP 既有 4 个原始全称 VC 证书及成本保持不变；该证书以分配器契约为前提。完整组计数仍为 21/45。修复范围与复现步骤见 docs/benchmark-singleton-cn-fulminate-repair-20261018.md。
+| 策略 | 空间 SMT | PASS / UNKNOWN | 预期匹配 | 平均时间（秒） | 平均峰值 RSS（MiB） | 最大峰值 RSS（MiB） |
+|---|---|---:|---:|---:|---:|---:|
+| inline | off | 0 / 7 | 0/7 | 0.458471 | 20.4023 | 20.6523 |
+| inline | on | 0 / 7 | 0/7 | 0.464123 | 47.2221 | 47.4141 |
+| modular | off | 7 / 0 | 7/7 | 0.335116 | 20.3460 | 20.5469 |
+| modular | on | 7 / 0 | 7/7 | 0.347073 | 20.4258 | 20.6094 |
+
+## 已有四工具结果与历史测量
+
+下列保留既有主程序证据、失败修复成本及旧 teSpec 测量；旧 UNKNOWN 原因和时间不代表本轮当前执行。当前状态及新增成本以上表和 JSON 的 `latest_native_recheck` 为准。
 
 | 工具 | 范围 | 结果／预期匹配 | 测试对数 |
 |---|---|---|---:|
