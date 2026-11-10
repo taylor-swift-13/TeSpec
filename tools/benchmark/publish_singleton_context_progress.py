@@ -17,10 +17,11 @@ import re
 from collections import Counter
 import singleton_context_transition as transition
 from singleton_context_transition import ROOT, GROUP, BASE, NATIVE, PROGRESS, LEGACY, ACTIVE, TRANSITION, REVIEW, encoded, load, need, sha, rel, obj_sha
-from publish_singleton_completed import usage_events, require_hash, stage_totals, csv_bytes, COST_FIELDS, build_execution, audit_prepared_execution
+from publish_singleton_completed import usage_events, require_hash, csv_bytes, COST_FIELDS, build_execution, audit_prepared_execution, persist_interruption, persist_native_recovery
 from singleton_canonical_support import canonical_sha
 from publish_singleton_itp_progress import running_checks, section
 from validate_canonical_group import model_attempt, attempt_measurement
+from singleton_interruption import SCHEMA as INTERRUPTION_SCHEMA, collect_interruption, partial_stage_totals, combine_stage_metrics
 
 
 class Publication:
@@ -74,7 +75,7 @@ class Publication:
                 for item in value:
                     visit(item)
         for path, data in self.files.items():
-            if path.suffix == '.json' and (path.is_relative_to(BASE / 'evidence') or path == REVIEW):
+            if path.suffix == '.json' and not path.is_relative_to(BASE / 'evidence/itp/objects') and (path.is_relative_to(BASE / 'evidence') or path == REVIEW):
                 visit(json.loads(data))
 
     def apply(self):
@@ -133,26 +134,12 @@ def closed_models(directory, task):
     return models, pending
 
 
-def metric(stages):
-    if not stages:
-        return {'wall_seconds': None, 'peak_process_rss_kib': None, 'observed_peak_rss_lower_bound_kib': None,
-                'resource_metrics_complete': False, 'tokens': None, 'subprocesses': 0, 'status': 'NOT_RUN'}
-    return stage_totals(stages)
+def metric(stages, scope_complete=True):
+    return partial_stage_totals(stages, scope_complete=scope_complete)
 
 
 def combined_stage(items, agent=False):
-    items = [i for i in items if i and i.get('wall_seconds') is not None]
-    if not items:
-        return metric([]) if not agent else {'wall_seconds': None, 'peak_process_resident_bytes': None, 'tokens': None, 'model_calls': 0, 'status': 'NOT_RUN'}
-    peak_key = 'peak_process_resident_bytes' if agent else 'peak_process_rss_kib'
-    lower_key = 'observed_peak_rss_lower_bound_bytes' if agent else 'observed_peak_rss_lower_bound_kib'
-    known = [i.get(lower_key, i.get(peak_key)) for i in items]
-    known = [i for i in known if i is not None]
-    complete = all(i.get(peak_key) is not None for i in items)
-    return {'wall_seconds': sum(i['wall_seconds'] for i in items), 'tokens': sum(i['tokens'] for i in items),
-            peak_key: max(i[peak_key] for i in items) if complete else None,
-            lower_key: max(known) if known else None, 'resource_metrics_complete': complete,
-            'model_calls' if agent else 'subprocesses': sum(i.get('model_calls' if agent else 'subprocesses', 0) for i in items)}
+    return combine_stage_metrics(items, agent=agent)
 
 
 def metrics_for(models, checks):
@@ -162,28 +149,52 @@ def metrics_for(models, checks):
              'model_calls': len(models)} if models else combined_stage([], True)
     stages = [s for c in checks for s in c['stages']]
     return {'agent': agent,
-        'coq_compile_and_assumption_audit': metric([s for s in stages if not s['stage'].startswith('kernel_replay')]),
+        'coq_compile_and_assumption_audit': metric([s for s in stages if not s['stage'].startswith('kernel_replay')],
+            scope_complete=all(c.get('measurement_scope_complete', True) for c in checks)),
         'independent_kernel_check': metric([s for s in stages if s['stage'].startswith('kernel_replay')])}
 
 
 def collect_execution(pub, task, native, root, model_root, mapping, context_ref):
     index = task['execution_index']
     row = native['runs'][task['native_row_index']]
+    recovery = None
+    proof_native_sha, proof_native_row_index = native['_sha256'], task['native_row_index']
+    if task.get('native_source'):
+        row, recovery = persist_native_recovery(pub, task, task['native_source']['original_native_result'], native['_sha256'])
+        proof_native_sha = task['native_source']['native_result_sha256']
+        proof_native_row_index = task['native_source']['native_row_index']
     for key, other in (('case', 'case'), ('mode', 'spatial_smt'), ('strategy', 'strategy'), ('input', 'input'), ('source_sha256', 'source_sha256')):
         need(task[key] == row[other], 'Strong task/native identity differs')
     need(task['residual_vcs'] == row['residual_vcs'] and row['raw_status'] == 'UNKNOWN', 'Strong task coverage differs')
-    for key in ('original_report', 'original_manifest', 'original_goal', 'certificate_manifest'):
-        require_hash(Path(task[key]), task[key + '_sha256'], key)
     require_hash(ROOT / task['source'], task['source_sha256'], 'source')
     models, pending = closed_models(model_root / f'execution-{index:02d}', task)
+    check_paths = sorted((root / 'checks' / f'execution-{index:02d}').glob('*.json'))
+    missing_prerequisites = []
+    for key in ('original_report', 'original_manifest', 'original_goal', 'certificate_manifest'):
+        path = Path(task[key])
+        if not path.is_file() and not (models or pending or check_paths):
+            missing_prerequisites.append({'field': key, 'path': str(path), 'sha256': task[key + '_sha256'],
+                'reason': 'Original prerequisite not preserved after filesystem interruption; no attempt may start or pass without a verified recovery binding.'})
+        else:
+            require_hash(path, task[key + '_sha256'], key)
     model_by_hash = {m['source_receipt_sha256']: m for m in models}
     checks, missing = [], []
-    for path in sorted((root / 'checks' / f'execution-{index:02d}').glob('*.json')):
+    for path in check_paths:
         raw = load(path)
-        need(raw['schema'] == 'tespec-singleton-strong-left-execution-itp/v1', 'Unknown strong check schema')
         need(raw['model_receipt_sha256'] in model_by_hash, 'Check/model link missing')
-        need(raw['native_row_index'] == task['native_row_index'] and raw['native_results_sha256'] == native['_sha256'], 'Check/native differs')
         model = model_by_hash[raw['model_receipt_sha256']]
+        if raw['schema'] == INTERRUPTION_SCHEMA:
+            check, gaps = persist_interruption(pub, path, raw, task, native['_sha256'], model)
+            check['attempt'] = path.stem
+            checks.append(check)
+            missing.extend(gaps)
+            continue
+        need(raw['schema'] == 'tespec-singleton-strong-left-execution-itp/v1', 'Unknown strong check schema')
+        need(raw['native_row_index'] == proof_native_row_index and raw['native_results_sha256'] == proof_native_sha, 'Check/native differs')
+        if recovery:
+            need(raw.get('native_recovery_audit') == recovery['audit'] and
+                 raw.get('native_recovery_binding_sha256') == task['native_recovery_binding']['sha256'],
+                 'Check/native recovery binding differs')
         binding = raw['binding']
         need(binding['abi_context'] == task['abi_context'], 'Strong ABI binding differs')
         for key, other in (('original_goal_sha256', 'original_goal_sha256'), ('source_sha256', 'source_sha256'), ('original_residual_vcs', 'residual_vcs')):
@@ -225,8 +236,12 @@ def collect_execution(pub, task, native, root, model_root, mapping, context_ref)
         'original_report_sha256': task['original_report_sha256'], 'selected_goals': task['residual_vcs'],
         'model_attempts': models, 'unreceipted_model_attempts': pending, 'checks': checks,
         'metrics': active_metrics, 'cumulative_metrics': cumulative, 'missing_measurements': missing,
+        'missing_prerequisites': missing_prerequisites,
         'legacy_execution_receipt': mapping['legacy_itp_receipt'], 'legacy_metrics': legacy_metrics or None,
         'context_transition': context_ref, 'scope': 'Active measured strong-left attempts; no verdict promotion until strict proof publication audit. Legacy proofs contribute costs only.'}
+    if recovery:
+        receipt.update(native_recovery=recovery, proof_native_row_index=proof_native_row_index,
+            proof_native_results_sha256=proof_native_sha, baseline_native_results_sha256=native['_sha256'])
     if models:
         cert = Path(task['certificate_dir'])
         receipt['goal'] = pub.object(cert / 'Goal.v')
@@ -234,11 +249,12 @@ def collect_execution(pub, task, native, root, model_root, mapping, context_ref)
         receipt['candidate'] = pub.object(latest)
         receipt['proof_files'] = {name: pub.object(cert / name) for name in ('Coverage.v', 'Assumptions.v')}
         receipt['dependencies'] = [{**pub.object(cert / 'dependencies' / (name + '.v')), 'module': name} for name in task['abi_context']['modules']]
-    reference = pub.json(ACTIVE / f'execution-{index:02d}.json', receipt) if models or checks or pending else None
+    reference = pub.json(ACTIVE / f'execution-{index:02d}.json', receipt) if models or checks or pending or missing_prerequisites or recovery else None
     if seen:
         canonical, reference = build_execution(pub, task, native, root, model_root, transition_mapping=None)
         audit_row = {**row, 'vc_sha256': {k: v['sha256'] for k, v in row['vc_files'].items()}}
-        audit_prepared_execution(pub, reference, audit_row)
+        audit_prepared_execution(pub, reference, audit_row,
+            allow_partial=any(c.get('infrastructure_interrupted') for c in checks))
         receipt['_audited_canonical'] = canonical
     return receipt, reference
 
@@ -246,12 +262,18 @@ def collect_execution(pub, task, native, root, model_root, mapping, context_ref)
 def summarize(entries, field):
     result = {}
     for stage in ('agent', 'coq_compile_and_assumption_audit', 'independent_kernel_check'):
-        items = [e[field][stage] for e in entries if e[field][stage].get('wall_seconds') is not None]
+        items = [e[field][stage] for e in entries if e[field][stage].get('wall_seconds') is not None
+                 or e[field][stage].get('subprocesses', 0) or e[field][stage].get('model_calls', 0)]
+        aggregate = combined_stage(items, agent=stage == 'agent')
         peaks = [(i.get('peak_process_resident_bytes') if stage == 'agent' else
                   None if i.get('peak_process_rss_kib') is None else i['peak_process_rss_kib'] * 1024) for i in items]
-        result[stage] = {'measured_executions': len(items), 'wall_seconds_total': sum(i['wall_seconds'] for i in items),
+        result[stage] = {'measured_executions': len(items), 'wall_seconds_total': aggregate['wall_seconds'] if items else 0,
+            'known_wall_seconds_lower_bound': aggregate.get('known_wall_seconds_lower_bound'),
+            'wall_time_complete': bool(items) and aggregate.get('wall_time_complete', False),
+            'cpu_user_seconds_observed': aggregate.get('cpu_user_seconds_observed', 0),
+            'cpu_system_seconds_observed': aggregate.get('cpu_system_seconds_observed', 0),
             'tokens_total': sum(i['tokens'] for i in items),
-            'observed_mean_wall_seconds': statistics.mean(i['wall_seconds'] for i in items) if items else None,
+            'observed_mean_wall_seconds': aggregate['wall_seconds'] / len(items) if items and aggregate['wall_seconds'] is not None else None,
             'observed_mean_tokens': statistics.mean(i['tokens'] for i in items) if items else None,
             'observed_mean_peak_process_mib': statistics.mean(peaks) / 1048576 if peaks and all(p is not None for p in peaks) else None,
             'full_14_execution_mean': None, 'complete': False}
@@ -289,6 +311,25 @@ def prepare(args):
     need(task_bundle['native_result_sha256'] == raw['_sha256'] and len(task_bundle['tasks']) == 14, 'Task/native snapshot mismatch')
     need({t['native_row_index'] for t in task_bundle['tasks']} == {i for i, r in enumerate(raw['runs']) if r['raw_status'] == 'UNKNOWN'}, 'Incomplete ITP inventory')
     need({t['execution_index'] for t in task_bundle['tasks']} == set(range(14)), 'Duplicate/missing execution ordinal')
+    overrides_path = getattr(args, 'tasks_overrides', None)
+    override_ref = None
+    if overrides_path:
+        overrides = load(overrides_path)
+        need(overrides['schema'] == 'tespec-singleton-task-overrides/v1' and
+             overrides['original_tasks_sha256'] == sha(args.itp_root / 'tasks.json') and
+             overrides['baseline_native_results_sha256'] == raw['_sha256'], 'Task override baseline differs')
+        replacements = {t['execution_index']: t for t in overrides['overrides']}
+        need(len(replacements) == len(overrides['overrides']) == 6 and set(replacements) == {4, 5, 8, 9, 10, 13},
+             'Recovery override inventory differs')
+        for original in task_bundle['tasks']:
+            if original['execution_index'] in replacements:
+                need(replacements[original['execution_index']]['native_source']['original_task'] == original,
+                     'Recovery overlay does not preserve original frozen task')
+        task_bundle['tasks'] = [replacements.get(t['execution_index'], t) for t in task_bundle['tasks']]
+        override_ref = pub.object(overrides_path, 'tasks-overrides.json')
+    elif (ACTIVE / 'progress.json').exists():
+        need(not load(ACTIVE / 'progress.json').get('task_overrides'),
+             'Recovery was already published; pass --tasks-overrides to retain its source bindings and costs')
     mappings = {m['active_itp_execution_index']: m for m in context['per_execution_cost_mapping'] if m['active_itp_execution_index'] is not None}
     entries, entry_refs = [], []
     for task in task_bundle['tasks']:
@@ -309,6 +350,13 @@ def prepare(args):
                         c['candidate_sha256'] == first.get('candidate_sha256') and c['status'] == 'PASS'
                         for c in entry['_audited_canonical']['checks'])]
         need(len(matching) == 1, 'Resolution first certificate lacks a matching fully audited strong proof')
+        # Publication metadata can evolve while the checked certificate remains
+        # byte-identical. Rebind this one durable pointer only after the exact
+        # controller/report/candidate tuple above has passed the full audit.
+        if 'durable_receipt' in first:
+            first['durable_receipt'] = next(reference for entry, reference in zip(entries, entry_refs)
+                if entry is matching[0])
+            active_review_ref = pub.json(REVIEW, review)
     for entry in entries:
         entry['status'] = 'PASS' if resolved and '_audited_canonical' in entry else 'UNKNOWN'
     completed = sum(e['status'] == 'PASS' for e in entries)
@@ -319,10 +367,48 @@ def prepare(args):
     need(len(active_checks) == len({c['controller_receipt_sha256'] for c in active_checks}), 'Active check counted twice')
     legacy_cost = context['measured_totals_to_date']
     setup = context['group_shared_setup']['context_preparation']
+    shared_setup = copy.deepcopy(context['group_shared_setup'])
+    recovery_entries = [e for e in entries if e.get('native_recovery')]
+    recovery_stages = [e['native_recovery']['audit']['new_native_stage'] for e in recovery_entries]
+    recovery_wall = sum(s['wall_seconds'] for s in recovery_stages)
+    if override_ref:
+        setup_path = overrides_path.parent / 'recovery-setup.json'
+        resources_path = overrides_path.parent / 'recovery-setup.resources'
+        recovery_setup = load(setup_path)
+        need(recovery_setup['schema'] == 'tespec-native-recovery-setup/v1' and
+             recovery_setup['tasks_override_sha256'] == sha(overrides_path) and
+             recovery_setup['original_tasks_sha256'] == sha(args.itp_root / 'tasks.json') and
+             recovery_setup['tokens'] == recovery_setup['model_calls'] == recovery_setup['Coq_calls'] == 0,
+             'Recovery preparation receipt differs')
+        need({a['execution_index']: a['audit'] for a in recovery_setup['audits']} ==
+             {e['execution_index']: e['native_recovery']['audit'] for e in recovery_entries}, 'Recovery setup audit differs')
+        resource_text = resources_path.read_text()
+        values = re.fullmatch(r'wall_seconds=([0-9.]+)(?:n|\n)user_seconds=([0-9.]+)(?:n|\n)system_seconds=([0-9.]+)(?:n|\n)max_process_rss_kib=([0-9]+)\s*', resource_text)
+        need(values is not None, 'Unexpected raw GNU time recovery preparation output')
+        wall, user_cpu, system_cpu, rss = values.groups()
+        script = overrides_path.parent.parent / 'prepare-singleton-native-overrides.py'
+        require_hash(script, '9ac74681082a2bf2899102194b9175138063241836564a0fd1d5260121a2952d', 'Recovery preparation source')
+        shared_setup['native_recovery_preparation'] = {'wall_seconds': float(wall), 'peak_process_rss_kib': int(rss),
+            'cpu_user_seconds': float(user_cpu), 'cpu_system_seconds': float(system_cpu), 'tokens': 0, 'model_calls': 0,
+            'receipt': pub.object(setup_path), 'resources': pub.object(resources_path), 'source': pub.object(script),
+            'raw_resources': resource_text, 'internal_python_wall_seconds_diagnostic_only': recovery_setup['wall_seconds'],
+            'requested_windows_invocation': ['wsl.exe', '-d', 'Ubuntu-22.04', '--', '/usr/bin/time', '--quiet', '-f',
+                r'wall_seconds=%e\nuser_seconds=%U\nsystem_seconds=%S\nmax_process_rss_kib=%M', '-o', str(resources_path),
+                'python3', '-B', str(script), '--tasks', str(args.model_root / 'tasks.json'),
+                '--native-results', replacements[4]['native_source']['native_result'], '--output', str(overrides_path),
+                '--setup-receipt', str(setup_path)],
+            'captured_actual_argv': None,
+            'command_evidence': 'Original requested Windows wsl.exe invocation recorded by runner; actual /proc argv was not captured. GNU time preserved all four resource values; separators reached the output as literal n.',
+            'scope': 'One actual recovery preparation, excluded from per-execution ITP means; full external GNU time wall retained.'}
     need(setup['wall_seconds'] == 0.45 and setup['peak_process_rss_kib'] == 17244 and setup['tokens'] == setup['model_calls'] == 0,
          'Measured group setup changed')
     need(legacy_cost['model_calls'] == 4 and legacy_cost['tokens'] == 416106 and legacy_cost['check_attempts'] == 6, 'Legacy cost identity changed')
     observed = sum(e['observed_strong_kernel_status'].startswith('KERNEL_CHECKED') for e in entries)
+    work_wall_complete = all(stage['wall_seconds_total'] is not None for stage in cumulative_stats.values())
+    recovery_setup_wall = shared_setup.get('native_recovery_preparation', {}).get('wall_seconds', 0)
+    known_work_wall = legacy_cost['native_wall_seconds'] + setup['wall_seconds'] + recovery_wall + recovery_setup_wall + sum(
+        stage.get('known_wall_seconds_lower_bound') or 0 for stage in cumulative_stats.values())
+    interrupted = sum(bool(c.get('infrastructure_interrupted')) for c in active_checks)
     progress = {'schema': 'tespec-singleton-context-itp-progress/v1', 'group': GROUP, 'complete': False,
         'verdict_complete': False, 'resource_metrics_complete': False, 'context': context['active_context'],
         'context_transition': context_ref, 'native_results_sha256': raw['_sha256'], 'tasks_sha256': sha(args.itp_root / 'tasks.json'),
@@ -334,14 +420,21 @@ def prepare(args):
         'model_calls_including_context_repair': 4 + len(active_models), 'check_attempts_including_context_repair': 6 + len(active_checks),
         'tokens_including_context_repair': 416106 + active_stats['agent']['tokens_total'],
         'active_context_measured_stages': active_stats, 'cumulative_measured_stages': cumulative_stats,
-        'group_shared_setup': context['group_shared_setup'],
-        'tespec_group_measured_work_wall_seconds': legacy_cost['native_wall_seconds'] + setup['wall_seconds'] +
-            sum(stage['wall_seconds_total'] for stage in cumulative_stats.values()),
+        'group_shared_setup': shared_setup,
+        'task_overrides': override_ref,
+        'native_recovery': {'executions': len(recovery_entries), 'wall_seconds_total': recovery_wall,
+            'peak_process_rss_kib_max': max((s['resources']['max_process_rss_kib'] for s in recovery_stages), default=None),
+            'tokens': 0, 'model_calls': 0, 'original_costs_retained': True} if override_ref else None,
+        'tespec_group_measured_work_wall_seconds': known_work_wall if work_wall_complete else None,
+        'tespec_group_known_work_wall_seconds_lower_bound': known_work_wall,
+        'infrastructure_interrupted_checks': interrupted,
+        'missing_prerequisites': [{'execution_index': e['execution_index'], **item} for e in entries for item in e['missing_prerequisites']],
         'missing_measurements': legacy_cost['missing_measurements'] + [m for e in entries for m in e['missing_measurements']],
         'semantic_review': active_review_ref, 'running_checks': running_checks(args.itp_root),
         'executions': [{'execution_index': e['execution_index'], 'native_row_index': e['native_row_index'],
                         'status': e['status'], 'observed_strong_kernel_status': e['observed_strong_kernel_status'],
-                        'receipt': reference, 'legacy_execution_receipt': e['legacy_execution_receipt']}
+                        'receipt': reference, 'legacy_execution_receipt': e['legacy_execution_receipt'],
+                        'missing_prerequisites': e['missing_prerequisites']}
                        for e, reference in zip(entries, entry_refs)],
         'scope': 'Only closed model/check receipts contribute cost. Running/unreceipted stages are not estimated. Every legacy context repair is added exactly once to its corresponding execution; successful legacy parent checks are not new ABI proofs. PASS requires full strong certificate audit plus resolution bound to this exact native/ABI context.'}
     progress_ref = pub.json(ACTIVE / 'progress.json', progress)
@@ -358,6 +451,10 @@ def prepare(args):
         row['matches_expected'] = row['expected'] == row['final_status']
         if reference:
             row['itp_attempts'] = reference
+        if entry.get('native_recovery'):
+            row['native_recovery'] = {'receipt': reference, 'proof_native_results_sha256': entry['proof_native_results_sha256'],
+                'proof_native_row_index': entry['proof_native_row_index'],
+                'scope': 'Original native summary and cost retained; this execution has an additional measured recovery source.'}
     native_ref = pub.json(NATIVE, native)
     latest = {'evidence': native_ref['path'], 'sha256': native_ref['sha256'], 'case_pairs': 7, 'executions': 28,
         'complete': False, 'pending_itp_executions': 14-completed, 'itp_progress': progress_ref, 'context_transition': context_ref,
@@ -378,8 +475,10 @@ def prepare(args):
         'tokens': progress['tokens_including_context_repair'], 'model_calls': progress['model_calls_including_context_repair'],
         'current_itp_progress': progress_ref, 'context_transition': context_ref, 'active_measured_stages': active_stats,
         'cumulative_measured_stages': cumulative_stats, 'native_stage_costs': context['measured_totals_to_date']['native_wall_seconds'],
-        'group_shared_setup': context['group_shared_setup'],
+        'group_shared_setup': shared_setup, 'native_recovery': progress['native_recovery'], 'task_overrides': override_ref,
         'tespec_group_measured_work_wall_seconds': progress['tespec_group_measured_work_wall_seconds'],
+        'tespec_group_known_work_wall_seconds_lower_bound': progress['tespec_group_known_work_wall_seconds_lower_bound'],
+        'infrastructure_interrupted_checks': interrupted, 'missing_prerequisites': progress['missing_prerequisites'],
         'missing_measurements': progress['missing_measurements'], 'final_14_execution_means': None,
         'scope': 'Cumulative ITP includes all context repair calls/checks. Native cost includes both contexts. Stage totals are not a completed end-to-end duration; unclosed work is pending.'})
     table = load(BASE / 'result-cost.json')
@@ -392,6 +491,15 @@ def prepare(args):
     table['costs'].append({'tool': 'tespec group setup', 'stage': '确定性 ABI 库准备', 'unit': '每组一次；不进入14次ITP均值',
         'wall_seconds': setup['wall_seconds'], 'peak_process_memory_mib': setup['peak_process_rss_kib'] / 1024,
         'tokens': 0, 'estimated': False, 'status': 'MEASURED', 'source': context_ref['path']})
+    if override_ref:
+        repair = shared_setup['native_recovery_preparation']
+        table['costs'].append({'tool': 'tespec group setup', 'stage': '文件系统恢复后证书准备', 'unit': '每组一次；不进入14次ITP均值',
+            'wall_seconds': repair['wall_seconds'], 'peak_process_memory_mib': repair['peak_process_rss_kib'] / 1024,
+            'tokens': 0, 'estimated': False, 'status': 'MEASURED', 'source': progress_ref['path']})
+        table['costs'].append({'tool': 'tespec native recovery', 'stage': '丢失报告的6次实际补跑', 'unit': '6次执行均值；原生旧费用另保留',
+            'wall_seconds': recovery_wall / len(recovery_stages),
+            'peak_process_memory_mib': statistics.mean(s['resources']['max_process_rss_kib'] for s in recovery_stages) / 1024,
+            'tokens': 0, 'estimated': False, 'status': 'MEASURED_INCLUDED', 'source': progress_ref['path']})
     for mode in native['modes']:
         table['costs'].append({'tool': f"tespec {mode['strategy']} spatial-{mode['spatial_smt']}", 'stage': '当前 ABI 原生测试',
             'unit': '每次执行均值', 'wall_seconds': mode['wall_seconds_mean'],
@@ -413,8 +521,11 @@ def prepare(args):
                           executions=28, expected_execution_matches=14+completed)
     table.update(complete=False, verdict_complete=False, resource_metrics_complete=False, latest_native_recheck=latest,
         current_itp_progress=progress_ref, context_transition=context_ref, current_measured_itp_stages=cumulative_stats,
-        current_missing_measurements=progress['missing_measurements'], group_shared_setup=context['group_shared_setup'],
-        group_measured_work_wall_seconds=progress['tespec_group_measured_work_wall_seconds'] +
+        current_missing_measurements=progress['missing_measurements'], group_shared_setup=shared_setup,
+        native_recovery=progress['native_recovery'], task_overrides=override_ref,
+        group_measured_work_wall_seconds=(progress['tespec_group_measured_work_wall_seconds'] +
+            sum(row['wall_seconds'] for i, row in enumerate(old_costs[:8]) if i != 5)) if work_wall_complete else None,
+        group_known_work_wall_seconds_lower_bound=known_work_wall +
             sum(row['wall_seconds'] for i, row in enumerate(old_costs[:8]) if i != 5),
         group_measured_work_scope='Selected current four-tool evaluation stages, including both native contexts, every legacy/new ITP attempt and one shared setup. Skip the overlapping QCP ITP aggregate row. Not a continuous end-to-end duration; pending work unmeasured.')
     pub.json(BASE / 'result-cost.json', table)
@@ -423,6 +534,7 @@ def prepare(args):
         value = load(BASE / name)
         value.update(complete=False, verdict_complete=False, resource_metrics_complete=False, latest_native_recheck=latest,
             current_itp_progress=progress_ref, context_transition=context_ref, current_missing_measurements=progress['missing_measurements'],
+            current_missing_prerequisites=progress['missing_prerequisites'],
             tespec_current_run_status='ABI_STRONG_LEFT_ITP_PENDING')
         if name == 'index.json':
             value['evaluation'] = native_ref['path']
@@ -434,6 +546,8 @@ def prepare(args):
         f"连同上下文修复共 {progress['model_calls_including_context_repair']} 次模型调用、{progress['tokens_including_context_repair']:,} token。"
         "旧 4 次调用、6 次检查的全部成本计入相应执行；旧父 VC 成功不转移为新 ABI 证明。未关闭阶段不估算，两个旧失败 RSS 缺失保持缺失。"
         "ABI 库准备另计每组一次 0.45 秒、17244 KiB、0 token，纳入组已测工作量，不进入14次ITP均值。"
+        + (f"本轮保留 {interrupted} 次文件系统中断：原模型只计一次，幸存编译 CPU 与逐阶段 RSS 如实保留；缺失整次墙钟与峰值保持 null，累计墙钟仅报告已测下界，不算失败或成功。" if interrupted else "")
+        + (f"6份丢失报告已实际补跑（合计 {recovery_wall:.6f} 秒），新证书绑定各自恢复报告；原c84快照、已有证明与旧费用保留。恢复准备另计 {recovery_setup_wall:.2f} 秒，不进入ITP均值。" if override_ref else "")
         + ("新显式 ABI 上下文的修复已限定确认；旧上下文仍 NOT_CERTIFIED。" if resolved else "语义审核仍 OPEN。") + "历史 QCP 仍绑定旧抽象地址上下文。\n\n"
         "[当前逐执行成本与证据](evidence/itp/abi-context/progress.json) · [上下文与费用映射](evidence/itp/context-transition.json)。完整进度仍为 **22/45 组、901 对输入**。")
     md = ['# Dbl_Linked_List__singleton：结果与成本表', '', detail, '',
@@ -479,6 +593,7 @@ def main():
     parser.add_argument('--native-results', type=Path, default=Path('/tmp/tespec-singleton-layout-native-24wkmdxt/results.json'))
     parser.add_argument('--itp-root', type=Path, default=Path('/tmp/tespec-singleton-strong-itp-ueo9fs4a'))
     parser.add_argument('--model-root', type=Path, default=Path('/mnt/c/Users/50635/Documents/Codex/2026-10-14/jin/work/singleton-strong-itp-3f5f5qwg'))
+    parser.add_argument('--tasks-overrides', type=Path, help='Verified sparse recovery overlays; original tasks/native snapshot stay unchanged')
     parser.add_argument('--apply', action='store_true')
     args = parser.parse_args()
     pub, progress = prepare(args)

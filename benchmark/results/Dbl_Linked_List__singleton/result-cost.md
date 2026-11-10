@@ -1,8 +1,8 @@
 # Dbl_Linked_List__singleton：结果与成本表
 
-当前 ABI 上下文原生执行为 14 PASS、14 UNKNOWN；包含已审计强证明后的最终结果为 **16 PASS、12 UNKNOWN**。已观测强证明内核完成 2/14，满足完整审计及限定上下文 resolution 的 2/14。
+当前 ABI 上下文原生执行为 14 PASS、14 UNKNOWN；包含已审计强证明后的最终结果为 **19 PASS、9 UNKNOWN**。已观测强证明内核完成 5/14，满足完整审计及限定上下文 resolution 的 5/14。
 
-当前上下文已关闭 6 次 gpt-6.1-sol 调用、5 次检查；连同上下文修复共 10 次模型调用、1,168,608 token。旧 4 次调用、6 次检查的全部成本计入相应执行；旧父 VC 成功不转移为新 ABI 证明。未关闭阶段不估算，两个旧失败 RSS 缺失保持缺失。ABI 库准备另计每组一次 0.45 秒、17244 KiB、0 token，纳入组已测工作量，不进入14次ITP均值。新显式 ABI 上下文的修复已限定确认；旧上下文仍 NOT_CERTIFIED。历史 QCP 仍绑定旧抽象地址上下文。
+当前上下文已关闭 8 次 gpt-6.1-sol 调用、9 次检查；连同上下文修复共 12 次模型调用、1,283,176 token。旧 4 次调用、6 次检查的全部成本计入相应执行；旧父 VC 成功不转移为新 ABI 证明。未关闭阶段不估算，两个旧失败 RSS 缺失保持缺失。ABI 库准备另计每组一次 0.45 秒、17244 KiB、0 token，纳入组已测工作量，不进入14次ITP均值。本轮保留 1 次文件系统中断：原模型只计一次，幸存编译 CPU 与逐阶段 RSS 如实保留；缺失整次墙钟与峰值保持 null，累计墙钟仅报告已测下界，不算失败或成功。6份丢失报告已实际补跑（合计 1.588379 秒），新证书绑定各自恢复报告；原c84快照、已有证明与旧费用保留。恢复准备另计 5.01 秒，不进入ITP均值。新显式 ABI 上下文的修复已限定确认；旧上下文仍 NOT_CERTIFIED。历史 QCP 仍绑定旧抽象地址上下文。
 
 [当前逐执行成本与证据](evidence/itp/abi-context/progress.json) · [上下文与费用映射](evidence/itp/context-transition.json)。完整进度仍为 **22/45 组、901 对输入**。
 
@@ -19,11 +19,13 @@
 | fulminate | 插桩、编译与首次执行 | 2.2581 | 45.6875 | 0.0000 | 已测工作总量 |
 | fulminate | 单独运行测试 | 0.0252 | 1.1133 | 0.0000 | 已测工作总量 |
 | tespec group setup | 确定性 ABI 库准备 | 0.4500 | 16.8398 | 0.0000 | 每组一次；不进入14次ITP均值 |
+| tespec group setup | 文件系统恢复后证书准备 | 5.0100 | 24.0430 | 0.0000 | 每组一次；不进入14次ITP均值 |
+| tespec native recovery | 丢失报告的6次实际补跑 | 0.2647 | 33.9089 | 0.0000 | 6次执行均值；原生旧费用另保留 |
 | tespec inline spatial-off | 当前 ABI 原生测试 | 0.9047 | 20.3806 | 0.0000 | 每次执行均值 |
 | tespec inline spatial-on | 当前 ABI 原生测试 | 1.0622 | 47.1356 | 0.0000 | 每次执行均值 |
 | tespec modular spatial-off | 当前 ABI 原生测试 | 0.8362 | 20.2907 | 0.0000 | 每次执行均值 |
 | tespec modular spatial-on | 当前 ABI 原生测试 | 0.6933 | 20.3834 | 0.0000 | 每次执行均值 |
 | tespec context-repair | 旧上下文原生执行（计入总成本） | 0.4012 | 27.0991 | 0.0000 | 28 次旧执行均值 |
-| tespec cumulative ITP | agent | 774.7553 | 239.9167 | 389536.0000 | 已尝试 3/14 次执行的暂计均值，含旧上下文；不是最终均值 |
-| tespec cumulative ITP | coq_compile_and_assumption_audit | 97.6036 | 542.2812 | 0.0000 | 已尝试 3/14 次执行的暂计均值，含旧上下文；不是最终均值 |
-| tespec cumulative ITP | independent_kernel_check | 2380.7127 | 待补齐 | 0.0000 | 已尝试 2/14 次执行的暂计均值，含旧上下文；不是最终均值 |
+| tespec cumulative ITP | agent | 532.8814 | 239.2422 | 256635.2000 | 已尝试 5/14 次执行的暂计均值，含旧上下文；不是最终均值 |
+| tespec cumulative ITP | coq_compile_and_assumption_audit | 待补齐 | 待补齐 | 0.0000 | 已尝试 5/14 次执行的暂计均值，含旧上下文；不是最终均值 |
+| tespec cumulative ITP | independent_kernel_check | 1129.4733 | 待补齐 | 0.0000 | 已尝试 5/14 次执行的暂计均值，含旧上下文；不是最终均值 |

@@ -25,8 +25,10 @@ from spectest.certificates import (
 
 SCHEMA = "tespec-canonical-group-evaluation/v1"
 ITP_SCHEMA = "tespec-canonical-execution-itp/v1"
+from singleton_native_recovery import validate_native_source
+from singleton_interruption import SCHEMA as INTERRUPTION_SCHEMA, collect_interruption, partial_stage_totals
 from singleton_canonical_support import (PROFILE, audit_strong_binding, combine_metrics,
-    legacy_costs, native_cost, audit_transition, canonical_sha)
+    legacy_costs, native_cost, audit_transition, canonical_sha, audit_shared_setup, group_workload)
 
 
 def need(condition, message):
@@ -281,8 +283,9 @@ def measured_stage_totals(stages):
 
 def execution_metrics(models, checks):
     """Recompute disjoint costs: models once, every checker invocation once."""
-    compile_cost = measured_stage_totals([stage for check in checks for stage in check["stages"]
-                                         if not stage["stage"].startswith("kernel_replay")])
+    interrupted = any(check.get("schema") == INTERRUPTION_SCHEMA for check in checks)
+    compile_stages = [stage for check in checks for stage in check["stages"] if not stage["stage"].startswith("kernel_replay")]
+    compile_cost = partial_stage_totals(compile_stages, scope_complete=False) if interrupted else measured_stage_totals(compile_stages)
     kernel_cost = measured_stage_totals([stage for check in checks for stage in check["stages"]
                                         if stage["stage"].startswith("kernel_replay")])
     agent = {"wall_seconds": sum(model["wall_seconds"] for model in models),
@@ -295,10 +298,13 @@ def execution_metrics(models, checks):
     complete = compile_cost["resource_metrics_complete"] and kernel_cost["resource_metrics_complete"]
     peaks = [agent["peak_process_resident_bytes"]] + [value["observed_peak_rss_lower_bound_kib"] * 1024
         for value in (compile_cost, kernel_cost) if value["observed_peak_rss_lower_bound_kib"] is not None]
-    total = {"wall_seconds": agent["wall_seconds"] + compile_cost["wall_seconds"] + kernel_cost["wall_seconds"],
+    total_wall = None if interrupted else agent["wall_seconds"] + compile_cost["wall_seconds"] + kernel_cost["wall_seconds"]
+    total = {"wall_seconds": total_wall,
              "peak_process_resident_bytes": max(peaks) if complete else None,
              "observed_peak_rss_lower_bound_bytes": max(peaks), "resource_metrics_complete": complete,
              "tokens": agent["tokens"], "model_calls": len(models), "check_attempts": len(checks)}
+    if interrupted:
+        total.update(known_wall_seconds_lower_bound=agent["wall_seconds"] + (compile_cost["known_wall_seconds_lower_bound"] or 0) + kernel_cost["wall_seconds"], wall_time_complete=False)
     return dict(zip(ITP_STAGES, (agent, compile_cost, kernel_cost, total)))
 
 
@@ -313,12 +319,17 @@ def aggregate_metrics(receipts):
         peaks = [value["peak_process_resident_bytes"] if "peak_process_resident_bytes" in value
                  else value["peak_process_rss_kib"] * 1024 if value["peak_process_rss_kib"] is not None
                  else None for value in values]
-        seconds, tokens = sum(value["wall_seconds"] for value in values), sum(value["tokens"] for value in values)
+        time_complete = all(value["wall_seconds"] is not None for value in values)
+        seconds = sum(value["wall_seconds"] for value in values) if time_complete else None
+        tokens = sum(value["tokens"] for value in values)
         complete = all(value is not None for value in peaks)
-        result["stages"][name] = {"wall_seconds_total": seconds, "wall_seconds_mean": seconds / len(values),
+        result["stages"][name] = {"wall_seconds_total": seconds, "wall_seconds_mean": seconds / len(values) if seconds is not None else None,
             "peak_process_memory_mib_mean": statistics.mean(peaks) / 1048576 if complete else None,
             "peak_process_memory_mib_max": max(peaks) / 1048576 if complete else None,
             "resource_metrics_complete": complete, "tokens_total": tokens, "tokens_mean": tokens / len(values)}
+        if not time_complete:
+            lower = sum(value.get("known_wall_seconds_lower_bound", value.get("wall_seconds")) or 0 for value in values)
+            result["stages"][name].update(wall_time_complete=False, known_wall_seconds_lower_bound_total=lower, known_wall_seconds_lower_bound_mean=lower / len(values))
     result["resource_metrics_complete"] = all(receipt["resource_metrics_complete"] for receipt in receipts)
     result["missing_measurements"] = [item for receipt in receipts for item in receipt["missing_measurements"]]
     return result
@@ -352,7 +363,7 @@ def audit_cost_statistics(root, base, data, table, receipts):
     def cost(tool, stage, seconds, peak, tokens, source):
         expected_costs.append({"tool": tool, "stage": stage, "wall_seconds": seconds,
             "peak_process_memory_mib": peak, "tokens": tokens, "source": str(source.relative_to(root)),
-            "estimated": False, "status": "MEASURED" if peak is not None else "PARTIAL_MISSING_RSS"})
+            "estimated": False, "status": "PARTIAL_MISSING_METRICS" if seconds is None else "MEASURED" if peak is not None else "PARTIAL_MISSING_RSS"})
 
     # Historical rows retain their own named statistics source and measurement units.
     source = base / "cn/statistics.json"
@@ -406,9 +417,65 @@ def audit_cost_statistics(root, base, data, table, receipts):
         value = aggregate["stages"][name]
         cost("tespec inline ITP", label, value["wall_seconds_mean"],
              value["peak_process_memory_mib_mean"], value["tokens_mean"], stats_path)
+    for name, setup_stage in data.get("group_shared_setup", {}).items():
+        label = "确定性 ABI 库准备" if name == "context_preparation" else "文件系统恢复后证书准备"
+        source = path_in(root, data["context_transition"]["path"]) if name == "context_preparation" else path_in(root, setup_stage["receipt"]["path"])
+        cost("tespec group setup", label, setup_stage["wall_seconds"], setup_stage["peak_process_rss_kib"] / 1024, setup_stage["tokens"], source)
     need(len(table["costs"]) == len(expected_costs), "Unexpected/missing current cost rows")
     for actual, expected in zip(table["costs"], expected_costs):
         corresponding(actual, expected, "source-bound cost row")
+
+
+def audit_native_recovery(root, receipt, row, read_ref):
+    retained = receipt["native_recovery"]
+    task = retained["task"]
+    refs = {item["original_path"]: item["evidence"] for item in retained["artifacts"]}
+    need(len(refs) == len(retained["artifacts"]), "Duplicate native recovery artifact path")
+    def resolver(path, expected):
+        need(path in refs and refs[path]["sha256"] == expected, "Native recovery artifact is not durably bound")
+        return read_ref(root, refs[path])
+    binding = read_ref(root, retained["binding"])
+    need(load(binding) == {k: v for k, v in task.items() if k != "native_recovery_binding"}, "Stored recovery binding task differs")
+    source = task["native_source"]
+    recovered, audit = validate_native_source(task, source["original_native_result"], receipt["baseline_native_results_sha256"], artifact_resolver=resolver)
+    need(audit == retained["audit"], "Recorded native recovery audit differs from actual artifacts")
+    need(receipt["original_native_results_sha256"] == source["native_result_sha256"] and receipt["proof_native_row_index"] == source["native_row_index"] and receipt["native_row_index"] == source["original_native_row_index"], "Recovery proof/native indices differ")
+    for field in ("case", "strategy", "spatial_smt", "input", "source_sha256", "raw_status", "expected", "residual_vcs", "precondition_result", "execution_completed"):
+        need(recovered[field] == row[field], "Recovery changes the original execution: " + field)
+    need(task["original_goal_sha256"] == receipt["original_goal_sha256"] and task["original_manifest_sha256"] == receipt["original_manifest_sha256"] and task["original_report_sha256"] == receipt["original_report_sha256"], "Recovery original report/Goal bindings differ")
+    need(task["certificate_manifest_sha256"] == receipt["certificate_manifest"]["sha256"], "Recovery certificate manifest differs")
+    for check in receipt["checks"]:
+        need(check.get("native_recovery_binding_sha256") == retained["binding"]["sha256"] and check.get("native_recovery_audit") == audit, "Proof check did not validate this exact native recovery")
+    return recovered, audit
+
+
+def audit_interruption(root, check, receipt, row, model, read_ref):
+    """Re-run the recovery evidence audit against durable hash-addressed objects."""
+    source = read_ref(root, check["interruption_receipt"])
+    need(digest(source) == check["controller_receipt_sha256"], "Interruption receipt checksum differs")
+    raw = load(source)
+    mapping = {}
+    for item in check["recovery_artifact_refs"]:
+        need(item["original_path"] not in mapping, "Duplicate recovery artifact path")
+        mapping[item["original_path"]] = item["evidence"]
+    used = set()
+    def resolver(path, expected):
+        need(path in mapping and mapping[path]["sha256"] == expected, "Missing durable recovery artifact")
+        used.add(path)
+        return read_ref(root, mapping[path])
+    task = {"execution_index": receipt["execution_index"], "native_row_index": receipt["native_row_index"],
+        "case": row["case"], "strategy": row["strategy"], "mode": row["spatial_smt"], "input": row["input"],
+        "source_sha256": row["source_sha256"], "original_goal_sha256": receipt["original_goal_sha256"],
+        "residual_vcs": receipt["selected_goals"], "abi_context": receipt["abi_context"],
+        "strong_template": receipt["strong_template"], "certificate_manifest_sha256": receipt["certificate_manifest"]["sha256"]}
+    expected, missing = collect_interruption(raw, task, receipt["original_native_results_sha256"], model,
+        check["controller_receipt_sha256"], artifact_resolver=resolver)
+    need(all(check.get(k) == value for k, value in expected.items()), "Recovered interruption receipt differs from actual saved artifacts")
+    normalized = [{**m, "case": row["case"], "strategy": row["strategy"], "spatial_smt": row["spatial_smt"]} for m in missing]
+    need(check.get("missing_measurements") == normalized, "Interruption cost gap inventory changed")
+    for item in mapping.values():
+        read_ref(root, item)
+    return normalized
 
 
 def audit_itp(root, receipt_ref, row, allow_partial=False, evidence_reader=None):
@@ -418,6 +485,9 @@ def audit_itp(root, receipt_ref, row, allow_partial=False, evidence_reader=None)
          "Missing successful per-execution ITP receipt")
     for key in ("case", "strategy", "spatial_smt", "source_sha256"):
         need(receipt.get(key) == row[key], "ITP execution binding differs: " + key)
+    if receipt.get("native_recovery") is not None:
+        need(receipt.get("proof_profile") == PROFILE, "Native recovery requires the strong proof profile")
+        audit_native_recovery(root, receipt, row, read_ref)
     goal = read_ref(root, receipt["goal"])
     candidate = read_ref(root, receipt["candidate"])
     need(digest(goal) == row["vc_sha256"]["goal"] == receipt["original_goal_sha256"],
@@ -465,6 +535,10 @@ def audit_itp(root, receipt_ref, row, allow_partial=False, evidence_reader=None)
         model = model_by_hash[model_hash]
         need(check.get("candidate_sha256") == model["candidate_sha256"]
              and check.get("model_attempt") == model["attempt"], "ITP checker/model candidate binding differs")
+        if check.get("schema") == INTERRUPTION_SCHEMA:
+            need(allow_partial and receipt.get("proof_profile") == PROFILE, "Infrastructure interruption costs require explicit partial strong-profile audit")
+            missing.extend(audit_interruption(root, check, receipt, row, model, read_ref))
+            continue
         hash_value(check.get("certificate_report_sha256"), "ITP checker report")
         stages = check.get("stages")
         need(isinstance(stages, list) and stages, "ITP check missing measured stages")
@@ -472,16 +546,19 @@ def audit_itp(root, receipt_ref, row, allow_partial=False, evidence_reader=None)
             absent = attempt_measurement(stage, "ITP " + stage["stage"],
                 allow_missing_rss=allow_partial and check.get("status") != "PASS")
             if absent:
-                missing.append((check["attempt"], stage["stage"], stage["wall_seconds"], stage["exit_code"], stage["log_sha256"]))
+                missing.append({"execution_index": receipt["execution_index"], "case": row["case"], "strategy": row["strategy"], "spatial_smt": row["spatial_smt"],
+                    "check_attempt": check["attempt"], "stage": stage["stage"], "field": "resources.max_process_rss_kib",
+                    "reason": "Original failed stage did not retain RSS; later reruns cannot replace it.",
+                    "wall_seconds": stage["wall_seconds"], "exit_code": stage["exit_code"], "log_sha256": stage["log_sha256"]})
             hash_value(stage.get("log_sha256"), "ITP stage log")
     strong = receipt.get("proof_profile") == PROFILE
     need(receipt.get("proof_profile") in (None, PROFILE), "Unsupported proof profile")
     recorded = receipt.get("active_missing_measurements", []) if strong else receipt.get("missing_measurements", [])
-    need([(m["check_attempt"], m["stage"], m["wall_seconds"], m["exit_code"], m["log_sha256"]) for m in recorded] == missing,
+    need(recorded == missing,
          "ITP missing RSS inventory differs from actual attempts")
     need(receipt.get("active_resource_metrics_complete" if strong else "resource_metrics_complete") is (not bool(missing)), "ITP cost completeness flag differs")
     for m in recorded:
-        need(m.get("field") == "resources.max_process_rss_kib" and m.get("reason"), "Unclassified cost gap")
+        need(m.get("field") in {"resources.max_process_rss_kib", "wall_seconds", "peak_process_rss_kib"} and m.get("reason"), "Unclassified cost gap")
         for key in ("case", "strategy", "spatial_smt"):
             need(m[key] == row[key], "Cost gap belongs to another execution")
     selected_hash = receipt.get("selected_check_sha256")
@@ -577,6 +654,17 @@ def audit_canonical_group(group, root=ROOT, index=None, allow_partial=False):
         need(review.get("status") == "RESOLVED_FOR_EXPLICIT_ABI_CONTEXT" and review.get("resolution_native_results_sha256") == data["original_native_results_sha256"], "Strong semantic review is not resolved for this native run")
         need(review.get("legacy_review_snapshot") == transition["semantic_review"], "Resolved review lacks frozen legacy audit reference")
         need(review.get("resolution_abi_context_sha256") == canonical_sha(data["abi_context"]) and review.get("legacy_context_status") == "NOT_CERTIFIED", "Strong resolution context differs")
+    overrides_by_index = {}
+    if data.get("task_overrides"):
+        overrides = load(ref(root, data["task_overrides"]))
+        inventory_path = ref(root, data["original_task_inventory"])
+        inventory = load(inventory_path)
+        need(overrides.get("schema") == "tespec-singleton-task-overrides/v1" and overrides.get("original_tasks_sha256") == digest(inventory_path) == data["task_inventory_sha256"] and overrides.get("baseline_native_results_sha256") == data["original_native_results_sha256"], "Recovery override inventory is not bound")
+        overrides_by_index = {t["execution_index"]: t for t in overrides["overrides"]}
+        need(set(overrides_by_index) == {4, 5, 8, 9, 10, 13} and len(overrides_by_index) == len(overrides["overrides"]), "Wrong native recovery task inventory")
+        original_tasks = {t["execution_index"]: t for t in inventory["tasks"]}
+        for i, task in overrides_by_index.items():
+            need(task["native_source"]["original_task"] == original_tasks[i], "Native recovery changed the original task")
     cases = {}
     for pair in plan["pairings"]:
         for case in pair["cases"]:
@@ -615,7 +703,7 @@ def audit_canonical_group(group, root=ROOT, index=None, allow_partial=False):
         hash_value(row["vc_sha256"]["goal"], "native original Goal")
         if transition_map:
             mapping = transition_map[row_index]
-            need(row.get("native_attempts") == [mapping["legacy_native_stage"], mapping["active_native_stage"]] and row.get("context_transition_execution_key") == mapping["execution_key"], "Native costs omit or repeat a context attempt")
+            need(isinstance(row.get("native_attempts"), list) and row["native_attempts"][:2] == [mapping["legacy_native_stage"], mapping["active_native_stage"]] and len(row["native_attempts"]) in (2, 3) and row.get("context_transition_execution_key") == mapping["execution_key"], "Native costs omit or repeat a context attempt")
         else:
             need(not row.get("native_attempts"), "Native context costs have no audited transition")
         if row["raw_status"] == "UNKNOWN":
@@ -623,6 +711,14 @@ def audit_canonical_group(group, root=ROOT, index=None, allow_partial=False):
             receipt = audit_itp(root, row["itp_receipt"], row, allow_partial=allow_partial)
             if transition_map:
                 need(receipt.get("proof_profile") == PROFILE and receipt.get("abi_context") == data["abi_context"], "Legacy parent proof cannot authorize strong-context writeback")
+                if receipt.get("native_recovery"):
+                    need(receipt["execution_index"] in overrides_by_index and receipt["native_recovery"]["task"] == overrides_by_index[receipt["execution_index"]], "Recovered proof lacks exact task override")
+                    stage = receipt["native_recovery"]["audit"]["new_native_stage"]
+                    expected_stage = {"wall_seconds": stage["wall_seconds"], "peak_process_rss_kib": stage["resources"]["max_process_rss_kib"], "tokens": stage["tokens"], "model_calls": stage["model_calls"], "command_sha256": canonical_sha(stage["command"]), "report_sha256": stage["report_sha256"]}
+                    need(len(row["native_attempts"]) == 3 and row["native_attempts"][2] == expected_stage, "Measured recovery native cost missing or duplicated")
+                    need(row.get("proof_native_results_sha256") == receipt["original_native_results_sha256"] and row.get("proof_native_row_index") == receipt["proof_native_row_index"], "Row points to another proof-native execution")
+                else:
+                    need(receipt["execution_index"] not in overrides_by_index and len(row["native_attempts"]) == 2, "Recovery task silently reuses old native evidence or costs")
                 original_manifest = load(ref(root, receipt["original_manifest"]))
                 runtime_deps = sorted(({k: d[k] for k in ("module", "sha256", "compiled_sha256")} for d in original_manifest["runtime_dependencies"]), key=lambda d: d["module"])
                 need(runtime_deps == transition["active_context"]["runtime_dependencies"], "Strong receipt native runtime differs from transition context")
@@ -635,7 +731,7 @@ def audit_canonical_group(group, root=ROOT, index=None, allow_partial=False):
             missing_costs.extend(receipt.get("missing_measurements", []))
             itp_count += 1
             for check in receipt["checks"]:
-                report_hash = check["certificate_report_sha256"]
+                report_hash = ("interruption", check["controller_receipt_sha256"]) if check.get("schema") == INTERRUPTION_SCHEMA else ("certificate", check["certificate_report_sha256"])
                 need(report_hash not in checker_reports, "One kernel/check attempt counted for two executions")
                 checker_reports.add(report_hash)
             for model in receipt["model_attempts"]:
@@ -652,6 +748,11 @@ def audit_canonical_group(group, root=ROOT, index=None, allow_partial=False):
          "Group ITP execution counts differ from checked receipts")
     if group == "Dbl_Linked_List__singleton":
         need(itp_count == 14, "Singleton requires 14 independent checked ITP executions")
+    shared_setup, expected_workload = None, None
+    if group == "Dbl_Linked_List__singleton":
+        shared_setup = audit_shared_setup(root, data["group_shared_setup"], transition, data.get("task_overrides"), data["task_inventory_sha256"], {r["execution_index"]: r["native_recovery"]["audit"] for r in itp_receipts if r.get("native_recovery")})
+        expected_workload = group_workload(data["runs"], itp_receipts, shared_setup)
+        need(data.get("tespec_group_workload") == expected_workload, "Shared setup or recovered native work was excluded or counted repeatedly")
     need(missing_costs == data.get("missing_measurements", []), "Group cost gap inventory differs from attempt receipts")
     need(complete is (not bool(missing_costs)), "Group hides missing attempt costs")
     tools = {name: load(ref(root, data["tool_evidence"][name])) for name in ("cn", "fulminate", "qcp")}
@@ -671,6 +772,10 @@ def audit_canonical_group(group, root=ROOT, index=None, allow_partial=False):
     table = load(base / "result-cost.json")
     need(table.get("complete") is complete and table.get("resource_metrics_complete") is complete, "Group cost completeness differs")
     need(table.get("missing_measurements", []) == missing_costs, "Cost table gaps differ from receipts")
+    if shared_setup is not None:
+        need(table.get("group_shared_setup") == shared_setup and table.get("tespec_group_workload") == expected_workload, "Cost table shared setup/work totals differ")
+        stats = load(base / "tespec/statistics.json")
+        need(stats.get("group_shared_setup") == shared_setup and stats.get("tespec_group_workload") == expected_workload, "Statistics shared setup/work totals differ")
     audit_cost_statistics(root, base, data, table, itp_receipts)
     need({row["tool"] for row in table["results"]} >= {"cn", "qcp", "fulminate", "tespec"},
          "Missing tool in group result table")
@@ -678,9 +783,12 @@ def audit_canonical_group(group, root=ROOT, index=None, allow_partial=False):
         if cost.get("historical") or cost.get("required") is False:
             continue
         need(cost.get("status") not in {"PENDING", "BLOCKED"}, "A required cost remains pending")
-        number(cost.get("wall_seconds"), "table time")
+        if cost.get("wall_seconds") is None:
+            need(allow_partial and not complete and cost.get("status") == "PARTIAL_MISSING_METRICS", "Unexplained missing cost-table time")
+        else:
+            number(cost.get("wall_seconds"), "table time")
         if cost.get("peak_process_memory_mib") is None:
-            need(allow_partial and not complete and cost.get("status") == "PARTIAL_MISSING_RSS",
+            need(allow_partial and not complete and cost.get("status") in {"PARTIAL_MISSING_RSS", "PARTIAL_MISSING_METRICS"},
                  "Unexplained missing cost-table RSS")
         else:
             number(cost["peak_process_memory_mib"], "table memory")

@@ -74,6 +74,9 @@ def audit_strong_binding(root, receipt, row, final, evidence_reader=None):
     for model in receipt["model_attempts"]:
         need(set(model["locked_goal_and_helper_sha256"]) == {"Goal.v", *(module + ".v" for module in MODULES)}, "Strong model locked-input inventory differs")
     for check in receipt["checks"]:
+        if check.get("schema") == "tespec-singleton-infrastructure-interruption/v1":
+            # audit_itp independently validates this raw recovery evidence. It is never selected as proof.
+            continue
         need(check.get("support_sha256") == SUPPORT_SHA256, "Checker used a different strong-profile policy")
         b = check.get("binding", {})
         need(b.get("abi_context") == context and b.get("original_goal_sha256") == receipt["original_goal_sha256"] and b.get("original_manifest_sha256") == digest(original_path), "Strong check used another native proof context")
@@ -95,7 +98,15 @@ def combine_metrics(values):
     result = {}
     for stage in ("agent", "coq_compile_and_assumption_audit", "independent_kernel_check", "total"):
         parts = [value[stage] for value in values]
-        merged = {"wall_seconds": sum(p["wall_seconds"] for p in parts), "tokens": sum(p["tokens"] for p in parts)}
+        time_complete = all(p["wall_seconds"] is not None for p in parts)
+        merged = {"wall_seconds": sum(p["wall_seconds"] for p in parts) if time_complete else None, "tokens": sum(p["tokens"] for p in parts)}
+        if not time_complete:
+            merged.update(wall_time_complete=False, known_wall_seconds_lower_bound=sum(p.get("known_wall_seconds_lower_bound", p.get("wall_seconds")) or 0 for p in parts))
+        for cpu in ("cpu_user_seconds_observed", "cpu_system_seconds_observed"):
+            if any(cpu in p for p in parts):
+                merged[cpu] = sum(p.get(cpu, 0) for p in parts)
+        if any("measurement_scope_complete" in p for p in parts):
+            merged["measurement_scope_complete"] = all(p.get("measurement_scope_complete", True) for p in parts)
         peak_key = "peak_process_resident_bytes" if stage in ("agent", "total") else "peak_process_rss_kib"
         lower_key = "observed_peak_rss_lower_bound_bytes" if stage == "total" else "observed_peak_rss_lower_bound_kib"
         peaks = [p[peak_key] for p in parts]
@@ -104,7 +115,7 @@ def combine_metrics(values):
         if stage != "agent":
             known = [p.get(lower_key) for p in parts if p.get(lower_key) is not None]
             merged[lower_key] = max(known) if known else None
-            merged["resource_metrics_complete"] = complete
+            merged["resource_metrics_complete"] = complete and time_complete
         for count in ("model_calls", "check_attempts", "subprocesses"):
             if count in parts[0]:
                 merged[count] = sum(p[count] for p in parts)
@@ -132,7 +143,7 @@ def native_cost(row):
     stages = row.get("native_attempts")
     if stages is None:
         return row["wall_seconds"], row["resources"]["max_process_rss_kib"]
-    need(isinstance(stages, list) and len(stages) == 2, "Expected one legacy and one ABI native attempt")
+    need(isinstance(stages, list) and len(stages) in (2, 3), "Expected legacy/ABI native attempts and at most one measured recovery")
     return sum(s["wall_seconds"] for s in stages), max(s["peak_process_rss_kib"] for s in stages)
 
 
@@ -202,3 +213,61 @@ def audit_transition(root, transition_ref, rows, native_sha, abi_context):
     need([m for r in archived for m in r["missing_measurements"]] == transition["measured_totals_to_date"]["missing_measurements"], "Legacy missing RSS inventory differs")
     need(sum(m["legacy_native_stage"]["wall_seconds"] + m["active_native_stage"]["wall_seconds"] for m in mappings) == transition["measured_totals_to_date"]["native_wall_seconds"], "Transition native cost sum differs")
     return transition, by_row
+
+
+def audit_shared_setup(root, setup, transition, task_overrides=None, task_inventory_sha256=None, recovery_audits=None, evidence_reader=None):
+    from validate_canonical_group import ref as disk_ref, load, digest, number, hash_value
+    ref = evidence_reader or disk_ref
+    expected_names = {"context_preparation"} | ({"native_recovery_preparation"} if task_overrides else set())
+    need(set(setup) == expected_names, "Shared setup stages missing or repeated")
+    original = setup["context_preparation"]
+    need(original == transition["group_shared_setup"]["context_preparation"], "Original shared preparation cost changed")
+    text = original["raw_resources_text"]
+    need(hashlib.sha256(text.encode()).hexdigest() == original["raw_resources_sha256"], "Original setup resource text hash differs")
+    parts = text.split()
+    need(len(parts) == 2 and float(parts[0]) == original["wall_seconds"] and int(parts[1]) == original["peak_process_rss_kib"], "Original setup GNU time values differ")
+    need(original["tokens"] == original["model_calls"] == 0, "Original setup has invented model costs")
+    for key in ("raw_receipt_sha256", "preparation_script_sha256", "source_manifest_sha256"):
+        hash_value(original[key], "shared setup " + key)
+    ref(root, original["preparation_manifest"])
+    for item in original["prepared_modules"]:
+        ref(root, item)
+    if task_overrides:
+        import re
+        repair = setup["native_recovery_preparation"]
+        receipt = load(ref(root, repair["receipt"]))
+        need(receipt["schema"] == "tespec-native-recovery-setup/v1" and receipt["tasks_override_sha256"] == task_overrides["sha256"] and receipt["original_tasks_sha256"] == task_inventory_sha256, "Recovery setup task provenance differs")
+        need(receipt["tokens"] == receipt["model_calls"] == receipt["Coq_calls"] == repair["tokens"] == repair["model_calls"] == 0, "Recovery setup has invented proof/model charges")
+        need({a["execution_index"]: a["audit"] for a in receipt["audits"]} == recovery_audits, "Recovery setup does not match all six actual executions")
+        text = ref(root, repair["resources"]).read_text()
+        need(text == repair["raw_resources"], "Recovery setup raw resources differ")
+        values = re.fullmatch(r"wall_seconds=([0-9.]+)(?:n|\n)user_seconds=([0-9.]+)(?:n|\n)system_seconds=([0-9.]+)(?:n|\n)max_process_rss_kib=([0-9]+)\s*", text)
+        need(values is not None, "Malformed recovery setup GNU time record")
+        wall, user, system, rss = values.groups()
+        need((float(wall), float(user), float(system), int(rss)) == (repair["wall_seconds"], repair["cpu_user_seconds"], repair["cpu_system_seconds"], repair["peak_process_rss_kib"]), "Recovery preparation values do not match external GNU time")
+        need(digest(ref(root, repair["source"])) == "9ac74681082a2bf2899102194b9175138063241836564a0fd1d5260121a2952d", "Recovery preparation source differs")
+        need(repair["captured_actual_argv"] is None and repair.get("command_evidence"), "Uncaptured actual argv must not be invented")
+    for stage in setup.values():
+        number(stage["wall_seconds"], "shared setup time")
+        number(stage["peak_process_rss_kib"], "shared setup RSS", True)
+    return setup
+
+
+def group_workload(rows, receipts, setup):
+    """teSpec workload, counting shared setup once and attempts per logical input."""
+    native_seconds = sum(native_cost(row)[0] for row in rows)
+    setup_seconds = sum(value["wall_seconds"] for value in setup.values())
+    costs = [r["metrics"]["total"] for r in receipts]
+    itp_complete = all(c["wall_seconds"] is not None for c in costs)
+    itp_seconds = sum(c["wall_seconds"] for c in costs) if itp_complete else None
+    known = sum(c.get("known_wall_seconds_lower_bound", c.get("wall_seconds")) or 0 for c in costs)
+    lower_peaks = [native_cost(row)[1] * 1024 for row in rows] + [s["peak_process_rss_kib"] * 1024 for s in setup.values()] + [c["observed_peak_rss_lower_bound_bytes"] for c in costs]
+    rss_complete = all(c["peak_process_resident_bytes"] is not None for c in costs)
+    return {"scope": "teSpec native attempts, all per-execution ITP attempts, shared preparation once; no repeated ITP total rows", "native_executions": len(rows), "itp_executions": len(receipts),
+        "native_wall_seconds_total": native_seconds, "itp_wall_seconds_total": itp_seconds,
+        "shared_setup_wall_seconds_total": setup_seconds,
+        "wall_seconds_total": native_seconds + setup_seconds + itp_seconds if itp_complete else None,
+        "known_wall_seconds_lower_bound": native_seconds + setup_seconds + known,
+        "wall_time_complete": itp_complete, "peak_process_resident_bytes": max(lower_peaks) if rss_complete else None,
+        "observed_peak_rss_lower_bound_bytes": max(lower_peaks), "resource_metrics_complete": rss_complete and itp_complete,
+        "tokens": sum(c["tokens"] for c in costs), "model_calls": sum(c["model_calls"] for c in costs)}

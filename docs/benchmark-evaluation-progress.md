@@ -17,9 +17,9 @@
 本次 singleton 当前原生补测已完成 7 输入 × 两策略 × 空间 SMT OFF/ON 共 28 次：modular 两模式各 7 PASS，inline 两模式各 7 UNKNOWN，均已执行到出口，缺口为 Dll 返回 VC 的逐执行 ITP。时间、峰值 RSS 和源／VC 哈希已写入[当前结果成本表](../benchmark/results/Dbl_Linked_List__singleton/result-cost.md)，没有新增完整组。
 
 <!-- singleton-current-itp-progress -->
-当前 ABI 上下文原生执行为 14 PASS、14 UNKNOWN；包含已审计强证明后的最终结果为 **16 PASS、12 UNKNOWN**。已观测强证明内核完成 2/14，满足完整审计及限定上下文 resolution 的 2/14。
+当前 ABI 上下文原生执行为 14 PASS、14 UNKNOWN；包含已审计强证明后的最终结果为 **19 PASS、9 UNKNOWN**。已观测强证明内核完成 5/14，满足完整审计及限定上下文 resolution 的 5/14。
 
-当前上下文已关闭 6 次 gpt-6.1-sol 调用、5 次检查；连同上下文修复共 10 次模型调用、1,168,608 token。旧 4 次调用、6 次检查的全部成本计入相应执行；旧父 VC 成功不转移为新 ABI 证明。未关闭阶段不估算，两个旧失败 RSS 缺失保持缺失。ABI 库准备另计每组一次 0.45 秒、17244 KiB、0 token，纳入组已测工作量，不进入14次ITP均值。新显式 ABI 上下文的修复已限定确认；旧上下文仍 NOT_CERTIFIED。历史 QCP 仍绑定旧抽象地址上下文。
+当前上下文已关闭 8 次 gpt-6.1-sol 调用、9 次检查；连同上下文修复共 12 次模型调用、1,283,176 token。旧 4 次调用、6 次检查的全部成本计入相应执行；旧父 VC 成功不转移为新 ABI 证明。未关闭阶段不估算，两个旧失败 RSS 缺失保持缺失。ABI 库准备另计每组一次 0.45 秒、17244 KiB、0 token，纳入组已测工作量，不进入14次ITP均值。本轮保留 1 次文件系统中断：原模型只计一次，幸存编译 CPU 与逐阶段 RSS 如实保留；缺失整次墙钟与峰值保持 null，累计墙钟仅报告已测下界，不算失败或成功。6份丢失报告已实际补跑（合计 1.588379 秒），新证书绑定各自恢复报告；原c84快照、已有证明与旧费用保留。恢复准备另计 5.01 秒，不进入ITP均值。新显式 ABI 上下文的修复已限定确认；旧上下文仍 NOT_CERTIFIED。历史 QCP 仍绑定旧抽象地址上下文。
 
 [当前逐执行成本与证据](../benchmark/results/Dbl_Linked_List__singleton/evidence/itp/abi-context/progress.json) · [上下文与费用映射](../benchmark/results/Dbl_Linked_List__singleton/evidence/itp/context-transition.json)。完整进度仍为 **22/45 组、901 对输入**。
 <!-- /singleton-current-itp-progress -->

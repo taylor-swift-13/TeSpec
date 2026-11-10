@@ -17,12 +17,15 @@ import statistics
 from validate_canonical_group import (
     ROOT, audit_canonical_group, audit_cn, audit_fulminate, audit_qcp, audit_itp, ref as disk_ref,
     check_candidate_commands, digest, goal_interface, load, measurement,
-    model_attempt, need, number, attempt_measurement,
+    model_attempt, need, number, attempt_measurement, execution_metrics,
 )
 from spectest.certificates import coverage_source
+from singleton_interruption import (SCHEMA as INTERRUPTION_SCHEMA, collect_interruption,
+    local_path as recovery_path, artifact_file)
+from singleton_native_recovery import validate_native_source
 from singleton_strong_support import binding_layout, verify_native_dependencies, verify_candidate, strong_template
 from singleton_canonical_support import (PROFILE, SUPPORT_SHA256, SUPPORT_PATH, canonical_sha,
-    verify_attestation, combine_metrics, legacy_costs, native_cost, audit_transition)
+    verify_attestation, combine_metrics, legacy_costs, native_cost, audit_transition, audit_shared_setup, group_workload)
 
 GROUP = "Dbl_Linked_List__singleton"
 BASE = ROOT / "benchmark/results" / GROUP
@@ -59,7 +62,7 @@ def collect_checks(directory):
     checks, notes = [], []
     for path in sorted(directory.glob("*.json"), key=check_order):
         value = load(path)
-        if value.get("schema") in {"tespec-singleton-execution-itp/v1", "tespec-singleton-strong-left-execution-itp/v1"}:
+        if value.get("schema") in {"tespec-singleton-execution-itp/v1", "tespec-singleton-strong-left-execution-itp/v1", INTERRUPTION_SCHEMA}:
             need("status" in value, "Incomplete checker receipt: " + str(path))
             checks.append(path)
         else:
@@ -123,8 +126,8 @@ class Publication:
                 path.write_bytes(content)
 
 
-def audit_prepared_execution(pub, receipt_ref, row, allow_partial=False):
-    """Full read-only audit against pending objects; no publication or global patching."""
+def prepared_evidence_reader(pub):
+    """Read durable references from pending objects without publication or global patches."""
     class OverlayPath(type(Path())):
         def read_bytes(self):
             path = Path(self).resolve()
@@ -132,6 +135,13 @@ def audit_prepared_execution(pub, receipt_ref, row, allow_partial=False):
 
         def read_text(self, encoding=None, errors=None):
             return self.read_bytes().decode(encoding or "utf-8", errors or "strict")
+
+        def stat(self, *args, **kwargs):
+            path = Path(self).resolve()
+            if path in pub.files:
+                from types import SimpleNamespace
+                return SimpleNamespace(st_size=len(pub.files[path]), st_mode=0o100444)
+            return super().stat(*args, **kwargs)
 
     def pending_ref(root, item):
         path = (root / item["path"]).resolve()
@@ -141,7 +151,74 @@ def audit_prepared_execution(pub, receipt_ref, row, allow_partial=False):
             return OverlayPath(path)
         return disk_ref(root, item)
 
-    return audit_itp(ROOT, receipt_ref, row, allow_partial=allow_partial, evidence_reader=pending_ref)
+    return pending_ref
+
+
+def audit_prepared_execution(pub, receipt_ref, row, allow_partial=False):
+    """Full read-only ITP audit, including durable recovery references."""
+    return audit_itp(ROOT, receipt_ref, row, allow_partial=allow_partial, evidence_reader=prepared_evidence_reader(pub))
+
+
+def persist_interruption(pub, path, raw, task, native_sha256, model):
+    """Retain exact interruption/backup evidence by hash; never manufacture a verdict."""
+    check, missing = collect_interruption(raw, task, native_sha256, model, digest(path))
+    check["interruption_receipt"] = pub.object(path, "infrastructure-interruption.json")
+    evidence_path = recovery_path(raw["artifact_evidence"]["path"])
+    evidence = json.loads(evidence_path.read_bytes().decode("utf-8-sig"))
+    sources = [(raw["artifact_evidence"]["path"], evidence_path)]
+    for name in ("incident", "backup_manifest"):
+        sources.append((evidence[name]["path"], recovery_path(evidence[name]["path"])))
+    artifact_records = evidence["preserved_artifacts"] + [item for stage in evidence["stages"] for item in (stage["resource_artifact"], stage["log_artifact"])]
+    for item in artifact_records:
+        actual = artifact_file(item)
+        sources.extend([(item["source"], actual), (item["backup"], actual)])
+    refs = {}
+    for original, actual in sources:
+        value = pub.object(actual, actual.name)
+        need(original not in refs or refs[original] == value, "Recovery path has conflicting original bytes")
+        refs[original] = value
+    check["recovery_artifact_refs"] = [{"original_path": original, "evidence": value} for original, value in sorted(refs.items())]
+    normalized = [{**m, "case": task["case"], "strategy": task["strategy"], "spatial_smt": task["mode"]} for m in missing]
+    check["missing_measurements"] = normalized
+    return check, normalized
+
+
+def persist_native_recovery(pub, task, baseline_native_path, baseline_sha256):
+    """Freeze measured recovery inputs; runtime objects already in the repo stay shared."""
+    row, audit = validate_native_source(task, baseline_native_path, baseline_sha256)
+    refs = []
+    for item in audit["artifacts"]:
+        path = recovery_path(item["path"])
+        require_hash(path, item["sha256"], "native recovery artifact")
+        value = reference(path) if path.resolve().is_relative_to(ROOT.resolve()) else pub.object(path, path.name)
+        refs.append({"original_path": item["path"], "evidence": value})
+    binding_record = task.get("native_recovery_binding")
+    binding_path = Path(binding_record["path"]) if binding_record else Path(task["certificate_dir"]) / "binding.json"
+    if binding_record:
+        require_hash(binding_path, binding_record["sha256"], "native recovery binding sidecar")
+    binding = pub.object(binding_path, "native-task-binding.json")
+    need(load(binding_path) == {k: v for k, v in task.items() if k != "native_recovery_binding"}, "Native recovery task binding file differs")
+    return row, {"task": copy.deepcopy(task), "audit": audit, "artifacts": refs, "binding": binding}
+
+
+def prepare_shared_setup(pub, transition, overrides_path=None):
+    setup = copy.deepcopy(transition["group_shared_setup"])
+    if overrides_path is not None:
+        receipt_path = overrides_path.parent / "recovery-setup.json"
+        resources_path = overrides_path.parent / "recovery-setup.resources"
+        script_path = overrides_path.parent.parent / "prepare-singleton-native-overrides.py"
+        receipt, text = load(receipt_path), resources_path.read_text()
+        values = re.fullmatch(r"wall_seconds=([0-9.]+)(?:n|\n)user_seconds=([0-9.]+)(?:n|\n)system_seconds=([0-9.]+)(?:n|\n)max_process_rss_kib=([0-9]+)\s*", text)
+        need(values is not None, "Recovery setup lacks external GNU time values")
+        wall, user, system, rss = values.groups()
+        setup["native_recovery_preparation"] = {"wall_seconds": float(wall), "peak_process_rss_kib": int(rss),
+            "cpu_user_seconds": float(user), "cpu_system_seconds": float(system), "tokens": 0, "model_calls": 0,
+            "receipt": pub.object(receipt_path, receipt_path.name), "resources": pub.object(resources_path, resources_path.name),
+            "source": pub.object(script_path, script_path.name), "raw_resources": text,
+            "internal_python_wall_seconds_diagnostic_only": receipt["wall_seconds"], "captured_actual_argv": None,
+            "command_evidence": "GNU time preserved external wall/CPU/RSS. Actual /proc argv was not captured; the internal Python timer is diagnostic only.",
+            "scope": "One recovery preparation per group, excluded from per-execution ITP means."}
+    return setup
 
 
 def usage_events(path):
@@ -191,7 +268,18 @@ def stage_totals(stages):
 
 def build_execution(pub, task, native, itp_root, model_root, transition_mapping=None):
     index = task["execution_index"]
-    row = native["runs"][task["native_row_index"]]
+    baseline_native = native
+    native_recovery = None
+    proof_row_index = task["native_row_index"]
+    if task.get("native_source"):
+        source = task["native_source"]
+        row, native_recovery = persist_native_recovery(pub, task, Path(source["original_native_result"]), native["_sha256"])
+        need(baseline_native["_sha256"] == source["original_native_result_sha256"], "Recovery baseline differs from publication")
+        native = load(Path(source["native_result"]))
+        native["_sha256"] = source["native_result_sha256"]
+        proof_row_index = source["native_row_index"]
+    else:
+        row = native["runs"][task["native_row_index"]]
     for key, other in (("case", "case"), ("mode", "spatial_smt"), ("strategy", "strategy"),
                        ("input", "input"), ("source_sha256", "source_sha256")):
         need(task[key] == row[other], "Task/native execution identity differs")
@@ -227,8 +315,15 @@ def build_execution(pub, task, native, itp_root, model_root, transition_mapping=
         need(raw["model_receipt_sha256"] in model_by_hash, "Coq check has no metered model attempt")
         model = model_by_hash[raw["model_receipt_sha256"]]
         need(raw["model_receipt_sha256"] == model["source_receipt_sha256"], "Coq/model receipt differs")
-        need(raw["native_row_index"] == task["native_row_index"], "Check points at another execution")
+        if raw.get("schema") == INTERRUPTION_SCHEMA:
+            need(strong, "Infrastructure recovery evidence requires the strong task profile")
+            check, _missing = persist_interruption(pub, path, raw, task, native["_sha256"], model)
+            checks.append(check)
+            continue
+        need(raw["native_row_index"] == proof_row_index, "Check points at another execution")
         need(raw["native_results_sha256"] == native["_sha256"], "Check native snapshot mismatch")
+        if native_recovery is not None:
+            need(raw.get("native_recovery_binding_sha256") == native_recovery["binding"]["sha256"] and raw.get("native_recovery_audit") == native_recovery["audit"], "Checker lacks the exact recovery task/native binding")
         binding = raw["binding"]
         need(binding["original_goal_sha256"] == task["original_goal_sha256"]
              and binding["original_residual_vcs"] == task["residual_vcs"]
@@ -257,7 +352,7 @@ def build_execution(pub, task, native, itp_root, model_root, transition_mapping=
                      certificate_report_sha256=raw["certificate_report_sha256"],
                      controller_sha256=raw["controller_sha256"], checker_sha256=raw["checker_sha256"])
         if strong:
-            for name in ("binding", "support_sha256", "certificate_manifest_sha256", "strong_left_attestation", "strong_left_attestation_sha256"):
+            for name in ("binding", "support_sha256", "certificate_manifest_sha256", "strong_left_attestation", "strong_left_attestation_sha256", "native_recovery_binding_sha256", "native_recovery_audit"):
                 if name in raw:
                     check[name] = copy.deepcopy(raw[name])
         check["stages"] = []
@@ -300,23 +395,17 @@ def build_execution(pub, task, native, itp_root, model_root, transition_mapping=
         need(model["locked_goal_and_helper_sha256"]["Goal.v"] == task["original_goal_sha256"], "Model Goal changed")
         for dep in dependencies:
             need(model["locked_goal_and_helper_sha256"][Path(dep["path"]).name] == dep["sha256"], "Model dependency changed")
-    compile_cost = stage_totals([s for c in checks for s in c["stages"] if not s["stage"].startswith("kernel_replay")])
-    kernel_cost = stage_totals([s for c in checks for s in c["stages"] if s["stage"].startswith("kernel_replay")])
-    agent = {"wall_seconds": sum(m["wall_seconds"] for m in models),
-             "peak_process_resident_bytes": max(m["resources"]["max_process_peak_working_set_bytes"]
-                if "max_process_peak_working_set_bytes" in m["resources"] else m["resources"]["max_process_rss_kib"] * 1024 for m in models),
-             "tokens": sum(u["input_tokens"] + u["output_tokens"] for m in models for u in m["token_usage"]),
-             "model_calls": len(models)}
-    missing = [{"execution_index": index, "case": row["case"], "strategy": row["strategy"], "spatial_smt": row["spatial_smt"],
-                "check_attempt": c["attempt"], "stage": s["stage"], "field": "resources.max_process_rss_kib",
+    metrics = execution_metrics(models, checks)
+    missing = []
+    for check in checks:
+        if check.get("schema") == INTERRUPTION_SCHEMA:
+            missing.extend(check["missing_measurements"])
+        else:
+            missing.extend({"execution_index": index, "case": row["case"], "strategy": row["strategy"], "spatial_smt": row["spatial_smt"],
+                "check_attempt": check["attempt"], "stage": stage["stage"], "field": "resources.max_process_rss_kib",
                 "reason": "Original failed stage did not retain RSS; later reruns cannot replace it.",
-                "wall_seconds": s["wall_seconds"], "exit_code": s["exit_code"], "log_sha256": s["log_sha256"]}
-               for c in checks for s in c["stages"] if (s.get("resources") or {}).get("max_process_rss_kib") is None]
-    peak_values = [agent["peak_process_resident_bytes"]] + [v["observed_peak_rss_lower_bound_kib"] * 1024 for v in (compile_cost, kernel_cost) if v["observed_peak_rss_lower_bound_kib"] is not None]
-    totals = {"wall_seconds": agent["wall_seconds"] + compile_cost["wall_seconds"] + kernel_cost["wall_seconds"],
-              "peak_process_resident_bytes": None if missing else max(peak_values),
-              "observed_peak_rss_lower_bound_bytes": max(peak_values), "resource_metrics_complete": not missing,
-              "tokens": agent["tokens"], "model_calls": len(models), "check_attempts": len(checks)}
+                "wall_seconds": stage["wall_seconds"], "exit_code": stage["exit_code"], "log_sha256": stage["log_sha256"]}
+                for stage in check["stages"] if (stage.get("resources") or {}).get("max_process_rss_kib") is None)
     receipt = {"schema": "tespec-canonical-execution-itp/v1", "status": "PASS", "group": GROUP,
         "resource_metrics_complete": not missing, "missing_measurements": missing,
         "controller_notes": controller_notes, "measurement_environment": MEASUREMENT_ENVIRONMENT,
@@ -326,13 +415,14 @@ def build_execution(pub, task, native, itp_root, model_root, transition_mapping=
         "goal": goal, "candidate": candidate, "proof_files": proof_files, "dependencies": dependencies,
         "selected_goals": task["residual_vcs"], "model_attempts": models, "checks": checks,
         "selected_check_sha256": selected_check["controller_receipt_sha256"],
-        "metrics": {"agent": agent, "coq_compile_and_assumption_audit": compile_cost,
-                    "independent_kernel_check": kernel_cost, "total": totals},
+        "metrics": metrics,
         "scope": "One execution and all original residual VCs; every repair attempt counted. Independent full kernel replay per execution; proof deduplication shares storage only."}
     namespace = "abi-context/" if strong else ""
     if strong:
         need(digest(proof_dir / "manifest.json") == task["certificate_manifest_sha256"], "Selected strong certificate manifest changed")
         receipt.update(proof_profile=PROFILE, abi_context=context, strong_template=task["strong_template"],
+            native_row_index=task["native_row_index"], proof_native_row_index=proof_row_index,
+            original_native_results_sha256=native["_sha256"], baseline_native_results_sha256=baseline_native["_sha256"],
             support=reference(ROOT / SUPPORT_PATH),
             original_manifest=pub.object(Path(task["original_manifest"]), "native-manifest.json"),
             certificate_manifest=pub.object(proof_dir / "manifest.json", "certificate-manifest.json"),
@@ -340,6 +430,9 @@ def build_execution(pub, task, native, itp_root, model_root, transition_mapping=
             strong_left_attestation_sha256=final["strong_left_attestation_sha256"],
             active_metrics=copy.deepcopy(receipt["metrics"]), active_missing_measurements=copy.deepcopy(missing),
             active_resource_metrics_complete=not missing, legacy_cost_receipts=[])
+        receipt["missing_measurements"] = [{**m, "proof_context": "active"} for m in missing]
+        if native_recovery is not None:
+            receipt["native_recovery"] = native_recovery
         if transition_mapping is not None:
             need(transition_mapping["active_itp_execution_index"] == index and transition_mapping["active_native_row_index"] == task["native_row_index"], "Legacy cost mapping targets another active task")
             legacy = transition_mapping["legacy_itp_receipt"]
@@ -365,13 +458,18 @@ def aggregate_itp(receipts):
         values = [r["metrics"][name] for r in receipts]
         peaks = [v["peak_process_resident_bytes"] if "peak_process_resident_bytes" in v
                  else (v["peak_process_rss_kib"] * 1024 if v["peak_process_rss_kib"] is not None else None) for v in values]
-        total_time, tokens = sum(v["wall_seconds"] for v in values), sum(v["tokens"] for v in values)
+        time_complete = all(v["wall_seconds"] is not None for v in values)
+        total_time = sum(v["wall_seconds"] for v in values) if time_complete else None
+        tokens = sum(v["tokens"] for v in values)
         result["stages"][name] = {
-            "wall_seconds_total": total_time, "wall_seconds_mean": total_time / len(values),
+            "wall_seconds_total": total_time, "wall_seconds_mean": total_time / len(values) if total_time is not None else None,
             "peak_process_memory_mib_mean": statistics.mean(peaks) / 1048576 if all(v is not None for v in peaks) else None,
             "peak_process_memory_mib_max": max(peaks) / 1048576 if all(v is not None for v in peaks) else None,
             "resource_metrics_complete": all(v is not None for v in peaks),
             "tokens_total": tokens, "tokens_mean": tokens / len(values)}
+        if not time_complete:
+            lower = sum(v.get("known_wall_seconds_lower_bound", v.get("wall_seconds")) or 0 for v in values)
+            result["stages"][name].update(wall_time_complete=False, known_wall_seconds_lower_bound_total=lower, known_wall_seconds_lower_bound_mean=lower / len(values))
     result["resource_metrics_complete"] = all(r.get("resource_metrics_complete") is True for r in receipts)
     result["missing_measurements"] = [m for r in receipts for m in r.get("missing_measurements", [])]
     result["metric_scope"] = ("Every attempt counted once; one execution and all original residual VCs is one ITP. "
@@ -391,7 +489,7 @@ def csv_bytes(rows, fields):
 def cost_row(tool, stage, seconds, peak, tokens, source, unit="每次执行均值；内存为逐次峰值均值"):
     return {"tool": tool, "stage": stage, "unit": unit, "wall_seconds": seconds,
             "peak_process_memory_mib": peak, "tokens": tokens, "estimated": False,
-            "status": "MEASURED" if peak is not None else "PARTIAL_MISSING_RSS", "source": source}
+            "status": "PARTIAL_MISSING_METRICS" if seconds is None else "MEASURED" if peak is not None else "PARTIAL_MISSING_RSS", "source": source}
 
 
 def mode_statistics(rows, receipts):
@@ -416,7 +514,7 @@ def mode_statistics(rows, receipts):
     return result
 
 
-def prepare(itp_root, model_root, native_path):
+def prepare(itp_root, model_root, native_path, task_overrides=None):
     layout_audit = ROOT / "benchmark/results/tespec-unexpected/singleton-external-layout.json"
     if layout_audit.is_file() and load(layout_audit).get("status") == "OPEN":
         raise ValueError(
@@ -431,6 +529,17 @@ def prepare(itp_root, model_root, native_path):
     require_hash(native_path, inventory["native_result_sha256"], "native snapshot")
     native["_sha256"] = digest(native_path)
     tasks = sorted(inventory["tasks"], key=lambda t: t["execution_index"])
+    overrides = None
+    if task_overrides is not None:
+        overrides = load(task_overrides)
+        need(overrides.get("schema") == "tespec-singleton-task-overrides/v1" and overrides.get("original_tasks_sha256") == digest(tasks_path) and overrides.get("baseline_native_results_sha256") == native["_sha256"], "Native task override envelope differs from original inventory")
+        replaced = {t["execution_index"]: t for t in overrides["overrides"]}
+        need(set(replaced) == {4, 5, 8, 9, 10, 13} and len(replaced) == len(overrides["overrides"]), "Recovery overrides must cover exactly the six unstarted tasks")
+        for position, task in enumerate(tasks):
+            if task["execution_index"] in replaced:
+                new = replaced[task["execution_index"]]
+                need(new["native_source"]["original_task"] == task, "Override changes the original immutable task")
+                tasks[position] = new
     need([t["execution_index"] for t in tasks] == list(range(14)), "Expected exactly 14 independent tasks")
     need(len(native["runs"]) == 28 and native["case_pairs"] == 7
          and native["input_evidence_unchanged"] is True and not native["changed"], "Native coverage/source audit incomplete")
@@ -479,6 +588,7 @@ def prepare(itp_root, model_root, native_path):
         receipt, receipt_ref = build_execution(pub, task, native, itp_root, model_root, transition_map.get(task["native_row_index"]))
         receipts.append(receipt)
         by_row[task["native_row_index"]] = receipt_ref
+    receipts_by_row = {r["native_row_index"]: r for r in receipts}
     rows = []
     for position, raw in enumerate(native["runs"]):
         row = {k: copy.deepcopy(v) for k, v in raw.items() if k not in {"vc_files", "report", "itp", "spatial"}}
@@ -486,6 +596,12 @@ def prepare(itp_root, model_root, native_path):
             m = transition_map[position]
             row["native_attempts"] = [copy.deepcopy(m["legacy_native_stage"]), copy.deepcopy(m["active_native_stage"])]
             row["context_transition_execution_key"] = m["execution_key"]
+            proof = receipts_by_row.get(position)
+            if proof and proof.get("native_recovery"):
+                stage = proof["native_recovery"]["audit"]["new_native_stage"]
+                row["native_attempts"].append({"wall_seconds": stage["wall_seconds"], "peak_process_rss_kib": stage["resources"]["max_process_rss_kib"], "tokens": stage["tokens"], "model_calls": stage["model_calls"], "command_sha256": canonical_sha(stage["command"]), "report_sha256": stage["report_sha256"]})
+                row["proof_native_results_sha256"] = proof["original_native_results_sha256"]
+                row["proof_native_row_index"] = proof["proof_native_row_index"]
         row["vc_sha256"] = {name: entry["sha256"] for name, entry in raw["vc_files"].items()}
         if raw.get("spatial") is not None:
             row["spatial"] = copy.deepcopy(raw["spatial"])
@@ -498,6 +614,8 @@ def prepare(itp_root, model_root, native_path):
         row["matches_expected"] = row["final_status"] == row["expected"]
         rows.append(row)
     need(all(r["matches_expected"] for r in rows), "Final mismatch remains")
+    shared_setup = prepare_shared_setup(pub, transition, task_overrides)
+    workload = group_workload(rows, receipts, shared_setup)
     statistics_itp, modes = aggregate_itp(receipts), mode_statistics(rows, receipts)
     resources_complete = statistics_itp["resource_metrics_complete"]
     missing = statistics_itp["missing_measurements"]
@@ -512,6 +630,7 @@ def prepare(itp_root, model_root, native_path):
         "complete": resources_complete, "verdict_complete": True, "resource_metrics_complete": resources_complete,
         "missing_measurements": missing,
         "measurement_environment": MEASUREMENT_ENVIRONMENT,
+        "group_shared_setup": shared_setup, "tespec_group_workload": workload,
         "repository_commit": native["repository_commit"], "plan_sha256": digest(plan_path),
         "source_refs": [{"path": path, "sha256": value} for path, value in sorted(sources.items())],
         "input_identity": native["input_identity"], "input_evidence_unchanged": True,
@@ -529,6 +648,9 @@ def prepare(itp_root, model_root, native_path):
         evaluation.update(proof_profile=PROFILE, context_transition=transition_ref,
             abi_context=tasks[0]["abi_context"], semantic_review=reference(layout_audit),
             native_cost_scope="Each logical execution includes legacy and ABI native attempts once; input denominator unchanged.")
+    if overrides is not None:
+        evaluation["task_overrides"] = pub.object(task_overrides, "tasks-overrides.json")
+        evaluation["original_task_inventory"] = pub.object(tasks_path, "original-tasks.json")
     evaluation_ref = pub.json(CANONICAL, evaluation, compact=True)
     latest = {"evidence": evaluation_ref["path"], "sha256": evaluation_ref["sha256"], "case_pairs": 7,
               "executions": 28, "complete": resources_complete, "verdict_complete": True,
@@ -564,7 +686,7 @@ def prepare(itp_root, model_root, native_path):
     need([r["tool"] for r in previous_costs[:8]] == ["cn", "qcp", "qcp", "qcp", "qcp", "qcp", "fulminate", "fulminate"],
          "Historical tool rows changed")
     if table.get("canonical_evaluation"):
-        need(len(previous_costs) == 16 and "historical_attempts" in table, "Partial publication cost layout changed")
+        need(len(previous_costs) in (16, 17, 18) and "historical_attempts" in table, "Partial publication cost layout changed")
         require_hash(ROOT / table["canonical_evaluation"]["path"], table["canonical_evaluation"]["sha256"], "previous canonical publication")
     else:
         need(len(previous_costs) == 33, "Historical table changed; review cost partition before publication")
@@ -581,12 +703,17 @@ def prepare(itp_root, model_root, native_path):
         table["costs"].append(cost_row("tespec inline ITP", label, value["wall_seconds_mean"],
             value["peak_process_memory_mib_mean"], value["tokens_mean"], rel(BASE / "tespec/statistics.json"),
             "14 次独立执行 ITP 的均值；含所有失败尝试；内存为逐执行峰值均值"))
+    for name, setup_stage in shared_setup.items():
+        label = "确定性 ABI 库准备" if name == "context_preparation" else "文件系统恢复后证书准备"
+        source = transition_ref["path"] if name == "context_preparation" else setup_stage["receipt"]["path"]
+        table["costs"].append(cost_row("tespec group setup", label, setup_stage["wall_seconds"], setup_stage["peak_process_rss_kib"] / 1024, setup_stage["tokens"], source, "每组一次；不纳入逐执行 ITP 均值"))
     for result in table["results"]:
         if result["tool"] == "tespec":
             result.update(result="7/7; 28/28 configurations", test_pairs=7, expected_matches=7,
                           executions=28, expected_execution_matches=28)
     table.update(complete=resources_complete, verdict_complete=True, resource_metrics_complete=resources_complete,
         missing_measurements=missing, measurement_environment=MEASUREMENT_ENVIRONMENT, canonical_evaluation=evaluation_ref, latest_native_recheck=latest,
+        group_shared_setup=shared_setup, tespec_group_workload=workload,
         itp_statistics=statistics_itp, test_modes={"statistics": rel(BASE / "tespec/statistics.json"), "modes": modes},
         evaluation_notes=["CN 与 QCP 复用源与依赖哈希匹配的主程序验证证据；分配器规约是共同的外部假设。",
             "7 个原有合法输入，inline/modular × 空间 SMT OFF/ON 共 28 次执行。14 次 inline 原生 UNKNOWN 各自完成独立 ITP；modular 14 次原生 PASS。",
@@ -625,9 +752,9 @@ def prepare(itp_root, model_root, native_path):
         lines.append("| " + " | ".join([cost["tool"], cost["stage"], display(cost["wall_seconds"]),
             display(cost["peak_process_memory_mib"]), display(cost["tokens"]), cost["unit"]]) + " |")
     if missing:
-        lines += ["", "成本缺口：以下失败尝试的时间实际测得，但原始采集未保存 RSS；后续成功重跑不能补写本次峰值，因此完整内存均值保持缺失。"]
+        lines += ["", "成本缺口：以下历史失败的时间或 RSS 未完整保留；后续成功重放不能补写，缺项保持 null，已知时间只作为下界。"]
         for item in missing:
-            lines.append(f"- execution-{item['execution_index']:02d} / {item['check_attempt']} / {item['stage']}：{item['exit_code']}，{item['wall_seconds']:.6f} 秒，RSS 缺失。")
+            lines.append(f"- execution-{item['execution_index']:02d} / {item['check_attempt']} / {item['stage']}：{item['field']} 缺失，已知 wall={display(item.get('wall_seconds'))} 秒。")
     if strong:
         lines += ["", "证明上下文：当前 teSpec 直接证明显式目标 ABI 下原始左侧 Dll 蕴含及父 VC；旧 QCP 证书仍属于旧抽象地址谓词上下文。两者等价性未获证明，不能将旧 QCP 证书解释成新 ABI 谓词的全称证明。原生费用包含旧、新上下文各一次执行，ITP 费用包含两种上下文所有修复尝试，输入分母不变。"]
     lines += ["", "QCP 原始 4 个目标中 1 个 Closed、3 个使用原有 `eval_addr_expr` 参数；没有新增证明公理。测试 ITP 的允许假设、身份检查及完整审计文本逐收据保留。",
@@ -743,17 +870,18 @@ def main():
     parser.add_argument("--itp-root", required=True, type=Path)
     parser.add_argument("--model-root", required=True, type=Path)
     parser.add_argument("--native-results", required=True, type=Path)
+    parser.add_argument("--task-overrides", type=Path, help="Exact native recovery task overrides; original 14-task inventory stays immutable")
     parser.add_argument("--apply", action="store_true", help="Write, audit and then update global indices; otherwise read-only preflight")
     parser.add_argument("--allow-partial", action="store_true", help="Explicitly publish proved verdicts with disclosed failed-attempt cost gaps; never count the group complete")
     args = parser.parse_args()
-    pub, evaluation, index = prepare(args.itp_root.resolve(), args.model_root.resolve(), args.native_results.resolve())
+    pub, evaluation, index = prepare(args.itp_root.resolve(), args.model_root.resolve(), args.native_results.resolve(), args.task_overrides.resolve() if args.task_overrides else None)
     if not args.apply:
         print(json.dumps({"preflight": "PASS", "files_planned": len(pub.files), "writes": 0,
                           "verdict_complete": True, "resource_metrics_complete": evaluation["resource_metrics_complete"],
                           "missing_measurements": evaluation["missing_measurements"]}, ensure_ascii=False))
         return
     need(evaluation["complete"] or args.allow_partial,
-         "All verdicts proved but failed-attempt RSS is missing; default publication refused. --allow-partial retains this gap and does not increase complete groups.")
+         "All verdicts proved but historical attempt time/RSS is missing; default publication refused. --allow-partial retains this gap and does not increase complete groups.")
     before = pub.apply()
     globals_before, globals_pub = None, None
     try:
