@@ -139,7 +139,7 @@ def run_source(
 def status_counts(report: dict[str, Any]) -> dict[str, int]:
     return {
         name: int(report["summary"][name])
-        for name in ("PASS", "FAIL", "UNKNOWN", "ERROR")
+        for name in ("PASS", "FAIL", "CRASH", "UNKNOWN", "ERROR")
     }
 
 
@@ -231,7 +231,7 @@ def main() -> int:
             counts = status_counts(report)
             if counts["ERROR"]:
                 classification = "invalid"
-            elif counts["FAIL"]:
+            elif counts["FAIL"] or counts["CRASH"]:
                 classification = "killed"
             elif counts["UNKNOWN"]:
                 classification = "unresolved"
@@ -239,13 +239,15 @@ def main() -> int:
                 classification = "survived"
             for result in report["results"]:
                 if (
-                    reference_by_id[result["id"]]["status"] == "PASS"
-                    and result["status"] == "FAIL"
+                    classification == "killed"
+                    and reference_by_id[result["id"]]["status"] == "PASS"
+                    and result["status"] in {"FAIL", "CRASH"}
                 ):
                     negative_examples.append(
                         {
                             "mutant": mutant.name,
                             "bind_id": result["id"],
+                            "status": result["status"],
                             "reason": result.get("reason"),
                             "mutant_source_sha256": sha256(mutant),
                             "report": artifact_path(

@@ -8,7 +8,7 @@
 3. 目标函数及可选的 named spec；
 4. 若干组 `binds`，每组 bind 就是一条具体测试用例。
 
-输出按 bind 给出 `PASS / FAIL / UNKNOWN / ERROR`，并保存特化源文件、QCP
+输出按 bind 给出 `PASS / FAIL / CRASH / UNKNOWN / ERROR`，并保存特化源文件、QCP
 日志和 Coq VC。核心框架完全确定性，不调用大模型。
 
 ## 执行语义
@@ -231,7 +231,12 @@ constructor 的多态实参；`type_args` 用于明确记录/校验输入意图�
 - `PASS`：QCP/SMT 已关闭全部 VC；
 - `FAIL`：QCP 得到确定的不一致 obligation；
 - `UNKNOWN`：路径上限、求解/证明超时或尚未关闭的 VC，不等于 spec 错误；
-- `ERROR`：job、parser、执行器或环境错误。
+- `CRASH` 表示在已判定 SAT 的入口下，执行某个被测操作时确认了运行安全违规。已经反证的安全性 VC（例如除零）给出 `invalid_safety_vc`。对于权限违规，报告的 `reason` 区分缺读权限（`missing_read_permission`）、缺写权限（`missing_write_permission`）、读未初始化单元（`uninitialized_read`）或缺被调规约所要求的资源（`missing_call_permission`）。权限尚无法判定时，整例为 `UNKNOWN`。
+- `ERROR` 表示输入、parser、执行器、依赖或报告协议故障。执行器进程收到异常信号也属于此类。
+
+例如，从 `Require emp` 进入后执行 `return *p;` 可以得到 `CRASH`。调用 `free(p)` 时，若其合同要求拥有 `p` 对应的单元，而当前路径可确认缺少该资源，则报 `CRASH / missing_call_permission`。这里的权限由当前测试规约和执行策略确定，即使这个地址在宿主机器上可读，也不足以满足该规约的访问要求。
+
+统计整次测试时读取 `results[].status`。另一个字段 `test_result` 记录原始证明义务的三值合取。权限错误中止执行、且此前没有 VC 被反证时，它是 `UNKNOWN`。若已有 VC 被反证，它是 `FAIL`。两种情况下，已确认权限违规的整次执行都报 `CRASH`。
 
 已知输出目录的重试会先撤下旧 `report.json`，不删除原证明产物。程序、job 和外置规约的
 哈希来自实际读取的字节；发布报告前复核这些输入及执行器二进制，执行中发生变更或

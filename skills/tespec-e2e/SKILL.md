@@ -86,8 +86,11 @@ Run all 30 tests on the original body. Classify evidence strictly:
 - `PASS`: this bind does not violate the candidate spec.
 - `FAIL`: inspect the actual reference transition; correct the spec when its
   heap relation, old-state relation, or postcondition is wrong.
-- `ERROR / bindings_violate_require`: repair or replace the bind, not the
-  implementation.
+- `FAIL / bindings_violate_require` means the bind does not satisfy the entry condition.
+  Repair or replace that bind.
+- `CRASH` identifies a confirmed unsafe operation under an admitted entry.
+  Inspect the operation and its required resources.
+- `ERROR` indicates a tool or input-processing failure.
 - `UNKNOWN`: increase finite bounds or complete a real residual proof; never
   treat it as evidence that the spec is correct or incorrect.
 
@@ -126,8 +129,8 @@ python3 "$TESPEC_ROOT/skills/tespec-e2e/scripts/run_mutation_matrix.py" \
   --spec-version vNNN
 ```
 
-A negative example requires `PASS` on the reference and `FAIL` on the mutant
-for the same bind. Never include `UNKNOWN`, `ERROR`, an invalid mutant, or an
+A negative example requires `PASS` on the reference and either `FAIL` or a
+confirmed `CRASH` on the mutant for the same bind. Never include `UNKNOWN`, `ERROR`, an invalid mutant, or an
 unconfirmed behavioral claim in `negative-examples.json`.
 
 ## 7. Correct weak specs without hiding overfitting

@@ -403,9 +403,11 @@ class RunCertificateTests(unittest.TestCase):
     def test_other_cases_keep_their_automatic_verdicts(self):
         other = copy.deepcopy(self.case)
         other.update(id="y", status="ERROR", reason="qcp_execution_error")
-        result, calls = self.check(self.prepare([self.case, other]))
+        crashed = {**other, "id": "z", "status": "CRASH", "reason": "missing_read_permission"}
+        result, calls = self.check(self.prepare([self.case, other, crashed]))
         self.assertEqual(calls, 1)
-        self.assertEqual([r["status"] for r in result["results"]], ["PASS", "ERROR"])
+        self.assertEqual([r["status"] for r in result["results"]], ["PASS", "ERROR", "CRASH"])
+        self.assertEqual(result["summary"]["CRASH"], 1)
 
     def test_unknown_without_residual_vc_stays_unknown(self):
         self.case["residual_vcs"] = []

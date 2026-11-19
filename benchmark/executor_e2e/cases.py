@@ -916,37 +916,48 @@ def scenarios():
         },
     )
     add("declaration_spec_missing", "declarations", "int sample(void);", error)
+
+    def crash(reason):
+        return {
+            "overall": "CRASH", "precondition": "SAT", "reason": reason,
+            "negative": True, "negative_kind": None,
+            "expect_artifacts": reason == "invalid_safety_vc",
+        }
+
     add(
         "unowned_read",
         "c_safety",
         "int sample(int *p) /*@ Require emp Ensure emp */ { return *p; }",
-        error,
+        crash("missing_read_permission"),
     )
     add(
         "unowned_write",
         "c_safety",
         "int sample(int *p) /*@ Require emp Ensure emp */ { *p=3; return 0; }",
-        error,
+        crash("missing_write_permission"),
+    )
+    add(
+        "release_missing_one_of_two_resources",
+        "c_safety",
+        "void release_pair(int *p, int *q) "
+        "/*@ Require undef_data_at(p,int) * undef_data_at(q,int) Ensure emp */; "
+        "int sample(int *p, int *q) "
+        "/*@ Require p == 4096 && q == 4100 && data_at(q,int,3) Ensure emp */ "
+        "{ release_pair(p, q); return 0; }",
+        crash("missing_call_permission"),
     )
     add(
         "escaping_local_dereference",
         "c_safety",
         "int *f(void) { int x=7; return &x; } int sample(void) /*@ Require emp Ensure emp */ { int *p=f(); return *p; }",
-        error,
+        crash("missing_read_permission"),
     )
     add(
         "one_past_array_read",
         "c_safety",
         '#include "verification_list.h"\nint sample(int *p) /*@ Require IntArray::full(p,1,cons(3,nil)) Ensure emp */ { return p[1]; }',
-        error,
+        crash("missing_read_permission"),
     )
-    bad_safety = {
-        "overall": "UNKNOWN",
-        "precondition": "SAT",
-        "safety": "UNKNOWN",
-        "negative": True,
-        "negative_kind": "safety_checker_wit",
-    }
     for name, body in [
         ("division_by_zero", "int x=1; int y=0; return x/y;"),
         ("remainder_by_zero", "int x=1; int y=0; return x%y;"),
@@ -961,6 +972,6 @@ def scenarios():
             name,
             "c_safety",
             "int sample(void) /*@ Require emp Ensure emp */ { " + body + " }",
-            error if name == "negative_shift" else bad_safety,
+            crash("invalid_safety_vc"),
         )
     return checks

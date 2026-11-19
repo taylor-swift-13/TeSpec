@@ -222,7 +222,14 @@ def audit_current_group(group,root,index=None,allow_partial=False):
  index=load(base/'index.json') if index is None else index
  data=load(ref(root,index['current_evaluation']))
  need(data['schema']==SCHEMA and data['program_group']==group,'Wrong current group/schema')
- plan=load(ref(root,data['plan']));manifest=load(root/'benchmark/programs'/group/'manifest.json')
+ plan_path=ref(root,data['plan'])
+ plan=load(plan_path);manifest=load(root/'benchmark/programs'/group/'manifest.json')
+ if 'tespec_fault_oracle' in data:
+  from current_test_plan import load_current_plan
+  plan,oracle_hash=load_current_plan(plan_path)
+  need(oracle_hash==sha(ref(root,data['tespec_fault_oracle'])),'Wrong current fault oracle')
+ from current_test_plan import check_current_expectations
+ check_current_expectations(plan)
  sources={}
  for item in manifest['variants']:
   v=load(root/item['manifest'])
@@ -253,7 +260,7 @@ def audit_current_group(group,root,index=None,allow_partial=False):
  for pair in plan['pairings']:
   for case in pair['cases']:
    k=(pair['cn_variant'],case['id']);need(k not in cases and case['precondition_valid'],'Duplicate/illegal case')
-   need(case['expected'] in ['PASS','FAIL','ERROR'],'UNKNOWN is not an admissible semantic expectation')
+   need(case['expected'] in ['PASS','FAIL','ERROR','CRASH'],'UNKNOWN is not an admissible semantic expectation')
    cases[k]=(case,pair)
    for strategy in ['inline','modular']:
     for mode in ['off','on']:expected_keys.add((*k,strategy,mode))
@@ -291,8 +298,12 @@ def audit_current_group(group,root,index=None,allow_partial=False):
    case,pair=cases[(vid,r['case_id'])]
    need(r['input']==case['binds'] and r['source_sha256']==sha(sources[pair['qcp_variant']]['qcp']),'Shared execution changed source/input')
    expected=case.get('expected_by_execution_strategy',{}).get(r['strategy'],case.get('expected_by_tool',{}).get('tespec_'+r['spatial_smt'],case['expected']))
-   need(expected in ['PASS','FAIL','ERROR'],'UNKNOWN cannot count as an expected successful result')
+   need(expected in ['PASS','FAIL','ERROR','CRASH'],'UNKNOWN cannot count as an expected successful result')
    need(expected==r['expected'],'Frozen expected changed')
+   if expected=='CRASH' and r['final_status']=='CRASH':
+    from current_test_plan import matches_crash
+    need(r['raw_status']=='CRASH' and matches_crash(r | {'status':r['raw_status']}, case.get('expected_crash_fault_code')),
+         'Missing CRASH evidence for this case')
   if r.get('certificate'):
    p=audit_certificate(root,r['certificate'],measures,'test',seen_models,seen_checks);itps+=1
    need(p['execution_id']==r['execution_id'] and p['native_receipt_sha256']==r['native_receipt_sha256'],'ITP/native execution binding differs')
@@ -304,7 +315,7 @@ def audit_current_group(group,root,index=None,allow_partial=False):
   if r['final_status']=='PASS':need(r['execution_completed'] and r['precondition_result']=='SAT' and (not r['residual_vcs'] or r.get('certificate')),'Incomplete execution accepted')
   if r['final_status']!='UNKNOWN' and r['final_status']==r['expected']:resolved+=1
   else:
-   need(r.get('unexpected_ref') and r['final_status'] in ['UNKNOWN','ERROR','FAIL','PASS'],'Unrecorded mismatch')
+   need(r.get('unexpected_ref') and r['final_status'] in ['UNKNOWN','ERROR','CRASH','FAIL','PASS'],'Unrecorded mismatch')
    ref(root,r['unexpected_ref'])
  need(seen==expected_keys,'Missing input/strategy/mode coverage')
  need(len(data['executions'])==data['actual_executions'] and len(cases)==data['paired_inputs'],'Wrong denominator')

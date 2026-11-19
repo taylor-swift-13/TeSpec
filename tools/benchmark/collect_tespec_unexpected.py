@@ -22,7 +22,7 @@ def make_issue(group,row,mode,measurement,final=None,itp=None):
     key=json.dumps(keyparts,sort_keys=True);issue=hashlib.sha256(key.encode()).hexdigest()[:20]
     p=evidence_path(measurement['report']) if measurement.get('report') else None;report=read(p) if p and p.exists() else {};case=(report.get('results') or [{}])[0]
     assert case.get('status',actual)==actual, 'Aggregate/raw automatic status mismatch: '+issue
-    classification='RESOLVED_AUTOMATIC_GAP' if final_matches else 'UNRESOLVED_UNKNOWN' if actual=='UNKNOWN' else 'UNEXPECTED_ACCEPTANCE' if actual=='PASS' else 'UNEXPECTED_REJECTION' if actual=='FAIL' else 'UNEXPECTED_EXECUTOR_ERROR'
+    classification='RESOLVED_AUTOMATIC_GAP' if final_matches else 'UNRESOLVED_UNKNOWN' if actual=='UNKNOWN' else 'UNEXPECTED_ACCEPTANCE' if actual=='PASS' else 'UNEXPECTED_REJECTION' if actual=='FAIL' else 'UNEXPECTED_CRASH' if actual=='CRASH' else 'UNEXPECTED_EXECUTOR_ERROR'
     if final_matches and actual=='ERROR' and row.get('_resolution'):classification='RESOLVED_CONFIGURATION_ERROR'
     vc=[]
     if p and p.exists():

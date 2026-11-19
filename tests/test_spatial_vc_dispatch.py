@@ -103,6 +103,23 @@ class SpatialVcDispatchTests(unittest.TestCase):
                     )
                     self.assertEqual({key: result[key] for key in before}, before)
 
+    def test_only_eligible_invalid_safety_obligations_are_crashes(self):
+        for complete in (True, False):
+            with self.subTest(complete=complete):
+                case, raw = spatial_tests.sample()
+                case["vc_results"][0]["kind"] = "safety"
+                raw["spec_test"]["vc_results"] = deepcopy(case["vc_results"])
+                case["execution_completed"] = complete
+                with patch("spectest.spatial_smt._solve_record",
+                           return_value={"status": "INVALID", "reason": "checked_countermodel"}):
+                    result, _ = self.apply(case, raw)
+                self.assertEqual(result["vc_results"][0]["status"], "INVALID")
+                self.assertEqual(result["status"], "CRASH" if complete else "UNKNOWN")
+                if complete:
+                    self.assertEqual(result["test_result"], "FAIL")
+                    self.assertEqual(result["reason"], "invalid_safety_vc")
+                    self.assertFalse(result["satisfied"])
+
     def test_modular_loop_return_reaches_solver_and_can_decide(self):
         for goal, expected in ((spatial_tests.PRE, "PASS"), (spatial_tests.EMPTY, "FAIL")):
             with self.subTest(expected=expected):

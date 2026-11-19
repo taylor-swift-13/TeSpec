@@ -117,7 +117,7 @@ def main() -> int:
             }
         reports.append(report)
 
-    totals = {status: 0 for status in ("PASS", "FAIL", "UNKNOWN", "ERROR")}
+    totals = {status: 0 for status in ("PASS", "FAIL", "CRASH", "UNKNOWN", "ERROR")}
     bind_count = 0
     manual_residual_count = 0
     unexpected_unknown_count = 0
@@ -175,6 +175,7 @@ def main() -> int:
         0
         if (
             totals["FAIL"] == 0
+            and totals["CRASH"] == 0
             and totals["ERROR"] == 0
             and unexpected_unknown_count == 0
             and manual_gate_passed

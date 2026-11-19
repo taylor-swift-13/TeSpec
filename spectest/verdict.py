@@ -11,6 +11,16 @@ from .modes import (
 )
 
 
+CASE_STATUSES = ("PASS", "FAIL", "UNKNOWN", "CRASH", "ERROR", "INVALID")
+EXECUTION_FAULT_CODES = frozenset({
+    "missing_read_permission", "missing_write_permission", "uninitialized_read",
+    "missing_call_permission",
+})
+UNRESOLVED_FAULT_CODES = frozenset({
+    "unresolved_read_permission", "unresolved_write_permission", "unresolved_call_permission",
+})
+
+
 def aggregate_test_result(
     precondition: str, vc_states: list[str], *, complete: bool
 ) -> str:
@@ -57,6 +67,12 @@ def _executor_result(
     expected_strategy: str | None = None,
 ) -> dict[str, Any]:
     """Consume executor JSON. Missing fields are explicitly unknown, not success."""
+    # GNU time encodes a signal as 128 + signum. Neither form is a target crash.
+    if returncode < 0 or 128 < returncode < 256:
+        return {
+            "status": "ERROR", "overall": "ERROR", "satisfied": None,
+            "reason": "executor_process_failure",
+        }
     try:
         executor = json.loads(output)
     except json.JSONDecodeError:
@@ -135,7 +151,7 @@ def _executor_result(
     ):
         raise JobError("invalid executor sampling events")
     status = result.get("overall")
-    if status not in {"PASS", "FAIL", "UNKNOWN", "ERROR", "INVALID"}:
+    if status not in CASE_STATUSES:
         raise JobError("invalid structured executor verdict")
     reported_status = status
     vc_results = result.get("vc_results", [])
@@ -152,15 +168,42 @@ def _executor_result(
         or result.get("test_result") not in {"PASS", "FAIL", "UNKNOWN"}
     ):
         raise JobError("incomplete three-valued executor result")
+    diagnostic = executor.get("errormessage")
+    code = diagnostic.get("fault_code") if isinstance(diagnostic, dict) else None
+    fault_code = code if isinstance(code, str) else None
     invalid_vcs = [v for v in vc_results if v["status"] == "INVALID"]
+    if status == "CRASH" and not (
+        fault_code in EXECUTION_FAULT_CODES
+        and returncode == 1 and conjunction and path_vcs
+        and result["scope"] == "execution" and result.get("completed") is False
+        and result["phases"]["precondition"] == result["precondition_result"] == "SAT"
+        and result["test_result"] == ("FAIL" if invalid_vcs else "UNKNOWN")
+        and result.get("limit_reason") is None
+    ):
+        return {
+            "status": "ERROR", "overall": "ERROR", "satisfied": None,
+            "executor_reported_status": reported_status, "executor_error": diagnostic,
+            "reason": "invalid_executor_crash_report",
+        }
     confirmed_fail = (
-        path_vcs
+        reported_status not in {"ERROR", "CRASH"} and path_vcs
         and bool(invalid_vcs)
         and (conjunction or result["phases"]["precondition"] == "SAT")
         and result["scope"] == "execution"
     )
-    entry_unsat = conjunction and result["precondition_result"] == "UNSAT"
-    if confirmed_fail or entry_unsat:
+    confirmed_safety_fault = (
+        confirmed_fail and conjunction and reported_status == "FAIL"
+        and returncode == 0 and result.get("completed") is True
+        and result["precondition_result"] == result["phases"]["precondition"] == "SAT"
+        and not diagnostic and not result.get("limit_reason")
+        and any(v.get("kind") == "safety" for v in invalid_vcs)
+    )
+    entry_unsat = (
+        reported_status != "ERROR" and conjunction and result["precondition_result"] == "UNSAT"
+    )
+    if confirmed_safety_fault:
+        status = "CRASH"
+    elif confirmed_fail or entry_unsat:
         status = "FAIL"
     elif status == "FAIL":
         status = "UNKNOWN"
@@ -215,6 +258,7 @@ def _executor_result(
             "PASS": "qcp_full_auto_passed",
             "INVALID": "bindings_violate_require",
             "ERROR": "qcp_execution_error",
+            "CRASH": fault_code,
             "UNKNOWN": "residual_vc_requires_proof",
             "FAIL": "confirmed_counterexample",
         }[status]
@@ -225,9 +269,15 @@ def _executor_result(
         and not result.get("limit_reason")
     ):
         reason = "precondition_requires_proof"
+    if (status == "UNKNOWN" and fault_code in UNRESOLVED_FAULT_CODES
+            and returncode == 1 and not result.get("limit_reason")):
+        reason = fault_code
     if reported_status == "FAIL" and not confirmed_fail and not entry_unsat:
         reason = "execution_counterexample_not_checked"
-    if confirmed_fail:
+    if confirmed_safety_fault:
+        reason = "invalid_safety_vc"
+        phases["safety"] = "FAIL"
+    elif confirmed_fail:
         reason = "invalid_path_vc"
     if entry_unsat:
         reason = "bindings_violate_require"
@@ -252,7 +302,8 @@ def _executor_result(
         "test_result": test_result,
         "result_semantics": result.get("result_semantics"),
         "executor_reported_status": reported_status,
-        "satisfied": True if status == "PASS" else False if status == "FAIL" else None,
+        "satisfied": (status == "PASS") if status in {"PASS", "FAIL"}
+        or (status == "CRASH" and test_result == "FAIL") else None,
         "reason": reason,
         "phases": phases,
         "scope": result["scope"],
@@ -276,7 +327,7 @@ def _executor_result(
         "residual_vcs": vc["residual_goals"],
         "vc_results": vc_results,
         "evidence": {
-            "decision_backend": "qcp-smt",
+            "decision_backend": "qcp-executor" if reported_status == "CRASH" else "qcp-smt",
             "certificate": "NOT_CHECKED"
             if reported_status == "FAIL"
             else result["certificate"],

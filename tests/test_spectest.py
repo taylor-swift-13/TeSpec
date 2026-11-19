@@ -140,6 +140,92 @@ int f(int n)
         self.assertEqual(result["status"], "ERROR")
         self.assertEqual(result["reason"], "invalid_executor_json")
 
+    def test_permission_faults_require_a_typed_incomplete_execution(self):
+        from copy import deepcopy
+        base = {
+            "schema": "sac-spec-test/v1", "overall": "CRASH", "scope": "execution",
+            "mode": "expand", "certificate": "NOT_CHECKED", "completed": False,
+            "result_semantics": "three-valued-conjunction/v1", "vc_semantics": "path-vc/v1",
+            "precondition_result": "SAT", "test_result": "UNKNOWN",
+            "phases": {"precondition": "SAT", "safety": "UNKNOWN",
+                       "postcondition": "NOT_RUN", "annotations": "NOT_RUN"},
+        }
+        vc = {"status": "not_generated", "residual_goals": []}
+        def decide(spec, code, exit_status=1):
+            diagnostic = {"Main Error Message": "cannot read memory through this pointer"}
+            if code is not None:
+                diagnostic["fault_code"] = code
+            output = json.dumps({"spec_test": spec, "errormessage": diagnostic})
+            return _executor_result(output, exit_status, vc)
+        for code in ("missing_read_permission", "missing_write_permission",
+                     "uninitialized_read", "missing_call_permission"):
+            with self.subTest(code=code):
+                result = decide(base, code)
+                self.assertEqual((result["status"], result["reason"]), ("CRASH", code))
+                self.assertFalse(result["execution_completed"])
+                self.assertEqual(result["test_result"], "UNKNOWN")
+        vcs = [{"kind": "return", "status": "INVALID"},
+               {"kind": "entailment", "status": "UNKNOWN"}]
+        mixed = {**base, "test_result": "FAIL", "vc_results": vcs}
+        crash = decide(mixed, "missing_read_permission")
+        self.assertEqual((crash["status"], crash["reason"], crash["test_result"]),
+                         ("CRASH", "missing_read_permission", "FAIL"))
+        self.assertFalse(crash["satisfied"])
+        self.assertEqual(crash["vc_results"], vcs)
+        for spec in ({**mixed, "test_result": "UNKNOWN"}, {**base, "test_result": "FAIL"}):
+            with self.subTest(inconsistent_crash=spec):
+                self.assertEqual(decide(spec, "missing_read_permission")["status"], "ERROR")
+        error = decide({**mixed, "overall": "ERROR"}, "missing_read_permission")
+        self.assertEqual((error["status"], error["reason"]), ("ERROR", "qcp_execution_error"))
+        self.assertIsNone(error["satisfied"])
+        for code in (None, "unsupported", {}, "unresolved_read_permission"):
+            with self.subTest(bad_code=code):
+                self.assertEqual(decide(base, code)["status"], "ERROR")
+        for changes in ({"completed": True}, {"scope": "specification-only"},
+                        {"precondition_result": "UNKNOWN"}, {"limit_reason": "loop_unroll_limit"}):
+            with self.subTest(changes=changes):
+                self.assertEqual(decide({**base, **changes}, "missing_read_permission")["status"], "ERROR")
+        for exit_status in (0, 3, -11, 139):
+            with self.subTest(exit_status=exit_status):
+                self.assertEqual(decide(base, "missing_read_permission", exit_status)["status"], "ERROR")
+        self.assertEqual(decide({**base, "overall": "ERROR"}, None)["status"], "ERROR")
+        incomplete = deepcopy(base)
+        incomplete.update(overall="UNKNOWN", precondition_result="UNKNOWN")
+        incomplete["phases"]["precondition"] = "UNKNOWN"
+        unresolved = decide(incomplete, "unresolved_read_permission")
+        self.assertEqual((unresolved["status"], unresolved["reason"]),
+                         ("UNKNOWN", "unresolved_read_permission"))
+
+    def test_native_c_safety_counterexample_is_distinct_from_contract_failure(self):
+        def decide(kind, **changes):
+            payload = {
+                "schema": "sac-spec-test/v1", "overall": "FAIL", "scope": "execution",
+                "mode": "expand", "certificate": "NOT_CHECKED", "completed": True,
+                "result_semantics": "three-valued-conjunction/v1", "vc_semantics": "path-vc/v1",
+                "precondition_result": "SAT", "test_result": "FAIL",
+                "phases": {"precondition": "SAT", "safety": "UNKNOWN",
+                           "postcondition": "PASS", "annotations": "NOT_RUN"},
+                "vc_results": [{"kind": kind, "status": "INVALID"}], **changes,
+            }
+            return _executor_result(json.dumps({"spec_test": payload}), 0,
+                                    {"status": "residual", "residual_goals": ["safety_wit"]})
+        fault = decide("safety")
+        self.assertEqual((fault["status"], fault["test_result"], fault["reason"]),
+                         ("CRASH", "FAIL", "invalid_safety_vc"))
+        self.assertEqual(fault["phases"]["safety"], "FAIL")
+        self.assertFalse(fault["satisfied"])
+        # An invalid VC remains available for diagnosis after a tool error.
+        error = decide("safety", overall="ERROR")
+        self.assertEqual((error["status"], error["reason"]), ("ERROR", "qcp_execution_error"))
+        self.assertIsNone(error["satisfied"])
+        self.assertEqual(error["vc_results"][0]["status"], "INVALID")
+        for kind in ("return", "entailment", "which_implies"):
+            with self.subTest(kind=kind):
+                self.assertEqual(decide(kind)["status"], "FAIL")
+        for changes in ({"completed": False}, {"precondition_result": "UNKNOWN"},
+                        {"limit_reason": "loop_unroll_limit"}):
+            self.assertNotEqual(decide("safety", **changes)["status"], "CRASH")
+
     def test_pass_requires_complete_execution_and_all_selected_checks(self):
         import copy
 

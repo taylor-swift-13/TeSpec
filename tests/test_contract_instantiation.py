@@ -266,7 +266,11 @@ class ContractInstantiationTests(unittest.TestCase):
 
     def test_contract_application_does_not_initialize_undefined_resources(self):
         for native, report in self.variants("undef_read"):
-            self.assertEqual(native["overall"], "ERROR", native)
+            # The symbolic contract result need not have a concrete address.
+            # A rejected read is either proved uninitialized or still unresolved.
+            self.assertIn((native["overall"], report["errormessage"].get("fault_code")), {
+                ("CRASH", "uninitialized_read"), ("UNKNOWN", "unresolved_read_permission"),
+            })
             self.assertFalse(native["completed"], native)
             self.assertIn("does not prove readable memory",
                           report["errormessage"]["Main Error Message"])

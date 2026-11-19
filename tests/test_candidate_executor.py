@@ -924,6 +924,24 @@ end."""
                 result = self.run_source(source, mode)
                 self.assertEqual(result["status"], "PASS", result)
 
+    def test_program_crash_and_failed_specification_have_different_verdicts(self):
+        examples = (
+            ("int sample(int *p) /*@ Require p == 4096 && emp Ensure emp */ { return *p; }",
+             "CRASH", "missing_read_permission"),
+            ("int sample(void) /*@ Require emp Ensure emp */ { int d=0; return 3 / d; }",
+             "CRASH", "invalid_safety_vc"),
+            ("int sample(void) /*@ Require emp Ensure emp */ { return 1 << -1; }",
+             "CRASH", "invalid_safety_vc"),
+            ("int sample(void) /*@ Require emp Ensure __return == 3 && emp */ { return 0; }",
+             "FAIL", "invalid_path_vc"),
+        )
+        for source, status, reason in examples:
+            for mode in ("entry-exit", "all-boundaries"):
+                with self.subTest(mode=mode, reason=reason):
+                    result = self.run_source(source, mode)
+                    self.assertEqual((result["status"], result["reason"]), (status, reason))
+                    self.assertEqual(result["precondition_result"], "SAT")
+
     def test_escaped_parameter_slot_is_not_live_after_return(self):
         source = (
             "int **escape(int *p) "
@@ -936,7 +954,9 @@ end."""
         for mode in ("entry-exit", "all-boundaries"):
             with self.subTest(mode=mode):
                 result = self.run_source(source, mode)
-                self.assertEqual(result["status"], "ERROR", result)
+                self.assertIn((result["status"], result["reason"]), {
+                    ("CRASH", "missing_read_permission"), ("UNKNOWN", "unresolved_read_permission"),
+                })
                 self.assertIn(
                     "cannot read memory through this pointer",
                     result["executor_error"]["Main Error Message"],

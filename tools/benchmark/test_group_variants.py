@@ -7,6 +7,7 @@ from evaluation_provenance import snapshot
 from cn_toolchain import installed_identity
 from cn_result_reuse import assert_resume_compatible, assert_fulminate_reuse_compatible, input_files_identity
 from evaluation_expectations import matches as matches_expected
+from current_test_plan import load_current_plan
 
 def compiler_wrapper(plan):
     """Resolve an optional, hash-pinned execution-support compiler wrapper."""
@@ -20,22 +21,42 @@ def compiler_wrapper(plan):
         raise ValueError('Fulminate compiler wrapper hash mismatch')
     return path
 
+def freeze_test_plan(out, planpath, oracle_hash, has_existing_report):
+    out.mkdir(parents=True, exist_ok=True)
+    snapshot_path = out / 'evaluation-plan.executed.json'
+    oracle_snapshot = out / 'tespec-fault-oracle.executed.json'
+    if oracle_hash and has_existing_report and not oracle_snapshot.is_file():
+        raise ValueError('Use a fresh run ID for the new fault oracle')
+    if snapshot_path.is_file():
+        if sha(snapshot_path) != sha(planpath):
+            raise ValueError('A measured run is bound to a different plan')
+    else:
+        shutil.copyfile(planpath, snapshot_path)
+    if oracle_hash:
+        if not oracle_snapshot.exists():
+            shutil.copyfile(planpath.with_name('tespec-fault-oracle.json'), oracle_snapshot)
+        if sha(oracle_snapshot) != oracle_hash:
+            raise ValueError('Existing batch is bound to a different fault oracle')
+    return snapshot_path
+
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--group',required=True);parser.add_argument('--run-id',help='Fresh result batch identifier; defaults to the reviewed plan run_id');a=parser.parse_args()
-    group=ROOT/'benchmark/programs'/a.group;planpath=group/'evaluation-plan.json';plan=json.loads(planpath.read_text());assert plan['program_group']==a.group
+    group=ROOT/'benchmark/programs'/a.group;planpath=group/'evaluation-plan.json';plan,oracle_hash=load_current_plan(planpath);assert plan['program_group']==a.group
     keys=[(pair['cn_variant'],case['id']) for pair in plan['pairings'] for case in pair['cases']]
     assert len(keys)==len(set(keys)), 'Each (CN variant, case id) must identify one target/pairing; use distinct case IDs for different clients'
     for pair in plan['pairings']:
         assert isinstance(pair.get('function',plan['function']),str)
         for case in pair['cases']:
             assert isinstance(case['binds'].get('args',{}),dict) and isinstance(case['binds'].get('values'),dict), 'Every case needs valid args and an explicit values object'
-            assert case['expected'] in ['PASS','FAIL','ERROR'] and case['precondition_valid']
+            assert case['expected'] in ['PASS','FAIL','ERROR','CRASH'] and case['precondition_valid']
     run_id=a.run_id or plan['run_id']
     assert re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]*',run_id),'run_id must be a single directory name'
     out=ROOT/'benchmark/results'/a.group/run_id;variants={}
     wrapper=compiler_wrapper(plan)
     current_toolchain={'input_files_sha256':input_files_identity(ROOT,group),'cn_build':installed_identity(),'cn_sha256':sha(CN),'executor_sha256':sha(ROOT/'bin/tespec-symexec'),'build':json.loads((ROOT/'bin/tespec-symexec.build.json').read_text()),'driver_sha256':sha(Path(__file__)),'compiler_wrapper_sha256':sha(wrapper),'evaluation_source_snapshot':snapshot()}
     guard=out/'toolchain.json'
+    if oracle_hash:
+        current_toolchain['tespec_fault_oracle_sha256'] = oracle_hash
     old_report=out/'results.json'
     if guard.exists():assert_resume_compatible({'toolchain':json.loads(guard.read_text())},current_toolchain)
     elif old_report.exists():assert_resume_compatible(json.loads(old_report.read_text()),current_toolchain)
@@ -43,13 +64,13 @@ def main():
     reuse_path=ROOT/plan['reuse_fulminate_from'] if plan.get('reuse_fulminate_from') else None
     reuse_report=json.loads(reuse_path.read_text()) if reuse_path else None
     if reuse_report:assert_fulminate_reuse_compatible(reuse_report,current_toolchain)
-    snapshot_path=out/'evaluation-plan.executed.json'
-    if snapshot_path.exists():assert sha(snapshot_path)==sha(planpath),'Do not overwrite a measured run with a changed plan'
-    else:save(snapshot_path,plan)
+    snapshot_path = freeze_test_plan(out, planpath, oracle_hash, old_report.exists())
     if not guard.exists():save(guard,current_toolchain)
     for p in (group/'variants').glob('*/manifest.json'):
         v=json.loads(p.read_text());variants[v['id']]=(p,v)
     report={'schema':'tespec-group-finite-evaluation/v1','program_group':a.group,'started_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'evaluation_plan':str(planpath.relative_to(ROOT)),'plan_sha256':sha(planpath),'evaluation_plan_snapshot':str(snapshot_path.relative_to(ROOT)),'toolchain':current_toolchain,'runs':[]}
+    if oracle_hash:
+        report['tespec_fault_oracle']={'path':str((out/'tespec-fault-oracle.executed.json').relative_to(ROOT)), 'sha256':oracle_hash}
     reuse_path=ROOT/plan['reuse_fulminate_from'] if plan.get('reuse_fulminate_from') else None
     reuse_rows={(r['variant'],r['case']):r for r in reuse_report['runs']} if reuse_report else {}
     for pair in plan['pairings']:

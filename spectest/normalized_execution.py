@@ -7,6 +7,7 @@ import subprocess
 
 from .certificates import check_certificate, digest, tree_digest
 from .kernel_replay import KernelReplayCache
+from .verdict import CASE_STATUSES
 from .core import (
     JobError,
     _executor_result,
@@ -217,7 +218,7 @@ def _run_normalized_case(
             completed.returncode,
             {"status": "not_generated", "residual_goals": []},
         )
-        if provisional["status"] not in {"ERROR", "UNKNOWN", "INVALID"}:
+        if provisional["status"] not in {"CRASH", "ERROR", "UNKNOWN", "INVALID"}:
             raise JobError("executor verdict requires a generated Coq context")
     include_dirs = [Path(arg[2:]) for arg in command if arg.startswith("-I")]
     dependencies_source = source_with_local_includes(
@@ -283,7 +284,7 @@ def _run_normalized_case(
             "total": 1,
             **{
                 status: int(result["status"] == status)
-                for status in ("PASS", "FAIL", "UNKNOWN", "ERROR", "INVALID")
+                for status in CASE_STATUSES
             },
             "duration_seconds": elapsed,
             "peak_rss_kb": rss,

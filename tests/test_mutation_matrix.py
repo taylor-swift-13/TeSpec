@@ -51,6 +51,11 @@ class MutationMatrixTests(unittest.TestCase):
                 encoding="utf-8",
             )
 
+            (mutants / "zero_divisor.c").write_text(
+                implementation.replace("return x + 1;", "return 1 / (x - 1);"),
+                encoding="utf-8",
+            )
+
             completed = subprocess.run(
                 [
                     sys.executable,
@@ -88,7 +93,8 @@ class MutationMatrixTests(unittest.TestCase):
             )
             matrix = json.loads((output / "matrix.json").read_text(encoding="utf-8"))
             self.assertEqual(matrix["reference"]["counts"]["PASS"], 1)
-            self.assertEqual(matrix["mutation_summary"]["killed"], 1)
+            self.assertEqual(matrix["mutation_summary"]["killed"], 2)
+            self.assertEqual(sum(row["counts"]["CRASH"] for row in matrix["mutants"]), 1)
             self.assertEqual(matrix["mutation_summary"]["unresolved"], 0)
             self.assertEqual(matrix["spec_file"], "candidate.qcp")
 

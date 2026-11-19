@@ -11,6 +11,7 @@ import re
 from .certificates import check_certificate, digest, prepare_certificate
 from .core import JobError
 from .kernel_replay import KernelReplayCache
+from .verdict import CASE_STATUSES
 
 
 def _eligible(case: dict) -> bool:
@@ -318,7 +319,7 @@ def check_run_certificates(
             case["evidence"]["refuted_goal"] = refute
             case["evidence"]["initial_domain"] = "EMPTY"
     counts = Counter(c["status"] for c in result["results"])
-    for status in ("PASS", "FAIL", "UNKNOWN", "ERROR", "INVALID"):
+    for status in CASE_STATUSES:
         result["summary"][status] = counts[status]
     pending = {c["id"]: c["residual_vcs"] for c in result["results"]
                if c.get("residual_vcs")}

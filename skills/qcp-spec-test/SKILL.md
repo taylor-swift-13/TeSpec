@@ -90,7 +90,8 @@ Report per-case bindings, scope, status and artifact path. Distinguish:
 - complete VC certificates accepted by independent replay and assumption audit;
 - FAIL with an UNSAT entry condition;
 - FAIL with an INVALID original VC;
-- UNKNOWN and tool errors.
+- CRASH with the confirmed program fault and its reason;
+- UNKNOWN for unresolved permissions and ERROR for tool failures.
 
 A successful partial instance establishes the checked properties for its
 represented initial states, under the recorded execution semantics and proof

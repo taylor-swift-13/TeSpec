@@ -132,7 +132,10 @@ def main(argv=()):
         if test_modes:
             off=test_modes['modes']['off'];on=test_modes['modes']['on']
             text+='\n## teSpec 空间 SMT 模式\n\n| 项目 | 关闭 | 开启 |\n|---|---:|---:|\n'
-            text+=f"| 原生 PASS / FAIL / UNKNOWN / ERROR | {' / '.join(str(off['native_status_counts'].get(k,0)) for k in ['PASS','FAIL','UNKNOWN','ERROR'])} | {' / '.join(str(on['native_status_counts'].get(k,0)) for k in ['PASS','FAIL','UNKNOWN','ERROR'])} |\n| 最终预期匹配（含所需 ITP） | {off['expected_matches']}/{test_modes['case_pairs']} | {on['expected_matches']}/{test_modes['case_pairs']} |\n| 每次执行平均时间（秒） | {off['mean_execution_wall_seconds']:.6f} | {on['mean_execution_wall_seconds']:.6f} |\n| 平均单次峰值 RSS（MiB） | {off['mean_execution_peak_rss_mib']:.4f} | {on['mean_execution_peak_rss_mib']:.4f} |\n| 需 ITP 判定的执行数 | {off['executions_requiring_itp_for_verdict']} | {on['executions_requiring_itp_for_verdict']} |\n"
+            states=['PASS','FAIL','UNKNOWN','ERROR']
+            if any('CRASH' in mode['native_status_counts'] for mode in (off,on)):
+                states.insert(2,'CRASH')
+            text+=f"| 原生 {' / '.join(states)} | {' / '.join(str(off['native_status_counts'].get(k,0)) for k in states)} | {' / '.join(str(on['native_status_counts'].get(k,0)) for k in states)} |\n| 最终预期匹配（含所需 ITP） | {off['expected_matches']}/{test_modes['case_pairs']} | {on['expected_matches']}/{test_modes['case_pairs']} |\n| 每次执行平均时间（秒） | {off['mean_execution_wall_seconds']:.6f} | {on['mean_execution_wall_seconds']:.6f} |\n| 平均单次峰值 RSS（MiB） | {off['mean_execution_peak_rss_mib']:.4f} | {on['mean_execution_peak_rss_mib']:.4f} |\n| 需 ITP 判定的执行数 | {off['executions_requiring_itp_for_verdict']} | {on['executions_requiring_itp_for_verdict']} |\n"
             text+=f"\n模式逐次结果、成本和证书范围见 [模式对照]({mode_stats_path.parent.name}/comparison.md)。无需 ITP 时成本记 0，均值和峰值不适用。SMT 决策不作为 Coq 证书。\n"
         for strategy,extra in supplements.items():
             link=Path(extra['report']).relative_to(Path('benchmark/results')/name).as_posix()

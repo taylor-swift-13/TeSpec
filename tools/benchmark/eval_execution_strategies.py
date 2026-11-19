@@ -35,7 +35,7 @@ def publish_group_costs(results, out):
                     table.append({
                         "strategy": strategy, "vc_mode": mode, "spatial_smt": spatial,
                         "executions": len(xs), "execution_completed": sum(x["execution_completed"] is True for x in xs),
-                        **{k: counts[k] for k in ("PASS", "UNKNOWN", "FAIL", "ERROR")},
+                        **{k: counts[k] for k in ("PASS", "UNKNOWN", "FAIL", "CRASH", "ERROR")},
                         "cli_wall_seconds_mean": statistics.mean(x["measurement"]["wall_seconds"] for x in xs),
                         "cli_max_process_rss_kib_max": max(x["measurement"]["resources"]["max_process_rss_kib"] for x in xs),
                         "executor_wall_seconds_mean": statistics.mean(x["wall_seconds"] for x in es) if es else None,
@@ -56,12 +56,12 @@ def publish_group_costs(results, out):
         lines = ["# " + group + " — execution strategy costs", "",
                  "Supplemental native tests; no new universal or ITP certificate.",
                  "Time is per-execution mean. RSS is largest process peak. CLI/executor times are nested. Tokens=0 for this native run.", "",
-                 "| Strategy | VC mode | SMT | Runs | PASS / UNKNOWN / FAIL / ERROR | CLI mean s | CLI peak KiB | Executor mean s | Executor peak KiB |",
+                 "| Strategy | VC mode | SMT | Runs | PASS / UNKNOWN / FAIL / CRASH / ERROR | CLI mean s | CLI peak KiB | Executor mean s | Executor peak KiB |",
                  "| --- | --- | --- | ---: | --- | ---: | ---: | ---: | ---: |"]
         for x in table:
-            lines.append("| %s | %s | %s | %d | %d / %d / %d / %d | %.6f | %d | %s | %s |" % (
+            lines.append("| %s | %s | %s | %d | %d / %d / %d / %d / %d | %.6f | %d | %s | %s |" % (
                 x["strategy"], x["vc_mode"], x["spatial_smt"], x["executions"],
-                x["PASS"], x["UNKNOWN"], x["FAIL"], x["ERROR"],
+                x["PASS"], x["UNKNOWN"], x["FAIL"], x["CRASH"], x["ERROR"],
                 x["cli_wall_seconds_mean"], x["cli_max_process_rss_kib_max"],
                 x["executor_wall_seconds_mean"], x["executor_max_process_rss_kib_max"]))
         (folder / "result-cost.md").write_text("\n".join(lines) + "\n")
@@ -180,17 +180,17 @@ def main():
     lines = ["# Execution strategy target regression", "",
              "Native results only. Original source, expectations and inputs preserved.",
              "No universal verification or ITP certificate is implied by PASS.", "",
-             "| Group | Strategy | VC mode | SMT | Executions | PASS | UNKNOWN | FAIL/ERROR |",
-             "| --- | --- | --- | --- | ---: | ---: | ---: | ---: |"]
+             "| Group | Strategy | VC mode | SMT | Executions | PASS | UNKNOWN | FAIL | CRASH | ERROR |",
+             "| --- | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |"]
     for group in GROUPS:
         for strategy in ("inline", "modular"):
             for mode in ("entry-exit", "all-boundaries"):
                 for spatial in ("off", "on"):
                     selected = [x for x in results if (x["group"], x["execution_strategy"], x["vc_mode"], x["spatial_smt_mode"]) == (group, strategy, mode, spatial)]
                     counts = Counter(x["status"] for x in selected)
-                    lines.append("| %s | %s | %s | %s | %d | %d | %d | %d |" % (
+                    lines.append("| %s | %s | %s | %s | %d | %d | %d | %d | %d | %d |" % (
                         group, strategy, mode, spatial, len(selected), counts["PASS"],
-                        counts["UNKNOWN"], counts["FAIL"] + counts["ERROR"]))
+                        counts["UNKNOWN"], counts["FAIL"], counts["CRASH"], counts["ERROR"]))
     (out / "summary.md").write_text("\n".join(lines) + "\n")
     publish_group_costs(results, out)
     print(json.dumps(summary))

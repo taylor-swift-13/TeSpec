@@ -19,7 +19,7 @@ from .errors import JobError
 from .modes import (
     execution_semantics, normalize_execution_mode, normalize_execution_strategy,
 )
-from .verdict import _executor_result, _executor_target_layout
+from .verdict import CASE_STATUSES, _executor_result, _executor_target_layout
 
 
 _C_SOURCE_ENCODINGS = ("utf-8-sig", "gb18030")
@@ -2106,7 +2106,7 @@ def run_job(
 
     counts = {
         status: sum(result["status"] == status for result in results)
-        for status in ("PASS", "FAIL", "UNKNOWN", "ERROR", "INVALID")
+        for status in CASE_STATUSES
     }
     itp_vcs = [
         {

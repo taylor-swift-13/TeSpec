@@ -710,7 +710,12 @@ def refine_case(
         )
     )
     status = case["status"]
-    if result_eligible and "INVALID" in states:
+    if result_eligible and any(v.get("kind") == "safety" and v["status"] == "INVALID"
+                               for v in refined):
+        phases["safety"] = "FAIL"
+        status = "CRASH"
+        case["reason"] = "invalid_safety_vc"
+    elif result_eligible and "INVALID" in states:
         status = "FAIL"
         case["reason"] = "spatial_smt_invalid_path_vc"
     elif result_eligible and states and all(s == "VALID" for s in states) and complete and coverage:
@@ -721,7 +726,7 @@ def refine_case(
         case.update(
             status=status,
             overall=status,
-            test_result=status,
+            test_result="FAIL" if status == "CRASH" else status,
             satisfied=status == "PASS",
             phases=phases,
         )

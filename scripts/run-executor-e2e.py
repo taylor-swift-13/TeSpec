@@ -280,7 +280,12 @@ def main():
             canonical = result.get("test_result")
             if canonical not in {"PASS", "FAIL", "UNKNOWN"}:
                 canonical = "UNKNOWN"
-            overall_matches = canonical in allowed if negative else got["overall"] == want.get("overall")
+            if want.get("overall") in {"CRASH", "ERROR"}:
+                overall_matches = got["overall"] == want["overall"]
+            elif negative:
+                overall_matches = canonical in allowed and got["overall"] not in {"ERROR", "CRASH"}
+            else:
+                overall_matches = got["overall"] == want.get("overall")
             if want.get("overall") == "INVALID" and want.get("precondition") == "UNSAT":
                 overall_matches = got["overall"] == "FAIL"
             differences = {
@@ -297,8 +302,13 @@ def main():
                 and got.get(key) != val
                 and not (key == "overall" and overall_matches)
             }
-            if negative and not overall_matches:
-                differences["overall"] = {"expected": sorted(allowed), "actual": canonical}
+            if negative and want.get("overall") not in {"ERROR", "CRASH"} and not overall_matches:
+                differences["overall"] = {"expected": sorted(allowed), "actual": got["overall"]}
+            if want.get("reason") == "invalid_safety_vc" and not any(
+                vc.get("kind") == "safety" and vc.get("status") == "INVALID"
+                for vc in result.get("vc_results", [])
+            ):
+                differences["safety_vc"] = "missing refuted safety obligation"
             files = result.get("vc", {}).get("files", {})
             for key in ["goal", "proof_auto", "proof_manual", "goal_check"]:
                 if want.get("expect_artifacts", True) and (
@@ -415,9 +425,13 @@ def main():
             "false_passes": sum(
                 r.get("negative", False) and r["status"] == "PASS" for r in results
             ),
-            "negative_resolved": sum(r.get("negative", False) and r["status"] == "FAIL" for r in results),
+            "negative_resolved": sum(
+                r.get("negative", False) and not r["differences"] and r["status"] in {"FAIL", "CRASH"}
+                for r in results
+            ),
+            "negative_execution_crashes": sum(r.get("negative", False) and r["status"] == "CRASH" for r in results),
             "negative_diagnostic_errors": sum(r.get("negative", False) and r["status"] == "ERROR" for r in results),
-            "negative_unresolved": sum(r.get("negative", False) and r.get("test_result") == "UNKNOWN" for r in results),
+            "negative_unresolved": sum(r.get("negative", False) and r["status"] == "UNKNOWN" for r in results),
             "native_failures": len(native_failures),
             "verdicts": dict(Counter(r["status"] for r in results)),
             "wall_seconds": round(time.monotonic() - started, 3),

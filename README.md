@@ -6,7 +6,7 @@
 
 输入 **C implementation + QCP spec**、spec 引用的 **Coq definitions /
 strategies** 和具体 **binds**，直接得到逐测试用例的
-`PASS / FAIL / UNKNOWN / ERROR / INVALID`。
+`PASS / FAIL / CRASH / UNKNOWN / ERROR / INVALID`。
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![Coq 8.20](https://img.shields.io/badge/Coq-8.20-7C3AED)](https://coq.inria.fr/)
@@ -239,10 +239,11 @@ Python 预先认识。无法唯一推断的任意 Coq 类型可以使用显式 `
 | 状态 | 含义 |
 |---|---|
 | `PASS` | Require 已判定 SAT，执行已完成，所选 VC 已关闭；仅声明的目标另标注 specification-only |
-| `INVALID` | 实例化 Require 不可满足 |
-| `FAIL` | 某个具体 obligation 确定为假，该执行不满足 spec |
+| `INVALID` | 旧协议的入口拒绝标签；当前三值协议将不可满足的 Require 报为 `FAIL / bindings_violate_require` |
+| `FAIL` | 入口条件不可满足，或执行中反证了规约义务，例如返回值违反 Ensure |
 | `UNKNOWN` | 存在 residual VC，或达到循环/调用深度上限；绝不视为成功 |
-| `ERROR` | binds、parser、依赖或运行环境错误 |
+| `CRASH` | 合法入口下，被测操作在当前执行策略的路径上违反内存访问、调用资源或 C 运行安全要求（例如除零）；具体原因见 `reason`。 |
+| `ERROR` | 输入、解析、依赖、执行器或报告协议发生故障。例如，执行器进程自身崩溃。 |
 
 自动证明只来自通用 assertion 归约与 QCP/SMT，保存为 `proof_auto.v`。核心没有
 二级 `coq_auto`，也不会自动填写 `proof_manual.v`。

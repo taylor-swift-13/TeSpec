@@ -67,6 +67,14 @@ def main():
     if data['plan_sha256']!=sha(planpath):
         frozen=json.loads((ROOT/data['evaluation_plan_snapshot']).read_text())
         assert all(frozen[k]==plan[k] for k in ['program_group','function','run_id','primary_cn_variant','primary_qcp_variant','pairings']), 'Executed cases changed after measurement'
+    if data.get('tespec_fault_oracle'):
+        from current_test_plan import load_current_plan
+        effective, oracle_hash = load_current_plan(planpath)
+        recorded = data['tespec_fault_oracle']
+        assert oracle_hash == recorded['sha256'] == sha(ROOT/recorded['path'])
+        cases = {(p['cn_variant'], p['qcp_variant'], c['id']): c
+                 for p in effective['pairings'] for c in p['cases']}
+        assert all(r['plan_case'] == cases[r['variant'],r['paired_qcp_variant'],r['case']] for r in runs)
     variants={json.loads(p.read_text())['id']:(p,json.loads(p.read_text())) for p in (group/'variants').glob('*/manifest.json')}
     for r in runs:
         for key in ['harness','binds']:assert sha(ROOT/r[key])==r[key+'_sha256']
@@ -80,7 +88,7 @@ def main():
             if m['status']=='UNKNOWN':
                 assert m.get('itp') and m.get('final_status')==expected_status(r,'tespec_'+mode),'Independently checked per-execution ITP required'
                 assert sha(ROOT/m['itp']['receipt'])==m['itp']['receipt_sha256'];validate_receipt(ROOT/m['itp']['receipt'],r,mode)
-            elif m['status']=='ERROR':assert matches_expected(r,'tespec_'+mode), 'Unexpected ERROR cannot be published as complete'
+            elif m['status'] in ('CRASH','ERROR'):assert matches_expected(r,'tespec_'+mode), 'Unmatched fault cannot be published as complete'
             else:assert m['status'] in ['PASS','FAIL']
     data.setdefault('native_summary_before_final_publication',data['summary']);data['summary']=evaluation_summary(runs,plan);save(run/'results.json',data)
     rel=lambda p:str(p.relative_to(ROOT))

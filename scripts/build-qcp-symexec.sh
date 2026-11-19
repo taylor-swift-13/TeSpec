@@ -21,7 +21,10 @@ import sys
 payload = Path(sys.argv[1]).read_bytes()
 required = (b"--spec-test", b"--execution-strategy", b"copy-only/v1",
             b"post-execution-witness-smt/v1", b"modular-symbolic/v1",
-            b"inline-with-symbolic-contracts", b"contract-symbolic/v1")
+            b"inline-with-symbolic-contracts", b"contract-symbolic/v1",
+            b"missing_read_permission", b"missing_write_permission",
+            b"uninitialized_read", b"missing_call_permission",
+            b"unresolved_call_permission")
 missing = [item.decode() for item in required if item not in payload]
 if missing:
     raise SystemExit("Executor lacks required teSpec capabilities: " + ", ".join(missing))

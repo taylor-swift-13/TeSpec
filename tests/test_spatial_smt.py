@@ -606,11 +606,12 @@ class NativeSpatialIntegrationTests(unittest.TestCase):
             [r["results"][0]["status"] for r in (off, on)], ["PASS", "PASS"]
         )
 
-    def test_unreadable_memory_unchanged(self):
+    def test_unowned_read_is_a_target_crash_in_both_modes(self):
         off, on, _, _ = self.run_modes("Require emp Ensure emp", {})
-        self.assertEqual(
-            [r["results"][0]["status"] for r in (off, on)], ["ERROR", "ERROR"]
-        )
+        for report in (off, on):
+            case = report["results"][0]
+            self.assertEqual((case["status"], case["reason"]), ("CRASH", "missing_read_permission"))
+            self.assertEqual(case["precondition_result"], "SAT")
 
     def test_opaque_goal_preserves_itp(self):
         off, on, _, _ = self.run_modes(

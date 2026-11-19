@@ -40,7 +40,10 @@ import time
 ROOT = Path(__file__).resolve().parents[2]
 OUTPUT_ROOT = ROOT / "benchmark/results/spatial-smt-regressions"
 OLD_ROOT = "/home/yangfp/teSpec-benchmark-tespec"
-STATES = {"PASS", "FAIL", "ERROR", "UNKNOWN"}
+sys.path.insert(0, str(ROOT / "tools/benchmark"))
+from current_test_plan import load_current_plan, matches_crash
+
+STATES = {"PASS", "FAIL", "CRASH", "ERROR", "UNKNOWN"}
 
 
 def require(condition, message):
@@ -251,9 +254,14 @@ def load_baseline(groups=None, execution_strategy="inline"):
             # evidence pointer, current source hashes and frozen row oracle are
             # authoritative; never choose a batch by directory-name recency.
         active_cases = {}
-        if group != 'read' and plan_path.exists():
-            active_cases = {(pair['cn_variant'], c['id']): c
-                            for pair in plan['pairings'] for c in pair.get('cases', [])}
+        plan_path = ROOT / "benchmark/programs" / group / "evaluation-plan.json"
+        if plan_path.exists():
+            active, overlay_sha = load_current_plan(plan_path)
+            audit.ref(plan_path)
+            if overlay_sha:
+                audit.ref(plan_path.with_name("tespec-fault-oracle.json"), overlay_sha)
+            active_cases = {(p['cn_variant'], p['qcp_variant'], c['id']): c
+                            for p in active['pairings'] for c in p['cases']}
         for position, item in enumerate(rows):
             row = originals[(item["variant"], item["case"])] if group == "read" else item
             source, binds = source_and_binds(row, variants, audit)
@@ -280,15 +288,17 @@ def load_baseline(groups=None, execution_strategy="inline"):
                     require(oracle is not None and oracle["conclusion"] == expected[mode],
                             "Complete group's UNKNOWN lacks a matching checked ITP oracle")
             baseline_expected = dict(expected)
-            current_case = active_cases.get((row['variant'], row['case']), {})
+            current_case = active_cases.get((row['variant'], row['paired_qcp_variant'], row['case']), {})
             strategy_expected = current_case.get('expected_by_execution_strategy', {})
             if execution_strategy in strategy_expected:
                 value = strategy_expected[execution_strategy]
-                require(value in {'PASS', 'FAIL', 'ERROR'}, 'Invalid strategy expectation')
+                require(value in {'PASS', 'FAIL', 'CRASH', 'ERROR'}, 'Invalid strategy expectation')
                 expected = {m: value for m in ('off', 'on')}
+            require("ERROR" not in expected.values(), "Fresh regression cannot expect a tool error")
             task = {"execution_strategy": execution_strategy,
                     "baseline_expected": baseline_expected,
                     "expected_by_execution_strategy": strategy_expected,
+                    "expected_crash_fault_code": current_case.get("expected_crash_fault_code"),
                     "group": group, "ordinal": position, "variant": row["variant"],
                     "paired_qcp_variant": row["paired_qcp_variant"], "case": row["case"],
                     "initial": row.get("initial"), "source": source, "binds": binds,
@@ -355,8 +365,11 @@ def classify(baseline, current, expected, guard, oracle, transport_ok=True):
             "resolved": good, "certificate_reused": False}
 
 
-def strategy_comparison(comparison, current, expected, transport_ok):
+def strategy_comparison(comparison, current, expected, transport_ok, fault_code=None):
     """An oracle change never hides entry/transport/execution regressions."""
+    if expected == "CRASH":
+        matched = transport_ok and comparison["kind"] != "INVOCATION_FAILED" and matches_crash(current, fault_code)
+        return {"ok": matched, "kind": "EXPECTED_CRASH" if matched else "CRASH_NOT_CONFIRMED"}
     if comparison["kind"] in {"INVOCATION_FAILED", "PRECONDITION_REGRESSION", "EXECUTION_REGRESSION"}:
         return comparison
     matched = transport_ok and current.get("status") == expected
@@ -473,6 +486,7 @@ def run_task(task, mode, out, timeout):
     current = {"status": "UNKNOWN", "reason": "invocation_failed"}
     transport_ok = False
     report_ref = None
+    case = {}
     goals = []
     executor = None
     if report_path.exists():
@@ -485,6 +499,13 @@ def run_task(task, mode, out, timeout):
             current = {k: case.get(k) for k in (
                 "status", "reason", "precondition_result", "execution_completed",
                 "executor_error", "residual_vcs", "phases", "spatial_smt")}
+            if current["status"] == "CRASH":
+                current.update({k: case.get(k) for k in ("scope", "test_result", "returncode", "limit_reason")})
+                current["vc_results"] = [
+                    {"kind": v["kind"], "status": v["status"], "name": v.get("name")}
+                    for v in case.get("vc_results", [])
+                    if v.get("status") == "INVALID"
+                ]
             for kind, path in (case.get("vc") or {}).get("files", {}).items():
                 if kind in {"goal", "proof_auto", "goal_check"} and path and Path(path).is_file():
                     goals.append({"kind": kind, "path": str(Path(path).relative_to(ROOT)),
@@ -496,8 +517,9 @@ def run_task(task, mode, out, timeout):
     comparison = classify(task["baseline"][mode], current, task["expected"][mode],
                           task["expected_executor_error_contains"], task["itp_comparison_oracle"],
                           transport_ok=transport_ok)
-    if task.get("baseline_expected", task["expected"])[mode] != task["expected"][mode]:
-        comparison = strategy_comparison(comparison, current, task["expected"][mode], transport_ok)
+    if task["expected"][mode] == "CRASH" or task.get("baseline_expected", task["expected"])[mode] != task["expected"][mode]:
+        comparison = strategy_comparison(comparison, case, task["expected"][mode], transport_ok,
+                                         task.get("expected_crash_fault_code"))
     result = {"execution_strategy": task.get("execution_strategy", "inline"),
               "baseline_expected": task.get("baseline_expected", task["expected"])[mode],
               "group": task["group"], "variant": task["variant"],

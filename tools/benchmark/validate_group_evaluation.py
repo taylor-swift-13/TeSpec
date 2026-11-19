@@ -60,12 +60,20 @@ def main():
     proofpath=repository_path(idx['qcp_receipt'])
     if a.qcp_receipt:assert proofpath==repository_path(a.qcp_receipt), 'Requested QCP receipt is not the published receipt'
     data=load(evaluation);runs=data['runs'];table=load(b/'result-cost.json');assert table['complete']
+    if data.get('tespec_fault_oracle'):
+        from current_test_plan import load_current_plan
+        effective, oracle_hash = load_current_plan(g/'evaluation-plan.json')
+        ref = data['tespec_fault_oracle']
+        assert oracle_hash == ref['sha256'] == sha(ROOT/ref['path'])
+        planned = {(p['cn_variant'],p['qcp_variant'],c['id']): c
+                   for p in effective['pairings'] for c in p['cases']}
+        assert all(r['plan_case'] == planned[r['variant'],r['paired_qcp_variant'],r['case']] for r in runs)
     if data.get('schema')=='tespec-compact-group-evidence/v1':
         validate_compact(ROOT,g,b,manifest,idx,evaluation,nativepath,proofpath,data)
         return
     variants={load(ROOT/v['manifest'])['id']:load(ROOT/v['manifest']) for v in manifest['variants']};covered=set()
     for r in runs:
-        covered.update([r['variant'],r['paired_qcp_variant']]);assert r['precondition_valid'] and r['expected'] in ['PASS','FAIL','ERROR']
+        covered.update([r['variant'],r['paired_qcp_variant']]);assert r['precondition_valid'] and r['expected'] in ['PASS','FAIL','ERROR','CRASH']
         for k in ['harness','binds']:assert sha(ROOT/r[k])==r[k+'_sha256']
         for dep in r.get('runtime_dependency_fixtures',[])+([r['qcp_execution_wrapper']] if r.get('qcp_execution_wrapper') else []):assert (ROOT/dep['path']).resolve().is_relative_to(ROOT) and sha(ROOT/dep['path'])==dep['sha256']
         for lang,vid in [('cn',r['variant']),('qcp',r['paired_qcp_variant'])]:assert sha(ROOT/variants[vid]['files'][lang]['path'])==r[lang+'_source_sha256']==variants[vid]['files'][lang]['sha256']
