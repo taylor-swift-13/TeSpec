@@ -79,7 +79,7 @@ match xs with
 end."""
         clauses = parse_predicate(source, "observe")
         self.assertEqual(
-            clauses[1][0], "observe(?p, cons{Payload}(Pair(Leaf(?a), Leaf(?b)), ?tail))"
+            clauses[1][0], "observe(?p, cons{<Payload>}(Pair(Leaf(?a), Leaf(?b)), ?tail))"
         )
         self.assertEqual(clauses[1][2].existential_types, ("Z",))
         self.assertIn("Payload", referenced_symbols(clauses))
@@ -88,7 +88,7 @@ end."""
         self.assertIn("@cons = @Coq.Init.Datatypes.cons", equations)
         rules = emit_rules(clauses, infer_models=True)
         self.assertIn(
-            "right_add(xs == cons{Payload}(Pair(Leaf(a), Leaf(b)), tail))", rules
+            "right_add(xs == cons{<Payload>}(Pair(Leaf(a), Leaf(b)), tail))", rules
         )
         for invalid in [
             source.replace("Pair (Leaf a) (Leaf b)", "Pair (Leaf a)"),
@@ -461,6 +461,22 @@ EX (x y: addr) (a b: list Z), first x a ** second y b."""
                     "Definition f (p: addr): Assertion := " + body + ".", "f"
                 )
 
+    def test_existential_type_parameter_is_bound_by_the_rule_and_certificate(self):
+        source = (
+            "Definition A := Z. "
+            "Definition box {A : Type} (p : addr) (item : A) : Assertion := "
+            "EX xs : list A, emp."
+        )
+        clauses = parse_predicate(source, "box")
+        rules = emit_rules(clauses)
+        self.assertIn("box{?A}(?p, ?item)", rules)
+        self.assertIn("left_exist_add(xs : list{?A})", rules)
+        self.assertNotIn("A", referenced_symbols(clauses))
+        self.assertIn(
+            "fun (A : Type) (P : list A -> Assertion)",
+            emit_equations(clauses, "Definitions", "box"),
+        )
+
     def test_nominal_witnesses_and_pure_relations_keep_their_types(self):
         source = """Inductive Model : Type := Leaf : Model.
 Definition shape(p: addr)(m: Model): Assertion := emp.
@@ -468,18 +484,29 @@ Definition observe(p: addr): Assertion := EX m, shape p m.
 """
         clauses = parse_predicate(source, "observe")
         self.assertEqual(clauses[0][2].existential_types, ("Model",))
-        self.assertIn("left_exist_add(m : Model)", emit_rules(clauses))
+        self.assertIn("left_exist_add(m : <Model>)", emit_rules(clauses))
         self.assertIn("Model", referenced_symbols(clauses))
         relation = parse_predicate(
             "Definition observe(p: addr): Assertion := EX (m: Model) (xs: list Model), “ admissible m xs ” && p # Int |-> 7.",
             "observe",
         )
-        self.assertIn("left_exist_add(xs : list{Model})", emit_rules(relation))
+        self.assertIn("left_exist_add(xs : list{<Model>})", emit_rules(relation))
         self.assertIn("admissible", referenced_symbols(relation))
         self.assertIn(
             "EX (m: Model) (xs: list Model)",
             emit_equations(relation, "Definitions", "observe"),
         )
+        nested_definition = (
+            "Definition observe(p: addr): Assertion := EX xs : list (list Model), emp."
+        )
+        nested = parse_predicate(nested_definition, "observe")
+        self.assertIn("left_exist_add(xs : list{list{<Model>}})", emit_rules(nested))
+        equations = emit_equations(nested, "Definitions", "observe")
+        self.assertIn("EX (xs: list (list Model))", equations)
+        self.assertIn("normalization_semantics_exists_list_list_Model :=", equations)
+        self.assertIn("fun (P : list (list Model) -> Assertion)", equations)
+        with self.assertRaises(JobError):
+            parse_predicate(nested_definition.replace("(list Model)", "list Model"), "observe")
         with self.assertRaisesRegex(JobError, "conflicting existential"):
             parse_predicate(
                 source.replace("shape p m.", "shape p m ** m # Int |-> 0."), "observe"

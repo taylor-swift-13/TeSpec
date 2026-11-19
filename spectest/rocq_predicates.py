@@ -142,6 +142,7 @@ def referenced_symbols(clauses):
                 identifier
                 for identifier in re.findall(_ID, typ)
                 if identifier not in {"Z", "addr", "list"}
+                and identifier not in clause.type_parameters
             )
         if clause.constructor:
             symbols.add(clause.constructor.split("{", 1)[0])
@@ -166,8 +167,11 @@ def semantic_probes(clauses):
     }
     for _, _, clause in clauses:
         for typ in clause.existential_types:
-            key = "exists_" + typ.replace(" ", "_")
-            probes[key] = f"(fun (P : {typ} -> Assertion) => EX x : {typ}, P x)"
+            names = re.findall(_ID, typ)
+            key = "exists_" + "_".join(names)
+            bound_types = [t for t in clause.type_parameters if t in names]
+            binders = f"({' '.join(bound_types)} : Type) " if bound_types else ""
+            probes[key] = f"(fun {binders}(P : {typ} -> Assertion) => EX x : {typ}, P x)"
         for _, coq, pure in clause.atoms:
             if not pure:
                 cell = re.search(r"#\s*(\w+)\s*\|->", coq)
@@ -375,13 +379,19 @@ def _list_application(head, args):
     )
 
 
-def _pattern_type(source, typ, seen=()):
+def _pattern_type(source, typ, seen=(), *, type_parameters=()):
     """Resolve simple type aliases, retaining nominal inductive identities."""
     typ = _strip_outer_parens(" ".join(typ.split()))
     if typ.startswith("list "):
-        return "list " + _pattern_type(source, typ[5:], seen)
+        argument = typ[5:].strip()
+        if " " in argument and argument == _strip_outer_parens(argument):
+            raise JobError("unsupported constructor pattern type: " + typ)
+        element = _pattern_type(source, argument, seen, type_parameters=type_parameters)
+        return f"list ({element})" if " " in element else "list " + element
     if not re.fullmatch(_ID, typ):
         raise JobError("unsupported constructor pattern type: " + typ)
+    if typ in type_parameters:
+        return typ
     aliases = re.findall(
         rf"\bDefinition\s+{re.escape(typ)}\s*(?::\s*Type\s*)?:=\s*([^.]*)\.",
         source,
@@ -393,15 +403,20 @@ def _pattern_type(source, typ, seen=()):
     return _pattern_type(source, aliases[0], (*seen, typ))
 
 
-def _qcp_logic_type(typ):
+def _qcp_logic_type(typ, type_parameters):
+    """Emit DSL type arguments, distinguishing constants from pattern variables."""
     typ = _strip_outer_parens(" ".join(typ.split()))
     if typ.startswith("list "):
-        return "list{" + _qcp_logic_type(typ[5:]) + "}"
-    if typ == "addr":
-        return "Z"
+        return "list{" + _qcp_logic_type(typ[5:], type_parameters) + "}"
     if not re.fullmatch(_ID, typ):
         raise JobError("unsupported existential type: " + typ)
-    return typ
+    if typ in type_parameters:
+        return "?" + typ
+    if typ == "addr":
+        return "Z"
+    if typ in {"Z", "Prop", "Assertion", "bool"}:
+        return typ
+    return f"<{typ}>"
 
 
 def _definition_namespace(source, position):
@@ -453,22 +468,22 @@ def _argument_witness_types(source, branch, identifier):
     return candidates
 
 
-def _typed_list_pattern(source, pattern, typ, parameters):
+def _typed_list_pattern(source, pattern, typ, parameters, type_parameters):
     """Build a typed constructor tree for list patterns, without name dispatch."""
-    resolved = _pattern_type(source, typ)
+    resolved = _pattern_type(source, typ, type_parameters=type_parameters)
     if not resolved.startswith("list "):
         raise JobError("list constructor pattern requires a list type")
     binders, symbols = {}, {"cons", "nil"}
 
     def list_element(element):
-        def qcp_type(typ):
-            if typ.startswith("list "):
-                return "list{" + qcp_type(typ[5:]) + "}"
-            if typ != "Z":
-                symbols.add(typ)
-            return typ
-
-        return qcp_type(element), "(" + element + ")" if " " in element else element
+        symbols.update(
+            name
+            for name in re.findall(_ID, element)
+            if name not in {"Z", "addr", "list"} and name not in type_parameters
+        )
+        return _qcp_logic_type(element, type_parameters), (
+            "(" + element + ")" if " " in element else element
+        )
 
     def constructor_arguments(head, expected):
         signatures = []
@@ -496,7 +511,7 @@ def _typed_list_pattern(source, pattern, typ, parameters):
             if depth == 0 and text[index : index + 2] == "::":
                 if not expected.startswith("list "):
                     raise JobError("cons pattern requires a list type")
-                element = expected[5:]
+                element = _strip_outer_parens(expected[5:])
                 qhead, chead = parse(text[:index], element)
                 qtail, ctail = parse(text[index + 2 :], expected)
                 qtype, ctype = list_element(element)
@@ -505,7 +520,7 @@ def _typed_list_pattern(source, pattern, typ, parameters):
                     f"(@cons {ctype} {chead} {ctail})",
                 )
         if text == "nil" and expected.startswith("list "):
-            element = expected[5:]
+            element = _strip_outer_parens(expected[5:])
             qtype, ctype = list_element(element)
             return f"nil{{{qtype}}}()", f"(@nil {ctype})"
         parts = _application_parts(text)
@@ -634,10 +649,14 @@ def parse_predicate(source: str, name: str, *, target_layout=None):
             constructor, args, coq_pattern = "", [], ""
         elif "::" in pattern or (
             pattern == "nil"
-            and _pattern_type(masked, types[scrutinee]).startswith("list ")
+            and _pattern_type(
+                masked, types[scrutinee], type_parameters=type_params
+            ).startswith("list ")
         ):
             pattern_qcp, pattern_coq, pattern_types, pattern_symbols = (
-                _typed_list_pattern(masked, pattern, types[scrutinee], params)
+                _typed_list_pattern(
+                    masked, pattern, types[scrutinee], params, type_params
+                )
             )
             pattern_expression = pattern_qcp.replace("?", "")
             args = list(pattern_types)
@@ -661,7 +680,9 @@ def parse_predicate(source: str, name: str, *, target_layout=None):
         branch_types = dict(types)
         for identifier, typ in types.items():
             try:
-                branch_types[identifier] = _pattern_type(masked, typ)
+                branch_types[identifier] = _pattern_type(
+                    masked, typ, type_parameters=type_params
+                )
             except JobError as error:
                 if not str(error).startswith("unsupported constructor pattern type:"):
                     raise
@@ -670,8 +691,8 @@ def parse_predicate(source: str, name: str, *, target_layout=None):
         existential_types = []
 
         def add_existential(identifiers, typ):
-            typ = _pattern_type(masked, typ)
-            _qcp_logic_type(typ)
+            typ = _pattern_type(masked, typ, type_parameters=type_params)
+            _qcp_logic_type(typ, type_params)
             for identifier in identifiers.split():
                 if (
                     identifier == "_"
@@ -864,7 +885,7 @@ def emit_rules(clauses, *, first_id=10000, infer_models=False, scope="core"):
         for side_index, side in enumerate(["left", "right"]):
             actions = [f"{side}_erase(0)"]
             actions += [
-                f"{side}_exist_add({name} : {_qcp_logic_type(typ)})"
+                f"{side}_exist_add({name} : {_qcp_logic_type(typ, clause.type_parameters)})"
                 for name, typ in zip(clause.existentials, clause.existential_types)
             ]
             actions += [f"{side}_add({qcp})" for qcp, _, _ in clause.atoms if qcp]

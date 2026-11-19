@@ -83,6 +83,25 @@ def _relocate_strategy_includes(source: str, original: Path) -> str:
     return pattern.sub(replace, source)
 
 
+def _function_definitions(source: str, function: str):
+    # Find declarators at file scope. Mask trivia and literals without moving
+    # offsets so callers can retrieve the original parameter and annotation text.
+    ignored = (
+        _C_COMMENT_PATTERN
+        + r"""|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'"""
+        + r"|^[ \t]*#(?:\\\r?\n|[^\n])*"
+    )
+    code = re.sub(ignored, lambda m: " " * len(m[0]), source, flags=re.S | re.M)
+    heads_and_braces = re.compile(
+        rf"(?P<head>\b{re.escape(function)}\s*\([^;{{}}]*\))\s*(?P<body>{{)|[{{}}]"
+    )
+    depth = 0
+    for match in heads_and_braces.finditer(code):
+        if match["body"] and depth == 0:
+            yield match
+        depth += 1 if match[0].endswith("{") else -1
+
+
 def attach_spec_to_source(source: str, spec: str, function: str) -> str:
     """Attach a separate full QCP spec to one C function definition.
 
@@ -110,18 +129,7 @@ def attach_spec_to_source(source: str, spec: str, function: str) -> str:
     if re.search(r"\bEnsure\b", body) is None:
         raise JobError("separate spec has no Ensure clause")
 
-    pattern = re.compile(
-        rf"(?P<head>\b{re.escape(function)}\s*"
-        r"\((?P<parameters>[^;{}]*)\))\s*"
-        r"(?P<comments>" + _C_COMMENT_TRIVIA + r"*)"
-        r"(?P<terminator>{)",
-        re.DOTALL,
-    )
-    matches = [
-        match
-        for match in pattern.finditer(source)
-        if not _inside_block_comment(source, match.start())
-    ]
+    matches = list(_function_definitions(source, function))
     if len(matches) != 1:
         raise JobError(
             f"expected exactly one definition of function {function!r}, "
@@ -130,7 +138,7 @@ def attach_spec_to_source(source: str, spec: str, function: str) -> str:
     match = matches[0]
     if any(
         re.search(r"\bRequire\b", body)
-        for _, body in _qcp_comments(match.group("comments"))
+        for _, body in _qcp_comments(source[match.end("head") : match.start("body")])
     ):
         raise JobError(
             f"function {function!r} already has a full QCP spec; "
@@ -1288,10 +1296,12 @@ def specialize_entry_source(
     Declaration-only checks keep their single original goal interface.
     """
     specialized = specialize_source(source, function, bindings, spec_name, **kwargs)
-    candidate = _find_function_spec(source, function, spec_name)
-    suffix = re.match(r"\s*" + _C_COMMENT_TRIVIA + r"*([;{])", source[candidate.end :], re.S)
-    if specialized == source or suffix is None or suffix.group(1) == ";":
+    if specialized == source:
         return specialized, spec_name
+    definition = next(_function_definitions(source, function), None)
+    if definition is None:
+        return specialized, spec_name
+    candidate = _find_function_spec(source, function, spec_name)
     entry = _find_function_spec(specialized, function, spec_name)
     start = re.search(r"\b(?:With|Require)\b", entry.body)
     assert start is not None
@@ -1300,7 +1310,12 @@ def specialize_entry_source(
     while name in names:
         name += "_"
     comment = "\n/*@ " + name + " " + entry.body[start.start() :] + "*/"
-    return source[: candidate.start] + comment + "\n" + source[candidate.start :], name
+    # sac preserves declaration contracts in source order and prepends contracts
+    # attached to a definition. Keep the original ahead of the entry in the
+    # executor's lookup order for ordinary recursive calls in either form.
+    on_definition = definition.end("head") <= candidate.start < definition.start("body")
+    insertion = candidate.start if on_definition else candidate.end
+    return source[:insertion] + comment + "\n" + source[insertion:], name
 
 
 def _parse_qcp_config(job: dict[str, Any], base: Path, source_dir: Path) -> QcpConfig:

@@ -91,8 +91,25 @@ int f(int n)
         )
         self.assertIn("(n == (3)) && (v == (3))", generated)
 
+    def test_named_prototype_keeps_unspecialized_contract_for_recursive_calls(self):
+        source = (
+            "int f(int size) /*@ chosen Require size>=0 && emp Ensure __return==size && emp */; "
+            "int f(int n) { if (!n) return 0; "
+            "return 1 + f(n-1) /*@ where(chosen) */; }"
+        )
+        generated, name = specialize_entry_source(
+            source, "f", {}, "chosen", argument_bindings={"size": 2}
+        )
+        self.assertEqual(name, "__tespec_entry")
+        self.assertIn("/*@ chosen Require size>=0 && emp Ensure __return==size && emp */", generated)
+        self.assertIn("(size == (2))", generated)
+        self.assertIn("f(n-1) /*@ where(chosen) */", generated)
+
     def test_declaration_entry_keeps_one_satisfiability_domain(self):
-        source = "int f(int n) /*@ Require n >= 0 && emp Ensure emp */;"
+        source = (
+            "int f(int n) /*@ Require n >= 0 && emp Ensure emp */; "
+            "int g(void) { if (f(2)) { return 1; } return 0; }"
+        )
         generated, name = specialize_entry_source(
             source, "f", {}, argument_bindings={"n": 2}
         )
@@ -1120,6 +1137,41 @@ int sample(int *p)
 
 @unittest.skipUnless(LOCAL_QCP.is_file(), "local QCP binary is unavailable")
 class EndToEndTests(unittest.TestCase):
+    def test_recursive_calls_to_a_named_prototype_retain_the_original_domain(self):
+        source = (
+            "int f(int size) /*@ chosen Require 0<=size && size<=4 && emp "
+            "Ensure __return==size && emp */; "
+            "int f(int n) { if (!n) return 0; "
+            "int ret=f(n-1) /*@ where(chosen) */; return ret+1; }"
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            subject = root / "subject.c"
+            job = root / "job.json"
+            for strategy in ("inline", "modular"):
+                job.write_text(json.dumps({
+                    "source": str(subject), "function": "f", "spec": "chosen",
+                    "binds": [{"id": "two", "args": {"size": 2}, "values": {}}],
+                    "qcp": {"execution_strategy": strategy, "execution_mode": "all-boundaries"},
+                }))
+                for call, increment, expected in (
+                    ("named", 1, "PASS"), ("default", 1, "PASS"), ("named", 2, "FAIL"),
+                ):
+                    with self.subTest(strategy=strategy, call=call, increment=increment):
+                        code = source.replace("ret+1", f"ret+{increment}")
+                        if call == "default":
+                            code = code.replace(" /*@ where(chosen) */", "")
+                        subject.write_text(code)
+                        report = run_job(job, root / f"{strategy}-{call}-{increment}")
+                        case = report["results"][0]
+                        self.assertEqual(case["precondition_result"], "SAT")
+                        self.assertEqual(case["status"], expected, case)
+                        if expected == "FAIL":
+                            self.assertTrue(any(
+                                vc["kind"] == "return" and vc["status"] == "INVALID"
+                                for vc in case["vc_results"]
+                            ))
+
     def test_mutual_recursion_preserves_explicit_named_contracts(self):
         source = (ROOT / "benchmark/comparison/mutual-entry/subject.c").read_text()
         source = source.replace(

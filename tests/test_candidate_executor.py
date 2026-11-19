@@ -1012,7 +1012,6 @@ end."""
                 before, after = returns[0].split("|--")
                 self.assertIn("n == 0", before)
                 self.assertRegex(before, r"__return == n \+")
-                self.assertRegex(before, r"\*p@pre == n \+")
                 self.assertNotIn("is_square", before)
                 self.assertIn("is_square(", after)
                 trace = execution["spec_test"]["instance_trace"]
@@ -1021,6 +1020,23 @@ end."""
                 self.assertEqual(trace[-1]["state_role"], "execution")
                 runtime_points = [p for p in trace if p["state_role"] == "execution"]
                 self.assertTrue(runtime_points)
+                # Bind the caller's p to its pointee at entry and check the same
+                # cell on both sides of the normalized return obligation.
+                entry = runtime_points[0]
+                [(slot, address)] = re.findall(
+                    r"\bstore\(\s*(\w+)\s*,\s*(\w+)\s*,\s*PTR\s*\)", entry["memory"]
+                )
+                self.assertRegex(entry["P"], rf"\bTemp\s+p\s+{slot}\b")
+                self.assertRegex(
+                    runtime_points[-1]["memory"],
+                    rf"\bstore\(\s*{slot}\s*,\s*{address}\s*,\s*PTR\s*\)",
+                )
+                (return_vc,) = [
+                    v for v in execution["spec_test"]["vc_results"] if v["kind"] == "return"
+                ]
+                cell = rf"\bstore\(\s*{address}\s*,\s*9\s*,\s*signed\s+int\s*\)"
+                for side in ("path", "goal"):
+                    self.assertRegex(return_vc[side], cell)
                 self.assertTrue(all("is_square" not in p["P"] for p in runtime_points))
                 copied_points = [p for p in trace if p["state_role"] == "boundary-copy"]
                 if mode == "all-boundaries":
@@ -1478,6 +1494,24 @@ end."""
         for mode in ("entry-exit", "all-boundaries"):
             result = self.run_source(source, mode, spec="chosen")
             self.assertEqual(result["status"], "PASS", result)
+
+    def test_earlier_contract_binds_definition_parameters_by_position(self):
+        source = (
+            "int sample(int *left, int *right) /*@ chosen "
+            "Require data_at(left,int,3) * data_at(right,int,9) "
+            "Ensure __return == 9 && data_at(left,int,3) * data_at(right,int,9) */; "
+            "int sample(int *right, int *left) /*@ implementation "
+            "Require data_at(right,int,2) * data_at(left,int,9) "
+            "Ensure __return == 2 && data_at(right,int,2) * data_at(left,int,9) */ "
+            "{ return *right; }"
+        )
+        for mode in ("entry-exit", "all-boundaries"):
+            for spec, expected in (("chosen", "FAIL"), ("implementation", "PASS")):
+                with self.subTest(mode=mode, spec=spec):
+                    result = self.run_source(source, mode, spec=spec)
+                    self.assertEqual(result["precondition_result"], "SAT", result)
+                    self.assertTrue(result["execution_completed"], result)
+                    self.assertEqual(result["status"], expected, result)
 
     def test_partial_instance_keeps_unbound_logic_variables(self):
         source = (
