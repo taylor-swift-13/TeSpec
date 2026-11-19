@@ -206,7 +206,7 @@ def _run_parser() -> argparse.ArgumentParser:
         default="inline",
         help="inline: execute bodies and loop iterations; modular: retain symbolic "
         "states at contract, invariant and assertion boundaries. Calls without "
-        "bodies use their contracts; only inline may sample their results",
+        "bodies use their contracts and retain symbolic results in both strategies",
     )
     parser.add_argument(
         "--annotation-policy", choices=("ignore", "check-preserve", "qcp")

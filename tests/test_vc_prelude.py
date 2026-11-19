@@ -38,6 +38,24 @@ class VCPreludeOriginalGoalTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout[-3000:] + result.stderr[-3000:])
         return result.stdout + result.stderr
 
+    def test_polymorphic_list_defaults_compile_with_the_bundled_prelude(self):
+        source_text = """void check_defaults(void)
+        /*@ With {A} (x : A) (xs : list A) (rows : list (list Z)) (row : list Z)
+            Require xs[0] == x && rows[0] == row && row[0] == 0 && emp
+            Ensure xs[0] == x && rows[0] == row && row[0] == 0 && emp */
+        {}
+        """
+        with tempfile.TemporaryDirectory() as directory:
+            work = Path(directory)
+            source = work / "defaults.c"
+            source.write_text(source_text)
+            self.run_checked([str(BINARY), f"--input-file={source}", "--no-exec-info",
+                              f"--coq-output-dir={work}/"], work)
+            goal = work / "defaults_goal.v"
+            self.assertIn("Inhabited", goal.read_text())
+            self.run_checked(["opam", "exec", "--switch=qcp-8.20", "--", "coqc",
+                              *_coq_load_path_args(RUNTIME, work), str(goal)], work)
+
     def test_current_pure_and_frame_goals_compile_and_original_proofs_check(self):
         with tempfile.TemporaryDirectory() as directory:
             folder = Path(directory)
