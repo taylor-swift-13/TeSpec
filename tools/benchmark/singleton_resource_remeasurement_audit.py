@@ -10,6 +10,8 @@ import hashlib
 import io
 import json
 import math
+import os
+import subprocess
 from pathlib import Path
 
 SCHEMA = "whole-check-remeasurement/v1"
@@ -141,6 +143,25 @@ def _resource_record(stage, records):
     v.hash_value(stage.get("log_sha256"), "Remeasured stage log hash")
 
 
+REMEASUREMENT_COMMIT = "78ae4b708913237608aada8b988258cf8db5c3c1"
+REMEASUREMENT_TOOLS = {
+    "runner": "tools/benchmark/rerun_singleton_missing_resources.py",
+    "production_checker": "spectest/certificates.py",
+}
+
+
+def verify_remeasurement_tool(root, field, reference):
+    """Check source bytes from the commit publishing this historical measurement."""
+    relative = REMEASUREMENT_TOOLS[field]
+    need(Path(reference["path"]) == Path(root) / relative, "Wrong remeasurement tool path")
+    git = ["git", "--no-replace-objects", "-C", str(root), "cat-file", "blob",
+           REMEASUREMENT_COMMIT + ":" + relative]
+    result = subprocess.run(git, capture_output=True,
+                            env=dict(os.environ, GIT_NO_LAZY_FETCH="1", GIT_TERMINAL_PROMPT="0"))
+    need(result.returncode == 0, "Pinned remeasurement tool is unavailable: " + relative)
+    need(sha(result.stdout) == reference["sha256"], "Historical remeasurement tool hash differs: " + relative)
+
+
 def audit_replay(root, replacement, source, original, plan, records, read):
     """Bind a new complete checker measurement to exact old inputs and commands."""
     import validate_canonical_group as v
@@ -158,8 +179,7 @@ def audit_replay(root, replacement, source, original, plan, records, read):
     need(raw["plan"]["sha256"] == plan["_recorded_sha256"], "Replay plan differs")
     for field in ("runner", "production_checker"):
         need(raw[field] == plan[field], "Replay tool identity differs: " + field)
-        reference = {"path": str(Path(plan[field]["path"]).relative_to(Path(root))), "sha256": plan[field]["sha256"]}
-        read(root, reference)
+        verify_remeasurement_tool(root, field, plan[field])
     need(job["source_execution"]["sha256"] == replacement["original_receipt"]["sha256"] and
          Path(job["source_execution"]["path"]).resolve() == (Path(root) / replacement["original_receipt"]["path"]).resolve() and
          job["original_check_sha256"] == canonical(original) == replacement["original_check_sha256"] and

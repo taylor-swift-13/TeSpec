@@ -4,11 +4,9 @@
 
 ## 当前汇总
 
-第23组 singleton 已完成用户要求的资源补测，继续使用 `gpt-6.1-sol` 的原23次模型证据；本次只重放证明检查，无新增模型调用，未启动下一组。
+完整评测已归档 **24/45 组、932 对变体与输入**。第 24 组 `dll_add` 的 24 个 CN 配对输入对应 12 个不同 QCP 输入。Fulminate 24/24 匹配，teSpec 在 inline/modular 与空间 SMT OFF/ON 的四种组合下均 12/12 匹配。共 28 次原生 PASS，20 次入口可满足性义务逐执行通过 Coq 检查。下一未完整组是 `dll_remove`。[全局结果成本索引](../benchmark/results/group-result-cost-index.json) · [第 24 组四工具结果与成本](../benchmark/results/dll_add/result-cost.md)
 
-当前已归档完整 **23/45组，共908对“变体×输入”**，还有 **22组未完整**。完整表示当前测量口径的结果与证据收齐，不表示所有工具均符合预期：Fulminate 为896/908预期匹配，teSpec完整测试为908/908。singleton使用明确标识的同证明分阶段重测口径；其历史累计资源缺项仍保留。权威入口为[全局结果成本索引](../benchmark/results/group-result-cost-index.json)。
-
-45组都曾扫描或尝试运行，不能据此称为45组完整。下文及夜间状态中的20组是2026-10-16截止时的历史计数；补齐array_load后为21组，再补齐const_example_lessgood后为22组，singleton新增7对输入后为当前23组。前22组没有在本次重跑，工程回归与正式组结果范围保持独立。
+前 23 组的 908 对输入沿用其正式批次。按配对输入口径，24 组 Fulminate 汇总为 920/932，teSpec 为 932/932。第 24 组的重复 CN 配对只引用同一 QCP 输入的一份成本。历史夜间状态及下文的日期记录保留当时的组数与实验口径。
 
 第23组 `Dbl_Linked_List__singleton` 的7个合法输入，在inline/modular × 空间SMT OFF/ON共28种配置下最终 **28 PASS、0 UNKNOWN**。modular的14次原生PASS；inline的14次原生UNKNOWN逐执行完成原始Dll蕴含和父VC的ITP、Coq编译与假设审计及完整独立内核检查，输入与预期未改。
 
@@ -347,3 +345,9 @@ inline 无函数体调用与 modular 统一使用 QCP 符号规约传递，调�
 dll_add 的48次原生执行现在全部完成，28 PASS、20 UNKNOWN。原先10次inline非空采样阻塞已消除；20次非空输入的入口SAT义务仍需正式证明。本次没有重新跑ITP、CN、Fulminate，也没有把新目标套用旧证书。原四工具正式批次与成本保持原二进制身份，完整组计数不因此增加。所有旧版/最终版回归和首候选诊断成本单列在[紧凑修复回执](../benchmark/results/tespec-unexpected/contract-symbolic-replay.json)，不作为受控性能比较。
 
 升级后的历史证据定位也已核验：singleton 的28个原结论和14份原证书保持不变，固定 Git 版本的旧二进制字节审计通过；dll_add 旧正式批次仍按 PARTIAL 发布。新增8项历史证据读取/拒绝测试通过，未重跑证明。
+
+## 2026-11-20 第 24 组正式评测
+
+本批 teSpec 实测 48 次，其中 20 次分别完成入口 SAT 证明源码重放、编译、假设审计和独立内核检查。CN/QCP 主程序与 Fulminate 的适用范围、当前成本和旧批次缺失的 token 回执见[组成本表](../benchmark/results/dll_add/result-cost.md)。
+
+同日复核前 22 组归档，以及第 23 组 singleton 的 28 个判定和 14 份证明。singleton 的资源重测审计现在从提交 `78ae4b7089` 读取当时的检查器源码，按历史收据校验实际字节。

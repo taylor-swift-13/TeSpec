@@ -1,6 +1,8 @@
 # teSpec 不符合预期的专项台账
 
-已扫描 45 组、1551 对变体与输入。当前有效批次最终不匹配 **1046** 条；历史批次仍保留不匹配 **10** 条。兼容字段 open_final_mismatches 为两者总计 **1056**，不能当作当前批次错误数。自动阶段缺口后续已解决 **45** 条；另有配置错误修正 **70** 条。未评测组不计为零异常。原始分类不改写，人工分析追加到 triage.json，重建不覆盖人工结论。
+已扫描 45 组、1561 对变体与输入。当前批次有 1018 条最终不匹配，历史批次有 58 条。第 24 组新批次 48/48 符合预期，20 次原生 UNKNOWN 在逐执行 ITP 后通过。见[当前完整台账](index.json)与[dll_add 的本次记录](dll_add-current.json)。
+
+下表保留早期逐例扫描的记录，当前批次状态见上方索引。
 
 | 组 | 变体 | 输入 | 模式 | 批次 | 预期 | 自动 | 最终 | 分类 | 证据 |
 |---|---|---|---|---|---|---|---|---|---|
@@ -62,34 +64,34 @@
 | const_example | cn_original:const_example | x_5 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/83fa75b2da7384af200e.json) |
 | const_example | cn_original:const_example | x_6 | off | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/ebb4acfcc7c07171fec4.json) |
 | const_example | cn_original:const_example | x_6 | on | 历史 | PASS | ERROR | PASS | RESOLVED_CONFIGURATION_ERROR | [详情](cases/703e77dcd7e7514ec521.json) |
-| dll_add | cn_original:Dbl_Linked_List__add | empty_element_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/489f86588a2ca4ce06f5.json) |
-| dll_add | cn_original:Dbl_Linked_List__add | empty_element_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ab87e86e08a248b42025.json) |
-| dll_add | cn_original:Dbl_Linked_List__add | empty_element_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ec7357d06d932ecff879.json) |
-| dll_add | cn_original:Dbl_Linked_List__add | empty_element_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0d16f79deecbcd7da70d.json) |
-| dll_add | cn_original:Dbl_Linked_List__add | empty_element_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c4bc38e1679f431293b2.json) |
-| dll_add | cn_original:Dbl_Linked_List__add | empty_element_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/768c4cbd6ac08786ff99.json) |
-| dll_add | cn_original:Dbl_Linked_List__add | empty_element_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c74035fce0ab9a1de56e.json) |
-| dll_add | cn_original:Dbl_Linked_List__add | empty_element_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/275312674d657b6e558b.json) |
-| dll_add | cn_original:Dbl_Linked_List__add | empty_element_4 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1e7f71e7c718e838d3be.json) |
-| dll_add | cn_original:Dbl_Linked_List__add | empty_element_4 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2031e0c06c7cb13b02fc.json) |
-| dll_add | cn_original:Dbl_Linked_List__add | empty_element_5 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/66abc057c0bc716119ff.json) |
-| dll_add | cn_original:Dbl_Linked_List__add | empty_element_5 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/aa1b8f77b9acfbbdecbe.json) |
-| dll_add | cn_original:Dbl_Linked_List__add | empty_element_6 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e78a998abfc5d632d148.json) |
-| dll_add | cn_original:Dbl_Linked_List__add | empty_element_6 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/12ab9c7ad0f14f98a3f4.json) |
-| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/138a600f03c09c3a2efb.json) |
-| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d3a7eb4b3e160e0dfa23.json) |
-| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b059ca75f67281d10d7c.json) |
-| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_1 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/af785b111f5ab6df2971.json) |
-| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_2 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7f0384ff8683aa452137.json) |
-| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_2 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/54ae6ff36f2ebb3c93e8.json) |
-| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_3 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/92dbbe33f067bd450948.json) |
-| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_3 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9d04822f2239ac9bbaf1.json) |
-| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_4 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/18e06161f1bba5275b59.json) |
-| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_4 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/636ef2a07831ac23084e.json) |
-| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_5 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ae6d4a5c57c384fc1d45.json) |
-| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_5 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a4a8c366f807167efa06.json) |
-| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_6 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a3ca216ccbf9e4f3592f.json) |
-| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_6 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/feb6d43238a7ff7aa8aa.json) |
+| dll_add | cn_original:Dbl_Linked_List__add | empty_element_0 | off | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/489f86588a2ca4ce06f5.json) |
+| dll_add | cn_original:Dbl_Linked_List__add | empty_element_0 | on | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ab87e86e08a248b42025.json) |
+| dll_add | cn_original:Dbl_Linked_List__add | empty_element_1 | off | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ec7357d06d932ecff879.json) |
+| dll_add | cn_original:Dbl_Linked_List__add | empty_element_1 | on | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/0d16f79deecbcd7da70d.json) |
+| dll_add | cn_original:Dbl_Linked_List__add | empty_element_2 | off | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c4bc38e1679f431293b2.json) |
+| dll_add | cn_original:Dbl_Linked_List__add | empty_element_2 | on | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/768c4cbd6ac08786ff99.json) |
+| dll_add | cn_original:Dbl_Linked_List__add | empty_element_3 | off | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c74035fce0ab9a1de56e.json) |
+| dll_add | cn_original:Dbl_Linked_List__add | empty_element_3 | on | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/275312674d657b6e558b.json) |
+| dll_add | cn_original:Dbl_Linked_List__add | empty_element_4 | off | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/1e7f71e7c718e838d3be.json) |
+| dll_add | cn_original:Dbl_Linked_List__add | empty_element_4 | on | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/2031e0c06c7cb13b02fc.json) |
+| dll_add | cn_original:Dbl_Linked_List__add | empty_element_5 | off | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/66abc057c0bc716119ff.json) |
+| dll_add | cn_original:Dbl_Linked_List__add | empty_element_5 | on | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/aa1b8f77b9acfbbdecbe.json) |
+| dll_add | cn_original:Dbl_Linked_List__add | empty_element_6 | off | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e78a998abfc5d632d148.json) |
+| dll_add | cn_original:Dbl_Linked_List__add | empty_element_6 | on | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/12ab9c7ad0f14f98a3f4.json) |
+| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_0 | off | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/138a600f03c09c3a2efb.json) |
+| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_0 | on | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/d3a7eb4b3e160e0dfa23.json) |
+| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_1 | off | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/b059ca75f67281d10d7c.json) |
+| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_1 | on | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/af785b111f5ab6df2971.json) |
+| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_2 | off | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/7f0384ff8683aa452137.json) |
+| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_2 | on | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/54ae6ff36f2ebb3c93e8.json) |
+| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_3 | off | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/92dbbe33f067bd450948.json) |
+| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_3 | on | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/9d04822f2239ac9bbaf1.json) |
+| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_4 | off | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/18e06161f1bba5275b59.json) |
+| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_4 | on | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/636ef2a07831ac23084e.json) |
+| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_5 | off | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/ae6d4a5c57c384fc1d45.json) |
+| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_5 | on | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a4a8c366f807167efa06.json) |
+| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_6 | off | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/a3ca216ccbf9e4f3592f.json) |
+| dll_add | cn_original:Dbl_Linked_List__add_orig.broken | empty_element_6 | on | 历史 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/feb6d43238a7ff7aa8aa.json) |
 | dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_0 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/e59e30ee375021bee823.json) |
 | dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_0 | on | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/80878e88a8cc638cea1c.json) |
 | dll_remove | cn_original:Dbl_Linked_List__remove | shape_payload_1 | off | 当前 | PASS | UNKNOWN | UNKNOWN | UNRESOLVED_UNKNOWN | [详情](cases/c75f4cc436862e8e829f.json) |

@@ -94,6 +94,25 @@ class HistoricalBinaryAuditTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.reference()
 
+    def test_singleton_remeasurement_checks_its_published_checker_bytes(self):
+        from unittest.mock import patch
+        import singleton_resource_remeasurement_audit as audit
+        source = self.root / "spectest/certificates.py"
+        source.parent.mkdir()
+        source.write_bytes(b"# measured source")
+        reference = {"path": str(source), "sha256": hashlib.sha256(source.read_bytes()).hexdigest()}
+        self.git("add", "spectest/certificates.py")
+        self.git("-c", "user.name=Audit test", "-c", "user.email=audit@example.invalid",
+                 "-c", "commit.gpgsign=false", "commit", "-qm", "measured checker")
+        measured = self.git("rev-parse", "HEAD").decode().strip()
+        source.write_bytes(b"# subsequent source")
+        with patch.object(audit, "REMEASUREMENT_COMMIT", measured):
+            audit.verify_remeasurement_tool(self.root, "production_checker", reference)
+            with self.assertRaisesRegex(ValueError, "hash differs"):
+                audit.verify_remeasurement_tool(self.root, "production_checker", dict(reference, sha256="0" * 64))
+            with self.assertRaisesRegex(ValueError, "tool path"):
+                audit.verify_remeasurement_tool(self.root, "production_checker", dict(reference, path=__file__))
+
     def test_other_artifacts_never_fall_back_to_git(self):
         source = self.root / "source.c"
         source.write_text("changed")

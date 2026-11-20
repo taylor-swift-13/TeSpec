@@ -86,6 +86,9 @@ def audit_coverage(p,goal,candidate,proof_files):
 def audit_certificate(root,proof_ref,measures,kind,seen_models,seen_checks):
  p=load(ref(root,proof_ref))
  need(p['schema']=='tespec-current-proof/v1' and p['kind']==kind,'Wrong proof schema/scope')
+ if p.get('coverage_style')=='controller-selected-targets':
+  from publish_replayed_certificate import audit_replayed_certificate
+  return audit_replayed_certificate(root,p,measures,seen_checks)
  goal=ref(root,p['goal']);candidate=ref(root,p['candidate'])
  check_candidate_commands(candidate.read_text())
  inventory=dict(goal_interface(goal.read_text()))
@@ -308,6 +311,8 @@ def audit_current_group(group,root,index=None,allow_partial=False):
    p=audit_certificate(root,r['certificate'],measures,'test',seen_models,seen_checks);itps+=1
    need(p['execution_id']==r['execution_id'] and p['native_receipt_sha256']==r['native_receipt_sha256'],'ITP/native execution binding differs')
    need(p['source']['sha256']==r['source_sha256'],'Test certificate source differs from executed source')
+   if p.get('coverage_style')=='controller-selected-targets':
+    need(p['native_input']==r['input'] and p['report_sha256']==r['report_sha256'],'Decision replay input/report differs')
    need(p['goal']['sha256']==r['vc_sha256']['goal'] and set(p['targets'])==set(r['residual_vcs']),'ITP differs from original residual VC')
    need(r['raw_status']=='UNKNOWN' and r['execution_completed'] and r['final_status']=='PASS' and r['precondition_result']=='SAT','Unsafe ITP writeback')
   else:
