@@ -30,8 +30,15 @@ python3 tools/benchmark/audit_archive.py
 
 `resolved-results.json` in that directory gives the separate adjudicated view (22 PASS, 32 FAIL, 7 expected ERROR). The original automatic results are unchanged. Authoritative evidence consists of the exact goal copies, refutation sources, compilation/audit logs and kernel receipt. Replay with `python3 tools/benchmark/refute_read_unknowns.py`; audit saved source hashes and receipts with `python3 tools/benchmark/validate_read_itp.py`.
 
-## 完整测试口径
+## teSpec 当前两条路线
 
-完整测试包括执行测试和必要的 ITP 阶段，正式结果以两阶段合并后的结论为准。自动阶段的 UNKNOWN 应在 ITP 中证明或反证；已有决定性结果无需重复 ITP。主程序的全称验证仍单独复用，不要求所有变体额外做全称验证。规则见仓库根目录下 `benchmark/protocol.json`。
+[全局索引](tespec-routes-index.json) 指向 45 组的 `tespec/routes.json`，[统计表](tespec-routes.csv) 每组分 inline 和 modular 展示原生、Auto 与 ITP 的时间、峰值 RSS 和 token。正式自动结果使用原生决定和 Auto 决定，ITP 独立记录。[异常台账](tespec-unexpected/routes-auto.json)按输入对照冻结的预期。
 
-read 的正式入口为 `benchmark/results/read/complete/results.json`、`statistics.json` 和 `cases.csv`，包含 61 对变体与输入的执行结果、ITP 结论及最终结论。原始自动数据完整保留，但不作为完整测试的最终正确率。时间统计包含两阶段实际测得的工作、失败证明尝试和内核检查；共享工作仅计一次。正式统计已切换到新一轮可计量的 gpt-6.1-sol 证明生成、Coq 编译和内核检查，记录实际 token、各阶段耗时和本地进程峰值内存。旧的对话编写证明批次作为历史保留，不把新一轮测量冒充旧批次的耗时。
+`NOT_RUN` 表示没有送入该后续路线，`UNMEASURED` 表示原生证明义务可送入 ITP，当前没有同一证明上下文下的已测结果。旧设置下的 ITP 整批成本、逐例证明与失败尝试通过 `historical_itp` 字段引用。历史账单按原批次记录，已知部分量另列，缺失为 `null`。批次摘要与逐例证明成本会重叠，不可直接相加。
+
+按组重建 Auto 记录的命令如下。第二条只整理账单和校验可复用证明的上下文。
+
+```sh
+python3 tools/benchmark/organize_tespec_routes.py --group read
+python3 tools/benchmark/index_tespec_routes.py
+```
