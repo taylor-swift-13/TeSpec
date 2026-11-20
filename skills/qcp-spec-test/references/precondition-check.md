@@ -46,13 +46,12 @@ nor an unsuccessful positive attempt establishes INVALID.
 
 Explicit `--refute-vc CASE_ID=PROOF_NAME` is accepted by the runner and
 `prepare-run-certificates`. It freezes one selected original VC; a checked
-negative proof sets that VC to INVALID and the case to FAIL, while unrelated
-VCs may remain UNKNOWN. A standalone negative certificate reports VC validity
+negative proof sets that VC to INVALID. The controller retains the execution
+verdict until reachability is established. Unrelated VCs may remain UNKNOWN. A standalone negative certificate reports VC validity
 without claiming that a complete execution was checked. Failed attempts remain
 UNKNOWN. Entry UNSAT and other VC INVALID remain distinct obligation results.
 
-One proof Agent handles the requested positive and negative candidates; the
-external controller handles acceptance. Failed attempts remain UNKNOWN. If
+The controller checks each execution's positive or negative candidate independently. Failed attempts remain UNKNOWN. If
 both polarities appear accepted for the same frozen proposition, keep the case
 unresolved and investigate dependency consistency and proof scope.
 

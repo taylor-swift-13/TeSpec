@@ -105,6 +105,117 @@ class RunCertificateTests(unittest.TestCase):
             )
             return result, checker.call_count
 
+    def test_dll_entry_task_preserves_automatic_vcs_and_original_manifest(self):
+        from spectest.core import run_job
+
+        repo = Path(__file__).resolve().parents[1]
+        variant = repo / "benchmark/programs/dll_add/variants/qcp_existing_ca69c364e8e3c06211ef"
+        job = self.root / "dll.json"
+        job.write_text(json.dumps({
+            "source": str(variant / "qcp/dll_add_orig.qcp.c"), "function": "add",
+            "binds": [{"id": "head_one_successor", "args": {"element": 7, "n": 4096},
+                       "values": {"e": 7, "h": 10, "p": 0, "q": 12288, "ll": [], "lr": [20]}}],
+            "qcp": {"binary": str(repo / "bin/tespec-symexec"), "execution_strategy": "modular",
+                    "execution_mode": "all-boundaries", "spatial_smt": True,
+                    "include_dirs": [str(repo / "runtime/qcip/QCP_examples/QCP_demos_human"),
+                                     str(repo / "arxiv/benchmark-support/selection/qcp-migration/supplemental/dll_add_orig")]},
+        }))
+        auto = run_job(job, self.root / "run")
+        case = auto["results"][0]
+        self.assertEqual(case["reason"], "precondition_requires_proof", case)
+        roots = ["proof_of_add_precondition_wit_1"]
+        self.assertEqual(auto["itp_vcs"][0]["goals"], roots)
+        request = prepare_run_certificates(self.root / "run/report.json", self.root / "proof",
+                                           decision_only=True)
+        text = Path(request["editable"][0]).read_text()
+        self.assertIn("Lemma proof_of_add_precondition_wit_1", text)
+        self.assertEqual(text.count("Lemma "), 1)
+        checked, calls = self.check(request)
+        self.assertEqual(calls, 1)
+        updated = checked["results"][0]
+        self.assertEqual(updated["status"], "PASS")
+        self.assertEqual(updated["evidence"]["certificate"], "CHECKED_DECISION_VCS")
+        self.assertEqual(updated["evidence"]["kernel_checked_goals"], roots)
+        self.assertEqual(updated["vc_results"], case["vc_results"])
+        self.assertEqual(updated["vc"], case["vc"])
+        self.assertEqual(checked["itp_vcs"], [])
+
+        # Old binaries also report seven VALID path VCs and one entry root,
+        # but they supply no printer identity for any of the seven diagnostics.
+        automatic = json.loads((self.root / "run/report.json").read_text())
+        old = automatic["results"][0]
+        stdout = Path(old["stdout"])
+        native = json.loads(stdout.read_text())
+        for records in (old["vc_results"], native["spec_test"]["vc_results"]):
+            for row in records:
+                row.pop("proof_roots")
+        stdout.write_text(json.dumps(native))
+        old_report = self.root / "old.json"
+        old_report.write_text(json.dumps(automatic))
+        fallback = prepare_run_certificates(old_report, self.root / "old-proof", decision_only=True)
+        work = json.loads(Path(fallback["manifest"]).read_text())["certificates"][0]
+        self.assertIsNone(work["selected_decision_roots"])
+        self.assertGreater(Path(fallback["editable"][0]).read_text().count("Lemma "), 1)
+        completed, _ = self.check(fallback)
+        self.assertEqual(completed["results"][0]["status"], "PASS")
+        self.assertEqual(completed["results"][0]["vc_results"], old["vc_results"])
+
+    def test_partial_decision_requires_matching_spatial_receipt(self):
+        from spectest.core import run_job
+        from spectest.run_certificates import _decision_binding
+
+        repo = Path(__file__).resolve().parents[1]
+        source = self.root / "cells.c"
+        source.write_text(
+            '#include "verification_stdlib.h"\n#include "int_array_def.h"\n'
+            'int f(int *p) /*@ With xs Require IntArray::full(p,2,xs) '
+            'Ensure data_at(p,int,7) * data_at(p+1,int,9) */ { return 0; }\n'
+        )
+        job = self.root / "cells.json"
+        job.write_text(json.dumps({
+            "source": str(source), "function": "f",
+            "binds": [{"id": "cells", "args": {"p": 4096}, "values": {"xs": [7, 9]}}],
+            "qcp": {"binary": str(repo / "bin/tespec-symexec"), "spatial_smt": True,
+                    "include_dirs": [str(repo / "runtime/qcip/QCP_examples/QCP_demos_human")]},
+        }))
+        case = run_job(job, self.root / "run")["results"][0]
+        self.assertIsNotNone(_decision_binding(case))
+        changed = next(row for row in case["vc_results"] if row.get("original_status") == "UNKNOWN")
+        self.assertEqual(changed["status"], "VALID")
+        path = Path(changed["spatial_smt"]["artifact"])
+        receipt = json.loads(path.read_bytes())
+        missing = copy.deepcopy(case)
+        missing["vc_results"][changed["spatial_smt"]["vc_index"]].pop("spatial_smt")
+        self.assertIsNone(_decision_binding(missing))
+        wrong_hash = copy.deepcopy(case)
+        wrong_hash["spatial_smt"]["executor_sha256"] = "0" * 64
+        self.assertIsNone(_decision_binding(wrong_hash))
+        for error in ("old_goal", "other_layout", "other_index", "opposite_result", "missing"):
+            with self.subTest(error=error):
+                edited = copy.deepcopy(receipt)
+                if error == "old_goal":
+                    edited["input"]["vc"]["goal"] = "different original obligation"
+                elif error == "other_layout":
+                    edited["input"]["layout"]["architecture_bits"] = 64
+                elif error == "other_index":
+                    edited["vc_index"] += 1
+                elif error == "opposite_result":
+                    edited["solver_result"] = "sat"
+                path.write_text(json.dumps(edited))
+                if error == "missing":
+                    path.unlink()
+                self.assertIsNone(_decision_binding(case))
+
+    def test_decision_full_fallback_preserves_unmapped_unknown_diagnostic(self):
+        self.case["vc_results"] = [{"kind": "return", "status": "UNKNOWN"}]
+        self.prepare()
+        request = prepare_run_certificates(self.root / "automatic.json",
+                                           self.root / "decision", decision_only=True)
+        updated = self.check(request)[0]["results"][0]
+        self.assertEqual(updated["status"], "PASS")
+        self.assertEqual(updated["vc_results"], self.case["vc_results"])
+        self.assertEqual(updated["evidence"]["certificate"], "CHECKED_COMPLETE_VC_GROUP")
+
     def test_complete_original_group_resolves_split_goals_and_preserves_skipped_annotations(
         self,
     ):

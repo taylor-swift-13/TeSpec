@@ -14,6 +14,7 @@ from pathlib import Path
 import re
 import time
 
+from .itp_schedule import bind_proof_roots, decision_goals, native_negative_for_test
 from .modes import EXECUTION_SEMANTICS, normalize_execution_mode
 
 
@@ -361,9 +362,8 @@ def _checked_events(case: dict, native: dict, function: str) -> bool:
 def _annotation_coverage(executor: dict, case: dict, original: list) -> bool:
     """Check a complete, unambiguous return/annotation residual group.
 
-    This is execution-decision coverage, not a Coq certificate. Native diagnostic
-    VCs have no stable IDs, so admit only one function, one path per source line,
-    and unsuffixed witness roots. Mixed, branched or unmapped inventories retain
+    This fallback supports executor artifacts predating proof_roots. Accept only
+    one function, one path per source line, and unsuffixed witness roots. Mixed, branched or unmapped inventories retain
     ITP. Every UNKNOWN VC in the accepted group must still be decided separately.
     """
     native = executor.get("spec_test", {})
@@ -497,7 +497,8 @@ def _obligation_artifacts(case: dict, executor: dict) -> dict:
             raise ValueError("proof_target_definition_mismatch")
         return set(names)
     manual, automatic = proofs("proof_manual"), proofs("proof_auto")
-    if manual != set(case["residual_vcs"]) or manual & automatic:
+    if (len(manual) != len(case["residual_vcs"])
+            or manual != set(case["residual_vcs"]) or manual & automatic):
         raise ValueError("manual_residual_inventory_mismatch")
     interfaces = re.findall(r"^Axiom\s+(proof_of_\w+)\s*:\s*(\w+)\s*\.", texts["goal"], re.M)
     interface_names = [name for name, _ in interfaces]
@@ -517,6 +518,7 @@ def _obligation_artifacts(case: dict, executor: dict) -> dict:
         raise ValueError("unsupported_goal_check_interface")
     return {"scope": "original-obligation-group/v1", "files": files,
             "sha256": hashes, "interface_roots": sorted(roots),
+            "all_interface_roots": sorted(interface_names),
             "auxiliary_split_lemmas_individually_proved": False,
             "certificate": "NOT_CHECKED"}
 
@@ -675,6 +677,31 @@ def refine_case(
             info["return_coverage_reason"] = "original_artifact_binding_failed:" + str(error)
     info["return_residual_coverage"] = coverage
     coverage = coverage or annotation_coverage
+    owners = {}
+    binding = None
+    identity_coverage = False
+    if any("proof_roots" in record for record in original) and case.get("residual_vcs"):
+        try:
+            binding = (info.get("return_artifact_binding")
+                       or info.get("annotation_artifact_binding")
+                       or _obligation_artifacts(case, executor))
+            owners = bind_proof_roots(executor["functionName"], original, binding)
+            # Every manual parent and every outstanding path VC must be bound.
+            # A single deduplicated VC can account for several printed roots.
+            identity_coverage = bool(owners) and (
+                set(owners) == set(binding["interface_roots"])
+                and {i for i, vc in enumerate(original) if vc["status"] == "UNKNOWN"}
+                <= set(owners.values())
+            )
+            info["proof_root_vc_indices"] = owners
+        except (OSError, ValueError, TypeError, KeyError, AttributeError) as error:
+            artifact_binding_failed = True
+            info["proof_root_binding_error"] = str(error)
+        # On a version emitting identities, never fall back to line-number inference.
+        coverage = identity_coverage
+    for key in ("annotation_artifact_binding", "return_artifact_binding"):
+        if key in info:
+            info[key].pop("all_interface_roots", None)
     info["residual_coverage"] = coverage
     if artifact_binding_failed:
         # A countermodel of the saved diagnostic VC is not evidence for a case
@@ -683,6 +710,8 @@ def refine_case(
         result_eligible = False
         info["execution_result_eligible"] = False
         info["aggregate_preserved_reason"] = "original_artifact_binding_failed"
+    native_negative = bool(owners and events_checked and not artifact_binding_failed
+                           and native_negative_for_test(case, original, owners))
     phases = dict(case.get("phases", {}))
     returns = [v for v in refined if v.get("kind") == "return"]
     if result_eligible and returns and any(v["status"] == "INVALID" for v in returns):
@@ -691,11 +720,16 @@ def refine_case(
         # Coverage is checked below before changing the final verdict.
         phases["postcondition"] = "PASS"
     annotations = [v for v in refined if v.get("kind") == "entailment"]
-    if result_eligible and annotation_coverage and annotations:
+    if result_eligible and (annotation_coverage or identity_coverage) and annotations:
         if any(v["status"] == "INVALID" for v in annotations):
             phases["annotations"] = "FAIL"
         elif all(v["status"] == "VALID" for v in annotations):
             phases["annotations"] = "PASS"
+    safety = [v for v in refined if v.get("kind") == "safety"]
+    if (result_eligible and identity_coverage and safety
+            and all(v["status"] == "VALID" for v in safety)
+            and phases.get("safety") == "UNKNOWN"):
+        phases["safety"] = "PASS"
     complete = (
         phases.get("execution") == "PASS"
         and phases.get("safety") == "PASS"
@@ -710,8 +744,11 @@ def refine_case(
         )
     )
     status = case["status"]
-    if result_eligible and any(v.get("kind") == "safety" and v["status"] == "INVALID"
-                               for v in refined):
+    mapped_safety_fault = native_negative and any(
+        refined[i]["kind"] == "safety" and refined[i]["status"] == "INVALID"
+        for i in owners.values()
+    )
+    if mapped_safety_fault or (result_eligible and any(v["status"] == "INVALID" for v in safety)):
         phases["safety"] = "FAIL"
         status = "CRASH"
         case["reason"] = "invalid_safety_vc"
@@ -739,6 +776,13 @@ def refine_case(
     info["itp_required"] = bool(case.get("residual_vcs")) and (
         not result_eligible or status == "UNKNOWN" or "UNKNOWN" in states or not coverage
     )
+    if (binding and owners and events_checked and not artifact_binding_failed
+            and info["itp_required"] and (result_eligible or native_negative)):
+        pending = decision_goals(case, binding, owners, native_negative=native_negative)
+        # Never publish an empty decision task for an unsettled verdict.
+        if pending or (identity_coverage and status in {"PASS", "FAIL", "CRASH"}):
+            info["decision_goals"] = pending
+            info["itp_required"] = bool(pending)
     summary_path = artifact_dir / "summary.json"
     summary_path.write_text(json.dumps(info, indent=2) + "\n", encoding="utf-8")
     info["summary"] = str(summary_path)

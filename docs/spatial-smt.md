@@ -70,7 +70,7 @@ VC 清单一致，协议缺失或损坏时不能猜测公式。
 
 - 语义和作用域检查通过的 SAT 反例对应 INVALID VC；具备执行判定条件时才汇总为 FAIL。
 - 所有原始 VC 都 VALID，且执行完整、各阶段通过、原始 manual 清单和 witness 覆盖一致，才允许 PASS。
-- 新断言路径仅接受单函数、无命名分支后缀且来源行无歧义的 return/entailment 义务组。
+- 对于没有原生目标名的旧执行产物，断言覆盖检查只接受单函数、无命名分支后缀且来源行无歧义的 return/entailment 义务组。
   manual 条目、UNKNOWN 记录和 witness 的 total/manual/auto 计数须严格一致。
   同时读取旧 WitnessList 和新 schema_version=1 的 verification_conditions，不补造缺失义务。
   原始记录可能去重、manual 分支可能聚合；不一致时保留 UNKNOWN，不放宽为集合包含。
@@ -85,7 +85,10 @@ VC 清单一致，协议缺失或损坏时不能猜测公式。
 
 原始 `executor.json`、`vc/*.v`、`vc/manifest.json` 和 `residual_vcs` 保留作为证书输入，
 不会生成伪造的 Coq 证明或把 SMT 结果标为内核检查通过。
-`annotation_artifact_binding` 记录的是原始义务组覆盖，不是猜测的逐 VC→lemma 映射。
+`annotation_artifact_binding` 记录原始义务组的覆盖情况。新版执行器还在 return、
+entailment 和 safety 记录的 `proof_roots` 中列出生成这条诊断的所有原始 Coq 父目标。
+执行器去重后仍保留各次出现所对应的父目标。调度器将这些名字与本次保存的 Goal、
+接口及 manifest 核对。旧记录或无法核对的记录仍使用完整义务组。
 部分生成的根目标为“原始 VC 或策略化 VC”，`split_goal_*` 是另一证明路径的辅助引理；
 原始 VC 被 SMT 判 VALID 可以使本次测试无需 ITP，但不代表这些辅助引理已逐个获证。
 `report.json` 中 `vc_results` 表示经过可选后端判定后的 VC 状态，附带原始状态和证据路径。

@@ -7,6 +7,7 @@ import subprocess
 
 from .certificates import check_certificate, digest, tree_digest
 from .kernel_replay import KernelReplayCache
+from .itp_schedule import decision_itp_task
 from .verdict import CASE_STATUSES
 from .core import (
     JobError,
@@ -250,6 +251,10 @@ def _run_normalized_case(
         "type_bindings": program["type_bindings"],
         "vc": vc,
         "command": command,
+        "returncode": completed.returncode,
+        "stdout": str(execute_dir / "executor.json"),
+        "generated_source": str(source),
+        "generated_source_sha256": source_digest,
         "resources": {"wall_seconds": elapsed, "cpu_seconds": cpu, "peak_rss_kib": rss},
     }
     execution = {"PASS": "RUN", "NOT_RUN": "NOT_RUN"}.get(
@@ -257,15 +262,8 @@ def _run_normalized_case(
     )
     report.update(status=result["status"], execution=execution, results=[result])
     result["residual_vcs"] = vc["residual_goals"]
-    if vc["residual_goals"]:
-        report["itp_vcs"] = [
-            {
-                "case_id": program["case"],
-                "function": program["function"],
-                "manifest": vc["manifest"],
-                "goals": vc["residual_goals"],
-            }
-        ]
+    task = decision_itp_task(result, program["function"])
+    report["itp_vcs"] = [task] if task is not None else []
     automatic = {
         "schema": "qcp-spectest-report/v1",
         "job": str(Path(job_path).resolve()),

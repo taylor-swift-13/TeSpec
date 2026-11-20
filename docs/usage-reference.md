@@ -264,29 +264,21 @@ hierarchy、UIP/额外 Theory 或无法识别的审计记录均明确拒绝，�
 `independent_kernel_replay` 为 `NOT_RUN`；它不表示 QCP 自动证明或独立内核复核。
 需要独立 `coqchk` 的完整证据时使用完整证书检查流程。
 
-完整证书流程处理部分 VC 后，顶层 `itp_vcs.goals` 与该 case 当前的 `residual_vcs`
-同步；已反证的目标及其 split 子目标不重复派发，未决目标继续保留。原始 manifest
-和冻结报告不修改。仅反证一个 VC 且未建立可达性时，整次执行仍保持 UNKNOWN。
+测试报告的 `vc/manifest.json` 保存所有原始证明义务。`itp_vcs` 按执行列出仍影响测试结论的目标。
+新版执行器为可关联的返回、断言和安全 VC 写出 `proof_roots`。一条诊断 VC 可以对应多个原始 Coq 目标。
+映射或证明文件无法核对时保留整组。已确定的功能错误仍可能有影响 `CRASH` 分类的安全义务。
 
-## Codex skill
-
-skill 位于 `skills/qcp-spec-test`，并安装到
-`~/.codex/skills/qcp-spec-test`。skill 规定：
-
-- 框架、执行、分类、proof checking 不使用模型；
-- 只有缺少 binds 时的测试选择，以及 residual Coq 证明可使用模型；
-- 模型生成的证明始终写入 `proof_manual`，并按 manual proof 报告；
-- 人写 binds 时必须原样保留；
-- 不为 callee 生成 binds。
-
-需要独立无人值守模型层时：
+## 执行一次测试的证明任务
 
 ```bash
-skills/qcp-spec-test/scripts/run-agent.sh SOURCE.c FUNCTION [BINDS.json]
+skills/qcp-spec-test/scripts/run-agent.sh OUTPUT/report.json --output PROOF_OUTPUT
 ```
 
-该脚本参考 CAV 的 Codex runner，固定使用 `gpt-5.4-mini` 和 medium
-reasoning。
+控制器逐次准备证明候选，核对原始目标、输入、依赖和目标布局。匹配的已有证明源码优先在
+本次环境重新编译、审计假设并运行独立内核检查。成功重放的执行消耗 0 个 agent token。
+仍需填写证明时，默认请求 `gpt-6.1-sol`。每次尝试的检查开销及实际模型调用分开记录。
+`CHECKED_DECISION_VCS` 的内核覆盖范围见 `kernel_checked_goals`，其他原生或 SMT 结果保留各自证据。
+`prepare-run-certificates` 的默认完整证书流程仍覆盖整个原始接口。单个 VC 的反证仍需可达性证据才能升级为执行反例。
 
 ## Assertion 语法
 

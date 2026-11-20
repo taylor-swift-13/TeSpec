@@ -9,11 +9,14 @@ requests only the negation of the original initial proposition; see [Require che
 Generated auto proof placeholders are
 not evidence for a complete certificate.
 
-The controller retains the returned digest before giving the proof Agent its
-candidate paths. Use one Agent for all candidates. It reads each `Goal.v` and
-its imported definitions, fills every required proof, and may run `coqc` for
-local diagnostics. It does not change the original C program, binds, goals,
-contracts, manifests, dependency definitions or library sources.
+The proof controller plans one task per execution. It binds outstanding decisions
+to the original Coq targets where the executor and saved artifacts establish an
+exact match. If a binding is incomplete, it selects the complete original
+interface. It retains the manifest digest and first tries a matching saved proof
+source with the current checker. Each execution that still needs an Agent gets
+its own request. The Agent reads `Goal.v` and its imports, edits `Candidate.v`,
+and can run `coqc` for diagnostics. The C program, inputs, goals, contracts,
+manifests and dependencies are fixed for all attempts.
 
 The external controller performs acceptance:
 
@@ -25,8 +28,9 @@ python3 -m spectest check-run-certificates OUTPUT/proof/run-manifest.json \
 This recompiles candidates, checks interface coverage, audits transitive
 assumptions and replays the libraries with `coqchk`. The final report is
 `OUTPUT/proof/report.json`. Existing automatic results are preserved; a
-completed eligible instance becomes PASS only after its complete certificate
-passes. Execution limits and errors cannot be repaired merely by proving the
+completed eligible instance becomes PASS when all required decisions have
+support in the automatic report or a checked certificate. The proof report
+records the exact kernel-checked goals of a decision-only certificate. Execution limits and errors cannot be repaired merely by proving the
 VCs emitted before execution stopped.
 
 No `Admitted`, `admit`, new axioms, parameters or hypotheses may remain
@@ -53,6 +57,7 @@ routing file. The controller checks the positive attempt before preparing the
 negative request. `--refute-vc CASE_ID=PROOF_NAME` selects a negative statement
 explicitly. Immutable original interfaces and dependencies are checked in both
 rounds. A kernel-checked proof of the selected original VC's negation establishes
-INVALID and the whole test FAIL, even with other unresolved obligations.
-Agent judgement alone never establishes a result. If neither polarity is proved,
-the obligation remains UNKNOWN.
+INVALID for that VC. An execution counterexample also requires evidence
+that the failing state is reachable. A checked refutation of a whole Require SAT
+goal instead establishes an empty input domain. An unresolved obligation stays
+UNKNOWN.

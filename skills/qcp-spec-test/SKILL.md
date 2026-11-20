@@ -1,6 +1,6 @@
 ---
 name: qcp-spec-test
-description: Test QCP-annotated C programs with partial logical instances, execute loops and calls symbolically, and optionally complete unresolved verification conditions through one proof Agent and an independent certificate controller.
+description: Test QCP-annotated C programs with partial logical instances, execute loops and calls symbolically, and optionally complete unresolved verification conditions through per-execution proof tasks and an independent certificate controller.
 ---
 
 # QCP Spec Test
@@ -25,15 +25,12 @@ runtime; the packaged default is 32-bit.
    be omitted or explicitly symbolic; numeric addresses are optional test
    constraints, not prerequisites for heap ownership. Follow analysis metadata
    for required non-pointer arguments and logical variables.
-3. Select the checking policy:
-   - `entry-exit`: execute actual loops and available callee bodies, checking
-     safety and the final postcondition.
-   - `all-boundaries`: execute the same bodies and iterations, also checking visited
-     assertions, invariants and nested call contracts. This compatibility name
-     selects checking boundaries, not modular execution.
-   Checks observe copies of the current state; no tested annotation replaces
-   the state. Callee arguments come from the caller, shared writes return to
-   the caller, and no separate callee bind file is needed.
+3. Choose the execution strategy and VC coverage independently.
+   The default `inline` strategy follows available bodies and loop iterations.
+   `modular` uses contracts and loop invariants to carry the symbolic state.
+   In either strategy a call with only a declaration uses its contract.
+   `entry-exit` checks safety and the final postcondition.
+   `all-boundaries` also checks visited annotations and call boundaries.
 4. Execute all binds:
 
    ```bash
@@ -41,11 +38,9 @@ runtime; the packaged default is 32-bit.
      --execution-mode all-boundaries --output-dir OUTPUT
    ```
 
-   A reached declaration-only call cannot replace body execution with its
-   contract. A declaration-only test target supports an explicitly labelled
-   Require-only test. Missing bodies, loop/call limits and unresolved symbolic
-   operations remain UNKNOWN or ERROR as reported. Increase budgets only when
-   justified by the intended input; do not weaken a contract to obtain PASS.
+   A declaration-only test target supports a Require-only test. Loop/call limits
+   and unresolved symbolic operations retain the status reported by the executor. Increase
+   budgets only when justified by the intended input.
 
 Keep declared headers, strategies and Coq definitions with the case. Add `-I`
 for required include roots. Coq dependencies can live under
@@ -69,7 +64,8 @@ The external controller retains the returned manifest digest outside the proof
 Agent's editable files. If `proof_required` is false, skip the Agent. Other
 UNKNOWN cases can remain unresolved because they need execution or tool fixes.
 
-Use **one proof Agent for all returned candidate files**. Its task is to fill
+Use the proof controller to replay eligible proof sources first. Start a proof
+Agent for each execution that still needs a candidate. Its task is to fill
 `Candidate.v`, optionally compiling drafts for feedback. The controller calls
 `check-run-certificates` with its held digest; the proof Agent does not assign
 verdicts or invoke final acceptance on its own authority. The controller may
@@ -80,16 +76,17 @@ process. Never recursively invoke the runner from the proof Agent.
 For initial satisfiability and negative results, read
 [Require checks](references/precondition-check.md). Failed proof search is not
 UNSAT. A checked proof of an original execution VC's negation establishes
-INVALID and makes the test FAIL. Agent judgement is not a certificate.
+INVALID for that VC. An execution counterexample also requires evidence that
+the failing state is reachable.
 
 ## Results and resources
 
 Report per-case bindings, scope, status and artifact path. Distinguish:
 
 - automatic QCP/SMT acceptance, relative to the executor/solver trusted base;
-- complete VC certificates accepted by independent replay and assumption audit;
+- independently checked certificates, with their exact goals or full interface;
 - FAIL with an UNSAT entry condition;
-- FAIL with an INVALID original VC;
+- FAIL with an execution counterexample;
 - CRASH with the confirmed program fault and its reason;
 - UNKNOWN for unresolved permissions and ERROR for tool failures.
 
@@ -106,6 +103,6 @@ actual agent telemetry. Unavailable token counts and model identities are
 certificate-checking costs separate. Record concurrency for comparative timing.
 
 For explicitly requested unattended proof construction, use
-`scripts/run-agent.sh AUTO-REPORT.json`. It runs one proof process only when
-preparation yields eligible tasks and performs final checking in its external
-controller. Preserve the caller's model configuration.
+`scripts/run-agent.sh AUTO-REPORT.json`. It replays matching proof sources, then
+requests a candidate for each execution that still needs one. The default CLI requests `gpt-6.1-sol`.
+The controller performs final checking.

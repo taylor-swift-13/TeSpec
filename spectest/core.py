@@ -15,6 +15,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
+from .itp_schedule import decision_itp_task
 from .errors import JobError
 from .modes import (
     execution_semantics, normalize_execution_mode, normalize_execution_strategy,
@@ -2124,17 +2125,8 @@ def run_job(
         for status in CASE_STATUSES
     }
     itp_vcs = [
-        {
-            "case_id": result["id"],
-            "function": function,
-            "manifest": result["vc"]["manifest"],
-            "goals": result["vc"]["residual_goals"],
-        }
-        for result in results
-        if isinstance(result.get("vc"), dict)
-        and result["vc"].get("status") == "residual"
-        and result["vc"].get("residual_goals")
-        and result.get("spatial_smt", {}).get("itp_required", True)
+        task for result in results
+        if (task := decision_itp_task(result, function)) is not None
     ]
     report = {
         "schema": "qcp-spectest-report/v1",

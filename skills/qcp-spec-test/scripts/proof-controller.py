@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Run one optional proof process, then independently check its candidates."""
+"""Route one execution per proof task and independently check each attempt."""
 
 import argparse
 import json
 import os
 from pathlib import Path
+import shutil
 import signal
 import subprocess
 import sys
@@ -13,6 +14,7 @@ import time
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT))
+from spectest.proof_reuse import proof_key, publish_candidate, published_candidates  # noqa: E402
 from spectest.run_certificates import prepare_run_certificates, check_run_certificates  # noqa: E402
 
 
@@ -83,7 +85,7 @@ def run_agent(command, prompt, out, timeout):
         if usage
         else "not reported by agent telemetry",
         "model": None,
-        "model_note": "inherited caller configuration; identity not independently reported",
+        "model_note": "identity not independently reported by CLI telemetry",
         "command": command,
     }
 
@@ -103,9 +105,131 @@ def read_refutation_plan(path, report):
     selected = set(vcs) | set(entries)
     if selected - cases.keys() or set(vcs) & set(entries):
         raise ValueError("unknown or conflicting proof routing case")
-    # A successful positive proof overrides a stale negative judgement.
-    return ({key: value for key, value in vcs.items() if cases[key]["status"] == "UNKNOWN"},
+    # A successful proof overrides a stale negative judgement. A provisional
+    # functional FAIL may still carry an explicitly scheduled safety target.
+    pending = {task["case_id"]: task.get("goals", []) for task in report.get("itp_vcs", [])}
+    return ({key: value for key, value in vcs.items()
+             if cases[key]["status"] == "UNKNOWN"
+             or (cases[key]["status"] == "FAIL" and value in pending.get(key, []))},
             {key for key in entries if cases[key]["status"] == "UNKNOWN"})
+
+
+def proof_attempts(command, out, cache, automatic, attempts, plans, args):
+    """Yield proof candidates for exactly one execution, replaying locally first."""
+    def for_case(entry):
+        case = automatic["results"][entry["case_index"]]
+        manifest = Path(entry["manifest"])
+        bundle = json.loads(manifest.read_text())
+        candidate = manifest.parent / "Candidate.v"
+        template = candidate.read_bytes()
+        key = proof_key(bundle, automatic, case)
+        stage_root = out / ("case_%04d" % entry["case_index"])
+        stage_root.mkdir(parents=True, exist_ok=True)
+
+        def record(label, origin, number, agent=None):
+            folder = stage_root / f"attempt-{number}"
+            folder.mkdir(exist_ok=True)
+            def finished(audit):
+                info = {"case_id": case["id"], "source": label, "origin": origin,
+                        "key": key, "check": dict(audit)}
+                if agent is not None:
+                    info["agent"] = agent
+                if audit.get("proof_status") != "VALID" and label != "agent":
+                    # Fresh checks write the same log names. Keep failed replay
+                    # costs and evidence available after a subsequent attempt.
+                    logs = folder / "checker"
+                    logs.mkdir()
+                    stages = []
+                    for stage in audit["stages"]:
+                        item = dict(stage)
+                        log = Path(stage["log"])
+                        stored = logs / log.name
+                        shutil.copyfile(log, stored)
+                        item["log"] = str(stored)
+                        stages.append(item)
+                    info["check"]["stages"] = stages
+                if key and audit.get("proof_status") == "VALID" and label != "cache":
+                    try:
+                        publish_candidate(cache, key, candidate, audit)
+                    except OSError as error:
+                        info["cache_write_error"] = str(error)
+                attempts.append(info)
+                (folder / "attempt.json").write_text(json.dumps(info, indent=2) + "\n")
+            return finished
+
+        number = 0
+        if key:
+            cached = cache / (key + ".v")
+            if cached.is_file():
+                number += 1
+                # The ordinary checker validates the exact staged bytes and
+                # meters a rejected source like any other failed attempt.
+                candidate.write_bytes(cached.read_bytes())
+                yield record("cache", str(cached), number)
+            for origin, text in published_candidates(ROOT, automatic, case, bundle):
+                number += 1
+                candidate.write_text(text)
+                yield record("published", origin, number)
+
+        candidate.write_bytes(template)
+        number += 1
+        folder = stage_root / f"attempt-{number}"
+        folder.mkdir(exist_ok=True)
+        plan = folder / "proof-plan.json"
+        if bundle["refuted_goal"]:
+            routing = "Prove the negative statement supplied by the controller."
+        else:
+            routing = (
+                f"Optional routing plan: {plan} with JSON "
+                '{"refute_vcs":{"CASE_ID":"proof_of_original_goal"}} '
+                'or {"refute_preconditions":["CASE_ID"]}. '
+                f"The only allowed case ID is {case['id']!r}."
+            )
+        prompt = (
+            f"Prove exactly this execution's supplied original VC obligations in {candidate}. "
+            "Keep the supplied statements and polarities unchanged. "
+            "Read sibling Goal.v and dependencies as immutable inputs. "
+            "Edit only Candidate.v and the optional routing plan. No admits, new axioms, "
+            "proof escapes, delegated agents, or controller verdict edits. "
+            "Leave any unresolved obligations unresolved. "
+            + routing + "\nCandidates: " + json.dumps([str(candidate)])
+            + "\nSee " + str(ROOT / "skills/qcp-spec-test/references/residual-vc.md")
+        )
+        proc_command = list(command)
+        if not args.agent_command:
+            proc_command.extend(["-o", str(folder / "agent.last.txt"), "-"])
+        agent = run_agent(proc_command, prompt, folder, args.agent_timeout)
+        agent["requested_model"] = None if args.agent_command else "gpt-6.1-sol"
+        (folder / "agent-report.json").write_text(json.dumps(agent, indent=2) + "\n")
+        if plan.is_file() and not bundle["refuted_goal"]:
+            plans.append((case["id"], plan))
+        yield record("agent", str(candidate), number, agent)
+    return for_case
+
+
+def agent_summary(attempts):
+    runs = [row["agent"] for row in attempts if "agent" in row]
+    usage = [event for run in runs for event in (run["token_usage"] or [])]
+    usage_complete = all(run["token_usage"] is not None for run in runs)
+    total = None
+    if usage_complete and all(isinstance(e.get(k), int) and e[k] >= 0
+                              for e in usage for k in ("input_tokens", "output_tokens")):
+        total = sum(e["input_tokens"] + e["output_tokens"] for e in usage)
+    peaks = [(run.get("resources") or {}).get("max_process_rss_kib") for run in runs]
+    peak = max(peaks) if peaks and all(type(rss) is int for rss in peaks) else None
+    status = "SKIPPED"
+    if runs:
+        status = "COMPLETED" if all(r["status"] == "COMPLETED" for r in runs) else "INCOMPLETE"
+    return {
+        "status": status, "agent_invocations": len(runs),
+        "wall_seconds": sum(r["wall_seconds"] for r in runs),
+        "token_usage": usage if usage_complete else None,
+        "tokens": total,
+        "resources": {"max_process_rss_kib": peak} if runs else None, "model": None,
+        "token_usage_note": "actual turn.completed events; individual attempts retain partial telemetry",
+        "attempts": attempts,
+    }
+
 
 
 def main():
@@ -114,6 +238,7 @@ def main():
     parser.add_argument("--output", type=Path)
     parser.add_argument("--agent-timeout", type=float, default=900)
     parser.add_argument("--check-timeout", type=float, default=600)
+    parser.add_argument("--proof-cache", type=Path, default=ROOT / ".spectest" / "proof-cache")
     parser.add_argument("--switch", default="qcp-8.20")
     parser.add_argument(
         "--refute-precondition", action="append", default=[], metavar="CASE_ID"
@@ -138,104 +263,52 @@ def main():
         if not separator or not case or not goal or case in refute_vcs:
             parser.error("--refute-vc requires unique CASE_ID=PROOF_NAME values")
         refute_vcs[case] = goal
-    prepared = prepare_run_certificates(
-        args.report.resolve(),
-        out / "proof",
-        refute_preconditions=set(args.refute_precondition),
-        refute_vcs=refute_vcs,
-    )
-    # This digest remains in the external controller's memory during proof work.
-    (out / "controller-request.json").write_text(json.dumps(prepared, indent=2) + "\n")
-    agent = {
-        "status": "SKIPPED",
-        "wall_seconds": 0,
-        "token_usage": None,
-        "resources": None,
-        "model": None,
-        "token_usage_note": "no agent launched",
-    }
-    if prepared["proof_required"]:
-        command = args.agent_command or [
-            os.environ.get("CODEX_BIN", "codex"),
-            "exec",
-            "--json",
-            "--skip-git-repo-check",
-            "--sandbox",
-            "workspace-write",
-            "--ephemeral",
-            "-C",
-            str(ROOT),
-            "--add-dir",
-            str(out),
-            "-o",
-            str(out / "agent.last.txt"),
-            "-",
-        ]
-        prompt = (
-            "First assess whether each original VC holds. Prove the supplied statement if it holds. "
-            "If a positive VC appears false, request a proof of its negation using the routing plan below. "
-            "Your judgement and the routing plan never establish a verdict; only kernel-checked proofs do. "
-            "Construct proofs for all listed TeSpec Candidate.v files. You are the sole proof Agent. "
-            "Read each sibling Goal.v and staged dependencies as immutable program/proof data. "
-            "Fill every original interface obligation, including initial satisfiability. "
-            "Controller-selected goals may request a negation; preserve each supplied lemma statement exactly. "
-            "Edit only Candidate.v files and the optional proof-plan.json; place compilation scratch under the output directory. "
-            "Do not change source, binds, goals, manifests, dependencies or runtime libraries. "
-            "Do not introduce axioms, admits or proof escapes. You may compile drafts for feedback. "
-            "Do not run final certificate acceptance, write verdict reports, launch other Agents, "
-            "or invoke run-agent.sh. The external controller performs final checking. "
-            "Leave unresolved proofs unresolved and report their blockers.\n"
-            + "Output: "
-            + str(out)
-            + "\nOptional routing plan: " + str(out / "proof-plan.json")
-            + ' with JSON {"refute_vcs": {"CASE_ID": "proof_of_original_goal"}, "refute_preconditions": ["CASE_ID"]}. '
-            + "Use only case IDs and original interface proof names from the controller request. "
-            + "A second controller round will supply immutable negative statements for checking.\n"
-            + "\nCandidates: "
-            + json.dumps(prepared["editable"])
-            + "\n"
-            + "Proof guidance: "
-            + str(ROOT / "skills/qcp-spec-test/references/residual-vc.md")
-            + "\n"
+
+    command = args.agent_command or [
+        os.environ.get("CODEX_BIN", "codex"), "exec", "--model", "gpt-6.1-sol", "--json", "--skip-git-repo-check",
+        "--sandbox", "workspace-write", "--ephemeral", "-C", str(ROOT), "--add-dir", str(out),
+    ]
+    attempts, plans = [], []
+
+    def check_round(report_path, proof_dir, requests, negative_vcs, negative_entries, only_case_ids=None):
+        prepared = prepare_run_certificates(report_path, proof_dir,
+                                            refute_preconditions=negative_entries,
+                                            refute_vcs=negative_vcs, decision_only=True,
+                                            only_case_ids=only_case_ids)
+        requests.mkdir(exist_ok=True)
+        (requests / "controller-request.json").write_text(json.dumps(prepared, indent=2) + "\n")
+        frozen = json.loads((proof_dir / "automatic.json").read_text())
+        return check_run_certificates(
+            Path(prepared["manifest"]), prepared["manifest_sha256"],
+            switch=args.switch, timeout=args.check_timeout,
+            candidate_attempts=proof_attempts(command, requests, args.proof_cache.resolve(),
+                                              frozen, attempts, plans, args),
         )
-        agent = run_agent(command, prompt, out, args.agent_timeout)
-    (out / "agent-report.json").write_text(json.dumps(agent, indent=2) + "\n")
-    report = check_run_certificates(
-        Path(prepared["manifest"]),
-        prepared["manifest_sha256"],
-        switch=args.switch,
-        timeout=args.check_timeout,
-    )
-    plan_path = out / "proof-plan.json"
-    if plan_path.is_file() and not (args.refute_precondition or refute_vcs):
-        negative_vcs, negative_entries = read_refutation_plan(plan_path, report)
+
+    report = check_round(args.report.resolve(), out / "proof", out, refute_vcs,
+                    set(args.refute_precondition))
+    if plans and not (args.refute_precondition or refute_vcs):
+        negative_vcs, negative_entries = {}, set()
+        for case_id, plan in plans:
+            vcs, entries = read_refutation_plan(plan, report)
+            if (vcs.keys() | entries) - {case_id}:
+                raise ValueError("proof routing plan refers to another execution")
+            negative_vcs.update(vcs)
+            negative_entries.update(entries)
         if negative_vcs or negative_entries:
-            negative = prepare_run_certificates(
-                Path(report["report"]), out / "negative-proof",
-                refute_preconditions=negative_entries, refute_vcs=negative_vcs,
-            )
-            second_out = out / "negative-agent"
-            second_out.mkdir()
-            second_prompt = (
-                "Prove the controller-supplied negative VC statements. Preserve every lemma statement exactly. "
-                "Only a checked proof of the original VC's negation establishes INVALID. "
-                "Edit only the listed Candidate.v files. Goals, manifests, dependencies and reports are immutable. "
-                "Do not introduce axioms, admits or proof escapes, launch other Agents, or run final acceptance. "
-                "If the negation cannot be proved, leave it unresolved.\nCandidates: "
-                + json.dumps(negative["editable"]) + "\n"
-            )
-            second_agent = run_agent(command, second_prompt, second_out, args.agent_timeout)
-            checked = check_run_certificates(
-                Path(negative["manifest"]), negative["manifest_sha256"],
-                switch=args.switch, timeout=args.check_timeout,
-            )
-            agent = {"status": second_agent["status"], "attempts": [agent, second_agent],
-                     "wall_seconds": agent["wall_seconds"] + second_agent["wall_seconds"],
-                     "token_usage_note": "raw telemetry recorded separately for both attempts"}
-            report = checked
+            report = check_round(Path(report["report"]), out / "negative-proof",
+                            out / "negative-agent", negative_vcs, negative_entries,
+                            only_case_ids=negative_vcs.keys() | negative_entries)
+
+    agent = agent_summary(attempts)
     (out / "agent-report.json").write_text(json.dumps(agent, indent=2) + "\n")
     report["proof_completion"]["agent"] = agent
+    # Include failed replays and any positive round before a negative route.
+    check_seconds = sum(row["check"]["duration_seconds"] for row in attempts)
+    report["proof_completion"]["wall_seconds"] = check_seconds
+    report["summary"]["proof_wall_seconds"] = check_seconds
     Path(report["report"]).write_text(json.dumps(report, indent=2) + "\n")
+
     print(
         json.dumps(
             {

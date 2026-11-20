@@ -167,6 +167,22 @@ End VC_Correct.
             with self.assertRaisesRegex(JobError, "controller digest"):
                 check_certificate(path, result["manifest_sha256"])
 
+    def test_rejected_cached_source_has_measured_precheck_before_any_compiler(self):
+        with tempfile.TemporaryDirectory() as directory:
+            request, _ = self.prepare_fixture(Path(directory))
+            Path(request["editable"]).write_text("Axiom forbidden : False.")
+            audit = check_certificate(
+                Path(request["manifest"]), request["manifest_sha256"], measure_candidate_precheck=True
+            )
+            self.assertEqual(audit["status"], "UNKNOWN")
+            self.assertEqual(audit["reason"], "candidate_source_precheck_failed_or_timeout")
+            [precheck] = audit["stages"]
+            self.assertEqual(precheck["stage"], "candidate_precheck")
+            self.assertGreater(precheck["wall_seconds"], 0)
+            self.assertGreater(precheck["resources"]["max_process_rss_kib"], 0)
+            self.assertIn("candidate contains forbidden command", Path(precheck["log"]).read_text())
+
+
     def test_changed_manifest_rejected_against_controller_digest(self):
         with tempfile.TemporaryDirectory() as directory:
             result, _ = self.prepare_fixture(Path(directory))

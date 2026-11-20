@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 import re
 import signal
+import sys
 import subprocess
 import time
 
@@ -311,6 +312,7 @@ def check_certificate(
     switch: str = "qcp-8.20",
     timeout: float = 120,
     kernel_cache: KernelReplayCache | None = None,
+    measure_candidate_precheck: bool = False,
 ) -> dict:
     path = path.resolve()
     # An earlier PASS must not survive a rejected or failed new attempt.
@@ -339,7 +341,8 @@ def check_certificate(
         ):
             raise JobError("certificate dependency changed")
         dep_paths.append(target)
-    check_candidate_commands((out / "Candidate.v").read_text())
+    if not measure_candidate_precheck:
+        check_candidate_commands((out / "Candidate.v").read_text())
     entries = goal_interface((out / "Goal.v").read_text())
     refute = manifest.get("refuted_goal")
     selected = manifest.get("selected_goals")
@@ -429,6 +432,18 @@ def check_certificate(
         )
         return code == 0
 
+    if measure_candidate_precheck:
+        # Use a separate measured process so a rejected source has real time
+        # and per-attempt RSS, even when no Coq compiler is ever launched.
+        precheck = [
+            sys.executable, "-I", "-c",
+            "import sys; from pathlib import Path; sys.path.insert(0, sys.argv[1]); "
+            "from spectest.certificates import check_candidate_commands; "
+            "check_candidate_commands(Path('Candidate.v').read_text())",
+            str(Path(__file__).resolve().parents[1]),
+        ]
+        if not execute("candidate_precheck", precheck):
+            return finish("candidate_source_precheck_failed_or_timeout")
     if not execute("version", prefix + ["coqc", "--version"]):
         return finish("coq_unavailable")
     if "version 8.20" not in (out / "version.log").read_text():
