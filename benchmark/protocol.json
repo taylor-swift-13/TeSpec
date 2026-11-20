@@ -41,19 +41,19 @@
   },
   "test_pipeline": {
     "stages": [
-      "execution_testing",
-      "itp_for_unresolved_vcs",
-      "final_aggregation"
+      "native_execution_once",
+      "independent_residual_routes",
+      "compare_with_per_input_expectations"
     ],
-    "official_result": "The complete staged result; automatic-only statistics are diagnostics, not final benchmark accuracy.",
-    "itp_trigger": "Unresolved test VCs after execution, unless a matching checked proof/refutation receipt is reusable. Already decided cases do not require redundant ITP.",
+    "official_result": "For the automatic test, use the native decision when settled and the Auto decision otherwise. Report ITP as an independent comparator on the same frozen original cases. Preserve historical staged reports under their original protocols.",
+    "itp_trigger": "Same eligible native cases as Auto; all decision-relevant original VCs of one execution form one task. No Auto output is an ITP input.",
     "itp_positive": "Prove every required unresolved obligation before a final PASS.",
-    "itp_negative": "A checked refutation of a required VC with a satisfiable admitted entry establishes FAIL.",
+    "itp_negative": "A checked refutation upgrades the test only when the original target, entry, reachability or modular scope, and safety priority allow the writeback.",
     "itp_trust": "Compile exact goal/proof sources, audit assumptions and independently kernel-check. Retain proof and input/source hashes.",
     "unknown": "Unresolved cases remain UNKNOWN and pipeline-incomplete; do not hide them.",
     "error_scoring": "For current teSpec runs, expect CRASH for a confirmed target execution fault (including an invalid safety VC or a failed operation without the required ownership). A match requires the case-specific fault code and a satisfiable execution entry. Unresolved permission is UNKNOWN. Tool ERROR never counts as a successful detection. Historical results retain their recorded status and scoring protocol.",
-    "formal_scope": "Test-specific VC checking is part of testing and does not impose universal formal verification on every variant. Main-program verification is still once per group and reused.",
-    "resource_accounting": "Include execution plus ITP generation/repair, compilation, assumption audit and kernel check. Count failed attempts and shared stage work once. Report unknown time/memory/token measurements as null, never zero.",
+    "formal_scope": "Universal CN/QCP verification applies to the primary. ITP adjudicates instance-specific original obligations separately from automatic test outcomes.",
+    "resource_accounting": "Measure native once; separate Auto and ITP marginal wall time and maximum process RSS. Record actual tokens and all repairs, and label replay-only and model-based runs. Preserve null for missing measurements.",
     "model_policy": "Use requested gpt-6.1-sol for model-assisted proof authoring when invoked; preserve actual model and token receipts. Unmetered conversation authoring is reported as missing telemetry, not zero tokens."
   },
   "stage_resource_accounting": {

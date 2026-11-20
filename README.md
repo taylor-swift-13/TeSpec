@@ -47,6 +47,8 @@ modular 报告使用 `modular-symbolic/v1`、`contract-symbolic/v1` 和 `result_
 
 可选 `--spatial-smt` 逐条尝试原生未决 VC，按各类 VC 的堆语义编码；默认关闭，不支持或证据不完整的 VC 保留给 ITP。参见[空间 SMT 后端](docs/spatial-smt.md)。
 
+用 `python3 -m spectest routes job.json --output-dir comparison` 可以对照 Auto 和 ITP。原生只执行一次，两条路线分别处理同一批未决输入。单独运行自动测试可加 `--route auto`，只重放已有证明可加 `--route itp --replay-only`。结果与成本分别保存在 `comparison/routes.json`。[独立路线与统计口径](docs/spatial-smt.md#auto-与-itp-的独立对照)
+
 ## 使用流程
 
 每次测试都对应一个具体 bind。程序执行结束后，TeSpec 仍使用实际终态检查

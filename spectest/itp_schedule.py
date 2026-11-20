@@ -121,3 +121,14 @@ def decision_itp_task(case, function):
         return None
     return {"case_id": case["id"], "function": function, "manifest": manifest["manifest"],
             "goals": list(goals)}
+
+
+def route_case_ids(report):
+    """Select the same native executions for both decision backends."""
+    from .run_certificates import _eligible
+
+    return {
+        case["id"] for case in report["results"]
+        if _eligible(case, decision_only=True)
+        and decision_itp_task(case, report["function"]) is not None
+    }

@@ -6,6 +6,12 @@
 
 当前可执行策略见 [benchmark/protocol.json](../benchmark/protocol.json)。benchmark 与 results 的唯一现行存储规则见 [存储规范](benchmark-storage-policy.md)；本文带日期的历史实验说明不覆盖该规则。`read` 的程序入口为 [程序组清单](../benchmark/programs/read/manifest.json)，结果入口为 [结果索引](../benchmark/results/read/index.json)，四工具总表为 [comparison.csv](../benchmark/results/read/comparison.csv)。
 
+## 当前 teSpec 测试口径
+
+新增的效率与能力对照使用 `spectest routes`。两条路线共享同一份原生执行，Auto 的正式测试结果只包含原生与自动空间 SMT；ITP 是对同一批未决输入的独立对照。历史表中“包含 ITP”的成功数仍属于当时的评测。inline 和 modular 各冻结一次实际执行，不把后端数计入输入分母。
+
+每组列出原生状态、Auto 和 ITP 在共同未决输入上的状态矩阵、各自逐输入预期匹配数，以及三者分别的时间、最大进程 RSS 和实际 token。单列从头生成的证明、重放已有证明的执行和缺少候选的执行。`--replay-only` 缺少匹配证明只能说明本次没有可重放的候选。成本表标记并发条件，并以一次执行的所有原始待定 VC 为一个 ITP 任务。复现入口见[独立路线说明](spatial-smt.md#auto-与-itp-的独立对照)。
+
 ## 1. 数据单位与计数
 
 层级统一为：

@@ -522,6 +522,58 @@ def _obligation_artifacts(case: dict, executor: dict) -> dict:
             "auxiliary_split_lemmas_individually_proved": False,
             "certificate": "NOT_CHECKED"}
 
+def _refine_records(original, layout, artifact_dir, timeout_ms, solver, info):
+    """Decide copied path formulas and preserve the original per-VC evidence."""
+    refined = deepcopy(original)
+    artifact_dir.mkdir(parents=True, exist_ok=True)
+    for index, obligation in enumerate(original):
+        if obligation.get("status") != "UNKNOWN":
+            continue
+        record = {"layout": layout, "vc": obligation}
+        # Modes follow the native witness solver, not an execution event or
+        # whole-group count: full entailment is exact; partial matching allows
+        # a frame; safety goals are pure (the importer checks their shape).
+        kind = obligation.get("kind")
+        modes = {
+            "return": "exact", "entailment": "exact", "which_implies": "exact",
+            "partial_solve": "frame", "safety": "frame",
+        }
+        if kind in modes:
+            record.update(check_mode=modes[kind], local_semantics="same-program-environment/v1")
+        # Dependency errors, parser failures and SMT failures must never be
+        # interpreted as invalid bindings or discard the existing ITP task.
+        try:
+            decision = solver(record, timeout_ms)
+        except Exception as error:
+            decision = {
+                "status": "UNKNOWN",
+                "reason": "backend_error:" + type(error).__name__ + ":" + str(error),
+            }
+        if decision.get("status") not in {"VALID", "INVALID", "UNKNOWN"}:
+            decision = {"status": "UNKNOWN", "reason": "invalid_backend_status"}
+        decision["certificate"] = "NOT_CHECKED"
+        decision["vc_index"] = index
+        decision["input"] = record
+        smt = decision.pop("smt2", None)
+        if smt is not None:
+            query_path = artifact_dir / f"vc-{index:04d}.smt2"
+            query_path.write_text(smt, encoding="utf-8")
+            decision["query"] = str(query_path)
+            decision["query_sha256"] = hashlib.sha256(
+                query_path.read_bytes()
+            ).hexdigest()
+        path = artifact_dir / f"vc-{index:04d}.json"
+        path.write_text(json.dumps(decision, indent=2) + "\n", encoding="utf-8")
+        item = {k: decision[k] for k in ("vc_index", "status", "reason", "certificate")}
+        item["artifact"] = str(path)
+        info["results"].append(item)
+        refined[index]["status"] = decision["status"]
+        refined[index]["original_status"] = "UNKNOWN"
+        refined[index]["spatial_smt"] = item
+    info["attempted"] = len(info["results"])
+    return refined
+
+
 def refine_case(
     case: dict, stdout_path: Path, artifact_dir: Path, *, timeout_ms: int
 ) -> None:
@@ -613,54 +665,9 @@ def refine_case(
     else:
         info["annotation_coverage_reason"] = "unsupported_or_ambiguous_obligation_group"
     info["annotation_residual_coverage"] = annotation_coverage
-    refined = deepcopy(original)
-    artifact_dir.mkdir(parents=True, exist_ok=True)
     info["executor_sha256"] = hashlib.sha256(raw_bytes).hexdigest()
-    for index, obligation in enumerate(original):
-        if obligation.get("status") != "UNKNOWN":
-            continue
-        record = {"layout": case.get("target_layout"), "vc": obligation}
-        # Modes follow the native witness solver, not an execution event or
-        # whole-group count: full entailment is exact; partial matching allows
-        # a frame; safety goals are pure (the importer checks their shape).
-        kind = obligation.get("kind")
-        modes = {
-            "return": "exact", "entailment": "exact", "which_implies": "exact",
-            "partial_solve": "frame", "safety": "frame",
-        }
-        if kind in modes:
-            record.update(check_mode=modes[kind], local_semantics="same-program-environment/v1")
-        # Dependency errors, parser failures and SMT failures must never be
-        # interpreted as invalid bindings or discard the existing ITP task.
-        try:
-            decision = _solve_record(record, timeout_ms)
-        except Exception as error:
-            decision = {
-                "status": "UNKNOWN",
-                "reason": "backend_error:" + type(error).__name__ + ":" + str(error),
-            }
-        if decision.get("status") not in {"VALID", "INVALID", "UNKNOWN"}:
-            decision = {"status": "UNKNOWN", "reason": "invalid_backend_status"}
-        decision["certificate"] = "NOT_CHECKED"
-        decision["vc_index"] = index
-        decision["input"] = record
-        smt = decision.pop("smt2", None)
-        if smt is not None:
-            query_path = artifact_dir / f"vc-{index:04d}.smt2"
-            query_path.write_text(smt, encoding="utf-8")
-            decision["query"] = str(query_path)
-            decision["query_sha256"] = hashlib.sha256(
-                query_path.read_bytes()
-            ).hexdigest()
-        path = artifact_dir / f"vc-{index:04d}.json"
-        path.write_text(json.dumps(decision, indent=2) + "\n", encoding="utf-8")
-        item = {k: decision[k] for k in ("vc_index", "status", "reason", "certificate")}
-        item["artifact"] = str(path)
-        info["results"].append(item)
-        refined[index]["status"] = decision["status"]
-        refined[index]["original_status"] = "UNKNOWN"
-        refined[index]["spatial_smt"] = item
-    info["attempted"] = len(info["results"])
+    refined = _refine_records(original, case.get("target_layout"), artifact_dir,
+                              timeout_ms, _solve_record, info)
     info["wall_seconds"] = time.monotonic() - started
     case["vc_results"] = refined
     states = [v["status"] for v in refined]

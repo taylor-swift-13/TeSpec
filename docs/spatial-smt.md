@@ -15,6 +15,22 @@ python3 -m spectest check job.json --no-spatial-smt
 超时范围是 1–60000 毫秒，预算针对每个 SMT 查询，非整个进程。
 `run_job(..., spatial_smt=True)` 同样可用。
 
+## Auto 与 ITP 的独立对照
+
+```sh
+python3 -m spectest routes job.json --output-dir out/comparison
+python3 -m spectest routes job.json --route auto --output-dir out/test
+python3 -m spectest routes out/comparison/native/report.json --from-native --route itp --replay-only --output-dir out/replay
+```
+
+`routes` 将作业中的空间 SMT 关闭后执行一次，或者通过 `--from-native` 读取已有的原生报告及其配套产物。原生已确定的输入保留原始判断，两条后续路线均记为 `NOT_RUN`。对于尚有可能改变最终判断的原始义务，两条路线独立读取相同的报告、输入和 VC。默认依次计时，以减少资源竞争；加 `--parallel` 可同时启动两个独立进程，报告会标记并发条件。Auto 运行过程中不启动 Coq 证明或模型。ITP 从原始目标重放匹配的证明源码，必要时调用 `gpt-6.1-sol`，并由本地检查器核验。指定 `--replay-only` 时，仅尝试已有候选；没有匹配证明的执行保留原判，并在 ITP 报告给出 `missing_candidates`。
+
+Auto 分别查询入口堆可满足性和路径蕴含。对于绑定的透明定义，在查询副本上化简可解释的定义、列表及空间谓词，保留原始堆语义、量词、布局和目标身份。未知递归尾、无法翻译的语法、超出预算和缺失的原始目标对应关系都会限制自动判定。Auto 的 SMT 判定沿用 `NOT_CHECKED` 证据口径；ITP 的内核证书独立保存。
+
+`routes.json` 按执行记录 `native_status`、`auto_status`、`itp_status`。能力比较以实际分流的执行数为分母，分别报告 PASS、FAIL、CRASH、UNKNOWN 和工具错误；有用例预期时另核对逐例匹配数。两条路线对同一输入给出相反的确定判断会列入 `conflicts`。效率比较单列原生成本及两条路线的额外成本：墙钟时间、整个阶段内单个进程的最大 RSS、实际 token。ITP 另列模型、Coq 编译审计及独立内核的成本，命中已有证明源码的任务计入本次重放成本。重放缺少候选、从头调用模型和成功重放应分别标注。旧的 `check --spatial-smt` 继续提供有限空间后端的单路线结果。
+
+已发布的双路线对照覆盖 `dll_remove` 和 `read`。每个输入分别执行 inline 与 modular。`dll_remove` 的 18 次未决执行在两条路线都得到 PASS，其中 ITP 使用已有证明源码并逐执行通过内核重放。`read` 的 24 次未决执行由 Auto 判为预期的 FAIL；ITP 在本批仅查找匹配证明，24 次均未命中。两组同时保存原始判断、逐执行成本和比较范围。[dll_remove 结果](../benchmark/results/dll_remove/residual-routes/comparison.json) · [read 结果](../benchmark/results/read/residual-routes/comparison.json)
+
 ## 调用与判定
 
 `run_job → 原生执行器 → 原始 JSON / Coq VC → 可选空间 SMT → 报告与 ITP 任务`。

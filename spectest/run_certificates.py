@@ -331,7 +331,7 @@ def prepare_run_certificates(
 
 
 def check_run_certificates(
-    path: Path, expected_digest: str, *, switch="qcp-8.20", timeout=120, candidate_attempts=None
+    path: Path, expected_digest: str, *, switch="qcp-8.20", timeout=120, candidate_attempts=None, allow_missing_candidate=False
 ) -> dict:
     """Replay proofs ourselves; never merge agent-supplied certificate verdicts."""
     path = path.resolve()
@@ -348,6 +348,7 @@ def check_run_certificates(
     automatic = json.loads(frozen.read_text())
     result = copy.deepcopy(automatic)
     audits = []
+    missing_candidates = []
     decision_only = request.get("decision_only", False)
     kernel_cache = KernelReplayCache() if candidate_attempts is None else None
     seen = set()
@@ -382,6 +383,9 @@ def check_run_certificates(
                 certificate.get("proof_status") == "VALID" and certificate.get("polarity") == "negative"
             ):
                 break
+        if certificate is None and allow_missing_candidate:
+            missing_candidates.append(case["id"])
+            continue
         if certificate is None:
             raise JobError("proof controller provided no candidate")
         case.setdefault("original_residual_vcs", list(case["residual_vcs"]))
@@ -509,6 +513,9 @@ def check_run_certificates(
         "certificates": audits,
         "wall_seconds": sum(a["certificate"]["duration_seconds"] for a in audits),
     }
+    if missing_candidates:
+        result["proof_completion"]["missing_candidates"] = missing_candidates
+        result["proof_completion"]["status"] = "PARTIAL_REPLAY" if audits else "NO_MATCHING_PROOF"
     result["summary"]["proof_wall_seconds"] = result["proof_completion"]["wall_seconds"]
     result["report"] = str(final_path)
     final_path.write_text(json.dumps(result, indent=2) + "\n")

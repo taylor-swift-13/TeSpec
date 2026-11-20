@@ -521,6 +521,7 @@ def main(argv: list[str] | None = None) -> int:
                 "  analyze                   Analyze specs and create a binds template\n"
                 "  run                       Test a source file with binds\n"
                 "  check                     Replay a saved job\n"
+                "  routes                    Compare Auto and ITP from one native execution\n"
                 "  prepare-run-certificates  Prepare all proof tasks from a report\n"
                 "  check-run-certificates    Check the complete run certificate\n"
                 "  prepare-certificate       Prepare one VC group's certificate\n"
@@ -539,6 +540,10 @@ def main(argv: list[str] | None = None) -> int:
         "check-certificate",
     }:
         return _run_certificate_command(argv[0], argv[1:])
+    if argv and argv[0] == "routes":
+        from .routes import routes_cli
+
+        return routes_cli(argv[1:])
     if argv and argv[0] == "analyze":
         return _run_analyze(argv[1:])
     if argv and argv[0] == "run":

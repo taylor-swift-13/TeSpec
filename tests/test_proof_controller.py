@@ -1,6 +1,5 @@
 """The external runner measures processes without trusting self-reported verdicts."""
 
-import importlib.util
 import json
 from pathlib import Path
 import sys
@@ -9,13 +8,7 @@ import unittest
 
 from spectest.certificates import digest
 
-SPEC = importlib.util.spec_from_file_location(
-    "proof_controller",
-    Path(__file__).resolve().parents[1]
-    / "skills/qcp-spec-test/scripts/proof-controller.py",
-)
-MODULE = importlib.util.module_from_spec(SPEC)
-SPEC.loader.exec_module(MODULE)
+from spectest import proof_controller as MODULE
 
 
 class ProofControllerTests(unittest.TestCase):

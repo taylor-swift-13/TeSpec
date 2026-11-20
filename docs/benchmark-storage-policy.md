@@ -56,7 +56,7 @@ benchmark/
 
 这里只保存不可替代的结论和成本：
 
-- 每个 case 的预期、原生状态、ITP 后最终状态和是否匹配；
+- 每个 case 的预期、原生状态和预期匹配结果；新双路线评测分别记录 Auto 和 ITP 的状态、成本与证据来源。已判定输入的两条后续路线记为 `NOT_RUN`，历史串行批次保留原口径；
 - Fulminate、teSpec spatial SMT OFF/ON、inline/modular 的判定；
 - 各阶段 wall time、最大进程 RSS、token、模型调用数和尝试次数；
 - 复现命令、工具/二进制哈希、源哈希、输入或 harness 哈希；
