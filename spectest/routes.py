@@ -2,9 +2,9 @@
 
 import argparse
 from collections import Counter
-from concurrent.futures import ThreadPoolExecutor
 import hashlib
 import json
+import math
 from pathlib import Path
 import subprocess
 import sys
@@ -77,13 +77,13 @@ def itp_command(args, native, work, selected):
         "--output",
         str(work),
         "--agent-timeout",
-        str(args.agent_timeout),
+        str(args.itp_config["agent_timeout"]),
         "--check-timeout",
-        str(args.check_timeout),
+        str(args.itp_config["check_timeout"]),
         "--switch",
-        args.switch,
+        args.itp_config["switch"],
     ]
-    if args.replay_only:
+    if args.itp_replay_only:
         cmd.append("--replay-only")
     if args.proof_cache:
         cmd.extend(["--proof-cache", str(args.proof_cache.resolve())])
@@ -128,12 +128,12 @@ def run_backend(route, args, native, output, selected, cases, raw_hash):
         else itp_command(args, native, work, selected)
     )
     stats = measure(cmd, meter)
-    stats["tokens"] = 0 if route == "auto" or args.replay_only else None
+    stats["tokens"] = 0 if route == "auto" or args.itp_replay_only else None
     if route == "auto":
         stats["model_calls"] = 0
     else:
         stats["candidate_policy"] = (
-            "replay_only" if args.replay_only else "replay_then_generate"
+            "replay_only" if args.itp_replay_only else "replay_then_generate"
         )
     if route == "auto":
         path = work / "report.json"
@@ -198,9 +198,8 @@ def compare(args):
     if output.exists() and (not output.is_dir() or any(output.iterdir())):
         raise JobError("routes output directory must be empty")
     output.mkdir(parents=True, exist_ok=True)
-    source = args.input.resolve()
-    if args.from_native:
-        native = source
+    if args.native_report:
+        native = args.native_report.resolve()
         native_cost = {"source": "existing native report", "measured_this_run": False}
     else:
         native_dir = output / "native"
@@ -210,7 +209,7 @@ def compare(args):
                 "-m",
                 "spectest",
                 "check",
-                str(source),
+                str(args.job.resolve()),
                 "--no-spatial-smt",
                 "--output-dir",
                 str(native_dir),
@@ -258,12 +257,7 @@ def compare(args):
             )
         return data
 
-    concurrent = args.parallel and len(requested) == 2
-    if concurrent:
-        with ThreadPoolExecutor(max_workers=2) as pool:
-            outcomes = list(pool.map(run, requested))
-    else:
-        outcomes = [run(route) for route in requested]
+    outcomes = [run(route) for route in requested]
     routes = {}
     for route, stats, verdicts in outcomes:
         routes[route] = stats
@@ -281,7 +275,10 @@ def compare(args):
         "native_report": str(native),
         "native_report_sha256": raw_hash,
         "native_cost": native_cost,
-        "parallel_execution": concurrent,
+        "parallel_execution": False,
+        "requested_route": args.route,
+        "spatial_smt_timeout_ms": args.spatial_smt_timeout_ms,
+        "itp_config": args.itp_config if args.route in ("itp", "both") else None,
         "routes": routes,
         "native_executions": len(rows),
         "eligible_executions": len(selected),
@@ -299,37 +296,59 @@ def compare(args):
     return result
 
 
+def read_itp_config(path):
+    settings = {"switch": "qcp-8.20", "agent_timeout": 900, "check_timeout": 600}
+    if path is None:
+        return settings
+    fields = read(path)
+    if not isinstance(fields, dict) or fields.keys() - settings.keys():
+        raise JobError(
+            "expected ITP settings object with switch, agent_timeout or check_timeout"
+        )
+    settings.update(fields)
+    if not isinstance(settings["switch"], str) or not settings["switch"].strip():
+        raise JobError("ITP switch must be a nonempty string")
+    for key in ("agent_timeout", "check_timeout"):
+        value = settings[key]
+        if type(value) not in (int, float) or not 0 < value < math.inf:
+            raise JobError(f"ITP {key} must be positive and finite (seconds)")
+    return settings
+
+
 def routes_cli(argv):
     parser = argparse.ArgumentParser(
         prog="qcp-spectest routes",
-        description="Run Auto and ITP separately on the same unsolved native executions.",
+        description="Run Auto on native residuals, or explicitly select ITP or both.",
     )
-    parser.add_argument(
-        "input", type=Path, help="job, or original report with --from-native"
+    source = parser.add_mutually_exclusive_group(required=True)
+    source.add_argument("job", nargs="?", type=Path, help="test job")
+    source.add_argument(
+        "--native-report", type=Path, help="reuse an original native report"
     )
     parser.add_argument("--output-dir", type=Path, required=True)
-    parser.add_argument("--route", choices=("auto", "itp", "both"), default="both")
-    parser.add_argument("--from-native", action="store_true")
     parser.add_argument(
-        "--parallel",
-        action="store_true",
-        help="launch both backends concurrently; resource contention may affect timings",
+        "--route",
+        choices=("auto", "itp", "both"),
+        default="auto",
+        help="residual solver (default: auto); both runs them sequentially",
     )
     parser.add_argument(
-        "--replay-only", action="store_true", help="use existing ITP proof sources only"
+        "--itp-replay-only",
+        action="store_true",
+        help="use existing ITP proof sources only",
     )
     parser.add_argument("--proof-cache", type=Path)
-    parser.add_argument("--switch", default="qcp-8.20")
-    parser.add_argument("--agent-timeout", type=float, default=900)
-    parser.add_argument("--check-timeout", type=float, default=600)
+    parser.add_argument(
+        "--itp-config",
+        type=Path,
+        help="ITP settings JSON (switch, agent_timeout, check_timeout)",
+    )
     parser.add_argument("--spatial-smt-timeout-ms", type=int, default=2000)
     args = parser.parse_args(argv)
-    if (
-        not 1 <= args.spatial_smt_timeout_ms <= 60000
-        or min(args.agent_timeout, args.check_timeout) <= 0
-    ):
-        parser.error("invalid timeout")
+    if not 1 <= args.spatial_smt_timeout_ms <= 60000:
+        parser.error("spatial SMT timeout must be 1..60000 ms")
     try:
+        args.itp_config = read_itp_config(args.itp_config)
         result = compare(args)
     except (JobError, OSError, ValueError, KeyError, TypeError) as exc:
         print(str(exc), file=sys.stderr)

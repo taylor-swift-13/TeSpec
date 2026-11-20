@@ -174,7 +174,7 @@ def main():
                     str(bind),
                     "--output-dir",
                     str(dest / "qcp"),
-                    "--execution-mode",
+                    "--vc-scope",
                     "expand",
                     "--loop-unroll-limit",
                     "128",

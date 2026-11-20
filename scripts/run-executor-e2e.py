@@ -231,7 +231,7 @@ def main():
             str(args.binary.resolve()),
             "--qcip-root",
             str(args.runtime.resolve()),
-            "--execution-mode",
+            "--vc-scope",
             mode,
             "--loop-unroll-limit",
             str(options.get("loop_unroll_limit", 24)),

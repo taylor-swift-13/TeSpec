@@ -1345,13 +1345,20 @@ def _parse_qcp_config(job: dict[str, Any], base: Path, source_dir: Path) -> QcpC
     timeout = raw.get("timeout_seconds", 30)
     if not isinstance(timeout, (int, float)) or timeout <= 0:
         raise JobError("qcp.timeout_seconds must be positive")
-    try:
-        execution_mode = normalize_execution_mode(raw.get("execution_mode", "entry-exit"))
-        execution_strategy = normalize_execution_strategy(raw.get("execution_strategy", "inline"))
-    except ValueError as error:
-        raise JobError(f"qcp.{error}") from error
+
+    def setting(name, legacy, normalize, default):
+        try:
+            value = normalize(raw.get(name, raw.get(legacy, default)))
+            if name not in raw or legacy not in raw or normalize(raw[legacy]) == value:
+                return value
+        except ValueError as error:
+            raise JobError(f"qcp.{name}: {error}") from error
+        raise JobError(f"conflicting qcp.{name} and qcp.{legacy}")
+
+    execution_mode = setting("vc_scope", "execution_mode", normalize_execution_mode, "entry-exit")
+    execution_strategy = setting("execution", "execution_strategy", normalize_execution_strategy, "inline")
     if "modular_instantiation" in raw:
-        raise JobError("qcp.modular_instantiation was removed; select execution_strategy=modular")
+        raise JobError("qcp.modular_instantiation was removed; select qcp.execution=modular")
     architecture_bits = raw.get("architecture_bits", 32)
     if type(architecture_bits) is not int or architecture_bits not in (32, 64):
         raise JobError("qcp.architecture_bits must be 32 or 64")

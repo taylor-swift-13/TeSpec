@@ -106,11 +106,11 @@ def main():
                 for mode in ("entry-exit", "all-boundaries"):
                     for spatial in ("off", "on"):
                         folder = out / group / ("%02d-" % ordinal + old["case"]) / strategy / mode / spatial
-                        cli = original[3:]
+                        cli = ["--vc-scope" if arg == "--execution-mode" else arg for arg in original[3:]]
                         cli[cli.index("--output-dir") + 1] = str(folder / "artifacts")
-                        cli[cli.index("--execution-mode") + 1] = mode
+                        cli[cli.index("--vc-scope") + 1] = mode
                         cli[cli.index("--no-spatial-smt")] = "--spatial-smt" if spatial == "on" else "--no-spatial-smt"
-                        cli += ["--qcp-binary", str(binary), "--execution-strategy", strategy]
+                        cli += ["--qcp-binary", str(binary), "--execution", strategy]
                         phase_path = folder / "phase-metrics.json"
                         command = [sys.executable, "-B", str(Path(__file__).resolve()), "--_worker",
                                    str(phase_path), "--", *cli]

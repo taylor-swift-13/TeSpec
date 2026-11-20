@@ -35,7 +35,7 @@ runtime; the packaged default is 32-bit.
 
    ```bash
    python3 -m spectest run SOURCE --function FUNCTION --binds BINDS \
-     --execution-mode all-boundaries --output-dir OUTPUT
+     --vc-scope all-boundaries --output-dir OUTPUT
    ```
 
    A declaration-only test target supports a Require-only test. Loop/call limits

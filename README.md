@@ -28,16 +28,16 @@ TeSpec 先检查实例化的 Require 是否可满足，再检查安全性和 Ens
 
 | 参数 | 选项 | 行为 |
 | --- | --- | --- |
-| `--execution-strategy` | `inline`（默认） | 执行可用函数体、逐次执行循环；检查注解时保留当前状态 |
-| `--execution-strategy` | `modular` | 使用函数契约、循环不变式和 assertion 作为边界，保留符号状态继续，不进行边界采样 |
-| `--execution-mode` | `entry-exit`（默认） | 检查入口、运行安全性和最终出口，默认不生成中间边界 VC |
-| `--execution-mode` | `all-boundaries` | 另外生成调用、assertion 和不变式的检查 VC |
+| `--execution` | `inline`（默认） | 执行可用函数体、逐次执行循环；检查注解时保留当前状态 |
+| `--execution` | `modular` | 使用函数契约、循环不变式和 assertion 作为边界，保留符号状态继续，不进行边界采样 |
+| `--vc-scope` | `entry-exit`（默认） | 检查入口、运行安全性和最终出口，默认不生成中间边界 VC |
+| `--vc-scope` | `all-boundaries` | 另外生成调用、assertion 和不变式的检查 VC |
 
-例如：`python3 -m spectest run input.c --function f --binds binds.json --execution-strategy modular --execution-mode all-boundaries --output-dir out`。
+例如：`python3 -m spectest run input.c --function f --binds binds.json --execution modular --vc-scope all-boundaries --output-dir out`。
 
 无函数体的被调用函数在两种策略中都使用契约，保留 QCP 符号后状态和调用者已有资源；调用前后均不采样。入口测试输入仍固定，有函数体的 inline 调用仍展开执行。没有契约时不能继续调用。作为检查目标的只有声明的函数仍只检查 Require，安全性和 Ensure 为 NOT_RUN。旧模式名称 `expand` / `no-expand` 仍分别是 `entry-exit` / `all-boundaries` 的输入别名。
 
-模块化执行保留入口测试绑定、旧值关系、未修改资源及地址分离，在边界使用规约或不变式的符号状态。循环体与出口分别保留不变式加守卫/退出条件，不再选择具体值；所有原始证明义务保留。`--modular-instantiation` 及对应配置字段已删除；直接使用 `--execution-strategy modular`。
+模块化执行保留入口测试绑定、旧值关系、未修改资源及地址分离，在边界使用规约或不变式的符号状态。循环体与出口分别保留不变式加守卫/退出条件，不再选择具体值；所有原始证明义务保留。`--modular-instantiation` 及对应配置字段已删除；直接使用 `--execution modular`。
 
 modular 报告使用 `modular-symbolic/v1`、`contract-symbolic/v1` 和 `result_scope=contract-and-invariant-symbolic`，`sampling_events=[]`。这是固定入口下的模块化检查，不能据此声称真实函数体的完整运行已被验证。inline 的声明调用同样使用 `contract-symbolic/v1`，发生这类调用时报告 `result_scope=inline-with-symbolic-contracts`；没有规约调用时仍为 `concrete-execution`。两种策略的 `sampling_events` 均为空，不能把符号规约结果称为重新选取的一次具体执行。入口不可满足为 INVALID；剩余 VC 为 UNKNOWN；自动流程不启动证明 Agent。
 
@@ -47,7 +47,9 @@ modular 报告使用 `modular-symbolic/v1`、`contract-symbolic/v1` 和 `result_
 
 可选 `--spatial-smt` 逐条尝试原生未决 VC，按各类 VC 的堆语义编码；默认关闭，不支持或证据不完整的 VC 保留给 ITP。参见[空间 SMT 后端](docs/spatial-smt.md)。
 
-用 `python3 -m spectest routes job.json --output-dir comparison` 可以对照 Auto 和 ITP。原生只执行一次，两条路线分别处理同一批未决输入。单独运行自动测试可加 `--route auto`，只重放已有证明可加 `--route itp --replay-only`。结果与成本分别保存在 `comparison/routes.json`。[独立路线与统计口径](docs/spatial-smt.md#auto-与-itp-的独立对照)
+作业 JSON 用 `qcp.execution` 和 `qcp.vc_scope` 设置上面两个参数。已有作业中的 `execution_strategy` 和 `execution_mode` 仍可读取。
+
+`python3 -m spectest routes job.json --output-dir out/test` 默认只对原生未决输入运行 Auto。双路线评测显式加 `--route both`，Auto 和 ITP 依次处理同一份原生执行的剩余义务。只重放已有证明可用 `--route itp --itp-replay-only`。各路线的结果和成本保存在输出目录的 `routes.json`。[独立路线与统计口径](docs/spatial-smt.md#auto-与-itp-的独立对照)
 
 ## 使用流程
 

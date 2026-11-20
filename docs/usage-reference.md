@@ -11,6 +11,10 @@
 输出按 bind 给出 `PASS / FAIL / CRASH / UNKNOWN / ERROR`，并保存特化源文件、QCP
 日志和 Coq VC。核心框架完全确定性，不调用大模型。
 
+## 原生执行后的求解路线
+
+`python3 -m spectest routes job.json --output-dir out/test` 默认走 Auto。双路线评测显式指定 `--route both`，只做证明重放使用 `--route itp --itp-replay-only`。作业中的 `qcp.execution` 选择 inline 或 modular，`qcp.vc_scope` 选择 entry-exit 或 all-boundaries。[路线参数和配置示例](spatial-smt.md#auto-与-itp-的独立对照)
+
 ## 执行语义
 
 这不是普通的全称验证模式。工具先把目标函数的全部 C 形参和顶层 spec 的逻辑输入

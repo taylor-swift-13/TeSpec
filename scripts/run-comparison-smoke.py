@@ -149,7 +149,7 @@ def main():
                 "spectest",
                 "run",
                 str(qs),
-                "--execution-mode",
+                "--vc-scope",
                 args.mode,
                 "--function",
                 function,

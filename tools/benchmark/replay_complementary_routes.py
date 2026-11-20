@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Replay the paired Auto / model-free ITP comparison on read or dll_remove."""
+"""Check Auto against the archived read or dll_remove results; use --route both for paired replay."""
 import argparse
 import hashlib
 import json
@@ -57,7 +57,8 @@ def main():
     parser.add_argument("--case", help="one frozen case ID")
     parser.add_argument("--strategy", choices=("inline", "modular"))
     parser.add_argument("--variant", help="one frozen QCP variant ID")
-    parser.add_argument("--route", choices=("auto", "itp", "both"), default="both")
+    parser.add_argument("--route", choices=("auto", "itp", "both"), default="auto",
+                        help="default: auto; use both for paired replay with checked proof sources")
     args = parser.parse_args()
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
@@ -70,6 +71,9 @@ def main():
         raise ValueError("Variant, source, case, bindings or expectation differ from the measured batch")
     records = comparison["executions"]
     previous = {(r["variant"], r["input"], r["strategy"]): r for r in records}
+    itp_config = output / "itp-config.json"
+    if args.route in {"both", "itp"}:
+        itp_config.write_text(json.dumps({"check_timeout": 900}))
     selected = 0
     for key, (function, source, binds, _) in tasks.items():
         variant, case, strategy = key
@@ -80,18 +84,19 @@ def main():
         folder = output / (variant.replace(":", "_") + "-" + case + "-" + strategy)
         native, _ = execute(folder, function, source, 32, binds, strategy, "off")
         cache = folder / "cache"
-        cache.mkdir()
         proof = previous[key].get("itp_proof")
         if proof and args.route in {"both", "itp"}:
+            cache.mkdir()
             candidate = read(evidence / "proofs.json")[proof["candidate_sha256"]].encode("utf-8")
             if hashlib.sha256(candidate).hexdigest() != proof["candidate_sha256"]:
                 raise ValueError("Archived candidate changed")
             # The controller computes the key again from the new source, input,
             # VC and complete runtime context, then independently rechecks Coq.
             (cache / (proof["cache_key"] + ".v")).write_bytes(candidate)
-        command = [sys.executable, "-B", "-m", "spectest", "routes", str(native), "--from-native",
-                   "--output-dir", str(folder / "routes"), "--route", args.route,
-                   "--proof-cache", str(cache), "--replay-only", "--check-timeout", "900"]
+        command = [sys.executable, "-B", "-m", "spectest", "routes", "--native-report", str(native),
+                   "--output-dir", str(folder / "routes"), "--route", args.route]
+        if args.route in {"both", "itp"}:
+            command += ["--proof-cache", str(cache), "--itp-replay-only", "--itp-config", str(itp_config)]
         subprocess.run(command, cwd=ROOT, check=True)
         replay, = read(folder / "routes/routes.json")["cases"]
         reference = previous[key]

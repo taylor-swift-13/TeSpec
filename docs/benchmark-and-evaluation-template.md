@@ -8,9 +8,9 @@
 
 ## 当前 teSpec 测试口径
 
-新增的效率与能力对照使用 `spectest routes`。两条路线共享同一份原生执行，Auto 的正式测试结果只包含原生与自动空间 SMT；ITP 是对同一批未决输入的独立对照。历史表中“包含 ITP”的成功数仍属于当时的评测。inline 和 modular 各冻结一次实际执行，不把后端数计入输入分母。
+新增的效率与能力对照显式使用 `spectest routes job.json --route both --output-dir DIR`，只测 Auto 时省略 `--route both`。两条路线共享同一份原生执行，Auto 的正式测试结果只包含原生与自动空间 SMT；ITP 是对同一批未决输入的独立对照。历史表中“包含 ITP”的成功数仍属于当时的评测。inline 和 modular 各冻结一次实际执行，不把后端数计入输入分母。
 
-每组列出原生状态、Auto 和 ITP 在共同未决输入上的状态矩阵、各自逐输入预期匹配数，以及三者分别的时间、最大进程 RSS 和实际 token。单列从头生成的证明、重放已有证明的执行和缺少候选的执行。`--replay-only` 缺少匹配证明只能说明本次没有可重放的候选。成本表标记并发条件，并以一次执行的所有原始待定 VC 为一个 ITP 任务。复现入口见[独立路线说明](spatial-smt.md#auto-与-itp-的独立对照)。
+每组列出原生状态、Auto 和 ITP 在共同未决输入上的状态矩阵、各自逐输入预期匹配数，以及三者分别的时间、最大进程 RSS 和实际 token。单列从头生成的证明、重放已有证明的执行和缺少候选的执行。`--itp-replay-only` 缺少匹配证明只能说明本次没有可重放的候选。两条路线依次计时，并以一次执行的所有原始待定 VC 为一个 ITP 任务。复现入口见[独立路线说明](spatial-smt.md#auto-与-itp-的独立对照)。
 
 ## 1. 数据单位与计数
 
@@ -379,14 +379,14 @@ historical results under their original version; retain new measurements under
 
 ## 现行 modular 策略：移除边界采样（2026-10-20）
 
-modular 只在函数入口应用测试绑定。函数规约、循环不变式和 assertion 边界保留符号状态，不进入候选搜索；采样事件必须为空。`--modular-instantiation` 和 `qcp.modular_instantiation` 已删除，不再区分 on/off，也不接受 off 兼容开关。直接选择 `execution_strategy=modular`；不能把旧采样执行器输出当作当前 modular 结果。`execution_semantics=modular-symbolic/v1`、`declaration_call_policy=contract-symbolic/v1`、`result_scope=contract-and-invariant-symbolic`。inline 原行为及 VC 范围参数保持独立不变。
+modular 只在函数入口应用测试绑定。函数规约、循环不变式和 assertion 边界保留符号状态，不进入候选搜索；采样事件必须为空。`--modular-instantiation` 和 `qcp.modular_instantiation` 已删除，不再区分 on/off，也不接受 off 兼容开关。直接选择 `qcp.execution=modular`；不能把旧采样执行器输出当作当前 modular 结果。`execution_semantics=modular-symbolic/v1`、`declaration_call_policy=contract-symbolic/v1`、`result_scope=contract-and-invariant-symbolic`。inline 原行为及 VC 范围参数保持独立不变。
 
 以下带日期的采样方案为历史记录，不能用于描述现行默认值。旧结果、成本与二进制哈希原样保留。此次删除不扩大空间 SMT 接入条件；未解决义务仍为 UNKNOWN。详见 [删除记录](modular-no-boundary-sampling.md)。
 
 ## 执行策略与 VC 范围的独立评测（2026-10-18）
 
-新增 `execution_strategy=inline|modular`，默认 inline；既有
-`execution_mode=entry-exit|all-boundaries` 只决定 VC 范围。策略、VC 范围、
+作业字段 `qcp.execution=inline|modular` 默认 inline。
+`qcp.vc_scope=entry-exit|all-boundaries` 只决定 VC 范围。策略、VC 范围、
 空间 SMT OFF/ON 都必须写入结果标识，不能合并为同一种测试。无函数体的
 调用均使用规约实例化，因此 inline 结果也可能依赖外部函数契约。
 

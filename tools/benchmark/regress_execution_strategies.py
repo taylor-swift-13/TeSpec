@@ -15,7 +15,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", required=True)
     parser.add_argument("--workers", type=int, default=4)
-    parser.add_argument("--execution-strategy", choices=("inline", "modular"), default="inline")
+    parser.add_argument("--execution", "--execution-strategy", dest="execution_strategy", choices=("inline", "modular"), default="inline")
     parser.add_argument("--groups", nargs="+", help="Restrict regression to the named completed groups")
     parser.add_argument("--positive-representatives", action="store_true")
     args = parser.parse_args()
@@ -62,7 +62,7 @@ def main():
     (out / "executor-build.json").write_bytes((shared.ROOT / "bin/tespec-symexec.build.json").read_bytes())
     original = shared.cli_arguments
     shared.cli_arguments = lambda task, mode, folder: (
-        original(task, mode, folder) + ["--execution-strategy", args.execution_strategy])
+        original(task, mode, folder) + ["--execution", args.execution_strategy])
     rows = []
     try:
         with ThreadPoolExecutor(max_workers=args.workers) as pool:

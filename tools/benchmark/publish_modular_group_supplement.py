@@ -86,8 +86,10 @@ def main():
             case,payload,raw=reports[key]
             spec=payload.get("spec_test",{})
             pair=next(y for y in group_rows if y["variant"]==x["variant"] and y["case"]==x["case"] and y["mode"]!=x["mode"])
+            command = x["measurement"]["command"]
+            scope_flag = "--vc-scope" if "--vc-scope" in command else "--execution-mode"
             item={"group":group,"variant":x["variant"],"case":x["case"],"spatial_smt":x["mode"],
-                "execution_strategy":"modular","execution_mode":x["measurement"]["command"][x["measurement"]["command"].index("--execution-mode")+1],
+                "execution_strategy":"modular","execution_mode":command[command.index(scope_flag)+1],
                 "result_scope":case.get("result_scope",spec.get("result_scope")),
                 "declaration_call_policy":spec.get("declaration_call_policy"),
                 "expected":x["expected"],"native_status":x["current"]["status"],

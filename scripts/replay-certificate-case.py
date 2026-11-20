@@ -58,7 +58,7 @@ def main():
         str((inputs / case["bindings"]).resolve()),
         "--output-dir",
         str(output / "automatic"),
-        "--execution-mode",
+        "--vc-scope",
         mode,
         "--architecture-bits",
         str(arch),

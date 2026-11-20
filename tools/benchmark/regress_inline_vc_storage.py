@@ -242,8 +242,8 @@ def run_pairs(args, out):
             run = folder / label
             cli = [sys.executable, "-B", "-m", "spectest", "run", str(source),
                    "--function", "sample", "--binds", str(binds),
-                   "--qcp-binary", str(binary), "--execution-strategy", fixture["strategy"],
-                   "--execution-mode", fixture["mode"],
+                   "--qcp-binary", str(binary), "--execution", fixture["strategy"],
+                   "--vc-scope", fixture["mode"],
                    "--loop-unroll-limit", str(max(16, fixture["n"] + 4)),
                    "--output-dir", str(run / "artifacts"),
                    "--timeout", str(args.timeout), "--no-spatial-smt"]

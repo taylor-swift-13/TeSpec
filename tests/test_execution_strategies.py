@@ -96,6 +96,17 @@ class ExecutionStrategyTests(unittest.TestCase):
             with self.subTest(value=value), self.assertRaises(JobError):
                 _parse_qcp_config({"qcp": {"execution_strategy": value}}, ROOT, ROOT)
 
+    def test_old_and_new_job_keys_must_agree(self):
+        for new, legacy, value, other in (
+            ("vc_scope", "execution_mode", "entry-exit", "all-boundaries"),
+            ("execution", "execution_strategy", "inline", "modular"),
+        ):
+            job = {"qcp": {new: value, legacy: value}}
+            _parse_qcp_config(job, ROOT, ROOT)
+            job["qcp"][legacy] = other
+            with self.assertRaisesRegex(JobError, "conflicting"):
+                _parse_qcp_config(job, ROOT, ROOT)
+
     def test_cli_persists_both_independent_parameters(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -107,15 +118,15 @@ class ExecutionStrategyTests(unittest.TestCase):
                     output = root / (strategy + "-" + mode)
                     def check_job(path, override):
                         job = json.loads(path.read_text())
-                        self.assertEqual(job["qcp"]["execution_strategy"], strategy)
-                        self.assertEqual(job["qcp"]["execution_mode"], mode)
+                        self.assertEqual(job["qcp"]["execution"], strategy)
+                        self.assertEqual(job["qcp"]["vc_scope"], mode)
                         self.assertEqual(override, output)
                         return {"summary": {"PASS": 1, "total": 1}}
                     with self.subTest(strategy=strategy, mode=mode),                          patch("spectest.cli.run_job", side_effect=check_job),                          patch("sys.stdout", new_callable=io.StringIO):
                         code = _run_source([
                             str(source), "--function", "sample", "--binds", str(binds),
-                            "--output-dir", str(output), "--execution-mode", mode,
-                            "--execution-strategy", strategy,
+                            "--output-dir", str(output), "--vc-scope", mode,
+                            "--execution", strategy,
                         ])
                         self.assertEqual(code, 0)
 

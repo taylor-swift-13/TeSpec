@@ -191,7 +191,7 @@ def _run_parser() -> argparse.ArgumentParser:
         help="artifact directory (default: .spectest/<source>-<function>)",
     )
     parser.add_argument(
-        "--execution-mode",
+        "--vc-scope", "--execution-mode", dest="execution_mode",
         type=normalize_execution_mode,
         choices=EXECUTION_MODES,
         default="entry-exit",
@@ -200,7 +200,7 @@ def _run_parser() -> argparse.ArgumentParser:
         "Independent of execution strategy. Legacy aliases: expand, no-expand",
     )
     parser.add_argument(
-        "--execution-strategy",
+        "--execution", "--execution-strategy", dest="execution_strategy",
         type=normalize_execution_strategy,
         choices=EXECUTION_STRATEGIES,
         default="inline",
@@ -283,8 +283,8 @@ def _run_source(argv: list[str]) -> int:
                 "binary": str(args.qcp_binary.expanduser().resolve()),
                 "architecture_bits": args.architecture_bits,
                 "loop_unroll_limit": args.loop_unroll_limit,
-                "execution_mode": args.execution_mode,
-                "execution_strategy": args.execution_strategy,
+                "vc_scope": args.execution_mode,
+                "execution": args.execution_strategy,
                 "annotation_policy": args.annotation_policy,
                 "instance_trace": args.instance_trace,
                 "call_depth_limit": args.call_depth_limit,
@@ -521,7 +521,7 @@ def main(argv: list[str] | None = None) -> int:
                 "  analyze                   Analyze specs and create a binds template\n"
                 "  run                       Test a source file with binds\n"
                 "  check                     Replay a saved job\n"
-                "  routes                    Compare Auto and ITP from one native execution\n"
+                "  routes                    Run Auto on native residuals (compare ITP with --route both)\n"
                 "  prepare-run-certificates  Prepare all proof tasks from a report\n"
                 "  check-run-certificates    Check the complete run certificate\n"
                 "  prepare-certificate       Prepare one VC group's certificate\n"

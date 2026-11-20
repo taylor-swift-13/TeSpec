@@ -330,7 +330,8 @@ def load_baseline(groups=None, execution_strategy="inline"):
 def cli_arguments(task, mode, destination):
     command = task["baseline"][mode]["command"]
     require(command[1:4] == ["-m", "spectest", "run"], "Unsupported recorded CLI wrapper")
-    args = list(command[3:])
+    aliases = {"--execution-mode": "--vc-scope", "--execution-strategy": "--execution"}
+    args = [aliases.get(arg, arg) for arg in command[3:]]
     args = [str(repo_path(a)) if (a.startswith(str(ROOT) + "/") or a.startswith(OLD_ROOT + "/"))
             else a for a in args]
     require(repo_path(args[1]) == ROOT / task["source"]["path"], "Recorded source path mismatch")

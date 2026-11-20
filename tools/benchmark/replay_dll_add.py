@@ -57,8 +57,8 @@ def execute(folder, function, source, bits, bind, strategy, spatial):
         "output_dir": str(output),
         "qcp": {
             "binary": str(ROOT / "bin/tespec-symexec"), "qcip_root": str(RUNTIME),
-            "architecture_bits": bits, "execution_mode": "all-boundaries",
-            "execution_strategy": strategy, "spatial_smt": spatial == "on",
+            "architecture_bits": bits, "vc_scope": "all-boundaries",
+            "execution": strategy, "spatial_smt": spatial == "on",
             "loop_unroll_limit": 64, "call_depth_limit": 64, "timeout_seconds": 30,
             "spatial_smt_timeout_ms": 2000,
             "include_dirs": [str(RUNTIME / "QCP_examples/QCP_demos_human"),
