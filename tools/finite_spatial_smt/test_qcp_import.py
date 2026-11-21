@@ -51,6 +51,19 @@ class DiagnosticModuloTests(unittest.TestCase):
                 import_record(record(assertion(), assertion(pure=f'x %% ({divisor}) == 0'), kind='return'))
 
 
+class UnsignedTruncationTests(unittest.TestCase):
+    def test_exact_modulo_of_two_to_width(self):
+        post = assertion(pure='unsigned_last_nbits(-1, 32) == 4294967295; '
+                             'unsigned_last_nbits(256, 8) == 0')
+        self.assertEqual(check(import_record(record(assertion(), post, kind='return')))['status'], 'VALID')
+
+    def test_unknown_or_excessive_width_is_rejected(self):
+        for width in ('-1', '129', 'symbolic'):
+            with self.subTest(width=width), self.assertRaises(Unsupported):
+                import_record(record(assertion(),
+                    assertion(pure=f'unsigned_last_nbits(x, {width}) == 0'), kind='return'))
+
+
 class CheckModeTests(unittest.TestCase):
     def test_return_default_preserved(self):
         q = record(assertion('store(4096,7,signed int)'), assertion(), kind='return')

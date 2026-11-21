@@ -69,6 +69,11 @@ def reduce_term(text,lists=None):
             if node.keywords or not isinstance(node.func,ast.Name):raise Unsupported('unsupported_finite_function')
             name=node.func.id;args=node.args
             if name=='__fsm_qcp_rem':return node
+            if name=='unsigned_last_nbits' and len(args)==2:
+                # IntLib defines this operation as x mod (2 ^ width).
+                width=numeral(ast.unparse(args[1]))
+                if not 0<=width<=128:raise Unsupported('unsigned_bit_width_budget')
+                return ast.BinOp(args[0],ast.Mod(),ast.Constant(2**width))
             def tag():
                 if not args or not isinstance(args[0],ast.Name) or args[0].id!='Z_1':
                     raise Unsupported('noninteger_list_type')
