@@ -68,6 +68,23 @@ def read_source_text(path: Path) -> str:
     return _read_source_snapshot(path)[0]
 
 
+def prepared_guard_activation(job, binary_sha256):
+    context = job.get("field_layout_context")
+    if isinstance(context, dict) and "guard_projection" in context:
+        from .layout_guards import guard_activation
+        return guard_activation(context["guard_projection"], binary_sha256)
+    return "", []
+
+
+def qcp_annotations(source: str):
+    """Yield QCP block annotations while skipping ordinary comments and C literals."""
+    tokens = re.finditer(
+        _C_COMMENT_PATTERN + r"""|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'""",
+        source, re.S,
+    )
+    return (token for token in tokens if token[0].startswith("/*@"))
+
+
 def _relocate_strategy_includes(source: str, original: Path) -> str:
     """Preserve source-relative strategy imports after moving a translation unit."""
     pattern = re.compile(r'(/\*@\s*include\s+strategies\s+")([^"\n]+)("\s*\*/)', re.I)
@@ -2002,6 +2019,8 @@ def run_job(
                 argument_bindings=case.arguments,
             )
             specialized = _relocate_strategy_includes(specialized, source_path)
+            annotation, guard_args = prepared_guard_activation(job, provenance["binary_sha256"])
+            specialized += annotation
             generated_source.write_text(specialized, encoding="utf-8")
             command = _qcp_command(
                 config,
@@ -2010,6 +2029,7 @@ def run_job(
                 entry_spec,
                 vc_dir,
             )
+            command.extend(guard_args)
             run_started = time.monotonic()
             completed, peak_rss_kb, cpu_seconds = _run_measured(
                 command,
@@ -2035,6 +2055,8 @@ def run_job(
                 from .layout_job import validate_layout_context
 
                 validate_layout_context(job["field_layout_context"], vc, provenance["runtime_source_sha256"])
+                if guard_args:
+                    prepared_guard_activation(job, provenance["binary_sha256"])
             case_result.update(
                 {
                     **_executor_result(

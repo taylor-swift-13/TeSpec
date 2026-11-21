@@ -25,11 +25,14 @@ from .core import (
     _require_object,
     _resolve,
     _sha256,
+    qcp_annotations,
     read_source_text,
+    source_with_local_includes,
 )
 from .errors import FieldLayoutMismatch
 from .layout import generate_layout_source, target_layout_digest
 from .layout_libraries import elaborate_library
+from .layout_guards import candidates, prepare_guards, check_guard_header
 from .preflight import export_program_preflight
 
 
@@ -45,16 +48,9 @@ def rewrite_imports(source, names, *, coq=False):
             rf"Require\s+(?P<mode>(?:Import|Export)\s+)?"
             rf"(?P<modules>{_COQ_LOGICAL_NAME}(?:\s+{_COQ_LOGICAL_NAME})*)\s*\*/"
         )
-        # Do not rewrite strings, examples inside ordinary comments or line comments.
-        tokens = re.finditer(
-            r"""/\*.*?\*/|//[^\n]*|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*' """.strip(),
-            source,
-            re.S,
-        )
         matches = (
             pattern.fullmatch(source, token.start(), token.end())
-            for token in tokens
-            if token[0].startswith("/*@")
+            for token in qcp_annotations(source)
         )
     chunks, pos = [], 0
     for m in pattern.finditer(scanned) if coq else matches:
@@ -302,6 +298,7 @@ def prepare_layout_job(job_path, modules, output, *, coqc_command=None):
                     + ", ".join(sorted(set(modules) - inventory.keys()))
                 )
             depdir = output / "dependencies" / "coq"
+            compiler = coqc_command or _default_coqc_command()
             names, records, order = _prepare_libraries(
                 inventory,
                 modules,
@@ -309,7 +306,7 @@ def prepare_layout_job(job_path, modules, output, *, coqc_command=None):
                 depdir,
                 base / "coq",
                 config.qcip_root / "SeparationLogic",
-                coqc_command or _default_coqc_command(),
+                compiler,
             )
 
             staged_source = stage_frontend(
@@ -340,7 +337,50 @@ def prepare_layout_job(job_path, modules, output, *, coqc_command=None):
                     for n in order
                 },
             }
+            job_file = output / "job.json"
+            proposals = list(
+                candidates(
+                    source_with_local_includes(staged_source, config.include_dirs),
+                    [names[m] for m in modules],
+                    base / "coq",
+                    layout,
+                )
+            )
+            guard_receipt = {"proved": [], "skipped": {}}
+            if proposals:
+                job_file.write_text(json.dumps(new_job))
+                active = export_program_preflight(
+                    job_file, base / "active-preflight", case_id=first.case_id
+                )
+                context = new_job["field_layout_context"]
+                actual = {d["module"]: d["sha256"] for d in active["coq_dependencies"]}
+                if (
+                    actual != context["dependencies"]
+                    or active["target_layout"] != layout
+                    or active["provenance"]["runtime_source_sha256"]
+                    != context["runtime_source_sha256"]
+                ):
+                    raise JobError("prepared projection and execution contexts differ")
+                guards, guard_receipt = prepare_guards(
+                    proposals, active, base / "coq", output / "guards", compiler
+                )
+                if guards:
+                    context["guard_projection"] = guards
+                    job_file.write_text(json.dumps(new_job))
+                    try:
+                        export_program_preflight(
+                            job_file, base / "guard-preflight", case_id=first.case_id
+                        )
+                    except JobError as error:
+                        # Some declared definitions are unavailable in the native
+                        # frontend. Keep the ordinary prepared job in that case.
+                        del context["guard_projection"]
+                        guard_receipt["activation"] = "SKIPPED"
+                        guard_receipt["reason"] = str(error)
+                    else:
+                        guard_receipt["activation"] = "CHECKED"
             receipt = {
+                "guard_projection": guard_receipt,
                 "interpretation": "target-layout",
                 "original_job_sha256": pre["provenance"]["job_sha256"],
                 "target_layout_sha256": target_layout_digest(layout),
@@ -402,6 +442,16 @@ def validate_layout_context(expected, manifest, runtime_digest):
         )
     }
     goal_source = Path(goal).read_text()
+    if "guard_projection" in expected:
+        generated = {
+            d["module"]: d["sha256"]
+            for d in manifest.get("generated_coq_dependencies", [])
+        }
+        if generated != expected["guard_projection"].get("generated_modules"):
+            raise FieldLayoutMismatch(
+                "goal dependencies differ from the checked guard bindings"
+            )
+        check_guard_header(expected["guard_projection"], goal_source)
     reject_old_qualifiers(goal_source, selected)
     pending = _coq_required_modules(goal_source)
     reachable = set()

@@ -20,6 +20,7 @@ from .core import (
     _source_coq_imports,
     _stage_source_coq_dependencies,
     attach_spec_to_source,
+    prepared_guard_activation,
     read_source_text,
     source_with_local_includes,
     specialize_entry_source,
@@ -133,9 +134,11 @@ def export_program_preflight(
         [*config.include_dirs, config.qcip_root], [output]
     )
     generated = output / "input.c"
-    generated.write_text(_relocate_strategy_includes(specialized, source_path))
+    annotation, guard_args = prepared_guard_activation(job, provenance["binary_sha256"])
+    generated.write_text(_relocate_strategy_includes(specialized, source_path) + annotation)
     context = output / "context"
     command = _qcp_command(config, generated, function, entry_spec, context)
+    command.extend(guard_args)
     command.append("--spec-test-preflight")
     binary_digest, input_digest = _sha256(config.binary), _sha256(generated)
     started = time.monotonic()
@@ -184,6 +187,10 @@ def export_program_preflight(
     header = Path(header_value).resolve()
     if not header.is_relative_to(context.resolve()) or not header.is_file():
         raise JobError("preflight header is outside the private context")
+    if guard_args:
+        prepared_guard_activation(job, binary_digest)
+        if _sha256(header) != job["field_layout_context"]["guard_projection"]["header_sha256"]:
+            raise JobError("preflight header differs from the checked projection context")
     runtime_dependencies = []
     dependencies = _stage_source_coq_dependencies(
         generated,
