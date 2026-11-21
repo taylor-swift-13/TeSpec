@@ -165,7 +165,7 @@ entailment 和 safety 记录的 `proof_roots` 中列出生成这条诊断的所�
   为 5.65/5.60 毫秒。新增时间集中在此前未编码的数组 VC。开发机负载未受控，
   这些数字仅为开销核对，不是正式性能评测。
 - 曾运行的更大组件套件中，旧 `test_no_unconstrained_list_length_guess` 断言
-  与已存在的有限列表展开行为不符；已用隔离 HEAD 复现，未改该旧测试或实验预期。
+  与有限列表展开行为不符。现有组件测试分别覆盖 `IntArray.full` 由 `store_array_Zlength` 确定长度的情况，以及只有长度下界时保留未知的情况。
 
 该轮只改 Python 接入与测试，未修改执行器二进制和 sac 源码。临时回放树不提交。
 

@@ -213,8 +213,20 @@ class FiniteTermsTests(unittest.TestCase):
         self.assertEqual(check(vc(a(array(4096,[7])),post))['status'],'INVALID')
     def test_existential_list_name_collision(self):
         with self.assertRaises(Unsupported):assertions('EX lr_9\nPROP[Zlength(Z_1, lr_9) == 1; qcp_list_lr_9_0 == 2]\nLOCAL[]\nSEP[IntArray.full(4096, 1, lr_9)]')
+    def test_array_full_constrains_the_existential_list_length(self):
+        # QCP's store_array_Zlength entails Zlength(items) = length.
+        for length in (0, 1, 3):
+            post = assertions(
+                f'EX items\nPROP[]\nLOCAL[]\nSEP[IntArray.full(4096, {length}, items)]'
+            )[0]
+            for size, expected in [(length, 'VALID'), (length + 1, 'INVALID')]:
+                with self.subTest(length=length, size=size):
+                    query = vc(a(array(4096, list(range(size)))), post)
+                    self.assertEqual(check(query)['status'], expected)
+
     def test_no_unconstrained_list_length_guess(self):
-        with self.assertRaises(Unsupported):assertions('EX lr_9\nPROP[]\nLOCAL[]\nSEP[IntArray.full(4096, 1, lr_9)]')
+        with self.assertRaisesRegex(Unsupported, 'nonfinite_list'):
+            assertions('EX items\nPROP[Zlength(Z_1, items) >= 1]\nLOCAL[]\nSEP[]')
 
 
 class WitnessEliminationTests(unittest.TestCase):pass
