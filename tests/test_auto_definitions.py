@@ -286,6 +286,19 @@ class AutoDefinitionsTest(unittest.TestCase):
             r = self.check_entry(f"exists (divisor : Z), ~ (({body}) |-- “ False ”)")
             self.assertEqual(r["status"], "UNKNOWN", r)
 
+    def test_list_length_needs_only_the_spine(self):
+        for term in ("Zlength xs", "@Zlength Z xs", "Coq.ZArith.Zcomplements.Zlength xs"):
+            for length, expected in [(2, "SAT"), (1, "UNSAT")]:
+                body = (
+                    "EX (a b : Z) (xs : list Z), "
+                    f"“ (xs = cons a (cons b nil)) ” && “ (({term}) = {length}) ” && emp"
+                )
+                r = self.check_entry(f"~ (({body}) |-- “ False ”)")
+                self.assertEqual(r["status"], expected, r)
+        for term in ("Zlength missing", "Zlength 4", "@Zlength bool nil"):
+            r = self.check_entry(f"~ ((“ (({term}) = 0) ” && emp) |-- “ False ”)")
+            self.assertEqual(r["status"], "UNKNOWN", r)
+
     def test_scalar_actual_is_an_arithmetic_atom(self):
         lib = LIBRARY + "\nDefinition twice (p:Z) : Z := p * 2."
         for target, expected in [(6, "INVALID"), (10, "VALID")]:

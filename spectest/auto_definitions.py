@@ -499,6 +499,15 @@ class Reduction:
         if t in ("@nil Z", "nil"):
             return ()
         parts = _application_parts(t)
+        if parts and parts[0] in ("Zlength", "Coq.ZArith.Zcomplements.Zlength",
+                                  "@Zlength", "@Coq.ZArith.Zcomplements.Zlength"):
+            if parts[0].startswith("@"):
+                require(len(parts) == 3 and unparen(parts[1]) == "Z", "noninteger_list_type")
+            else:
+                require(len(parts) == 2, "invalid_list_length_arity")
+            items = self.term(parts[-1], env, depth + 1)
+            require(isinstance(items, tuple), "unknown_list_length")
+            return str(len(items))
         if parts and parts[0] == "cons" and len(parts) == 3:
             h = self.term(parts[1], env, depth + 1)
             tail = self.term(parts[2], env, depth + 1)
