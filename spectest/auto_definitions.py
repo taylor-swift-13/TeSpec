@@ -930,11 +930,28 @@ def entry_formula(source, goal, red):
     require(body.startswith("~"), "unsupported_entry_proposition")
     expr = split_operator(unparen(body[1:]), "|--")
     require(expr and expr[1] == "“ False ”", "entry_goal_not_heap_satisfiability")
-    formula = unparen(expr[0])
-    # List binders have no default interpretation. Materialize only if a mandatory
-    # top-level conjunct of this exact original entry proposition fixes the spine.
+    branches = entry_branches(expr[0], env, lists, red)
+    return qcp.assertions("".join(write_branch(b) for b in branches))
+
+
+def entry_branches(formula, shared, lists, red, depth=1):
+    red.budget(depth)
+    formula = unparen(formula)
+    alternatives = split_operator(formula, "||", stop_at_binder=True)
+    if alternatives:
+        branches = [
+            branch
+            for part in alternatives
+            for branch in entry_branches(part, shared, lists, red, depth + 1)
+        ]
+        require(len(branches) <= 64, "definition_alternative_budget")
+        return branches
+
+    # Each alternative can bind its own list witnesses. No equality from a
+    # sibling branch may constrain the heap in this branch.
+    env = shared.copy()
     tail = formula
-    while not split_operator(tail, "||", stop_at_binder=True):
+    while split_operator(tail, "||", stop_at_binder=True) is None:
         pair = split_operator(tail, "&&", stop_at_binder=True)
         if not pair:
             break
@@ -956,8 +973,7 @@ def entry_formula(source, goal, red):
                             env[var] = v
         tail = unparen(pair[1])
     require(lists <= env.keys(), "unknown_entry_list_spine")
-    branches = red.formula(formula, env, False, 1)
-    return qcp.assertions("".join(write_branch(b) for b in branches))
+    return red.formula(formula, env, False, depth)
 
 
 def solve_entry(case, native, binding, *, timeout_ms):

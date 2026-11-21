@@ -197,6 +197,19 @@ class AutoDefinitionsTest(unittest.TestCase):
             "exists (xs : (@list Z)), ~ (((“ (xs = (@nil Z)) ” && emp) || "
             "(“ (xs = (cons 9 (@nil Z))) ” && emp)) |-- “ False ”)"
         )
+        self.assertEqual(self.check_entry(entry)["status"], "SAT")
+
+    def test_entry_branch_bindings_preserve_contradictions(self):
+        left = "\u201c (xs = (@nil Z)) \u201d && \u201c (xs = (cons 7 (@nil Z))) \u201d && emp"
+        right = "\u201c (xs = (cons 9 (@nil Z))) \u201d && \u201c (xs = (@nil Z)) \u201d && emp"
+        formula = f"exists (xs : (@list Z)), ~ ((({left}) || ({right})) |-- \u201c False \u201d)"
+        self.assertEqual(self.check_entry(formula)["status"], "UNSAT")
+
+    def test_unknown_list_branch_is_not_discarded(self):
+        entry = (
+            "exists (xs : (@list Z)), ~ (((\u201c (xs = (@nil Z)) \u201d && emp) || "
+            "(wrapper 400 xs)) |-- \u201c False \u201d)"
+        )
         self.assertEqual(self.check_entry(entry)["status"], "UNKNOWN")
 
     def test_scalar_actual_is_an_arithmetic_atom(self):
