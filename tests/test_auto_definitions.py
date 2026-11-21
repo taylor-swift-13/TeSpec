@@ -231,6 +231,50 @@ class AutoDefinitionsTest(unittest.TestCase):
         )
         self.assertEqual(self.check_entry(entry)["status"], "UNKNOWN")
 
+    def test_typed_existentials_across_names_orders_and_arities(self):
+        for x, y, xs, ys in [
+            ("n", "m", "xs", "ys"),
+            ("payload", "offset", "trailA", "trailB"),
+        ]:
+            for required, status in [(7, "SAT"), (8, "UNSAT")]:
+                with self.subTest(x=x, required=required):
+                    body = (
+                        f"EX ({x} {y} : Z) ({xs} {ys} : (@list Z)), "
+                        f"“ ({xs} = {ys}) ” && “ ({ys} = cons {x} nil) ” && "
+                        f"“ ({x} = 7) ” && “ ({xs} = cons {required} nil) ” && emp"
+                    )
+                    result = self.check_entry(f"~ (({body}) |-- “ False ”)")
+                    self.assertEqual(result["status"], status, result)
+
+    def test_scoped_list_constraint_never_leaks_or_masks_an_unknown(self):
+        for right, expected in [
+            ("“ (xs = cons 6 nil) ” && wrapper 400 xs", "SAT"),
+            ("wrapper 400 xs", "UNKNOWN"),
+        ]:
+            left = "“ (xs = nil) ” && “ (k <> k) ” && emp"
+            body = f"EX (k : Z) (xs : list Z), (({left}) || ({right}))"
+            r = self.check_entry(f"~ (({body}) |-- “ False ”)")
+            self.assertEqual(r["status"], expected, r)
+
+    def test_nested_list_witness_cannot_escape_its_quantifier(self):
+        body = "(EX (n : Z), “ (xs = cons n nil) ” && emp) && “ (xs <> nil) ”"
+        r = self.check_entry(f"exists (xs : list Z), ~ (({body}) |-- “ False ”)")
+        self.assertEqual(r["status"], "UNKNOWN", r)
+
+    def test_typed_binders_in_imported_assertion(self):
+        lib = LIBRARY + (
+            "\nDefinition hidden (a : Z) : Assertion := "
+            "EX (v : Z) (items : list Z), "
+            "“ (v = 3) ” && “ (items = cons v nil) ” && trail a items."
+        )
+        for value, expected in [(3, "VALID"), (4, "INVALID")]:
+            result = self.entail(
+                "PROP[]LOCAL[]SEP[hidden(400)]",
+                f"PROP[]LOCAL[]SEP[store(400,{value},signed int)]",
+                lib,
+            )
+            self.assertEqual(result["status"], expected, result)
+
     def test_scalar_actual_is_an_arithmetic_atom(self):
         lib = LIBRARY + "\nDefinition twice (p:Z) : Z := p * 2."
         for target, expected in [(6, "INVALID"), (10, "VALID")]:

@@ -630,41 +630,69 @@ class Reduction:
         )
         return value
 
-    def formula(self, text, env, fields, depth):
+    def formula(self, text, env, fields, depth, lists=frozenset()):
         self.budget(depth)
         t = unparen(text)
-        ex = re.match(r"EX\s+((?:" + ID + r"\s*)+):\s*Z\s*,", t)
-        if ex:
+        if t.startswith("EX "):
+            header = split_operator(t[3:], ",")
+            require(header, "unsupported_existential_binders")
+            binders, body = header
             require(
-                split_operator(t[ex.end() :], "||") is None,
+                split_operator(body, "||") is None,
                 "ambiguous_existential_disjunction_scope",
             )
-            e = env.copy()
-            fresh = []
-            for name in ex[1].split():
+            if binders.startswith("("):
+                groups = _application_parts(binders)
                 require(
-                    name not in e
-                    and name not in RESERVED
-                    and name not in self.visible
-                    and name != "_",
-                    "shadowed_existential",
+                    all(group.startswith("(") and group.endswith(")") for group in groups),
+                    "unsupported_existential_binders",
                 )
-                v = self.fresh()
-                e[name] = v
-                fresh.append(v)
-            branches = self.formula(t[ex.end() :], e, fields, depth + 1)
-            for b in branches:
-                b.exists.extend(fresh)
+            else:
+                groups = [binders]
+            scoped = env.copy()
+            pending = set(lists)
+            fresh = []
+            for group in groups:
+                names, sep, annotation = unparen(group).partition(":")
+                require(sep and names.strip(), "unsupported_existential_binders")
+                kind = typ(annotation)
+                require(kind in ("Z", "list Z"), "unsupported_existential_type")
+                for name in names.split():
+                    require(
+                        re.fullmatch(ID, name)
+                        and name not in scoped
+                        and name not in pending
+                        and name not in RESERVED
+                        and name not in self.visible
+                        and name != "_",
+                        "shadowed_existential",
+                    )
+                    if kind == "Z":
+                        scoped[name] = self.fresh()
+                        fresh.append(scoped[name])
+                    else:
+                        pending.add(name)
+            branches = self.formula(body, scoped, fields, depth + 1, pending)
+            for branch in branches:
+                branch.exists.extend(fresh)
             return branches
-        for op in ("||", "&&", "**"):
+
+        alternatives = split_operator(t, "||", stop_at_binder=True)
+        if alternatives:
+            branches = [
+                branch
+                for part in alternatives
+                for branch in self.formula(part, env, fields, depth + 1, lists)
+            ]
+            require(len(branches) <= 64, "definition_alternative_budget")
+            return branches
+        if lists:
+            env = bind_list_witnesses(t, env, lists, self, depth)
+        for op in ("&&", "**"):
             pair = split_operator(t, op, stop_at_binder=True)
-            if pair is None:
-                continue
-            a, b = [self.formula(x, env, fields, depth + 1) for x in pair]
-            if op == "||":
-                require(len(a) + len(b) <= 64, "definition_alternative_budget")
-                return a + b
-            return product(a, b, op)
+            if pair:
+                a, b = [self.formula(x, env, fields, depth + 1) for x in pair]
+                return product(a, b, op)
         if t == "emp":
             return [Branch([], [], [], True)]
         if t.startswith("“") and t.endswith("”"):
@@ -937,50 +965,49 @@ def entry_formula(source, goal, red):
     require(body.startswith("~"), "unsupported_entry_proposition")
     expr = split_operator(unparen(body[1:]), "|--")
     require(expr and expr[1] == "“ False ”", "entry_goal_not_heap_satisfiability")
-    branches = entry_branches(expr[0], env, lists, red)
+    branches = red.formula(expr[0], env, False, 1, lists)
     return qcp.assertions("".join(write_branch(b) for b in branches))
 
 
-def entry_branches(formula, shared, lists, red, depth=1):
-    red.budget(depth)
-    formula = unparen(formula)
-    alternatives = split_operator(formula, "||", stop_at_binder=True)
-    if alternatives:
-        branches = [
-            branch
-            for part in alternatives
-            for branch in entry_branches(part, shared, lists, red, depth + 1)
-        ]
-        require(len(branches) <= 64, "definition_alternative_budget")
-        return branches
+def bind_list_witnesses(formula, env, lists, red, depth):
+    """Eliminate existential lists using equalities required by this branch.
 
-    # Each alternative can bind its own list witnesses. No equality from a
-    # sibling branch may constrain the heap in this branch.
-    env = shared.copy()
-    tail = formula
-    while split_operator(tail, "||", stop_at_binder=True) is None:
-        pair = split_operator(tail, "&&", stop_at_binder=True)
-        if not pair:
-            break
-        quoted = unparen(pair[0])
-        if (
-            quoted.startswith("“")
-            and quoted.endswith("”")
-            and quoted.count("“") == quoted.count("”") == 1
-        ):
-            sides = split_operator(unparen(quoted[1:-1]), "=")
+    Re-evaluate the original equalities after substitution. A binding from an
+    alternative or a nested quantifier cannot constrain its siblings.
+    """
+    equations = []
+
+    def collect(text, level):
+        red.budget(level)
+        t = unparen(text)
+        if t.startswith("EX ") or split_operator(t, "||", stop_at_binder=True):
+            return
+        pair = split_operator(t, "&&", stop_at_binder=True)
+        if pair:
+            for part in pair:
+                collect(part, level + 1)
+        elif t.startswith("“") and t.endswith("”") and t.count("“") == t.count("”") == 1:
+            sides = split_operator(unparen(t[1:-1]), "=")
             if sides:
-                for var, term in (sides, sides[::-1]):
-                    if var in lists and var not in env:
-                        try:
-                            v = red.term(term, env, 1)
-                        except Unsupported:
-                            continue
-                        if isinstance(v, tuple):
-                            env[var] = v
-        tail = unparen(pair[1])
-    require(lists <= env.keys(), "unknown_entry_list_spine")
-    return red.formula(formula, env, False, depth)
+                for var, rhs in (sides, sides[::-1]):
+                    if var in lists:
+                        equations.append((var, rhs))
+
+    collect(formula, depth)
+    scoped = env.copy()
+    while not lists <= scoped.keys():
+        count = len(scoped)
+        for var, rhs in equations:
+            if var in scoped:
+                continue
+            try:
+                value = red.term(rhs, scoped, depth + 1)
+            except Unsupported:
+                continue
+            if isinstance(value, tuple):
+                scoped[var] = value
+        require(len(scoped) > count, "unknown_entry_list_spine")
+    return scoped
 
 
 def solve_entry(case, native, binding, *, timeout_ms):
