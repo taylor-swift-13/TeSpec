@@ -275,6 +275,17 @@ class AutoDefinitionsTest(unittest.TestCase):
             )
             self.assertEqual(result["status"], expected, result)
 
+    def test_coq_remainder_preserves_sign_and_divisor_checks(self):
+        for term in ("(dividend % 3)", "(Z.rem dividend 3)"):
+            for expected, status in [(-1, "SAT"), (2, "UNSAT")]:
+                body = f"“ (dividend = -7) ” && “ ({term} = {expected}) ” && emp"
+                r = self.check_entry(f"exists (dividend : Z), ~ (({body}) |-- “ False ”)")
+                self.assertEqual(r["status"], status, r)
+        for term in ("Z.rem 7 divisor", "7 % 0", "nil % 3"):
+            body = f"“ (({term}) = 1) ” && emp"
+            r = self.check_entry(f"exists (divisor : Z), ~ (({body}) |-- “ False ”)")
+            self.assertEqual(r["status"], "UNKNOWN", r)
+
     def test_scalar_actual_is_an_arithmetic_atom(self):
         lib = LIBRARY + "\nDefinition twice (p:Z) : Z := p * 2."
         for target, expected in [(6, "INVALID"), (10, "VALID")]:

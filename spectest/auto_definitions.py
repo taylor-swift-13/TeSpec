@@ -510,12 +510,16 @@ class Reduction:
         if parts and parts[0] in self.defs:
             values = [self.term(a, env, depth + 1) for a in parts[1:]]
             return self.apply(parts[0], values, False, depth + 1)
-        # A single binary operation with explicitly delimited subterms.
-        if len(parts) == 3 and parts[1] in ("+", "-", "*"):
+        # Lower QCP integer operations to their diagnostic equivalents. In
+        # particular, the prelude's % is Z.rem (truncation toward zero).
+        if len(parts) == 3 and parts[0] == "Z.rem":
+            parts = [parts[1], "%", parts[2]]
+        if len(parts) == 3 and parts[1] in ("+", "-", "*", "%"):
             a = self.term(parts[0], env, depth + 1)
             b = self.term(parts[2], env, depth + 1)
             require(isinstance(a, str) and isinstance(b, str), "noninteger_arithmetic")
-            return "(" + a + " " + parts[1] + " " + b + ")"
+            op = "%%" if parts[1] == "%" else parts[1]
+            return "(" + a + " " + op + " " + b + ")"
         raise Unsupported("unsupported_definition_term:" + t[:80])
 
     def prop(self, t, env, depth):
