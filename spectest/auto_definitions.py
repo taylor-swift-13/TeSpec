@@ -16,6 +16,7 @@ from pathlib import Path
 
 from .certificates import strip_comments
 from .core import JobError, _coq_required_modules
+from .ground_reduction import GroundFunction, functions_for, rewrite_closed_calls
 from .layout import generate_layout_source, resolve_field_path
 from .layout_libraries import ADDRESS_ALIASES
 from .rocq_predicates import _application_parts, _strip_outer_parens, field_access
@@ -151,6 +152,7 @@ class Definition:
     field_notation: bool
     recursive: bool
     visible: frozenset = frozenset()
+    ground: GroundFunction | None = None
 
 
 def proof_tactics(command):
@@ -537,9 +539,11 @@ def definitions_for(case):
                     not set(names) & (RESERVED | {"addr", "NULL"}),
                     "reserved_opaque_export",
                 )
-                parsed = dict.fromkeys(
-                    names, Definition((), "opaque", "", False, False)
-                )
+                ground = functions_for(name, raw, interfaces[name], names)
+                parsed = {
+                    n: Definition((), "opaque", "", False, False, ground=ground.get(n))
+                    for n in names
+                }
             register(name, parsed)
     goal = frozen_bytes(vc["files"]["goal"], vc["immutable_sha256"]["goal"]).decode()
     header = re.split(r"(?m)^Definition\s", strip_comments(goal), maxsplit=1)[0]
@@ -1059,7 +1063,7 @@ def expand_part(red, m, inherited, *, single_antecedent=False):
     }
 
 
-def solve_path(record, case, *, timeout_ms):
+def solve_path(record, case, *, timeout_ms, ground_cache=None):
     try:
         defs, layout, visible = definitions_for(case)
         require(layout == record["layout"], "definition_layout_mismatch")
@@ -1067,6 +1071,17 @@ def solve_path(record, case, *, timeout_ms):
         vc = record["vc"]
         text = vc["path"] + "\n" + vc["goal"]
         require("tespec_auto_local_" not in text, "generated_binder_collision")
+        ground = {n: d.ground for n, d in defs.items() if d.ground and n in visible}
+        values = {} if ground_cache is None else ground_cache
+        used = set()
+        if ground:
+            require("\x00" not in text, "invalid_diagnostic_text")
+            copied, used = rewrite_closed_calls(
+                vc["path"] + "\x00" + vc["goal"], ground, values, timeout_ms
+            )
+            path, goal = copied.split("\x00")
+            vc = vc | {"path": path, "goal": goal}
+            text = path + "\n" + goal
         # A bare Coq constant in a diagnostic expression is not a free SMT
         # integer. Check the original text before list/term substitution.
         for token in set(re.findall(r"[A-Za-z_][A-Za-z0-9_']*", text)) & defs.keys():
@@ -1093,7 +1108,23 @@ def solve_path(record, case, *, timeout_ms):
             local_semantics=record.get("local_semantics"),
         )
         result = check(ir, timeout_ms=timeout_ms, include_smt=True)
-        result.update(normalized_vc=ir, expanded_definitions=sorted(red.used))
+        result.update(
+            normalized_vc=ir,
+            expanded_definitions=sorted(red.used | {f.name for f, _ in used}),
+        )
+        if used:
+            result["ground_equalities"] = [
+                {
+                    "function": f.module + "." + f.name,
+                    "object_sha256": f.object_sha256,
+                    "arguments": args,
+                    "value": values[f, args],
+                    "check": "kernel_conversion_closed",
+                }
+                for f, args in sorted(
+                    used, key=lambda key: (key[0].module, key[0].name, key[1])
+                )
+            ]
         return result
     except (
         Unsupported,

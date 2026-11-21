@@ -73,7 +73,7 @@ def compiled_interface(module, source, build, compiler_args):
     if unit.exists():
         return None
     unit.write_text(
-        f"Require {module}.\nSet Printing Width 100000.\nPrint Module {module}.\n"
+        f"From Coq Require Import ZArith List.\nRequire {module}.\nSet Printing Width 100000.\nPrint Module {module}.\n"
     )
     try:
         result = subprocess.run(
@@ -97,24 +97,39 @@ def compiled_interface(module, source, build, compiler_args):
     if not signature:
         return None
     names = []
+    signatures = {}
     for entry in re.split(r"\.(?=\s|$)", signature[1]):
         if entry.strip():
             match = re.fullmatch(
-                r"(?:Definition|Parameter)\s+(" + _IDENT + r")\s*:\s*.+",
+                r"(Definition|Parameter)\s+(" + _IDENT + r")\s*:\s*(.+)",
                 entry.strip(),
                 re.S,
             )
             if not match:
                 return None
-            names.append(match[1])
+            kind, name, typ = match.groups()
+            names.append(name)
+            signature = [" ".join(t.split()) for t in typ.split("->")]
+            if (
+                kind == "Definition"
+                and name in declared
+                and 2 <= len(signature) <= 9
+                and set(signature) <= {"Z", "list Z"}
+            ):
+                signatures[name] = signature
     if len(names) != len(set(names)) or not declared <= set(names):
         return None
     inventory = sorted(names)
-    return {
+    result = {
         "source_sha256": hashlib.sha256(source.encode()).hexdigest(),
         "exports": inventory,
         "exports_sha256": _inventory_digest(inventory),
     }
+    if signatures:
+        obj = build.joinpath(*module.split(".")).with_suffix(".vo")
+        result["ground_signatures"] = signatures
+        result["object_sha256"] = hashlib.sha256(obj.read_bytes()).hexdigest()
+    return result
 
 
 def _inventory_digest(names):

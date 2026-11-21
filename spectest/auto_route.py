@@ -173,7 +173,7 @@ def _same_counterexample(goal, root, nonempty, timeout_ms):
         return False
 
 
-def _solve_auto_record(record, case, budget, compiled_names):
+def _solve_auto_record(record, case, budget, compiled_names, ground_cache=None):
     # A native scalar parser can treat a bare imported Coq constant as a
     # free integer. Consult its bound definition before that interpretation.
     vc = record["vc"]
@@ -185,7 +185,7 @@ def _solve_auto_record(record, case, budget, compiled_names):
         if decision["status"] != "UNKNOWN" or decision.get("supported") is not False:
             return decision
     from .auto_definitions import solve_path
-    decision = solve_path(record, case, timeout_ms=budget)
+    decision = solve_path(record, case, timeout_ms=budget, ground_cache=ground_cache)
     if (decision["status"] == "INVALID" and vc["kind"] in {"entailment", "which_implies"}
             and _has_unmapped_local_scope(vc)):
         decision.update(status="UNKNOWN", reason="unmapped_local_stack_frame")
@@ -252,8 +252,10 @@ def _auto_case(case, function, output, timeout_ms):
         for module, interface in manifest["opaque_imports"].items():
             compiled_names.update(checked_names(staged[module].read_bytes(), interface))
 
+    ground_cache = {}
+
     def solve(record, budget):
-        return _solve_auto_record(record, case, budget, compiled_names)
+        return _solve_auto_record(record, case, budget, compiled_names, ground_cache)
 
     refined = _refine_records(original, case["target_layout"], output, timeout_ms, solve, info)
     case["vc_results"] = refined

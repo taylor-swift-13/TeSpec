@@ -136,7 +136,9 @@ class AutoDefinitionsTest(unittest.TestCase):
             ("4 == 4", "VALID"),
             ("4 == 5", "INVALID"),
             ("limit_value == 8", "UNKNOWN"),
-            ("opaque_increment(3) == 4", "UNKNOWN"),
+            ("opaque_increment(3) == 4", "VALID"),
+            ("opaque_increment(3) == 5", "INVALID"),
+            ("opaque_increment(x) == 4", "UNKNOWN"),
         ]:
             rec = {
                 "layout": LAYOUT,
@@ -152,6 +154,79 @@ class AutoDefinitionsTest(unittest.TestCase):
                 _solve_auto_record(rec, case, 2000, set(interface["exports"])),
             ):
                 self.assertEqual(result["status"], status, result)
+
+    def test_closed_list_reduction_uses_the_original_recursive_definition(self):
+        import os
+        import shutil
+        import subprocess
+        from unittest.mock import patch
+        from spectest.opaque_imports import compiled_interface
+        from spectest.auto_route import _solve_auto_record
+
+        cc = os.environ.get("COQC") or shutil.which("coqc")
+        if not cc:
+            self.skipTest("Coq compiler is unavailable")
+        # Different identifier, recursion and arity from the benchmark library.
+        source = """From Coq Require Import List ZArith.
+Fixpoint add_each (n : Z) (xs : list Z) : list Z :=
+  match xs with nil => nil | cons h t => cons ((n+h)%Z) (add_each n t) end.
+"""
+        case = self.case(source)
+        subprocess.run([cc, "-q", "Library.v"], cwd=self.root, check=True)
+        interface = compiled_interface("Library", source, self.root, [cc, "-q"])
+        vc = case["vc"]
+
+        def install(receipt):
+            vc["opaque_imports"] = {"Library": receipt}
+            Path(vc["manifest"]).write_text(json.dumps(vc))
+
+        install(interface)
+        cache = {}
+
+        def query(prop):
+            rec = {
+                "layout": LAYOUT,
+                "check_mode": "exact",
+                "vc": {
+                    "kind": "return",
+                    "path": "PROP[]LOCAL[]SEP[]",
+                    "goal": f"PROP[{prop}]LOCAL[]SEP[]",
+                },
+            }
+            return _solve_auto_record(rec, case, 2000, {"add_each"}, cache)
+
+        closed = "add_each((- 2),cons{Z_1}(5,nil{Z_1}))"
+        result = query(closed + " == cons{Z_1}(3,nil{Z_1})")
+        self.assertEqual(result["status"], "VALID", result)
+        self.assertEqual(result["ground_equalities"][0]["value"], (3,))
+        with patch(
+            "spectest.ground_reduction.checked_batch", side_effect=AssertionError
+        ):
+            self.assertEqual(query(closed + " == nil{Z_1}")["status"], "INVALID")
+            self.assertEqual(
+                query("add_each(x,nil{Z_1}) == nil{Z_1}")["status"], "UNKNOWN"
+            )
+        nested = f"add_each(3,{closed}) == cons{{Z_1}}(6,nil{{Z_1}})"
+        self.assertEqual(query(nested)["status"], "VALID")
+        with patch("spectest.ground_reduction.read_value", return_value=(998,)):
+            wrong = query(
+                "add_each(10,cons{Z_1}(2,nil{Z_1})) == cons{Z_1}(998,nil{Z_1})"
+            )
+            self.assertEqual(wrong["reason"], "ground_conversion_not_closed")
+        install(
+            {
+                k: v
+                for k, v in interface.items()
+                if k not in {"ground_signatures", "object_sha256"}
+            }
+        )
+        self.assertEqual(query(closed + " == nil{Z_1}")["status"], "UNKNOWN")
+        install(dict(interface, object_sha256="0" * 64))
+        self.assertEqual(
+            query(closed + " == nil{Z_1}")["reason"], "ground_compiled_module_mismatch"
+        )
+        install(dict(interface, ground_signatures={"add_each": ["Z", "Z", "list Z"]}))
+        self.assertEqual(query("add_each(0,1) == nil{Z_1}")["status"], "UNKNOWN")
 
     def test_integer_record_declarations_are_opaque(self):
         lib = LIBRARY + "\nRecord Parcel : Type := pack { item : Z; weight : Z }."
