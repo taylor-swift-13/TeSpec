@@ -50,6 +50,19 @@ python3 tools/benchmark/replay_complementary_routes.py dll_remove --route both -
 
 已发布的双路线对照覆盖 `dll_remove` 和 `read`。每个输入分别执行 inline 与 modular。`dll_remove` 的 18 次未决执行在两条路线都得到 PASS，其中 ITP 使用已有证明源码并逐执行通过内核重放。`read` 的 24 次未决执行由 Auto 判为预期的 FAIL；ITP 在本批仅查找匹配证明，24 次均未命中。两组同时保存原始判断、逐执行成本和比较范围。[dll_remove 结果](../benchmark/results/dll_remove/residual-routes/comparison.json) · [read 结果](../benchmark/results/read/residual-routes/comparison.json)
 
+## 让外部谓词使用本次 C 程序的字段布局
+
+已有作业可以显式生成一个使用目标布局的新作业。选择声明谓词的 Coq 模块，可重复传入 `--module`。准备步骤从原作业读取实际布局，使用兼容 QCP 运行时的 Coq 8.20 编译整份库及其原有引理。当前环境的 `coqc` 版本不符时，可以通过 `--coqc PATH` 指定编译器。
+
+```sh
+python -m spectest prepare-layout-job job.json --module MyPredicates --output prepared
+python -m spectest routes prepared/job.json --output-dir results/target-layout
+```
+
+`layout-job.json` 记录源库、活动模块、文件哈希及布局哈希。新 VC 直接导入活动模块，Auto 和 ITP 因而读取相同的谓词定义。运行时核对实际布局、运行时版本、库文件哈希及目标的导入关系。字段地址只在声明该定义时已经绑定计算布局的作用域内展开，支持字段地址作为存储位置、值或辅助谓词的参数，以及结构体内嵌字段。无法解析的字段保留未知。
+
+旧作业和旧证书属于原先的地址语义。比较两种设置时应按证明上下文区分结果。库编译是每个准备目录的一次性成本，使用已准备作业运行 Auto 时无需再启动 Coq。
+
 ## 调用与判定
 
 `run_job → 原生执行器 → 原始 JSON / Coq VC → 可选空间 SMT → 报告与 ITP 任务`。

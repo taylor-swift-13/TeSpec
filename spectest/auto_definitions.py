@@ -17,7 +17,8 @@ from pathlib import Path
 from .certificates import strip_comments
 from .core import JobError, _coq_required_modules
 from .layout import generate_layout_source, resolve_field_path
-from .rocq_predicates import _application_parts, _strip_outer_parens
+from .layout_libraries import ADDRESS_ALIASES
+from .rocq_predicates import _application_parts, _strip_outer_parens, field_access
 from tools.finite_spatial_smt.finite_spatial_smt import (
     CONSTANTS,
     Unsupported,
@@ -152,18 +153,43 @@ class Definition:
     visible: frozenset = frozenset()
 
 
+def layout_proof_tactics(command):
+    # Tactics are inert here. Vernacular commands can change the interpretation
+    # of later declarations and must still be rejected.
+    text = re.sub(r"^[-+*] +", "", command)
+    assertion = re.fullmatch(r"assert \([\w ():*=+\-]+\) by \(([^()]*)\)", text)
+    if assertion:
+        text = assertion[1]
+    return all(
+        re.fullmatch(
+            r"(?:try )?(?:intros?|Intros|Exists|simpl|revert|subst|induction|destruct|"
+            r"congruence|constructor|entailer!|tauto|easy|lia|sep_apply|prop_apply|rewrite)"
+            r"(?: [\w ()',:\-=+*]+)?",
+            tactic.strip(),
+        )
+        for tactic in text.split(";")
+    )
+
+
 def parse_library(source, module_exports):
     definitions = {}
     known_modules = set(module_exports)
     imported = set()
     field_notation = False
+    address_prelude = False
+    address_aliases = False
+    checked_aliases = {}
     # Keep proof scripts opaque. Only a restricted, tactic-only proof body
     # is inert here: vernacular syntax, scope and import changes are barriers.
     in_proof = False
     opaque = Definition((), "opaque", "", False, False)
     commands = re.split(r"\.(?=\s|$)", strip_comments(source).strip())
+    commands = [" ".join(command.split()) for command in commands]
+    layout_context = (
+        "GeneratedLayout" in known_modules
+        and "Import GeneratedLayout.AddressNotations" in commands
+    )
     for command in commands:
-        command = " ".join(command.split())
         if not command:
             continue
         if in_proof:
@@ -172,6 +198,7 @@ def parse_library(source, module_exports):
                 continue
             require(
                 command == "Proof"
+                or (field_notation and layout_proof_tactics(command))
                 or re.fullmatch(
                     r"(?:[-+*] )?(?:intros?|reflexivity|assumption|apply|exact|unfold|simpl|cbn|lia|split|constructor|destruct|induction|rewrite)(?: [\w ()',:\-=+*]+)?",
                     command,
@@ -179,10 +206,28 @@ def parse_library(source, module_exports):
                 "unsupported_vernacular_in_auxiliary_proof",
             )
             continue
+        if field_notation and address_aliases:
+            checks = {check: name for name, (check, _) in ADDRESS_ALIASES.items()}
+            if command in checks:
+                name = checks[command]
+                checked_aliases[name] = ADDRESS_ALIASES[name][1]
+                continue
+        if checked_aliases:
+            require(
+                not ({"NULL", "addr"} & (definitions.keys() | imported)),
+                "shadowed_address_alias",
+            )
+            # Preserve quoted field names. Only normalize aliases from the
+            # admitted QCP prelude in the computational notation context.
+            command = re.sub(
+                r'"(?:[^"]|"")*"|(?<![\w.\'])(?:NULL|addr)(?![\w\'])',
+                lambda m: checked_aliases.get(m[0], m[0]),
+                command,
+            )
         declared = re.match(
             r"(?:Definition|Fixpoint|Lemma|Theorem|Corollary|Fact) ("
             + ID
-            + r")(?![\w'])",
+            + r"'*)(?![\w'])",
             command,
         )
         if declared:
@@ -204,11 +249,27 @@ def parse_library(source, module_exports):
         m = re.fullmatch(r"(?:From ([\w.]+) )?Require Import ([\w. ]+)", command)
         if m:
             modules = [(m[1] + "." if m[1] else "") + n for n in m[2].split()]
+            allowed = set(PRELUDE)
+            if layout_context:
+                allowed.update({"Permutation", "String", "compcert.lib.Integers"})
+                require(
+                    not set(modules) & {"Permutation", "String"} & known_modules,
+                    "ambiguous_standard_import",
+                )
+            if (
+                "SimpleC.SL.SeparationLogic" in modules
+                or "SimpleC.Verification.VCPrelude" in modules
+            ):
+                address_prelude = True
+            if set(modules) - {"GeneratedLayout"}:
+                address_aliases = False
+                field_notation = False
+                checked_aliases.clear()
             require(
-                set(modules) <= PRELUDE | known_modules, "unverified_definition_import"
+                set(modules) <= allowed | known_modules, "unverified_definition_import"
             )
             for module in modules:
-                if module in PRELUDE:
+                if module in allowed:
                     imported.clear()
                 else:
                     imported.update(module_exports[module])
@@ -224,9 +285,12 @@ def parse_library(source, module_exports):
             "Import ListNotations",
         ):
             imported.clear()
+            field_notation = False
+            checked_aliases.clear()
+            address_aliases = address_prelude and command == "Import naive_C_Rules"
             continue
         m = re.fullmatch(r"Local Open Scope (\w+)", command)
-        if m and m[1] in SCOPES:
+        if m and (m[1] in SCOPES or (layout_context and m[1] == "string")):
             continue
         m = re.fullmatch(
             r"(Definition|Fixpoint) ("
@@ -292,7 +356,7 @@ def parsed_module(raw, modules):
 # Admit its exact transparent definitions, while leaving that notation opaque.
 _LEGACY_LIST_MODULE = "SimpleC.EE.QCP_demos_human.sll_lib"
 _LEGACY_LIST_SHA256 = "91d172559c4b3e21b108c7e2a005476cc76d56337213ef65fb5a9ef1d433a9ad"
-_LEGACY_LIST_PRELUDE = {
+_QCP_ADDRESS_PRELUDE = {
     "Mem.v": "a4a92713ca60c93a5e2b65522d319de25eee1d78e53040d363bffc52f3ecc730",
     "CNotation.v": "a86a024fc3bb1fb5caedd5c522c3c29cd6cdf6ef7f029df14e252f366e670f6e",
 }
@@ -303,7 +367,7 @@ def runtime_module(dep, raw, qcip_root, modules):
         return parsed_module(raw, modules)
 
     base = Path(qcip_root) / "SeparationLogic/SeparationLogic"
-    for file, sha in _LEGACY_LIST_PRELUDE.items():
+    for file, sha in _QCP_ADDRESS_PRELUDE.items():
         frozen_bytes(base / file, sha)
 
     # The pinned file has three Fixpoints followed by opaque lemmas.
@@ -397,7 +461,18 @@ def definitions_for(case):
             )
             register(name, {})
         else:
-            for imported in _coq_required_modules(raw.decode("utf-8")):
+            source = raw.decode("utf-8")
+            with_layout = (
+                "GeneratedLayout" in exports
+                and "GeneratedLayout" in _coq_required_modules(source)
+            )
+            if with_layout and re.search(r"\b(?:addr|NULL)\b", source):
+                root = Path(vc["qcip_root"]) / "SeparationLogic/SeparationLogic"
+                for file, sha in _QCP_ADDRESS_PRELUDE.items():
+                    frozen_bytes(root / file, sha)
+            for imported in _coq_required_modules(source):
+                if with_layout and imported == "compcert.lib.Integers":
+                    continue
                 load_runtime(imported)
             register(name, parsed_module(raw, tuple(sorted(exports.items()))))
     goal = frozen_bytes(vc["files"]["goal"], vc["immutable_sha256"]["goal"]).decode()
@@ -472,6 +547,7 @@ class Reduction:
         self.defs = defs
         self.layout = layout
         self.visible = visible
+        self.field_notation = False
         self.count = 0
         self.serial = 0
         self.used = set()
@@ -492,6 +568,16 @@ class Reduction:
             # Each substituted expression is atomic, regardless of its caller's
             # operator precedence. List elements receive the same treatment when bound.
             return "(" + value + ")" if isinstance(value, str) else value
+        if t.startswith("&("):
+            access = field_access(t)
+            require(access is not None, "unsupported_field_address")
+            base, tag, path = access
+            require(
+                self.field_notation and isinstance(env.get(base), str),
+                "unbound_computational_field_notation",
+            )
+            offset = sum(resolve_field_path(self.layout, tag, path))
+            return "((" + env[base] + ") + " + str(offset) + ")"
         if t in ("INT_MIN", "INT_MAX"):
             return {"INT_MIN": str(-(2**31)), "INT_MAX": str(2**31 - 1)}[t]
         if re.fullmatch(r"-?\d+", t):
@@ -499,10 +585,16 @@ class Reduction:
         if t in ("@nil Z", "nil"):
             return ()
         parts = _application_parts(t)
-        if parts and parts[0] in ("Zlength", "Coq.ZArith.Zcomplements.Zlength",
-                                  "@Zlength", "@Coq.ZArith.Zcomplements.Zlength"):
+        if parts and parts[0] in (
+            "Zlength",
+            "Coq.ZArith.Zcomplements.Zlength",
+            "@Zlength",
+            "@Coq.ZArith.Zcomplements.Zlength",
+        ):
             if parts[0].startswith("@"):
-                require(len(parts) == 3 and unparen(parts[1]) == "Z", "noninteger_list_type")
+                require(
+                    len(parts) == 3 and unparen(parts[1]) == "Z", "noninteger_list_type"
+                )
             else:
                 require(len(parts) == 2, "invalid_list_length_arity")
             items = self.term(parts[-1], env, depth + 1)
@@ -575,12 +667,13 @@ class Reduction:
 
     def apply(self, name, values, spatial, depth):
         require(name in self.visible, "unbound_definition_at_declaration:" + name)
-        caller = self.visible
+        caller = self.visible, self.field_notation
         self.visible = self.defs[name].visible
+        self.field_notation = self.defs[name].field_notation
         try:
             return self._apply(name, values, spatial, depth)
         finally:
-            self.visible = caller
+            self.visible, self.field_notation = caller
 
     def _apply(self, name, values, spatial, depth):
         self.budget(depth)
@@ -634,7 +727,7 @@ class Reduction:
         else:
             require(not d.recursive, "unsupported_recursive_definition:" + name)
         if spatial:
-            return self.formula(body, env, d.field_notation, depth + 1)
+            return self.formula(body, env, depth + 1)
         value = self.term(body, env, depth + 1)
         require(
             d.result == "inferred"
@@ -643,7 +736,7 @@ class Reduction:
         )
         return value
 
-    def formula(self, text, env, fields, depth, lists=frozenset()):
+    def formula(self, text, env, depth, lists=frozenset()):
         self.budget(depth)
         t = unparen(text)
         if t.startswith("EX "):
@@ -657,7 +750,10 @@ class Reduction:
             if binders.startswith("("):
                 groups = _application_parts(binders)
                 require(
-                    all(group.startswith("(") and group.endswith(")") for group in groups),
+                    all(
+                        group.startswith("(") and group.endswith(")")
+                        for group in groups
+                    ),
                     "unsupported_existential_binders",
                 )
             else:
@@ -685,7 +781,7 @@ class Reduction:
                         fresh.append(scoped[name])
                     else:
                         pending.add(name)
-            branches = self.formula(body, scoped, fields, depth + 1, pending)
+            branches = self.formula(body, scoped, depth + 1, pending)
             for branch in branches:
                 branch.exists.extend(fresh)
             return branches
@@ -695,7 +791,7 @@ class Reduction:
             branches = [
                 branch
                 for part in alternatives
-                for branch in self.formula(part, env, fields, depth + 1, lists)
+                for branch in self.formula(part, env, depth + 1, lists)
             ]
             require(len(branches) <= 64, "definition_alternative_budget")
             return branches
@@ -704,7 +800,7 @@ class Reduction:
         for op in ("&&", "**"):
             pair = split_operator(t, op, stop_at_binder=True)
             if pair:
-                a, b = [self.formula(x, env, fields, depth + 1) for x in pair]
+                a, b = [self.formula(x, env, depth + 1) for x in pair]
                 return product(a, b, op)
         if t == "emp":
             return [Branch([], [], [], True)]
@@ -712,26 +808,7 @@ class Reduction:
             return [Branch([self.prop(t[1:-1], env, depth + 1)], [], [], False)]
         cell = re.fullmatch(r"(.+?)\s*#\s*(" + "|".join(TYPES) + r")\s*\|->\s*(.+)", t)
         if cell:
-            addr = unparen(cell[1])
-            field = re.fullmatch(
-                r"&\(\s*("
-                + ID
-                + r')\s*#\s*"('
-                + ID
-                + r')"\s*->ₛ\s*"('
-                + ID
-                + r')"\s*\)',
-                addr,
-            )
-            if field:
-                require(
-                    fields and field[1] in env, "unbound_computational_field_notation"
-                )
-                p = env[field[1]]
-                (offset,) = resolve_field_path(self.layout, field[2], [field[3]])
-                address = "((" + p + ") + " + str(offset) + ")"
-            else:
-                address = self.term(addr, env, depth + 1)
+            address = self.term(cell[1], env, depth + 1)
             value = self.term(cell[3], env, depth + 1)
             require(
                 isinstance(address, str) and isinstance(value, str), "noninteger_cell"
@@ -978,7 +1055,7 @@ def entry_formula(source, goal, red):
     require(body.startswith("~"), "unsupported_entry_proposition")
     expr = split_operator(unparen(body[1:]), "|--")
     require(expr and expr[1] == "“ False ”", "entry_goal_not_heap_satisfiability")
-    branches = red.formula(expr[0], env, False, 1, lists)
+    branches = red.formula(expr[0], env, 1, lists)
     return qcp.assertions("".join(write_branch(b) for b in branches))
 
 
@@ -999,7 +1076,9 @@ def bind_list_witnesses(formula, env, lists, red, depth):
         if pair:
             for part in pair:
                 collect(part, level + 1)
-        elif t.startswith("“") and t.endswith("”") and t.count("“") == t.count("”") == 1:
+        elif (
+            t.startswith("“") and t.endswith("”") and t.count("“") == t.count("”") == 1
+        ):
             sides = split_operator(unparen(t[1:-1]), "=")
             if sides:
                 for var, rhs in (sides, sides[::-1]):

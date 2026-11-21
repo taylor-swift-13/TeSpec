@@ -287,25 +287,34 @@ def _application_parts(text):
     return parts
 
 
+def field_access(text):
+    """Return the base, aggregate and explicit field path of a Rocq address."""
+    field = re.fullmatch(
+        rf'&\(\s*([()\s]*{_ID}[()\s]*)\s*#\s*"({_ID})"\s*->ₛ\s*"({_ID})"((?:\s*\.ₛ\s*"{_ID}")*)\s*\)',
+        _strip_outer_parens(text.strip()),
+    )
+    if field is None:
+        return None
+    base, tag, first, tail = field.groups()
+    return _strip_outer_parens(base.strip()), tag, [first, *re.findall(rf'"({_ID})"', tail)]
+
+
 def _address_term(text, names, target_layout):
     """Lower admitted address syntax identically in cells and predicate calls."""
     text = _strip_outer_parens(text.strip())
-    field = re.fullmatch(
-        rf'&\(\s*([()\s]*{_ID}[()\s]*)\s*#\s*"({_ID})"\s*->ₛ\s*"({_ID})"((?:\s*\.ₛ\s*"{_ID}")*)\s*\)',
-        text,
-    )
-    if field is None:
+    access = field_access(text)
+    if access is None:
         atom = _lower_atom(_atom(text, names))
         return atom, atom, False
-    base, tag, first, tail = field.groups()
-    base = _lower_atom(_atom(_strip_outer_parens(base.strip()), names))
+    base, tag, path = access
+    base = _lower_atom(_atom(base, names))
+    first = path[0]
     qaddr = f"field_addr({base}, {tag}, {first})"
     coq_addr = f'&({base} # "{tag}" ->ₛ "{first}")'
-    if not tail:
+    if len(path) == 1:
         return qaddr, coq_addr, False
     if target_layout is None:
         raise JobError("nested field requires a target layout")
-    path = [first, *re.findall(rf'"({_ID})"', tail)]
     try:
         offsets = resolve_field_path(target_layout, tag, path)
     except ValueError as error:

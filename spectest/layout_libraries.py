@@ -17,7 +17,14 @@ _SCOPE = re.compile(r"\bLocal\s+Open\s+Scope\s+sac\s*\.")
 _IMPORT = "\nRequire Import GeneratedLayout.\nImport GeneratedLayout.AddressNotations."
 
 
-def elaborate_library(source: str) -> str:
+# Coq checks these identities in the declaration environment used by Auto.
+ADDRESS_ALIASES = {
+    "addr": ("Check (eq_refl : addr = Z)", "Z"),
+    "NULL": ("Check (eq_refl : NULL = 0%Z)", "0"),
+}
+
+
+def elaborate_library(source: str, *, check_address_aliases=False) -> str:
     """Insert the selected interpretation at a unique existing notation boundary."""
     code = _coq_dependency_code(source)
     matches = list(_SCOPE.finditer(code))
@@ -26,7 +33,12 @@ def elaborate_library(source: str) -> str:
     if re.search(r"\b(?:GeneratedLayout|LayoutAddress)\b", code):
         raise JobError("library already references a reserved layout module")
     end = matches[0].end()
-    return source[:end] + _IMPORT + source[end:]
+    imports = _IMPORT
+    if check_address_aliases and re.search(r"\bImport\s+naive_C_Rules\s*\.", code[:end]):
+        for name, (check, _) in ADDRESS_ALIASES.items():
+            if re.search(r"\b" + name + r"\b", code[end:]):
+                imports += "\n" + check + "."
+    return source[:end] + imports + source[end:]
 
 
 def prepare_layout_libraries(layout_path: Path, sources: list[Path], output: Path):

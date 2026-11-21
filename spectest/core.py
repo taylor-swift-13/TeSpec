@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Any
 
 from .itp_schedule import decision_itp_task
-from .errors import JobError
+from .errors import FieldLayoutMismatch, JobError
 from .modes import (
     execution_semantics, normalize_execution_mode, normalize_execution_strategy,
 )
@@ -2031,6 +2031,10 @@ def run_job(
                 executor_output=completed.stdout,
                 include_dirs=config.include_dirs,
             )
+            if "field_layout_context" in job:
+                from .layout_job import validate_layout_context
+
+                validate_layout_context(job["field_layout_context"], vc, provenance["runtime_source_sha256"])
             case_result.update(
                 {
                     **_executor_result(
@@ -2053,7 +2057,8 @@ def run_job(
                 {
                     "status": "ERROR",
                     "satisfied": None,
-                    "reason": "invalid_bindings",
+                    "reason": ("field_layout_context_mismatch" if isinstance(error, FieldLayoutMismatch)
+                               else "invalid_bindings"),
                     "error": str(error),
                 }
             )

@@ -522,6 +522,7 @@ def main(argv: list[str] | None = None) -> int:
                 "  run                       Test a source file with binds\n"
                 "  check                     Replay a saved job\n"
                 "  routes                    Run Auto on native residuals (compare ITP with --route both)\n"
+                "  prepare-layout-job        Bind selected Coq libraries to a job layout\n"
                 "  prepare-run-certificates  Prepare all proof tasks from a report\n"
                 "  check-run-certificates    Check the complete run certificate\n"
                 "  prepare-certificate       Prepare one VC group's certificate\n"
@@ -540,6 +541,10 @@ def main(argv: list[str] | None = None) -> int:
         "check-certificate",
     }:
         return _run_certificate_command(argv[0], argv[1:])
+    if argv and argv[0] == "prepare-layout-job":
+        from .layout_job import layout_job_cli
+
+        return layout_job_cli(argv[1:])
     if argv and argv[0] == "routes":
         from .routes import routes_cli
 
