@@ -110,6 +110,25 @@ class AutoDefinitionsTest(unittest.TestCase):
             "definition_dependency_hash_mismatch",
         )
 
+    def test_generated_module_is_bound_to_the_original_goal(self):
+        case = self.case(LIBRARY, "~ ((address_cell 400 1) |-- “ False ”)")
+        vc = case["vc"]
+        vc["generated_coq_dependencies"] = vc["coq_dependencies"]
+        vc["coq_dependencies"] = []
+        Path(vc["manifest"]).write_text(json.dumps(vc))
+        args = (
+            case,
+            {"preconditions": [{"status": "UNKNOWN", "goal": "start"}]},
+            {"interface_roots": ["proof_of_start"], "files": vc["files"]},
+        )
+        self.assertEqual(self.entry(*args, timeout_ms=2000)["status"], "SAT")
+        dep = vc["generated_coq_dependencies"][0]
+        Path(dep["staged"]).write_text(LIBRARY + "\n(* altered *)")
+        self.assertEqual(
+            self.entry(*args, timeout_ms=2000)["reason"],
+            "definition_dependency_hash_mismatch",
+        )
+
     def test_legacy_list_uses_only_supported_definitional_reduction(self):
         root = Path(__file__).resolve().parents[1] / "runtime/qcip"
         source = root / "SeparationLogic/examples/QCP_demos_human/sll_lib.v"

@@ -1779,6 +1779,14 @@ def _write_vc_manifest(
         runtime_dependencies,
         include_dirs=include_dirs,
     )
+    generated = vc_dir / f"{stem}_def.v"
+    generated_dependencies = []
+    if generated.is_file():
+        generated_dependencies.append({
+            "module": generated.stem,
+            "staged": str(generated),
+            "sha256": _sha256(generated),
+        })
     manifest = {
         "schema": "qcp-spectest-vc-manifest/v1",
         "case_id": case_id,
@@ -1806,6 +1814,7 @@ def _write_vc_manifest(
             if paths[name].is_file()
         },
         "coq_dependencies": coq_dependencies,
+        "generated_coq_dependencies": generated_dependencies,
         "runtime_dependencies": runtime_dependencies,
         # Embedded in the immutable certificate manifest during preparation.
         # This records the selected interpretation, not a proof of frontend

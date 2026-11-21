@@ -329,6 +329,7 @@ def definitions_for(case):
             for k in (
                 "target_layout",
                 "coq_dependencies",
+                "generated_coq_dependencies",
                 "runtime_dependencies",
                 "files",
                 "immutable_sha256",
@@ -343,6 +344,12 @@ def definitions_for(case):
         for dep in vc["runtime_dependencies"]
         if dep["module"] not in PRELUDE
     }
+    for dep in vc.get("generated_coq_dependencies", []):
+        name = dep["module"]
+        require(
+            name not in runtime and name not in PRELUDE, "ambiguous_definition_module"
+        )
+        runtime[name] = dep | {"source": dep["staged"]}
     loading = set()
 
     def register(name, parsed):

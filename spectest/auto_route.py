@@ -111,7 +111,7 @@ def _auto_case(case, function, output, timeout_ms):
     binding = _obligation_artifacts(case, executor)
     manifest = case["vc"]
     saved = json.loads(Path(manifest["manifest"]).read_bytes())
-    if any(saved.get(key) != manifest.get(key) for key in ("coq_dependencies", "runtime_dependencies","qcip_root")):
+    if any(saved.get(key) != manifest.get(key) for key in ("coq_dependencies", "generated_coq_dependencies", "runtime_dependencies", "qcip_root")):
         raise ValueError("mismatched_definition_context")
     roots = set(binding["interface_roots"])
     # Older reports without printer identities cannot establish which raw

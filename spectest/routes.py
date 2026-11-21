@@ -231,7 +231,13 @@ def compare(args):
     artifacts = {}
     for case_id in selected:
         case = cases[case_id]
-        paths = [case["stdout"], case["vc"]["manifest"], *case["vc"]["files"].values()]
+        vc = case["vc"]
+        paths = [
+            case["stdout"],
+            vc["manifest"],
+            *vc["files"].values(),
+            *(dep["staged"] for dep in vc.get("generated_coq_dependencies", [])),
+        ]
         for name in paths:
             if name:
                 artifacts[name] = fingerprint(name)

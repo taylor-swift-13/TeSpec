@@ -2,7 +2,12 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from spectest.core import JobError, _stage_source_coq_dependencies, _runtime_coq_module
+from spectest.core import (
+    JobError,
+    _stage_source_coq_dependencies,
+    _runtime_coq_module,
+    _write_vc_manifest,
+)
 
 
 class RuntimeDependencyOwnershipTests(unittest.TestCase):
@@ -95,6 +100,25 @@ class RuntimeDependencyOwnershipTests(unittest.TestCase):
                     source, source, runtime, root / "conflict", **opts
                 ),
                 [],
+            )
+
+    def test_generated_definition_is_pinned_in_auto_context(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            runtime, _, source = self.fixture(root)
+            vc_dir = root / "vc"
+            vc_dir.mkdir()
+            generated = vc_dir / "input_def.v"
+            generated.write_text("Record Sample : Type := MakeSample { field : Z }.")
+            manifest = _write_vc_manifest(
+                vc_dir, source, source, runtime, "f", "sample"
+            )
+            [dep] = manifest["generated_coq_dependencies"]
+            self.assertEqual(dep["module"], "input_def")
+            self.assertEqual(Path(dep["staged"]), generated)
+            self.assertEqual(len(dep["sha256"]), 64)
+            self.assertNotIn(
+                "input_def", [dep["module"] for dep in manifest["coq_dependencies"]]
             )
 
     def test_logical_load_path_resolves_multiple_runtime_roots(self):
