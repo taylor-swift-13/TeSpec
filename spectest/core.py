@@ -1656,6 +1656,8 @@ def _stage_source_coq_dependencies(
     vc_dir: Path,
     dependency_source: str | None = None,
     runtime_dependencies: list[dict[str, Any]] | None = None,
+    *,
+    include_dirs: tuple[Path, ...] | list[Path] = (),
 ) -> list[dict[str, str]]:
     """Copy explicit source-level Coq imports into an immutable VC-local tree.
 
@@ -1704,6 +1706,16 @@ def _stage_source_coq_dependencies(
             staged_modules.add(module)
             return
         if physical is None:
+            relative = Path(*module.split(".")).with_suffix(".v")
+            candidates = sorted({(root / relative).resolve() for root in include_dirs
+                                 if (root / relative).is_file()})
+            # A C include directory does not establish Coq search precedence.
+            # Pin an exact declaration only when candidates agree byte-for-byte.
+            if len(candidates) == 1 or (
+                candidates and len({_sha256(item) for item in candidates}) == 1
+            ):
+                physical = candidates[0]
+        if physical is None:
             return
         visiting.add(module)
         coq_source = physical.read_text(encoding="utf-8", errors="replace")
@@ -1738,6 +1750,8 @@ def _write_vc_manifest(
     case_id: str,
     dependency_source: str | None = None,
     executor_output: str | None = None,
+    *,
+    include_dirs: tuple[Path, ...] | list[Path] = (),
 ) -> dict[str, Any]:
     stem = generated_source.stem
     paths = {
@@ -1763,6 +1777,7 @@ def _write_vc_manifest(
         vc_dir,
         dependency_source,
         runtime_dependencies,
+        include_dirs=include_dirs,
     )
     manifest = {
         "schema": "qcp-spectest-vc-manifest/v1",
@@ -2005,6 +2020,7 @@ def run_job(
                 case.case_id,
                 signature_source,
                 executor_output=completed.stdout,
+                include_dirs=config.include_dirs,
             )
             case_result.update(
                 {
@@ -2069,6 +2085,7 @@ def run_job(
                         function,
                         case.case_id,
                         signature_source,
+                        include_dirs=config.include_dirs,
                     ),
                     "duration_seconds": round(time.monotonic() - run_started, 6),
                     "peak_rss_kb": timeout_peak_rss_kb,

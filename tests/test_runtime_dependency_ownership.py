@@ -69,6 +69,34 @@ class RuntimeDependencyOwnershipTests(unittest.TestCase):
                 [item["module"] for item in imports], ["SimpleC.EE.Domain.Shapes"]
             )
 
+    def test_include_only_import_is_pinned_and_ambiguity_fails_closed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            runtime, _, source = self.fixture(root)
+            header_dir = root / "include"
+            other_dir = root / "other"
+            header_dir.mkdir()
+            other_dir.mkdir()
+            source.write_text("/*@ Import Coq Require Import Domain.Library */")
+            module = header_dir / "Domain/Library.v"
+            module.parent.mkdir()
+            module.write_text("Definition shape := True.")
+            opts = {"include_dirs": [header_dir, other_dir]}
+            tasks = _stage_source_coq_dependencies(
+                source, source, runtime, root / "vc", **opts
+            )
+            self.assertEqual([item["module"] for item in tasks], ["Domain.Library"])
+            self.assertEqual(Path(tasks[0]["staged"]).read_bytes(), module.read_bytes())
+            conflict = other_dir / "Domain/Library.v"
+            conflict.parent.mkdir()
+            conflict.write_text("Definition shape := False.")
+            self.assertEqual(
+                _stage_source_coq_dependencies(
+                    source, source, runtime, root / "conflict", **opts
+                ),
+                [],
+            )
+
     def test_logical_load_path_resolves_multiple_runtime_roots(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

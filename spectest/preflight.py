@@ -192,6 +192,7 @@ def export_program_preflight(
         context,
         dependency_source=signature_source,
         runtime_dependencies=runtime_dependencies,
+        include_dirs=config.include_dirs,
     )
     layout_path = output / "GeneratedLayout.v"
     layout_path.write_text(layout_source)

@@ -236,6 +236,7 @@ def _run_normalized_case(
         program["case"],
         dependencies_source,
         executor_output=completed.stdout,
+        include_dirs=include_dirs,
     )
     before = {dep["module"]: dep["sha256"] for dep in program["coq_dependencies"]}
     after = {dep["module"]: dep["sha256"] for dep in vc["coq_dependencies"]}
