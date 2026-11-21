@@ -18,6 +18,45 @@ def arm(guard, pre="((p) # Int |-> x)", post="emp"):
 
 
 class OriginalParentTests(unittest.TestCase):
+    def test_missing_private_parameter_cells_need_independent_evidence(self):
+        import hashlib
+        from spectest.auto_route import _checked_c_source, _missing_value_parameter_cells, _value_aggregate_parameters
+
+        with tempfile.TemporaryDirectory() as tmp:
+            p = Path(tmp) / "unit.c"
+            p.write_text("void send(struct Packet parcel, Box copy, struct Packet *user) "
+                         "/*@ Require emp Ensure emp */ {}")
+            case = {"generated_source": str(p),
+                    "generated_source_sha256": hashlib.sha256(p.read_bytes()).hexdigest(),
+                    "target_layout": {"aliases": [{"name": "Box", "type": {"kind": "struct"}}]}}
+            def missing(pre, post):
+                params = _value_aggregate_parameters(_checked_c_source(case), case["target_layout"], "send")
+                return _missing_value_parameter_cells(params, parent([arm("", pre, post)]), "proof_of_result")
+            self.assertEqual(missing("emp", "(parcel + 4) # Int |-> 1"), ["parcel"])
+            self.assertEqual(missing("emp", "(copy + 0) # Char |-> 1"), ["copy"])
+            self.assertEqual(missing("emp", "(user + 4) # Int |-> 1"), [])
+            self.assertEqual(missing("parcel # Int |-> 0", "(parcel + 0) # Int |-> 1"), [])
+            self.assertEqual(missing("emp", "(other_parcel + 4) # Int |-> 1"), [])
+            self.assertEqual(missing("emp", "(base + (parcel)) # Int |-> 1"), [])
+            p.write_text(p.read_text() + " ")
+            with self.assertRaisesRegex(ValueError, "generated_source_changed"):
+                missing("emp", "parcel # Int |-> 1")
+
+    def test_internal_result_diagnostic_requires_partial_exact_ownership_in_every_arm(self):
+        from spectest.auto_route import _partial_return_temporary
+
+        def branch(base, offsets):
+            return {"spatial": [{"kind": "cell", "address": f"({base} + {offset})", "type": "i32"}
+                                for offset in offsets]}
+        for base, expected in [("record_return_821_free", ["record_return_821_free"]), ("caller_821_free", [])]:
+            full, one = branch(base, [0, 4]), branch(base, [4])
+            ir = {"mode": "exact", "pre": [full], "post": [one]}
+            self.assertEqual(_partial_return_temporary(ir, "struct Box build(void)"), expected)
+            for guarded in (dict(ir, mode="frame"), dict(ir, post=[one, full]),
+                            dict(ir, post=[branch(base, [])]), dict(ir, pre=[full, full])):
+                self.assertEqual(_partial_return_temporary(guarded, ""), [])
+            self.assertEqual(_partial_return_temporary(ir, "int record_return;"), [])
+
     def test_negative_requires_equivalent_guards_in_every_alternative(self):
         prefix = "(PreH1 : (x >= 0))"
         restricting = "(PreH1 : (x > 0))"

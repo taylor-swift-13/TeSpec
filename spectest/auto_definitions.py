@@ -153,17 +153,32 @@ class Definition:
     visible: frozenset = frozenset()
 
 
-def layout_proof_tactics(command):
+def proof_tactics(command):
     # Tactics are inert here. Vernacular commands can change the interpretation
     # of later declarations and must still be rejected.
     text = re.sub(r"^[-+*] +", "", command)
     assertion = re.fullmatch(r"assert \([\w ():*=+\-]+\) by \(([^()]*)\)", text)
     if assertion:
         text = assertion[1]
+    # Only recognize complete tactic phrases, including the tactics in a
+    # branch or in a replacement proof. Vernacular commands remain barriers.
+    replacement = re.fullmatch(
+        r"replace [\w ()*+\-]+ with [\w ()*+\-]+ by \(([^()]*)\)", text
+    )
+    if replacement:
+        text = replacement[1]
+    text = re.sub(r"destruct (\w+) as \[\|(\w+) (\w+)\]", r"destruct \1", text)
+    branches = re.fullmatch(r"(.*); \[([^][]*)\]", text)
+    if branches:
+        return proof_tactics(branches[1]) and all(
+            not branch.strip() or proof_tactics(branch.strip())
+            for branch in branches[2].split("|")
+        )
     return all(
         re.fullmatch(
             r"(?:try )?(?:intros?|Intros|Exists|simpl|revert|subst|induction|destruct|"
-            r"congruence|constructor|entailer!|tauto|easy|lia|sep_apply|prop_apply|rewrite)"
+            r"congruence|constructor|entailer!|tauto|easy|lia|sep_apply|prop_apply|rewrite|"
+            r"cancel|simpl_nonptr_sizeof|ring)"
             r"(?: [\w ()',:\-=+*]+)?",
             tactic.strip(),
         )
@@ -198,13 +213,39 @@ def parse_library(source, module_exports):
                 continue
             require(
                 command == "Proof"
-                or (field_notation and layout_proof_tactics(command))
+                or proof_tactics(command)
                 or re.fullmatch(
                     r"(?:[-+*] )?(?:intros?|reflexivity|assumption|apply|exact|unfold|simpl|cbn|lia|split|constructor|destruct|induction|rewrite)(?: [\w ()',:\-=+*]+)?",
                     command,
                 ),
                 "unsupported_vernacular_in_auxiliary_proof",
             )
+            continue
+        record = re.fullmatch(
+            rf"Record ({ID}) : Type := ({ID}) \{{\s*((?:{ID}\s*:\s*Z\s*;\s*)*{ID}\s*:\s*Z)\s*\}}",
+            command,
+        )
+        if record:
+            # These declarations do not introduce any notation or coercion.
+            # Reserve their names even when the current goal uses only cells.
+            rec, constructor, fields = record.groups()
+            exported = [rec, constructor, *re.findall(rf"({ID})\s*:", fields)]
+            exported.extend(
+                rec + suffix for suffix in ("_ind", "_rec", "_rect", "_sind")
+            )
+            require(
+                len(set(exported)) == len(exported)
+                and not set(exported)
+                & (
+                    definitions.keys()
+                    | RESERVED
+                    | imported
+                    | {"addr", "NULL", "tt", "andp", "emp"}
+                ),
+                "reserved_or_duplicate_record_name",
+            )
+            definitions.update(dict.fromkeys(exported, opaque))
+            imported.update(exported)
             continue
         if field_notation and address_aliases:
             checks = {check: name for name, (check, _) in ADDRESS_ALIASES.items()}
@@ -394,6 +435,7 @@ def definitions_for(case):
                 "target_layout",
                 "coq_dependencies",
                 "generated_coq_dependencies",
+                "opaque_imports",
                 "runtime_dependencies",
                 "files",
                 "immutable_sha256",
@@ -474,7 +516,31 @@ def definitions_for(case):
                 if with_layout and imported == "compcert.lib.Integers":
                     continue
                 load_runtime(imported)
-            register(name, parsed_module(raw, tuple(sorted(exports.items()))))
+            try:
+                parsed = parsed_module(raw, tuple(sorted(exports.items())))
+            except Unsupported:
+                interfaces = vc.get("opaque_imports", {})
+                if name not in interfaces:
+                    raise
+                from .opaque_imports import checked_names
+
+                require(
+                    not any(
+                        d["module"].startswith("Coq.")
+                        for d in vc["coq_dependencies"]
+                        + vc.get("generated_coq_dependencies", [])
+                    ),
+                    "shadowed_standard_library",
+                )
+                names = checked_names(raw, interfaces[name])
+                require(
+                    not set(names) & (RESERVED | {"addr", "NULL"}),
+                    "reserved_opaque_export",
+                )
+                parsed = dict.fromkeys(
+                    names, Definition((), "opaque", "", False, False)
+                )
+            register(name, parsed)
     goal = frozen_bytes(vc["files"]["goal"], vc["immutable_sha256"]["goal"]).decode()
     header = re.split(r"(?m)^Definition\s", strip_comments(goal), maxsplit=1)[0]
     visible = set()
@@ -578,8 +644,9 @@ class Reduction:
             )
             offset = sum(resolve_field_path(self.layout, tag, path))
             return "((" + env[base] + ") + " + str(offset) + ")"
-        if t in ("INT_MIN", "INT_MAX"):
-            return {"INT_MIN": str(-(2**31)), "INT_MAX": str(2**31 - 1)}[t]
+        # Exactly the integer notations exported by QCP's IntLib.
+        if t in ("INT_MIN", "INT_MAX", "UINT_MAX"):
+            return str(CONSTANTS[t])
         if re.fullmatch(r"-?\d+", t):
             return t
         if t in ("@nil Z", "nil"):
@@ -600,6 +667,15 @@ class Reduction:
             items = self.term(parts[-1], env, depth + 1)
             require(isinstance(items, tuple), "unknown_list_length")
             return str(len(items))
+        if parts and parts[0] in ("app", "Coq.Init.Datatypes.app") and len(parts) == 3:
+            left, right = [self.term(a, env, depth + 1) for a in parts[1:]]
+            require(
+                isinstance(left, tuple)
+                and isinstance(right, tuple)
+                and len(left) + len(right) <= 512,
+                "unsupported_list_append",
+            )
+            return left + right
         if parts and parts[0] == "cons" and len(parts) == 3:
             h = self.term(parts[1], env, depth + 1)
             tail = self.term(parts[2], env, depth + 1)
@@ -991,6 +1067,10 @@ def solve_path(record, case, *, timeout_ms):
         vc = record["vc"]
         text = vc["path"] + "\n" + vc["goal"]
         require("tespec_auto_local_" not in text, "generated_binder_collision")
+        # A bare Coq constant in a diagnostic expression is not a free SMT
+        # integer. Check the original text before list/term substitution.
+        for token in set(re.findall(r"[A-Za-z_][A-Za-z0-9_']*", text)) & defs.keys():
+            require(defs[token].result != "opaque", "opaque_definition:" + token)
         pre = qcp.assertion_parts(vc["path"])
         post = qcp.assertion_parts(vc["goal"])
         source_bound = {v for m in pre for v in qcp.existential_names(m)}
@@ -1081,23 +1161,46 @@ def bind_list_witnesses(formula, env, lists, red, depth):
         ):
             sides = split_operator(unparen(t[1:-1]), "=")
             if sides:
-                for var, rhs in (sides, sides[::-1]):
-                    if var in lists:
-                        equations.append((var, rhs))
+                equations.extend([sides, sides[::-1]])
 
     collect(formula, depth)
     scoped = env.copy()
     while not lists <= scoped.keys():
         count = len(scoped)
-        for var, rhs in equations:
-            if var in scoped:
+        for lhs, rhs in equations:
+            lhs = unparen(lhs)
+            parts = _application_parts(lhs)
+            if lhs in lists - scoped.keys():
+                variable, fixed, side = lhs, None, None
+            elif len(parts) == 3 and parts[0] in ("app", "Coq.Init.Datatypes.app"):
+                prefix, suffix = map(unparen, parts[1:])
+                if prefix in lists - scoped.keys():
+                    variable, fixed, side = prefix, suffix, "prefix"
+                elif suffix in lists - scoped.keys():
+                    variable, fixed, side = suffix, prefix, "suffix"
+                else:
+                    continue
+            else:
                 continue
             try:
                 value = red.term(rhs, scoped, depth + 1)
+                if not isinstance(value, tuple):
+                    continue
+                if fixed is not None:
+                    other = red.term(fixed, scoped, depth + 1)
+                    if not isinstance(other, tuple):
+                        continue
+                    # List concatenation fixes the missing slice uniquely. The
+                    # original equality is checked again, including its length
+                    # and each symbolic element of the opposite slice.
+                    value = (
+                        value[: max(0, len(value) - len(other))]
+                        if side == "prefix"
+                        else value[len(other) :]
+                    )
             except Unsupported:
                 continue
-            if isinstance(value, tuple):
-                scoped[var] = value
+            scoped[variable] = value
         require(len(scoped) > count, "unknown_entry_list_spine")
     return scoped
 

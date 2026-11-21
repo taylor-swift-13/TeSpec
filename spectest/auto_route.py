@@ -9,8 +9,102 @@ import time
 
 from .core import JobError, _consume_balanced, _safe_case_id
 from .itp_schedule import bind_proof_roots
+from .rocq_predicates import _strip_outer_parens
 from .spatial_smt import _checked_events, _has_unmapped_local_scope, _obligation_artifacts, _refine_records, _solve_record
 from .verdict import CASE_STATUSES, _executor_result
+
+
+def _checked_c_source(case):
+    source = Path(case["generated_source"]).read_bytes()
+    if hashlib.sha256(source).hexdigest() != case["generated_source_sha256"]:
+        raise ValueError("generated_source_changed")
+    return source.decode()
+
+
+def _value_aggregate_parameters(source, layout, function):
+    """Identify aggregate parameters copied into the callee's private frame."""
+    from .core import _c_parameters, _function_specs
+
+    specs = _function_specs(source, function)
+    aliases = {a["name"] for a in layout.get("aliases", [])
+               if a.get("type", {}).get("kind") in {"struct", "union"}}
+    aggregates = set()
+    for spec in specs:
+        for parameter in _c_parameters(spec):
+            if parameter.pointer_like:
+                continue
+            typ = set(re.findall(r"[A-Za-z_]\w*", parameter.declaration)) - {parameter.name}
+            if typ & ({"struct", "union"} | aliases):
+                aggregates.add(parameter.name)
+    return aggregates
+
+
+def _missing_value_parameter_cells(aggregates, goal, root):
+    if not aggregates:
+        return []
+    name = re.escape(root.removeprefix("proof_of_"))
+    definition = re.search(r"(?ms)^Definition\s+" + name + r"\s*:=\s*(.*?)\.(?=\s|$)",
+                           goal)
+    if not definition:
+        return []
+    def cell_offsets(formula, param):
+        result = set()
+        for cell in re.finditer(r"#\s*\w+\s*\|->", formula):
+            address = formula[:cell.start()].rstrip()
+            if address.endswith(")"):
+                balance = 0
+                for index in range(len(address) - 1, -1, -1):
+                    balance += (address[index] == ")") - (address[index] == "(")
+                    if balance == 0:
+                        address = _strip_outer_parens(address[index:]).strip()
+                        break
+            else:
+                atom = re.search(r"[\w']+$", address)
+                address = atom[0] if atom else ""
+            match = re.fullmatch(re.escape(param) + r"(?:\s*\+\s*(\d+))?", address)
+            if match:
+                result.add(int(match[1] or 0))
+        return result
+
+    missing = set()
+    for arm in re.split(r"(?m)^\)\s*\\/\s*\(\s*$", definition[1]):
+        if arm.count("|--") != 1:
+            continue
+        lhs, rhs = arm.split("|--")
+        for param in aggregates:
+            # Compare printer-emitted byte offsets, not a guess about null or
+            # aliasing. Only the address of the parameter object is private.
+            if cell_offsets(rhs, param) - cell_offsets(lhs, param):
+                missing.add(param)
+    return sorted(missing)
+
+
+def _partial_return_temporary(ir, source):
+    """An exact-heap mismatch on a partially retained internal result object."""
+    if ir.get("mode") != "exact" or len(ir.get("pre", [])) != 1 or not ir.get("post"):
+        return []
+    # QCP's NewRecordReturnAddr uses an anonymous "record_return" logic
+    # variable. A user declaration with the same spelling is ambiguous.
+    if re.search(r"\brecord_return(?:_\d+)*(?:_free)?\b", source):
+        return []
+
+    def fields(branch):
+        result = {}
+        for cell in branch.get("spatial", []):
+            if cell.get("kind") != "cell":
+                continue
+            address = _strip_outer_parens(cell["address"].strip())
+            m = re.fullmatch(r"(record_return_\d+_free)(?:\s*\+\s*(\d+))?", address)
+            if m:
+                result.setdefault(m[1], set()).add((int(m[2] or 0), cell["type"]))
+        return result
+
+    before = fields(ir["pre"][0])
+    if not before:
+        return []
+    after = [fields(branch) for branch in ir["post"]]
+    return sorted(base for base, owned in before.items()
+                  if all(set() < branch.get(base, set()) < owned for branch in after))
 
 
 def _same_counterexample(goal, root, nonempty, timeout_ms):
@@ -79,6 +173,25 @@ def _same_counterexample(goal, root, nonempty, timeout_ms):
         return False
 
 
+def _solve_auto_record(record, case, budget, compiled_names):
+    # A native scalar parser can treat a bare imported Coq constant as a
+    # free integer. Consult its bound definition before that interpretation.
+    vc = record["vc"]
+    mentions_import = compiled_names and any(
+        name in compiled_names for name in re.findall(r"[A-Za-z_][A-Za-z0-9_']*", vc["path"] + "\n" + vc["goal"])
+    )
+    if not mentions_import:
+        decision = _solve_record(record, budget)
+        if decision["status"] != "UNKNOWN" or decision.get("supported") is not False:
+            return decision
+    from .auto_definitions import solve_path
+    decision = solve_path(record, case, timeout_ms=budget)
+    if (decision["status"] == "INVALID" and vc["kind"] in {"entailment", "which_implies"}
+            and _has_unmapped_local_scope(vc)):
+        decision.update(status="UNKNOWN", reason="unmapped_local_stack_frame")
+    return decision
+
+
 def _auto_case(case, function, output, timeout_ms):
     raw = Path(case["stdout"]).read_bytes()
     executor = json.loads(raw)
@@ -111,7 +224,7 @@ def _auto_case(case, function, output, timeout_ms):
     binding = _obligation_artifacts(case, executor)
     manifest = case["vc"]
     saved = json.loads(Path(manifest["manifest"]).read_bytes())
-    if any(saved.get(key) != manifest.get(key) for key in ("coq_dependencies", "generated_coq_dependencies", "runtime_dependencies", "qcip_root")):
+    if any(saved.get(key) != manifest.get(key) for key in ("coq_dependencies", "generated_coq_dependencies", "opaque_imports", "runtime_dependencies", "qcip_root")):
         raise ValueError("mismatched_definition_context")
     roots = set(binding["interface_roots"])
     # Older reports without printer identities cannot establish which raw
@@ -132,15 +245,15 @@ def _auto_case(case, function, output, timeout_ms):
                 if p["status"] == "UNKNOWN":
                     p.update(status=entry, proof="auto-spatial-smt")
             case["precondition_result"] = case["phases"]["precondition"] = entry
+    compiled_names = set()
+    if manifest.get("opaque_imports"):
+        from .opaque_imports import checked_names
+        staged = {d["module"]: Path(d["staged"]) for d in manifest["coq_dependencies"]}
+        for module, interface in manifest["opaque_imports"].items():
+            compiled_names.update(checked_names(staged[module].read_bytes(), interface))
+
     def solve(record, budget):
-        decision = _solve_record(record, budget)
-        if decision["status"] == "UNKNOWN" and decision.get("supported") is False:
-            from .auto_definitions import solve_path
-            decision = solve_path(record, case, timeout_ms=budget)
-            if (decision["status"] == "INVALID" and record["vc"]["kind"] in {"entailment", "which_implies"}
-                    and _has_unmapped_local_scope(record["vc"])):
-                decision.update(status="UNKNOWN", reason="unmapped_local_stack_frame")
-        return decision
+        return _solve_auto_record(record, case, budget, compiled_names)
 
     refined = _refine_records(original, case["target_layout"], output, timeout_ms, solve, info)
     case["vc_results"] = refined
@@ -168,6 +281,8 @@ def _auto_case(case, function, output, timeout_ms):
         if hashlib.sha256(goal_bytes).hexdigest() != binding["sha256"]["goal"]:
             raise ValueError("original_goal_changed")
         goal = goal_bytes.decode()
+        frame_context = source = None
+        checked_call = any(e["kind"] == "contract-check" for e in case.get("abstraction_events", []))
         for root, i in owners.items():
             if i not in unknown or refined[i]["status"] != "INVALID":
                 continue
@@ -175,6 +290,29 @@ def _auto_case(case, function, output, timeout_ms):
             kind = refined[i]["kind"]
             if kind in {"return", "entailment", "which_implies"} and _has_unmapped_local_scope(original[i]):
                 continue
+            if kind == "return" or (kind == "entailment" and checked_call):
+                if source is None:
+                    source = _checked_c_source(case)
+            if kind == "entailment" and checked_call:
+                partial = _partial_return_temporary(decision.get("normalized_vc", {}), source)
+                if partial:
+                    info.setdefault("writeback_diagnostics", []).append({
+                        "root": root, "vc_index": i, "temporaries": partial,
+                        "reason": "partial_internal_return_temporary",
+                    })
+                    continue
+            if kind == "return":
+                if frame_context is None:
+                    from .certificates import strip_comments
+                    params = _value_aggregate_parameters(source, case["target_layout"], function)
+                    frame_context = (params, strip_comments(goal) if params else "")
+                missing = _missing_value_parameter_cells(*frame_context, root)
+                if missing:
+                    info.setdefault("writeback_diagnostics", []).append({
+                        "root": root, "vc_index": i, "parameters": missing,
+                        "reason": "missing_by_value_parameter_frame",
+                    })
+                    continue
             if _same_counterexample(goal, root, bool(decision.get("countermodel", {}).get("heap")), timeout_ms):
                 disproved.add(refined[i]["kind"])
         if "safety" in disproved:

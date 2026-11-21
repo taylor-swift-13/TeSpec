@@ -91,6 +91,114 @@ class AutoDefinitionsTest(unittest.TestCase):
             timeout_ms=2000,
         )
 
+    def test_compiled_pure_interface_is_bound_to_source_and_exported_names(self):
+        import os
+        import shutil
+        import subprocess
+        from spectest.auto_route import _solve_auto_record
+        from spectest.opaque_imports import (
+            checked_names,
+            compiled_interface,
+            passive_declarations,
+        )
+
+        compiler = os.environ.get("COQC") or shutil.which("coqc")
+        if not compiler:
+            self.skipTest("Coq compiler is unavailable")
+        source = (
+            "From Coq Require Import ZArith List.\n"
+            "Definition limit_value : Z := 8%Z.\n"
+            "Definition opaque_increment (n : Z) := (n + 1)%Z.\n"
+        )
+        for extra in (
+            'Notation "plusone" := limit_value.',
+            "Export ListNotations.",
+            "Coercion opaque_increment : Z >-> Z.",
+            "Axiom guessed : False.",
+        ):
+            self.assertFalse(passive_declarations(source + extra))
+        case = self.case(source)
+        subprocess.run([compiler, "-q", "Library.v"], cwd=self.root, check=True)
+        interface = compiled_interface("Library", source, self.root, [compiler, "-q"])
+        self.assertEqual(
+            checked_names(source.encode(), interface),
+            ["limit_value", "opaque_increment"],
+        )
+        with self.assertRaises(ValueError):
+            checked_names((source + " ").encode(), interface)
+        with self.assertRaises(ValueError):
+            checked_names(source.encode(), dict(interface, exports=["limit_value"]))
+        with self.assertRaises(ValueError):
+            checked_names(source.encode(), dict(interface, exports_sha256="0" * 64))
+        case["vc"]["opaque_imports"] = {"Library": interface}
+        Path(case["vc"]["manifest"]).write_text(json.dumps(case["vc"]))
+        for prop, status in [
+            ("4 == 4", "VALID"),
+            ("4 == 5", "INVALID"),
+            ("limit_value == 8", "UNKNOWN"),
+            ("opaque_increment(3) == 4", "UNKNOWN"),
+        ]:
+            rec = {
+                "layout": LAYOUT,
+                "check_mode": "exact",
+                "vc": {
+                    "kind": "return",
+                    "path": "PROP[]LOCAL[]SEP[]",
+                    "goal": f"PROP[{prop}]LOCAL[]SEP[]",
+                },
+            }
+            for result in (
+                self.path(rec, case, timeout_ms=2000),
+                _solve_auto_record(rec, case, 2000, set(interface["exports"])),
+            ):
+                self.assertEqual(result["status"], status, result)
+
+    def test_integer_record_declarations_are_opaque(self):
+        lib = LIBRARY + "\nRecord Parcel : Type := pack { item : Z; weight : Z }."
+        empty = "PROP[]LOCAL[]SEP[]"
+        for post, status in [
+            ("PROP[4 == 4]LOCAL[]SEP[]", "VALID"),
+            ("PROP[4 == 5]LOCAL[]SEP[]", "INVALID"),
+            ("PROP[item == 5]LOCAL[]SEP[]", "UNKNOWN"),
+            ("PROP[]LOCAL[]SEP[store(400,weight,signed int)]", "UNKNOWN"),
+        ]:
+            self.assertEqual(self.entail(empty, post, lib)["status"], status)
+        for field in ("INT_MAX", "item : Z; item"):
+            self.assertEqual(
+                self.entail(empty, empty, lib.replace("weight", field))["status"],
+                "UNKNOWN",
+            )
+
+    def test_append_witnesses_preserve_contents_and_scope(self):
+        for side in ("app prefix (cons last nil)", "app (cons last nil) prefix"):
+            for last, expected in [(7, "SAT"), (9, "UNSAT")]:
+                body = (
+                    f"EX (last : Z) (prefix : list Z), “ (last = {last}) ” && "
+                    f"“ (cons 7 nil = {side}) ” && “ (prefix = nil) ” && emp"
+                )
+                result = self.check_entry(f"~ (({body}) |-- “ False ”)")
+                self.assertEqual(result["status"], expected, result)
+            body = f"EX (last : Z) (prefix : list Z), “ (nil = {side}) ” && emp"
+            self.assertEqual(
+                self.check_entry(f"~ (({body}) |-- “ False ”)")["status"], "UNSAT"
+            )
+            body = (
+                f"EX (last : Z) (prefix : list Z), “ (last = 7) ” && "
+                f"“ (cons 7 (cons 7 nil) = {side}) ” && wrapper 400 prefix"
+            )
+            result = self.check_entry(f"~ (({body}) |-- “ False ”)")
+            self.assertEqual(result["status"], "SAT", result)
+            self.assertTrue(result["owned_addresses"])
+        body = "EX (a b : list Z), “ (app a b = cons 1 nil) ” && emp"
+        self.assertEqual(
+            self.check_entry(f"~ (({body}) |-- “ False ”)")["status"], "UNKNOWN"
+        )
+
+    def test_unsigned_limit_uses_qcp_intlib_value(self):
+        for value, expected in [(4294967295, "SAT"), (-1, "UNSAT")]:
+            r = self.check_entry(f"~ ((“ (UINT_MAX = {value}) ” && emp) |-- “ False ”)")
+            self.assertEqual(r["status"], expected, r)
+
     def test_reads_hash_checked_runtime_definition(self):
         case = self.case(LIBRARY, "~ ((address_cell 400 1) |-- \u201c False \u201d)")
         vc = case["vc"]
@@ -279,7 +387,9 @@ class AutoDefinitionsTest(unittest.TestCase):
         for term in ("(dividend % 3)", "(Z.rem dividend 3)"):
             for expected, status in [(-1, "SAT"), (2, "UNSAT")]:
                 body = f"“ (dividend = -7) ” && “ ({term} = {expected}) ” && emp"
-                r = self.check_entry(f"exists (dividend : Z), ~ (({body}) |-- “ False ”)")
+                r = self.check_entry(
+                    f"exists (dividend : Z), ~ (({body}) |-- “ False ”)"
+                )
                 self.assertEqual(r["status"], status, r)
         for term, expected in [("Z.rem 7 divisor", 1), ("7 % 0", 7)]:
             body = f"“ (divisor = -3) ” && “ (({term}) = {expected}) ” && emp"
@@ -291,7 +401,11 @@ class AutoDefinitionsTest(unittest.TestCase):
             self.assertEqual(r["status"], "UNKNOWN", r)
 
     def test_list_length_needs_only_the_spine(self):
-        for term in ("Zlength xs", "@Zlength Z xs", "Coq.ZArith.Zcomplements.Zlength xs"):
+        for term in (
+            "Zlength xs",
+            "@Zlength Z xs",
+            "Coq.ZArith.Zcomplements.Zlength xs",
+        ):
             for length, expected in [(2, "SAT"), (1, "UNSAT")]:
                 body = (
                     "EX (a b : Z) (xs : list Z), "

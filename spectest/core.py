@@ -1769,6 +1769,7 @@ def _write_vc_manifest(
     executor_output: str | None = None,
     *,
     include_dirs: tuple[Path, ...] | list[Path] = (),
+    opaque_imports: dict | None = None,
 ) -> dict[str, Any]:
     stem = generated_source.stem
     paths = {
@@ -1838,6 +1839,8 @@ def _write_vc_manifest(
         # correctness or compatibility of legacy imported predicates.
         "target_layout": _executor_target_layout(executor_output),
     }
+    if opaque_imports:
+        manifest["opaque_imports"] = opaque_imports
     vc_dir.mkdir(parents=True, exist_ok=True)
     manifest_path = vc_dir / "manifest.json"
     manifest_path.write_text(
@@ -2050,6 +2053,8 @@ def run_job(
                 signature_source,
                 executor_output=completed.stdout,
                 include_dirs=config.include_dirs,
+                opaque_imports=(job["field_layout_context"].get("opaque_imports")
+                                if isinstance(job.get("field_layout_context"), dict) else None),
             )
             if "field_layout_context" in job:
                 from .layout_job import validate_layout_context

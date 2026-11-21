@@ -260,7 +260,19 @@ def _prepare_libraries(inventory, modules, layout, depdir, build, runtime, compi
                 f"layout library compilation failed for {n}: " + result.stderr[-1800:]
             )
 
-    return names, records, order
+    from .opaque_imports import compiled_interface
+
+    interfaces = {}
+    for item in records:
+        module = item["active_module"]
+        if module != item["module"]:
+            continue
+        interface = compiled_interface(
+            module, sources[module], build, [*compiler, "-q", *args]
+        )
+        if interface:
+            interfaces[module] = interface
+    return names, records, order, interfaces
 
 
 def prepare_layout_job(job_path, modules, output, *, coqc_command=None):
@@ -299,7 +311,7 @@ def prepare_layout_job(job_path, modules, output, *, coqc_command=None):
                 )
             depdir = output / "dependencies" / "coq"
             compiler = coqc_command or _default_coqc_command()
-            names, records, order = _prepare_libraries(
+            names, records, order, interfaces = _prepare_libraries(
                 inventory,
                 modules,
                 layout,
@@ -337,6 +349,8 @@ def prepare_layout_job(job_path, modules, output, *, coqc_command=None):
                     for n in order
                 },
             }
+            if interfaces:
+                new_job["field_layout_context"]["opaque_imports"] = interfaces
             job_file = output / "job.json"
             proposals = list(
                 candidates(
