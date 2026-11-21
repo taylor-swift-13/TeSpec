@@ -7,6 +7,7 @@ Unsupported syntax, dependency contexts and exhausted budgets fail closed.
 
 from __future__ import annotations
 
+import ast
 import hashlib
 import json
 import re
@@ -987,6 +988,61 @@ def write_branch(b, local=""):
     )
 
 
+def list_length_bound(term):
+    """Return (minimum length, is exact) for an explicitly typed native list."""
+    if isinstance(term, ast.Name) and term.id not in RESERVED:
+        return 0, False
+    if not (isinstance(term, ast.Call) and isinstance(term.func, ast.Name)
+            and not term.keywords and term.args and isinstance(term.args[0], ast.Name)
+            and term.args[0].id == "Z_1"):
+        raise Unsupported("unknown_list_length_bound")
+    head, args = term.func.id, term.args[1:]
+    if head == "nil" and not args:
+        return 0, True
+    if head == "cons" and len(args) == 2:
+        # The element cannot affect the length. Only accept printer identifiers
+        # or integer literals here; unfamiliar term syntax stays on the old path.
+        element = args[0]
+        if isinstance(element, ast.UnaryOp) and isinstance(element.op, ast.USub):
+            element = element.operand
+        if not (isinstance(element, ast.Name)
+                or (isinstance(element, ast.Constant) and type(element.value) is int)):
+            raise Unsupported("unsupported_list_element")
+        lower, exact = list_length_bound(args[1])
+        return lower + 1, exact
+    if head == "app" and len(args) == 2:
+        left, left_exact = list_length_bound(args[0])
+        right, right_exact = list_length_bound(args[1])
+        return left + right, left_exact and right_exact
+    raise Unsupported("unknown_list_length_bound")
+
+
+def impossible_list_equality(part, definitions):
+    """Find a required equality with disjoint lengths within this one disjunct."""
+    if "cons" not in part["pure"] or "==" not in part["pure"]:
+        return None
+    primitives = {"nil", "cons", "app", "Z_1"}
+    if primitives.intersection(definitions) or primitives.intersection(qcp.existential_names(part)):
+        return None
+    for prop in qcp.split_top(part["pure"], ";"):
+        if "==" not in prop or "cons" not in prop or len(prop) > 4096:
+            continue
+        if not re.fullmatch(r"[A-Za-z0-9_{}(),=\s-]+", prop):
+            continue
+        try:
+            node = ast.parse(normalize_builtin_type_arguments(prop), mode="eval").body
+            if not (isinstance(node, ast.Compare) and len(node.ops) == 1
+                    and isinstance(node.ops[0], ast.Eq) and sum(1 for _ in ast.walk(node)) <= 256):
+                continue
+            left, right = (list_length_bound(t) for t in (node.left, node.comparators[0]))
+        except (SyntaxError, RecursionError, Unsupported):
+            continue
+        for (length, exact), (minimum, _) in ((left, right), (right, left)):
+            if exact and length < minimum:
+                return {"equality": prop, "exact_length": length, "opposite_minimum": minimum}
+    return None
+
+
 def expand_part(red, m, inherited, *, single_antecedent=False):
     orig = qcp.split_top(m["pure"], ";")
     names = qcp.existential_names(m)
@@ -1096,9 +1152,28 @@ def solve_path(record, case, *, timeout_ms, ground_cache=None):
                     "native_shared_existential_requires_scope_mapping:" + v,
                 )
         qcp.checked_local_symbols(pre, post, text, record.get("local_semantics"))
-        ant = [expand_part(red, m, {}, single_antecedent=len(pre) == 1) for m in pre]
+        ant, conflicts = [], []
+        for i, part in enumerate(pre):
+            conflict = impossible_list_equality(part, defs)
+            if conflict is None:
+                ant.append(expand_part(red, part, {}, single_antecedent=len(pre) == 1))
+                continue
+            conflicts.append({"pre_alternative": i, **conflict})
+            # A necessary condition on two numerical lengths is already false.
+            # Preserve LOCAL for the importer's cross-alternative scope checks.
+            guard = f"{conflict['opposite_minimum']} <= {conflict['exact_length']}"
+            ant.append((f"PROP[{guard}]\nLOCAL[{part['local']}]\nSEP[]\n", {}))
         globals_ = ant[0][1] if len(ant) == 1 else {}
-        post_text = "".join(expand_part(red, m, globals_)[0] for m in post)
+        all_impossible = len(conflicts) == len(pre)
+        if all_impossible and vc["kind"] == "safety":
+            require(all(not m["spatial"].strip() and not m["local"].strip() for m in post),
+                    "safety_goal_not_pure")
+        if all_impossible:
+            # Prove the stronger entailment to False, regardless of which
+            # original post would hold. A countermodel here cannot refute it.
+            post_text = "PROP[prop_false]\nLOCAL[]\nSEP[]\n"
+        else:
+            post_text = "".join(expand_part(red, m, globals_)[0] for m in post)
         copied = record | {
             "vc": vc | {"path": "".join(s for s, _ in ant), "goal": post_text}
         }
@@ -1112,6 +1187,10 @@ def solve_path(record, case, *, timeout_ms, ground_cache=None):
             normalized_vc=ir,
             expanded_definitions=sorted(red.used | {f.name for f, _ in used}),
         )
+        if conflicts:
+            result["infeasible_list_branches"] = conflicts
+            if all_impossible and result["status"] == "INVALID":
+                result.update(status="UNKNOWN", reason="list_path_contradiction_not_established")
         if used:
             result["ground_equalities"] = [
                 {

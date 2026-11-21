@@ -475,6 +475,61 @@ Fixpoint add_each (n : Z) (xs : list Z) : list Z :=
             r = self.check_entry(f"exists (divisor : Z), ~ (({body}) |-- “ False ”)")
             self.assertEqual(r["status"], "UNKNOWN", r)
 
+    def test_infeasible_list_path_precedes_heap_expansion(self):
+        empty = "nil{Z_1}"
+        pair = "cons{Z_1}(a, cons{Z_1}(b, rest))"
+        one = f"cons{{Z_1}}(v, {empty})"
+        for equality in (f"{one} == app{{Z_1}}(prefix, {pair})",
+                         f"app{{Z_1}}(prefix, {pair}) == {one}"):
+            with self.subTest(equality=equality):
+                path = f"PROP[{equality}]LOCAL[]SEP[unhandled_heap(p)]"
+                out = self.entail(path, "PROP[]LOCAL[]SEP[unhandled_goal(q)]")
+                self.assertEqual(out["status"], "VALID", out)
+                self.assertTrue(out["vacuous"])
+                witness, = out["infeasible_list_branches"]
+                self.assertEqual(witness["equality"], equality)
+                self.assertEqual((witness["exact_length"], witness["opposite_minimum"]), (1, 2))
+
+    def test_dead_alternative_does_not_hide_live_heap(self):
+        dead = "PROP[nil{Z_1} == app{Z_1}(xs, cons{Z_1}(v, nil{Z_1}))]LOCAL[]SEP[unknown(p)]"
+        live = "PROP[]LOCAL[]SEP[store(4096, 9, signed int)]"
+        for pre in (dead + "\n" + live, live + "\n" + dead):
+            for value, expected in [(9, "VALID"), (10, "INVALID")]:
+                goal = f"PROP[]LOCAL[]SEP[store(4096, {value}, signed int)]"
+                out = self.entail(pre, goal)
+                self.assertEqual(out["status"], expected, out)
+                self.assertFalse(out["vacuous"])
+
+    def test_list_feasibility_uses_only_mandatory_typed_equalities(self):
+        nil = "nil{Z_1}"
+        one = f"cons{{Z_1}}(v, {nil})"
+        appended = f"app{{Z_1}}(xs, {one})"
+        for guard in (f"{one} == {appended}", f"{nil} != {appended}",
+                      f"({nil} == {appended}) || prop_true",
+                      f"({nil} == {appended}) == prop_false",
+                      f"{nil} == user_app(Z_1, xs, {one})",
+                      f"{nil} == app{{bool}}(xs, {one})"):
+            with self.subTest(guard=guard):
+                out = self.entail(f"PROP[{guard}]LOCAL[]SEP[unknown(p)]", "PROP[prop_false]LOCAL[]SEP[]")
+                self.assertEqual(out["status"], "UNKNOWN", out)
+                self.assertNotIn("infeasible_list_branches", out)
+
+    def test_contradiction_in_goal_cannot_discharge_the_path(self):
+        impossible = "nil{Z_1} == app{Z_1}(xs, cons{Z_1}(v, nil{Z_1}))"
+        out = self.entail("PROP[]LOCAL[]SEP[]", f"PROP[{impossible}]LOCAL[]SEP[]")
+        self.assertNotEqual(out["status"], "VALID", out)
+        self.assertNotIn("infeasible_list_branches", out)
+
+    def test_infeasible_path_still_checks_scope_and_native_vc_kind(self):
+        path = "PROP[nil{Z_1} == cons{Z_1}(head, tail)]LOCAL[]SEP[]"
+        record = {"layout": LAYOUT, "check_mode": "frame",
+                  "vc": {"kind": "safety", "path": path, "goal": "PROP[]LOCAL[]SEP[store(42, 9, PTR)]"}}
+        out = self.path(record, self.case(LIBRARY), timeout_ms=2000)
+        self.assertEqual(out["reason"], "safety_goal_not_pure")
+        out = self.entail("EX cons \n" + path, "PROP[]LOCAL[]SEP[unhandled_goal(q)]")
+        self.assertEqual(out["status"], "UNKNOWN", out)
+        self.assertNotIn("infeasible_list_branches", out)
+
     def test_list_length_needs_only_the_spine(self):
         for term in (
             "Zlength xs",
