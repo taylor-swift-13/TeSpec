@@ -12,9 +12,9 @@ if __package__:
 else:
     from finite_spatial_smt import Expressions, Unsupported, integer, boolean, type_info
 if __package__:
-    from .finite_qcp_terms import list_values, pure_terms, materialize_list_binders
+    from .finite_qcp_terms import list_values, pure_terms, materialize_list_binders, normalize_diagnostic_arithmetic
 else:
-    from finite_qcp_terms import list_values, pure_terms, materialize_list_binders
+    from finite_qcp_terms import list_values, pure_terms, materialize_list_binders, normalize_diagnostic_arithmetic
 
 
 TYPES={'signed int':'i32','unsigned int':'u32','signed I8':'i8','unsigned I8':'u8',
@@ -54,7 +54,7 @@ def scalar_type(text):
 
 
 def scalar(text):
-    text=text.strip()
+    text=normalize_diagnostic_arithmetic(text.strip())
     # POINTER_OFFSET is explicitly lowered to addr + offset * size in QCP.
     if text.startswith('pointer_offset('):
         name,args=call(text)

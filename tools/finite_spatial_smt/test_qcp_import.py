@@ -34,6 +34,23 @@ def finite_list(values):
     return tail
 
 
+class DiagnosticModuloTests(unittest.TestCase):
+    def test_exact_qcp_modulo_with_positive_divisor(self):
+        pre = assertion('store(400, x %% 3, signed int)', pure='x == -1')
+        post = assertion('store(400, -1, signed int)', pure='x %% 3 == -1')
+        self.assertEqual(check(import_record(record(pre, post, kind='return')))['status'], 'VALID')
+
+    def test_remainder_does_not_accept_a_forged_internal_operator(self):
+        for formula in ('__fsm_qcp_rem(x, 3) == 0', 'x @ 3 == 0'):
+            with self.subTest(formula=formula), self.assertRaises(Unsupported):
+                import_record(record(assertion(), assertion(pure=formula), kind='return'))
+
+    def test_unsupported_divisors_remain_unsupported(self):
+        for divisor in ('0', '-2', 'symbolic'):
+            with self.subTest(divisor=divisor), self.assertRaisesRegex(Unsupported, 'nonpositive_or_symbolic_divisor'):
+                import_record(record(assertion(), assertion(pure=f'x %% ({divisor}) == 0'), kind='return'))
+
+
 class CheckModeTests(unittest.TestCase):
     def test_return_default_preserved(self):
         q = record(assertion('store(4096,7,signed int)'), assertion(), kind='return')

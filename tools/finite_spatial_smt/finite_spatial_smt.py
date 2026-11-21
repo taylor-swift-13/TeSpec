@@ -72,6 +72,12 @@ class Expressions:
         except (SyntaxError, RecursionError) as exc:
             raise Unsupported(f'expression_syntax:{source[:100]}') from exc
 
+        def positive_divisor(value):
+            divisor = z3.simplify(value)
+            if not z3.is_int_value(divisor) or divisor.as_long() <= 0:
+                raise Unsupported('nonpositive_or_symbolic_divisor')
+            return divisor
+
         def visit(n):
             if isinstance(n, ast.Constant):
                 if type(n.value) is bool: return z3.BoolVal(n.value)
@@ -97,10 +103,14 @@ class Expressions:
                 if isinstance(n.op, ast.Mult): return a*b
                 # Positive literal divisors: Z.div/mod and SMT Int div/mod agree.
                 if isinstance(n.op, (ast.FloorDiv, ast.Mod)):
-                    divisor = z3.simplify(b)
-                    if not z3.is_int_value(divisor) or divisor.as_long() <= 0:
-                        raise Unsupported('nonpositive_or_symbolic_divisor')
-                    return a/b if isinstance(n.op,ast.FloorDiv) else a%b
+                    divisor = positive_divisor(b)
+                    return a/divisor if isinstance(n.op,ast.FloorDiv) else a%divisor
+            elif (isinstance(n, ast.Call) and isinstance(n.func, ast.Name)
+                  and n.func.id == '__fsm_qcp_rem' and len(n.args) == 2 and not n.keywords):
+                a, b = (integer(visit(arg)) for arg in n.args)
+                divisor = positive_divisor(b)
+                # Rocq IntLib binds % to Z.rem: truncate the quotient toward zero.
+                return z3.If(a >= 0, a % divisor, -((-a) % divisor))
             elif isinstance(n, ast.BoolOp):
                 vs=[boolean(visit(v)) for v in n.values]
                 return z3.And(*vs) if isinstance(n.op,ast.And) else z3.Or(*vs)

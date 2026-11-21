@@ -20,6 +20,30 @@ def normalize_builtin_type_arguments(text):
         lambda m: m[1]+'(Z_1, ', text)
 
 
+def normalize_diagnostic_arithmetic(text):
+    """Convert the printer's %% token to a typed Rocq Z.rem operation."""
+    if "__fsm_qcp_rem" in text or "@" in text:
+        raise Unsupported("reserved_diagnostic_arithmetic")
+    if "%%" not in text:
+        return text
+    # Matrix multiplication shares multiplicative precedence and has no
+    # meaning in the diagnostic grammar. Use it only as an AST placeholder.
+    placeholder = re.sub(r"(?<!%)%%(?!%)", "@", text)
+    try:
+        root = ast.parse(placeholder, mode="eval")
+    except SyntaxError as exc:
+        raise Unsupported("finite_term_syntax:" + text[:100]) from exc
+
+    class Remainder(ast.NodeTransformer):
+        def visit_BinOp(self, node):
+            node = self.generic_visit(node)
+            if isinstance(node.op, ast.MatMult):
+                return ast.Call(ast.Name("__fsm_qcp_rem", ast.Load()), [node.left, node.right], [])
+            return node
+
+    return ast.unparse(Remainder().visit(root))
+
+
 def numeral(text):
     value=z3.simplify(integer(Expressions().parse(text)))
     if not z3.is_int_value(value):raise Unsupported('nonconcrete_finite_bound')
@@ -30,7 +54,7 @@ def reduce_term(text,lists=None):
     lists=lists or {}
     text=normalize_builtin_type_arguments(text)
     text=text.replace('&&',' and ').replace('||',' or ')
-    text=re.sub(r'!(?!=)',' not ',text).strip()
+    text=normalize_diagnostic_arithmetic(re.sub(r'!(?!=)',' not ',text).strip())
     try:root=ast.parse(text,mode='eval')
     except SyntaxError as exc:raise Unsupported('finite_term_syntax:'+text[:100]) from exc
 
@@ -44,6 +68,7 @@ def reduce_term(text,lists=None):
             node=self.generic_visit(node)
             if node.keywords or not isinstance(node.func,ast.Name):raise Unsupported('unsupported_finite_function')
             name=node.func.id;args=node.args
+            if name=='__fsm_qcp_rem':return node
             def tag():
                 if not args or not isinstance(args[0],ast.Name) or args[0].id!='Z_1':
                     raise Unsupported('noninteger_list_type')
