@@ -133,6 +133,13 @@ def spatial(text,lists=None):
             return {'kind':'array','address':scalar(args[0]),'type':typ,'length':n,'values':values}
         if method=='undef_full' and len(args)==2:
             return {'kind':'array','address':scalar(args[0]),'type':typ,'length':concrete(args[1])}
+        if method=='undef_seg' and len(args)==3:
+            # ArrayLibCore.undef_seg owns [lo, hi) via undefstoreA.
+            # Inverted ranges have a false base case in Rocq.
+            lo,hi=concrete(args[1]),concrete(args[2])
+            if hi<lo:raise Unsupported('inverted_undefined_segment')
+            return {'kind':'array','address':scalar(args[0]),'type':typ,
+                    'length':hi-lo,'start':lo}
         if method=='seg' and len(args)==4:
             lo,hi=concrete(args[1]),concrete(args[2]);values=list_values(args[3],lists)
             if hi-lo!=len(values):raise Unsupported('array_length_mismatch')
@@ -374,7 +381,7 @@ def import_record(row,*,check_mode=None,local_semantics=None):
         raise Unsupported('check_mode_not_established:'+str(kind))
     mode='frame' if kind in ('partial_solve','safety') else 'exact'
     bits=layout.get('architecture_bits')
-    if bits!=32 and re.search(r'\bPtrArray\.(?:full|undef_full|seg|missing_i)\s*\(',
+    if bits!=32 and re.search(r'\bPtrArray\.(?:full|undef_full|seg|undef_seg|missing_i)\s*\(',
                              row['vc']['path']+'\n'+row['vc']['goal']):
         raise Unsupported('pointer_array_stride_not_established')
     pre_text=normalize_pointer_offsets(row['vc']['path'],bits)

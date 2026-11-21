@@ -443,6 +443,32 @@ class LocalEnvironmentTests(unittest.TestCase):
         self.assertEqual(check(self.imported(pre, post))['status'], 'INVALID')
 
 
+class UndefinedSegmentTests(unittest.TestCase):
+    def evaluate(self, pre, post):
+        return check(import_record(record(assertion(pre), assertion(post), kind='return')))['status']
+
+    def test_only_the_half_open_segment_is_owned(self):
+        segment = 'CharArray.undef_seg(400, 2, 4)'
+        self.assertEqual(self.evaluate(segment,
+            'has_permission(402, signed char); has_permission(403, signed char)'), 'VALID')
+        self.assertEqual(self.evaluate(segment,
+            'has_permission(401, signed char); has_permission(402, signed char)'), 'INVALID')
+        self.assertEqual(self.evaluate(segment,
+            'store(402, 7, signed char); has_permission(403, signed char)'), 'INVALID')
+
+    def test_empty_and_inverted_ranges_are_distinct(self):
+        self.assertEqual(self.evaluate('CharArray.undef_seg(400, 2, 2)', ''), 'VALID')
+        with self.assertRaisesRegex(Unsupported, 'inverted_undefined_segment'):
+            self.evaluate('CharArray.undef_seg(400, 2, 1)', '')
+
+    def test_scaled_offset_and_pointer_layout(self):
+        self.assertEqual(self.evaluate('IntArray.undef_seg(400, 2, 3)',
+            'has_permission(408, signed int)'), 'VALID')
+        with self.assertRaises(Unsupported):
+            import_record(record(assertion('PtrArray.undef_seg(400, 2, 3)'),
+                                 assertion(), kind='return', bits=64))
+
+
 class MissingIndexTests(unittest.TestCase):
     def query(self, index=1, lo=0, hi=3, values=(3,7,11), value=7,
               module='IntArray', ctype='signed int', size=4):

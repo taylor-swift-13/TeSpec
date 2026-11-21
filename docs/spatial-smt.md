@@ -78,7 +78,7 @@ VC 清单一致，协议缺失或损坏时不能猜测公式。
 
 适配层依据已核对的原生 VC kind 显式传递 exact/frame 模式；不会根据是否经过
 循环决定模式。来源事件和整个义务组的覆盖情况不再决定是否尝试单条求解。
-支持 `store`、`has_permission`、具体长度内置数组 `full` / `undef_full` / `seg`，
+支持 `store`、`has_permission`、具体长度内置数组 `full` / `undef_full` / `seg` / `undef_seg`，
 以及有限 `missing_i`。后者按库定义拆为缺失索引前后的数组段，要求完整列表长度
 与范围一致且 `lo <= i < hi`；未知长度、未知索引或越界保留 UNKNOWN。
 
