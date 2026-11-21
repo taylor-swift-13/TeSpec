@@ -15,7 +15,7 @@ from functools import lru_cache
 from pathlib import Path
 
 from .certificates import strip_comments
-from .core import JobError
+from .core import JobError, _coq_required_modules
 from .layout import generate_layout_source, resolve_field_path
 from .rocq_predicates import _application_parts, _strip_outer_parens
 from tools.finite_spatial_smt.finite_spatial_smt import (
@@ -288,10 +288,40 @@ def parsed_module(raw, modules):
     return parse_library(raw.decode("utf-8"), dict(modules))
 
 
+# The legacy library's field_address is abstract in its Rocq context.
+# Admit its exact transparent definitions, while leaving that notation opaque.
+_LEGACY_LIST_MODULE = "SimpleC.EE.QCP_demos_human.sll_lib"
+_LEGACY_LIST_SHA256 = "91d172559c4b3e21b108c7e2a005476cc76d56337213ef65fb5a9ef1d433a9ad"
+_LEGACY_LIST_PRELUDE = {
+    "Mem.v": "a4a92713ca60c93a5e2b65522d319de25eee1d78e53040d363bffc52f3ecc730",
+    "CNotation.v": "a86a024fc3bb1fb5caedd5c522c3c29cd6cdf6ef7f029df14e252f366e670f6e",
+}
+
+
+def runtime_module(dep, raw, qcip_root, modules):
+    if dep["module"] != _LEGACY_LIST_MODULE or dep["sha256"] != _LEGACY_LIST_SHA256:
+        return parsed_module(raw, modules)
+
+    base = Path(qcip_root) / "SeparationLogic/SeparationLogic"
+    for file, sha in _LEGACY_LIST_PRELUDE.items():
+        frozen_bytes(base / file, sha)
+
+    # The pinned file has three Fixpoints followed by opaque lemmas.
+    # addr and NULL are definitional aliases in the pinned runtime prelude.
+    source = raw.decode("utf-8")
+    bodies, lemmas = source[source.index("Fixpoint ") :].split("Lemma ", 1)
+    bodies = re.sub(r"\baddr\b", "Z", bodies)
+    bodies = re.sub(r"\bNULL\b", "0", bodies)
+    definitions = dict(parsed_module(bodies.encode("utf-8"), modules))
+    opaque = Definition((), "opaque", "", False, False)
+    for name in re.findall(r"(?m)^Lemma (" + ID + r")(?![\w'])", "Lemma " + lemmas):
+        definitions[name] = opaque
+    return definitions
+
+
 def definitions_for(case):
     vc = case["vc"]
     layout = vc["target_layout"]
-    deps = vc["coq_dependencies"]
     frozen = json.loads(Path(vc["manifest"]).read_bytes())
     require(
         all(
@@ -306,22 +336,49 @@ def definitions_for(case):
         ),
         "definition_manifest_mismatch",
     )
-    known = set()
     exports = {}
     definitions = {}
-    for dep in deps:
+    runtime = {
+        dep["module"]: dep
+        for dep in vc["runtime_dependencies"]
+        if dep["module"] not in PRELUDE
+    }
+    loading = set()
+
+    def register(name, parsed):
+        require(not definitions.keys() & parsed.keys(), "ambiguous_definition_name")
+        definitions.update(parsed)
+        exports[name] = tuple(sorted(parsed))
+
+    def load_runtime(name):
+        if name not in runtime or name in exports:
+            return
+        require(name not in loading, "cyclic_runtime_definition_import")
+        loading.add(name)
+        dep = runtime[name]
+        raw = frozen_bytes(dep["source"], dep["sha256"])
+        pinned = name == _LEGACY_LIST_MODULE and dep["sha256"] == _LEGACY_LIST_SHA256
+        if not pinned:
+            for imported in _coq_required_modules(raw.decode("utf-8")):
+                load_runtime(imported)
+        modules = tuple(sorted(exports.items()))
+        register(name, runtime_module(dep, raw, vc.get("qcip_root"), modules))
+        loading.remove(name)
+
+    for dep in vc["coq_dependencies"]:
         name = dep["module"]
         require(
-            name not in known and name not in PRELUDE, "ambiguous_definition_module"
+            name not in exports and name not in PRELUDE and name not in runtime,
+            "ambiguous_definition_module",
         )
         raw = frozen_bytes(dep["staged"], dep["sha256"])
-        exports[name] = ()
         if name == "GeneratedLayout":
             require(
-                "LayoutAddress" in known
+                "LayoutAddress" in exports
                 and raw.decode() == generate_layout_source(layout),
                 "different_generated_layout",
             )
+            register(name, {})
         elif name == "LayoutAddress":
             require(
                 raw
@@ -331,12 +388,11 @@ def definitions_for(case):
                 ).read_bytes(),
                 "different_layout_semantics",
             )
+            register(name, {})
         else:
-            parsed = parsed_module(raw, tuple((m, exports[m]) for m in sorted(known)))
-            require(not definitions.keys() & parsed.keys(), "ambiguous_definition_name")
-            definitions.update(parsed)
-            exports[name] = tuple(sorted(parsed))
-        known.add(name)
+            for imported in _coq_required_modules(raw.decode("utf-8")):
+                load_runtime(imported)
+            register(name, parsed_module(raw, tuple(sorted(exports.items()))))
     goal = frozen_bytes(vc["files"]["goal"], vc["immutable_sha256"]["goal"]).decode()
     header = re.split(r"(?m)^Definition\s", strip_comments(goal), maxsplit=1)[0]
     visible = set()
@@ -348,6 +404,7 @@ def definitions_for(case):
         if imp:
             for n in imp[2].split():
                 module = (imp[1] + "." if imp[1] else "") + n
+                load_runtime(module)
                 require(
                     module in exports or module in PRELUDE,
                     "unresolved_original_import:" + module,

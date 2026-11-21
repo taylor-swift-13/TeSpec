@@ -91,6 +91,66 @@ class AutoDefinitionsTest(unittest.TestCase):
             timeout_ms=2000,
         )
 
+    def test_reads_hash_checked_runtime_definition(self):
+        case = self.case(LIBRARY, "~ ((address_cell 400 1) |-- \u201c False \u201d)")
+        vc = case["vc"]
+        dep = vc["coq_dependencies"].pop()
+        dep["source"] = dep.pop("staged")
+        vc["runtime_dependencies"].append(dep)
+        Path(vc["manifest"]).write_text(json.dumps(vc))
+        args = (
+            case,
+            {"preconditions": [{"status": "UNKNOWN", "goal": "start"}]},
+            {"interface_roots": ["proof_of_start"], "files": vc["files"]},
+        )
+        self.assertEqual(self.entry(*args, timeout_ms=2000)["status"], "SAT")
+        Path(dep["source"]).write_text(LIBRARY + "\n(* changed *)")
+        self.assertEqual(
+            self.entry(*args, timeout_ms=2000)["reason"],
+            "definition_dependency_hash_mismatch",
+        )
+
+    def test_legacy_list_uses_only_supported_definitional_reduction(self):
+        root = Path(__file__).resolve().parents[1] / "runtime/qcip"
+        source = root / "SeparationLogic/examples/QCP_demos_human/sll_lib.v"
+        module = "SimpleC.EE.QCP_demos_human.sll_lib"
+        for address, value, status in (
+            (0, "(@nil Z)", "SAT"),
+            (400, "(@nil Z)", "UNSAT"),
+            (400, "(cons 7 (@nil Z))", "UNKNOWN"),
+        ):
+            with self.subTest(address=address, value=value):
+                case = self.case(
+                    "", f"~ ((sll {address} {value}) |-- \u201c False \u201d)"
+                )
+                vc = case["vc"]
+                goal = Path(vc["files"]["goal"])
+                goal.write_text(
+                    goal.read_text().replace(
+                        "Require Import Library.", f"Require Import {module}."
+                    )
+                )
+                vc["immutable_sha256"]["goal"] = hashlib.sha256(
+                    goal.read_bytes()
+                ).hexdigest()
+                vc["coq_dependencies"] = []
+                vc["qcip_root"] = str(root)
+                vc["runtime_dependencies"] = [
+                    {
+                        "module": module,
+                        "source": str(source),
+                        "sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
+                    }
+                ]
+                Path(vc["manifest"]).write_text(json.dumps(vc))
+                result = self.entry(
+                    case,
+                    {"preconditions": [{"status": "UNKNOWN", "goal": "start"}]},
+                    {"interface_roots": ["proof_of_start"], "files": vc["files"]},
+                    timeout_ms=2000,
+                )
+                self.assertEqual(result["status"], status, result)
+
     def test_changed_names_recursive_alias_and_nested_term(self):
         pre = "PROP[]LOCAL[]SEP[wrapper(400, cons{Z_1}(3,cons{Z_1}(4,nil{Z_1})))]"
         for value, status in [(3, "VALID"), (9, "INVALID")]:
