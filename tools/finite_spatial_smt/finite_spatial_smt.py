@@ -108,9 +108,15 @@ class Expressions:
             elif (isinstance(n, ast.Call) and isinstance(n.func, ast.Name)
                   and n.func.id == '__fsm_qcp_rem' and len(n.args) == 2 and not n.keywords):
                 a, b = (integer(visit(arg)) for arg in n.args)
-                divisor = positive_divisor(b)
-                # Rocq IntLib binds % to Z.rem: truncate the quotient toward zero.
-                return z3.If(a >= 0, a % divisor, -((-a) % divisor))
+                # IntLib uses Z.rem. Its sign follows a; Z.rem a 0 = a.
+                # rem_abs_encoding.v proves this reduction for all integers.
+                magnitude = z3.simplify(z3.If(b < 0, -b, b))
+                if z3.is_int_value(magnitude) and magnitude.as_long() == 0:
+                    return a
+                signed_rem = z3.If(a >= 0, a % magnitude, -((-a) % magnitude))
+                if z3.is_int_value(magnitude):
+                    return signed_rem
+                return z3.If(b == 0, a, signed_rem)
             elif isinstance(n, ast.BoolOp):
                 vs=[boolean(visit(v)) for v in n.values]
                 return z3.And(*vs) if isinstance(n.op,ast.And) else z3.Or(*vs)

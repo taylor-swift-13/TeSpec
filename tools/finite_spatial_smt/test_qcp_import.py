@@ -45,10 +45,26 @@ class DiagnosticModuloTests(unittest.TestCase):
             with self.subTest(formula=formula), self.assertRaises(Unsupported):
                 import_record(record(assertion(), assertion(pure=formula), kind='return'))
 
-    def test_unsupported_divisors_remain_unsupported(self):
+    def test_signed_and_zero_symbolic_divisors(self):
+        for a, b, remainder in [
+            (-7, -3, -1), (7, -3, 1), (-7, 0, -7), (7, 0, 7), (0, -3, 0),
+        ]:
+            pre = assertion(pure=f'x == {a}; d == {b}')
+            for value, verdict in [(remainder, 'VALID'), (remainder + 1, 'INVALID')]:
+                with self.subTest(a=a, b=b, value=value):
+                    post = assertion(pure=f'x %% d == {value}')
+                    query = import_record(record(pre, post, kind='return'))
+                    self.assertEqual(check(query)['status'], verdict)
+
+    def test_remainder_preserves_the_separate_nonzero_obligation(self):
+        post = assertion(pure='x %% d == x; d != 0')
+        query = import_record(record(assertion(pure='d == 0'), post, kind='return'))
+        self.assertEqual(check(query)['status'], 'INVALID')
+
+    def test_euclidean_modulo_does_not_inherit_qcp_remainder_rules(self):
         for divisor in ('0', '-2', 'symbolic'):
             with self.subTest(divisor=divisor), self.assertRaisesRegex(Unsupported, 'nonpositive_or_symbolic_divisor'):
-                import_record(record(assertion(), assertion(pure=f'x %% ({divisor}) == 0'), kind='return'))
+                import_record(record(assertion(), assertion(pure=f'x % ({divisor}) == 0'), kind='return'))
 
 
 class UnsignedTruncationTests(unittest.TestCase):

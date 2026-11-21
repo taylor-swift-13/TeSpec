@@ -275,13 +275,17 @@ class AutoDefinitionsTest(unittest.TestCase):
             )
             self.assertEqual(result["status"], expected, result)
 
-    def test_coq_remainder_preserves_sign_and_divisor_checks(self):
+    def test_coq_remainder_preserves_sign_and_sorts(self):
         for term in ("(dividend % 3)", "(Z.rem dividend 3)"):
             for expected, status in [(-1, "SAT"), (2, "UNSAT")]:
                 body = f"“ (dividend = -7) ” && “ ({term} = {expected}) ” && emp"
                 r = self.check_entry(f"exists (dividend : Z), ~ (({body}) |-- “ False ”)")
                 self.assertEqual(r["status"], status, r)
-        for term in ("Z.rem 7 divisor", "7 % 0", "nil % 3"):
+        for term, expected in [("Z.rem 7 divisor", 1), ("7 % 0", 7)]:
+            body = f"“ (divisor = -3) ” && “ (({term}) = {expected}) ” && emp"
+            r = self.check_entry(f"exists (divisor : Z), ~ (({body}) |-- “ False ”)")
+            self.assertEqual(r["status"], "SAT", r)
+        for term in ("nil % 3", "Z.rem 7 nil"):
             body = f"“ (({term}) = 1) ” && emp"
             r = self.check_entry(f"exists (divisor : Z), ~ (({body}) |-- “ False ”)")
             self.assertEqual(r["status"], "UNKNOWN", r)
