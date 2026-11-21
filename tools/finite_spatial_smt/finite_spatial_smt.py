@@ -169,13 +169,15 @@ class Encoding:
     witnesses: dict
     pre_addresses: list
     mode: str
+    witness_instance: dict | None = None
 
     def smt2(self, timeout_ms=5000):
         s=z3.Solver();s.set(timeout=timeout_ms);s.add(self.query)
         return s.to_smt2()
 
 
-def encode(vc: dict, *, max_bytes=512, max_alternatives=64, eliminate_value_witnesses=True) -> Encoding:
+def encode(vc: dict, *, max_bytes=512, max_alternatives=64, eliminate_value_witnesses=True,
+           match_pre_witnesses=False) -> Encoding:
     keys(vc, {'schema','layout','mode','pre','post'}, {'layout','mode','pre','post'})
     if vc.get('schema','finite-spatial-vc/v1')!='finite-spatial-vc/v1':
         raise Unsupported('unsupported_schema')
@@ -196,8 +198,10 @@ def encode(vc: dict, *, max_bytes=512, max_alternatives=64, eliminate_value_witn
     I=z3.Array('__fsm_initialized',z3.IntSort(),z3.BoolSort())
     M=z3.Array('__fsm_memory',z3.IntSort(),z3.IntSort())
     witnesses={};pre_addresses=[]
+    witness_instance = None
 
     def assertion(a, label, frame=False, consequent=False):
+        nonlocal witness_instance
         keys(a, {'exists','pure','spatial'}, {'spatial'})
         names=a.get('exists',[])
         if not isinstance(names,list) or any(not isinstance(n,str) or not re.fullmatch(r'[A-Za-z_]\w*',n) or n in CONSTANTS or n.startswith('__fsm_') for n in names) or len(set(names))!=len(names):
@@ -265,27 +269,44 @@ def encode(vc: dict, *, max_bytes=512, max_alternatives=64, eliminate_value_witn
             for p in addresses: footprint=z3.Store(footprint,p,True)
             conditions.append(D==footprint)
         formula=z3.And(*conditions)
+        instance = None
+        # For a single pair of alternatives, try the left existential witnesses
+        # in binder order. P(t) implies exists x, P(x) for any well-typed t.
+        # Only keep the hint when the antecedent already contains its conjuncts.
+        if (match_pre_witnesses and consequent and bound and len(vc['pre']) == len(vc['post']) == 1
+                and len(witnesses) == len(bound) and len(a['spatial']) == len(vc['pre'][0]['spatial'])):
+            replacements = list(zip(bound.values(), witnesses.values()))
+            proposed = z3.simplify(z3.substitute(formula, *replacements))
+            left = z3.simplify(pre)
+            left_terms = set(left.children()) if z3.is_and(left) else {left}
+            right_terms = proposed.children() if z3.is_and(proposed) else [proposed]
+            if all(z3.is_true(term) or term in left_terms for term in right_terms):
+                instance = proposed
+                witness_instance = dict(zip(names, vc['pre'][0]['exists']))
         if value_witnesses:
             formula=z3.substitute(formula,*[(bound[n],v) for n,v in value_witnesses.items()])
         remaining=[w for n,w in bound.items() if n not in value_witnesses]
         if consequent and remaining: formula=z3.Exists(remaining,formula)
         if not consequent: pre_addresses.extend(addresses)
-        return formula
+        return z3.Or(formula, instance) if instance is not None else formula
 
     pre=z3.Or(*[assertion(a,f'pre{i}') for i,a in enumerate(vc['pre'])])
     post=z3.Or(*[assertion(a,f'post{i}',vc['mode']=='frame',True) for i,a in enumerate(vc['post'])])
-    return Encoding(pre,post,z3.And(pre,z3.Not(post)),D,I,M,expressions.variables,witnesses,pre_addresses,vc['mode'])
+    return Encoding(pre,post,z3.And(pre,z3.Not(post)),D,I,M,expressions.variables,witnesses,pre_addresses,vc['mode'],witness_instance)
 
 
-def check(vc: dict, *, timeout_ms=5000, max_bytes=512, include_smt=False) -> dict:
+def check(vc: dict, *, timeout_ms=5000, max_bytes=512, include_smt=False,
+          match_pre_witnesses=False) -> dict:
     start=time.monotonic()
     result={'status':'UNKNOWN','certificate':'NOT_CHECKED','scope':'spatial_vc_only'}
     try:
-        enc=encode(vc,max_bytes=max_bytes)
+        enc=encode(vc,max_bytes=max_bytes,match_pre_witnesses=match_pre_witnesses)
     except Unsupported as exc:
         result.update(reason=str(exc),supported=False,wall_seconds=time.monotonic()-start)
         return result
     result['supported']=True
+    if enc.witness_instance is not None:
+        result['consequent_witness_instance'] = enc.witness_instance
     if include_smt: result['smt2']=enc.smt2(timeout_ms)
     s=z3.Solver();s.set(timeout=max(1,timeout_ms));s.add(z3.simplify(enc.query))
     answer=s.check();result['solver_result']=str(answer)

@@ -1107,7 +1107,7 @@ def solve_path(record, case, *, timeout_ms, ground_cache=None):
             check_mode=record.get("check_mode"),
             local_semantics=record.get("local_semantics"),
         )
-        result = check(ir, timeout_ms=timeout_ms, include_smt=True)
+        result = check(ir, timeout_ms=timeout_ms, include_smt=True, match_pre_witnesses=True)
         result.update(
             normalized_vc=ir,
             expanded_definitions=sorted(red.used | {f.name for f, _ in used}),

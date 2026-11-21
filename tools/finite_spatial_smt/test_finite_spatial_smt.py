@@ -45,6 +45,27 @@ class SemanticTests(unittest.TestCase):
     def test_undef_exists_value_not_valid(self):self.expect(vc(a(cell(v=None)),a(cell(v='w'),exists=['w'])),'INVALID')
     def test_exists_value(self):self.expect(vc(a(cell()),a(cell(v='w'),exists=['w'])),'VALID')
     def test_exists_wrong_constraint(self):self.expect(vc(a(cell()),a(cell(v='w'),exists=['w'],pure=['w == 8'])),'INVALID')
+    def test_auto_uses_renamed_left_address_as_existential_witness(self):
+        query = vc(a(cell('source', 3, 'u8'), exists=['source'], pure=['source == 4096']),
+                   a(cell('target', 3, 'u8'), exists=['target']))
+        out = check(query, match_pre_witnesses=True, include_smt=True)
+        self.assertEqual(out['status'], 'VALID', out)
+        self.assertEqual(out['consequent_witness_instance'], {'target': 'source'})
+        self.assertIn('(exists', out['smt2'])
+        self.assertNotIn('consequent_witness_instance', check(query))
+
+    def test_auto_witness_keeps_stronger_and_alternative_postconditions(self):
+        left = a(cell('left', 3, 'u8'), exists=['left'], pure=['left == 4096'])
+        wrong = a(cell('right', 4, 'u8'), exists=['right'], pure=['right == 4096'])
+        query = vc(left, wrong)
+        out = check(query, match_pre_witnesses=True)
+        self.assertEqual(out['status'], 'INVALID', out)
+        self.assertNotIn('consequent_witness_instance', out)
+        query['post'].append(a(cell('other', 3, 'u8'), exists=['other'], pure=['other == 4096']))
+        out = check(query, match_pre_witnesses=True)
+        self.assertEqual(out['status'], 'VALID', out)
+        self.assertNotIn('consequent_witness_instance', out)
+
     def test_exists_address(self):self.expect(vc(a(cell()),a(cell(p='w'),exists=['w'])),'VALID')
     def test_exists_shadowing(self):self.expect(vc(a(cell(v='w'),pure=['w == 7']),a(cell(v='w'),exists=['w'])),'VALID')
     def test_post_binder_does_not_bind_global(self):self.expect(vc(a(cell(v='w'),pure=['w == 7']),a(cell(v='z'),exists=['w'],pure=['w == 8','z == 7'])),'INVALID')

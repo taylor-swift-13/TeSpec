@@ -1,0 +1,143 @@
+{
+  "schema": "tespec-auto-ground-replay/v1",
+  "baseline_commit": "628baeef3d",
+  "ground_conversion_commit": "bc902e9fb2",
+  "native_binary_sha256": "4c5f44ae911f78e566370f869376b179f198481e3825ee9d598c399feb0cc712",
+  "coq_version": "8.20.1",
+  "scope": "Auto replay on native residuals; costs in rows cover only the final Auto CLI stage",
+  "route": "auto",
+  "itp_runs": 0,
+  "model_calls": 0,
+  "tokens": 0,
+  "regression": {
+    "groups": 20,
+    "distinct_test_keys": 532,
+    "frozen_replay": {
+      "PASS": 102,
+      "UNKNOWN": 351,
+      "FAIL": 79
+    },
+    "checked_layout_subset": 196,
+    "same_goal_hash_as_preceding_checked_layout": 196,
+    "before": {
+      "PASS": 251,
+      "UNKNOWN": 202,
+      "FAIL": 79
+    },
+    "after": {
+      "PASS": 275,
+      "UNKNOWN": 178,
+      "FAIL": 79
+    },
+    "previous_determinate_outcomes_lost": 0
+  },
+  "measured_subset": {
+    "selection": "all 28 prepared executions previously blocked on a reachable imported computational definition",
+    "before": "UNKNOWN",
+    "expected": "PASS",
+    "native": "UNKNOWN",
+    "first_change": {
+      "PASS": 20,
+      "UNKNOWN": 8
+    },
+    "both_changes": {
+      "PASS": 24,
+      "UNKNOWN": 4
+    }
+  },
+  "reproduce": {
+    "job": "Use the group evaluation plan and the variant, case ID and execution strategy in each row. Use the plan binds, 32-bit all-boundaries, loop and call limits 64.",
+    "prepare": "python3 -m spectest prepare-layout-job JOB --module SimpleC.EE.QCP_demos_human.sll_lib --coqc \"$COQC\" --output PREPARED",
+    "projection": "For a row with guard_projection false, omit only field_layout_context.guard_projection in the prepared job as in its prior replay.",
+    "command": "python3 -m spectest routes PREPARED/job.json --route auto --output-dir OUT",
+    "measured_command": "python3 -m spectest routes --native-report NATIVE_REPORT --route auto --output-dir OUT"
+  },
+  "row_columns": [
+    "case_id",
+    "strategy",
+    "guard_projection",
+    "goal_sha256",
+    "after_auto",
+    "wall_seconds",
+    "max_process_rss_kib"
+  ],
+  "groups": {
+    "list_all": {
+      "evaluation_plan_sha256": "da0fee4334c41c15ed88bcca8dc8635c75b452d6d43288ed5e58ed68430069ac",
+      "rows": [
+        ["11aff98e_IntList_merge_0", "inline", true, "c8b03b57863b42bdeacb3e5f72c236c7be07a9e6bdcd30ac7dfc5e4b87ae282a", "PASS", 1.325849, 408136],
+        ["11aff98e_IntList_merge_0", "modular", true, "c8b03b57863b42bdeacb3e5f72c236c7be07a9e6bdcd30ac7dfc5e4b87ae282a", "PASS", 1.284254, 408436],
+        ["11aff98e_IntList_merge_3", "inline", true, "3960c093dfdcd987dadd7c332eb37d49377bf16feed21884dd757e2243eb1fbd", "PASS", 1.330832, 408280],
+        ["11aff98e_IntList_merge_3", "modular", true, "3960c093dfdcd987dadd7c332eb37d49377bf16feed21884dd757e2243eb1fbd", "PASS", 1.228435, 408264],
+        ["11aff98e_IntList_mergesort_0", "inline", true, "082ed3ce8687625f9fca82d81d46f578dd0a99934cc7f94c6a0a6f8d965ada96", "PASS", 1.357807, 418396],
+        ["11aff98e_IntList_mergesort_0", "modular", true, "082ed3ce8687625f9fca82d81d46f578dd0a99934cc7f94c6a0a6f8d965ada96", "PASS", 1.40038, 418776],
+        ["11aff98e_IntList_mergesort_1", "inline", true, "a6ab7022f3ec533a049d51e1dfd3811012d74f87553a7861c099d4295a7380bb", "PASS", 1.421852, 418876],
+        ["11aff98e_IntList_mergesort_1", "modular", true, "a6ab7022f3ec533a049d51e1dfd3811012d74f87553a7861c099d4295a7380bb", "PASS", 1.423972, 418808],
+        ["11aff98e_IntList_mergesort_2", "inline", false, "58effe470fc9ae691833afea9872ed0f724ae6438d8179d1803c2ec5f2d53bbf", "UNKNOWN", 8.705266, 419032],
+        ["11aff98e_IntList_split_0", "inline", false, "349b491a95e1571011fa1a055eaade405ba58a0b7a312fc0337d5aac9599988a", "PASS", 1.640074, 408352],
+        ["11aff98e_IntList_split_0", "modular", false, "349b491a95e1571011fa1a055eaade405ba58a0b7a312fc0337d5aac9599988a", "PASS", 1.643482, 408348],
+        ["11aff98e_IntList_split_1", "inline", false, "74d2b8c95b582896fd9e097c2048da10cc62b81d16e5c34246a8d7e330cb6793", "PASS", 1.560201, 408364],
+        ["11aff98e_IntList_split_1", "modular", false, "74d2b8c95b582896fd9e097c2048da10cc62b81d16e5c34246a8d7e330cb6793", "PASS", 1.298825, 408084],
+        ["11aff98e_IntList_split_2", "inline", false, "43d6e905b571fc12d6bb7e2677d0658d0384256e218d1c1d151f72f6d44d44c5", "UNKNOWN", 3.040834, 408464]
+      ],
+      "unresolved_vc_reasons": {
+        "11aff98e_IntList_mergesort_2:inline": {
+          "counterexample_query_unsat": 4,
+          "ambiguous_local_name:xs": 1,
+          "unbound_definition_at_declaration:UndefStructPredint_list_pair": 1,
+          "ambiguous_local_name:p": 1,
+          "counterexample_query_sat": 1
+        },
+        "11aff98e_IntList_split_2:inline": {
+          "unbound_definition_at_declaration:UndefStructPredint_list_pair": 1,
+          "counterexample_query_unsat": 1,
+          "counterexample_query_sat": 1
+        }
+      },
+      "variant": "qcp_existing:11aff98e8bef27844c51",
+      "source": "benchmark/programs/list_all/variants/qcp_existing_11aff98e8bef27844c51/qcp/list_all.qcp.c",
+      "source_sha256": "11aff98e8bef27844c5133a8e882f2307a0b4e52c6ef30dd3124b7b520d8ed44"
+    },
+    "mergesort": {
+      "evaluation_plan_sha256": "2a0ba3617701b30b3d2b528a9d21ff8345ed1c3a7d1527fc654662d674c46a97",
+      "rows": [
+        ["IntList_merge_0", "inline", true, "d062ee6a91e0705d0e909f884867864a1225a17f1ee914bbeae4d0ae094e4c1c", "PASS", 1.223764, 408328],
+        ["IntList_merge_0", "modular", true, "d062ee6a91e0705d0e909f884867864a1225a17f1ee914bbeae4d0ae094e4c1c", "PASS", 1.173378, 408056],
+        ["IntList_merge_3", "inline", true, "5ac393a2a246710d44550b2f42e6b6eef3b21a72df221644e92fd964f4502400", "PASS", 1.268368, 408224],
+        ["IntList_merge_3", "modular", true, "5ac393a2a246710d44550b2f42e6b6eef3b21a72df221644e92fd964f4502400", "PASS", 1.321619, 408452],
+        ["IntList_mergesort_0", "inline", true, "9c6925c48bbc2065308da5bb40b69573a257fa919281e8c4df3eeece7a92d889", "PASS", 1.406354, 418724],
+        ["IntList_mergesort_0", "modular", true, "9c6925c48bbc2065308da5bb40b69573a257fa919281e8c4df3eeece7a92d889", "PASS", 1.453617, 418476],
+        ["IntList_mergesort_1", "inline", true, "980c942caf88f26d733d0ed393d519d95553e029844d4b9e8a68343cd13fa790", "PASS", 1.482132, 418540],
+        ["IntList_mergesort_1", "modular", true, "980c942caf88f26d733d0ed393d519d95553e029844d4b9e8a68343cd13fa790", "PASS", 1.4791, 418556],
+        ["IntList_mergesort_2", "inline", false, "55465169bad1317bc750b453bf8844932780533b1462b8b10fa8d5db599998b0", "UNKNOWN", 8.479152, 418972],
+        ["IntList_split_0", "inline", false, "cb326d7ea81f4709354aebe416540407a228a69e7e6bd28487e9b9c8f5855e68", "PASS", 1.164769, 408496],
+        ["IntList_split_0", "modular", false, "cb326d7ea81f4709354aebe416540407a228a69e7e6bd28487e9b9c8f5855e68", "PASS", 1.16663, 408368],
+        ["IntList_split_1", "inline", false, "eb6fd5e79321d94b48e67acc1fffade22e4bbff4546c67bd525f06658316a256", "PASS", 1.245812, 408164],
+        ["IntList_split_1", "modular", false, "eb6fd5e79321d94b48e67acc1fffade22e4bbff4546c67bd525f06658316a256", "PASS", 1.23925, 408236],
+        ["IntList_split_2", "inline", false, "36d6fb088491bbc09e74ab11327b749ca2a9d5980eac429fb8599310eea4491b", "UNKNOWN", 2.987217, 408416]
+      ],
+      "unresolved_vc_reasons": {
+        "IntList_mergesort_2:inline": {
+          "counterexample_query_unsat": 4,
+          "ambiguous_local_name:xs": 1,
+          "unbound_definition_at_declaration:UndefStructPredint_list_pair": 1,
+          "ambiguous_local_name:p": 1,
+          "counterexample_query_sat": 1
+        },
+        "IntList_split_2:inline": {
+          "unbound_definition_at_declaration:UndefStructPredint_list_pair": 1,
+          "counterexample_query_unsat": 1,
+          "counterexample_query_sat": 1
+        }
+      },
+      "variant": "qcp_existing:480d4273c94f321477a8",
+      "source": "benchmark/programs/mergesort/variants/qcp_existing_480d4273c94f321477a8/qcp/mergesort.qcp.c",
+      "source_sha256": "480d4273c94f321477a8db14aeec507b9b2f3a167e20bbbd0a49698f11bd4bd1"
+    }
+  },
+  "compiled_pure_module": {
+    "module": "FulminateMerge",
+    "source_sha256": "a7fceb65e001dc6a10749f9b1fd7f694c119fcae6d91cc6b27af7a9d41e16954",
+    "object_sha256": "33f26f77e72bfa6be24fa19a06b806db716e22ff2cd66e972f3737749c4310f9"
+  }
+}
