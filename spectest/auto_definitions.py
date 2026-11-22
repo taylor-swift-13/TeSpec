@@ -15,6 +15,7 @@ from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
 
+from .auto_heap_witnesses import check_cell_witnesses
 from .certificates import strip_comments
 from .core import JobError, _coq_required_modules
 from .ground_reduction import GroundFunction, functions_for, rewrite_closed_calls
@@ -622,6 +623,7 @@ class Reduction:
         self.count = 0
         self.serial = 0
         self.used = set()
+        self.list_splits = []
 
     def budget(self, depth):
         self.count += 1
@@ -1017,6 +1019,17 @@ def list_length_bound(term):
     raise Unsupported("unknown_list_length_bound")
 
 
+def native_list_equality(prop):
+    """Recognize only a top-level native equality, never a conditional or disjunction."""
+    if len(prop) > 4096 or "==" not in prop or not re.fullmatch(r"[A-Za-z0-9_{}(),=\s-]+", prop):
+        return None
+    node = ast.parse(normalize_builtin_type_arguments(prop), mode="eval").body
+    if (isinstance(node, ast.Compare) and len(node.ops) == 1 and isinstance(node.ops[0], ast.Eq)
+            and sum(1 for _ in ast.walk(node)) <= 256):
+        return node.left, node.comparators[0]
+    return None
+
+
 def impossible_list_equality(part, definitions):
     """Find a required equality with disjoint lengths within this one disjunct."""
     if "cons" not in part["pure"] or "==" not in part["pure"]:
@@ -1025,22 +1038,67 @@ def impossible_list_equality(part, definitions):
     if primitives.intersection(definitions) or primitives.intersection(qcp.existential_names(part)):
         return None
     for prop in qcp.split_top(part["pure"], ";"):
-        if "==" not in prop or "cons" not in prop or len(prop) > 4096:
-            continue
-        if not re.fullmatch(r"[A-Za-z0-9_{}(),=\s-]+", prop):
+        if "cons" not in prop:
             continue
         try:
-            node = ast.parse(normalize_builtin_type_arguments(prop), mode="eval").body
-            if not (isinstance(node, ast.Compare) and len(node.ops) == 1
-                    and isinstance(node.ops[0], ast.Eq) and sum(1 for _ in ast.walk(node)) <= 256):
+            sides = native_list_equality(prop)
+            if sides is None:
                 continue
-            left, right = (list_length_bound(t) for t in (node.left, node.comparators[0]))
+            left, right = map(list_length_bound, sides)
         except (SyntaxError, RecursionError, Unsupported):
             continue
         for (length, exact), (minimum, _) in ((left, right), (right, left)):
             if exact and length < minimum:
                 return {"equality": prop, "exact_length": length, "opposite_minimum": minimum}
     return None
+
+
+def split_slice(whole, fixed_length, side):
+    if side == "prefix":
+        return whole[:max(0, len(whole) - fixed_length)]
+    return whole[fixed_length:]
+
+
+def infer_path_splits(red, props, names, substitutions, single_antecedent):
+    """Use a mandatory append equality when the opposite slice has a fixed length."""
+    primitives = {"nil", "app", "cons", "Z_1"}
+    if primitives.intersection(names) or primitives.intersection(red.defs):
+        return
+    for prop in props:
+        if "app" not in prop:
+            continue
+        try:
+            sides = native_list_equality(prop)
+            if sides is None:
+                continue
+            for concat, whole in (sides, sides[::-1]):
+                if not (isinstance(concat, ast.Call) and isinstance(concat.func, ast.Name)
+                        and concat.func.id == "app" and not concat.keywords and len(concat.args) == 3
+                        and isinstance(concat.args[0], ast.Name) and concat.args[0].id == "Z_1"):
+                    continue
+                _, exact_whole = list_length_bound(whole)
+                if not exact_whole:
+                    continue
+                values = qcp.list_values(ast.unparse(whole))
+                if not all(re.fullmatch(r"-?\d+", value) for value in values):
+                    continue
+                prefix, suffix = concat.args[1:]
+                for side, hole, fixed in (("prefix", prefix, suffix), ("suffix", suffix, prefix)):
+                    if not isinstance(hole, ast.Name):
+                        continue
+                    name = hole.id
+                    if (name in RESERVED or name in red.defs or name in substitutions
+                            or (name not in names and not single_antecedent)):
+                        continue
+                    length, exact = list_length_bound(fixed)
+                    if not exact or length > len(values):
+                        continue
+                    value = split_slice(values, length, side)
+                    substitutions[name] = native_list(value)
+                    red.list_splits.append({"equality": prop, "variable": name, "side": side,
+                                            "value": [int(item) for item in value]})
+        except (SyntaxError, RecursionError, Unsupported):
+            continue
 
 
 def expand_part(red, m, inherited, *, single_antecedent=False):
@@ -1067,6 +1125,8 @@ def expand_part(red, m, inherited, *, single_antecedent=False):
                     continue
                 if all(re.fullmatch(r"-?\d+", element) for element in xs):
                     substitutions[variable] = native_list(xs)
+
+    infer_path_splits(red, orig, names, substitutions, single_antecedent)
 
     def subst(text):
         require(
@@ -1182,11 +1242,20 @@ def solve_path(record, case, *, timeout_ms, ground_cache=None):
             check_mode=record.get("check_mode"),
             local_semantics=record.get("local_semantics"),
         )
-        result = check(ir, timeout_ms=timeout_ms, include_smt=True, match_pre_witnesses=True)
+        result = None
+        if red.list_splits:
+            try:
+                result = check_cell_witnesses(ir, timeout_ms)
+            except (Unsupported, RecursionError, z3.Z3Exception):
+                pass
+        if result is None:
+            result = check(ir, timeout_ms=timeout_ms, include_smt=True, match_pre_witnesses=True)
         result.update(
             normalized_vc=ir,
             expanded_definitions=sorted(red.used | {f.name for f, _ in used}),
         )
+        if red.list_splits:
+            result["list_splits"] = red.list_splits
         if conflicts:
             result["infeasible_list_branches"] = conflicts
             if all_impossible and result["status"] == "INVALID":
@@ -1303,11 +1372,7 @@ def bind_list_witnesses(formula, env, lists, red, depth):
                     # List concatenation fixes the missing slice uniquely. The
                     # original equality is checked again, including its length
                     # and each symbolic element of the opposite slice.
-                    value = (
-                        value[: max(0, len(value) - len(other))]
-                        if side == "prefix"
-                        else value[len(other) :]
-                    )
+                    value = split_slice(value, len(other), side)
             except Unsupported:
                 continue
             scoped[variable] = value

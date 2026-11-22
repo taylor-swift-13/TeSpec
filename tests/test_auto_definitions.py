@@ -475,6 +475,75 @@ Fixpoint add_each (n : Z) (xs : list Z) : list Z :=
             r = self.check_entry(f"exists (divisor : Z), ~ (({body}) |-- “ False ”)")
             self.assertEqual(r["status"], "UNKNOWN", r)
 
+    def test_append_slice_checks_original_elements_and_owned_cells(self):
+        whole = "cons{Z_1}(5, cons{Z_1}(8, nil{Z_1}))"
+        for side, kept, fixed in (("prefix", 5, 8), ("suffix", 8, 5)):
+            fragment = "cons{Z_1}(item, nil{Z_1})"
+            args = ("part", fragment) if side == "prefix" else (fragment, "part")
+            concat = f"app{{Z_1}}({', '.join(args)})"
+            for equality in (f"{whole} == {concat}", f"{concat} == {whole}"):
+                for value, expected in ((kept, "VALID"), (kept + 1, "INVALID")):
+                    with self.subTest(equality=equality, value=value):
+                        pre = f"PROP[]LOCAL[]SEP[store(4096, {value}, signed int)]"
+                        post = (f"EX part item \nPROP[{equality}; item == {fixed}]"
+                                "LOCAL[]SEP[wrapper(4096, part)]")
+                        result = self.entail(pre, post)
+                        self.assertEqual(result["status"], expected, result)
+                        self.assertEqual(result["list_splits"][0]["value"], [kept])
+                post = f"EX part item \nPROP[{equality}; item != {fixed}]LOCAL[]SEP[wrapper(4096, part)]"
+                result = self.entail(f"PROP[]LOCAL[]SEP[store(4096, {kept}, signed int)]", post)
+                self.assertEqual(result["status"], "INVALID", result)
+                self.assertNotIn("heap_witnesses", result)
+
+    def test_append_slice_does_not_bind_a_free_post_or_guess_a_partition(self):
+        whole = "cons{Z_1}(4, nil{Z_1})"
+        for post in (
+            f"PROP[{whole} == app{{Z_1}}(rest, nil{{Z_1}})]LOCAL[]SEP[wrapper(4096, rest)]",
+            f"EX x y \nPROP[{whole} == app{{Z_1}}(x,y)]LOCAL[]SEP[wrapper(4096,x)]",
+            f"EX x \nPROP[({whole} == app{{Z_1}}(x,nil{{Z_1}})) || prop_true]LOCAL[]SEP[wrapper(4096,x)]",
+        ):
+            result = self.entail("PROP[]LOCAL[]SEP[store(4096,4,signed int)]", post)
+            self.assertEqual(result["status"], "UNKNOWN", result)
+            self.assertNotIn("list_splits", result)
+
+    def test_heap_witnesses_follow_pointers_in_original_scopes(self):
+        from spectest.auto_heap_witnesses import check_cell_witnesses
+        from tools.finite_spatial_smt import qcp_import
+
+        # The arbitrary pre address collides in spelling with the post binder.
+        left = "EX dest \nPROP[dest == 4096]LOCAL[]SEP[store(8192, dest, PTR);store(dest, 17, signed int)]"
+        def check_goal(cells, guard="dest == 17"):
+            post = f"EX dest where_to \nPROP[{guard}]LOCAL[]SEP[{cells}]"
+            ir = qcp_import.import_record({"layout": LAYOUT, "vc": {"kind": "return", "path": left, "goal": post}})
+            return check_cell_witnesses(ir, 500)
+        cells = "store(where_to, dest, signed int);store(8192, where_to, PTR)"
+        ok = check_goal(cells)
+        self.assertEqual(ok["status"], "VALID", ok)
+        self.assertEqual(ok["antecedent_satisfiability"], "sat")
+        self.assertIsNone(check_goal(cells, "dest == 18"))
+        self.assertIsNone(check_goal("store(8192, where_to, PTR)"))
+        self.assertIsNone(check_goal(cells.replace("signed int", "PTR")))
+
+        # A failed witness for the first disjunct leaves the second available.
+        alternatives = "".join(f"EX dest where_to \nPROP[dest == {n}]LOCAL[]SEP[{cells}]\n"
+                               for n in (18, 17))
+        ir = qcp_import.import_record({"layout": LAYOUT, "vc": {"kind": "return", "path": left, "goal": alternatives}})
+        self.assertEqual(check_cell_witnesses(ir, 1000)["heap_witnesses"]["post_alternative"], 1)
+
+    def test_append_witness_does_not_cover_missing_heap_or_a_wrong_link(self):
+        post = ("EX tail q \nPROP[cons{Z_1}(4, nil{Z_1}) == app{Z_1}(tail,nil{Z_1})]"
+                "LOCAL[]SEP[store(100,q,PTR);wrapper(q,tail)]")
+        for sep, expected in (
+            ("store(100,200,PTR);store(200,4,signed int)", "VALID"),
+            ("store(100,204,PTR);store(200,4,signed int)", "INVALID"),
+            ("store(100,200,PTR)", "INVALID"),
+            ("store(100,200,PTR);has_permission(200,signed int)", "INVALID"),
+        ):
+            with self.subTest(sep=sep):
+                result = self.entail(f"PROP[]LOCAL[]SEP[{sep}]", post)
+                self.assertEqual(result["status"], expected, result)
+                self.assertEqual("heap_witnesses" in result, expected == "VALID")
+
     def test_infeasible_list_path_precedes_heap_expansion(self):
         empty = "nil{Z_1}"
         pair = "cons{Z_1}(a, cons{Z_1}(b, rest))"
