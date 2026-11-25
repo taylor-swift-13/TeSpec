@@ -18,7 +18,7 @@ from .itp_schedule import bind_proof_roots, decision_goals, native_negative_for_
 from .modes import EXECUTION_SEMANTICS, normalize_execution_mode
 
 
-def _solve_record(record: dict, timeout_ms: int) -> dict:
+def _solve_record(record: dict, timeout_ms: int, *, checker=None) -> dict:
     # Do not import Z3 when this feature is disabled (or for existing decisions).
     from tools.finite_spatial_smt.finite_spatial_smt import check, Unsupported
     from tools.finite_spatial_smt.qcp_import import import_record
@@ -30,7 +30,7 @@ def _solve_record(record: dict, timeout_ms: int) -> dict:
         )
     except Unsupported as error:
         return {"status": "UNKNOWN", "supported": False, "reason": str(error)}
-    result = check(vc, timeout_ms=timeout_ms, include_smt=True)
+    result = (checker or check)(vc, timeout_ms=timeout_ms, include_smt=True)
     result["normalized_vc"] = vc
     if (result.get("status") == "INVALID"
             and record["vc"].get("kind") in {"entailment", "which_implies"}

@@ -181,11 +181,22 @@ def _solve_auto_record(record, case, budget, compiled_names, ground_cache=None):
         name in compiled_names for name in re.findall(r"[A-Za-z_][A-Za-z0-9_']*", vc["path"] + "\n" + vc["goal"])
     )
     if not mentions_import:
-        decision = _solve_record(record, budget)
+        from .auto_frame_evidence import check_auto_heap
+        decision = _solve_record(record, budget, checker=check_auto_heap)
         if decision["status"] != "UNKNOWN" or decision.get("supported") is not False:
             return decision
     from .auto_definitions import solve_path
     decision = solve_path(record, case, timeout_ms=budget, ground_cache=ground_cache)
+    if decision["status"] == "UNKNOWN" and decision["reason"].startswith("unbound_definition_at_declaration:"):
+        from .auto_common_frame import prove_with_common_frame
+
+        name = decision["reason"].split(":", 1)[1]
+        framed = prove_with_common_frame(
+            record, case, name,
+            lambda remainder: solve_path(remainder, case, timeout_ms=budget, ground_cache=ground_cache),
+        )
+        if framed is not None:
+            decision = framed
     if (decision["status"] == "INVALID" and vc["kind"] in {"entailment", "which_implies"}
             and _has_unmapped_local_scope(vc)):
         decision.update(status="UNKNOWN", reason="unmapped_local_stack_frame")
@@ -316,7 +327,13 @@ def _auto_case(case, function, output, timeout_ms):
                     })
                     continue
             if _same_counterexample(goal, root, bool(decision.get("countermodel", {}).get("heap")), timeout_ms):
-                disproved.add(refined[i]["kind"])
+                disproved.add(kind)
+            else:
+                from .auto_parent_evidence import refute_parent_by_footprint
+                witness = refute_parent_by_footprint(case, function, goal, root, kind, timeout_ms)
+                if witness is not None:
+                    info.setdefault("parent_counterexamples", []).append({"vc_index": i, **witness})
+                    disproved.add(kind)
         if "safety" in disproved:
             status, reason = "CRASH", "invalid_safety_vc"
             phases["safety"] = "FAIL"

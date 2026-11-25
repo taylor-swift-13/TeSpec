@@ -25,7 +25,6 @@ from .rocq_predicates import _application_parts, _strip_outer_parens, field_acce
 from tools.finite_spatial_smt.finite_spatial_smt import (
     CONSTANTS,
     Unsupported,
-    check,
     encode,
 )
 from tools.finite_spatial_smt import qcp_import as qcp
@@ -401,6 +400,11 @@ def parsed_module(raw, modules):
 # Admit its exact transparent definitions, while leaving that notation opaque.
 _LEGACY_LIST_MODULE = "SimpleC.EE.QCP_demos_human.sll_lib"
 _LEGACY_LIST_SHA256 = "91d172559c4b3e21b108c7e2a005476cc76d56337213ef65fb5a9ef1d433a9ad"
+QCP_INTEGER_PRELUDE = {
+    "IntLib.v": "5e417fc06a876fa710b631bcdc46911cca8b2d91352cb0dbfe9b8b2ce7e8f2a4",
+    "SeparationLogic.v": "458b92038b13cea149d5ab59819072be2493b77687f09150db46d64604c8e064",
+    "../Verification/VCPrelude.v": "77939bc483582cd218907f4e351d7f3e19b9e875c5cddc6f616358dc49976ec7",
+}
 _QCP_ADDRESS_PRELUDE = {
     "Mem.v": "a4a92713ca60c93a5e2b65522d319de25eee1d78e53040d363bffc52f3ecc730",
     "CNotation.v": "a86a024fc3bb1fb5caedd5c522c3c29cd6cdf6ef7f029df14e252f366e670f6e",
@@ -1224,6 +1228,7 @@ def solve_path(record, case, *, timeout_ms, ground_cache=None):
             guard = f"{conflict['opposite_minimum']} <= {conflict['exact_length']}"
             ant.append((f"PROP[{guard}]\nLOCAL[{part['local']}]\nSEP[]\n", {}))
         globals_ = ant[0][1] if len(ant) == 1 else {}
+        relation_instances = []
         all_impossible = len(conflicts) == len(pre)
         if all_impossible and vc["kind"] == "safety":
             require(all(not m["spatial"].strip() and not m["local"].strip() for m in post),
@@ -1233,7 +1238,13 @@ def solve_path(record, case, *, timeout_ms, ground_cache=None):
             # original post would hold. A countermodel here cannot refute it.
             post_text = "PROP[prop_false]\nLOCAL[]\nSEP[]\n"
         else:
-            post_text = "".join(expand_part(red, m, globals_)[0] for m in post)
+            from .auto_list_relations import expand_post, original_list_scope
+
+            post_text = "".join(
+                expand_post(red, part, globals_, relation_instances,
+                            scope_check=lambda: original_list_scope(case, vc))
+                for part in post
+            )
         copied = record | {
             "vc": vc | {"path": "".join(s for s, _ in ant), "goal": post_text}
         }
@@ -1243,19 +1254,22 @@ def solve_path(record, case, *, timeout_ms, ground_cache=None):
             local_semantics=record.get("local_semantics"),
         )
         result = None
-        if red.list_splits:
+        if red.list_splits or relation_instances:
             try:
                 result = check_cell_witnesses(ir, timeout_ms)
             except (Unsupported, RecursionError, z3.Z3Exception):
                 pass
         if result is None:
-            result = check(ir, timeout_ms=timeout_ms, include_smt=True, match_pre_witnesses=True)
+            from .auto_frame_evidence import check_auto_heap
+            result = check_auto_heap(ir, timeout_ms=timeout_ms, include_smt=True, match_pre_witnesses=True)
         result.update(
             normalized_vc=ir,
             expanded_definitions=sorted(red.used | {f.name for f, _ in used}),
         )
         if red.list_splits:
             result["list_splits"] = red.list_splits
+        if relation_instances:
+            result["finite_list_partitions"] = relation_instances
         if conflicts:
             result["infeasible_list_branches"] = conflicts
             if all_impossible and result["status"] == "INVALID":
