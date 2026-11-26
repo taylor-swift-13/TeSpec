@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Index Auto results and historical ITP costs without double-counting receipts."""
 
+import argparse
 from collections import Counter, defaultdict
 import csv
 import json
@@ -206,10 +207,29 @@ def main():
     groups = sorted(
         p.name for p in (ROOT / "benchmark/programs").iterdir() if p.is_dir()
     )
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--group", choices=groups, action="append",
+        help="Refresh only these groups, retaining published evidence for the others.",
+    )
+    selected = set(parser.parse_args().group or groups)
     sheets, summary = [], []
     status_count = Counter()
     unexpected = {}
+    if selected != set(groups):
+        previous = {
+            row["group"]: row for row in read(RESULTS / "tespec-routes-index.json")["groups"]
+        }
+        previous_unexpected = read(RESULTS / "tespec-unexpected/routes-auto.json")["groups"]
     for group in groups:
+        if group not in selected:
+            item = previous[group]
+            sheets.extend(checked(item["report"])["by_strategy"])
+            summary.append(item)
+            status_count.update(item["auto_effective"])
+            if group in previous_unexpected:
+                unexpected[group] = previous_unexpected[group]
+            continue
         folder = RESULTS / group
         path = folder / "tespec/routes.json"
         data = read(path)
@@ -223,20 +243,27 @@ def main():
             by_strategy[row["strategy"]].append(row)
         data["historical_itp"] = historical(folder)
         if group == "runway__funcs2":
-            data["sampled_native_errors"] = [
-                {
-                    "variant": "qcp_existing:0cb8f24f0043303f340c",
-                    "case": "increment_Plane_Counter_translation1_0",
-                    "strategy": "inline",
-                    "diagnostic": "fatal error: too much branches",
-                },
-                {
-                    "variant": "qcp_existing:62db5030dd2d2bfc466e",
-                    "case": "arrive_translation4_0",
-                    "strategy": "inline",
-                    "diagnostic": "fatal error: Cannot use a struct or union program expression as a value in an assertion",
-                },
-            ]
+            # The first legacy report retained its diagnostic only in this summary.
+            # Newer executions carry their own diagnostic and source fingerprint.
+            sample_fields = ("variant", "case", "strategy", "source_sha256")
+            prior = {
+                tuple(sample.get(k) for k in sample_fields): sample["diagnostic"]
+                for sample in data.get("sampled_native_errors", [])
+            }
+            samples = {}
+            for r in data["executions"]:
+                if r["native_status"] != "ERROR" or r["variant"] in samples:
+                    continue
+                error = r.get("failure")
+                diagnostic = (
+                    error.get("Main Error Message") if isinstance(error, dict) else error
+                )
+                diagnostic = diagnostic or prior.get(tuple(r[k] for k in sample_fields))
+                if diagnostic:
+                    samples[r["variant"]] = {k: r[k] for k in sample_fields} | {
+                        "diagnostic": diagnostic
+                    }
+            data["sampled_native_errors"] = list(samples.values())
         historical_cases(folder, data["executions"])
         lines = []
         mismatches = []

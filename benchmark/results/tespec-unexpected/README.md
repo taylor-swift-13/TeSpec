@@ -1,8 +1,10 @@
 # teSpec 不符合预期的专项台账
 
-最近一次 Auto 回放覆盖 20 组的 532 个不同配置，原有 166 个 UNKNOWN 中有 3 个得到预期 PASS，22 个得到预期 FAIL，141 个仍未决。逐配置的成本、父目标反例和未决分组见[回放收据](auto-finite-evidence-replay.json)，原因见[空间 SMT 文档](../../../docs/spatial-smt.md)。
+跑道组按值结构体规约复测了第 3、4、5 版的 180 个执行配置。原冻结结果中的 135 个 UNKNOWN 现有 123 PASS、9 UNKNOWN 和 3 个非预期 FAIL。新规约全部 180 个配置仍有 21 UNKNOWN、24 ERROR 和 3 个非预期 FAIL。3 个 FAIL 均为 `tick_translation3_{1,3,6}` 的 inline 模式，实际 C 执行的纯前后条件通过，Auto 则报告调用边界父 VC 反例。逐例状态、剩余义务、成本和旧规约同输入对照见[跑道组活动结果](../runway__funcs2/tespec/routes.json)。
 
-Auto 在 `runway__funcs2` 的 27 次定向回放中撤回了无法归因到源程序的 `FAIL`。这些执行预期为 `PASS`，当前为 `UNKNOWN`，尚未计为匹配。[输入、Goal 哈希与复现命令](aggregate-frame-replay.json)
+原规约的 Auto 冻结回放覆盖 20 组的 532 个不同配置，原有 166 个 UNKNOWN 中有 3 个得到预期 PASS，22 个得到预期 FAIL，141 个仍未决。逐配置的成本、父目标反例和未决分组见[回放收据](auto-finite-evidence-replay.json)，原因见[空间 SMT 文档](../../../docs/spatial-smt.md)。
+
+Auto 在 `runway__funcs2` 的 27 次定向回放中撤回了无法归因到源程序的 `FAIL`。这些执行预期为 `PASS`，在该次冻结回放中为 `UNKNOWN`，尚未计为匹配。[输入、Goal 哈希与复现命令](aggregate-frame-replay.json)
 
 已扫描 45 组、1561 对变体与输入。当前批次有 1018 条最终不匹配，历史批次有 58 条。第 24 组新批次 48/48 符合预期，20 次原生 UNKNOWN 在逐执行 ITP 后通过。见[当前完整台账](index.json)与[dll_add 的本次记录](dll_add-current.json)。
 
