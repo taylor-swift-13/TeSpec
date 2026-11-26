@@ -136,6 +136,23 @@ int sample(void)
 FIXTURES["struct_return_wrong_result"] = FIXTURES["struct_return"].replace(
     "Ensure __return == 4", "Ensure __return == 5"
 )
+FIXTURES["combine_copies"] = """struct Pair { int a; int b; };
+struct Pair combine(struct Pair first, struct Pair second, int *p)
+/*@ With x y q Require first.a == x && second.b == y && p == q && data_at(q, int, 7)
+    Ensure __return.a == x && __return.b == y && data_at(q, int, 8) */
+{ *p = 8; first.b = second.b; return first; }
+int sample(int *p)
+/*@ Require data_at(p, int, 7) Ensure __return == 5 && data_at(p, int, 8) */
+{
+  struct Pair a = {3, 1};
+  struct Pair b = {9, 5};
+  struct Pair out = combine(a, b, p);
+  return out.b;
+}
+"""
+FIXTURES["combine_wrong_field"] = FIXTURES["combine_copies"].replace("__return.b == y", "__return.b == y + 1")
+FIXTURES["combine_wrong_pointee"] = FIXTURES["combine_copies"].replace("data_at(q, int, 8)", "data_at(q, int, 9)")
+FIXTURES["combine_wrong_result"] = FIXTURES["combine_copies"].replace("Ensure __return == 5", "Ensure __return == 4")
 FIXTURES["out_of_range_struct_field"] = """struct Pair { unsigned char x; };
 struct Pair external_pair(void)
 /*@ Require emp Ensure __return.x == 256 && emp */;
@@ -279,6 +296,24 @@ class ContractInstantiationTests(unittest.TestCase):
             self.assertTrue(native["completed"], native)
             self.assertEqual(native["overall"], "FAIL", native)
             self.assertIsNone(native["limit_reason"], native)
+
+    def test_inline_by_value_arguments_preserve_return_fields_and_caller_heap(self):
+        def check(name):
+            native, _ = self.run_fixture(name, "inline", "check-preserve")
+            self.assertTrue(native["completed"], native)
+            self.assertIsNone(native["limit_reason"], native)
+            return native
+
+        self.assert_symbolic_success(check("combine_copies"))
+        for name in ("combine_wrong_field", "combine_wrong_pointee"):
+            with self.subTest(fixture=name):
+                native = check(name)
+                self.assertIn(native["overall"], ("FAIL", "UNKNOWN"), native)
+                self.assertIn(native["phases"]["annotations"], ("FAIL", "UNKNOWN"), native)
+                self.assertEqual(native["phases"]["postcondition"], "PASS", native)
+        wrong_result = check("combine_wrong_result")
+        self.assertEqual(wrong_result["overall"], "FAIL", wrong_result)
+        self.assertEqual(wrong_result["phases"]["annotations"], "PASS", wrong_result)
 
     def test_out_of_range_struct_field_is_an_inconsistent_contract(self):
         for name in ("out_of_range_struct_field", "out_of_range_struct_field_interval"):

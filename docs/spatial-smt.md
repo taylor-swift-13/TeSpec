@@ -1,8 +1,14 @@
 # 可选空间 SMT 后端
 
-## 跑道组 modular 结构体返回
+## 跑道组 inline 结构体按值调用
 
-在相同的 300 个配置上重新运行 Auto 路线，得到 204 PASS、3 FAIL、9 UNKNOWN、84 ERROR。第 3 个变体原有 12 个 modular 输入在调用辅助函数时遇到结构体返回类型限制。新执行器完成了这 12 次测试，入口均为 SAT，安全性、后置条件和中间断言均在原生阶段通过。其余 288 个配置逐项保持原结果。另对其他 44 组先前符合预期的 2,306 个确定结果做了回归，1,469 个 PASS、761 个 FAIL 和 76 个预期 CRASH 的判定均与原结果一致。[构建、逐输入状态与成本](../benchmark/results/runway__funcs2/tespec/routes.json)
+inline 调用按值传递结构体时，执行器将实参临时副本登记为调用方资源。在比较实际返回状态与规约后置状态时，只补回调用前已登记、可确认仍由调用方拥有的字段。遇到可能占用该副本的不透明谓词、无法确定归属的间接地址或后置已给出不同字段值时，保留原证明义务。
+
+在相同的 300 个配置上重跑，得到 216 PASS、84 ERROR。12 个原来未达到预期的 inline 输入均在原生阶段通过了调用规约检查，其中 9 个原为 UNKNOWN，3 个原为 FAIL。两个执行策略各有 108 个 PASS 和 42 个原生 ERROR。本组没有调用 Auto 增量求解或 ITP。另对其他 44 组重放了 2,307 项，所有判定与基线一致。其中 2,306 项符合预期，另有 1 个历史上预期 FAIL 却得到 PASS 的 modular 用例，本次仍为 PASS。[本轮执行、构建与成本](../benchmark/results/runway__funcs2/tespec/routes.json)
+
+## 跑道组 modular 结构体返回（上一版执行器）
+
+在相同的 300 个配置上重新运行 Auto 路线，得到 204 PASS、3 FAIL、9 UNKNOWN、84 ERROR。第 3 个变体原有 12 个 modular 输入在调用辅助函数时遇到结构体返回类型限制。新执行器完成了这 12 次测试，入口均为 SAT，安全性、后置条件和中间断言均在原生阶段通过。其余 288 个配置逐项保持原结果。另对其他 44 组先前符合预期的 2,306 个确定结果做了回归，1,469 个 PASS、761 个 FAIL 和 76 个预期 CRASH 的判定均与原结果一致。[构建、逐输入状态与成本](https://github.com/taylor-swift-13/TeSpec/blob/c4b4a77f249e95c43020f2a17109655ac882ccd9/benchmark/results/runway__funcs2/tespec/routes.json)
 
 ## 跑道组按值结构体入口字段复测（上一版执行器）
 

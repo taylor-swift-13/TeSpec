@@ -1,6 +1,6 @@
 # teSpec 不符合预期的专项台账
 
-跑道组更新 modular 结构体返回处理后，原来因返回类型未支持而中止的 12 次执行均得到预期 PASS。全组 300 个配置中还有 96 次与预期不符，包括 9 个 inline 中间规约 UNKNOWN、3 个 inline tick 非预期 FAIL 和 84 个原生 ERROR。这 96 个结果与相同输入和策略在上一版执行器上的结果逐项一致。[当前逐输入记录与成本](../runway__funcs2/tespec/routes.json)
+跑道组在原规约和输入上复测后，9 个 inline UNKNOWN 与 3 个非预期 inline FAIL 均已在调用边界通过。全组仍有 84 个预期 PASS 的原生 ERROR，和上一版逐项相同。其中 60 个报告分支过多，24 个报告断言中无法将结构体或联合体表达式当作值。[当前逐输入记录与成本](../runway__funcs2/tespec/routes.json) · [上一版调用边界异常](https://github.com/taylor-swift-13/TeSpec/blob/c4b4a77f249e95c43020f2a17109655ac882ccd9/benchmark/results/runway__funcs2/tespec/routes.json)
 
 跑道组按值结构体规约复测了第 3、4、5 版的 180 个执行配置。原冻结结果中的 135 个 UNKNOWN 当时得到 123 PASS、9 UNKNOWN 和 3 个非预期 FAIL。新规约全部 180 个配置当时有 21 UNKNOWN、24 ERROR 和 3 个非预期 FAIL。3 个 FAIL 均为 `tick_translation3_{1,3,6}` 的 inline 模式，实际 C 执行的纯前后条件通过，Auto 则报告调用边界父 VC 反例。逐例状态、剩余义务、成本和旧规约同输入对照见[上次逐输入复测记录](https://github.com/taylor-swift-13/TeSpec/blob/1d35ccecad165499d931c3d26a8e5695ef9288d3/benchmark/results/runway__funcs2/tespec/routes.json)。
 
