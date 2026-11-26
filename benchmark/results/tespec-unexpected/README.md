@@ -1,6 +1,8 @@
 # teSpec 不符合预期的专项台账
 
-跑道组按值结构体规约复测了第 3、4、5 版的 180 个执行配置。原冻结结果中的 135 个 UNKNOWN 现有 123 PASS、9 UNKNOWN 和 3 个非预期 FAIL。新规约全部 180 个配置仍有 21 UNKNOWN、24 ERROR 和 3 个非预期 FAIL。3 个 FAIL 均为 `tick_translation3_{1,3,6}` 的 inline 模式，实际 C 执行的纯前后条件通过，Auto 则报告调用边界父 VC 反例。逐例状态、剩余义务、成本和旧规约同输入对照见[跑道组活动结果](../runway__funcs2/tespec/routes.json)。
+跑道组更新 modular 结构体返回处理后，原来因返回类型未支持而中止的 12 次执行均得到预期 PASS。全组 300 个配置中还有 96 次与预期不符，包括 9 个 inline 中间规约 UNKNOWN、3 个 inline tick 非预期 FAIL 和 84 个原生 ERROR。这 96 个结果与相同输入和策略在上一版执行器上的结果逐项一致。[当前逐输入记录与成本](../runway__funcs2/tespec/routes.json)
+
+跑道组按值结构体规约复测了第 3、4、5 版的 180 个执行配置。原冻结结果中的 135 个 UNKNOWN 当时得到 123 PASS、9 UNKNOWN 和 3 个非预期 FAIL。新规约全部 180 个配置当时有 21 UNKNOWN、24 ERROR 和 3 个非预期 FAIL。3 个 FAIL 均为 `tick_translation3_{1,3,6}` 的 inline 模式，实际 C 执行的纯前后条件通过，Auto 则报告调用边界父 VC 反例。逐例状态、剩余义务、成本和旧规约同输入对照见[上次逐输入复测记录](https://github.com/taylor-swift-13/TeSpec/blob/1d35ccecad165499d931c3d26a8e5695ef9288d3/benchmark/results/runway__funcs2/tespec/routes.json)。
 
 原规约的 Auto 冻结回放覆盖 20 组的 532 个不同配置，原有 166 个 UNKNOWN 中有 3 个得到预期 PASS，22 个得到预期 FAIL，141 个仍未决。逐配置的成本、父目标反例和未决分组见[回放收据](auto-finite-evidence-replay.json)，原因见[空间 SMT 文档](../../../docs/spatial-smt.md)。
 

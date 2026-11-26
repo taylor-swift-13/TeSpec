@@ -1,6 +1,10 @@
 # 可选空间 SMT 后端
 
-## 跑道组按值结构体入口字段复测
+## 跑道组 modular 结构体返回
+
+在相同的 300 个配置上重新运行 Auto 路线，得到 204 PASS、3 FAIL、9 UNKNOWN、84 ERROR。第 3 个变体原有 12 个 modular 输入在调用辅助函数时遇到结构体返回类型限制。新执行器完成了这 12 次测试，入口均为 SAT，安全性、后置条件和中间断言均在原生阶段通过。其余 288 个配置逐项保持原结果。另对其他 44 组先前符合预期的 2,306 个确定结果做了回归，1,469 个 PASS、761 个 FAIL 和 76 个预期 CRASH 的判定均与原结果一致。[构建、逐输入状态与成本](../benchmark/results/runway__funcs2/tespec/routes.json)
+
+## 跑道组按值结构体入口字段复测（上一版执行器）
 
 跑道组的第 3、4、5 个 QCP 变体在 `Require` 中用六个 `With` 变量绑定 `struct State s` 的入口字段，在 `Ensure` 中保留对实际返回字段的约束。三个变体各有 30 个输入，每个输入在 inline 和 modular 下各跑一次，VC 范围为 all-boundaries。两轮都固定了相同的六个字段值，全部 360 次入口检查均为 SAT。旧规约使用带入口字段常量的用例源码，新规约通过逻辑变量传入数值。
 
@@ -11,7 +15,7 @@
 
 上次冻结回放中跑道组的 135 个 UNKNOWN，按旧 Goal 哈希定位并按变体、用例和模式关联，本次得到 123 PASS、9 UNKNOWN、3 个非预期 FAIL。旧冻结回放中的修订前测试未为这三个变体绑定六个具体字段，同输入的直接比较以上表为准。
 
-新规约的 132 个 PASS 都由原生阶段判定。另有 9 个 inline 输入在调用边界留下空间义务，12 个 modular 输入遇到不支持的结构体合同返回。3 个非预期 FAIL 均来自第 3 版 `tick` 的 inline 输入 1、3、6，Auto 在内联调用的合同检查中报告父 VC 反例，三次的 safety、execution 和 postcondition 阶段均通过。独立执行 C 时，这三个输入及其他 87 个输入的纯前后条件均成立，该检查只覆盖具体执行的纯断言。第 4 版的 24 个 ERROR 仍发生在把整个结构体用作调用标注的值时。[逐输入结果、对照与成本](../benchmark/results/runway__funcs2/tespec/routes.json)
+新规约的 132 个 PASS 都由原生阶段判定。另有 9 个 inline 输入在调用边界留下空间义务，12 个 modular 输入遇到不支持的结构体合同返回。3 个非预期 FAIL 均来自第 3 版 `tick` 的 inline 输入 1、3、6，Auto 在内联调用的合同检查中报告父 VC 反例，三次的 safety、execution 和 postcondition 阶段均通过。独立执行 C 时，这三个输入及其他 87 个输入的纯前后条件均成立，该检查只覆盖具体执行的纯断言。第 4 版的 24 个 ERROR 仍发生在把整个结构体用作调用标注的值时。[逐输入结果、对照与成本](https://github.com/taylor-swift-13/TeSpec/blob/1d35ccecad165499d931c3d26a8e5695ef9288d3/benchmark/results/runway__funcs2/tespec/routes.json)
 
 ## Auto 的列表见证、公共堆资源和父 VC 反例（原规约冻结回放）
 

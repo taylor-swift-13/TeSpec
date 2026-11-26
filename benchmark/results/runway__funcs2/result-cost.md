@@ -1,6 +1,6 @@
 # runway__funcs2：结果与成本表
 
-当前 Auto 路线含 300 个执行配置，其中 180 个已按入口字段新规约复测，120 个原生结果按哈希复用。全组 192 PASS、3 FAIL、21 UNKNOWN、84 ERROR；预期均为 PASS。原规约同输入 180 项对照、逐行成本与阶段汇总见[路线报告](tespec/routes.json)。以下四工具表和空间 SMT 表为原评测批次。
+在相同规约和输入上，更新执行器后重新运行了全部 300 个 Auto 路线配置，得到 204 PASS、3 FAIL、9 UNKNOWN、84 ERROR。此前因 modular 调用返回结构体而中止的 12 项均在原生阶段通过。下方四工具表和空间 SMT 表保留原评测批次，当前构建、逐行结果、阶段耗时和峰值 RSS 见[路线报告](tespec/routes.json)。
 
 本次普通 QCP 使用上游 `40dfa5cc`。translation3 生成 281 个目标，8 个已用 Coq 编译证明；translation4 在原有调用标注 `s_callee = temp` 处中止；translation5 生成 248 个目标，仅 `tick_return_wit_16` 有独立内核检查，其余 247 个自动分类目标仍是占位。与 translation5 生成相同目标的原主程序按哈希共用该单项目标的证明。三个修订版本均未取得整程序证明。[QCP 版本、目标哈希、证明、耗时与内存](qcp/results.json)
 

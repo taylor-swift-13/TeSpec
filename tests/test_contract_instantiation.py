@@ -126,6 +126,33 @@ int sample(void)
 /*@ Require emp Ensure __return == 0 && emp */
 { external_value(); return 0; }
 """
+FIXTURES["struct_return"] = """struct Pair { int a; int b; };
+struct Pair external_pair(void)
+/*@ Require emp Ensure __return.a == 3 && __return.b == 7 && emp */;
+int sample(void)
+/*@ Require emp Ensure __return == 4 && emp */
+{ struct Pair p = external_pair(); return p.b - p.a; }
+"""
+FIXTURES["struct_return_wrong_result"] = FIXTURES["struct_return"].replace(
+    "Ensure __return == 4", "Ensure __return == 5"
+)
+FIXTURES["out_of_range_struct_field"] = """struct Pair { unsigned char x; };
+struct Pair external_pair(void)
+/*@ Require emp Ensure __return.x == 256 && emp */;
+int sample(void)
+/*@ Require emp Ensure __return == 0 && emp */
+{ external_pair(); return 0; }
+"""
+FIXTURES["out_of_range_struct_field_interval"] = FIXTURES["out_of_range_struct_field"].replace(
+    "__return.x == 256", "260 <= __return.x && __return.x <= 270"
+)
+FIXTURES["partly_representable_struct_field"] = """struct Pair { unsigned char x; };
+struct Pair external_pair(void)
+/*@ Require emp Ensure 250 <= __return.x && __return.x <= 270 && emp */;
+int sample(void)
+/*@ Require emp Ensure 250 <= __return && __return <= 255 && emp */
+{ return external_pair().x; }
+"""
 FIXTURES["unreachable_inconsistent_call"] = """int external_value(void)
 /*@ Require emp Ensure __return < 0 && __return >= 0 && emp */;
 int sample(int x)
@@ -244,6 +271,24 @@ class ContractInstantiationTests(unittest.TestCase):
             self.assertEqual(native["overall"], "UNKNOWN", native)
             self.assertEqual(native["limit_reason"], "contract_postcondition_inconsistent")
             self.assertEqual(native["sampling_events"], [], native)
+
+    def test_struct_return_copies_the_fields_in_the_contract(self):
+        for native, _ in self.variants("struct_return"):
+            self.assert_symbolic_success(native)
+        for native, _ in self.variants("struct_return_wrong_result"):
+            self.assertTrue(native["completed"], native)
+            self.assertEqual(native["overall"], "FAIL", native)
+            self.assertIsNone(native["limit_reason"], native)
+
+    def test_out_of_range_struct_field_is_an_inconsistent_contract(self):
+        for name in ("out_of_range_struct_field", "out_of_range_struct_field_interval"):
+            for native, _ in self.variants(name):
+                self.assertEqual(native["overall"], "UNKNOWN", native)
+                self.assertEqual(native["limit_reason"], "contract_postcondition_inconsistent")
+
+    def test_struct_field_retains_its_representable_return_range(self):
+        for native, _ in self.variants("partly_representable_struct_field"):
+            self.assert_symbolic_success(native)
 
     def test_proved_unreachable_inconsistent_call_does_not_poison_return(self):
         for native, _ in self.variants("unreachable_inconsistent_call"):
