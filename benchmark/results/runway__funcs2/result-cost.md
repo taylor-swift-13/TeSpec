@@ -1,6 +1,6 @@
 # runway__funcs2：结果与成本表
 
-本轮按原规约和输入重跑 300 项，得到 216 PASS、84 ERROR。9 个原 inline UNKNOWN 和 3 个原 inline FAIL 均在原生阶段通过。300 次原生执行和 VC 生成合计 115.088 秒，单进程峰值 RSS 为 34.21 MiB。Auto 增量求解与 ITP 均调用 0 次，本轮消耗 0 token。下方四工具表和空间 SMT 表保留原评测批次。[本轮逐项结果与成本](tespec/routes.json)
+本轮重跑两组各 30 个专用输入，在 inline 和 modular 下共 120 项。其余 180 项沿用上一批逐案证据。当前 300 项为 216 PASS、84 ERROR。本轮原生执行与 VC 生成合计 16.647 秒，单进程峰值 RSS 为 20.90 MiB。Auto 增量求解 0 次，ITP 0 次，模型消耗 0 token。下方四工具表与空间 SMT 表保留原评测批次。[逐项来源哈希与分批成本](tespec/routes.json)
 
 本次普通 QCP 使用上游 `40dfa5cc`。translation3 生成 281 个目标，8 个已用 Coq 编译证明；translation4 在原有调用标注 `s_callee = temp` 处中止；translation5 生成 248 个目标，仅 `tick_return_wit_16` 有独立内核检查，其余 247 个自动分类目标仍是占位。与 translation5 生成相同目标的原主程序按哈希共用该单项目标的证明。三个修订版本均未取得整程序证明。[QCP 版本、目标哈希、证明、耗时与内存](qcp/results.json)
 

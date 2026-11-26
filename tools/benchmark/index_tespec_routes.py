@@ -25,6 +25,14 @@ from spectest.itp_schedule import decision_itp_task
 from spectest.proof_reuse import dependency_ids
 
 
+def execution_source_evidence(row):
+    return {
+        k: row[k] for k in (
+            "original_source_sha256", "qcp_input_fixture_path", "executed_source_sha256"
+        ) if k in row
+    }
+
+
 def checked(ref):
     path = ROOT / ref["path"]
     if fingerprint(path) != ref["sha256"]:
@@ -246,8 +254,9 @@ def main():
             # The first legacy report retained its diagnostic only in this summary.
             # Newer executions carry their own diagnostic and source fingerprint.
             sample_fields = ("variant", "case", "strategy", "source_sha256")
+            match_fields = (*sample_fields, "executed_source_sha256")
             prior = {
-                tuple(sample.get(k) for k in sample_fields): sample["diagnostic"]
+                tuple(sample.get(k) for k in match_fields): sample["diagnostic"]
                 for sample in data.get("sampled_native_errors", [])
             }
             samples = {}
@@ -258,10 +267,13 @@ def main():
                 diagnostic = (
                     error.get("Main Error Message") if isinstance(error, dict) else error
                 )
-                diagnostic = diagnostic or prior.get(tuple(r[k] for k in sample_fields))
+                diagnostic = diagnostic or prior.get(
+                    tuple(r.get(k) for k in match_fields)
+                )
                 if diagnostic:
                     samples[r["variant"]] = {k: r[k] for k in sample_fields} | {
-                        "diagnostic": diagnostic
+                        **execution_source_evidence(r),
+                        "diagnostic": diagnostic,
                     }
             data["sampled_native_errors"] = list(samples.values())
         historical_cases(folder, data["executions"])
@@ -300,7 +312,7 @@ def main():
                                 "reason",
                                 "failure",
                             )
-                        }
+                        } | execution_source_evidence(row)
                     )
             line = {
                 "group": group,

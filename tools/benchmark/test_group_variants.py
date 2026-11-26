@@ -7,7 +7,7 @@ from evaluation_provenance import snapshot
 from cn_toolchain import installed_identity
 from cn_result_reuse import assert_resume_compatible, assert_fulminate_reuse_compatible, input_files_identity
 from evaluation_expectations import matches as matches_expected
-from current_test_plan import load_current_plan
+from current_test_plan import executed_source, load_current_plan, select_qcp_input
 
 def compiler_wrapper(plan):
     """Resolve an optional, hash-pinned execution-support compiler wrapper."""
@@ -80,6 +80,8 @@ def main():
         for case in pair['cases']:
             assert case['precondition_valid']
             cid=case['id'];folder=out/vp.parent.name/cid;cached=folder/'receipt.json'
+            selected=select_qcp_input(ROOT,qv['files']['qcp'],case,pair.get('function',plan['function']))
+            qcp_input=ROOT/selected['path']
             if cached.exists():
                 row=json.loads(cached.read_text());assert row['plan_case']==case;assert row['cn_source_sha256']==sha(cn) and row['qcp_source_sha256']==sha(qcp),'Cached inputs changed; choose a new --run-id';report['runs'].append(row);continue
             if folder.exists() and any(folder.iterdir()):raise RuntimeError('Partial execution directory has no receipt; choose a fresh --run-id to preserve failed artifacts: '+str(folder))
@@ -102,31 +104,16 @@ def main():
                     if len(binaries)==1:
                         row['instrumented_binary_sha256']=sha(binaries[0]);m=measure([binaries[0]],folder/'fulminate-test');m['status']='PASS' if m['exit_code']==0 else 'FAIL';row['fulminate_test']=m
                     else:row['fulminate_test']={'status':'NOT_BUILT','wall_seconds':None,'resources':None,'tokens':0,'model_calls':0}
-            qcp_input=qcp
-            if case.get('qcp_input_fixture'):
-                fixture=case['qcp_input_fixture'];qcp_input=ROOT/fixture['path']
-                assert sha(qcp_input)==fixture['sha256'] and fixture['original_source_sha256']==sha(qcp)
-                # A recorded specialization may add only concrete field equality
-                # constraints at the selected original function's Require.
-                function=pair.get('function',plan['function']);original=qcp.read_text();specialized=qcp_input.read_text()
-                prefix=fixture['inserted_require_prefix'];offset=fixture['original_require_offset']
-                assert original[offset:offset+len('Require ')]=='Require '
-                assert specialized==original[:offset]+prefix+original[offset+len('Require '):]
-                assert re.search(r'\b'+re.escape(function)+r'\s*\(',original[:offset])
-                assert fixture['scope']=='CONCRETE_AGGREGATE_FIELD_ENTRY_BINDING'
-                fields=fixture['field_bindings'];parameter=fixture['parameter'];typename=fixture['struct_type']
-                assert re.fullmatch(r'[A-Za-z_]\w*',parameter) and re.fullmatch(r'[A-Za-z_]\w*',typename)
-                assert all(re.fullmatch(r'[A-Za-z_]\w*',name) and type(value) is int for name,value in fields.items())
-                assert prefix=='Require '+' && '.join(parameter+'.'+name+' == '+str(value) for name,value in fields.items())+' && '
-                signature=re.search(r'\b'+re.escape(function)+r'\s*\(\s*struct\s+'+re.escape(typename)+r'\s+'+re.escape(parameter)+r'\s*\)\s*/\*@',original)
-                assert signature and signature.end()<=offset and '*/' not in original[signature.end():offset]
-                row['qcp_input_fixture']=fixture
+            if 'qcp_input_fixture' in case:
+                row['qcp_input_fixture']=case['qcp_input_fixture']
             for mode in ['off','on']:
-                dest=folder/('tespec-'+mode);command=[sys.executable,'-m','spectest','run',qcp_input,'--function',pair.get('function',plan['function']),'--binds',binds,'--execution-mode','all-boundaries','--output-dir',dest/'artifacts','--timeout','30','--compact','--spatial-smt' if mode=='on' else '--no-spatial-smt','--spatial-smt-timeout-ms','2000','-I',str(ROOT/'runtime/qcip/QCP_examples/QCP_demos_human'),*[flag for inc in qv['files']['qcp'].get('include_dirs',[]) for flag in ['-I',str(ROOT/inc)]]]
+                dest=folder/('tespec-'+mode);command=[sys.executable,'-m','spectest','run',qcp_input,'--function',pair.get('function',plan['function']),'--binds',binds,'--execution-mode','all-boundaries','--output-dir',dest/'artifacts','--timeout','30','--compact','--spatial-smt' if mode=='on' else '--no-spatial-smt','--spatial-smt-timeout-ms','2000','-I',str(ROOT/'runtime/qcip/QCP_examples/QCP_demos_human'),*[flag for inc in selected.get('include_dirs',[]) for flag in ['-I',str(ROOT/inc)]]]
                 if re.search(r'include\s+strategies\s+"/home/yangfp/teSpec/benchmark/selection/',qcp.read_text()):
                     locator=ROOT/'tools/benchmark/with_legacy_strategy_locator.py';row['qcp_execution_wrapper']={'path':str(locator.relative_to(ROOT)),'sha256':sha(locator),'policy':'Temporary byte-identical strategy locator compatibility, source unchanged.'};command=[sys.executable,locator,'--source',qcp,'--',*command]
                 m=measure(command,dest,timeout=90)
-                p=dest/'artifacts/report.json';m['report']=str(p.relative_to(ROOT)) if p.exists() else None;data=json.loads(p.read_text()) if p.exists() else {};m['statuses']=[x.get('status') for x in data.get('results',[])];m['status']=m['statuses'][0] if len(m['statuses'])==1 else 'ERROR';row['tespec_'+mode]=m
+                p=dest/'artifacts/report.json';m['report']=str(p.relative_to(ROOT)) if p.exists() else None;data=json.loads(p.read_text()) if p.exists() else {};m['statuses']=[x.get('status') for x in data.get('results',[])];m['status']=m['statuses'][0] if len(m['statuses'])==1 else 'ERROR'
+                m['executed_source_sha256']=executed_source(data,selected['sha256']) if data.get('results') else None
+                row['tespec_'+mode]=m
             row['runtime_dependency_fixtures']=[{'path':str(p.relative_to(ROOT)),'sha256':sha(p)} for p in sorted((qcp.parent.parent/'dependencies').glob('*')) if p.is_file()]
             save(cached,row);report['runs'].append(row);save(out/'results.json',report);print(a.group,vid,cid,row['expected'],'fulminate',row['fulminate_test']['status'],'OFF',row['tespec_off']['status'],'ON',row['tespec_on']['status'],flush=True)
     runs=report['runs'];report['summary']={'configurations':len(plan['pairings']),'variant_language_records':len(variants),'case_pairs':len(runs),'expected':dict(collections.Counter(r['expected'] for r in runs))}

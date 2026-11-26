@@ -9,7 +9,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path[:0] = [str(ROOT), str(Path(__file__).resolve().parent)]
-from tools.benchmark.current_test_plan import load_current_plan
+from tools.benchmark.current_test_plan import load_current_plan, select_qcp_input
 from tools.benchmark.evaluation_expectations import expected
 from tools.benchmark.replay_dll_add import execute
 
@@ -33,9 +33,10 @@ def cases(group):
         if hash_file(ROOT / source["path"]) != source["sha256"]:
             raise ValueError("QCP source changed for " + variant)
         for case in pair["cases"]:
+            selected = select_qcp_input(ROOT, source, case, pair["function"])
             for strategy in ("inline", "modular"):
                 key = (variant, case["id"], strategy)
-                item = (pair["function"], source, dict(case["binds"], id=case["id"]),
+                item = (pair["function"], selected, dict(case["binds"], id=case["id"]),
                         expected(case, "tespec_on", strategy))
                 if key in tasks and tasks[key] != item:
                     raise ValueError("Conflicting shared QCP input: " + repr(key))

@@ -15,7 +15,9 @@ from tempfile import TemporaryDirectory
 ROOT = Path(__file__).resolve().parents[2]
 sys.path[:0] = [str(ROOT), str(Path(__file__).resolve().parent)]
 from spectest.routes import fingerprint, read  # noqa: E402
-from tools.benchmark.current_test_plan import load_current_plan, matches_crash  # noqa: E402
+from tools.benchmark.current_test_plan import (  # noqa: E402
+    executed_source, load_current_plan, matches_crash, select_qcp_input,
+)
 from tools.benchmark.evaluation_expectations import expected  # noqa: E402
 from tools.benchmark.replay_complementary_routes import matrix_hash  # noqa: E402
 
@@ -62,10 +64,11 @@ def inputs(group):
         bits = read(layout)["architecture_bits"] if layout.is_file() else 32
         function = pair.get("function", plan.get("function"))
         for case in pair["cases"]:
+            selected = select_qcp_input(ROOT, source, case, function)
             bind = dict(case["binds"], id=case["id"])
             for strategy in ("inline", "modular"):
                 key = (variant, case["id"], strategy)
-                row = (function, source, bind, expected(case, "tespec_on", strategy))
+                row = (function, selected, bind, expected(case, "tespec_on", strategy))
                 detail = (row, bits, case.get("expected_crash_fault_code"))
                 if tasks.setdefault(key, detail) != detail:
                     raise ValueError(f"conflicting execution identity: {group} {key}")
@@ -98,6 +101,17 @@ def archived_routes(group, tasks):
     }
     if rows.keys() != tasks.keys():
         return None, {}
+    # Older paired archives did not record which specialized C file the
+    # executor opened. Preserve their other rows, but remeasure fixture rows.
+    for key, ((_, src, _, _), _, _) in tasks.items():
+        if "original_source_sha256" not in src:
+            continue
+        old = data["executions"][rows[key]]
+        if (old.get("qcp_input_fixture_path") != src["path"]
+                or old.get("original_source_sha256") != src["original_source_sha256"]
+                or old.get("source_sha256") != src["sha256"]
+                or not re.fullmatch(r"[0-9a-f]{64}", old.get("executed_source_sha256") or "")):
+            del rows[key]
     return path, rows
 
 
@@ -112,6 +126,18 @@ def plan_reference(group, archive, oracle):
     return reference(plan)
 
 
+def reusable_row(row, detail):
+    (_, source, bind, expectation), _, fault = detail
+    if (row.get("source_sha256") != source["sha256"] or row.get("input_sha256") != digest(bind)
+            or row.get("expected") != expectation or row.get("expected_fault_code") != fault):
+        return False
+    return "original_source_sha256" not in source or (
+        row.get("original_source_sha256") == source["original_source_sha256"]
+        and row.get("qcp_input_fixture_path") == source["path"]
+        and bool(re.fullmatch(r"[0-9a-f]{64}", row.get("executed_source_sha256") or ""))
+    )
+
+
 def run_one(task):
     key, detail = task
     (function, source, bind, expectation), bits, fault = detail
@@ -124,6 +150,8 @@ def run_one(task):
         folder = Path(temp)
         job = folder / "job.json"
         source_path = ROOT / source["path"]
+        if fingerprint(source_path) != source["sha256"]:
+            raise ValueError(f"Selected QCP input changed before execution: {source_path}")
         relocated_strategy = None
         if source_path.name == "init_array_rev.qcp.c":
             legacy = (
@@ -180,6 +208,12 @@ def run_one(task):
         ]
         proc = subprocess.run(command, cwd=ROOT, capture_output=True, text=True)
         report = out / "routes.json"
+        native_path = out / "native/report.json"
+        native_report = read(native_path) if native_path.is_file() else None
+        ran_sha = None
+        if native_report is not None:
+            job_sha = fingerprint(source_path) if relocated_strategy else source["sha256"]
+            ran_sha = executed_source(native_report, job_sha)
         if not report.is_file():
             log = out / "measurements/native/stderr.log"
             diagnostic = (
@@ -195,6 +229,7 @@ def run_one(task):
                 "effective_status": "ERROR",
                 "expected_match": False,
                 "failure": diagnostic,
+                "executed_source_sha256": ran_sha,
                 "native": {
                     "wall_seconds": None,
                     "max_process_rss_kib": int(rss.read_text())
@@ -205,8 +240,10 @@ def run_one(task):
                 "auto": None,
             }
         routes = read(report)
+        if native_report is None or routes["native_report_sha256"] != fingerprint(native_path):
+            raise ValueError("Missing or mismatched native report for route result")
         (row,) = routes["cases"]
-        (native,) = read(out / "native/report.json")["results"]
+        (native,) = native_report["results"]
         auto = routes["routes"].get("auto")
         auto_path = out / "auto/report.json"
         final = read(auto_path)["results"][0] if auto_path.is_file() else native
@@ -214,6 +251,7 @@ def run_one(task):
         goal = native.get("vc", {}).get("files", {}).get("goal")
         return {
             "executor_case_id": runtime_id,
+            "executed_source_sha256": ran_sha,
             "relocated_strategy": relocated_strategy,
             "native_status": row["native_status"],
             "auto_status": row["auto_status"],
@@ -221,6 +259,8 @@ def run_one(task):
             "expected_match": status == expectation
             and (status != "CRASH" or matches_crash(final, fault)),
             "reason": final.get("reason"),
+            "execution_completed": native.get("execution_completed"),
+            "precondition_result": native.get("precondition_result"),
             "fault_code": (final.get("executor_error") or {}).get("fault_code"),
             "failure": final.get("executor_error") if status == "ERROR" else None,
             "goal_sha256": fingerprint(goal) if goal and Path(goal).is_file() else None,
@@ -275,18 +315,14 @@ def main():
                     old["binary"] == reference(BINARY)
                     and old["fault_oracle_sha256"] == oracle
                 )
-                previous = {
-                    (r["variant"], r["case"], r["strategy"]): r
-                    for r in old["executions"]
-                    if "archive_row" in r
-                    or (
-                        r.get("native_report_sha256")
-                        and not (
-                            args.retry_execution_errors
-                            and r["native_status"] == "ERROR"
-                        )
-                    )
-                }
+                for row in old["executions"]:
+                    key = row["variant"], row["case"], row["strategy"]
+                    if key not in tasks or not reusable_row(row, tasks[key]):
+                        continue
+                    if row.get("native_report_sha256") and not (
+                        args.retry_execution_errors and row["native_status"] == "ERROR"
+                    ):
+                        previous[key] = row
             jobs = (
                 (key, value)
                 for key, value in tasks.items()
@@ -305,8 +341,13 @@ def main():
                     "expected": expectation,
                     "expected_fault_code": fault,
                 }
+                if "original_source_sha256" in source:
+                    row["original_source_sha256"] = source["original_source_sha256"]
+                    row["qcp_input_fixture_path"] = source["path"]
                 if key in archived:
                     original = published["executions"][archived[key]]
+                    if "executed_source_sha256" in original:
+                        row["executed_source_sha256"] = original["executed_source_sha256"]
                     status = (
                         original["native_status"]
                         if original["auto_status"] == "NOT_RUN"

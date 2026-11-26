@@ -5,6 +5,7 @@ The original plan is kept byte-for-byte for historical evidence audits.
 
 import hashlib
 import json
+import re
 from pathlib import Path
 
 
@@ -16,6 +17,67 @@ FAULT_CODES = {
 
 def sha256(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def select_qcp_input(root, source, case, function):
+    """Bind an optional per-case input to the checked variant source."""
+    if "qcp_input_fixture" not in case:
+        return source
+    fixture = case["qcp_input_fixture"]
+    original = root / source["path"]
+    path = (root / fixture["path"]).resolve()
+    if not path.is_relative_to(root.resolve()) or not path.is_file():
+        raise ValueError(f"Missing or external QCP input fixture: {path}")
+    if fixture["original_source_sha256"] != source["sha256"] or sha256(original) != source["sha256"]:
+        raise ValueError(f"QCP fixture original source hash mismatch: {original}")
+    if sha256(path) != fixture["sha256"]:
+        raise ValueError(f"QCP input fixture hash mismatch: {path}")
+    if fixture.get("scope") == "CONCRETE_AGGREGATE_FIELD_ENTRY_BINDING" or "inserted_require_prefix" in fixture:
+        _check_aggregate_fixture(original, path, function, fixture)
+    return {
+        **source,
+        "path": fixture["path"],
+        "sha256": fixture["sha256"],
+        "original_source_sha256": source["sha256"],
+        "include_dirs": list(dict.fromkeys([str(Path(source["path"]).parent), *source.get("include_dirs", [])])),
+    }
+
+
+def _check_aggregate_fixture(original, path, function, fixture):
+    fields = fixture["field_bindings"]
+    param = fixture["parameter"]
+    typename = fixture["struct_type"]
+    ident = r"[A-Za-z_]\w*"
+    if (fixture["scope"] != "CONCRETE_AGGREGATE_FIELD_ENTRY_BINDING" or not fields
+            or not all(re.fullmatch(ident, v) for v in (param, typename, *fields))
+            or any(type(value) is not int for value in fields.values())):
+        raise ValueError(f"Invalid aggregate field binding: {path}")
+    prefix = "Require " + " && ".join(f"{param}.{k} == {v}" for k, v in fields.items()) + " && "
+    contents = original.read_bytes().decode("utf-8")
+    offset = fixture["original_require_offset"]
+    signature = re.compile(r"\b" + re.escape(function) + r"\s*\(\s*struct\s+" +
+                           re.escape(typename) + r"\s+" + re.escape(param) + r"\s*\)\s*/\*@")
+    if (type(offset) is not int or offset < 0 or not contents.startswith("Require ", offset)
+            or not any("*/" not in contents[m.end():offset] for m in signature.finditer(contents, 0, offset))
+            or prefix != fixture["inserted_require_prefix"]
+            or path.read_bytes() != (contents[:offset] + prefix + contents[offset + len("Require "):]).encode("utf-8")):
+        raise ValueError(f"Fixture does not specialize the selected Require: {path}")
+
+
+def executed_source(report, job_source_sha256):
+    if report["provenance"]["source_sha256"] != job_source_sha256:
+        raise ValueError("Native report used a different job source")
+    (native,) = report["results"]
+    command = native.get("command")
+    if not command:
+        return None
+    generated = Path(native["generated_source"])
+    if [arg for arg in command if arg.startswith("--input-file=")] != [f"--input-file={generated}"]:
+        raise ValueError("Native command and generated source disagree")
+    actual = sha256(generated)
+    if native.get("generated_source_sha256", actual) != actual:
+        raise ValueError("Executed source hash mismatch")
+    return actual
 
 
 def matches_crash(result, code):
