@@ -51,7 +51,7 @@ struct State arrive(struct State s)
   struct State temp = s;
   temp.W_A = s.W_A - 1;
   if (s.W_D > 0) {
-    temp = increment_Plane_Counter(temp) /*@ where(default) s_callee = temp */;
+    temp = increment_Plane_Counter(temp) /*@ where(default) a0 = temp.ModeA, d0 = temp.ModeD, wa0 = temp.W_A, wd0 = temp.W_D, t0 = temp.Runway_Time, c0 = temp.Plane_Counter */;
   }
   return temp;
 }
@@ -64,7 +64,7 @@ struct State depart(struct State s)
   struct State temp = s;
   temp.W_D = s.W_D - 1;
   if (s.W_A > 0) {
-    temp = increment_Plane_Counter(temp) /*@ where(default) s_callee = temp */;
+    temp = increment_Plane_Counter(temp) /*@ where(default) a0 = temp.ModeA, d0 = temp.ModeD, wa0 = temp.W_A, wd0 = temp.W_D, t0 = temp.Runway_Time, c0 = temp.Plane_Counter */;
   }
   return temp;
 }
@@ -97,51 +97,51 @@ struct State tick(struct State s)
     {
       if (s.Runway_Time == 5)
       {
-        s = reset_Runway_Time(s) /*@ where(default) s_callee = s */;
+        s = reset_Runway_Time(s) /*@ where(default) a0 = s.ModeA, d0 = s.ModeD, wa0 = s.W_A, wd0 = s.W_D, t0 = s.Runway_Time, c0 = s.Plane_Counter */;
       } else {
-        s = increment_Runway_Time(s) /*@ where(default) s_callee = s */;
+        s = increment_Runway_Time(s) /*@ where(default) a0 = s.ModeA, d0 = s.ModeD, wa0 = s.W_A, wd0 = s.W_D, t0 = s.Runway_Time, c0 = s.Plane_Counter */;
       }
       return s;
     }
     else if (s.ModeA == ACTIVE && s.W_A > 0 && s.Plane_Counter < 3) {
-      s = arrive(s) /*@ where(default) s_callee = s */;
-      s = increment_Runway_Time(s) /*@ where(default) s_callee = s */;
+      s = arrive(s) /*@ where(default) a0 = s.ModeA, d0 = s.ModeD, wa0 = s.W_A, wd0 = s.W_D, t0 = s.Runway_Time, c0 = s.Plane_Counter */;
+      s = increment_Runway_Time(s) /*@ where(default) a0 = s.ModeA, d0 = s.ModeD, wa0 = s.W_A, wd0 = s.W_D, t0 = s.Runway_Time, c0 = s.Plane_Counter */;
       return s;
     }
     else if (s.ModeD == ACTIVE && s.W_D > 0 && s.Plane_Counter < 3) {
-      s = depart(s) /*@ where(default) s_callee = s */;
-      s = increment_Runway_Time(s) /*@ where(default) s_callee = s */;
+      s = depart(s) /*@ where(default) a0 = s.ModeA, d0 = s.ModeD, wa0 = s.W_A, wd0 = s.W_D, t0 = s.Runway_Time, c0 = s.Plane_Counter */;
+      s = increment_Runway_Time(s) /*@ where(default) a0 = s.ModeA, d0 = s.ModeD, wa0 = s.W_A, wd0 = s.W_D, t0 = s.Runway_Time, c0 = s.Plane_Counter */;
       return s;
     }
     else {
       if (s.ModeA == ACTIVE) {
-        s = reset_Plane_Counter(s) /*@ where(default) s_callee = s */;
-        s = switch_modes(s) /*@ where(default) s_callee = s */;
+        s = reset_Plane_Counter(s) /*@ where(default) a0 = s.ModeA, d0 = s.ModeD, wa0 = s.W_A, wd0 = s.W_D, t0 = s.Runway_Time, c0 = s.Plane_Counter */;
+        s = switch_modes(s) /*@ where(default) a0 = s.ModeA, d0 = s.ModeD, wa0 = s.W_A, wd0 = s.W_D, t0 = s.Runway_Time, c0 = s.Plane_Counter */;
         if (s.W_D > 0) {
-          s = depart(s) /*@ where(default) s_callee = s */;
-          s = increment_Runway_Time(s) /*@ where(default) s_callee = s */;
+          s = depart(s) /*@ where(default) a0 = s.ModeA, d0 = s.ModeD, wa0 = s.W_A, wd0 = s.W_D, t0 = s.Runway_Time, c0 = s.Plane_Counter */;
+          s = increment_Runway_Time(s) /*@ where(default) a0 = s.ModeA, d0 = s.ModeD, wa0 = s.W_A, wd0 = s.W_D, t0 = s.Runway_Time, c0 = s.Plane_Counter */;
         }
         return s;
       }
       else if (s.ModeD == ACTIVE) {
-        s = reset_Plane_Counter(s) /*@ where(default) s_callee = s */;
-        s = switch_modes(s) /*@ where(default) s_callee = s */;
+        s = reset_Plane_Counter(s) /*@ where(default) a0 = s.ModeA, d0 = s.ModeD, wa0 = s.W_A, wd0 = s.W_D, t0 = s.Runway_Time, c0 = s.Plane_Counter */;
+        s = switch_modes(s) /*@ where(default) a0 = s.ModeA, d0 = s.ModeD, wa0 = s.W_A, wd0 = s.W_D, t0 = s.Runway_Time, c0 = s.Plane_Counter */;
         if (s.W_A > 0) {
-          s = arrive(s) /*@ where(default) s_callee = s */;
-          s = increment_Runway_Time(s) /*@ where(default) s_callee = s */;
+          s = arrive(s) /*@ where(default) a0 = s.ModeA, d0 = s.ModeD, wa0 = s.W_A, wd0 = s.W_D, t0 = s.Runway_Time, c0 = s.Plane_Counter */;
+          s = increment_Runway_Time(s) /*@ where(default) a0 = s.ModeA, d0 = s.ModeD, wa0 = s.W_A, wd0 = s.W_D, t0 = s.Runway_Time, c0 = s.Plane_Counter */;
         }
         return s;
       }
       else {
         if (s.W_A > 0) {
           s.ModeA = ACTIVE;
-          s = arrive(s) /*@ where(default) s_callee = s */;
-          s = increment_Runway_Time(s) /*@ where(default) s_callee = s */;
+          s = arrive(s) /*@ where(default) a0 = s.ModeA, d0 = s.ModeD, wa0 = s.W_A, wd0 = s.W_D, t0 = s.Runway_Time, c0 = s.Plane_Counter */;
+          s = increment_Runway_Time(s) /*@ where(default) a0 = s.ModeA, d0 = s.ModeD, wa0 = s.W_A, wd0 = s.W_D, t0 = s.Runway_Time, c0 = s.Plane_Counter */;
           return s;
         } else if (s.W_D > 0) {
           s.ModeD = ACTIVE;
-          s = depart(s) /*@ where(default) s_callee = s */;
-          s = increment_Runway_Time(s) /*@ where(default) s_callee = s */;
+          s = depart(s) /*@ where(default) a0 = s.ModeA, d0 = s.ModeD, wa0 = s.W_A, wd0 = s.W_D, t0 = s.Runway_Time, c0 = s.Plane_Counter */;
+          s = increment_Runway_Time(s) /*@ where(default) a0 = s.ModeA, d0 = s.ModeD, wa0 = s.W_A, wd0 = s.W_D, t0 = s.Runway_Time, c0 = s.Plane_Counter */;
           return s;
         } else {
           s.ModeA = ACTIVE;

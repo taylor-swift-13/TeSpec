@@ -1,6 +1,6 @@
 # teSpec 不符合预期的专项台账
 
-跑道组仅重跑计划指定专用输入的 120 项。translation1 的 60 项在 QCP 解析规约时超出分支上限，仍为预期 PASS、实测 ERROR。另有 translation4 的 24 项沿用原结果。已对照普通 QCP 定位到调用标注把按值结构体作为逻辑值传给 With 参数。例如 `arrive_translation4_1` 第 54 行的 `where(default) s_callee = temp`。在临时对照中只移除这一条标注，普通 QCP 生成了 VC，teSpec 的 inline 和 modular 均在原生阶段通过。[当前逐案错误、输入哈希与诊断](../runway__funcs2/tespec/routes.json) · [上次全量重跑](https://github.com/taylor-swift-13/TeSpec/blob/4c402934575bd49b30dceddc35dc185584ae19b0/benchmark/results/runway__funcs2/tespec/routes.json)
+跑道组剩余 60 项非预期 ERROR，全部属于 translation1 的 QCP 规约解析分支上限。translation4 的 20 处调用注解已改为绑定六个标量入口字段。该变体的 30 个输入在 inline 和 modular 下全部原生 PASS，包括此前报错的 24 项。[当前逐案结果](../runway__funcs2/tespec/routes.json) · [修正前的异常记录](https://github.com/taylor-swift-13/TeSpec/blob/6fe4e91b480dc89acd25daa4cb1465642eeeeed9/benchmark/results/tespec-unexpected/README.md)
 
 跑道组按值结构体规约复测了第 3、4、5 版的 180 个执行配置。原冻结结果中的 135 个 UNKNOWN 当时得到 123 PASS、9 UNKNOWN 和 3 个非预期 FAIL。新规约全部 180 个配置当时有 21 UNKNOWN、24 ERROR 和 3 个非预期 FAIL。3 个 FAIL 均为 `tick_translation3_{1,3,6}` 的 inline 模式，实际 C 执行的纯前后条件通过，Auto 则报告调用边界父 VC 反例。逐例状态、剩余义务、成本和旧规约同输入对照见[上次逐输入复测记录](https://github.com/taylor-swift-13/TeSpec/blob/1d35ccecad165499d931c3d26a8e5695ef9288d3/benchmark/results/runway__funcs2/tespec/routes.json)。
 
