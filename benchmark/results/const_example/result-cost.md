@@ -1,48 +1,37 @@
-# const_example：结果与成本表
+# const_example 评测结果与成本
 
-完整状态：已齐全。语言版本记录 2 条；主程序：cn_original:const_example。
+| 工具 | 结果或覆盖 |
+|---|---|
+| cn | VERIFIED |
+| qcp | VERIFIED_KERNEL_CHECKED |
+| fulminate | {"case_pairs": 7, "correct": 7, "native_status_counts": {"PASS": 7}} |
 
-| 工具 | 范围 | 结果／预期匹配 | 测试对数 |
-|---|---|---|---:|
-| cn | 主程序全称验证一次 | VERIFIED | — |
-| qcp | 主程序全称验证一次 | VERIFIED_KERNEL_CHECKED | — |
-| fulminate | 各变体的有限测试 | 7/7 | 7 |
-| tespec | 各变体的有限测试 | 7/7 | 7 |
+| 策略 | 执行数 | Auto 符合预期 | ITP 符合预期（含原生） | 需要 ITP | 已有本轮回执 |
+|---|---:|---:|---:|---:|---:|
+| inline | 7 | 7 | 7 | 0 | 0 |
+| modular | 7 | 7 | 7 | 0 | 0 |
 
-| 工具 | 阶段 | 时间（秒） | 峰值进程内存（MiB） | token | 口径 |
-|---|---|---:|---:|---:|---|
-| cn | 主程序验证 | 0.1145 | 41.8906 | 0.0000 | 一次主程序验证 |
-| qcp | VC 生成与自动处理 | 0.0161 | 4.7734 | 0.0000 | 已测工作总量 |
-| qcp | agent 填写证明 | 39.6250 | 191.4648 | 53629.0000 | 一次主程序验证 |
-| qcp | Coq 编译与假设审计 | 1.9494 | 563.5625 | 0.0000 | 一次主程序验证 |
-| qcp | 独立内核检查 | 131.1420 | 1982.9102 | 0.0000 | 一次主程序验证 |
-| qcp | ITP 平均合计 | 172.7165 | 1982.9102 | 53629.0000 | 一次主程序验证 |
-| fulminate | 插桩、编译与首次执行 | 0.9042 | 41.9141 | 0.0000 | 已测工作总量 |
-| fulminate | 单独运行测试 | 0.0274 | 1.1055 | 0.0000 | 已测工作总量 |
-| tespec | 测试执行、VC 生成与自动处理 | 2.1572 | 19.4453 | 0.0000 | 已测工作总量 |
-| tespec | agent 填写证明 | 0.0000 | — | 0.0000 | 本批无需该阶段，总成本为 0；均值不适用 |
-| tespec | Coq 编译与假设审计 | 0.0000 | — | 0.0000 | 本批无需该阶段，总成本为 0；均值不适用 |
-| tespec | 独立内核检查 | 0.0000 | — | 0.0000 | 本批无需该阶段，总成本为 0；均值不适用 |
-| tespec | ITP 平均合计 | 0.0000 | — | 0.0000 | 本批无需 ITP，总成本为 0；均值不适用 |
-| tespec --spatial-smt | 测试执行、VC 生成与空间 SMT | 0.2296 | 19.3823 | 0.0000 | 每次测试执行均值；内存为逐次峰值均值 |
-| tespec --spatial-smt | ITP（无需） | 0.0000 | — | 0.0000 | 本批无需额外 ITP，总成本为 0；均值不适用 |
+| 工具 | 策略 | 阶段 | 数据口径 | 耗时 s | 单进程峰值 KiB¹ | token | 分支计数覆盖 |
+|---|---|---|---|---:|---:|---:|---:|
+| cn | — | 主程序验证 | 一次主程序验证 | 0.1145 | 42896.0000 | 0 | — |
+| qcp | — | VC 生成与自动处理 | 已测工作总量 | 0.0161 | 4888.0000 | 0 | — |
+| qcp | — | agent 填写证明 | 一次主程序验证 | 39.6250 | 196060.0000 | 53629 | — |
+| qcp | — | Coq 编译与假设审计 | 一次主程序验证 | 1.9494 | 577088.0000 | 0 | — |
+| qcp | — | 独立内核检查 | 一次主程序验证 | 131.1420 | 2030500.0000 | 0 | — |
+| qcp | — | ITP 平均合计 | 一次主程序验证 | 172.7165 | 2030500.0000 | 53629 | — |
+| fulminate | — | 插桩、编译与首次执行 | 已测工作总量 | 0.9042 | 42920.0000 | 0 | — |
+| fulminate | — | 单独运行测试 | 已测工作总量 | 0.0274 | 1132.0000 | 0 | — |
+| tespec | inline | native | 7/7 current_execution | 0.8211 | 21020 | 0 | 7/7 |
+| tespec | inline | auto | 0/0 current_execution | 0 | — | 0 | — |
+| tespec | inline | itp_model | 0/0 current_execution | 0 | — | 0 | — |
+| tespec | inline | itp_coq | 0/0 current_execution | 0 | — | 0 | — |
+| tespec | inline | itp_kernel | 0/0 current_execution | 0 | — | 0 | — |
+| tespec | modular | native | 7/7 current_execution | 0.8465 | 20908 | 0 | 7/7 |
+| tespec | modular | auto | 0/0 current_execution | 0 | — | 0 | — |
+| tespec | modular | itp_model | 0/0 current_execution | 0 | — | 0 | — |
+| tespec | modular | itp_coq | 0/0 current_execution | 0 | — | 0 | — |
+| tespec | modular | itp_kernel | 0/0 current_execution | 0 | — | 0 | — |
 
-ITP 以一次测试执行的所有待处理 VC 为单位，只展示平均开销；read 的 12 次所需 ITP 各自独立测量后取平均。内存不将总峰值除以次数；read ITP 展示逐次实测峰值的平均值。ITP 合计行与其三个分项重叠，不能再次相加。CN/QCP 与两种测试工具的对象和次数不同。
+¹ 历史成本保留原始单位口径，包括执行峰值的均值。当前阶段显示已测部分的合计耗时及最大单进程峰值。
 
-缺测记为待补齐，不表示已有历史证据作废；须绑定匹配证据后发布。原始证据、计量来源与缺项见 [result-cost.json](result-cost.json)，成本 CSV 见 [result-cost.csv](result-cost.csv)。
-
-## teSpec 空间 SMT 模式
-
-| 项目 | 关闭 | 开启 |
-|---|---:|---:|
-| 原生 PASS / FAIL / UNKNOWN / ERROR | 7 / 0 / 0 / 0 | 7 / 0 / 0 / 0 |
-| 最终预期匹配（含所需 ITP） | 7/7 | 7/7 |
-| 每次执行平均时间（秒） | 0.308176 | 0.229561 |
-| 平均单次峰值 RSS（MiB） | 19.3873 | 19.3823 |
-| 需 ITP 判定的执行数 | 0 | 0 |
-
-模式逐次结果、成本和证书范围见 [模式对照](20261016-evaluation-bindings/comparison.md)。无需 ITP 时成本记 0，均值和峰值不适用。SMT 决策不作为 Coq 证书。
-
-## modular 补充评测
-
-既有完整状态沿用原正式评测范围。[modular 逐次结果与成本](modular/20261020/result-cost.md)：7 对输入，空间 SMT OFF/ON；原生执行齐全=True，全部预期已判定=True。UNKNOWN 与未完成 ITP 单列，不计成功。
+[逐阶段成本与分支计数](result-cost.csv) · [结构化结果与证据引用](result-cost.json) · [逐执行记录](tespec/current-executions.json)

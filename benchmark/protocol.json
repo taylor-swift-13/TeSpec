@@ -81,7 +81,24 @@
       "Assign actual model tokens to agent proof filling only; unmeasured usage must not be zero.",
       "Do not claim isolated pure generation timing when only combined native execution/automatic-processing timing exists.",
       "Sum stage time and tokens once; complete memory is the largest stage process peak."
-    ]
+    ],
+    "model_policy": {
+      "allowed_route": "tespec/itp",
+      "model": "gpt-6.1-sol",
+      "reasoning_effort": "medium",
+      "tokens": "Use actual turn.completed events. Include failed attempts and repairs. Preserve historical QCP proof generation costs with the original receipt."
+    },
+    "branch_evaluation": {
+      "scope": "shared native execution, before either residual route",
+      "metrics": [
+        "pure_queries",
+        "evaluated_true",
+        "evaluated_false",
+        "smt_fallback"
+      ],
+      "source": "executor.json /spec_test/branch_evaluation",
+      "missing": "null if executor has not reported counters; tool stages that do not execute program branches are inapplicable"
+    }
   },
   "itp_accounting_unit": {
     "unit": "one_test_execution_all_unresolved_vcs",
@@ -115,7 +132,15 @@
     ],
     "itp_presentation": "Per test-execution mean over independently measured executions requiring ITP, all its VCs combined. read uses 12 separate proof tasks and kernel replays; no shared-batch estimate. Peak memory is not divided.",
     "missing_values": "null/PENDING, never invent zero",
-    "publisher": "tools/benchmark/build_group_cost_tables.py"
+    "publisher": "tools/benchmark/build_group_cost_tables.py",
+    "current_view": {
+      "schema": "benchmark-current-evaluation/v1",
+      "json_pointer": "/current_evaluation",
+      "publisher": "tools/benchmark/publish_current_tables.py",
+      "audit": "tools/benchmark/audit_current_tables.py",
+      "executions": "tespec/current-executions.json",
+      "itp": "tespec/current-itp.json"
+    }
   },
   "optional_spatial_smt_evaluation": {
     "policy": "Matched explicit OFF/ON runs with unchanged sources/specs/inputs; retain raw statuses and current tool-source fingerprints.",

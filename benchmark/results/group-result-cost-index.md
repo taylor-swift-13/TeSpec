@@ -25,7 +25,7 @@
 | [quadruple](quadruple/result-cost.md) | 已齐全 |
 | [queue_all](queue_all/result-cost.md) | 待补齐 |
 | [read](read/result-cost.md) | 已齐全 |
-| [ref](ref/result-cost.md) | 待补齐 |
+| [ref](ref/result-cost.md) | 已齐全 |
 | [ref_greater](ref_greater/result-cost.md) | 待补齐 |
 | [runtime-extras__bad_free](runtime-extras__bad_free/result-cost.md) | 待补齐 |
 | [runtime-extras__double_free](runtime-extras__double_free/result-cost.md) | 待补齐 |

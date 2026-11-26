@@ -19,7 +19,7 @@
             "right": []
           },
           "expected": "PASS",
-          "cn_body": "struct node *n=cn_malloc(sizeof(struct node)); n->data=(-2147483647 - 1); n->prev=0; n->next=0; struct node_and_int *pair=remove(n); free_node_and_int(pair);",
+          "cn_body": "struct node *n=malloc_node(); n->data=(-2147483647 - 1); n->prev=0; n->next=0; struct node_and_int *pair=remove(n); if (!pair || pair->data != (-2147483647 - 1) || pair->node != 0) return 1; free_node_and_int(pair);",
           "binds": {
             "args": {
               "n": 4096
@@ -47,7 +47,7 @@
             "right": []
           },
           "expected": "PASS",
-          "cn_body": "struct node *n=cn_malloc(sizeof(struct node)); n->data=-1; n->prev=0; n->next=0; struct node_and_int *pair=remove(n); free_node_and_int(pair);",
+          "cn_body": "struct node *n=malloc_node(); n->data=-1; n->prev=0; n->next=0; struct node_and_int *pair=remove(n); if (!pair || pair->data != -1 || pair->node != 0) return 1; free_node_and_int(pair);",
           "binds": {
             "args": {
               "n": 4096
@@ -75,7 +75,7 @@
             "right": []
           },
           "expected": "PASS",
-          "cn_body": "struct node *n=cn_malloc(sizeof(struct node)); n->data=0; n->prev=0; n->next=0; struct node_and_int *pair=remove(n); free_node_and_int(pair);",
+          "cn_body": "struct node *n=malloc_node(); n->data=0; n->prev=0; n->next=0; struct node_and_int *pair=remove(n); if (!pair || pair->data != 0 || pair->node != 0) return 1; free_node_and_int(pair);",
           "binds": {
             "args": {
               "n": 4096
@@ -103,7 +103,7 @@
             "right": []
           },
           "expected": "PASS",
-          "cn_body": "struct node *n=cn_malloc(sizeof(struct node)); n->data=1; n->prev=0; n->next=0; struct node_and_int *pair=remove(n); free_node_and_int(pair);",
+          "cn_body": "struct node *n=malloc_node(); n->data=1; n->prev=0; n->next=0; struct node_and_int *pair=remove(n); if (!pair || pair->data != 1 || pair->node != 0) return 1; free_node_and_int(pair);",
           "binds": {
             "args": {
               "n": 4096
@@ -131,7 +131,7 @@
             "right": []
           },
           "expected": "PASS",
-          "cn_body": "struct node *n=cn_malloc(sizeof(struct node)); n->data=5; n->prev=0; n->next=0; struct node_and_int *pair=remove(n); free_node_and_int(pair);",
+          "cn_body": "struct node *n=malloc_node(); n->data=5; n->prev=0; n->next=0; struct node_and_int *pair=remove(n); if (!pair || pair->data != 5 || pair->node != 0) return 1; free_node_and_int(pair);",
           "binds": {
             "args": {
               "n": 4096
@@ -159,7 +159,7 @@
             "right": []
           },
           "expected": "PASS",
-          "cn_body": "struct node *n=cn_malloc(sizeof(struct node)); n->data=2147483647; n->prev=0; n->next=0; struct node_and_int *pair=remove(n); free_node_and_int(pair);",
+          "cn_body": "struct node *n=malloc_node(); n->data=2147483647; n->prev=0; n->next=0; struct node_and_int *pair=remove(n); if (!pair || pair->data != 2147483647 || pair->node != 0) return 1; free_node_and_int(pair);",
           "binds": {
             "args": {
               "n": 4096
@@ -189,7 +189,7 @@
             "right": []
           },
           "expected": "PASS",
-          "cn_body": "struct node *n=cn_malloc(sizeof(struct node)); n->data=7; n->prev=0; n->next=0; struct node *l=cn_malloc(sizeof(struct node)); l->data=2; l->prev=0; l->next=n; n->prev=l; struct node_and_int *pair=remove(n); free_node_and_int(pair); free_node(l);",
+          "cn_body": "struct node *n=malloc_node(); n->data=7; n->prev=0; n->next=0; struct node *l=malloc_node(); l->data=2; l->prev=0; l->next=n; n->prev=l; struct node_and_int *pair=remove(n); if (!pair || pair->data != 7 || pair->node != l) return 1; if (l->data != 2 || l->prev != 0 || l->next != 0) return 2; free_node_and_int(pair); free_node(l);",
           "binds": {
             "args": {
               "n": 4096
@@ -221,7 +221,7 @@
             ]
           },
           "expected": "PASS",
-          "cn_body": "struct node *n=cn_malloc(sizeof(struct node)); n->data=7; n->prev=0; n->next=0; struct node *r=cn_malloc(sizeof(struct node)); r->data=3; r->prev=n; r->next=0; n->next=r; struct node_and_int *pair=remove(n); free_node_and_int(pair); free_node(r);",
+          "cn_body": "struct node *n=malloc_node(); n->data=7; n->prev=0; n->next=0; struct node *r=malloc_node(); r->data=3; r->prev=n; r->next=0; n->next=r; struct node_and_int *pair=remove(n); if (!pair || pair->data != 7 || pair->node != r) return 1; if (r->data != 3 || r->prev != 0 || r->next != 0) return 3; free_node_and_int(pair); free_node(r);",
           "binds": {
             "args": {
               "n": 4096
@@ -255,7 +255,7 @@
             ]
           },
           "expected": "PASS",
-          "cn_body": "struct node *n=cn_malloc(sizeof(struct node)); n->data=7; n->prev=0; n->next=0; struct node *l=cn_malloc(sizeof(struct node)); l->data=2; l->prev=0; l->next=n; n->prev=l; struct node *r=cn_malloc(sizeof(struct node)); r->data=3; r->prev=n; r->next=0; n->next=r; struct node_and_int *pair=remove(n); free_node_and_int(pair); free_node(l); free_node(r);",
+          "cn_body": "struct node *n=malloc_node(); n->data=7; n->prev=0; n->next=0; struct node *l=malloc_node(); l->data=2; l->prev=0; l->next=n; n->prev=l; struct node *r=malloc_node(); r->data=3; r->prev=n; r->next=0; n->next=r; struct node_and_int *pair=remove(n); if (!pair || pair->data != 7 || pair->node != r) return 1; if (l->data != 2 || l->prev != 0 || l->next != r) return 2; if (r->data != 3 || r->prev != l || r->next != 0) return 3; free_node_and_int(pair); free_node(l); free_node(r);",
           "binds": {
             "args": {
               "n": 4096
@@ -294,7 +294,7 @@
             "right": []
           },
           "expected": "PASS",
-          "cn_body": "struct node *n=cn_malloc(sizeof(struct node)); n->data=(-2147483647 - 1); n->prev=0; n->next=0; struct node_and_int *pair=remove(n); free_node_and_int(pair);",
+          "cn_body": "struct node *n=malloc_node(); n->data=(-2147483647 - 1); n->prev=0; n->next=0; struct node_and_int *pair=remove(n); if (!pair || pair->data != (-2147483647 - 1) || pair->node != 0) return 1; free_node_and_int(pair);",
           "binds": {
             "args": {
               "n": 4096
@@ -322,7 +322,7 @@
             "right": []
           },
           "expected": "PASS",
-          "cn_body": "struct node *n=cn_malloc(sizeof(struct node)); n->data=-1; n->prev=0; n->next=0; struct node_and_int *pair=remove(n); free_node_and_int(pair);",
+          "cn_body": "struct node *n=malloc_node(); n->data=-1; n->prev=0; n->next=0; struct node_and_int *pair=remove(n); if (!pair || pair->data != -1 || pair->node != 0) return 1; free_node_and_int(pair);",
           "binds": {
             "args": {
               "n": 4096
@@ -350,7 +350,7 @@
             "right": []
           },
           "expected": "PASS",
-          "cn_body": "struct node *n=cn_malloc(sizeof(struct node)); n->data=0; n->prev=0; n->next=0; struct node_and_int *pair=remove(n); free_node_and_int(pair);",
+          "cn_body": "struct node *n=malloc_node(); n->data=0; n->prev=0; n->next=0; struct node_and_int *pair=remove(n); if (!pair || pair->data != 0 || pair->node != 0) return 1; free_node_and_int(pair);",
           "binds": {
             "args": {
               "n": 4096
@@ -378,7 +378,7 @@
             "right": []
           },
           "expected": "PASS",
-          "cn_body": "struct node *n=cn_malloc(sizeof(struct node)); n->data=1; n->prev=0; n->next=0; struct node_and_int *pair=remove(n); free_node_and_int(pair);",
+          "cn_body": "struct node *n=malloc_node(); n->data=1; n->prev=0; n->next=0; struct node_and_int *pair=remove(n); if (!pair || pair->data != 1 || pair->node != 0) return 1; free_node_and_int(pair);",
           "binds": {
             "args": {
               "n": 4096
@@ -406,7 +406,7 @@
             "right": []
           },
           "expected": "PASS",
-          "cn_body": "struct node *n=cn_malloc(sizeof(struct node)); n->data=5; n->prev=0; n->next=0; struct node_and_int *pair=remove(n); free_node_and_int(pair);",
+          "cn_body": "struct node *n=malloc_node(); n->data=5; n->prev=0; n->next=0; struct node_and_int *pair=remove(n); if (!pair || pair->data != 5 || pair->node != 0) return 1; free_node_and_int(pair);",
           "binds": {
             "args": {
               "n": 4096
@@ -434,7 +434,7 @@
             "right": []
           },
           "expected": "PASS",
-          "cn_body": "struct node *n=cn_malloc(sizeof(struct node)); n->data=2147483647; n->prev=0; n->next=0; struct node_and_int *pair=remove(n); free_node_and_int(pair);",
+          "cn_body": "struct node *n=malloc_node(); n->data=2147483647; n->prev=0; n->next=0; struct node_and_int *pair=remove(n); if (!pair || pair->data != 2147483647 || pair->node != 0) return 1; free_node_and_int(pair);",
           "binds": {
             "args": {
               "n": 4096
@@ -464,7 +464,7 @@
             "right": []
           },
           "expected": "PASS",
-          "cn_body": "struct node *n=cn_malloc(sizeof(struct node)); n->data=7; n->prev=0; n->next=0; struct node *l=cn_malloc(sizeof(struct node)); l->data=2; l->prev=0; l->next=n; n->prev=l; struct node_and_int *pair=remove(n); free_node_and_int(pair); free_node(l);",
+          "cn_body": "struct node *n=malloc_node(); n->data=7; n->prev=0; n->next=0; struct node *l=malloc_node(); l->data=2; l->prev=0; l->next=n; n->prev=l; struct node_and_int *pair=remove(n); if (!pair || pair->data != 7 || pair->node != l) return 1; if (l->data != 2 || l->prev != 0 || l->next != 0) return 2; free_node_and_int(pair); free_node(l);",
           "binds": {
             "args": {
               "n": 4096
@@ -496,7 +496,7 @@
             ]
           },
           "expected": "PASS",
-          "cn_body": "struct node *n=cn_malloc(sizeof(struct node)); n->data=7; n->prev=0; n->next=0; struct node *r=cn_malloc(sizeof(struct node)); r->data=3; r->prev=n; r->next=0; n->next=r; struct node_and_int *pair=remove(n); free_node_and_int(pair); free_node(r);",
+          "cn_body": "struct node *n=malloc_node(); n->data=7; n->prev=0; n->next=0; struct node *r=malloc_node(); r->data=3; r->prev=n; r->next=0; n->next=r; struct node_and_int *pair=remove(n); if (!pair || pair->data != 7 || pair->node != r) return 1; if (r->data != 3 || r->prev != 0 || r->next != 0) return 3; free_node_and_int(pair); free_node(r);",
           "binds": {
             "args": {
               "n": 4096
@@ -530,7 +530,7 @@
             ]
           },
           "expected": "PASS",
-          "cn_body": "struct node *n=cn_malloc(sizeof(struct node)); n->data=7; n->prev=0; n->next=0; struct node *l=cn_malloc(sizeof(struct node)); l->data=2; l->prev=0; l->next=n; n->prev=l; struct node *r=cn_malloc(sizeof(struct node)); r->data=3; r->prev=n; r->next=0; n->next=r; struct node_and_int *pair=remove(n); free_node_and_int(pair); free_node(l); free_node(r);",
+          "cn_body": "struct node *n=malloc_node(); n->data=7; n->prev=0; n->next=0; struct node *l=malloc_node(); l->data=2; l->prev=0; l->next=n; n->prev=l; struct node *r=malloc_node(); r->data=3; r->prev=n; r->next=0; n->next=r; struct node_and_int *pair=remove(n); if (!pair || pair->data != 7 || pair->node != r) return 1; if (l->data != 2 || l->prev != 0 || l->next != r) return 2; if (r->data != 3 || r->prev != l || r->next != 0) return 3; free_node_and_int(pair); free_node(l); free_node(r);",
           "binds": {
             "args": {
               "n": 4096
@@ -559,5 +559,14 @@
   ],
   "expectation_basis": "All three records, nine non-null legal DLL states covering singleton, head, tail and interior. Six signed payloads on singleton including extremes. Both CN implementations have same pointer update/free/return logic; orig.broken lacks contract, not a wrong C implementation. Corresponding QCP supplied contract is a corrected specification variant, not proof of original missing CN spec. Eighteen CN/QCP pair executions contain nine distinct QCP states. No null current accepted.",
   "cn_trust_qualification": "Original annotated remove untrusted; external node/pair allocator and free contracts assumed. Unannotated orig.broken has no function contract; cannot count its absent ownership contract as checked even if C execution succeeds.",
-  "cn_acceptance_verdict": "ACCEPTED_UNTRUSTED_ORIGINAL_FUNCTION_MODULE_WITH_HEADERS"
+  "cn_acceptance_verdict": "ACCEPTED_UNTRUSTED_ORIGINAL_FUNCTION_MODULE_WITH_HEADERS",
+  "fulminate_observations": {
+    "driver_semantic_oracle": true,
+    "checks": [
+      "returned pair is non-null and its data equals the removed payload",
+      "returned node equals original successor, else predecessor, else null",
+      "surviving node data and both next/prev links match the concrete input with the current node removed"
+    ],
+    "contract_scope": "Only the annotated CN variant has a remove function contract; both variants execute the same explicit C observations after remove."
+  }
 }

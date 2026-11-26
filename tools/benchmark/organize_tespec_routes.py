@@ -2,6 +2,7 @@
 """Publish compact current Auto results and references to archived ITP evidence."""
 
 import argparse
+from contextlib import nullcontext
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 import hashlib
@@ -138,7 +139,24 @@ def reusable_row(row, detail):
     )
 
 
-def run_one(task):
+def branch_counts(native):
+    raw = native.get("stdout")
+    if not raw or not Path(raw).is_file():
+        return None
+    try:
+        report = read(raw)
+    except (UnicodeError, ValueError):
+        return None
+    counts = report.get("spec_test", {}).get("branch_evaluation")
+    if not isinstance(counts, dict) or counts.get("schema") != "instance-first-branch-query/v1":
+        return None
+    names = ("pure_queries", "evaluated_true", "evaluated_false", "smt_fallback")
+    if any(type(counts.get(k)) is not int or counts[k] < 0 for k in names):
+        raise ValueError("Invalid native branch counters")
+    return {k: counts[k] for k in names}
+
+
+def run_one(task, *, workspace=None):
     key, detail = task
     (function, source, bind, expectation), bits, fault = detail
     runtime_id = (
@@ -146,7 +164,8 @@ def run_one(task):
         if re.fullmatch(r"[A-Za-z_][A-Za-z_0-9]*", bind["id"])
         else "case_" + digest(bind)[:16]
     )
-    with TemporaryDirectory(prefix="tespec-auto-") as temp:
+    with (TemporaryDirectory(prefix="tespec-auto-") if workspace is None
+          else nullcontext(workspace)) as temp:
         folder = Path(temp)
         job = folder / "job.json"
         source_path = ROOT / source["path"]
@@ -251,6 +270,7 @@ def run_one(task):
         goal = native.get("vc", {}).get("files", {}).get("goal")
         return {
             "executor_case_id": runtime_id,
+            "branch_evaluation": branch_counts(native),
             "executed_source_sha256": ran_sha,
             "relocated_strategy": relocated_strategy,
             "native_status": row["native_status"],

@@ -2,6 +2,17 @@
 
 本文是 `benchmark/` 存储的唯一现行规范。其他文档中的带日期实验目录、完整运行树和原始日志描述仅记录历史实验，不构成后续评测的保存要求。发生冲突时以本文为准。
 
+## 当前双路线产物
+
+每组使用相同的三个入口。读取 `result-cost.json` 的 `current_evaluation` 得到本轮结果与分阶段成本。`result-cost.csv` 是同一组阶段记录的逐行导出，`result-cost.md` 展示工具结论、逐策略匹配数和阶段成本。旧 JSON 字段保留原批次口径。原始测试、证明义务和模型尝试以哈希引用。
+
+- `tespec/current-executions.json` 每行对应一个变体、一个输入、一种执行策略。记录预期、实际执行源哈希、原生和 Auto 的状态、耗时、单进程峰值 RSS、token 和原生分支计数。
+- `tespec/current-itp.json` 按同一次执行的原生报告哈希保存 ITP 结果。一个输入的一次执行合并处理全部残余义务。模型生成和修复、Coq 编译与假设审计、独立内核检查分别计量。证明源码按内容哈希存储。单独记录内核接受的运行库假设。
+- ITP 生成或修复使用 `gpt-6.1-sol`，推理强度固定为 `medium`。输入和输出 token 取自 CLI 事件，缓存输入包含在输入 token 内。模型内存记录 Windows 客户端单进程 Peak Working Set，Coq 与执行器记录 Linux 单进程峰值 RSS，以 KiB 展示。
+- 分支四列分别为条件查询、实例判真、实例判假和 SMT 回退次数。一个条件可能被查询多次。原生阶段只计一次，Auto 和 ITP 复用该结果。没有残余时两条后续路线均跳过。
+- 原生超时未返回分支计数时填 `null`。区分真实零、阶段未调用、数据缺失及未完成；阶段合计须同时展示已测与所需执行数。旧证明的模型和强度按当时回执说明。
+- 全局索引的 `current_route_measurement` 记录当前版本覆盖情况。`complete_groups` 按各组归档并审计的四工具证据计数。异常索引在 `benchmark/results/tespec-unexpected/current-routes.json`，可由组和行号定位完整输入、执行报告和 ITP 回执。
+
 ## 目录边界
 
 ```text

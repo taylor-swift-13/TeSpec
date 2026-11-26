@@ -1,48 +1,37 @@
-# slf3_basic_inplace_double：结果与成本表
+# slf3_basic_inplace_double 评测结果与成本
 
-完整状态：已齐全。语言版本记录 9 条；主程序：cn_original:slf3_basic_inplace_double。
+| 工具 | 结果或覆盖 |
+|---|---|
+| cn | VERIFIED |
+| qcp | VERIFIED_KERNEL_CHECKED |
+| fulminate | {"case_pairs": 52, "correct": 52, "native_status_counts": {"FAIL": 32, "PASS": 20}} |
 
-| 工具 | 范围 | 结果／预期匹配 | 测试对数 |
-|---|---|---|---:|
-| cn | 主程序全称验证一次 | VERIFIED | — |
-| qcp | 主程序全称验证一次 | VERIFIED_KERNEL_CHECKED | — |
-| fulminate | 各变体的有限测试 | 52/52 | 52 |
-| tespec | 各变体的有限测试 | 52/52 | 52 |
+| 策略 | 执行数 | Auto 符合预期 | ITP 符合预期（含原生） | 需要 ITP | 已有本轮回执 |
+|---|---:|---:|---:|---:|---:|
+| inline | 52 | 52 | 50 | 2 | 0 |
+| modular | 52 | 52 | 50 | 2 | 0 |
 
-| 工具 | 阶段 | 时间（秒） | 峰值进程内存（MiB） | token | 口径 |
-|---|---|---:|---:|---:|---|
-| cn | 主程序验证 | 0.2152 | 42.8867 | 0.0000 | 一次主程序验证 |
-| qcp | VC 生成与自动处理 | 0.0081 | 4.9727 | 0.0000 | 已测工作总量 |
-| qcp | agent 填写证明 | 34.9690 | 186.7656 | 55440.0000 | 一次主程序验证 |
-| qcp | Coq 编译与假设审计 | 1.8090 | 565.6602 | 0.0000 | 一次主程序验证 |
-| qcp | 独立内核检查 | 125.9261 | 1979.0312 | 0.0000 | 一次主程序验证 |
-| qcp | ITP 平均合计 | 162.7042 | 1979.0312 | 55440.0000 | 一次主程序验证 |
-| fulminate | 插桩、编译与首次执行 | 5.9678 | 43.3516 | 0.0000 | 已测工作总量 |
-| fulminate | 单独运行测试 | 0.1996 | 1.3711 | 0.0000 | 已测工作总量 |
-| tespec | 测试执行、VC 生成与自动处理 | 8.5683 | 19.5977 | 0.0000 | 已测工作总量 |
-| tespec | agent 填写证明 | 60.3285 | 186.8672 | 130821.0000 | 每次需 ITP 的执行均值；内存为各次峰值均值 |
-| tespec | Coq 编译与假设审计 | 3.1297 | 575.2188 | 0.0000 | 每次需 ITP 的执行均值；内存为各次峰值均值 |
-| tespec | 独立内核检查 | 124.7442 | 1897.3047 | 0.0000 | 每次需 ITP 的执行均值；内存为各次峰值均值 |
-| tespec | ITP 平均合计 | 188.2024 | 1897.3047 | 130821.0000 | 每次需 ITP 的执行均值；内存为各次峰值均值 |
-| tespec --spatial-smt | 测试执行、VC 生成与空间 SMT | 0.1658 | 20.7868 | 0.0000 | 每次测试执行均值；内存为逐次峰值均值 |
-| tespec --spatial-smt | ITP（无需） | 0.0000 | — | 0.0000 | 本批无需额外 ITP，总成本为 0；均值不适用 |
+| 工具 | 策略 | 阶段 | 数据口径 | 耗时 s | 单进程峰值 KiB¹ | token | 分支计数覆盖 |
+|---|---|---|---|---:|---:|---:|---:|
+| cn | — | 主程序验证 | 一次主程序验证 | 0.2152 | 43916.0000 | 0 | — |
+| qcp | — | VC 生成与自动处理 | 已测工作总量 | 0.0081 | 5092.0000 | 0 | — |
+| qcp | — | agent 填写证明 | 一次主程序验证 | 34.9690 | 191248.0000 | 55440 | — |
+| qcp | — | Coq 编译与假设审计 | 一次主程序验证 | 1.8090 | 579236.0000 | 0 | — |
+| qcp | — | 独立内核检查 | 一次主程序验证 | 125.9261 | 2026528.0000 | 0 | — |
+| qcp | — | ITP 平均合计 | 一次主程序验证 | 162.7042 | 2026528.0000 | 55440 | — |
+| fulminate | — | 插桩、编译与首次执行 | 已测工作总量 | 5.9678 | 44392.0000 | 0 | — |
+| fulminate | — | 单独运行测试 | 已测工作总量 | 0.1996 | 1404.0000 | 0 | — |
+| tespec | inline | native | 52/52 current_execution | 8.3591 | 21180 | 0 | 52/52 |
+| tespec | inline | auto | 2/2 current_execution | 0.2373 | 55208 | 0 | — |
+| tespec | inline | itp_model | 0/2 current_execution | — | — | — | — |
+| tespec | inline | itp_coq | 0/2 current_execution | — | — | — | — |
+| tespec | inline | itp_kernel | 0/2 current_execution | — | — | — | — |
+| tespec | modular | native | 52/52 current_execution | 8.2306 | 21144 | 0 | 52/52 |
+| tespec | modular | auto | 2/2 current_execution | 0.1941 | 55128 | 0 | — |
+| tespec | modular | itp_model | 0/2 current_execution | — | — | — | — |
+| tespec | modular | itp_coq | 0/2 current_execution | — | — | — | — |
+| tespec | modular | itp_kernel | 0/2 current_execution | — | — | — | — |
 
-ITP 以一次测试执行的所有待处理 VC 为单位，只展示平均开销；read 的 12 次所需 ITP 各自独立测量后取平均。内存不将总峰值除以次数；read ITP 展示逐次实测峰值的平均值。ITP 合计行与其三个分项重叠，不能再次相加。CN/QCP 与两种测试工具的对象和次数不同。
+¹ 历史成本保留原始单位口径，包括执行峰值的均值。当前阶段显示已测部分的合计耗时及最大单进程峰值。
 
-缺测记为待补齐，不表示已有历史证据作废；须绑定匹配证据后发布。原始证据、计量来源与缺项见 [result-cost.json](result-cost.json)，成本 CSV 见 [result-cost.csv](result-cost.csv)。
-
-## teSpec 空间 SMT 模式
-
-| 项目 | 关闭 | 开启 |
-|---|---:|---:|
-| 原生 PASS / FAIL / UNKNOWN / ERROR | 20 / 28 / 2 / 2 | 20 / 30 / 0 / 2 |
-| 最终预期匹配（含所需 ITP） | 52/52 | 52/52 |
-| 每次执行平均时间（秒） | 0.164775 | 0.165837 |
-| 平均单次峰值 RSS（MiB） | 19.3966 | 20.7868 |
-| 需 ITP 判定的执行数 | 2 | 0 |
-
-模式逐次结果、成本和证书范围见 [模式对照](20261016-evaluation/comparison.md)。无需 ITP 时成本记 0，均值和峰值不适用。SMT 决策不作为 Coq 证书。
-
-## modular 补充评测
-
-既有完整状态沿用原正式评测范围。[modular 逐次结果与成本](modular/20261020/result-cost.md)：52 对输入，空间 SMT OFF/ON；原生执行齐全=True，全部预期已判定=True。UNKNOWN 与未完成 ITP 单列，不计成功。
+[逐阶段成本与分支计数](result-cost.csv) · [结构化结果与证据引用](result-cost.json) · [逐执行记录](tespec/current-executions.json)

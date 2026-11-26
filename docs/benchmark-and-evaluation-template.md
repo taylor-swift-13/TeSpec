@@ -1,5 +1,7 @@
 # 以 read 为基准的 benchmark 与评测产物模板
 
+当前每组使用同一 [存储规范](benchmark-storage-policy.md)。读取 `result-cost.json#/current_evaluation`，或查看同目录的 CSV 和 Markdown。新增实验只在 ITP 路线调用 `gpt-6.1-sol`（medium），全部尝试分阶段记账。下文的原始 read 批次保留当时的模型与成本口径。
+
 本规范以 2026-10-15 已完成的 `read` 程序组为实例。新增程序组复用其数据结构、评测流程和统计口径；变体数量、测试输入和证明方法按程序调整，不固定正负比例。
 
 来源收录的 76 个 CN 文件已归入 45 个程序组；本文件的完整评测实例是 `read`，不表示其他组已经完成。

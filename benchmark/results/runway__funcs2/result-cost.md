@@ -1,53 +1,37 @@
-# runway__funcs2：结果与成本表
+# runway__funcs2 评测结果与成本
 
-本轮仅重跑修正调用注解的 translation4。30 个输入在 inline 和 modular 下共 60 次原生 PASS，含原先的 24 个 ERROR。原生耗时合计 35.552 秒，单进程峰值 RSS 34.71 MiB，Auto 和 ITP 均为 0 次。其余 240 项沿用原记录，全组当前为 240 PASS、60 ERROR。下方四工具表和空间 SMT 表保留历史批次。[逐项结果与本轮成本](tespec/routes.json)
+| 工具 | 结果或覆盖 |
+|---|---|
+| cn | ORIGINAL_MODULE_REJECTED |
+| qcp | 主程序生成 248 个原始目标；独立检查覆盖已记录的证明子集 |
+| fulminate | {"case_pairs": 150, "correct": 0, "native_status_counts": {"NOT_BUILT": 150}} |
 
-本次普通 QCP 使用上游 `40dfa5cc`。translation3 生成 281 个目标，8 个已用 Coq 编译证明；translation4 修正调用注解后生成 281 个目标，尚无整程序 Coq 证明；translation5 生成 248 个目标，仅 `tick_return_wit_16` 有独立内核检查，其余 247 个自动分类目标仍是占位。与 translation5 生成相同目标的原主程序按哈希共用该单项目标的证明。三个修订版本均未取得整程序证明。[QCP 版本、目标哈希、证明、耗时与内存](qcp/results.json)
+| 策略 | 执行数 | Auto 符合预期 | ITP 符合预期（含原生） | 需要 ITP | 已有本轮回执 |
+|---|---:|---:|---:|---:|---:|
+| inline | 150 | 120 | 120 | 0 | 0 |
+| modular | 150 | 120 | 120 | 0 | 0 |
 
-完整状态：待补齐。语言版本记录 6 条；主程序：cn_original:runway__funcs2。
+| 工具 | 策略 | 阶段 | 数据口径 | 耗时 s | 单进程峰值 KiB¹ | token | 分支计数覆盖 |
+|---|---|---|---|---:|---:|---:|---:|
+| cn | — | 主程序验证 | 一次主程序验证 | 0.0646 | 42764.0000 | 0 | — |
+| qcp | — | VC 生成与自动处理 | 已测工作总量 | 7.6375 | 102096.0000 | 0 | — |
+| qcp | — | agent 填写证明 | 一次主程序验证 | — | — | — | — |
+| qcp | — | Coq 编译与假设审计 | 一次主程序验证 | 1.1080 | 550548.0000 | 0 | — |
+| qcp | — | 独立内核检查 | 一次主程序验证 | — | — | — | — |
+| qcp | — | ITP 平均合计 | 一次主程序验证 | — | — | — | — |
+| fulminate | — | 插桩、编译与首次执行 | 已测工作总量 | 6.3237 | 45680.0000 | 0 | — |
+| fulminate | — | 单独运行测试 | 已测工作总量 | — | — | 0 | — |
+| tespec | inline | native | 150/150 current_execution | 31.4814 | 35556 | 0 | 150/150 |
+| tespec | inline | auto | 0/0 current_execution | 0 | — | 0 | — |
+| tespec | inline | itp_model | 0/0 current_execution | 0 | — | 0 | — |
+| tespec | inline | itp_coq | 0/0 current_execution | 0 | — | 0 | — |
+| tespec | inline | itp_kernel | 0/0 current_execution | 0 | — | 0 | — |
+| tespec | modular | native | 150/150 current_execution | 88.2863 | 22224 | 0 | 150/150 |
+| tespec | modular | auto | 0/0 current_execution | 0 | — | 0 | — |
+| tespec | modular | itp_model | 0/0 current_execution | 0 | — | 0 | — |
+| tespec | modular | itp_coq | 0/0 current_execution | 0 | — | 0 | — |
+| tespec | modular | itp_kernel | 0/0 current_execution | 0 | — | 0 | — |
 
-本组尚未完成；已测失败尝试和未运行阶段分别保留，见 [覆盖缺口](coverage-gap.json)。
+¹ 历史成本保留原始单位口径，包括执行峰值的均值。当前阶段显示已测部分的合计耗时及最大单进程峰值。
 
-| 工具 | 范围 | 结果／预期匹配 | 测试对数 |
-|---|---|---|---:|
-| cn | 主程序全称验证一次 | ORIGINAL_MODULE_REJECTED | — |
-| qcp | 主程序全称验证一次 | ORIGINAL215_TARGET_GOAL_MISSING_STRUCT_PREDICATE_CONTEXT | — |
-| fulminate | 各变体的有限测试 | 0/150 | 150 |
-| tespec | 各变体的有限测试 | 30/150 | 150 |
-
-| 工具 | 阶段 | 时间（秒） | 峰值进程内存（MiB） | token | 口径 |
-|---|---|---:|---:|---:|---|
-| cn | 主程序验证 | 0.0646 | 41.7617 | 0.0000 | 一次主程序验证 |
-| qcp | VC 生成与自动处理 | 7.6375 | 99.7031 | 0.0000 | 已测工作总量 |
-| qcp | agent 填写证明 | 待补齐 | 待补齐 | 待补齐 | 一次主程序验证 |
-| qcp | Coq 编译与假设审计 | 1.1080 | 537.6445 | 0.0000 | 一次主程序验证 |
-| qcp | 独立内核检查 | 待补齐 | 待补齐 | 待补齐 | 一次主程序验证 |
-| qcp | ITP 平均合计 | 待补齐 | 待补齐 | 待补齐 | 一次主程序验证 |
-| fulminate | 插桩、编译与首次执行 | 6.3237 | 44.6094 | 0.0000 | 已测工作总量 |
-| fulminate | 单独运行测试 | 待补齐 | 待补齐 | 0.0000 | 已测工作总量 |
-| tespec | 测试执行、VC 生成与自动处理 | 29.1058 | 19.8242 | 0.0000 | 已测工作总量 |
-| tespec | agent 填写证明 | 待补齐 | 待补齐 | 待补齐 | PENDING_PER_EXECUTION_MEAN |
-| tespec | Coq 编译与假设审计 | 待补齐 | 待补齐 | 待补齐 | PENDING_PER_EXECUTION_MEAN |
-| tespec | 独立内核检查 | 待补齐 | 待补齐 | 待补齐 | PENDING_PER_EXECUTION_MEAN |
-| tespec | ITP 平均合计 | 待补齐 | 待补齐 | 待补齐 | PENDING_PER_EXECUTION_MEAN |
-| tespec --spatial-smt | 测试执行、VC 生成与空间 SMT | 0.1942 | 31.6734 | 0.0000 | 每次测试执行均值；内存为逐次峰值均值 |
-| tespec --spatial-smt | agent 填写证明 | 待补齐 | 待补齐 | 待补齐 | PENDING_PER_EXECUTION_MEAN |
-| tespec --spatial-smt | Coq 编译与假设审计 | 待补齐 | 待补齐 | 待补齐 | PENDING_PER_EXECUTION_MEAN |
-| tespec --spatial-smt | 独立内核检查 | 待补齐 | 待补齐 | 待补齐 | PENDING_PER_EXECUTION_MEAN |
-| tespec --spatial-smt | ITP 平均合计 | 待补齐 | 待补齐 | 待补齐 | PENDING_PER_EXECUTION_MEAN |
-
-ITP 以一次测试执行的所有待处理 VC 为单位，只展示平均开销；read 的 12 次所需 ITP 各自独立测量后取平均。内存不将总峰值除以次数；read ITP 展示逐次实测峰值的平均值。ITP 合计行与其三个分项重叠，不能再次相加。CN/QCP 与两种测试工具的对象和次数不同。
-
-缺测记为待补齐，不表示已有历史证据作废；须绑定匹配证据后发布。原始证据、计量来源与缺项见 [result-cost.json](result-cost.json)，成本 CSV 见 [result-cost.csv](result-cost.csv)。
-
-## teSpec 空间 SMT 模式
-
-| 项目 | 关闭 | 开启 |
-|---|---:|---:|
-| 原生 PASS / FAIL / UNKNOWN / ERROR | 30 / 0 / 78 / 42 | 30 / 0 / 78 / 42 |
-| 最终预期匹配（含所需 ITP） | 30/150 | 30/150 |
-| 每次执行平均时间（秒） | 0.181805 | 0.194213 |
-| 平均单次峰值 RSS（MiB） | 19.4823 | 31.6734 |
-| 需 ITP 判定的执行数 | 78 | 78 |
-
-模式逐次结果、成本和证书范围见 [模式对照](20261016-evaluation/comparison.md)。无需 ITP 时成本记 0，均值和峰值不适用。SMT 决策不作为 Coq 证书。
+[逐阶段成本与分支计数](result-cost.csv) · [结构化结果与证据引用](result-cost.json) · [逐执行记录](tespec/current-executions.json)

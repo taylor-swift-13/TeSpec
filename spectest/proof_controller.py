@@ -200,6 +200,7 @@ def proof_attempts(command, out, cache, automatic, attempts, plans, args):
             proc_command.extend(["-o", str(folder / "agent.last.txt"), "-"])
         agent = run_agent(proc_command, prompt, folder, args.agent_timeout)
         agent["requested_model"] = None if args.agent_command else "gpt-6.1-sol"
+        agent["requested_reasoning_effort"] = None if args.agent_command else "medium"
         (folder / "agent-report.json").write_text(json.dumps(agent, indent=2) + "\n")
         if plan.is_file() and not bundle["refuted_goal"]:
             plans.append((case["id"], plan))
@@ -267,7 +268,8 @@ def main():
         refute_vcs[case] = goal
 
     command = args.agent_command or [
-        os.environ.get("CODEX_BIN", "codex"), "exec", "--model", "gpt-6.1-sol", "--json", "--skip-git-repo-check",
+        os.environ.get("CODEX_BIN", "codex"), "exec", "--model", "gpt-6.1-sol",
+        "-c", 'model_reasoning_effort="medium"', "--json", "--skip-git-repo-check",
         "--sandbox", "workspace-write", "--ephemeral", "-C", str(ROOT), "--add-dir", str(out),
     ]
     attempts, plans = [], []

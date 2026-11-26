@@ -1,47 +1,36 @@
-# dll_add 第 24 组结果与成本
+# dll_add 评测结果与成本
 
-24 个 CN 配对输入复用 12 个不同的 QCP 输入。Fulminate 实测 24 次，teSpec 实测 48 次。
-
-| 工具 | 结果 |
+| 工具 | 结果或覆盖 |
 |---|---|
-| CN | 主程序在已审查兼容头文件下通过验证 |
-| QCP | 17/17 原始 VC 及附加强左分支义务通过假设审计和独立内核检查 |
-| Fulminate | 24/24 PASS，其中 12 次有函数合同，另 12 次为无合同的实现测试 |
-| teSpec | 四配置各 7 次原生 PASS，5 次入口 SAT 经 ITP 后 PASS，最终 48/48 匹配 |
+| cn | VERIFIED_WITH_COMPAT_HEADERS |
+| qcp | VERIFIED_KERNEL_CHECKED_WITH_RUNTIME_LIBRARY_ASSUMPTIONS |
+| fulminate | {"PASS": 24, "input_pairs": 24} |
 
-CN 的主程序合同保证链表形状，QCP 另约束插入值。QCP 全称证明使用原抽象地址解释，并依赖记录的外延性假设。teSpec 逐输入测试使用显式 32 位 ABI。三种旧工具成本沿用与源、输入及原验证上下文匹配的历史收据。
+| 策略 | 执行数 | Auto 符合预期 | ITP 符合预期（含原生） | 需要 ITP | 已有本轮回执 |
+|---|---:|---:|---:|---:|---:|
+| inline | 12 | 12 | 12 | 5 | 5 |
+| modular | 12 | 12 | 12 | 5 | 5 |
 
-| 工具 | 阶段 | 统计单位 | 秒 | 峰值进程 MiB | token |
-|---|---|---|---:|---:|---:|
-| cn | 原生验证/VC生成及诊断 | 一次主程序验证 | 1.2644 | 45.176 | 0 |
-| qcp | 原生验证/VC生成及诊断 | 一次主程序验证 | 0.5295 | 55.730 | 0 |
-| qcp | agent证明与全部修复 | 一次主程序验证 | 603.3910 | 310.879 | 423525 |
-| qcp | Coq编译与假设审计 | 一次主程序验证 | 29.4466 | 619.621 | 0 |
-| qcp | 独立完整内核检查 | 一次主程序验证 | 132.5572 | 2024.379 | 0 |
-| fulminate | 插桩、编译与首次运行 | 每次测试平均 | 0.2730 | 44.971 | 0 |
-| fulminate | 独立再次运行 | 每次测试平均 | 0.0027 | 1.875 | 0 |
-| tespec | 原生测试 CLI（inline, SMT OFF） | 每次实际执行平均 | 0.2316 | 23.697 | 0 |
-| tespec | 原生测试 CLI（inline, SMT ON） | 每次实际执行平均 | 0.2358 | 23.651 | 0 |
-| tespec | 原生测试 CLI（modular, SMT OFF） | 每次实际执行平均 | 0.2358 | 23.676 | 0 |
-| tespec | 原生测试 CLI（modular, SMT ON） | 每次实际执行平均 | 0.2400 | 23.675 | 0 |
-| tespec | agent 证明与修复 | 每次 ITP 任务平均 | 0.0000 | 0.000 | 0 |
-| tespec | 候选检查、Coq 编译与假设审计 | 每次 ITP 任务平均 | 9.1396 | 584.909 | 0 |
-| tespec | 独立内核检查 | 每次 ITP 任务平均 | 161.2399 | 1896.089 | 0 |
-| tespec | ITP 合计（含上三项） | 每次 ITP 任务平均 | 170.3795 | 1896.089 | 0 |
-| tespec | 测试与 ITP 合计（inline, SMT OFF） | 每次实际执行平均 | 69.2263 | 803.739 | 0 |
-| tespec | 测试与 ITP 合计（inline, SMT ON） | 每次实际执行平均 | 72.8787 | 804.218 | 0 |
-| tespec | 测试与 ITP 合计（modular, SMT OFF） | 每次实际执行平均 | 74.6319 | 803.556 | 0 |
-| tespec | 测试与 ITP 合计（modular, SMT ON） | 每次实际执行平均 | 68.1722 | 803.879 | 0 |
-| tespec | 共享候选准备与预编译 | 整组一次 | 26.7183 | 603.602 | 0 |
+| 工具 | 策略 | 阶段 | 数据口径 | 耗时 s | 单进程峰值 KiB¹ | token | 分支计数覆盖 |
+|---|---|---|---|---:|---:|---:|---:|
+| cn | — | native | 1/1 tool_receipt | 1.2644 | 46260 | 0 | — |
+| qcp | — | native | 3/3 tool_receipt | 0.5295 | 57068 | 0 | — |
+| qcp | — | coq | 17/17 tool_receipt | 29.4466 | 634492 | 0 | — |
+| qcp | — | agent | 3/3 tool_receipt | 603.3910 | 318340.0000 | 423525 | — |
+| qcp | — | kernel | 1/1 tool_receipt | 132.5572 | 2072964 | 0 | — |
+| fulminate | — | pipeline | 24/24 tool_receipt | 6.5513 | 47384 | 0 | — |
+| fulminate | — | test | 24/24 tool_receipt | 0.0659 | 1920 | 0 | — |
+| tespec | inline | native | 12/12 current_execution | 1.9892 | 21128 | 0 | 12/12 |
+| tespec | inline | auto | 5/5 current_execution | 0.6056 | 55872 | 0 | — |
+| tespec | inline | itp_model | 5/5 current_execution | 0 | — | 0 | — |
+| tespec | inline | itp_coq | 5/5 current_execution | 41.4866 | 618372 | 0 | — |
+| tespec | inline | itp_kernel | 5/5 current_execution | 730.2568 | 2050888 | 0 | — |
+| tespec | modular | native | 12/12 current_execution | 1.9763 | 21116 | 0 | 12/12 |
+| tespec | modular | auto | 5/5 current_execution | 0.6065 | 56168 | 0 | — |
+| tespec | modular | itp_model | 5/5 current_execution | 0 | — | 0 | — |
+| tespec | modular | itp_coq | 5/5 current_execution | 41.7892 | 618224 | 0 | — |
+| tespec | modular | itp_kernel | 5/5 current_execution | 729.9885 | 2050548 | 0 | — |
 
-48 次原生 CLI 测试依次运行。20 份证明分别启动独立检查器，最多同时运行 3 份。表内秒数按每次检查从启动到结束的实测时间统计。
+¹ 历史成本保留原始单位口径，包括执行峰值的均值。当前阶段显示已测部分的合计耗时及最大单进程峰值。
 
-每次执行先取各阶段的最大单进程 RSS，再计算执行间均值。ITP 分母为 20，每配置原生或端到端分母为 12。合计行已含分项。模型栏记录本地 CLI 成本。空间 SMT 开启的 24 次均进入适配器，实际 SMT 查询为 0。原生进程和适配器位于 CLI 计量范围内。
-
-共享候选准备的 3 次测量单独计入本组总量。历史中断的一次模型调用缺失 token，保留在[历史成本](evidence/historical-attempts.json)。本批对每次执行重新编译、审计并独立检查可用证明源码。
-
-从仓库根目录运行以下命令，在新的输出目录重测四种配置，并对未决执行重新编译和独立检查随组保存的证明源码。
-
-~~~sh
-python3 tools/benchmark/replay_dll_add.py --output /tmp/tespec-dll-add-replay --with-proofs
-~~~
+[逐阶段成本与分支计数](result-cost.csv) · [结构化结果与证据引用](result-cost.json) · [逐执行记录](tespec/current-executions.json)

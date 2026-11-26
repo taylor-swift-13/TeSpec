@@ -1,48 +1,37 @@
-# add_two_array：结果与成本表
+# add_two_array 评测结果与成本
 
-完整状态：已齐全。语言版本记录 2 条；主程序：cn_original:add_two_array。
+| 工具 | 结果或覆盖 |
+|---|---|
+| cn | VERIFIED |
+| qcp | VERIFIED_KERNEL_CHECKED_WITH_RUNTIME_LIBRARY_ASSUMPTIONS |
+| fulminate | {"case_pairs": 8, "correct": 8, "native_status_counts": {"PASS": 8}} |
 
-| 工具 | 范围 | 结果／预期匹配 | 测试对数 |
-|---|---|---|---:|
-| cn | 主程序全称验证一次 | VERIFIED | — |
-| qcp | 主程序全称验证一次 | VERIFIED_KERNEL_CHECKED_WITH_RUNTIME_LIBRARY_ASSUMPTIONS | — |
-| fulminate | 各变体的有限测试 | 8/8 | 8 |
-| tespec | 各变体的有限测试 | 8/8 | 8 |
+| 策略 | 执行数 | Auto 符合预期 | ITP 符合预期（含原生） | 需要 ITP | 已有本轮回执 |
+|---|---:|---:|---:|---:|---:|
+| inline | 8 | 8 | 8 | 0 | 0 |
+| modular | 8 | 8 | 8 | 0 | 0 |
 
-| 工具 | 阶段 | 时间（秒） | 峰值进程内存（MiB） | token | 口径 |
-|---|---|---:|---:|---:|---|
-| cn | 主程序验证 | 0.4659 | 43.3633 | 0.0000 | 一次主程序验证 |
-| qcp | VC 生成与自动处理 | 0.0685 | 6.4531 | 0.0000 | 已测工作总量 |
-| qcp | agent 填写证明 | 97.0310 | 191.9453 | 168378.0000 | 一次主程序验证 |
-| qcp | Coq 编译与假设审计 | 4.8358 | 574.5625 | 0.0000 | 一次主程序验证 |
-| qcp | 独立内核检查 | 129.6187 | 1766.0664 | 0.0000 | 一次主程序验证 |
-| qcp | ITP 平均合计 | 231.4854 | 1766.0664 | 168378.0000 | 一次主程序验证 |
-| fulminate | 插桩、编译与首次执行 | 1.0192 | 43.2305 | 0.0000 | 已测工作总量 |
-| fulminate | 单独运行测试 | 0.0325 | 1.1094 | 0.0000 | 已测工作总量 |
-| tespec | 测试执行、VC 生成与自动处理 | 3.0898 | 19.5742 | 0.0000 | 已测工作总量 |
-| tespec | agent 填写证明 | 0.0000 | — | 0.0000 | 本批无需该阶段，总成本为 0；均值不适用 |
-| tespec | Coq 编译与假设审计 | 0.0000 | — | 0.0000 | 本批无需该阶段，总成本为 0；均值不适用 |
-| tespec | 独立内核检查 | 0.0000 | — | 0.0000 | 本批无需该阶段，总成本为 0；均值不适用 |
-| tespec | ITP 平均合计 | 0.0000 | — | 0.0000 | 本批无需 ITP，总成本为 0；均值不适用 |
-| tespec --spatial-smt | 测试执行、VC 生成与空间 SMT | 0.3300 | 19.5269 | 0.0000 | 每次测试执行均值；内存为逐次峰值均值 |
-| tespec --spatial-smt | ITP（无需） | 0.0000 | — | 0.0000 | 本批无需额外 ITP，总成本为 0；均值不适用 |
+| 工具 | 策略 | 阶段 | 数据口径 | 耗时 s | 单进程峰值 KiB¹ | token | 分支计数覆盖 |
+|---|---|---|---|---:|---:|---:|---:|
+| cn | — | 主程序验证 | 一次主程序验证 | 0.4659 | 44404.0000 | 0 | — |
+| qcp | — | VC 生成与自动处理 | 已测工作总量 | 0.0685 | 6608.0000 | 0 | — |
+| qcp | — | agent 填写证明 | 一次主程序验证 | 97.0310 | 196552.0000 | 168378 | — |
+| qcp | — | Coq 编译与假设审计 | 一次主程序验证 | 4.8358 | 588352.0000 | 0 | — |
+| qcp | — | 独立内核检查 | 一次主程序验证 | 129.6187 | 1808452.0000 | 0 | — |
+| qcp | — | ITP 平均合计 | 一次主程序验证 | 231.4854 | 1808452.0000 | 168378 | — |
+| fulminate | — | 插桩、编译与首次执行 | 已测工作总量 | 1.0192 | 44268.0000 | 0 | — |
+| fulminate | — | 单独运行测试 | 已测工作总量 | 0.0325 | 1136.0000 | 0 | — |
+| tespec | inline | native | 8/8 current_execution | 1.0137 | 21220 | 0 | 8/8 |
+| tespec | inline | auto | 0/0 current_execution | 0 | — | 0 | — |
+| tespec | inline | itp_model | 0/0 current_execution | 0 | — | 0 | — |
+| tespec | inline | itp_coq | 0/0 current_execution | 0 | — | 0 | — |
+| tespec | inline | itp_kernel | 0/0 current_execution | 0 | — | 0 | — |
+| tespec | modular | native | 8/8 current_execution | 1.0069 | 21160 | 0 | 8/8 |
+| tespec | modular | auto | 0/0 current_execution | 0 | — | 0 | — |
+| tespec | modular | itp_model | 0/0 current_execution | 0 | — | 0 | — |
+| tespec | modular | itp_coq | 0/0 current_execution | 0 | — | 0 | — |
+| tespec | modular | itp_kernel | 0/0 current_execution | 0 | — | 0 | — |
 
-ITP 以一次测试执行的所有待处理 VC 为单位，只展示平均开销；read 的 12 次所需 ITP 各自独立测量后取平均。内存不将总峰值除以次数；read ITP 展示逐次实测峰值的平均值。ITP 合计行与其三个分项重叠，不能再次相加。CN/QCP 与两种测试工具的对象和次数不同。
+¹ 历史成本保留原始单位口径，包括执行峰值的均值。当前阶段显示已测部分的合计耗时及最大单进程峰值。
 
-缺测记为待补齐，不表示已有历史证据作废；须绑定匹配证据后发布。原始证据、计量来源与缺项见 [result-cost.json](result-cost.json)，成本 CSV 见 [result-cost.csv](result-cost.csv)。
-
-## teSpec 空间 SMT 模式
-
-| 项目 | 关闭 | 开启 |
-|---|---:|---:|
-| 原生 PASS / FAIL / UNKNOWN / ERROR | 8 / 0 / 0 / 0 | 8 / 0 / 0 / 0 |
-| 最终预期匹配（含所需 ITP） | 8/8 | 8/8 |
-| 每次执行平均时间（秒） | 0.386224 | 0.329986 |
-| 平均单次峰值 RSS（MiB） | 19.4761 | 19.5269 |
-| 需 ITP 判定的执行数 | 0 | 0 |
-
-模式逐次结果、成本和证书范围见 [模式对照](20261016-evaluation-includes/comparison.md)。无需 ITP 时成本记 0，均值和峰值不适用。SMT 决策不作为 Coq 证书。
-
-## modular 补充评测
-
-既有完整状态沿用原正式评测范围。[modular 逐次结果与成本](modular/20261020/result-cost.md)：8 对输入，空间 SMT OFF/ON；原生执行齐全=True，全部预期已判定=True。UNKNOWN 与未完成 ITP 单列，不计成功。
+[逐阶段成本与分支计数](result-cost.csv) · [结构化结果与证据引用](result-cost.json) · [逐执行记录](tespec/current-executions.json)

@@ -2,7 +2,11 @@
 
 在唯一 `/home/yangfp/teSpec` 工作树的 `main` 上依次完成各组。只有主程序做 CN/QCP 全称验证；其他变体逐输入测试。复用输入哈希匹配的既有证据，补测缺少的成本阶段。正式状态以 `benchmark/results/group-result-cost-index.json` 为准。
 
-## 当前汇总
+## 当前版本
+
+当前版本已实测 45 组、3,056 次 inline 或 modular 执行。Auto 有 2,650 次符合预期，401 次执行需要独立 ITP。3,050 次取得原生分支计数；另 6 次超时。ITP 的最新逐执行状态与失败尝试见全局索引的 `current_route_measurement`。四工具归档完整组数为 25，合计 956 个变体输入对。`ref` 新增 24 个 Fulminate 测试对、48 次 teSpec 原生 PASS 的覆盖审计，并复核 CN 和 QCP 主程序证明。 [全局索引](../benchmark/results/group-result-cost-index.json) · [ref](../benchmark/results/ref/result-cost.md)
+
+## 第 24 组归档时的汇总
 
 完整评测已归档 **24/45 组、932 对变体与输入**。第 24 组 `dll_add` 的 24 个 CN 配对输入对应 12 个不同 QCP 输入。Fulminate 24/24 匹配，teSpec 在 inline/modular 与空间 SMT OFF/ON 的四种组合下均 12/12 匹配。共 28 次原生 PASS，20 次入口可满足性义务逐执行通过 Coq 检查。下一未完整组是 `dll_remove`。[全局结果成本索引](../benchmark/results/group-result-cost-index.json) · [第 24 组四工具结果与成本](../benchmark/results/dll_add/result-cost.md)
 

@@ -1,33 +1,37 @@
-# Dbl_Linked_List__singleton：结果与成本表
+# Dbl_Linked_List__singleton 评测结果与成本
 
-7对输入，inline/modular × 空间SMT OFF/ON共28种配置全部PASS；modular的14次原生PASS，inline的14次原生UNKNOWN均由独立ITP核证。
+| 工具 | 结果或覆盖 |
+|---|---|
+| cn | VERIFIED_WITH_COMPAT_HEADERS |
+| qcp | VERIFIED_KERNEL_CHECKED |
+| fulminate | {"case_pairs": 7, "correct": 7, "native_status_counts": {"PASS": 7}} |
 
-**当前成本已齐全：复用同证明的分阶段重测口径。** 原23次模型调用与完整检查保留，3个缺测检查整项使用本次真实重放；新模型调用与token为0。
-历史累计另列：原26个check加本次3个，共29个实际check；原9项缺测仍保留，历史累计时间/RSS不能声称完整。当前选择仍为26个check，不增加测试分母。
+| 策略 | 执行数 | Auto 符合预期 | ITP 符合预期（含原生） | 需要 ITP | 已有本轮回执 |
+|---|---:|---:|---:|---:|---:|
+| inline | 7 | 7 | 7 | 0 | 0 |
+| modular | 7 | 7 | 7 | 0 | 0 |
 
-| 工具 | 阶段 | 时间（秒） | 峰值进程内存（MiB） | token | 口径 |
-|---|---|---:|---:|---:|---|
-| cn | 主程序验证 | 0.2657 | 45.9805 | 0.0000 | 一次主程序验证 |
-| qcp | VC 生成与自动处理 | 0.0162 | 5.4414 | 0.0000 | 已测工作总量 |
-| qcp | agent 填写证明 | 284.0630 | 189.1914 | 591827.0000 | 一次主程序验证 |
-| qcp | Coq 编译与假设审计 | 11.9526 | 570.2070 | 0.0000 | 一次主程序验证 |
-| qcp | 独立内核检查 | 127.0429 | 1766.8867 | 0.0000 | 一次主程序验证 |
-| qcp | ITP 平均合计 | 423.0585 | 1766.8867 | 591827.0000 | 一次主程序验证 |
-| fulminate | 插桩、编译与首次执行 | 2.2581 | 45.6875 | 0.0000 | 已测工作总量 |
-| fulminate | 单独运行测试 | 0.0252 | 1.1133 | 0.0000 | 已测工作总量 |
-| tespec inline spatial-off | 原生测试执行与自动处理 | 1.4981 | 20.4782 | 0.0000 | 每次执行均值；内存为逐次峰值均值 |
-| tespec inline spatial-on | 原生测试执行与自动处理 | 1.6183 | 47.2723 | 0.0000 | 每次执行均值；内存为逐次峰值均值 |
-| tespec modular spatial-off | 原生测试执行与自动处理 | 1.1713 | 20.4174 | 0.0000 | 每次执行均值；内存为逐次峰值均值 |
-| tespec modular spatial-on | 原生测试执行与自动处理 | 1.0404 | 20.4794 | 0.0000 | 每次执行均值；内存为逐次峰值均值 |
-| tespec inline ITP | agent 填写证明 | 308.9476 | 228.0446 | 158242.1429 | 14次执行均值；复用同证明的分阶段重测口径 |
-| tespec inline ITP | Coq 编译与假设审计 | 29.5670 | 541.3304 | 0.0000 | 14次执行均值；复用同证明的分阶段重测口径 |
-| tespec inline ITP | 独立内核检查 | 530.6476 | 1920.4657 | 0.0000 | 14次执行均值；复用同证明的分阶段重测口径 |
-| tespec inline ITP | ITP 平均合计 | 869.1622 | 1920.4657 | 158242.1429 | 14次执行均值；复用同证明的分阶段重测口径 |
-| tespec group setup | 确定性 ABI 库准备 | 0.4500 | 16.8398 | 0.0000 | 每组一次；不纳入逐执行 ITP 均值 |
-| tespec group setup | 文件系统恢复后证书准备 | 5.0100 | 24.0430 | 0.0000 | 每组一次；不纳入逐执行 ITP 均值 |
+| 工具 | 策略 | 阶段 | 数据口径 | 耗时 s | 单进程峰值 KiB¹ | token | 分支计数覆盖 |
+|---|---|---|---|---:|---:|---:|---:|
+| cn | — | 主程序验证 | 一次主程序验证 | 0.2657 | 47084.0000 | 0 | — |
+| qcp | — | VC 生成与自动处理 | 已测工作总量 | 0.0162 | 5572.0000 | 0 | — |
+| qcp | — | agent 填写证明 | 一次主程序验证 | 284.0630 | 193732.0000 | 591827 | — |
+| qcp | — | Coq 编译与假设审计 | 一次主程序验证 | 11.9526 | 583892.0000 | 0 | — |
+| qcp | — | 独立内核检查 | 一次主程序验证 | 127.0429 | 1809292.0000 | 0 | — |
+| qcp | — | ITP 平均合计 | 一次主程序验证 | 423.0585 | 1809292.0000 | 591827 | — |
+| fulminate | — | 插桩、编译与首次执行 | 已测工作总量 | 2.2581 | 46784.0000 | 0 | — |
+| fulminate | — | 单独运行测试 | 已测工作总量 | 0.0252 | 1140.0000 | 0 | — |
+| tespec | inline | native | 7/7 current_execution | 1.0632 | 21152 | 0 | 7/7 |
+| tespec | inline | auto | 0/0 current_execution | 0 | — | 0 | — |
+| tespec | inline | itp_model | 0/0 current_execution | 0 | — | 0 | — |
+| tespec | inline | itp_coq | 0/0 current_execution | 0 | — | 0 | — |
+| tespec | inline | itp_kernel | 0/0 current_execution | 0 | — | 0 | — |
+| tespec | modular | native | 7/7 current_execution | 1.0197 | 21084 | 0 | 7/7 |
+| tespec | modular | auto | 0/0 current_execution | 0 | — | 0 | — |
+| tespec | modular | itp_model | 0/0 current_execution | 0 | — | 0 | — |
+| tespec | modular | itp_coq | 0/0 current_execution | 0 | — | 0 | — |
+| tespec | modular | itp_kernel | 0/0 current_execution | 0 | — | 0 | — |
 
-全部实际工作量的已测时间下界：12865.413318 秒；历史总量未知，RSS峰值不以重跑倒填。
+¹ 历史成本保留原始单位口径，包括执行峰值的均值。当前阶段显示已测部分的合计耗时及最大单进程峰值。
 
-QCP全称证书仅属于旧抽象地址上下文；当前teSpec证明属于显式ABI，未声称两者等价。
-
-[重测选择、全部实际成本与证据](evidence/resource-remeasurement.json) · [逐输入与证明](evidence/tespec-native.json)
+[逐阶段成本与分支计数](result-cost.csv) · [结构化结果与证据引用](result-cost.json) · [逐执行记录](tespec/current-executions.json)
