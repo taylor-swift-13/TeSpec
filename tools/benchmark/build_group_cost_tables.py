@@ -12,6 +12,16 @@ def main(argv=()):
     parser.add_argument('--group', help='Refresh one group, preserving all other published tables and index entries')
     args=parser.parse_args(argv)
     manifests=sorted((ROOT/'benchmark/programs').glob('*/manifest.json'))
+    selected = [p for p in manifests if not args.group or p.parent.name == args.group]
+    if selected and all((OUT/p.parent.name/"tespec/current-executions.json").is_file()
+                        and (OUT/p.parent.name/"result-cost.json").is_file() for p in selected):
+        from publish_current_tables import publish
+        for p in selected:
+            publish(p.parent.name)
+        if not args.group:
+            from audit_current_tables import main as audit_current
+            audit_current()
+        return
     if args.group:
         manifests=[p for p in manifests if p.parent.name==args.group]
         if not manifests:parser.error('Unknown group: '+args.group)

@@ -4,7 +4,7 @@
 |---|---|
 | cn | ACCEPTED_TARGETS_TRUSTED |
 | qcp | VC_GENERATED_PROOF_OR_REFUTATION_PENDING |
-| fulminate | {"case_pairs": 7, "correct": 7, "native_status_counts": {"FAIL": 7}} |
+| fulminate | 7/7 符合预期 · FAIL 7 |
 
 | 策略 | 执行数 | Auto 符合预期 | ITP 符合预期（含原生） | 需要 ITP | 已有本轮回执 |
 |---|---:|---:|---:|---:|---:|
@@ -13,24 +13,24 @@
 
 | 工具 | 策略 | 阶段 | 数据口径 | 耗时 s | 单进程峰值 KiB¹ | token | 分支计数覆盖 |
 |---|---|---|---|---:|---:|---:|---:|
-| cn | — | 主程序验证 | 一次主程序验证 | 0.1147 | 44136.0000 | 0 | — |
-| qcp | — | VC 生成与自动处理 | 已测工作总量 | 0.0163 | 5580.0000 | 0 | — |
-| qcp | — | agent 填写证明 | 一次主程序验证 | — | — | — | — |
-| qcp | — | Coq 编译与假设审计 | 一次主程序验证 | — | — | — | — |
-| qcp | — | 独立内核检查 | 一次主程序验证 | — | — | — | — |
-| qcp | — | ITP 平均合计 | 一次主程序验证 | — | — | — | — |
-| fulminate | — | 插桩、编译与首次执行 | 已测工作总量 | 0.8038 | 44456.0000 | 0 | — |
-| fulminate | — | 单独运行测试 | 已测工作总量 | 0.0278 | 1404.0000 | 0 | — |
-| tespec | inline | native | 7/7 current_execution | 0.9920 | 21036 | 0 | 7/7 |
-| tespec | inline | auto | 7/7 current_execution | 0.7905 | 55224 | 0 | — |
-| tespec | inline | itp_model | 0/7 current_execution | — | — | — | — |
-| tespec | inline | itp_coq | 0/7 current_execution | — | — | — | — |
-| tespec | inline | itp_kernel | 0/7 current_execution | — | — | — | — |
-| tespec | modular | native | 7/7 current_execution | 0.9919 | 21064 | 0 | 7/7 |
-| tespec | modular | auto | 6/6 current_execution | 0.6344 | 55196 | 0 | — |
-| tespec | modular | itp_model | 0/6 current_execution | — | — | — | — |
-| tespec | modular | itp_coq | 0/6 current_execution | — | — | — | — |
-| tespec | modular | itp_kernel | 0/6 current_execution | — | — | — | — |
+| cn | — | 主程序验证 | 一次主程序验证 · MEASURED | 0.1147 | 44136.0000 | 0 | — |
+| qcp | — | VC 生成与自动处理 | 已测工作总量 · MEASURED | 0.0163 | 5580.0000 | 0 | — |
+| qcp | — | agent 填写证明 | 一次主程序验证 · PENDING | — | — | — | — |
+| qcp | — | Coq 编译与假设审计 | 一次主程序验证 · PENDING | — | — | — | — |
+| qcp | — | 独立内核检查 | 一次主程序验证 · PENDING | — | — | — | — |
+| qcp | — | ITP 平均合计 | 一次主程序验证 · PENDING | — | — | — | — |
+| fulminate | — | 插桩、编译与首次执行 | 已测工作总量 · MEASURED | 0.8038 | 44456.0000 | 0 | — |
+| fulminate | — | 单独运行测试 | 已测工作总量 · MEASURED | 0.0278 | 1404.0000 | 0 | — |
+| tespec | inline | native | 7/7 · MEASURED | 0.9920 | 21036 | 0 | 7/7 |
+| tespec | inline | auto | 7/7 · MEASURED | 0.6742 | 55312 | 0 | — |
+| tespec | inline | itp_model | 0/7 · PENDING | — | — | — | — |
+| tespec | inline | itp_coq | 0/7 · PENDING | — | — | — | — |
+| tespec | inline | itp_kernel | 0/7 · PENDING | — | — | — | — |
+| tespec | modular | native | 7/7 · MEASURED | 0.9919 | 21064 | 0 | 7/7 |
+| tespec | modular | auto | 6/6 · MEASURED | 0.5512 | 55296 | 0 | — |
+| tespec | modular | itp_model | 0/6 · PENDING | — | — | — | — |
+| tespec | modular | itp_coq | 0/6 · PENDING | — | — | — | — |
+| tespec | modular | itp_kernel | 0/6 · PENDING | — | — | — | — |
 
 ¹ 历史成本保留原始单位口径，包括执行峰值的均值。当前阶段显示已测部分的合计耗时及最大单进程峰值。
 

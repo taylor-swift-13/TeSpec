@@ -25,6 +25,14 @@ def main():
         path = base / "tespec/current-executions.json"
         current = read(path)
         table = read(base / "result-cost.json")["current_evaluation"]
+        receipt = entry.get("current_group_audit")
+        if receipt:
+            receipt_path = ROOT / receipt["path"]
+            require(reference(receipt_path) == receipt, group + ": stale group audit")
+            audited = read(receipt_path)
+            for tool in ("cn", "qcp", "fulminate", "tespec"):
+                artifact = audited[tool]
+                require(reference(ROOT / artifact["path"]) == artifact, group + ": stale " + tool + " audit evidence")
         tasks, _, _ = inputs(group)
         proof = read(base / "tespec/current-itp.json")["executions"]
         require(table["executions"] == reference(path), group + ": wrong current execution reference")
@@ -82,7 +90,7 @@ def main():
              **dict(totals), "auto_outcomes": dict(auto_verdicts), "itp_residual_outcomes": dict(residual_verdicts),
              "unexpected": "benchmark/results/tespec-unexpected/current-routes.json"}
     save(RESULTS / "tespec-unexpected/current-routes.json", {"schema":"tespec-current-unexpected/v1",
-         "reproduction":"python3 tools/benchmark/measure_current_executions.py --group GROUP --scratch SCRATCH --workers 4",
+         "reproduction":"python3 tools/benchmark/measure_current_executions.py --reproduce --group GROUP --case CASE --variant VARIANT --strategy STRATEGY --scratch SCRATCH --workers 4",
          "identity":"execution_row indexes current-executions.json; matching ITP evidence keyed by native_report_sha256",
          "groups":mismatch})
     import json

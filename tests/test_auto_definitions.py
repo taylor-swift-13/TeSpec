@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import shutil
 from pathlib import Path
 import tempfile
 import unittest
@@ -45,6 +46,17 @@ class AutoDefinitionsTest(unittest.TestCase):
         temp = tempfile.TemporaryDirectory()
         self.addCleanup(temp.cleanup)
         self.root = Path(temp.name)
+
+    @unittest.skipUnless(shutil.which("coqc"), "requires the local Coq compiler")
+    def test_original_auxiliary_interface_without_layout_override(self):
+        from spectest.opaque_imports import checked_names, original_interface
+
+        raw = b"From Coq Require Import ZArith List Lia.\nDefinition another (n : Z) : Z := n.\n"
+        interface = original_interface("UnrelatedAux", raw, {})
+        self.assertIsNotNone(interface)
+        self.assertIn("another", checked_names(raw, interface))
+        self.assertIsNone(original_interface("UnrelatedAux", raw, {"coq_dependencies": [{"module":"Coq.Lists.List"}]}))
+        self.assertIsNone(original_interface("UnrelatedAux", raw + b'Notation "fresh" := 1.\n', {}))
 
     def case(self, lib, goal=""):
         dep = self.root / "Library.v"

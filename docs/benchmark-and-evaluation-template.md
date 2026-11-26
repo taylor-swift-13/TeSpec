@@ -2,6 +2,20 @@
 
 当前每组使用同一 [存储规范](benchmark-storage-policy.md)。读取 `result-cost.json#/current_evaluation`，或查看同目录的 CSV 和 Markdown。新增实验只在 ITP 路线调用 `gpt-6.1-sol`（medium），全部尝试分阶段记账。下文的原始 read 批次保留当时的模型与成本口径。
 
+当前批次可以分两次执行双路线，先测原生与 Auto，并保留同一份不可变原生报告，再用 `--route itp --native-report` 做独立 ITP。复用执行键和原始报告哈希必须一致。
+
+```sh
+python3 tools/benchmark/measure_current_executions.py --scratch "$RUN" --workers 4
+python3 tools/benchmark/replay_current_executions.py --scratch "$RUN" --workers 2
+python3 tools/benchmark/complete_current_itp.py --follow --scratch "$RUN" --windows-python "$WINDOWS_PYTHON" --task-root "$MODEL_TASKS"
+python3 tools/benchmark/collect_current_itp.py --scratch "$RUN"
+python3 tools/benchmark/publish_current_tables.py
+python3 tools/benchmark/audit_current_tables.py
+```
+
+`RUN` 是 WSL 的本次运行目录，`WINDOWS_PYTHON` 是可由 WSL 调用的 Windows Python 路径，`MODEL_TASKS` 是专门用于本轮证明材料的 Windows 挂载目录。单独复现异常使用 `--reproduce --group GROUP --variant VARIANT --case CASE --strategy STRATEGY`，输出写入指定 scratch。历史证书的模型费用和本轮 Coq 重放费用分开记录。
+
+
 本规范以 2026-10-15 已完成的 `read` 程序组为实例。新增程序组复用其数据结构、评测流程和统计口径；变体数量、测试输入和证明方法按程序调整，不固定正负比例。
 
 来源收录的 76 个 CN 文件已归入 45 个程序组；本文件的完整评测实例是 `read`，不表示其他组已经完成。

@@ -527,10 +527,13 @@ def definitions_for(case):
             try:
                 parsed = parsed_module(raw, tuple(sorted(exports.items())))
             except Unsupported:
-                interfaces = vc.get("opaque_imports", {})
-                if name not in interfaces:
+                from .opaque_imports import checked_names, original_interface
+
+                interface = vc.get("opaque_imports", {}).get(name)
+                if interface is None:
+                    interface = original_interface(name, raw, vc)
+                if interface is None:
                     raise
-                from .opaque_imports import checked_names
 
                 require(
                     not any(
@@ -540,12 +543,12 @@ def definitions_for(case):
                     ),
                     "shadowed_standard_library",
                 )
-                names = checked_names(raw, interfaces[name])
+                names = checked_names(raw, interface)
                 require(
                     not set(names) & (RESERVED | {"addr", "NULL"}),
                     "reserved_opaque_export",
                 )
-                ground = functions_for(name, raw, interfaces[name], names)
+                ground = functions_for(name, raw, interface, names)
                 parsed = {
                     n: Definition((), "opaque", "", False, False, ground=ground.get(n))
                     for n in names

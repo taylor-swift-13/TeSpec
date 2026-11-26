@@ -256,12 +256,21 @@ def _auto_case(case, function, output, timeout_ms):
                 if p["status"] == "UNKNOWN":
                     p.update(status=entry, proof="auto-spatial-smt")
             case["precondition_result"] = case["phases"]["precondition"] = entry
+    from .auto_definitions import frozen_bytes
+    from .opaque_imports import checked_names, original_interface, passive_declarations
     compiled_names = set()
-    if manifest.get("opaque_imports"):
-        from .opaque_imports import checked_names
-        staged = {d["module"]: Path(d["staged"]) for d in manifest["coq_dependencies"]}
-        for module, interface in manifest["opaque_imports"].items():
-            compiled_names.update(checked_names(staged[module].read_bytes(), interface))
+    for dep in manifest["coq_dependencies"]:
+        name = dep["module"]
+        raw = frozen_bytes(dep["staged"], dep["sha256"])
+        interface = manifest.get("opaque_imports", {}).get(name)
+        if interface is None and original:
+            interface = original_interface(name, raw, manifest)
+        if interface is not None:
+            compiled_names.update(checked_names(raw, interface))
+        else:
+            # A declared constant still cannot be interpreted as a free integer
+            # just because its executable interface is unavailable.
+            compiled_names.update(passive_declarations(raw.decode("utf-8")))
 
     ground_cache = {}
 

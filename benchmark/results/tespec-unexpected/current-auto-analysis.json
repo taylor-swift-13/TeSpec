@@ -1,0 +1,85 @@
+{
+  "schema": "tespec-auto-discrepancy-analysis/v1",
+  "previous_measurement_commit": "ce05e27012",
+  "executions": 3056,
+  "expected_matches": 2675,
+  "discrepancies": {
+    "residual_abstract_field": 168,
+    "residual_parent_writeback": 2,
+    "native_error": 60,
+    "modular_oracle_scope": 1,
+    "native_boundary_or_execution_unresolved": 150
+  },
+  "regression": {
+    "native_reports_reused": 401,
+    "auto_only": true,
+    "previously_matching_executions": 2650,
+    "lost_matches": 0,
+    "new_matches": {
+      "list_all": 19,
+      "mergesort": 6
+    }
+  },
+  "field_context": {
+    "runtime_module": "SimpleC.EE.QCP_demos_human.sll_lib",
+    "sha256": "91d172559c4b3e21b108c7e2a005476cc76d56337213ef65fb5a9ef1d433a9ad",
+    "diagnostic": "Original library uses abstract eval_addr_expr. No computational field-address interpretation is bound in the affected execution reports. Substituting ABI offsets would require additional evidence."
+  },
+  "parent_writeback": [
+    [
+      "array_load",
+      "original_client_translation12_only_entry",
+      "modular",
+      "bcdb5dd8b9ad0d12f9e22756f321e0c249230e9c37cdaa9a52589a21801ee8de"
+    ],
+    [
+      "runtime-extras__down_malloc_up_free",
+      "original_main_translation1_only_entry",
+      "inline",
+      "99f648a5cbf39993da749b8ee8833d5763d1d2b142e335a90a61c90cc8a3d026"
+    ]
+  ],
+  "modular_oracle_scope": {
+    "group": "runtime-extras__leaky",
+    "case": "original_main_translation0_only_entry",
+    "strategy": "modular",
+    "expected": "FAIL",
+    "native_status": "PASS",
+    "execution_completed": true,
+    "abstraction_events": [
+      {
+        "kind": "contract-use",
+        "function": "leaky_get",
+        "count": 1
+      },
+      {
+        "kind": "contract_state_symbolic",
+        "function": "contract",
+        "count": 2
+      },
+      {
+        "kind": "contract-use",
+        "function": "cn_malloc",
+        "count": 1
+      }
+    ],
+    "explanation": "leaky_get takes ownership of data_at(p,unsigned int,v) and ensures emp. Applying that contract consumes the cell, so main can establish emp. The existing oracle describes the concrete body leak. The recorded expectation is retained."
+  },
+  "native_boundary_reasons": {
+    "contract_binding_unknown": 53,
+    "unresolved_call_permission": 59,
+    "qcp_timeout": 6,
+    "modular_boundary_frame_unknown": 22,
+    "unresolved_read_permission": 10
+  },
+  "native_binding_example": {
+    "group": "list_all",
+    "case": "ab15e46b_IntList_copy_2",
+    "strategy": "inline",
+    "native_completed": true,
+    "native_limit_reason": "contract_binding_unknown",
+    "native_annotations": "UNKNOWN",
+    "facts": "Body execution can complete while the native call boundary has no verified With-variable mapping. Other residual goals can be present. A valid return or entry VC does not establish the missing boundary check."
+  },
+  "native_error_scope": "60 runway__funcs2 native execution errors retained under the upstream branch limit."
+}

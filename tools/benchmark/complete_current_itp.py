@@ -6,6 +6,7 @@ import os
 import shlex
 import subprocess
 import sys
+import time
 
 from organize_tespec_routes import ROOT, RESULTS, fingerprint, read
 
@@ -57,15 +58,41 @@ def main():
     parser.add_argument("--group", action="append")
     parser.add_argument("--limit", type=int)
     parser.add_argument("--repair", action="store_true")
+    parser.add_argument("--follow", action="store_true",
+                        help="Wait for pending proof-source replays, then generate and repair unresolved cases.")
+
     args = parser.parse_args()
     groups = args.group or sorted(p.parent.parent.name for p in RESULTS.glob("*/tespec/current-executions.json"))
     done = 0
-    for group in groups:
-        for row in read(RESULTS / group / "tespec/current-executions.json")["executions"]:
-            if row["auto_status"] != "NOT_RUN" and solve(row, args.scratch, args.task_root, args.windows_python, args.repair):
-                done += 1
-                if args.limit is not None and done >= args.limit:
-                    return
+    while True:
+        pending_replays = 0
+        changed = False
+        for group in groups:
+            rows = read(RESULTS / group / "tespec/current-executions.json")["executions"]
+            for row in rows:
+                if row["auto_status"] == "NOT_RUN":
+                    continue
+                folder = args.scratch / row["native_report_sha256"]
+                if not (folder / "out/native/report.json").exists():
+                    raise FileNotFoundError(f"Missing frozen native report in {folder}")
+                if not (folder / "current-itp/routes.json").exists():
+                    pending_replays += 1
+                    continue
+                modes = (False, True) if args.follow else (args.repair,)
+                for repair in modes:
+                    if solve(row, args.scratch, args.task_root, args.windows_python, repair):
+                        done += 1
+                        changed = True
+                        if args.limit is not None and done >= args.limit:
+                            return
+        if args.follow and (changed or not pending_replays):
+            for command in (["collect_current_itp.py", "--scratch", str(args.scratch)],
+                            ["publish_current_tables.py"], ["audit_current_tables.py"]):
+                subprocess.run([sys.executable, "-B", str(ROOT/"tools/benchmark"/command[0]), *command[1:]],
+                               cwd=ROOT, check=True)
+        if not args.follow or pending_replays == 0:
+            break
+        time.sleep(30)
 
 
 if __name__ == "__main__":

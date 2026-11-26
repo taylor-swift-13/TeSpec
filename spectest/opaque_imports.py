@@ -1,6 +1,11 @@
 """Read compiled name inventories for ordinary, notation-free Gallina libraries."""
 
+from functools import lru_cache
+from pathlib import Path
+from tempfile import TemporaryDirectory
 import hashlib
+import os
+import shutil
 import re
 import subprocess
 
@@ -130,6 +135,44 @@ def compiled_interface(module, source, build, compiler_args):
         result["ground_signatures"] = signatures
         result["object_sha256"] = hashlib.sha256(obj.read_bytes()).hexdigest()
     return result
+
+
+def original_interface(module, raw, vc):
+    """Inspect an unchanged auxiliary module even when no layout override was selected."""
+    if (not re.fullmatch(_IDENT + r"(?:\." + _IDENT + ")*", module)
+            or len(raw) > 262144
+            or any(d["module"].split(".")[0] in {"Coq", "Stdlib"}
+                   for group in ("coq_dependencies", "runtime_dependencies", "generated_coq_dependencies")
+                   for d in vc.get(group, []))):
+        return None
+    compiler = os.environ.get("COQC") or shutil.which("coqc")
+    if not compiler:
+        return None
+    return _compiled_original(module, raw, compiler)
+
+
+@lru_cache(maxsize=32)
+def _compiled_original(module, raw, compiler):
+    source = raw.decode("utf-8")
+    if not passive_declarations(source):
+        return None
+    with TemporaryDirectory(prefix="tespec-opaque-") as tmp:
+        work = Path(tmp)
+        unit = work.joinpath(*module.split(".")).with_suffix(".v")
+        unit.parent.mkdir(parents=True, exist_ok=True)
+        unit.write_bytes(raw)
+        cmd = [compiler, "-q", "-Q", str(work), ""]
+        limiter = shutil.which("prlimit")
+        if limiter:
+            cmd = [limiter, "--as=1073741824", "--fsize=67108864", "--", *cmd]
+        try:
+            result = subprocess.run([*cmd, str(unit)], cwd=work, stdout=subprocess.DEVNULL,
+                                    stderr=subprocess.DEVNULL, timeout=5)
+            if result.returncode == 0:
+                return compiled_interface(module, source, work, cmd)
+        except (OSError, subprocess.TimeoutExpired):
+            pass
+    return None
 
 
 def _inventory_digest(names):

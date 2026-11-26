@@ -34,12 +34,19 @@ def historic(base, table):
         stats_path = base / tool / "statistics.json"
         stats = read(stats_path)
         for r in (c for c in table["costs"] if c["tool"] == tool):
+            statuses = summary.get("native_status_counts", {})
+            if (tool == "fulminate" and r["stage"] == "单独运行测试" and statuses
+                    and set(statuses) == {"NOT_BUILT"} and r["wall_seconds"] is None):
+                rows.append(line(tool=tool, stage=r["stage"], basis="tool_receipt", result="NOT_BUILT",
+                                 measured=0, required=summary["case_pairs"], unit="no executable produced",
+                                 input_tokens=0, output_tokens=0, tokens=0, evidence=str(result_path.relative_to(ROOT))))
+                continue
             peak = r["peak_process_memory_mib"]
             usage = stats.get("token_usage") or {}
             if not isinstance(usage, dict) or r["tokens"] != usage.get("total_tokens"):
                 usage = {}
             total = r["tokens"]
-            rows.append(line(tool=tool, stage=r["stage"], basis="archived_cost", result=outcome,
+            rows.append(line(tool=tool, stage=r["stage"], basis="archived_cost", result=r["status"],
                              unit=r["unit"], wall_seconds=r["wall_seconds"],
                              max_process_rss_kib=None if peak is None else peak * 1024,
                              input_tokens=usage.get("input_tokens", 0 if total == 0 else None),
@@ -60,6 +67,27 @@ def historic(base, table):
             rows.append(line(tool=tool, stage="完整原始目标证明（含历史尝试）", basis="proof_receipt", result=outcome,
                              unit="charged proof attempts; missing fields unknown", wall_seconds=m["wall_seconds"],
                              max_process_rss_kib=m["max_process_rss_kib"], tokens=m["tokens"], evidence=ref["path"]))
+        generation_path = base / tool / "proof/generation-replay.json"
+        if tool == "qcp" and generation_path.is_file():
+            gen = read(generation_path)
+            attempts = [*gen.get("previous_attempts", []), gen]
+            rows.append(line(tool=tool, stage="当前 QCP 原始目标生成（含全部尝试）", basis="local_replay",
+                             result="EXACT_GOAL_MATCH" if gen["exact_goal_match"] else "DIFFERENT_GOAL",
+                             unit="native generation; compare against archived certificate", measured=len(attempts),
+                             wall_seconds=aggregate(attempts, "wall_seconds"), max_process_rss_kib=aggregate(attempts, "max_process_rss_kib", max),
+                             input_tokens=0, output_tokens=0, tokens=0, evidence=str(generation_path.relative_to(ROOT))))
+        replay_path = base / tool / "proof/local-replay.json"
+        if tool == "qcp" and replay_path.is_file():
+            replay = read(replay_path)
+            if replay.get("certificate") != result.get("certificate"):
+                raise ValueError("QCP replay and certificate differ")
+            for stage in ("coq", "kernel"):
+                ms = [m for m in replay["stages"] if m["stage"] == stage]
+                if ms:
+                    rows.append(line(tool=tool, stage=stage, basis="local_replay", result=replay["status"],
+                                     unit="local replay", measured=len(ms), wall_seconds=aggregate(ms,"wall_seconds"),
+                                     max_process_rss_kib=aggregate(ms,"max_process_rss_kib",max), input_tokens=0,
+                                     output_tokens=0, tokens=0, evidence=str(replay_path.relative_to(ROOT))))
         if isinstance(stats.get("cost_ledger"), dict):
             ref = stats["cost_ledger"]
             if fingerprint(ROOT / ref["path"]) != ref["sha256"]:
@@ -162,7 +190,15 @@ def publish(group):
     md = [f"# {group} 评测结果与成本", "", "| 工具 | 结果或覆盖 |", "|---|---|"]
     for tool in ("cn", "qcp", "fulminate"):
         v = read(base/tool/"results.json")
-        text = v.get("verdict") or json.dumps(v.get("summary", {}), ensure_ascii=False, sort_keys=True)
+        text = v.get("verdict")
+        if text is None:
+            counts = v.get("summary", {})
+            total = counts.get("case_pairs", counts.get("input_pairs"))
+            correct = counts.get("correct", counts.get("expected_matches"))
+            statuses = counts.get("native_status_counts", counts.get("status_counts", {}))
+            text = f"{correct}/{total} 符合预期" if correct is not None and total is not None else json.dumps(counts, ensure_ascii=False)
+            if statuses:
+                text += " · " + "、".join(f"{s} {n}" for s,n in statuses.items())
         if "entry_snapshot_replay" in v:
             target = [r for r in v["entry_snapshot_replay"]["runs"].values() if r["source_sha256"] == v.get("source_sha256")]
             if len(target) == 1 and target[0]["native"]["exit"] == 0:
@@ -174,7 +210,9 @@ def publish(group):
     md += ["", "| 工具 | 策略 | 阶段 | 数据口径 | 耗时 s | 单进程峰值 KiB¹ | token | 分支计数覆盖 |",
            "|---|---|---|---|---:|---:|---:|---:|"]
     for r in rows:
-        scope = r["unit"] if r["required"] is None else f"{r['measured']}/{r['required']} {r['basis']}"
+        scope = (f"{r['unit']} · {r['result']}" if r["required"] is None else
+                 f"{r['measured']}/{r['required']} · {r['result']}" if r["tool"] == "tespec" or r["result"] == "NOT_BUILT" else
+                 f"{r['measured']}/{r['required']} · {r['unit']}")
         branch = None if r["branch_records"] is None else f"{r['branch_records']}/{r['required']}"
         md.append("| "+" | ".join(display(v) for v in [r["tool"],r["strategy"],r["stage"],scope,r["wall_seconds"],r["max_process_rss_kib"],r["tokens"],branch])+" |")
     md += ["", "¹ 历史成本保留原始单位口径，包括执行峰值的均值。当前阶段显示已测部分的合计耗时及最大单进程峰值。", "",

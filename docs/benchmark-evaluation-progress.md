@@ -4,7 +4,9 @@
 
 ## 当前版本
 
-当前版本已实测 45 组、3,056 次 inline 或 modular 执行。Auto 有 2,650 次符合预期，401 次执行需要独立 ITP。3,050 次取得原生分支计数；另 6 次超时。ITP 的最新逐执行状态与失败尝试见全局索引的 `current_route_measurement`。四工具归档完整组数为 25，合计 956 个变体输入对。`ref` 新增 24 个 Fulminate 测试对、48 次 teSpec 原生 PASS 的覆盖审计，并复核 CN 和 QCP 主程序证明。 [全局索引](../benchmark/results/group-result-cost-index.json) · [ref](../benchmark/results/ref/result-cost.md)
+当前版本已实测 45 组、3,056 次 inline 或 modular 执行。Auto 有 2,675 次符合预期，401 次执行需要独立 ITP。3,050 次取得原生分支计数；另 6 次超时。ITP 的最新逐执行状态与失败尝试见全局索引的 `current_route_measurement`。四工具归档完整组数为 25，合计 956 个变体输入对。`ref` 新增 24 个 Fulminate 测试对、48 次 teSpec 原生 PASS 的覆盖审计，并复核 CN 和 QCP 主程序证明。 [全局索引](../benchmark/results/group-result-cost-index.json) · [ref](../benchmark/results/ref/result-cost.md)
+
+Auto 修复后按原生报告逐次重放全部 401 个残余执行。`list_all` 增加 19 次匹配，`mergesort` 增加 6 次，其余已匹配输入均保持。现有 381 次不符的逐项原因及模块化规约案例见 [Auto 异常分析](../benchmark/results/tespec-unexpected/current-auto-analysis.json)。
 
 ## 第 24 组归档时的汇总
 
