@@ -2,6 +2,14 @@
 
 当前完整 Auto 矩阵覆盖 45 组、3,056 次执行。131 次与既定预期不符，其中 70 次 UNKNOWN、60 次原生 ERROR、1 次 modular 原生 PASS。后者来自 `leaky_get` 的调用规约，细节见配对报告。异常索引逐组引用实际执行记录，可核对输入、源码、原始目标、判定阶段及额外超时复测。[全量 Auto 异常索引](auto-full-matrix.json) · [与 Fulminate 和 ITP 的对照](../paired-tool-comparison.md)
 
+### 两个家族的 inline 归并用例
+
+`list_all` 和 `mergesort` 各有一个 `IntList_mergesort_3`。输入为 `xs=8192`、`l=[INT_MAX,0,INT_MIN]`，预期 PASS，Auto 在固定 8 秒单查询预算下仍为 UNKNOWN。入口堆已判为可满足。原批次的第 45、63 条诊断 VC 在路径和目标两边都含有同一局部对象的 `UndefStructPredint_list_pair`。冻结的 `Goal.v` 先导入 `input_def`，再执行 `Import naive_C_Rules`。Auto 此处清空可见名集合，导致它找到了谓词定义，却无法在目标中确认该名称指向它。8 秒诊断还记录了已证义务，剩余原因是该名称的绑定。[谓词定义](../mergesort/tespec/proof-objects/d67895146d5c35415c774b4045af4ea1e5d1b895f4e37e8d644586114ad9928b/input_def.v#L17) · [原始目标](../mergesort/tespec/proof-objects/309aed9152d58e1cf1d5761628d85b9b970001f2bee2e0cf619975c2de91eca2/Goal.v#L643)
+
+在两份目标各自的导入环境中，Coq 8.20.1 都用 `reflexivity` 检查了三个等式。未限定的谓词名等于 `input_def` 中的常量。它的正文是两个未初始化指针字段格的分离合取，且最终环境中的字段记法仍解析为 QCP 的 `eval_addr_expr` 表达式。该地址求值在此作为参数；`snd` 的地址无法通过定义化简得到 `x+4`。这些核对能够确认该谓词的身份。若每个原始分支的路径和目标都保留同一资源、参数绑定和重数一致，且余下的蕴含已证，即可应用分离逻辑的 frame 规则。数值字段替换还需要在该环境中检查连接字段地址与 C 布局的等式。通用实现应逐个核对实际解析到的常量和参数，在证据不足时保留义务。三条等式的诊断独立于正式实验计时和路线分数。[诊断命令、依赖哈希及每条 VC 的证据](current-auto-analysis.json)
+
+两个家族的 `IntList_merge_2` 都使用 `xs=8192`、`ys=16384`、`l=[2,-1]`、`r=[INT_MAX,0,INT_MIN]`。两者预期 PASS，入口均为 SAT。原批次逐 VC 记录显示，第 11、12 条调用蕴含的 SMT 查询超时，第 13 条返回义务已证。两份固定 8 秒诊断仍有查询超时，执行均为 UNKNOWN。预算是每个查询的上限，两次后处理总用时分别为 33.229 秒和 33.510 秒。[list_all 对照](../list_all/tespec/latest-auto.json) · [mergesort 对照](../mergesort/tespec/latest-auto.json)
+
 
 `auto-guards.json` 记录的两个 inline `IntList_mergesort_2` UNKNOWN 已在相同原始 VC 上由 Auto 解决，四个原始断言均通过内核检查。[list_all 复核](../list_all/tespec/auto-original-roots.json) · [mergesort 复核](../mergesort/tespec/auto-original-roots.json)
 
