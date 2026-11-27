@@ -1,0 +1,7 @@
+Require Import Coverage.
+Locate CNotation.sizeof_alias_type.
+Locate CNotation.sizeof_enum_type.
+Locate CNotation.sizeof_struct_type.
+Locate CNotation.sizeof_union_type.
+Locate FunctionalExtensionality.functional_extensionality_dep.
+Locate PropExtensionality.propositional_extensionality.

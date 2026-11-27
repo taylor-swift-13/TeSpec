@@ -7,6 +7,7 @@ Its manifest digest must be held by the calling controller, outside proof edits.
 
 from __future__ import annotations
 
+from contextlib import contextmanager
 import hashlib
 import json
 import os
@@ -15,9 +16,10 @@ import re
 import signal
 import sys
 import subprocess
+from tempfile import TemporaryDirectory
 import time
 
-from .core import JobError, _coq_load_path_args
+from .core import JobError, _coq_load_path_args, _runtime_coq_module, _coq_required_modules
 from .kernel_replay import KernelReplayCache
 
 IDENT = r"[A-Za-z_][A-Za-z0-9_]*"
@@ -172,11 +174,16 @@ def prepare_certificate(
     target = output / "Goal.v"
     target.write_bytes(goal.read_bytes())
     dependencies = []
-    for item in manifest.get("coq_dependencies", []):
+    generated = manifest.get("generated_coq_dependencies", [])
+    module_names = set()
+    for item in [*manifest.get("coq_dependencies", []), *generated]:
         module = item["module"]
         if re.fullmatch(QUALIFIED, module) is None:
             raise JobError("invalid dependency module")
         check_dependency_namespace(module, runtime)
+        if module in module_names:
+            raise JobError("duplicate certificate dependency: " + module)
+        module_names.add(module)
         source = Path(item["staged"])
         if digest(source) != item["sha256"]:
             raise JobError("original dependency was modified")
@@ -188,6 +195,7 @@ def prepare_certificate(
                 "module": module,
                 "file": str(dest.relative_to(output)),
                 "sha256": digest(dest),
+                **({"generated": True} if item in generated else {}),
             }
         )
     proof = "Require Import Goal.\nModule Proofs.\n\n"
@@ -216,6 +224,8 @@ def prepare_certificate(
         "target_layout": manifest.get("target_layout"),
         "original_manifest": str(original_manifest),
         "original_manifest_sha256": digest(original_manifest),
+        "source_only_runtime_dependencies": [dep for dep in manifest.get("runtime_dependencies", [])
+                                             if dep.get("compiled") is None],
         "original_goal_sha256": digest(goal),
         "goals": [
             {"proof": name, "statement": statement} for name, statement in entries
@@ -305,6 +315,94 @@ def check_candidate_commands(source: str) -> None:
         raise JobError("candidate contains forbidden command: " + forbidden.group())
 
 
+def _uncompiled_runtime_modules(manifest, runtime, directory):
+    """Stage only original, hash-checked runtime sources lacking a compiled unit."""
+    original = Path(manifest["original_manifest"])
+    declared = manifest.get("source_only_runtime_dependencies")
+    if original.is_file():
+        if digest(original) != manifest["original_manifest_sha256"]:
+            raise JobError("original VC manifest changed")
+        pinned = json.loads(original.read_bytes())
+        selected = [dep for dep in pinned.get("runtime_dependencies", []) if dep.get("compiled") is None]
+        if declared is not None and declared != selected:
+            raise JobError("runtime source list differs from original VC manifest")
+    else:
+        # Older portable bundles used only the compiled runtime. New bundles
+        # also pin source-only imports when the generation workspace is archived.
+        selected = declared or []
+    pending = {}
+    for dep in selected:
+        name = dep["module"]
+        if not re.fullmatch(QUALIFIED, name) or "." not in name or name in pending:
+            raise JobError("invalid runtime dependency name")
+        path = _runtime_coq_module(name, runtime.parent)
+        if path is None or path != Path(dep["source"]).resolve() or not path.is_relative_to(runtime):
+            raise JobError("wrong runtime module source for " + name)
+        text = path.read_bytes()
+        if hashlib.sha256(text).hexdigest() != dep["sha256"]:
+            raise JobError("runtime dependency hash mismatch: " + name)
+        target = directory.joinpath(*name.split(".")).with_suffix(".v")
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(text)
+        pending[name] = (target, set(_coq_required_modules(text.decode())))
+    units = {}
+    while pending:
+        ready = [name for name, (_, imports) in pending.items() if not imports.intersection(pending)]
+        if not ready:
+            raise JobError("cyclic or unresolved runtime dependencies")
+        for name in ready:
+            units[name] = pending.pop(name)[0]
+    return units
+
+
+@contextmanager
+def _benchmark_checker_slot(stage):
+    """Bound costly ITP processes across workers while measuring each command separately."""
+    directory = os.environ.get("TESPEC_ITP_RESOURCE_DIR")
+    if stage.startswith("kernel_replay"):
+        kind = "kernel"
+    elif stage == "compile_Candidate.v":
+        kind = "candidate"
+    else:
+        kind = "compiler" if stage.startswith("compile_") else None
+    if not directory or not kind:
+        yield 0.0
+        return
+    import fcntl
+
+    root = Path(directory)
+    if not root.is_dir():
+        raise JobError("ITP resource-slot directory is unavailable")
+    defaults = {"kernel": "2", "candidate": "1", "compiler": "3"}
+    count = int(os.environ.get("TESPEC_ITP_" + kind.upper() + "_SLOTS", defaults[kind]))
+    if not 1 <= count <= 32:
+        raise JobError("invalid ITP resource-slot count")
+    started = time.monotonic()
+    handles = []
+    try:
+        for index in range(count):
+            handles.append((root / (kind + "-" + str(index) + ".lock")).open("a"))
+        # Only the oldest admitted waiter polls the slots. New arrivals wait on
+        # a blocking flock and cannot repeatedly overtake a queued kernel replay.
+        with (root / (kind + "-admission.lock")).open("a") as admission:
+            fcntl.flock(admission, fcntl.LOCK_EX)
+            acquired = False
+            while not acquired:
+                for handle in handles:
+                    try:
+                        fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                    except BlockingIOError:
+                        continue
+                    acquired = True
+                    break
+                if not acquired:
+                    time.sleep(0.1)
+        yield time.monotonic() - started
+    finally:
+        for handle in handles:
+            handle.close()
+
+
 def check_certificate(
     path: Path,
     expected_digest: str,
@@ -380,6 +478,7 @@ def check_certificate(
     }
 
     def finish(reason):
+        runtime_work.cleanup()
         report["reason"] = reason
         report["duration_seconds"] = round(time.monotonic() - started, 6)
         (out / "certificate-report.json").write_text(
@@ -390,6 +489,13 @@ def check_certificate(
     def execute(label, command):
         log = out / (label + ".log")
         resource = out / (label + ".resources.json")
+        limit = None
+        checked_command = command
+        if label == "compile_Candidate.v" and os.environ.get("TESPEC_ITP_RESOURCE_DIR"):
+            limit = int(os.environ.get("TESPEC_ITP_CANDIDATE_ADDRESS_SPACE_BYTES", 4 * 1024**3))
+            if limit <= 0:
+                raise JobError("invalid ITP candidate process address-space limit")
+            checked_command = ["/usr/bin/prlimit", "--as=" + str(limit), "--", *command]
         measured = [
             "/usr/bin/time",
             "--quiet",
@@ -397,23 +503,28 @@ def check_certificate(
             '{"user_seconds":%U,"system_seconds":%S,"max_process_rss_kib":%M}',
             "-o",
             str(resource),
-            *command,
+            # GNU time stays outside the timeout process group, so it can reap
+            # the command and write maximum RSS when the compiler times out.
+            "/usr/bin/timeout", "--kill-after=3s", f"{timeout}s", *checked_command,
         ]
-        start = time.monotonic()
-        with log.open("w") as stream:
-            process = subprocess.Popen(
-                measured,
-                cwd=out,
-                stdout=stream,
-                stderr=subprocess.STDOUT,
-                start_new_session=True,
-            )
-            try:
-                code = process.wait(timeout=timeout)
-            except subprocess.TimeoutExpired:
-                os.killpg(process.pid, signal.SIGKILL)
-                process.wait()
-                code = "TIMEOUT"
+        with _benchmark_checker_slot(label) as queue_seconds:
+            start = time.monotonic()
+            with log.open("w") as stream:
+                process = subprocess.Popen(
+                    measured,
+                    cwd=out,
+                    stdout=stream,
+                    stderr=subprocess.STDOUT,
+                    start_new_session=True,
+                )
+                try:
+                    code = process.wait(timeout=timeout + 10)
+                    if code in (124, 137) and time.monotonic() - start >= timeout:
+                        code = "TIMEOUT"
+                except subprocess.TimeoutExpired:
+                    os.killpg(process.pid, signal.SIGKILL)
+                    process.wait()
+                    code = "TIMEOUT"
         resources = None
         if resource.exists():
             try:
@@ -424,14 +535,26 @@ def check_certificate(
             {
                 "stage": label,
                 "command": command,
+                **({"address_space_limit_bytes": limit, "measured_command": measured} if limit else {}),
+                **({"resource_failure": "candidate_allocation_failed"} if limit and code != 0 and
+                   re.search(r"out of memory|cannot allocate memory|memory allocation failed",
+                             log.read_text(errors="replace"), re.IGNORECASE) else {}),
                 "exit_code": code,
                 "wall_seconds": time.monotonic() - start,
+                **({"queue_seconds": queue_seconds} if queue_seconds else {}),
                 "resources": resources,
                 "log": str(log),
             }
         )
         return code == 0
 
+    # Keep derived objects outside both the pinned runtime and model-editable files.
+    # A private directory also prevents reused .vo files from shadowing other modules.
+    runtime_work = TemporaryDirectory(prefix="tespec-itp-runtime-")
+    runtime_units = _uncompiled_runtime_modules(manifest, runtime, Path(runtime_work.name))
+    for module_dir, logical in sorted({(unit.parent, name.rsplit(".", 1)[0])
+                                       for name, unit in runtime_units.items()}):
+        load_paths.extend(["-Q", str(module_dir), logical])
     if measure_candidate_precheck:
         # Use a separate measured process so a rejected source has real time
         # and per-attempt RSS, even when no Coq compiler is ever launched.
@@ -448,6 +571,11 @@ def check_certificate(
         return finish("coq_unavailable")
     if "version 8.20" not in (out / "version.log").read_text():
         return finish("unsupported_coq_version")
+    for name, unit in runtime_units.items():
+        if not execute("compile_runtime_" + name.replace(".", "_"), prefix + ["coqc", *load_paths, str(unit)]):
+            return finish("uncompiled_runtime_dependency")
+        report.setdefault("compiled_runtime_sources", {})[name] = {
+            "source_sha256": digest(unit), "compiled_sha256": digest(unit.with_suffix(".vo"))}
     # Never accept a stale compiled candidate from a previous attempt.
     for unit in [
         *dep_paths,
@@ -461,7 +589,29 @@ def check_certificate(
             "compile_" + str(unit.relative_to(out)).replace("/", "_"),
             prefix + ["coqc", *load_paths, str(unit)],
         ):
-            return finish("coq_compile_failed_or_timeout")
+            # The generator can emit an invalid opaque alignment proof body.
+            # Check the original first. Only the pinned generated input_def may
+            # use a layout-derived proof for the identical original declarations.
+            generated_unit = next((dep for dep in manifest["dependencies"]
+                                   if dep.get("generated") and dep["module"] == "input_def"
+                                   and (out / dep["file"]).resolve() == unit), None)
+            if generated_unit is None or not manifest.get("target_layout"):
+                return finish("coq_compile_failed_or_timeout")
+            from .auto_guard_recheck import alignment_proof_source
+            original = unit.read_bytes()
+            replacement = alignment_proof_source(original.decode(), manifest["target_layout"]).encode()
+            if replacement == original:
+                return finish("coq_compile_failed_or_timeout")
+            unit.write_bytes(replacement)
+            try:
+                if not execute("compile_generated_alignment", prefix + ["coqc", *load_paths, str(unit)]):
+                    return finish("coq_compile_failed_or_timeout")
+            finally:
+                unit.write_bytes(original)
+            report["generated_alignment"] = {
+                "module": "input_def", "original_sha256": generated_unit["sha256"],
+                "compiled_source_sha256": hashlib.sha256(replacement).hexdigest(),
+                "compiled_sha256": digest(unit.with_suffix(".vo"))}
     audit = (out / "compile_Assumptions.v.log").read_text()
     observed, unsupported = assumption_audit_from_output(audit)
     blocks = audit.count("Axioms:") + audit.count("Closed under the global context")
@@ -519,6 +669,7 @@ def check_certificate(
             for dep in manifest["dependencies"]
         }
     )
+    fresh_modules.update({unit.with_suffix(".vo").resolve(): name for name, unit in runtime_units.items()})
     partial = kernel_cache is not None and kernel_cache.ready(identity)
     command = prefix + ["coqchk", *load_paths]
     if partial:

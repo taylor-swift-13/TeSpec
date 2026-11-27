@@ -6,31 +6,54 @@
 | qcp | VERIFIED_KERNEL_CHECKED |
 | fulminate | 136/136 符合预期 · PASS 46、FAIL 90 |
 
+全量 Auto 符合预期：inline 136/136，modular 136/136。[同一输入的跨工具比较](../paired-tool-comparison.md)。
+
+| 最新 ITP | 共用原生执行 | 需 ITP | 已测 ITP | 待测 | 全部执行中符合预期 |
+|---|---:|---:|---:|---:|---:|
+| inline | 136 | 0 | 0 | 0 | 136 |
+| modular | 136 | 0 | 0 | 0 | 136 |
+
+以下为旧冻结双路线批次。
+
 | 策略 | 执行数 | Auto 符合预期 | ITP 符合预期（含原生） | 需要 ITP | 已有本轮回执 |
 |---|---:|---:|---:|---:|---:|
 | inline | 136 | 136 | 136 | 0 | 0 |
 | modular | 136 | 136 | 136 | 0 | 0 |
 
-| 工具 | 策略 | 阶段 | 数据口径 | 耗时 s | 单进程峰值 KiB¹ | token | 分支计数覆盖 |
-|---|---|---|---|---:|---:|---:|---:|
-| cn | — | 主程序验证 | 一次主程序验证 · MEASURED | 0.1147 | 44224.0000 | 0 | — |
-| qcp | — | VC 生成与自动处理 | 已测工作总量 · MEASURED | 0.0080 | 5072.0000 | 0 | — |
-| qcp | — | agent 填写证明 | 一次主程序验证 · MEASURED | 167.4990 | 196180.0000 | 264704 | — |
-| qcp | — | Coq 编译与假设审计 | 一次主程序验证 · MEASURED | 7.6038 | 581508.0000 | 0 | — |
-| qcp | — | 独立内核检查 | 一次主程序验证 · MEASURED | 133.7297 | 1809704.0000 | 0 | — |
-| qcp | — | ITP 平均合计 | 一次主程序验证 · MEASURED | 308.8324 | 1809704.0000 | 264704 | — |
-| fulminate | — | 插桩、编译与首次执行 | 已测工作总量 · MEASURED | 15.6753 | 44560.0000 | 0 | — |
-| fulminate | — | 单独运行测试 | 已测工作总量 · MEASURED | 0.5489 | 1400.0000 | 0 | — |
-| tespec | inline | native | 136/136 · MEASURED | 17.5311 | 21216 | 0 | 136/136 |
-| tespec | inline | auto | 0/0 · NOT_REQUIRED | 0 | — | 0 | — |
-| tespec | inline | itp_model | 0/0 · NOT_REQUIRED | 0 | — | 0 | — |
-| tespec | inline | itp_coq | 0/0 · NOT_REQUIRED | 0 | — | 0 | — |
-| tespec | inline | itp_kernel | 0/0 · NOT_REQUIRED | 0 | — | 0 | — |
-| tespec | modular | native | 136/136 · MEASURED | 17.5040 | 21192 | 0 | 136/136 |
-| tespec | modular | auto | 0/0 · NOT_REQUIRED | 0 | — | 0 | — |
-| tespec | modular | itp_model | 0/0 · NOT_REQUIRED | 0 | — | 0 | — |
-| tespec | modular | itp_coq | 0/0 · NOT_REQUIRED | 0 | — | 0 | — |
-| tespec | modular | itp_kernel | 0/0 · NOT_REQUIRED | 0 | — | 0 | — |
+| 工具 | 策略 | 阶段 | 数据口径 (basis) | 测量覆盖 | 耗时 s | 单进程峰值 KiB¹ | token | 分支计数覆盖 |
+|---|---|---|---|---|---:|---:|---:|---:|
+| cn | — | 主程序验证 | archived_cost | 一次主程序验证 · MEASURED | 0.1147 | 44224.0000 | 0 | — |
+| qcp | — | VC 生成与自动处理 | archived_cost | 已测工作总量 · MEASURED | 0.0080 | 5072.0000 | 0 | — |
+| qcp | — | agent 填写证明 | archived_cost | 一次主程序验证 · MEASURED | 167.4990 | 196180.0000 | 264704 | — |
+| qcp | — | Coq 编译与假设审计 | archived_cost | 一次主程序验证 · MEASURED | 7.6038 | 581508.0000 | 0 | — |
+| qcp | — | 独立内核检查 | archived_cost | 一次主程序验证 · MEASURED | 133.7297 | 1809704.0000 | 0 | — |
+| qcp | — | ITP 平均合计 | archived_cost | 一次主程序验证 · MEASURED | 308.8324 | 1809704.0000 | 264704 | — |
+| fulminate | — | 插桩、编译与首次执行 | archived_cost | 已测工作总量 · MEASURED | 15.6753 | 44560.0000 | 0 | — |
+| fulminate | — | 单独运行测试 | archived_cost | 已测工作总量 · MEASURED | 0.5489 | 1400.0000 | 0 | — |
+| tespec | inline | native | current_execution | 136/136 · MEASURED | 17.5311 | 21216 | 0 | 136/136 |
+| tespec | inline | auto | current_execution | 0/0 · NOT_REQUIRED | 0 | — | 0 | — |
+| tespec | inline | itp_model | current_execution | 0/0 · NOT_REQUIRED | 0 | — | 0 | — |
+| tespec | inline | itp_coq | current_execution | 0/0 · NOT_REQUIRED | 0 | — | 0 | — |
+| tespec | inline | itp_kernel | current_execution | 0/0 · NOT_REQUIRED | 0 | — | 0 | — |
+| tespec | modular | native | current_execution | 136/136 · MEASURED | 17.5040 | 21192 | 0 | 136/136 |
+| tespec | modular | auto | current_execution | 0/0 · NOT_REQUIRED | 0 | — | 0 | — |
+| tespec | modular | itp_model | current_execution | 0/0 · NOT_REQUIRED | 0 | — | 0 | — |
+| tespec | modular | itp_coq | current_execution | 0/0 · NOT_REQUIRED | 0 | — | 0 | — |
+| tespec | modular | itp_kernel | current_execution | 0/0 · NOT_REQUIRED | 0 | — | 0 | — |
+| tespec | inline | layout_prepare | latest_native_matrix | 16/16 · MEASURED | 0.9726 | 18228 | 0 | — |
+| tespec | inline | batch_auto | latest_native_matrix | 0/0 · NOT_INVOKED | — | — | 0 | — |
+| tespec | inline | native | latest_native_matrix | 136/136 · MEASURED | 3.9267 | 21120 | 0 | 136/136 |
+| tespec | inline | auto | latest_same_input_and_vc | 0/0 · NOT_REQUIRED | 0 | — | 0 | — |
+| tespec | inline | itp_model | latest_same_input_and_vc | 0/0 · NOT_REQUIRED | 0 | — | 0 | — |
+| tespec | inline | itp_coq | latest_same_input_and_vc | 0/0 · NOT_REQUIRED | 0 | — | 0 | — |
+| tespec | inline | itp_kernel | latest_same_input_and_vc | 0/0 · NOT_REQUIRED | 0 | — | 0 | — |
+| tespec | modular | layout_prepare | latest_native_matrix | 16/16 · MEASURED | 0.9916 | 18040 | 0 | — |
+| tespec | modular | batch_auto | latest_native_matrix | 0/0 · NOT_INVOKED | — | — | 0 | — |
+| tespec | modular | native | latest_native_matrix | 136/136 · MEASURED | 3.8704 | 21120 | 0 | 136/136 |
+| tespec | modular | auto | latest_same_input_and_vc | 0/0 · NOT_REQUIRED | 0 | — | 0 | — |
+| tespec | modular | itp_model | latest_same_input_and_vc | 0/0 · NOT_REQUIRED | 0 | — | 0 | — |
+| tespec | modular | itp_coq | latest_same_input_and_vc | 0/0 · NOT_REQUIRED | 0 | — | 0 | — |
+| tespec | modular | itp_kernel | latest_same_input_and_vc | 0/0 · NOT_REQUIRED | 0 | — | 0 | — |
 
 ¹ 历史成本保留原始单位口径，包括执行峰值的均值。当前阶段显示已测部分的合计耗时及最大单进程峰值。
 

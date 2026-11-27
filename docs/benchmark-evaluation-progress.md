@@ -4,6 +4,10 @@
 
 ## 当前版本
 
+四工具已在 45 组上按主程序与有限输入分别计量。CN 记录 45 次验证结果；独立 QCP 记录 35 组获证、3 组原始义务获反证、7 组生成器拒绝。Fulminate 实跑全部 1,561 个变体输入对，其中 342 个保留原始构建失败和兼容语法后的实际运行。teSpec 两种执行策略共 3,056 次，当前 Auto 有 2,925 次符合预期。当前矩阵产生 489 个需后处理的执行。每次独立计量 Auto 和 ITP，核对完整原生结果、目标及输入哈希。旧版 401 个残余执行作为单独的历史对照。最新覆盖与可比范围见[四工具对照](../benchmark/results/paired-tool-comparison.md)。结果为 UNKNOWN、生成器拒绝和采集未完成分别统计。
+
+### 上一轮原始 VC 复核
+
 `list_all` 和 `mergesort` 的 inline `IntList_mergesort_2` 均从 UNKNOWN 转为 PASS。原生目标哈希与上一轮一致。四个断言各有一个完整的纯条件与空堆分支，Auto 为该分支构造证明项，Coq 在原始目标环境中检查整条析取命题，4/4 取得 `KERNEL_CHECKED`。这使上一轮 50 个目标全部 PASS。本轮覆盖 45 组的 2,843 次执行，其中 399 次实际运行 Auto，2,444 次复用经哈希核验的原生判定。此前符合预期的 2,841 次全部保持。另有 213 次执行不在本轮范围内。[回归总表](../benchmark/results/group-result-cost-index.json) · [list_all 的逐目标证据](../benchmark/results/list_all/tespec/auto-original-roots.json) · [mergesort 的逐目标证据](../benchmark/results/mergesort/tespec/auto-original-roots.json)
 
 ### 上一轮投影复核

@@ -76,7 +76,9 @@ def main():
                 for m in item["model_attempts"]:
                     require((m["requested_model"],m["requested_reasoning_effort"]) == ("gpt-6.1-sol","medium"), "ITP model")
                 totals["itp_model_calls"] += len(item["model_attempts"])
-            itp_final = item["final_status"] if item else "PENDING" if eligible else r["native_status"]
+            itp_final = r["native_status"]
+            if eligible:
+                itp_final = item["final_status"] if item and not item.get("needs_model") else "PENDING"
             if not r["expected_match"] or (itp_final != "PENDING" and itp_final != exp):
                 anomalies.append({"execution_row": i, "case": key[1], "variant": key[0], "strategy": key[2],
                                   "expected": exp, "native": r["native_status"], "auto": r["effective_status"], "itp": itp_final,

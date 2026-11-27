@@ -1,5 +1,8 @@
 # teSpec 不符合预期的专项台账
 
+当前完整 Auto 矩阵覆盖 45 组、3,056 次执行。131 次与既定预期不符，其中 70 次 UNKNOWN、60 次原生 ERROR、1 次 modular 原生 PASS。后者来自 `leaky_get` 的调用规约，细节见配对报告。异常索引逐组引用实际执行记录，可核对输入、源码、原始目标、判定阶段及额外超时复测。[全量 Auto 异常索引](auto-full-matrix.json) · [与 Fulminate 和 ITP 的对照](../paired-tool-comparison.md)
+
+
 `auto-guards.json` 记录的两个 inline `IntList_mergesort_2` UNKNOWN 已在相同原始 VC 上由 Auto 解决，四个原始断言均通过内核检查。[list_all 复核](../list_all/tespec/auto-original-roots.json) · [mergesort 复核](../mergesort/tespec/auto-original-roots.json)
 
 

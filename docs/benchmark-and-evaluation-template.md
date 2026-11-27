@@ -2,6 +2,8 @@
 
 当前每组使用同一 [存储规范](benchmark-storage-policy.md)。读取 `result-cost.json#/current_evaluation`，或查看同目录的 CSV 和 Markdown。新增实验只在 ITP 路线调用 `gpt-6.1-sol`（medium），全部尝试分阶段记账。下文的原始 read 批次保留当时的模型与成本口径。
 
+全矩阵比较将历史四工具归档状态与本轮独立测量分开。查看 [同输入交叉表与同原生 VC 成本](../benchmark/results/paired-tool-comparison.md)。`tespec/auto-remaining.json` 记录此前未覆盖的输入；`tespec/auto-on-itp-roots.json` 记录对原始 ITP 输入和 VC 重跑 Auto 的实际耗时、峰值、token 和输出。两份原生报告哈希不同的费用不作逐执行效率比较。Fulminate 无显式合同、合同不同、不同预期与兼容源码的处理见[审计](../benchmark/results/fulminate-coverage.json)。`qcp/standalone/` 保留独立 QCP 对原始主模块的生成结果、完整证书或原始拒绝原因。
+
 以作业启动 `python3 -m spectest routes JOB --output-dir OUT` 时，默认 Auto 在生成 VC 前发现使用抽象 C 字段地址的导入谓词，按该作业的目标布局重新编译相关库。布局绑定记录在 `routes.json#/auto_layout`，包括目标布局、原始和实际模块哈希、时间、最大进程 RSS、模型调用数与 token。布局准备可由同一源码、函数、架构和执行策略的一批输入共享，成本按批计一次。已有布局作业继续验证原绑定。新作业的 `--route both` 共用绑定后的 VC，回放 `--native-report` 始终使用报告原有的定义。
 
 独立 Auto 作业可以使用已由 Coq 证明的谓词投影。最终 VC 新增生成模块时，Auto 按本次实际字段布局检查对齐引理，并在最终导入环境中重新编译投影及其名字绑定证明。复核失败会重新执行无投影的布局作业。复核成本包含在原生执行中，单列时不能再加一次。双路线共用的原生作业继续采用无投影的布局，以保持同一套原始 VC 可比。对旧原生报告的回放沿用该报告的上下文。
@@ -493,3 +495,5 @@ ITP以整次执行的原始残余目标为单位。自动分解的纯/空间子�
 模型超时若没有实际usage事件，保留已测时间/RSS、事件哈希和缺失原因，token必须为null；总量给已知下界，并令resource_metrics_complete=false。后续成功review是新调用，不能替代旧尝试的未知token。对原Goal证明成功与全部历史成本完整分别判断。
 
 证明对象按内容SHA去重。重建Coq工作目录时，使用proof_files字典的原模块文件名及依赖module字段恢复文件名；对象路径末尾只表示第一次保存时的名称，不决定Coq模块身份。例如同字节的ReferenceCandidate.v可引用已存Candidate.v对象，不能因此改写Require Import中的模块名。
+
+完整双路线比较以当前版本实际产生的残余义务为准。若一个原生报告包含多个输入，逐输入保留该输入的全部义务并单独计量，记录原批次和逐输入报告的 SHA-256。现存证明可在核对目标、输入与依赖后重放。对同一次核验的跨批次复用，分别列出实际绑定成本和共享核验的原始成本。新生成或已改变的目标需要独立 ITP 回执。旧批次单列。[当前双路线对照](../benchmark/results/paired-tool-comparison.md)

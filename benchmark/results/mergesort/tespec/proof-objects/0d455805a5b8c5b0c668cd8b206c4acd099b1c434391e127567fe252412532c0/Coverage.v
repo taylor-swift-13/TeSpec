@@ -1,0 +1,21 @@
+Require Import Goal Candidate.
+Module Type Refutation_Correct.
+Axiom proof_of_IntList_mergesort_entail_wit_1 : Goal.IntList_mergesort_entail_wit_1.
+Axiom proof_of_IntList_mergesort_entail_wit_2 : Goal.IntList_mergesort_entail_wit_2.
+Axiom proof_of_IntList_mergesort_entail_wit_3 : Goal.IntList_mergesort_entail_wit_3.
+Axiom proof_of_IntList_mergesort_entail_wit_4 : Goal.IntList_mergesort_entail_wit_4.
+Axiom proof_of_IntList_mergesort_entail_wit_5 : Goal.IntList_mergesort_entail_wit_5.
+Axiom proof_of_IntList_mergesort_entail_wit_6 : Goal.IntList_mergesort_entail_wit_6.
+Axiom proof_of_IntList_mergesort_entail_wit_7 : Goal.IntList_mergesort_entail_wit_7.
+Axiom proof_of_IntList_mergesort_entail_wit_8 : Goal.IntList_mergesort_entail_wit_8.
+Axiom proof_of_IntList_mergesort_entail_wit_9 : Goal.IntList_mergesort_entail_wit_9.
+Axiom proof_of_IntList_mergesort_entail_wit_10 : Goal.IntList_mergesort_entail_wit_10.
+Axiom proof_of_IntList_mergesort_entail_wit_11 : Goal.IntList_mergesort_entail_wit_11.
+Axiom proof_of_IntList_mergesort_entail_wit_12 : Goal.IntList_mergesort_entail_wit_12.
+Axiom proof_of_IntList_mergesort_entail_wit_13 : Goal.IntList_mergesort_entail_wit_13.
+Axiom proof_of_IntList_mergesort_return_wit_1 : Goal.IntList_mergesort_return_wit_1.
+Axiom proof_of_IntList_mergesort_precondition_wit_1 : Goal.IntList_mergesort_precondition_wit_1.
+End Refutation_Correct.
+Module Checked : Refutation_Correct.
+Include Candidate.Proofs.
+End Checked.

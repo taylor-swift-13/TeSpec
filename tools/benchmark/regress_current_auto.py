@@ -12,14 +12,17 @@ from organize_tespec_routes import ROOT, RESULTS, digest, fingerprint, read, sav
 from current_test_plan import matches_crash
 
 
-def replay(row, scratch):
+def replay(row, scratch, *, spatial_smt_timeout_ms=None):
     native = scratch / row["native_report_sha256"] / "out/native/report.json"
     if fingerprint(native) != row["native_report_sha256"]:
         raise ValueError("Native report changed")
     with TemporaryDirectory() as tmp:
         out = Path(tmp)
-        proc = subprocess.run([sys.executable, "-B", "-m", "spectest", "routes", "--route", "auto",
-                               "--native-report", str(native), "--output-dir", str(out)], cwd=ROOT, capture_output=True, text=True)
+        cmd = [sys.executable, "-B", "-m", "spectest", "routes", "--route", "auto",
+               "--native-report", str(native), "--output-dir", str(out)]
+        if spatial_smt_timeout_ms is not None:
+            cmd.extend(["--spatial-smt-timeout-ms", str(spatial_smt_timeout_ms)])
+        proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True)
         if proc.returncode != 0:
             raise RuntimeError(proc.stderr[-1200:])
         routes = read(out / "routes.json")

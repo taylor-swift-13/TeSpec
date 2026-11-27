@@ -1,0 +1,45 @@
+From SimpleC.Verification Require Import VCPrelude.
+Import naive_C_Rules.
+Require Import TeSpecLayout_da886d926b8d5f2795572f0a.
+Require Import FulminateMerge.
+Local Open Scope sac.
+Local Open Scope Z_scope.
+
+(*----- Function IntList_cons -----*)
+
+Definition IntList_cons_return_wit_1 :=
+forall (l___tespec_entry: (@list Z)) (h_pre: Z) (t_pre: Z) (retval: Z) (PreH1 : (retval <> 0)) (PreH2 : (t_pre = 0)) (PreH3 : (h_pre = 7)) (PreH4 : (t_pre = 0)) (PreH5 : (l___tespec_entry = (@nil Z))) (PreH6 : (0 <= retval)) (PreH7 : (retval <= UINT_MAX)),
+  (((* tespec-target-field-address-v1: bits=32; offset=0; size=4; align=4 *) (retval + 0)) # Int  |-> h_pre)
+  **  (((* tespec-target-field-address-v1: bits=32; offset=4; size=4; align=4 *) (retval + 4)) # Ptr  |-> t_pre)
+|--
+  “ (retval <> 0) ”
+  &&  (sll retval (cons (h_pre) (l___tespec_entry)) )
+.
+
+Definition IntList_cons_partial_solve_wit_1 :=
+forall (l___tespec_entry: (@list Z)) (h_pre: Z) (t_pre: Z) (PreH1 : (h_pre = 7)) (PreH2 : (t_pre = 0)) (PreH3 : (l___tespec_entry = (@nil Z))),
+  (sll t_pre l___tespec_entry )
+|--
+  “ (t_pre = 0) ”
+  &&  “ (h_pre = 7) ”
+  &&  “ (t_pre = 0) ”
+  &&  “ (l___tespec_entry = (@nil Z)) ”
+  &&  emp
+.
+
+Definition IntList_cons_precondition_wit_1 :=
+exists (l___tespec_entry: (@list Z)),
+exists (h_pre: Z),
+exists (t_pre: Z),
+~ ((  “ (h_pre = 7) ”
+  &&  “ (t_pre = 0) ”
+  &&  “ (l___tespec_entry = (@nil Z)) ”
+  &&  (sll t_pre l___tespec_entry )) |-- “ False ”).
+
+Module Type VC_Correct.
+
+Axiom proof_of_IntList_cons_return_wit_1 : IntList_cons_return_wit_1.
+Axiom proof_of_IntList_cons_partial_solve_wit_1 : IntList_cons_partial_solve_wit_1.
+Axiom proof_of_IntList_cons_precondition_wit_1 : IntList_cons_precondition_wit_1.
+
+End VC_Correct.

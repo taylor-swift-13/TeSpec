@@ -1,0 +1,10 @@
+Require Import Coverage.
+Set Printing Width 1000000.
+Print Assumptions Coverage.Checked.proof_of_IntList_mergesort_entail_wit_1.
+Print Assumptions Coverage.Checked.proof_of_IntList_mergesort_entail_wit_2.
+Print Assumptions Coverage.Checked.proof_of_IntList_mergesort_entail_wit_3.
+Print Assumptions Coverage.Checked.proof_of_IntList_mergesort_entail_wit_4.
+Print Assumptions Coverage.Checked.proof_of_IntList_mergesort_entail_wit_5.
+Print Assumptions Coverage.Checked.proof_of_IntList_mergesort_entail_wit_6.
+Print Assumptions Coverage.Checked.proof_of_IntList_mergesort_return_wit_1.
+Print Assumptions Coverage.Checked.proof_of_IntList_mergesort_precondition_wit_1.

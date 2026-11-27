@@ -34,6 +34,7 @@ def solve(row, scratch, task_root, windows_python, repair):
     wrapper.write_text("#!/bin/sh\nexec " + shlex.join(bridge) + "\n")
     wrapper.chmod(0o700)
     env = dict(os.environ, CODEX_BIN=str(wrapper))
+    before = set(folder.glob("model-receipts/*.json"))
     proc = subprocess.run([sys.executable, "-B", "-m", "spectest", "routes", "--native-report", str(native),
                            "--route", "itp", "--proof-cache", str(folder / "replay-source"),
                            "--output-dir", str(out)], cwd=ROOT, env=env, capture_output=True, text=True)
@@ -43,7 +44,7 @@ def solve(row, scratch, task_root, windows_python, repair):
     if d["routes"]["itp"].get("model_calls") and not list(folder.glob("model-receipts/*.json")):
         raise RuntimeError(f"Missing Windows CLI receipt: {folder}")
     print(row["case"], row["strategy"], d["cases"][0]["itp_status"], flush=True)
-    for p in folder.glob("model-receipts/*.json"):
+    for p in set(folder.glob("model-receipts/*.json")) - before:
         m = read(p)
         if m["exit_code"] not in (0, "INVALID_RESPONSE"):
             raise RuntimeError(f"Model CLI failed: {m['exit_code']} ({p})")

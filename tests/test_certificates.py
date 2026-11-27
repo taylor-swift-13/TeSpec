@@ -9,6 +9,7 @@ import unittest
 from unittest.mock import patch
 
 from spectest.certificates import (
+    _uncompiled_runtime_modules,
     assumption_audit_from_output,
     assumptions_from_output,
     check_candidate_commands,
@@ -151,6 +152,112 @@ End VC_Correct.
         result = prepare_certificate(original, root / "certificate")
         return result, runtime
 
+    def test_source_only_modules_use_pinned_mapping_and_import_order(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            _, runtime = self.prepare_fixture(root)
+            (runtime / "_CoqProject").write_text("-R examples SimpleC.EE\n")
+            folder = runtime / "examples/Domain"
+            folder.mkdir(parents=True)
+            base, outer = folder / "Base.v", folder / "Outer.v"
+            base.write_text("Definition base := True.")
+            outer.write_text("Require Import SimpleC.EE.Domain.Base. Definition outer := base.")
+            pinned = root / "original/manifest.json"
+            info = json.loads(pinned.read_text())
+            deps = [{"module": "SimpleC.EE.Domain." + p.stem, "source": str(p),
+                     "sha256": digest(p), "compiled": None} for p in (outer, base)]
+            info["runtime_dependencies"] = deps
+            pinned.write_text(json.dumps(info))
+            bundle = {"original_manifest": str(pinned), "original_manifest_sha256": digest(pinned)}
+            units = _uncompiled_runtime_modules(bundle, runtime, root / "stage")
+            self.assertEqual(list(units), ["SimpleC.EE.Domain.Base", "SimpleC.EE.Domain.Outer"])
+            self.assertEqual(units[deps[0]["module"]].read_bytes(), outer.read_bytes())
+            self.assertFalse(base.with_suffix(".vo").exists())
+            deps[0]["source"] = str(base)
+            pinned.write_text(json.dumps(info))
+            with self.assertRaisesRegex(JobError, "original VC manifest changed"):
+                _uncompiled_runtime_modules(bundle, runtime, root / "other")
+            bundle["original_manifest_sha256"] = digest(pinned)
+            with self.assertRaisesRegex(JobError, "wrong runtime module source"):
+                _uncompiled_runtime_modules(bundle, runtime, root / "other")
+            deps[0]["source"] = str(outer)
+            deps[0]["sha256"] = "0" * 64
+            pinned.write_text(json.dumps(info))
+            bundle["original_manifest_sha256"] = digest(pinned)
+            with self.assertRaisesRegex(JobError, "hash mismatch"):
+                _uncompiled_runtime_modules(bundle, runtime, root / "other")
+
+    def test_portable_compiled_only_bundle_keeps_working_after_producer_is_archived(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            prepared, runtime = self.prepare_fixture(root)
+            bundle = json.loads(Path(prepared["manifest"]).read_text())
+            Path(bundle["original_manifest"]).unlink()
+            self.assertEqual(_uncompiled_runtime_modules(bundle, runtime, root / "stage"), {})
+            del bundle["source_only_runtime_dependencies"]
+            self.assertEqual(_uncompiled_runtime_modules(bundle, runtime, root / "stage"), {})
+
+    def test_generated_modules_are_staged_from_original_manifest(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.prepare_fixture(root)
+            original = root / "original/manifest.json"
+            source = root / "original/input_def.v"
+            source.write_text("Definition cell_size := 8.")
+            info = json.loads(original.read_text())
+            dep = {"module": "input_def", "staged": str(source), "sha256": digest(source)}
+            info["generated_coq_dependencies"] = [dep]
+            original.write_text(json.dumps(info))
+            result = prepare_certificate(original, root / "new")
+            bundle = json.loads(Path(result["manifest"]).read_text())
+            staged, = bundle["dependencies"]
+            self.assertTrue(staged["generated"])
+            self.assertEqual((root / "new" / staged["file"]).read_bytes(), source.read_bytes())
+            info["coq_dependencies"] = [dep]
+            original.write_text(json.dumps(info))
+            with self.assertRaisesRegex(JobError, "duplicate"):
+                prepare_certificate(original, root / "duplicate")
+
+    def test_benchmark_candidate_limit_is_enforced_and_remains_unknown(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            request, _ = self.prepare_fixture(root)
+            opam = root / "opam"
+            opam.write_text(
+                "#!/usr/bin/env python3\nimport resource,sys\n"
+                "if '--version' in sys.argv: print('version 8.20')\n"
+                "elif sys.argv[-1].endswith('Candidate.v'):\n"
+                " assert resource.getrlimit(resource.RLIMIT_AS)[0] == 100000000\n"
+                " try: bytearray(110000000)\n"
+                " except MemoryError: print('cannot allocate memory'); sys.exit(2)\n"
+            )
+            opam.chmod(0o755)
+            with patch.dict(os.environ, {"PATH": str(root) + os.pathsep + os.environ["PATH"],
+                            "TESPEC_ITP_RESOURCE_DIR": str(root),
+                            "TESPEC_ITP_CANDIDATE_ADDRESS_SPACE_BYTES": "100000000"}):
+                audit = check_certificate(Path(request["manifest"]), request["manifest_sha256"])
+            self.assertEqual(audit["status"], "UNKNOWN")
+            stage = audit["stages"][-1]
+            self.assertEqual(stage["stage"], "compile_Candidate.v")
+            self.assertEqual(stage["exit_code"], 2)
+            self.assertEqual(stage["address_space_limit_bytes"], 100000000)
+            self.assertEqual(stage["resource_failure"], "candidate_allocation_failed")
+            self.assertIn("/usr/bin/prlimit", stage["measured_command"])
+            self.assertGreater(stage["resources"]["max_process_rss_kib"], 0)
+
+    def test_timeout_keeps_measured_process_peak(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            request, _ = self.prepare_fixture(root)
+            opam = root / "opam"
+            opam.write_text("#!/usr/bin/env python3\nimport time\nmemory = bytearray(20000000)\ntime.sleep(10)\n")
+            opam.chmod(0o755)
+            with patch.dict(os.environ, {"PATH": str(root) + os.pathsep + os.environ["PATH"]}):
+                audit = check_certificate(Path(request["manifest"]), request["manifest_sha256"], timeout=0.5)
+            stage, = audit["stages"]
+            self.assertEqual(stage["exit_code"], "TIMEOUT")
+            self.assertGreater(stage["resources"]["max_process_rss_kib"], 16000)
+
     def test_target_layout_is_frozen_with_certificate_inputs(self):
         layout = {
             "schema": "sac-target-layout/v1",
@@ -225,13 +332,14 @@ End VC_Correct.
 )
 class CertificateKernelTests(unittest.TestCase):
     def check_fixture(
-        self, proposition, proof, dependencies=None, refute=None, kernel_cache=None
+        self, proposition, proof, dependencies=None, refute=None, kernel_cache=None, runtime_modules=(), timeout=120
     ):
         with tempfile.TemporaryDirectory(prefix="tespec-certificate-kernel-") as temp:
             root = Path(temp)
             goal = root / "input_goal.v"
             goal.write_text(
-                f"Definition required : Prop := {proposition}.\nModule Type VC_Correct.\nAxiom proof_of_required : required.\nEnd VC_Correct.\n"
+                "".join(f"Require Import {name}.\n" for name, _ in runtime_modules)
+                + f"Definition required : Prop := {proposition}.\nModule Type VC_Correct.\nAxiom proof_of_required : required.\nEnd VC_Correct.\n"
             )
             original = root / "original.json"
             deps = []
@@ -249,6 +357,8 @@ class CertificateKernelTests(unittest.TestCase):
                         "immutable_sha256": {"goal": digest(goal)},
                         "qcip_root": str(ROOT / "runtime/qcip"),
                         "coq_dependencies": deps,
+                        "runtime_dependencies": [{"module": name, "source": str(path),
+                            "sha256": digest(path), "compiled": None} for name, path in runtime_modules],
                     }
                 )
             )
@@ -258,11 +368,26 @@ class CertificateKernelTests(unittest.TestCase):
             report = check_certificate(
                 Path(prepared["manifest"]),
                 prepared["manifest_sha256"],
-                kernel_cache=kernel_cache,
+                kernel_cache=kernel_cache, timeout=timeout,
             )
             saved = Path(prepared["manifest"]).parent / "certificate-report.json"
             self.assertEqual(json.loads(saved.read_text()), report)
             return report
+
+    def test_source_only_runtime_checked_through_independent_kernel(self):
+        source = ROOT / "runtime/qcip/SeparationLogic/examples/QCP_demos_human/sll_lib.v"
+        module = "SimpleC.EE.QCP_demos_human.sll_lib"
+        before = source.with_suffix(".vo").exists()
+        report = self.check_fixture(
+            "sll = sll",
+            "Require Import Goal. Module Proofs. Lemma proof_of_required : Goal.required. "
+            "Proof. reflexivity. Qed. End Proofs.",
+            runtime_modules=[(module, source)], timeout=600,
+        )
+        self.assertEqual(report["status"], "PASS", report)
+        self.assertEqual(report["compiled_runtime_sources"][module]["source_sha256"], digest(source))
+        self.assertEqual(report["stages"][-1]["stage"], "kernel_replay")
+        self.assertEqual(source.with_suffix(".vo").exists(), before)
 
     def test_evidence_deleted_after_kernel_check_produces_unknown_report(self):
         real_popen = subprocess.Popen
