@@ -22,7 +22,7 @@
 | fulminate | — | 插桩、编译与首次执行 | 已测工作总量 · MEASURED | 3.2123 | 44812.0000 | 0 | — |
 | fulminate | — | 单独运行测试 | 已测工作总量 · MEASURED | 0.1119 | 1132.0000 | 0 | — |
 | tespec | inline | native | 28/28 · MEASURED | 4.2069 | 21128 | 0 | 28/28 |
-| tespec | inline | auto | 1/1 · MEASURED | 0.1043 | 54196 | 0 | — |
+| tespec | inline | auto | 1/1 · MEASURED | 0.1020 | 54068 | 0 | — |
 | tespec | inline | itp_model | 0/1 · PENDING | — | — | — | — |
 | tespec | inline | itp_coq | 0/1 · PENDING | — | — | — | — |
 | tespec | inline | itp_kernel | 0/1 · PENDING | — | — | — | — |

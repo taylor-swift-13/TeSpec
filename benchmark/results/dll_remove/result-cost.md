@@ -28,12 +28,12 @@
 | fulminate | — | test | 18/18 · stage total | 0.0617 | 1920 | 0 | — |
 | fulminate | — | preflight | 2/2 · stage total | 0.0966 | 45588 | 0 | — |
 | tespec | inline | native | 9/9 · MEASURED | 1.7214 | 21128 | 0 | 9/9 |
-| tespec | inline | auto | 9/9 · MEASURED | 1.1693 | 57292 | 0 | — |
+| tespec | inline | auto | 9/9 · MEASURED | 1.1870 | 57388 | 0 | — |
 | tespec | inline | itp_model | 9/9 · MEASURED | 0 | — | 0 | — |
 | tespec | inline | itp_coq | 9/9 · MEASURED | 66.0267 | 657236 | 0 | — |
 | tespec | inline | itp_kernel | 9/9 · MEASURED | 1211.3040 | 2047816 | 0 | — |
 | tespec | modular | native | 9/9 · MEASURED | 1.7251 | 21184 | 0 | 9/9 |
-| tespec | modular | auto | 9/9 · MEASURED | 1.1752 | 57448 | 0 | — |
+| tespec | modular | auto | 9/9 · MEASURED | 1.2041 | 57600 | 0 | — |
 | tespec | modular | itp_model | 9/9 · MEASURED | 0 | — | 0 | — |
 | tespec | modular | itp_coq | 9/9 · MEASURED | 64.6246 | 657056 | 0 | — |
 | tespec | modular | itp_kernel | 9/9 · MEASURED | 1200.6048 | 2047564 | 0 | — |

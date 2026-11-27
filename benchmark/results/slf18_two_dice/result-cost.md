@@ -22,12 +22,12 @@
 | fulminate | — | 插桩、编译与首次执行 | 已测工作总量 · MEASURED | 1.7072 | 44692.0000 | 0 | — |
 | fulminate | — | 单独运行测试 | 已测工作总量 · MEASURED | 0.0535 | 1132.0000 | 0 | — |
 | tespec | inline | native | 14/14 · MEASURED | 2.0703 | 21152 | 0 | 14/14 |
-| tespec | inline | auto | 14/14 · MEASURED | 1.3286 | 55556 | 0 | — |
+| tespec | inline | auto | 14/14 · MEASURED | 1.2477 | 55596 | 0 | — |
 | tespec | inline | itp_model | 0/14 · PENDING | — | — | — | — |
 | tespec | inline | itp_coq | 0/14 · PENDING | — | — | — | — |
 | tespec | inline | itp_kernel | 0/14 · PENDING | — | — | — | — |
 | tespec | modular | native | 14/14 · MEASURED | 2.0839 | 21052 | 0 | 14/14 |
-| tespec | modular | auto | 12/12 · MEASURED | 1.0932 | 54816 | 0 | — |
+| tespec | modular | auto | 12/12 · MEASURED | 1.0340 | 54784 | 0 | — |
 | tespec | modular | itp_model | 0/12 · PENDING | — | — | — | — |
 | tespec | modular | itp_coq | 0/12 · PENDING | — | — | — | — |
 | tespec | modular | itp_kernel | 0/12 · PENDING | — | — | — | — |

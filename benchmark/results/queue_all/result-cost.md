@@ -8,8 +8,8 @@
 
 | 策略 | 执行数 | Auto 符合预期 | ITP 符合预期（含原生） | 需要 ITP | 已有本轮回执 |
 |---|---:|---:|---:|---:|---:|
-| inline | 34 | 11 | 6 | 11 | 0 |
-| modular | 34 | 12 | 6 | 15 | 0 |
+| inline | 34 | 12 | 6 | 11 | 0 |
+| modular | 34 | 14 | 6 | 15 | 0 |
 
 | 工具 | 策略 | 阶段 | 数据口径 | 耗时 s | 单进程峰值 KiB¹ | token | 分支计数覆盖 |
 |---|---|---|---|---:|---:|---:|---:|
@@ -22,12 +22,12 @@
 | fulminate | — | 插桩、编译与首次执行 | 已测工作总量 · MEASURED | 2.1971 | 46008.0000 | 0 | — |
 | fulminate | — | 单独运行测试 | 0/34 · NOT_BUILT | — | — | 0 | — |
 | tespec | inline | native | 34/34 · MEASURED | 126.7643 | 21204 | 0 | 30/34 |
-| tespec | inline | auto | 11/11 · MEASURED | 1.1327 | 56800 | 0 | — |
+| tespec | inline | auto | 11/11 · MEASURED | 1.1781 | 56936 | 0 | — |
 | tespec | inline | itp_model | 0/11 · PENDING | — | — | — | — |
 | tespec | inline | itp_coq | 0/11 · PENDING | — | — | — | — |
 | tespec | inline | itp_kernel | 0/11 · PENDING | — | — | — | — |
 | tespec | modular | native | 34/34 · MEASURED | 6.9391 | 21188 | 0 | 34/34 |
-| tespec | modular | auto | 15/15 · MEASURED | 1.5740 | 56880 | 0 | — |
+| tespec | modular | auto | 15/15 · MEASURED | 1.6462 | 56872 | 0 | — |
 | tespec | modular | itp_model | 0/15 · PENDING | — | — | — | — |
 | tespec | modular | itp_coq | 0/15 · PENDING | — | — | — | — |
 | tespec | modular | itp_kernel | 0/15 · PENDING | — | — | — | — |

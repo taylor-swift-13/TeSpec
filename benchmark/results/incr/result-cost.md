@@ -22,12 +22,12 @@
 | fulminate | — | 插桩、编译与首次执行 | 已测工作总量 · MEASURED | 11.8205 | 43124.0000 | 0 | — |
 | fulminate | — | 单独运行测试 | 已测工作总量 · MEASURED | 0.4099 | 1400.0000 | 0 | — |
 | tespec | inline | native | 103/103 · MEASURED | 13.4200 | 21184 | 0 | 103/103 |
-| tespec | inline | auto | 13/13 · MEASURED | 1.1903 | 55348 | 0 | — |
+| tespec | inline | auto | 13/13 · MEASURED | 1.2021 | 55412 | 0 | — |
 | tespec | inline | itp_model | 3/13 · PARTIAL | 350.7500 | 163700.0000 | 232216 | — |
 | tespec | inline | itp_coq | 3/13 · PARTIAL | 34.2724 | 527740 | 0 | — |
 | tespec | inline | itp_kernel | 3/13 · PARTIAL | 0 | — | 0 | — |
 | tespec | modular | native | 103/103 · MEASURED | 13.6030 | 21176 | 0 | 103/103 |
-| tespec | modular | auto | 13/13 · MEASURED | 1.1859 | 55432 | 0 | — |
+| tespec | modular | auto | 13/13 · MEASURED | 1.1993 | 55380 | 0 | — |
 | tespec | modular | itp_model | 2/13 · PARTIAL | 174.7500 | 163624.0000 | 152443 | — |
 | tespec | modular | itp_coq | 2/13 · PARTIAL | 22.0418 | 527612 | 0 | — |
 | tespec | modular | itp_kernel | 2/13 · PARTIAL | 0 | — | 0 | — |

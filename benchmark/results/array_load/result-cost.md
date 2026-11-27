@@ -27,12 +27,12 @@
 | fulminate | — | CN兼容诊断：插桩/编译/首次执行 | 额外5次实际阶段合计；与最终批次分列 · MEASURED | 1.3253 | 46988.0000 | 0 | — |
 | fulminate | — | CN兼容诊断：独立测试 | 额外5次实际阶段合计；与最终批次分列 · MEASURED | 0.0192 | 1200.0000 | 0 | — |
 | tespec | inline | native | 67/67 · MEASURED | 8.9561 | 21156 | 0 | 67/67 |
-| tespec | inline | auto | 2/2 · MEASURED | 0.1940 | 55732 | 0 | — |
+| tespec | inline | auto | 2/2 · MEASURED | 0.2141 | 56152 | 0 | — |
 | tespec | inline | itp_model | 2/2 · MEASURED | 110.3450 | 164908.0000 | 95696 | — |
 | tespec | inline | itp_coq | 2/2 · MEASURED | 14.3284 | 570180 | 0 | — |
 | tespec | inline | itp_kernel | 2/2 · MEASURED | 0 | — | 0 | — |
 | tespec | modular | native | 67/67 · MEASURED | 8.9474 | 21184 | 0 | 67/67 |
-| tespec | modular | auto | 2/2 · MEASURED | 0.3534 | 57860 | 0 | — |
+| tespec | modular | auto | 2/2 · MEASURED | 0.3947 | 57816 | 0 | — |
 | tespec | modular | itp_model | 2/2 · MEASURED | 56.5310 | 162124.0000 | 81560 | — |
 | tespec | modular | itp_coq | 2/2 · MEASURED | 12.0359 | 564532 | 0 | — |
 | tespec | modular | itp_kernel | 2/2 · MEASURED | 151.1240 | 1878828 | 0 | — |

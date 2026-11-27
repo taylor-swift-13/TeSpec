@@ -1,10 +1,10 @@
 {
   "schema": "tespec-auto-discrepancy-analysis/v1",
-  "previous_measurement_commit": "ce05e27012",
+  "previous_measurement_commit": "50ccbefc591a",
   "executions": 3056,
-  "expected_matches": 2675,
+  "expected_matches": 2678,
   "discrepancies": {
-    "residual_abstract_field": 168,
+    "residual_abstract_field": 165,
     "residual_parent_writeback": 2,
     "native_error": 60,
     "modular_oracle_scope": 1,
@@ -13,11 +13,10 @@
   "regression": {
     "native_reports_reused": 401,
     "auto_only": true,
-    "previously_matching_executions": 2650,
+    "previously_matching_executions": 2675,
     "lost_matches": 0,
     "new_matches": {
-      "list_all": 19,
-      "mergesort": 6
+      "queue_all": 3
     }
   },
   "field_context": {
@@ -81,5 +80,49 @@
     "native_annotations": "UNKNOWN",
     "facts": "Body execution can complete while the native call boundary has no verified With-variable mapping. Other residual goals can be present. A valid return or entry VC does not establish the missing boundary check."
   },
-  "native_error_scope": "60 runway__funcs2 native execution errors retained under the upstream branch limit."
+  "native_error_scope": "60 runway__funcs2 native execution errors retained under the upstream branch limit.",
+  "resource_matching": {
+    "rule": "Match all separated resource occurrences modulo permutation and argument equalities. Instantiate existential variables from antecedent terms. Prove a complete branch of the original consequent.",
+    "newly_matched": [
+      [
+        "queue_all",
+        "e603e457_IntQueue_push_1",
+        "inline",
+        "0b7cf40d41ddb47e68a5d4c44c62201d482e7ed9b25c3a1041b3d5376c95bf32"
+      ],
+      [
+        "queue_all",
+        "e603e457_IntQueue_push_1",
+        "modular",
+        "0b7cf40d41ddb47e68a5d4c44c62201d482e7ed9b25c3a1041b3d5376c95bf32"
+      ],
+      [
+        "queue_all",
+        "774d9e08_IntQueue_push_induction_1",
+        "modular",
+        "7fd13b72dfb821ed64b32501cb1dd7fba3dc24fcd6a0780c1efc0fb94e0a6adf"
+      ]
+    ],
+    "entry_still_unknown": 163,
+    "entry_sat_return_still_unknown": 2,
+    "example_entry": {
+      "group": "list_all",
+      "case": "ab15e46b_IntList_cons_1",
+      "strategy": "inline",
+      "goal_sha256": "727efa1bc0b6cfa8cc9c08614330d8e935748cb6b607d2ad092eacbff9a2c293",
+      "expanded": "t=8192, l=[1], h=h0=INT_MIN. The singleton node needs Int(field(data,8192),1) ** Ptr(field(next,8192),0). No separating heap or abstract-to-concrete address equality is a premise of the original entry satisfiability goal."
+    },
+    "example_return": {
+      "group": "queue_all",
+      "case": "e603e457_IntQueue_push_1",
+      "strategy": "inline",
+      "witnesses": {
+        "f": "f_2",
+        "b": "retval",
+        "last": "x_pre",
+        "pre": "app pre_2 (cons last_2 nil)"
+      },
+      "resources": "The same sllseg and four typed cells occur on both sides after substitution. The pure guards imply the chosen nonempty alternative."
+    }
+  }
 }

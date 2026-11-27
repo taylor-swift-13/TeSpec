@@ -197,6 +197,11 @@ def _solve_auto_record(record, case, budget, compiled_names, ground_cache=None):
         )
         if framed is not None:
             decision = framed
+    if decision.get("reason") == "unbound_computational_field_notation" and decision["status"] == "UNKNOWN":
+        from .auto_resource_match import prove_original_resources
+        matched = prove_original_resources(case, record, budget)
+        if matched is not None:
+            return matched
     if (decision["status"] == "INVALID" and vc["kind"] in {"entailment", "which_implies"}
             and _has_unmapped_local_scope(vc)):
         decision.update(status="UNKNOWN", reason="unmapped_local_stack_frame")
