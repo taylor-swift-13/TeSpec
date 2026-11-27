@@ -522,7 +522,7 @@ def _obligation_artifacts(case: dict, executor: dict) -> dict:
             "auxiliary_split_lemmas_individually_proved": False,
             "certificate": "NOT_CHECKED"}
 
-def _refine_records(original, layout, artifact_dir, timeout_ms, solver, info):
+def _refine_records(original, layout, artifact_dir, timeout_ms, solver, info, *, kernel_certificates=False):
     """Decide copied path formulas and preserve the original per-VC evidence."""
     refined = deepcopy(original)
     artifact_dir.mkdir(parents=True, exist_ok=True)
@@ -551,7 +551,9 @@ def _refine_records(original, layout, artifact_dir, timeout_ms, solver, info):
             }
         if decision.get("status") not in {"VALID", "INVALID", "UNKNOWN"}:
             decision = {"status": "UNKNOWN", "reason": "invalid_backend_status"}
-        decision["certificate"] = "NOT_CHECKED"
+        if not (kernel_certificates and decision["status"] == "VALID"
+                and decision.get("certificate") == "KERNEL_CHECKED"):
+            decision["certificate"] = "NOT_CHECKED"
         decision["vc_index"] = index
         decision["input"] = record
         smt = decision.pop("smt2", None)

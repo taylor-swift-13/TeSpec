@@ -15,6 +15,7 @@ from tools.finite_spatial_smt.finite_spatial_smt import Unsupported
 
 class _Sequent:
     def __init__(self, defs, visible):
+        self.stack_addresses = {}
         self.defs = defs
         self.visible = visible
         self.z = z3.IntSort()
@@ -53,6 +54,14 @@ class _Sequent:
         term = unparen(text)
         if term in env and env[term] is not None:
             return env[term]
+        # Use the closed address expression from the original Coq root. It can
+        # denote the same address as another symbol; never assert disequality.
+        address = re.fullmatch(r'&\(\s*"([A-Za-z_]\w*)"\s*\)', term)
+        if address:
+            slot = address[1]
+            if slot not in self.stack_addresses:
+                self.stack_addresses[slot] = z3.FreshConst(self.z, "FrameStackAddress")
+            return self.stack_addresses[slot]
         if term == "@nil Z":
             return self.nil
         if re.fullmatch(r"[0-9]{1,32}", term):
@@ -168,7 +177,22 @@ def _prove(body, defs, visible, timeout_ms):
     return _consequence(pre, post, guards, timeout_ms)
 
 
-def prove_original_resources(case, record, timeout_ms):
+def _first_spatial_arm(body):
+    """Accept a whole forall, or the first fully parenthesized arm of a printer disjunction."""
+    text = body.strip()
+    if text.startswith("forall "):
+        return text
+    pair = split_operator(text, "\\/")
+    require(pair is not None and "\x00" not in text, "unsupported_original_disjunction")
+    for arm in pair:
+        require(arm.startswith("(") and arm.endswith(")"), "unsupported_original_disjunction")
+        # Validate the *entire* enclosed arm, including quoted stack names.
+        # This rejects "(A) \\/ (B) -> (C)", where proving A would be unsound.
+        split_operator(arm[1:-1], "\x00")
+    return pair[0][1:-1].strip()
+
+
+def prove_original_resources(case, record, timeout_ms, *, allow_disjunction=False):
     """Positive-only rule. Each consequent witness denotes a term from the antecedent."""
     try:
         roots = record["vc"].get("proof_roots")
@@ -188,7 +212,8 @@ def prove_original_resources(case, record, timeout_ms):
                 commands = re.split(r"\.(?=\s|$)", "Definition " + prefix[1])
                 require(all(re.match(r"Definition\s+" + ID + r"\s*:=", c.strip())
                             for c in commands if c.strip()), "changed_goal_context")
-            require(_prove(" ".join(match[1].split()), defs, visible, timeout_ms), "resource_match_unproved")
+            body = _first_spatial_arm(match[1]) if allow_disjunction else match[1]
+            require(_prove(" ".join(body.split()), defs, visible, timeout_ms), "resource_match_unproved")
         return {"status": "VALID", "reason": "original_separated_resources_match",
                 "proof_roots": roots, "goal_sha256": sha}
     except (Unsupported, JobError, OSError, ValueError, KeyError, TypeError, RecursionError, z3.Z3Exception):

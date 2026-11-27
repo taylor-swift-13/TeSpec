@@ -230,6 +230,20 @@ def publish(group):
                                  wall_seconds=aggregate(measurements,"wall_seconds"),
                                  max_process_rss_kib=aggregate(measurements,"max_process_rss_kib",max),
                                  tokens=0, input_tokens=0, output_tokens=0, evidence=str(guard_path.relative_to(ROOT)), **counts))
+    roots_path = base / "tespec/auto-original-roots.json"
+    if roots_path.is_file():
+        roots = read(roots_path)
+        if roots["previous"] != reference(guard_path):
+            raise ValueError("Original VC replay has a different guard baseline")
+        current_view["auto_original_roots"] = reference(roots_path)
+        for strategy in ("inline", "modular"):
+            cases = [r for r in roots["executions"] if r["strategy"] == strategy]
+            data = [r["auto_cost"] for r in cases] + [r["initial_auto_cost"] for r in cases if "initial_auto_cost" in r]
+            if data:
+                rows.append(line(tool="tespec", strategy=strategy, stage="auto", basis="auto_original_roots",
+                                 result="MEASURED", measured=len(data), required=len(data), unit="Auto attempts on frozen native executions",
+                                 wall_seconds=aggregate(data,"wall_seconds"), max_process_rss_kib=aggregate(data,"max_process_rss_kib",max),
+                                 tokens=0,input_tokens=0,output_tokens=0,evidence=str(roots_path.relative_to(ROOT))))
     table["current_evaluation"] = current_view
     table_file.write_text(json.dumps(table, ensure_ascii=False, indent=2)+"\n")
     stream = io.StringIO()
@@ -264,6 +278,11 @@ def publish(group):
         md.extend(["", "本次 Auto 投影复核覆盖此前仍为 UNKNOWN 的输入，"
                    + "、".join(f"{k} {v}" for k,v in guards["statuses"].items())
                    + "。[逐输入 VC、分支和成本](tespec/auto-guards.json)。最终环境复核耗时已包含在 native 阶段。"])
+    if roots_path.is_file():
+        outcomes = Counter(r["status"] for r in roots["executions"])
+        md += ["", "同名局部变量专项复用原生 VC，再次执行 Auto 得到 "
+               + "、".join(f"{k} {v}" for k,v in outcomes.items())
+               + "。[逐输入结果、原始目标与新增成本](tespec/auto-original-roots.json)"]
     md += ["", "| 策略 | 执行数 | Auto 符合预期 | ITP 符合预期（含原生） | 需要 ITP | 已有本轮回执 |", "|---|---:|---:|---:|---:|---:|"]
     for s in summaries:
         md.append("| "+" | ".join(str(s[k]) for k in ("strategy","executions","auto_matches","itp_matches","residual_executions","itp_receipts"))+" |")

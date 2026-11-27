@@ -1,7 +1,7 @@
 import unittest
 from types import SimpleNamespace
 
-from spectest.auto_resource_match import _prove
+from spectest.auto_resource_match import _first_spatial_arm, _prove
 
 
 class OriginalResourceTests(unittest.TestCase):
@@ -30,3 +30,17 @@ class OriginalResourceTests(unittest.TestCase):
     def test_disjunction_and_multiplicity(self):
         self.assertTrue(self.prove("forall (p: Z) (q: Z) (l: (@list Z)), (segment p l) ** (segment p l) |-- "
                                    "((segment q l) ** (segment p l)) || ((segment p l) ** (segment p l))"))
+
+    def test_disjunction_under_implication_is_not_a_sufficient_arm(self):
+        from tools.finite_spatial_smt.finite_spatial_smt import Unsupported
+        with self.assertRaises(Unsupported):
+            _first_spatial_arm(r"(forall (x: Z), emp |-- emp) \/ (False) -> False")
+
+    def test_scoped_slots_stay_distinct_as_terms_without_an_alias_assumption(self):
+        outer, inner = '&( "v_spec_4" )', '&( "v_spec_51" )'
+        pre = f"forall (x: Z) (y: Z), ({outer} # Int |-> x) ** ({inner} # Int |-> y) |-- "
+        reordered = f"({inner} # Int |-> y) ** ({outer} # Int |-> x)"
+        self.assertTrue(self.prove(_first_spatial_arm(f"({pre}{reordered}) \\/ (False)")))
+        swapped = f"({inner} # Int |-> x) ** ({outer} # Int |-> y)"
+        self.assertFalse(self.prove(pre + swapped))
+        self.assertFalse(self.prove(f"forall (x: Z), emp |-- “ ({inner} <> {outer}) ” && emp"))

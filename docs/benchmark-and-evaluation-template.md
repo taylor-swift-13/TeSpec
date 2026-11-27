@@ -10,6 +10,8 @@
 
 带投影的独立 Auto 专项归档在全局索引的 `auto_guard_measurement`。每组 `tespec/auto-guards.json` 保留逐输入旧新 VC、投影复核、原生分支和成本。使用 `python3 tools/benchmark/regress_auto_guards.py --scratch NEW_DIR` 重现目标集和此前匹配集。用同一目录执行 `--retry-timeouts` 可按相同预算串行重试一次超时目标；`--publish` 同时保留首跑和重试证据。残余 VC 的量化堆查询超时时，Auto 可从已有的带类型堆单元构造存在见证，代回完整后条件并检查反例查询是否不可满足。
 
+原生诊断的同名局部变量缺少作用域标识时，独立 Auto 回到哈希锁定的原始 VC。堆匹配采用原始栈槽表达式，并允许不同符号的地址相等。对于可判定的纯条件与空堆分支，Auto 构造固定形式的 Gallina 证明项，由 Coq 在原环境中检查整条目标的类型。每条目标的证据单独标记，原生和 SMT 判定继续沿用各自的证据口径。
+
 当前批次可以分两次执行双路线，先测原生与 Auto，并保留同一份不可变原生报告，再用 `--route itp --native-report` 做独立 ITP。复用执行键和原始报告哈希必须一致。
 
 ```sh

@@ -12,6 +12,8 @@
 
 本次 Auto 投影复核覆盖此前仍为 UNKNOWN 的输入，PASS 7、UNKNOWN 1。[逐输入 VC、分支和成本](tespec/auto-guards.json)。最终环境复核耗时已包含在 native 阶段。
 
+同名局部变量专项复用原生 VC，再次执行 Auto 得到 PASS 1。[逐输入结果、原始目标与新增成本](tespec/auto-original-roots.json)
+
 | 策略 | 执行数 | Auto 符合预期 | ITP 符合预期（含原生） | 需要 ITP | 已有本轮回执 |
 |---|---:|---:|---:|---:|---:|
 | inline | 17 | 4 | 1 | 12 | 0 |
@@ -54,6 +56,7 @@
 | tespec | modular | native_including_guard_check | 5/5 · MEASURED | 61.2864 | 569436 | 0 | 5/5 |
 | tespec | modular | final_guard_check_subset | 3/3 · MEASURED | 59.5637 | 569436 | 0 | — |
 | tespec | modular | auto | 5/5 · MEASURED | 18.4120 | 418912 | 0 | — |
+| tespec | inline | auto | 2/2 · MEASURED | 47.6174 | 573420 | 0 | — |
 
 ¹ 历史成本保留原始单位口径，包括执行峰值的均值。当前阶段显示已测部分的合计耗时及最大单进程峰值。
 

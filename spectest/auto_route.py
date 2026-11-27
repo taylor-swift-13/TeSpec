@@ -197,6 +197,18 @@ def _solve_auto_record(record, case, budget, compiled_names, ground_cache=None):
         )
         if framed is not None:
             decision = framed
+    if decision["status"] == "UNKNOWN" and decision["reason"].startswith("ambiguous_local_name:"):
+        # The diagnostic LOCAL table erases scope. Only the bound original
+        # propositions can justify writing a positive result back here.
+        from .auto_resource_match import prove_original_resources
+        from .auto_original_arm import prove_original_arm
+
+        scoped = prove_original_resources(case, record, budget, allow_disjunction=True)
+        if scoped is not None:
+            return scoped
+        decided = prove_original_arm(case, record, budget)
+        if decided is not None:
+            return decided
     if decision.get("reason") == "unbound_computational_field_notation" and decision["status"] == "UNKNOWN":
         from .auto_resource_match import prove_original_resources
         matched = prove_original_resources(case, record, budget)
@@ -282,7 +294,8 @@ def _auto_case(case, function, output, timeout_ms):
     def solve(record, budget):
         return _solve_auto_record(record, case, budget, compiled_names, ground_cache)
 
-    refined = _refine_records(original, case["target_layout"], output, timeout_ms, solve, info)
+    refined = _refine_records(original, case["target_layout"], output, timeout_ms, solve, info,
+                              kernel_certificates=True)
     case["vc_results"] = refined
     resolved_entries = entry_roots if entry == "SAT" else set()
     covered = set(owners) | resolved_entries

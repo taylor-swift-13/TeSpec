@@ -4,6 +4,10 @@
 
 ## 当前版本
 
+`list_all` 和 `mergesort` 的 inline `IntList_mergesort_2` 均从 UNKNOWN 转为 PASS。原生目标哈希与上一轮一致。四个断言各有一个完整的纯条件与空堆分支，Auto 为该分支构造证明项，Coq 在原始目标环境中检查整条析取命题，4/4 取得 `KERNEL_CHECKED`。这使上一轮 50 个目标全部 PASS。本轮覆盖 45 组的 2,843 次执行，其中 399 次实际运行 Auto，2,444 次复用经哈希核验的原生判定。此前符合预期的 2,841 次全部保持。另有 213 次执行不在本轮范围内。[回归总表](../benchmark/results/group-result-cost-index.json) · [list_all 的逐目标证据](../benchmark/results/list_all/tespec/auto-original-roots.json) · [mergesort 的逐目标证据](../benchmark/results/mergesort/tespec/auto-original-roots.json)
+
+### 上一轮投影复核
+
 本轮重跑上轮仍为 UNKNOWN 的 50 次执行，预期均为 PASS。独立 Auto 首跑 47 PASS、3 UNKNOWN。其中一次 modular 的闭项求值超时，相同预算串行重试后 PASS，两次成本均已计入。最终 48 PASS、2 UNKNOWN。此前符合预期的 2,793 次覆盖全部 45 组，全数重新执行并保持预期。另有 213 次此前不符的执行在本轮范围以外。[本轮结果与回归](../benchmark/results/group-result-cost-index.json) · [剩余 UNKNOWN](../benchmark/results/tespec-unexpected/auto-guards.json)
 
 重点检查的 8 次都在最终 VC 导入环境复核了投影，6 次整次 PASS。两组中的 `IntList_split_2` 在 modular 模式下，都从实际堆单元取得了返回值见证并检查了完整后条件。两组中的 `IntList_mergesort_2` 在 inline 模式下仍各有两个断言义务，局部名 `xs` 和 `p` 分别对应多个栈地址。入口、执行、安全和返回后条件均已通过。
