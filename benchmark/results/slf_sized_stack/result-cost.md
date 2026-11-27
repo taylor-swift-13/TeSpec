@@ -6,6 +6,10 @@
 | qcp | VC_GENERATED_PROOF_OR_REFUTATION_PENDING |
 | fulminate | 0/47 符合预期 · NOT_BUILT 47 |
 
+默认 Auto 布局绑定后，62/94 次符合预期。原字段地址未绑定的 70 次中，70 次入口 SAT，42 次整次符合预期。[逐执行结果与成本](tespec/auto-layout.json)
+
+下表的双路线对照保留原 VC；默认 Auto 的成本在阶段表中标记为 default_auto_layout。
+
 | 策略 | 执行数 | Auto 符合预期 | ITP 符合预期（含原生） | 需要 ITP | 已有本轮回执 |
 |---|---:|---:|---:|---:|---:|
 | inline | 47 | 10 | 3 | 42 | 0 |
@@ -31,6 +35,15 @@
 | tespec | modular | itp_model | 0/42 · PENDING | — | — | — | — |
 | tespec | modular | itp_coq | 0/42 · PENDING | — | — | — | — |
 | tespec | modular | itp_kernel | 0/42 · PENDING | — | — | — | — |
+| tespec | inline | layout_prepare | 14/14 · MEASURED | 82.5780 | 569540 | 0 | — |
+| tespec | inline | layout_check | 47/47 · MEASURED | 2.4903 | 18092 | 0 | — |
+| tespec | inline | native | 47/47 · MEASURED | 10.1106 | 21616 | 0 | 47/47 |
+| tespec | inline | auto | 42/42 · MEASURED | 30.9705 | 190732 | 0 | — |
+| tespec | modular | layout_prepare | 14/14 · MEASURED | 82.3107 | 569456 | 0 | — |
+| tespec | modular | layout_check | 47/47 · MEASURED | 2.5362 | 19408 | 0 | — |
+| tespec | modular | native | 47/47 · MEASURED | 9.6756 | 21600 | 0 | 47/47 |
+| tespec | modular | auto | 42/42 · MEASURED | 17.7809 | 99984 | 0 | — |
+| tespec | modular | prior_native_attempt | 2/2 · MEASURED | 0.3704 | 21596 | 0 | — |
 
 ¹ 历史成本保留原始单位口径，包括执行峰值的均值。当前阶段显示已测部分的合计耗时及最大单进程峰值。
 

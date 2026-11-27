@@ -2,6 +2,10 @@
 
 当前每组使用同一 [存储规范](benchmark-storage-policy.md)。读取 `result-cost.json#/current_evaluation`，或查看同目录的 CSV 和 Markdown。新增实验只在 ITP 路线调用 `gpt-6.1-sol`（medium），全部尝试分阶段记账。下文的原始 read 批次保留当时的模型与成本口径。
 
+以作业启动 `python3 -m spectest routes JOB --output-dir OUT` 时，默认 Auto 在生成 VC 前发现使用抽象 C 字段地址的导入谓词，按该作业的目标布局重新编译相关库。布局绑定记录在 `routes.json#/auto_layout`，包括目标布局、原始和实际模块哈希、时间、最大进程 RSS、模型调用数与 token。布局准备可由同一源码、函数、架构和执行策略的一批输入共享，成本按批计一次。已有布局作业继续验证原绑定。新作业的 `--route both` 共用绑定后的 VC，回放 `--native-report` 始终使用报告原有的定义。
+
+本次默认 Auto 布局批次见全局索引的 `default_auto_measurement`，变更组的 `tespec/auto-layout.json` 保存旧新 VC 标识、逐输入结果、分支及成本。相应的组成本表用 `default_auto_layout` 区分这批阶段。原 VC 的双路线对照和 ITP 证书继续按原哈希引用。
+
 当前批次可以分两次执行双路线，先测原生与 Auto，并保留同一份不可变原生报告，再用 `--route itp --native-report` 做独立 ITP。复用执行键和原始报告哈希必须一致。
 
 ```sh

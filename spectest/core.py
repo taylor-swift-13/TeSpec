@@ -2056,18 +2056,19 @@ def run_job(
                 opaque_imports=(job["field_layout_context"].get("opaque_imports")
                                 if isinstance(job.get("field_layout_context"), dict) else None),
             )
+            verdict = _executor_result(completed.stdout, completed.returncode, vc,
+                                       expected_strategy=config.execution_strategy)
             if "field_layout_context" in job:
                 from .layout_job import validate_layout_context
 
-                validate_layout_context(job["field_layout_context"], vc, provenance["runtime_source_sha256"])
+                validate_layout_context(job["field_layout_context"], vc, provenance["runtime_source_sha256"],
+                                        incomplete_without_goal=(not guard_args and verdict.get("status") == "UNKNOWN"
+                                                                 and verdict.get("execution_completed") is False))
                 if guard_args:
                     prepared_guard_activation(job, provenance["binary_sha256"])
             case_result.update(
                 {
-                    **_executor_result(
-                        completed.stdout, completed.returncode, vc,
-                        expected_strategy=config.execution_strategy,
-                    ),
+                    **verdict,
                     "returncode": completed.returncode,
                     "generated_source_sha256": _sha256(generated_source),
                     "duration_seconds": round(duration, 6),

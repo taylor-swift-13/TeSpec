@@ -180,6 +180,32 @@ def publish(group):
                     "historical_routes": reference(base / "tespec/routes.json"),
                     "primary_results": {t: reference(base/t/"results.json") for t in ("cn","qcp","fulminate")},
                     "strategies": summaries, "stages": rows}
+    layout_path = base / "tespec/auto-layout.json"
+    if layout_path.exists():
+        layout_profile = read(layout_path)
+        if layout_profile["original_profile"] != reference(path):
+            raise ValueError("Layout Auto results have a different baseline")
+        current_view["default_auto"] = reference(layout_path)
+        for strategy in ("inline", "modular"):
+            batches = [b for b in layout_profile["batches"] if b["strategy"] == strategy]
+            executions = [r for b in batches for r in b["rows"]]
+            for stage, data in (
+                ("layout_prepare", [b["layout"]["cost"] for b in batches]),
+                ("layout_check", [r["layout_check_cost"] for r in executions]),
+                ("native", [r["native_cost"] for r in executions]),
+                ("auto", [r["auto_cost"] for r in executions if r["auto_cost"]]),
+                ("prior_native_attempt", [r["previous_native_attempt"] for r in executions if r.get("previous_native_attempt")]),
+            ):
+                if not data:
+                    continue
+                branches = [r["branch_counts"] for r in executions if r["branch_counts"] is not None]
+                counts = ({"branch_records":len(branches), **{k:sum(v[k] for v in branches) for k in BRANCHES}}
+                          if stage == "native" else {})
+                rows.append(line(tool="tespec",strategy=strategy,stage=stage,basis="default_auto_layout",
+                                 result="MEASURED",measured=len(data),required=len(data),
+                                 unit="shared preparation per batch" if stage=="layout_prepare" else "executions",
+                                 wall_seconds=aggregate(data,"wall_seconds"),max_process_rss_kib=aggregate(data,"max_process_rss_kib",max),
+                                 tokens=0,input_tokens=0,output_tokens=0,evidence=str(layout_path.relative_to(ROOT)),**counts))
     table["current_evaluation"] = current_view
     table_file.write_text(json.dumps(table, ensure_ascii=False, indent=2)+"\n")
     stream = io.StringIO()
@@ -204,6 +230,12 @@ def publish(group):
             if len(target) == 1 and target[0]["native"]["exit"] == 0:
                 text = f"主程序生成 {target[0]['vc_correct_targets']} 个原始目标；独立检查覆盖已记录的证明子集"
         md.append(f"| {tool} | {display(text)} |")
+    if layout_path.exists():
+        counts = layout_profile["summary"]
+        md.extend(["", f"默认 Auto 布局绑定后，{counts['matches']}/{counts['executions']} 次符合预期。"
+                   f"原字段地址未绑定的 {counts['target']} 次中，{counts['target_entry_sat']} 次入口 SAT，"
+                   f"{counts['target_expected_matches']} 次整次符合预期。[逐执行结果与成本](tespec/auto-layout.json)",
+                   "", "下表的双路线对照保留原 VC；默认 Auto 的成本在阶段表中标记为 default_auto_layout。"])
     md += ["", "| 策略 | 执行数 | Auto 符合预期 | ITP 符合预期（含原生） | 需要 ITP | 已有本轮回执 |", "|---|---:|---:|---:|---:|---:|"]
     for s in summaries:
         md.append("| "+" | ".join(str(s[k]) for k in ("strategy","executions","auto_matches","itp_matches","residual_executions","itp_receipts"))+" |")

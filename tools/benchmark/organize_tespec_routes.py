@@ -156,7 +156,7 @@ def branch_counts(native):
     return {k: counts[k] for k in names}
 
 
-def run_one(task, *, workspace=None):
+def make_test_job(task, folder):
     key, detail = task
     (function, source, bind, expectation), bits, fault = detail
     runtime_id = (
@@ -164,56 +164,63 @@ def run_one(task, *, workspace=None):
         if re.fullmatch(r"[A-Za-z_][A-Za-z_0-9]*", bind["id"])
         else "case_" + digest(bind)[:16]
     )
+    job = folder / "job.json"
+    source_path = ROOT / source["path"]
+    if fingerprint(source_path) != source["sha256"]:
+        raise ValueError(f"Selected QCP input changed before execution: {source_path}")
+    relocated_strategy = None
+    if source_path.name == "init_array_rev.qcp.c":
+        legacy = (
+            ROOT
+            / "benchmark/selection/qcp-migration/simple/init_array_rev.strategies"
+        )
+        dependency = (
+            source_path.parent.parent / "dependencies/init_array_rev.strategies"
+        )
+        original = source_path.read_bytes()
+        if str(legacy).encode() in original and not legacy.is_file():
+            relocated_strategy = reference(dependency)
+            source_path = folder / source_path.name
+            source_path.write_bytes(
+                original.replace(str(legacy).encode(), str(dependency).encode())
+            )
+    save(
+        job,
+        {
+            "source": str(source_path),
+            "function": function,
+            "binds": [dict(bind, id=runtime_id)],
+            "qcp": {
+                "binary": str(BINARY),
+                "qcip_root": str(RUNTIME),
+                "architecture_bits": bits,
+                "execution": key[2],
+                "vc_scope": "all-boundaries",
+                "loop_unroll_limit": 64,
+                "call_depth_limit": 64,
+                "timeout_seconds": 30,
+                "include_dirs": [
+                    str(RUNTIME / "QCP_examples/QCP_demos_human"),
+                    *(
+                        [str((ROOT / source["path"]).parent)]
+                        if relocated_strategy
+                        else []
+                    ),
+                    *(str(ROOT / p) for p in source["include_dirs"]),
+                ],
+            },
+        },
+    )
+    return job, relocated_strategy, source_path, runtime_id
+
+
+def run_one(task, *, workspace=None):
+    key, detail = task
+    (function, source, bind, expectation), bits, fault = detail
     with (TemporaryDirectory(prefix="tespec-auto-") if workspace is None
           else nullcontext(workspace)) as temp:
         folder = Path(temp)
-        job = folder / "job.json"
-        source_path = ROOT / source["path"]
-        if fingerprint(source_path) != source["sha256"]:
-            raise ValueError(f"Selected QCP input changed before execution: {source_path}")
-        relocated_strategy = None
-        if source_path.name == "init_array_rev.qcp.c":
-            legacy = (
-                ROOT
-                / "benchmark/selection/qcp-migration/simple/init_array_rev.strategies"
-            )
-            dependency = (
-                source_path.parent.parent / "dependencies/init_array_rev.strategies"
-            )
-            original = source_path.read_bytes()
-            if str(legacy).encode() in original and not legacy.is_file():
-                relocated_strategy = reference(dependency)
-                source_path = folder / source_path.name
-                source_path.write_bytes(
-                    original.replace(str(legacy).encode(), str(dependency).encode())
-                )
-        save(
-            job,
-            {
-                "source": str(source_path),
-                "function": function,
-                "binds": [dict(bind, id=runtime_id)],
-                "qcp": {
-                    "binary": str(BINARY),
-                    "qcip_root": str(RUNTIME),
-                    "architecture_bits": bits,
-                    "execution": key[2],
-                    "vc_scope": "all-boundaries",
-                    "loop_unroll_limit": 64,
-                    "call_depth_limit": 64,
-                    "timeout_seconds": 30,
-                    "include_dirs": [
-                        str(RUNTIME / "QCP_examples/QCP_demos_human"),
-                        *(
-                            [str((ROOT / source["path"]).parent)]
-                            if relocated_strategy
-                            else []
-                        ),
-                        *(str(ROOT / p) for p in source["include_dirs"]),
-                    ],
-                },
-            },
-        )
+        job, relocated_strategy, source_path, runtime_id = make_test_job(task, folder)
         out = folder / "out"
         command = [
             sys.executable,
@@ -232,6 +239,11 @@ def run_one(task, *, workspace=None):
         ran_sha = None
         if native_report is not None:
             job_sha = fingerprint(source_path) if relocated_strategy else source["sha256"]
+            layout = read(report).get("auto_layout", {}) if report.is_file() else {}
+            if layout.get("status") == "bound":
+                if layout["original_source_sha256"] != job_sha or layout["original_job_sha256"] != fingerprint(job):
+                    raise ValueError("Auto layout was bound to a different benchmark source or job")
+                job_sha = fingerprint(Path(read(Path(layout["job"]))["source"]))
             ran_sha = executed_source(native_report, job_sha)
         if not report.is_file():
             log = out / "measurements/native/stderr.log"
@@ -269,6 +281,7 @@ def run_one(task, *, workspace=None):
         status = row["auto_status"] if row["eligible"] else row["native_status"]
         goal = native.get("vc", {}).get("files", {}).get("goal")
         return {
+            "auto_layout": {k: v for k, v in routes.get("auto_layout", {}).items() if k != "job"},
             "executor_case_id": runtime_id,
             "branch_evaluation": branch_counts(native),
             "executed_source_sha256": ran_sha,

@@ -198,18 +198,28 @@ def compare(args):
     if output.exists() and (not output.is_dir() or any(output.iterdir())):
         raise JobError("routes output directory must be empty")
     output.mkdir(parents=True, exist_ok=True)
+    layout_cost = None
     if args.native_report:
         native = args.native_report.resolve()
         native_cost = {"source": "existing native report", "measured_this_run": False}
     else:
         native_dir = output / "native"
+        job = args.job.resolve()
+        if args.route in ("auto", "both"):
+            layout_cost = measure([sys.executable, "-m", "spectest.routes", "--prepare-auto-layout",
+                                   str(job), str(output / "layout")], output / "measurements/layout")
+            if layout_cost["exit_code"]:
+                raise JobError(f"Auto layout preparation failed; see {output / 'measurements/layout/stderr.log'}")
+            layout_cost.update(read(output / "measurements/layout/stdout.log"), tokens=0, model_calls=0)
+            if layout_cost["status"] == "bound":
+                job = Path(layout_cost["job"])
         native_cost = measure(
             [
                 sys.executable,
                 "-m",
                 "spectest",
                 "check",
-                str(args.job.resolve()),
+                str(job),
                 "--no-spatial-smt",
                 "--output-dir",
                 str(native_dir),
@@ -298,6 +308,8 @@ def compare(args):
             )
         ),
     }
+    if layout_cost is not None:
+        result["auto_layout"] = layout_cost
     write(output / "routes.json", result)
     return result
 
@@ -377,6 +389,10 @@ def routes_cli(argv):
 
 
 if __name__ == "__main__":
+    if sys.argv[1:2] == ["--prepare-auto-layout"]:
+        from .layout_job import prepare_auto_layout
+        print(json.dumps(prepare_auto_layout(Path(sys.argv[2]), Path(sys.argv[3]))))
+        sys.exit(0)
     from .auto_route import run_auto
 
     frozen, work, timeout = sys.argv[1:]

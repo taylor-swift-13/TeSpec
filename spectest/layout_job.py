@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
 import shutil
@@ -18,6 +19,7 @@ from .core import (
     _coq_dependency_code,
     _coq_load_path_args,
     _coq_required_modules,
+    _stage_source_coq_dependencies,
     _default_coqc_command,
     _parse_bind_cases,
     _parse_qcp_config,
@@ -275,7 +277,61 @@ def _prepare_libraries(inventory, modules, layout, depdir, build, runtime, compi
     return names, records, order, interfaces
 
 
-def prepare_layout_job(job_path, modules, output, *, coqc_command=None):
+def _uses_field_addresses(source):
+    """Select field notation in declarations, excluding comments, strings and proofs."""
+    code = _coq_dependency_code(source)
+    bound = False
+    for command in re.split(r"\.(?=\s|$)", code):
+        if command.strip() == "Import GeneratedLayout.AddressNotations":
+            bound = True
+        if not bound and re.match(r"\s*(?:(?:Local|Global|Program)\s+)*(?:Definition|Fixpoint)\s+", command):
+            if re.search(r"&\s*\([^;]*?(?:->ₛ|\.ₛ)", command, re.S):
+                return True
+    return False
+
+
+def auto_layout_modules(job_path):
+    job_path = Path(job_path).resolve()
+    job = _require_object(json.loads(job_path.read_text()), "job")
+    if "field_layout_context" in job:
+        return []
+    base = job_path.parent
+    source = _resolve(base, job.get("source"), "source")
+    config = _parse_qcp_config(job, base, source.parent)
+    text = read_source_text(source)
+    if job.get("spec_file"):
+        from .core import attach_spec_to_source
+        text = attach_spec_to_source(text, read_source_text(_resolve(base, job["spec_file"], "spec_file")), job["function"])
+    text = source_with_local_includes(source, config.include_dirs, primary_source=text)
+    runtime = []
+    with tempfile.TemporaryDirectory(prefix="tespec-layout-discovery-") as tmp:
+        staged = _stage_source_coq_dependencies(source, source, config.qcip_root, Path(tmp), text, runtime,
+                                                include_dirs=config.include_dirs)
+        return sorted({d["module"] for d in [*staged, *runtime]
+                       if _uses_field_addresses(Path(d["source"]).read_text())})
+
+
+def prepare_auto_layout(job_path, output):
+    job = json.loads(Path(job_path).read_text())
+    modules = auto_layout_modules(job_path)
+    if not modules:
+        return {"status": "prebound" if "field_layout_context" in job else "not_required"}
+    compiler = os.environ.get("COQC")
+    if compiler:
+        command = [compiler]
+    elif shutil.which("opam"):
+        command = ["opam", "exec", "--switch=qcp-8.20", "--", "coqc"]
+    else:
+        command = _default_coqc_command()
+    receipt = prepare_layout_job(job_path, modules, output, coqc_command=command, project_guards=False)
+    return {"status": "bound", "modules": modules, "job": receipt["job"],
+            "original_job_sha256": receipt["original_job_sha256"],
+            "layout_sha256": receipt["target_layout_sha256"],
+            "original_source_sha256": _sha256(_resolve(Path(job_path).resolve().parent, job["source"], "source")),
+            "libraries": receipt["libraries"]}
+
+
+def prepare_layout_job(job_path, modules, output, *, coqc_command=None, project_guards=True):
     job_path, output = Path(job_path).resolve(), Path(output).resolve()
     job = _require_object(json.loads(job_path.read_text()), "job")
     binds = job.get("binds")
@@ -359,8 +415,10 @@ def prepare_layout_job(job_path, modules, output, *, coqc_command=None):
                     base / "coq",
                     layout,
                 )
-            )
+            ) if project_guards else []
             guard_receipt = {"proved": [], "skipped": {}}
+            if not project_guards:
+                guard_receipt["activation"] = "NOT_REQUESTED"
             if proposals:
                 job_file.write_text(json.dumps(new_job))
                 active = export_program_preflight(
@@ -420,7 +478,7 @@ def prepare_layout_job(job_path, modules, output, *, coqc_command=None):
         raise
 
 
-def validate_layout_context(expected, manifest, runtime_digest):
+def validate_layout_context(expected, manifest, runtime_digest, *, incomplete_without_goal=False):
     active = {dep["module"]: dep["sha256"] for dep in manifest["coq_dependencies"]}
     if (
         not isinstance(expected, dict)
@@ -442,12 +500,17 @@ def validate_layout_context(expected, manifest, runtime_digest):
             not isinstance(n, str) or not re.fullmatch(_COQ_LOGICAL_NAME, n)
             for n in selected
         )
-        or not goal
         or any(not isinstance(n, str) or n not in active for n in selected.values())
     ):
         raise FieldLayoutMismatch(
             "missing prepared field layout module bindings or goal"
         )
+    if not goal:
+        if (incomplete_without_goal and "guard_projection" not in expected
+                and manifest.get("status") == "not_generated" and manifest.get("residual_goals") == []
+                and manifest.get("counterexample_goals") == []):
+            return
+        raise FieldLayoutMismatch("missing original goal for layout validation")
     sources = {
         d["module"]: Path(d["staged"])
         for d in (
