@@ -80,7 +80,7 @@ def gather(folder, row, base):
                                   else "no_address_space_limit_set_by_checker",
                                   "address_space_limit_bytes": step.get("address_space_limit_bytes")}
                                  if step["stage"] == "compile_Candidate.v" else {}),
-                              **{k:step[k] for k in ("resource_failure", "measured_command") if k in step},
+                              **{k:step[k] for k in ("resource_failure", "measured_command", "resource_slot_policy", "borrowed_idle_kernel_slot") if k in step},
                               **({"queue_seconds": step["queue_seconds"]} if step.get("queue_seconds") else {})})
             checks.append({**{k: audit.get(k) for k in ("candidate_sha256", "proof_status", "polarity", "vc_status",
                                                          "execution_counterexample", "reason",
@@ -93,9 +93,19 @@ def gather(folder, row, base):
                            "manifest_sha256": audit["manifest_sha256"], "stages": steps})
         for bundle in path.parent.glob("itp/*proof/case_*/manifest.json"):
             sources[str(bundle.parent.relative_to(folder))] = proof_sources(bundle.parent, base)
+        peer = path.with_name("peer-source.json")
+        provenance = read(peer) if peer.is_file() else {}
+        if provenance and (
+            provenance["route_receipt_sha256"] != fingerprint(path)
+            or provenance["recipient_native_report_sha256"] != row["native_report_sha256"]
+            or provenance["candidate_sha256"] not in {c["candidate_sha256"] for c in checks}
+            or itp.get("model_calls") != 0
+        ):
+            raise ValueError("Unbound peer ITP source attribution")
         attempts.append({"report_sha256": fingerprint(path), "wall_seconds": itp["wall_seconds"],
                          "max_process_rss_kib": itp["max_process_rss_kib"], "status": case["itp_status"],
                          "missing_candidates": itp.get("missing_candidates", []),
+                         **({"replayed_peer": provenance} if provenance else {}),
                          **({"replayed_archive": d["replayed_archive"]} if d.get("replayed_archive") else {}),
                          **({"dispatcher_pause": read(path.with_name("dispatcher-paused.json"))}
                             if path.with_name("dispatcher-paused.json").is_file() else {})})
@@ -108,12 +118,14 @@ def gather(folder, row, base):
                            for i, v in enumerate(cmd[1:]))):
             raise ValueError("Nonconforming ITP model CLI settings")
         usage = m["token_usage"]
-        model_steps.append({"requested_model": m["requested_model"], "requested_reasoning_effort": m["requested_reasoning_effort"],
+        model_steps.append({"receipt_sha256": fingerprint(path), "requested_model": m["requested_model"], "requested_reasoning_effort": m["requested_reasoning_effort"],
                             "exit_code": m["exit_code"], "wall_seconds": m["wall_seconds"],
                             "max_process_rss_kib": m["resources"]["max_process_peak_working_set_bytes"] / 1024 or None,
                             "usage_events": usage, "candidate_sha256": m["candidate_sha256"],
                             "locked_inputs": m["locked_goal_and_helper_sha256"], "prompt_sha256": m["prompt_sha256"],
                             "event_log_sha256": m["raw_event_log_sha256"],
+                            **({"recovered_after_bridge_exit": True} if m.get("recovered_after_bridge_exit") else {}),
+                            **({"model_queue_seconds": m["model_queue_seconds"]} if m.get("model_queue_seconds") else {}),
                             **({"historical_proof_sha256": m["historical_proof_sha256"]}
                                if m.get("historical_proof_sha256") else {})})
     def cost(steps):

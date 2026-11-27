@@ -8,10 +8,12 @@
 
 全量 Auto 符合预期：inline 9/9，modular 9/9。[同一输入的跨工具比较](../paired-tool-comparison.md)。
 
+另有 18 个变体输入配对进行了合同或故障诊断对照，共享输入按实际调用计费。[补充证据](../fulminate-contract-companions.json)
+
 | 最新 ITP | 共用原生执行 | 需 ITP | 已测 ITP | 待测 | 全部执行中符合预期 |
 |---|---:|---:|---:|---:|---:|
 | inline | 0 | 9 | 9 | 0 | 9 |
-| modular | 0 | 9 | 4 | 5 | 4 |
+| modular | 0 | 9 | 9 | 0 | 9 |
 
 以下为旧冻结双路线批次。
 
@@ -49,6 +51,8 @@
 | tespec | modular | itp_kernel | current_execution | 9/9 · MEASURED | 1200.6048 | 2047564 | 0 | — |
 | tespec | inline | auto | auto_on_itp_roots | 9/9 · MEASURED | 1.3674 | 57324 | 0 | — |
 | tespec | modular | auto | auto_on_itp_roots | 9/9 · MEASURED | 1.3579 | 57544 | 0 | — |
+| fulminate | — | pipeline | supplemental_measured_companion | 9/9 · distinct supplemental inputs | 3.5347 | 46852 | 0 | — |
+| fulminate | — | test | supplemental_measured_companion | 9/9 · distinct supplemental inputs | 0.0324 | 1920 | 0 | — |
 | tespec | inline | layout_prepare | latest_native_matrix | 1/1 · MEASURED | 0.1456 | 19740 | 0 | — |
 | tespec | inline | batch_auto | latest_native_matrix | 1/1 · MEASURED | 0.5364 | 58972 | 0 | — |
 | tespec | inline | native | latest_native_matrix | 9/9 · MEASURED | 1.2244 | 21008 | 0 | 9/9 |
@@ -61,9 +65,9 @@
 | tespec | modular | batch_auto | latest_native_matrix | 1/1 · MEASURED | 0.5300 | 59180 | 0 | — |
 | tespec | modular | native | latest_native_matrix | 9/9 · MEASURED | 1.2275 | 21340 | 0 | 9/9 |
 | tespec | modular | auto | latest_same_input_and_vc | 9/9 · MEASURED | 1.9451 | 57332 | 0 | — |
-| tespec | modular | itp_model | latest_same_input_and_vc | 4/9 · PARTIAL | 0 | — | 0 | — |
-| tespec | modular | itp_coq | latest_same_input_and_vc | 4/9 · PARTIAL | 37.2071 | 574636 | 0 | — |
-| tespec | modular | itp_kernel | latest_same_input_and_vc | 4/9 · PARTIAL | 779.5688 | 2052836 | 0 | — |
+| tespec | modular | itp_model | latest_same_input_and_vc | 9/9 · MEASURED | 0 | — | 0 | — |
+| tespec | modular | itp_coq | latest_same_input_and_vc | 9/9 · MEASURED | 88.7941 | 657240 | 0 | — |
+| tespec | modular | itp_kernel | latest_same_input_and_vc | 9/9 · MEASURED | 1535.1936 | 2052836 | 0 | — |
 | tespec | modular | auto | same_input_profile_recheck_a21f363a | 9/9 · MEASURED | 1.4561 | 57448 | 0 | — |
 
 ¹ 历史成本保留原始单位口径，包括执行峰值的均值。当前阶段显示已测部分的合计耗时及最大单进程峰值。

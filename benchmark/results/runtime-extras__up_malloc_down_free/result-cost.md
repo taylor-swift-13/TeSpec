@@ -8,6 +8,10 @@
 
 全量 Auto 符合预期：inline 14/14，modular 14/14。[同一输入的跨工具比较](../paired-tool-comparison.md)。
 
+2 个客户端输入另有内部断言的实际运行记录。[覆盖范围与结果](../fulminate-client-boundaries.json)
+
+另有 2 个变体输入配对进行了合同或故障诊断对照，共享输入按实际调用计费。[补充证据](../fulminate-contract-companions.json)
+
 | 最新 ITP | 共用原生执行 | 需 ITP | 已测 ITP | 待测 | 全部执行中符合预期 |
 |---|---:|---:|---:|---:|---:|
 | inline | 14 | 0 | 0 | 0 | 14 |
@@ -44,6 +48,10 @@
 | tespec | modular | itp_model | current_execution | 0/0 · NOT_REQUIRED | 0 | — | 0 | — |
 | tespec | modular | itp_coq | current_execution | 0/0 · NOT_REQUIRED | 0 | — | 0 | — |
 | tespec | modular | itp_kernel | current_execution | 0/0 · NOT_REQUIRED | 0 | — | 0 | — |
+| fulminate | — | pipeline | supplemental_measured_companion | 1/1 · distinct supplemental inputs | 0.3182 | 45088 | 0 | — |
+| fulminate | — | test | supplemental_measured_companion | 1/1 · distinct supplemental inputs | 0.0031 | 1920 | 0 | — |
+| fulminate | — | pipeline | supplemental_client_boundaries | 2/2 · explicit internal checks | 0.6502 | 45412 | 0 | — |
+| fulminate | — | test | supplemental_client_boundaries | 2/2 · explicit internal checks | 0.0077 | 1920 | 0 | — |
 | tespec | inline | layout_prepare | latest_native_matrix | 4/4 · MEASURED | 0.2388 | 18020 | 0 | — |
 | tespec | inline | batch_auto | latest_native_matrix | 0/0 · NOT_INVOKED | — | — | 0 | — |
 | tespec | inline | native | latest_native_matrix | 14/14 · MEASURED | 0.7809 | 21120 | 0 | 14/14 |

@@ -8,6 +8,8 @@
 
 全量 Auto 符合预期：inline 1/1，modular 1/1。[同一输入的跨工具比较](../paired-tool-comparison.md)。
 
+另有 1 个变体输入配对进行了合同或故障诊断对照，共享输入按实际调用计费。[补充证据](../fulminate-contract-companions.json)
+
 | 最新 ITP | 共用原生执行 | 需 ITP | 已测 ITP | 待测 | 全部执行中符合预期 |
 |---|---:|---:|---:|---:|---:|
 | inline | 1 | 0 | 0 | 0 | 1 |
@@ -40,6 +42,8 @@
 | tespec | modular | itp_model | current_execution | 0/0 · NOT_REQUIRED | 0 | — | 0 | — |
 | tespec | modular | itp_coq | current_execution | 0/0 · NOT_REQUIRED | 0 | — | 0 | — |
 | tespec | modular | itp_kernel | current_execution | 0/0 · NOT_REQUIRED | 0 | — | 0 | — |
+| fulminate | — | pipeline | supplemental_measured_companion | 1/1 · distinct supplemental inputs | 0.3198 | 44812 | 0 | — |
+| fulminate | — | test | supplemental_measured_companion | 1/1 · distinct supplemental inputs | 0.0035 | 1920 | 0 | — |
 | tespec | inline | layout_prepare | latest_native_matrix | 1/1 · MEASURED | 0.0842 | 18200 | 0 | — |
 | tespec | inline | batch_auto | latest_native_matrix | 0/0 · NOT_INVOKED | — | — | 0 | — |
 | tespec | inline | native | latest_native_matrix | 1/1 · MEASURED | 0.1797 | 21124 | 0 | 1/1 |

@@ -18,8 +18,8 @@
 
 | 最新 ITP | 共用原生执行 | 需 ITP | 已测 ITP | 待测 | 全部执行中符合预期 |
 |---|---:|---:|---:|---:|---:|
-| inline | 3 | 44 | 0 | 44 | 3 |
-| modular | 3 | 44 | 0 | 44 | 3 |
+| inline | 3 | 44 | 44 | 0 | 6 |
+| modular | 3 | 44 | 44 | 0 | 6 |
 
 以下为旧冻结双路线批次。
 
@@ -84,17 +84,17 @@
 | tespec | inline | batch_auto | latest_native_matrix | 29/29 · MEASURED | 4.6565 | 57820 | 0 | — |
 | tespec | inline | native | latest_native_matrix | 47/47 · MEASURED | 9.7023 | 21708 | 0 | 47/47 |
 | tespec | inline | auto | latest_same_input_and_vc | 44/44 · MEASURED | 9.6069 | 57376 | 0 | — |
-| tespec | inline | itp_model | latest_same_input_and_vc | 0/44 · PENDING | — | — | — | — |
-| tespec | inline | itp_coq | latest_same_input_and_vc | 0/44 · PENDING | — | — | — | — |
-| tespec | inline | itp_kernel | latest_same_input_and_vc | 0/44 · PENDING | — | — | — | — |
+| tespec | inline | itp_model | latest_same_input_and_vc | 44/44 · MEASURED | 5073.9270 | 334536.0000 | 2234158 | — |
+| tespec | inline | itp_coq | latest_same_input_and_vc | 44/44 · MEASURED | 742.6848 | 569532 | 0 | — |
+| tespec | inline | itp_kernel | latest_same_input_and_vc | 44/44 · MEASURED | 465.6438 | 2017524 | 0 | — |
 | tespec | inline | auto | same_input_profile_recheck_a21f363a | 44/44 · MEASURED | 6.4813 | 57600 | 0 | — |
 | tespec | modular | layout_prepare | latest_native_matrix | 28/28 · MEASURED | 429.6763 | 569380 | 0 | — |
 | tespec | modular | batch_auto | latest_native_matrix | 25/25 · MEASURED | 4.1856 | 57928 | 0 | — |
 | tespec | modular | native | latest_native_matrix | 47/47 · MEASURED | 8.3863 | 21668 | 0 | 47/47 |
 | tespec | modular | auto | latest_same_input_and_vc | 44/44 · MEASURED | 9.8702 | 57248 | 0 | — |
-| tespec | modular | itp_model | latest_same_input_and_vc | 0/44 · PENDING | — | — | — | — |
-| tespec | modular | itp_coq | latest_same_input_and_vc | 0/44 · PENDING | — | — | — | — |
-| tespec | modular | itp_kernel | latest_same_input_and_vc | 0/44 · PENDING | — | — | — | — |
+| tespec | modular | itp_model | latest_same_input_and_vc | 44/44 · MEASURED | 4703.1160 | 334332.0000 | 2102814 | — |
+| tespec | modular | itp_coq | latest_same_input_and_vc | 44/44 · MEASURED | 743.3128 | 569540 | 0 | — |
+| tespec | modular | itp_kernel | latest_same_input_and_vc | 44/44 · MEASURED | 441.8071 | 2017648 | 0 | — |
 | tespec | modular | auto | same_input_profile_recheck_a21f363a | 44/44 · MEASURED | 6.4951 | 57296 | 0 | — |
 
 ¹ 历史成本保留原始单位口径，包括执行峰值的均值。当前阶段显示已测部分的合计耗时及最大单进程峰值。

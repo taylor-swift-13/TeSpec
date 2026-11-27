@@ -464,6 +464,34 @@ def publish(group):
     paired = read(comparison)["groups"][group] if comparison.is_file() else None
     if paired is not None:
         current_view["paired_comparison"] = {"path":str(comparison.relative_to(ROOT)), "group":group}
+    supplemental = RESULTS / "fulminate-contract-companions.json"
+    if supplemental.is_file():
+        companion = read(supplemental)
+        mappings = [r for r in companion["rows"] if r["group"] == group]
+        if mappings:
+            current_view["fulminate_companion"] = {"path":str(supplemental.relative_to(ROOT)), "paired_inputs":len(mappings)}
+            ids = {r["fulminate_receipt"] for r in mappings if r.get("fulminate_receipt")}
+            measures = [companion["measurements"][key] for key in sorted(ids)]
+            for kind in sorted({m.get("kind","measured_companion") for m in measures}):
+                for stage in ("pipeline","test","fault_probe"):
+                    records = [m[stage] for m in measures if m.get("kind","measured_companion") == kind and m.get(stage)]
+                    if not records:
+                        continue
+                    rows.append(line(tool="fulminate",stage=stage,basis="supplemental_" + kind,result="MEASURED",
+                                     measured=len(records),required=len(records),unit="distinct supplemental inputs",
+                                     wall_seconds=aggregate(records,"wall_seconds"),max_process_rss_kib=aggregate(records,"max_process_rss_kib",max),
+                                     tokens=0,input_tokens=0,output_tokens=0,evidence=str(supplemental.relative_to(ROOT))))
+    boundary_file = RESULTS / "fulminate-client-boundaries.json"
+    if boundary_file.is_file():
+        clients = [v["fulminate"] for v in read(boundary_file)["rows"] if v["group"] == group]
+        if clients:
+            current_view["client_boundaries"] = {"path":str(boundary_file.relative_to(ROOT)), "executions":len(clients)}
+            for stage in ("pipeline","test"):
+                records = [c[stage] for c in clients]
+                rows.append(line(tool="fulminate",stage=stage,basis="supplemental_client_boundaries",result="MEASURED",
+                                 measured=len(records),required=len(records),unit="explicit internal checks",
+                                 wall_seconds=aggregate(records,"wall_seconds"),max_process_rss_kib=aggregate(records,"max_process_rss_kib",max),
+                                 tokens=0,input_tokens=0,output_tokens=0,evidence=str(boundary_file.relative_to(ROOT))))
     results = tool_results(base, summaries, paired)
     attempted = all(s["itp_receipts"] == s["residual_executions"] for s in summaries)
     complete_costs = all(r["result"] in ("MEASURED", "NOT_REQUIRED") for r in rows if r["basis"] == "current_execution")
@@ -546,6 +574,10 @@ def publish(group):
         inline, modular = paired["auto_inline"], paired["auto_modular"]
         md.extend(["", f"全量 Auto 符合预期：inline {inline['matches']}/{inline['executions']}，modular {modular['matches']}/{modular['executions']}。"
                    "[同一输入的跨工具比较](../paired-tool-comparison.md)。"])
+    if "client_boundaries" in current_view:
+        md += ["", f"{current_view['client_boundaries']['executions']} 个客户端输入另有内部断言的实际运行记录。[覆盖范围与结果](../fulminate-client-boundaries.json)"]
+    if "fulminate_companion" in current_view:
+        md += ["", f"另有 {current_view['fulminate_companion']['paired_inputs']} 个变体输入配对进行了合同或故障诊断对照，共享输入按实际调用计费。[补充证据](../fulminate-contract-companions.json)"]
     if has_latest:
         md += ["", "| 最新 ITP | 共用原生执行 | 需 ITP | 已测 ITP | 待测 | 全部执行中符合预期 |",
                "|---|---:|---:|---:|---:|---:|"]

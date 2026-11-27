@@ -40,6 +40,23 @@ python3 tools/benchmark/audit_current_tables.py
 
 每组列出原生状态、Auto 和 ITP 在共同未决输入上的状态矩阵、各自逐输入预期匹配数，以及三者分别的时间、最大进程 RSS 和实际 token。单列从头生成的证明、重放已有证明的执行和缺少候选的执行。`--itp-replay-only` 缺少匹配证明只能说明本次没有可重放的候选。两条路线依次计时，并以一次执行的所有原始待定 VC 为一个 ITP 任务。复现入口见[独立路线说明](spatial-smt.md#auto-与-itp-的独立对照)。
 
+### 当前结果的重建与审计
+
+完整双路线比较以当前版本实际产生的残余义务为准。若一个原生报告包含多个输入，逐输入保留该输入的全部义务并单独计量，记录原批次和逐输入报告的 SHA-256。现存证明可在核对目标、输入与依赖后重放。对同一次核验的跨批次复用，分别列出实际绑定成本和共享核验的原始成本。新生成或已改变的目标需要独立 ITP 回执。旧批次单列。[当前双路线对照](../benchmark/results/paired-tool-comparison.md)
+
+组表的 `latest_results` 和 `latest_costs` 给出当前视图。原生批量成本在 `latest-native-costs.json` 中按批计一次，每个输入单独记录分支计数。两条后处理路线采用相同的单输入原生报告。8 秒预算等诊断与主结果分列。模型只用于 ITP，新调用须记录 `gpt-6.1-sol`、`medium`、实际 token、时间和单进程峰值 RSS。Coq 资源失败保留 UNKNOWN。旧证据共享、额外修复与原始历史不可回溯的成本须注明归属。
+
+有同一份原生、Auto、ITP 和其他工具回执时，从仓库根目录依次重建表格并审计。最后一条命令还要求每个当前残余执行都有完整的成本和终态回执。
+
+```sh
+python3 -B tools/benchmark/publish_paired_comparison.py --publish
+python3 -B tools/benchmark/publish_current_tables.py
+python3 -B tools/benchmark/audit_current_tables.py
+python3 -B tools/benchmark/audit_latest_comparison.py --require-complete
+```
+
+原始配对、经复核的规约差异、补充同合同运行及具体安全诊断分别保存。复核时保留原先预期，复用同一运行的配对只计一份成本。[合同配对](../benchmark/results/fulminate-contract-companions.json) · [客户端内部断言](../benchmark/results/fulminate-client-boundaries.json)
+
 ## 1. 数据单位与计数
 
 层级统一为：
@@ -495,5 +512,3 @@ ITP以整次执行的原始残余目标为单位。自动分解的纯/空间子�
 模型超时若没有实际usage事件，保留已测时间/RSS、事件哈希和缺失原因，token必须为null；总量给已知下界，并令resource_metrics_complete=false。后续成功review是新调用，不能替代旧尝试的未知token。对原Goal证明成功与全部历史成本完整分别判断。
 
 证明对象按内容SHA去重。重建Coq工作目录时，使用proof_files字典的原模块文件名及依赖module字段恢复文件名；对象路径末尾只表示第一次保存时的名称，不决定Coq模块身份。例如同字节的ReferenceCandidate.v可引用已存Candidate.v对象，不能因此改写Require Import中的模块名。
-
-完整双路线比较以当前版本实际产生的残余义务为准。若一个原生报告包含多个输入，逐输入保留该输入的全部义务并单独计量，记录原批次和逐输入报告的 SHA-256。现存证明可在核对目标、输入与依赖后重放。对同一次核验的跨批次复用，分别列出实际绑定成本和共享核验的原始成本。新生成或已改变的目标需要独立 ITP 回执。旧批次单列。[当前双路线对照](../benchmark/results/paired-tool-comparison.md)

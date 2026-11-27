@@ -102,6 +102,13 @@ def paired_route_costs(rows, replay, receipts):
             counts["cost_subset_shared_checks"] += 1
             costs["shared_check_seconds"].append(shared["wall_seconds"])
             costs["shared_check_rss"].append(shared["max_process_rss_kib"])
+        if fresh["expected_match"] and itp_match:
+            costs["both_checked_count"].append(1)
+            costs["both_checked_auto_seconds"].append(auto["wall_seconds"])
+            costs["both_checked_itp_seconds"].append(
+                sum(x["wall_seconds"] for x in phases)
+            )
+            costs["both_checked_itp_tokens"].append(sum(x["tokens"] for x in phases))
         costs["auto_seconds"].append(auto["wall_seconds"])
         costs["itp_seconds"].append(sum(x["wall_seconds"] for x in phases))
         costs["auto_tokens"].append(auto["tokens"])
@@ -119,10 +126,12 @@ def paired_route_costs(rows, replay, receipts):
 def markdown(result):
     totals = result["unique_auto"]
     statuses = result["outcomes"]
+    audit = result.get("audited_contract_comparison", {})
+    pairs = audit.get("paired", result["paired"])
     lines = [
         "# 四工具配对评测",
         "",
-        f"45 个程序组，{result['input_pairs']:,} 个 CN 变体与输入配对。teSpec 合并映射到同一 QCP 变体与输入的重复记录，inline 和 modular 合计 {totals['executions']:,} 次独立执行，{totals['matches']:,} 次符合预期。",
+        f"45 个程序组按组去重后有 {result['program_variants']['cn']} 个 CN 变体、{result['program_variants']['qcp']} 个 QCP 变体，形成 {result['program_variants']['pairings']} 个变体配对和 {result['input_pairs']:,} 个变体与输入配对。teSpec 合并映射到同一 QCP 变体与输入的重复记录，inline 和 modular 合计 {totals['executions']:,} 次独立执行，{totals['matches']:,} 次符合预期。",
         "",
         "## teSpec Auto 与 Fulminate",
         "",
@@ -135,12 +144,12 @@ def markdown(result):
         ("fulminate_only", "仅 Fulminate 符合预期"),
         ("neither_match", "两者均未符合预期"),
         ("body_only", "目标未声明 CN 前置或后置条件"),
-        ("different_contract", "计划明确标注规约不同"),
+        ("different_contract", "计划标注或本轮核实规约不同"),
         ("different_expected", "两工具预期标签不同"),
         ("unavailable_fulminate", "缺可执行文件"),
     ):
         lines.append(
-            f"| {label} | {result['paired']['inline'].get(key, 0)} | {result['paired']['modular'].get(key, 0)} |"
+            f"| {label} | {pairs['inline'].get(key, 0)} | {pairs['modular'].get(key, 0)} |"
         )
     lines += [
         "",
@@ -163,6 +172,27 @@ def markdown(result):
         "## 旧冻结批次的独立复核",
         "",
     ]
+    if audit:
+        outcomes = ("both_match", "tespec_only", "fulminate_only", "neither_match")
+        fair_total = sum(pairs["inline"].get(k, 0) for k in outcomes)
+        planned_total = sum(result["paired"]["inline"].get(k, 0) for k in outcomes)
+        safety = audit["safety_observations"]
+        lines[-2:-2] = [
+            "## 合同和安全诊断的补充对照",
+            "",
+            f"旧计划每种策略纳入 {planned_total:,} 个配对。核对双向链表规约后，发现其中 {audit['newly_excluded_pairs']} 个对新节点值或相邻节点身份的要求不同。上表采用复核后的 {fair_total:,} 个配对，原计划口径仍可复算。",
+            "",
+            "用相同强规约补做对照后，36 个数组配对和 42 个双向链表配对均得到双方预期的 PASS。一个实际程序和输入映射到多个配对时只收一次成本。另有 30 个目标未声明合同的原始输入，单列受检函数边界或释放操作的实际观察。",
+            "",
+            f"在 32 个原计划用 CRASH 和 FAIL 分别记分的输入上，{safety['same_memory_fault']} 个输入两工具均报告同一读写权限故障，{safety['executed_without_rejection']} 个输入由 teSpec 在两种策略下报告安全故障而 Fulminate 正常退出（6 个未初始化读取，4 个算术安全检查）。另外 {safety['postcondition_instead_of_c_safety']} 个双方均拒绝，发现的故障位置不同。这 32 个输入未并入同标签命中数。[逐输入合同、原始诊断和实测成本](fulminate-contract-companions.json)",
+            "",
+        ]
+    if "client_boundaries" in result:
+        scope = result["client_boundaries"]["counts"]
+        lines[-2:-2] = [
+            f"22 个客户端还实跑了内部边界对照，Fulminate 实际返回 {scope['fulminate']['PASS']} 个 PASS、{scope['fulminate']['FAIL']} 个 FAIL。12 个覆盖源码合同及全部显式断言。9 个逐项检查了对应具体单元的值、权限和分离关系，不能由此推出整个符号堆没有其他单元。最后一个 down_free_asserted_frame 检查了真实栈单元，原始 VC 的空堆前件仍不足以推出该单元。[22 个输入的断言、规约、输出和成本](fulminate-client-boundaries.json)",
+            "",
+        ]
     if "native_costs" in result:
         m = result["native_costs"]["totals"]
         prep, post = m["layout_prepare"], m["batch_auto"]
@@ -175,15 +205,31 @@ def markdown(result):
     if "latest_routes" in result:
         info = result["latest_routes"]
         counts = Counter(info["counts"])
+        pending = [
+            g
+            for g, d in result["groups"].items()
+            if any(
+                d["latest_" + strategy]["awaiting"]
+                for strategy in ("inline", "modular")
+            )
+        ]
+        finished_groups = len(result["groups"]) - len(pending)
         cc = info["paired_postprocessing_costs"]
         lines[-2:-2] = [
             "## 当前矩阵的两条路线",
             "",
+            f"已有 {finished_groups}/{len(result['groups'])} 个程序组取得全部需要的逐输入 ITP 回执。"
+            + ("待测组为 " + "、".join(pending) + "。" if pending else ""),
+            "",
             f"当前 {totals['executions']:,} 次执行中，{counts['native_only_executions']:,} 次没有残余义务可交给后处理，两条路线共用其原生输出。其余 {counts['residual']} 次均以单个输入的全部原始义务为一项任务。ITP 已实测 {counts['attempted']} 项，尚待 {counts['awaiting']} 项。",
+            "",
+            f"主矩阵有 {counts['native_matches']:,} 次直接在原生阶段符合预期。其余交给 Auto 的 {counts['residual']} 次中，Auto 额外给出 {totals['matches'] - counts['native_matches']} 个符合预期的执行判定，均未使用模型。",
             "",
             f"Auto 在逐输入复核中判定 PASS {counts['auto_PASS']}、FAIL {counts['auto_FAIL']}、UNKNOWN {counts['auto_UNKNOWN']}。其中 {len(info['auto_batch_vs_single'])} 次与批次 Auto 不同，逐例保存了两次判定和相同预算下的诊断复测。成本表使用首次逐输入判定。",
             "",
             f"另一次独立计量覆盖 {counts['additional_profile_runs']} 次，得到 PASS {counts['additional_profile_PASS']}、FAIL {counts['additional_profile_FAIL']}、UNKNOWN {counts['additional_profile_UNKNOWN']}。8 秒诊断覆盖了首次逐输入判定为 UNKNOWN 的 {counts['primary_unknown_retried']} 次，其中 {counts['primary_unknown_retried_PASS']} 次得到 PASS，{counts['primary_unknown_retried_UNKNOWN']} 次仍为 UNKNOWN。两类复测均单列成本。",
+            "",
+            f"ITP 路线含共用原生阶段，当前有 {counts['total_itp_matches']:,} 次符合预期，在 {totals['executions'] - counts['awaiting']:,} 次已有最终结果的执行中统计。后处理单独计数。",
             "",
             f"当前后处理已有双方回执的执行中，双方均命中 {counts['both_match']} 次，仅 Auto 命中 {counts['auto_only']} 次，仅 ITP 命中 {counts['itp_only']} 次，双方均未命中 {counts['neither_match']} 次。ITP 有 {counts['parent_vc_refuted']} 项正式反证原始 VC。执行 FAIL 还需有绑定当前输入的可达性证据。",
             "",
@@ -197,7 +243,34 @@ def markdown(result):
                 if counts["paired_cost_records"]
             ],
             "",
+            f"在双方均命中预期且成本完整的 {info['both_checked_costs'].get('count', 0)} 次执行上，Auto 后处理累计 {info['both_checked_costs'].get('auto_seconds', 0):,.2f} 秒，ITP 后处理累计 {info['both_checked_costs'].get('itp_seconds', 0):,.2f} 秒、{info['both_checked_costs'].get('itp_tokens', 0):,} 个 token。",
+            "",
+            "ITP 的单进程内存峰值来自 Coq 编译候选证明。down_malloc_up_free 和 bad_free 在 WSL 中有被系统因内存耗尽终止的记录，保留原始成本。相同候选在 4 GiB 地址空间上限下的重试成本也计入 ITP，执行均维持 UNKNOWN。[资源与重试收据](runtime-extras__down_malloc_up_free/tespec/latest-itp.json)",
+            "",
             f"其中 {counts['cost_subset_shared_checks']} 份复用了同一输入和目标已通过的核验。其原始核验合计 {cc.get('shared_check_seconds', 0):,.2f} 秒，最高单进程 RSS 为 {cc.get('shared_check_rss', 0):,.0f} KiB。本表计入本轮绑定、模型、编译与内核活动，共享的既有核验另列。旧反证候选的历史 CLI 没有记录推理强度，未纳入本轮 medium 模型计量。",
+            "",
+        ]
+    if "outcomes_by_expected" in result:
+        categories = result["outcomes_by_expected"]["auto"]
+        grouped = sorted({key for strata in categories.values() for key in strata})
+        lines[-2:-2] = [
+            "## 按逐输入预期拆分",
+            "",
+            "| 预期结果 | Auto inline 命中/执行 | Auto modular 命中/执行 |",
+            "|---|---:|---:|",
+            *[
+                "| "
+                + expected
+                + " | "
+                + " | ".join(
+                    f"{categories[strategy][expected]['matches']}/{categories[strategy][expected]['observations']}"
+                    for strategy in ("inline", "modular")
+                )
+                + " |"
+                for expected in grouped
+            ],
+            "",
+            "分母包括 UNKNOWN 和 ERROR。结构化表按预期与实际结果列出 Fulminate 和 ITP 的执行数。",
             "",
         ]
     n = result["same_native_residuals"]
@@ -222,7 +295,7 @@ def markdown(result):
             "",
             f"在全部 {n['residual']} 份共同原始报告上，Auto 有 {n['auto_matches']} 次命中预期，{n.get('auto_UNKNOWN', 0)} 次 UNKNOWN。在上表这 {n['paired_cost_records']} 个同输入、同目标且阶段成本完整的执行中，Auto 命中 {n.get('cost_subset_auto_matches', 0)} 次，ITP 命中 {n.get('cost_subset_itp_matches', 0)} 次。",
             "",
-            f"本轮 ITP 已计量 {n.get('metered_cli_calls', 0):,} 次模型调用、{n.get('recorded_model_tokens', 0):,} 个 token，包含失败与修复。旧证明在当前目标上本地重放的成本单列。",
+            f"旧批次 ITP 已计量 {n.get('metered_cli_calls', 0):,} 次模型调用、{n.get('recorded_model_tokens', 0):,} 个 token，包含失败与修复。旧证明在当前目标上本地重放的成本单列。",
             "",
             "ITP 已取得回执的执行结果为 "
             + "、".join(f"{key} {outcomes[key]}" for key in sorted(outcomes))
@@ -258,11 +331,30 @@ def main():
     all_statuses = Counter()
     native_auto = Counter()
     totals = defaultdict(Counter)
+    companion_path = RESULTS / "fulminate-contract-companions.json"
+    companions = read(companion_path) if companion_path.exists() else {}
+    confirmed_differences = {
+        (r["group"], r["cn_variant"], r["case"], r["qcp_variant"])
+        for r in companions.get("rows", [])
+        if r["frozen_class"] == "previously_included_dll_contract"
+    }
+    applied_differences = set()
+    audited_pairs = defaultdict(Counter)
     groups = {}
     same_counts, same_outcomes = Counter(), Counter()
     same_costs = defaultdict(list)
     original_profiles = defaultdict(Counter)
     discordant = defaultdict(list)
+    verdicts_by_expected = defaultdict(
+        lambda: defaultdict(lambda: defaultdict(Counter))
+    )
+
+    def add_outcome(tool, strategy, expected, actual, match):
+        counts = verdicts_by_expected[tool][strategy][expected]
+        counts["observations"] += 1
+        counts["matches"] += int(match)
+        counts["actual_" + actual] += 1
+
     refs = {}
     auto_refs = {}
     itp_refs = {}
@@ -273,6 +365,7 @@ def main():
     discrepancies = []
     reasons = Counter()
     primary_verdicts = {"cn": Counter(), "qcp": Counter()}
+    variants = Counter()
     latest_path = RESULTS / "latest-proof-route-inventory.json"
     latest = read(latest_path) if latest_path.is_file() else None
     latest_counts, latest_outcomes = Counter(), Counter()
@@ -305,6 +398,7 @@ def main():
                     overlay["executions"][i]["reason"] for i in exception_rows
                 )
         observed = {}
+        actual = {}
         gstats = defaultdict(Counter)
         current = read(current_path)
         auto_refs[group] = {"native_and_baseline": reference(current_path)}
@@ -349,6 +443,8 @@ def main():
             else:
                 raise ValueError(f"{group}: absent Auto result {k}")
             observed[k] = row["expected"], match
+            actual[k] = status
+            add_outcome("auto", k[2], row["expected"], status, match)
             all_statuses[status] += 1
             native_auto["executions"] += 1
             native_auto["matches"] += int(match)
@@ -367,6 +463,16 @@ def main():
             receipts = read(itp_path)["executions"] if itp_path.exists() else {}
             if receipts.keys() - auto.keys():
                 raise ValueError("ITP receipt does not belong to current eligible set")
+            by_case = {coordinates(row): receipts.get(h) for h, row in auto.items()}
+            for key, (expected, match) in observed.items():
+                if key in by_case:
+                    receipt = by_case[key]
+                    done = bool(receipt and not receipt.get("needs_model"))
+                    status = receipt["final_status"] if done else "PENDING"
+                    match = done and receipt["expected_match"]
+                else:
+                    status = actual[key]
+                add_outcome("itp", key[2], expected, status, match)
             for strategy in ("inline", "modular"):
                 rows = [v for v in auto.values() if v["strategy"] == strategy]
                 if len(rows) != inventory["residuals"].get(strategy, 0):
@@ -468,6 +574,14 @@ def main():
             for case_id in scope["cases"]
         }
         plan = read(ROOT / "benchmark/programs" / group / "evaluation-plan.json")
+        family = plan["pairings"]
+        group_variants = {
+            "cn": len({p["cn_variant"] for p in family}),
+            "qcp": len({p["qcp_variant"] for p in family}),
+            "pairings": len(family),
+        }
+        variants.update(group_variants)
+        gstats["program_variants"] = group_variants
         different_contract = {
             (pair["cn_variant"], case["id"], pair["qcp_variant"])
             for pair in plan["pairings"]
@@ -498,6 +612,7 @@ def main():
             checked = r.get("matches_expected", r.get("correct"))
             if checked is None:
                 checked = r.get("actual", r.get("status")) == r["expected"]
+            add_outcome("fulminate", "concrete", r["expected"], raw, checked)
             for strategy in ("inline", "modular"):
                 expected, auto_ok = observed[qcp, case_id, strategy]
                 if (
@@ -535,6 +650,21 @@ def main():
                     )
                 gstats[strategy][outcome] += 1
                 totals[strategy][outcome] += 1
+                confirmed = (group, *pair)
+                audited_outcome = outcome
+                if confirmed in confirmed_differences:
+                    if outcome not in (
+                        "both_match",
+                        "fulminate_only",
+                        "tespec_only",
+                        "neither_match",
+                    ):
+                        raise ValueError(
+                            "Supplemental exclusion is already out of scope"
+                        )
+                    audited_outcome = "different_contract"
+                    applied_differences.add(confirmed)
+                audited_pairs[strategy][audited_outcome] += 1
         if seen != {(name, c, q) for (name, c), vs in mapping.items() for q in vs}:
             raise ValueError(
                 f"{group}: Fulminate outcomes do not cover the declared pairs"
@@ -549,12 +679,14 @@ def main():
         "fresh_remainder": actual_remainder,
         "input_pairs": sum(totals["inline"].values()),
         "paired": dict(totals),
+        "outcomes_by_expected": dict(verdicts_by_expected),
         "result_cohort_digest": digest(subset),
         "auto_evidence": auto_refs,
         "itp_evidence": itp_refs,
         "paired_cost_baseline_hashes": sorted(profiles, key=str),
         "contract_scope_evidence": reference(RESULTS / "fulminate-coverage.json"),
         "primary_verdicts": primary_verdicts,
+        "program_variants": dict(variants),
         "groups": groups,
         "fulminate_evidence": refs,
         "discordant": dict(discordant),
@@ -564,9 +696,31 @@ def main():
         "paired_postprocessing_costs": {
             k: (max(v) if k.endswith("rss") else sum(v))
             for k, v in same_costs.items()
-            if v
+            if v and not k.startswith("both_checked_")
         },
     }
+    if companions:
+        if applied_differences != confirmed_differences:
+            raise ValueError("Confirmed contract difference is outside the baseline")
+        result["audited_contract_comparison"] = {
+            "evidence": reference(companion_path),
+            "paired": dict(audited_pairs),
+            "newly_excluded_pairs": len(confirmed_differences),
+            "original_plan_paired": dict(totals),
+            "safety_observations": companions["diagnostic_classes"],
+            "supplemental_profiles": dict(
+                Counter(r["profile"] for r in companions["rows"])
+            ),
+            "supplemental_unique_costs": companions["costs"],
+        }
+    boundary_path = RESULTS / "fulminate-client-boundaries.json"
+    if boundary_path.is_file():
+        boundary = read(boundary_path)
+        result["client_boundaries"] = {
+            "evidence": reference(boundary_path),
+            "counts": boundary["counts"],
+            "costs": boundary["costs"],
+        }
     native_path = RESULTS / "latest-native-costs.json"
     if native_path.is_file():
         native = read(native_path)["totals"]
@@ -587,11 +741,16 @@ def main():
             "inventory": reference(latest_path),
             "counts": dict(latest_counts),
             "itp_residual_outcomes": dict(latest_outcomes),
+            "both_checked_costs": {
+                k.removeprefix("both_checked_"): sum(v)
+                for k, v in latest_costs.items()
+                if k.startswith("both_checked_")
+            },
             "auto_batch_vs_single": discrepancies,
             "paired_postprocessing_costs": {
                 k: (max(v) if k.endswith("rss") else sum(v))
                 for k, v in latest_costs.items()
-                if v
+                if v and not k.startswith("both_checked_")
             },
         }
     print(
@@ -674,6 +833,9 @@ def main():
                     "itp_pairs_with_observed_phase_costs",
                 )
             }
+            four["historical_401"]["scope"] = (
+                "Archived frozen targets. Unmeasured historical targets are excluded from the current queue."
+            )
             four.update(
                 itp_residuals=latest_counts["residual"],
                 itp_attempted=latest_counts["attempted"],
@@ -689,8 +851,15 @@ def main():
                     for g in groups.values()
                 ),
             )
+            four["all_current_outcomes_and_required_costs_observed"] = (
+                four["groups_all_residuals_attempted"] == four["groups"]
+                and four["itp_pairs_with_observed_phase_costs"] == four["itp_residuals"]
+                and result.get("native_costs", {}).get("totals", {}).get("executions")
+                == four["auto_executions"]
+            )
         import json
 
+        index = {"four_tool_measurement": index["four_tool_measurement"], **index}
         index_path.write_text(json.dumps(index, ensure_ascii=False, indent=2) + "\n")
         (RESULTS / "paired-tool-comparison.md").write_text(markdown(result))
 

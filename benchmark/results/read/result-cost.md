@@ -8,6 +8,8 @@
 
 全量 Auto 符合预期：inline 61/61，modular 61/61。[同一输入的跨工具比较](../paired-tool-comparison.md)。
 
+另有 8 个变体输入配对进行了合同或故障诊断对照，共享输入按实际调用计费。[补充证据](../fulminate-contract-companions.json)
+
 | 最新 ITP | 共用原生执行 | 需 ITP | 已测 ITP | 待测 | 全部执行中符合预期 |
 |---|---:|---:|---:|---:|---:|
 | inline | 49 | 12 | 12 | 0 | 49 |
@@ -47,7 +49,7 @@
 | tespec | inline | native | latest_native_matrix | 61/61 · MEASURED | 2.2956 | 21112 | 0 | 61/61 |
 | tespec | inline | auto | latest_same_input_and_vc | 12/12 · MEASURED | 1.9701 | 55428 | 0 | — |
 | tespec | inline | itp_model | latest_same_input_and_vc | 12/12 · MEASURED | 0 | — | 0 | — |
-| tespec | inline | itp_coq | latest_same_input_and_vc | 12/12 · MEASURED | 13.6215 | 646856 | 0 | — |
+| tespec | inline | itp_coq | latest_same_input_and_vc | 12/12 · MEASURED | 20.0891 | 646856 | 0 | — |
 | tespec | inline | itp_kernel | latest_same_input_and_vc | 12/12 · MEASURED | 392.4186 | 1877676 | 0 | — |
 | tespec | inline | itp_binding | latest_same_input_and_vc | 10/10 · MEASURED | 5.3912 | 39636 | 0 | — |
 | tespec | inline | shared_check | shared_original_check | 10/10 · MEASURED | 2071.4414 | 1880276 | 0 | — |
@@ -57,7 +59,7 @@
 | tespec | modular | native | latest_native_matrix | 61/61 · MEASURED | 2.2674 | 21104 | 0 | 61/61 |
 | tespec | modular | auto | latest_same_input_and_vc | 12/12 · MEASURED | 1.9236 | 55432 | 0 | — |
 | tespec | modular | itp_model | latest_same_input_and_vc | 12/12 · MEASURED | 0 | — | 0 | — |
-| tespec | modular | itp_coq | latest_same_input_and_vc | 12/12 · MEASURED | 6.6610 | 646524 | 0 | — |
+| tespec | modular | itp_coq | latest_same_input_and_vc | 12/12 · MEASURED | 12.9259 | 646524 | 0 | — |
 | tespec | modular | itp_kernel | latest_same_input_and_vc | 12/12 · MEASURED | 195.5823 | 1877996 | 0 | — |
 | tespec | modular | itp_binding | latest_same_input_and_vc | 11/11 · MEASURED | 5.7624 | 39660 | 0 | — |
 | tespec | modular | shared_check | shared_original_check | 11/11 · MEASURED | 2332.6941 | 1880036 | 0 | — |

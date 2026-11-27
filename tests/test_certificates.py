@@ -5,10 +5,16 @@ import os
 import subprocess
 from pathlib import Path
 import tempfile
+import sys
+import time
 import unittest
 from unittest.mock import patch
 
 from spectest.certificates import (
+    _benchmark_resource_slot,
+    _idle_kernel_lease,
+    _second_candidate_has_headroom,
+    _reserved_job_memory_kib,
     _uncompiled_runtime_modules,
     assumption_audit_from_output,
     assumptions_from_output,
@@ -27,6 +33,134 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class CertificateInputTests(unittest.TestCase):
+    def test_parallel_candidate_requires_active_capped_first_candidate_and_free_memory(self):
+        limit = 4 * 1024**3
+        with tempfile.TemporaryDirectory() as directory:
+            slots = Path(directory)
+            (slots / "candidate-0.lock").write_text("100")
+            proc = slots / "proc"
+            meminfo = proc / "meminfo"
+            child = proc / "101"
+            for parent, children in (("100", "101"), ("101", "")):
+                task = proc / parent / "task" / parent
+                task.mkdir(parents=True)
+                (task / "children").write_text(children)
+                (proc / parent / "comm").write_text("python" if parent == "100" else "coqc")
+            (child / "cmdline").write_bytes(b"coqc\0/job/Candidate.v\0")
+            (child / "status").write_text("RssAnon: 1048576 kB")
+            (proc / "locks").write_text("")
+            (child / "limits").write_text(f"Max address space {limit} {limit} bytes")
+            meminfo.write_text("MemAvailable: 14680064 kB\nSwapFree: 3145728 kB")
+            with patch("spectest.certificates.Path", side_effect=lambda raw: slots / raw.lstrip("/")):
+                self.assertTrue(_second_candidate_has_headroom(slots, limit))
+                meminfo.write_text("MemAvailable: 8388608 kB\nSwapFree: 3145728 kB")
+                self.assertFalse(_second_candidate_has_headroom(slots, limit))
+                meminfo.write_text("MemAvailable: 14680064 kB\nSwapFree: 3145728 kB")
+                (child / "limits").write_text("Max address space unlimited unlimited bytes")
+                self.assertFalse(_second_candidate_has_headroom(slots, limit))
+
+    def test_reserved_memory_credits_only_locked_local_jobs_and_anon_pages(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            proc = root / "proc"
+            node = proc / "201"
+            thread = node / "task/201"
+            thread.mkdir(parents=True)
+            (thread / "children").write_text("")
+            (node / "comm").write_text("coqchk")
+            (node / "status").write_text("VmRSS: 700000 kB\nRssAnon: 500000 kB")
+            slot = root / "kernel-0.lock"
+            slot.touch()
+            st = slot.stat()
+            identity = f"{os.major(st.st_dev):x}:{os.minor(st.st_dev):x}:{st.st_ino}"
+            (proc / "locks").write_text(f"1: FLOCK ADVISORY WRITE 201 {identity} 0 EOF")
+            with patch("spectest.certificates.Path", return_value=proc):
+                self.assertEqual(_reserved_job_memory_kib(root), 500000)
+                (node / "comm").write_text("other")
+                self.assertEqual(_reserved_job_memory_kib(root), 0)
+                (node / "comm").write_text("coqchk")
+                (proc / "locks").write_text(f"1: -> FLOCK ADVISORY WRITE 201 {identity} 0 EOF")
+                self.assertEqual(_reserved_job_memory_kib(root), 0)
+
+    def test_idle_kernel_lease_respects_current_holders_and_queued_admission(self):
+        import fcntl
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for name in ("kernel-admission.lock", "kernel-0.lock", "kernel-1.lock"):
+                with (root / name).open("a") as holder:
+                    fcntl.flock(holder, fcntl.LOCK_EX)
+                    self.assertEqual(_idle_kernel_lease(root), [])
+            active = _idle_kernel_lease(root)
+            self.assertEqual(len(active), 2)
+            self.assertEqual(_idle_kernel_lease(root), [])
+            for handle in active:
+                handle.close()
+            with (root / "kernel-0.lock").open("a") as next_kernel:
+                fcntl.flock(next_kernel, fcntl.LOCK_EX | fcntl.LOCK_NB)
+
+    def test_idle_kernel_releases_first_lock_if_second_file_fails(self):
+        import fcntl
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "kernel-1.lock").mkdir()
+            with self.assertRaises(IsADirectoryError):
+                _idle_kernel_lease(root)
+            with (root / "kernel-0.lock").open("a") as contender:
+                fcntl.flock(contender, fcntl.LOCK_EX | fcntl.LOCK_NB)
+
+    def test_bounded_job_retains_kernel_lane_if_checker_is_terminated(self):
+        import fcntl
+        from textwrap import dedent
+        with tempfile.TemporaryDirectory() as directory:
+            folder = Path(directory)
+            script = dedent("""
+                import os, subprocess, sys
+                from pathlib import Path
+                from spectest.certificates import _benchmark_resource_slot
+                d = Path(sys.argv[1])
+                passed = []
+                with _benchmark_resource_slot("kernel_replay", job_fds=passed):
+                    job = subprocess.Popen(
+                        ["/usr/bin/time", "-o", str(d / "time"), "/usr/bin/timeout", "5",
+                         sys.executable, "-c", "import time; time.sleep(1.0)"],
+                        start_new_session=True, pass_fds=tuple(passed))
+                    (d / "started").write_text(str(job.pid))
+                    job.wait()
+            """)
+            checker = subprocess.Popen([sys.executable, "-c", script, directory], cwd=ROOT,
+                                       env={**os.environ, "TESPEC_ITP_RESOURCE_DIR": directory})
+            try:
+                deadline = time.monotonic() + 4
+                while not (folder / "started").exists() and time.monotonic() < deadline:
+                    time.sleep(0.01)
+                self.assertTrue((folder / "started").is_file())
+                checker.kill()
+                checker.wait(timeout=2)
+                with (folder / "kernel-0.lock").open("a") as contender:
+                    with self.assertRaises(BlockingIOError):
+                        fcntl.flock(contender, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                    deadline = time.monotonic() + 4
+                    while True:
+                        try:
+                            fcntl.flock(contender, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                            break
+                        except BlockingIOError:
+                            if time.monotonic() >= deadline:
+                                self.fail("lane still held after the bounded job ended")
+                            time.sleep(0.02)
+                self.assertGreater((folder / "time").stat().st_size, 0)
+            finally:
+                if checker.poll() is None:
+                    checker.kill()
+                    checker.wait()
+
+    def test_benchmark_candidate_capacity_cannot_exceed_memory_budget(self):
+        with tempfile.TemporaryDirectory() as directory, patch.dict(os.environ, {
+            "TESPEC_ITP_RESOURCE_DIR": directory, "TESPEC_ITP_CANDIDATE_SLOTS": "3"
+        }), self.assertRaisesRegex(JobError, "resource-slot count"):
+            with _benchmark_resource_slot("compile_Candidate.v"):
+                self.fail("third candidate slot acquired")
+
     def test_task_dependencies_cannot_shadow_controller_modules(self):
         with tempfile.TemporaryDirectory() as directory:
             _, runtime = self.prepare_fixture(Path(directory))

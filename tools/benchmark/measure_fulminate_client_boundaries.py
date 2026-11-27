@@ -465,10 +465,13 @@ def measured_client(group, case_id, source, work, saved, inventory, saved_tests)
             if "void " + name + "(" in source:
                 names.add(name)
     digest = text_hash(source)
-    if digest in saved:
-        directory, stage = saved[digest]
+    key = (group, case_id, digest)
+    if key in saved:
+        directory, stage = saved[key]
         gen = directory / "generated"
     else:
+        if saved_tests:
+            raise ValueError(f"missing exact saved pipeline for {key}; cannot validate saved tests")
         g.mkdir(parents=True, exist_ok=False)
         directory = g
         subject = g / "subject.c"
@@ -489,11 +492,23 @@ def measured_client(group, case_id, source, work, saved, inventory, saved_tests)
     (unit,) = gen.glob("*.exec.c")
     binary = executable(gen)
     checks = checked_functions(unit, names)
+    tested_binary = binary
+    tested_unit = unit
+    tested_origin = directory
     if saved_tests:
         g = saved_tests / group / case_id
         run = load(g / "test-receipt.json")
-        if len(run["command"]) != 1 or sha(Path(run["command"][0])) != sha(binary):
-            raise ValueError("saved test was run on a different executable")
+        if len(run["command"]) != 1:
+            raise ValueError("unexpected saved standalone command")
+        tested_binary = Path(run["command"][0])
+        tested_origin = tested_binary.parent.parent
+        if sha(tested_origin / "subject.c") != digest:
+            raise ValueError("standalone ELF was built from different C")
+        (tested_unit,) = tested_binary.parent.glob("*.exec.c")
+        if checked_functions(tested_unit, names) != checks:
+            raise ValueError("standalone generated obligations differ")
+        if (tested_origin.parent.name, tested_origin.name, digest) not in saved:
+            raise ValueError("unidentified standalone build origin")
         for stream in ("stderr", "stdout"):
             if sha(g / ("test." + stream)) != run[stream + "_sha256"]:
                 raise ValueError("changed standalone test diagnostics")
@@ -504,8 +519,24 @@ def measured_client(group, case_id, source, work, saved, inventory, saved_tests)
     failure = diagnostic(g, "test") if code else None
     if code and not ("Failed at" in failure or "failed." in failure.lower()):
         raise ValueError("unattributed runtime exit on " + group + "/" + case_id + ": " + str(failure))
-    return {
+    record = {
         "source_sha256": digest,
+        "pipeline_binding": {
+            "group": group,
+            "case": case_id,
+            "subject_sha256": digest,
+            "generated_sha256": sha(unit),
+            "elf_sha256": sha(binary),
+            "receipt_sha256": sha(directory / "build.json"),
+        },
+        "standalone_binding": {
+            "built_group": tested_origin.parent.name,
+            "built_case": tested_origin.name,
+            "subject_sha256": digest,
+            "generated_sha256": sha(tested_unit),
+            "elf_sha256": sha(tested_binary),
+            "receipt_sha256": sha(g / "test-receipt.json"),
+        },
         "generated_sha256": sha(unit),
         "elf_sha256": sha(binary),
         "pipeline": short_metric(stage),
@@ -516,6 +547,17 @@ def measured_client(group, case_id, source, work, saved, inventory, saved_tests)
         "branch_counters": None,
         "branch_scope": "Fulminate does not emit teSpec branch-query counters.",
     }
+
+    if tested_origin.resolve() != directory.resolve():
+        prior = load(tested_origin / "build.json")
+        record["previous_source_only_pipeline_attribution"] = {
+            "source_group": tested_origin.parent.name,
+            "source_case": tested_origin.name,
+            "previous_metric": short_metric(prior),
+            "previous_receipt_sha256": sha(tested_origin / "build.json"),
+            "correction": "The original source-only merge charged the other build on this row. The pipeline and standalone bindings identify their own original ELF and measurement.",
+        }
+    return record
 
 
 def prior_cost_fingerprint(entry):
@@ -580,7 +622,10 @@ def main():
             for stream in ("stdout", "stderr"):
                 if sha(path.parent / ("pipeline." + stream)) != stage[stream + "_sha256"]:
                     raise ValueError("changed build log")
-            saved[sha(src)] = (path.parent, stage)
+            key = (path.parent.parent.name, path.parent.name, sha(src))
+            if key in saved:
+                raise ValueError(f"ambiguous saved cold build for {key}")
+            saved[key] = (path.parent, stage)
     cohort = [
         r
         for r in source_index["rows"]
@@ -718,11 +763,11 @@ def main():
             for r in earlier
         ):
             raise ValueError("invalid development recheck")
-    used = {r["fulminate"]["source_sha256"] for r in results}
+    used = {(r["group"], r["case"], r["fulminate"]["source_sha256"]) for r in results}
     superseded = [
-        {"source_sha256": h, "group": p.parent.name, "case": p.name, "pipeline": short_metric(s)}
-        for h, (p, s) in saved.items()
-        if h not in used
+        {"source_sha256": key[2], "group": p.parent.name, "case": p.name, "pipeline": short_metric(s)}
+        for key, (p, s) in saved.items()
+        if key not in used
     ]
 
     def total(rows):
@@ -755,7 +800,7 @@ def main():
                 record.update(
                     compared_group=result["group"],
                     compared_case=result["case"],
-                    same_binary_sha256=result["fulminate"]["elf_sha256"],
+                    same_binary_sha256=result["fulminate"]["standalone_binding"]["elf_sha256"],
                     matched_phase="fulminate.test",
                 )
             else:

@@ -331,6 +331,389 @@ def check_table(base, table, entry, paired, native):
     return all_measured and all_attempted
 
 
+def comparison_key(row):
+    return (row["group"], row["cn_variant"], row["qcp_variant"], row["case"])
+
+
+def check_aggregate(metrics, summary, count_field, label):
+    equal(summary[count_field], len(metrics), label + " count")
+    for field, combine in (("wall_seconds", sum), ("max_process_rss_kib", max), ("tokens", sum)):
+        values = [m[field] for m in metrics]
+        expected = combine(values) if values else (None if field == "max_process_rss_kib" else 0)
+        equal(summary[field], expected, label + " " + field)
+
+
+def check_dependencies(report, name):
+    check_refs(report, name)
+    for path, digest in report["dependencies"].items():
+        check_refs({"path": path, "sha256": digest}, name)
+
+
+def check_client_boundaries(boundary, parent, published):
+    from measure_fulminate_client_boundaries import translated_array, translated_runtime
+
+    check_dependencies(boundary, "client boundaries")
+    eligible = {
+        comparison_key(r): r
+        for r in parent["rows"]
+        if r["profile"] in {"array_client_entry_exit", "lifted_array_client", "runtime_client_entry_exit"}
+    }
+    rows = boundary["rows"]
+    equal(unique(map(comparison_key, rows), "boundary row identities"), set(eligible), "entire client cohort")
+    equal(
+        boundary["source_comparison"]["path"],
+        "benchmark/results/fulminate-contract-companions.json",
+        "parent supplement",
+    )
+    for row in rows:
+        key = comparison_key(row)
+        g, cn, qcp, case = key
+        old = eligible[key]
+        files = parent["groups"][g]["sources"]
+        equal(row["qcp_sha256"], files[qcp]["qcp"]["sha256"], f"{key}: QCP")
+        equal(row["developer_source_cn_sha256"], files[cn]["cn"]["sha256"], f"{key}: original CN")
+        qcp_text = (ROOT / files[qcp]["qcp"]["path"]).read_text()
+        generated, contracts, assertions = (
+            translated_array(old, qcp_text) if g == "array_load" else translated_runtime(g, qcp_text)
+        )
+        measured = row["fulminate"]
+        equal(
+            hashlib.sha256(generated.encode()).hexdigest(),
+            measured["source_sha256"],
+            f"{key}: generated source",
+        )
+        equal((contracts, assertions), (row["contracts"], row["assertions"]), f"{key}: original annotations")
+        equal(
+            measured["status"],
+            "PASS" if measured["test"]["exit_code"] == 0 else "FAIL",
+            f"{key}: test return",
+        )
+        for mode in STRATEGIES:
+            current = row["strategies"][mode]
+            equal(
+                (current["vc_scope"], current["strategy"]),
+                ("all-boundaries", mode),
+                f"{key}/{mode}: VC policy",
+            )
+            for field in ("expected", "auto", "native_report_sha256"):
+                equal(current[field], old["strategies"][mode][field], f"{key}/{mode}: {field}")
+    # Two distinct case-specific build invocations can share input bytes. Check what was
+    # compiled and what was actually timed independently using their own immutable receipts.
+    data = {(r["group"], r["case"]): r["fulminate"] for r in rows}
+    unique(
+        (
+            (
+                m["generated_sha256"],
+                m["pipeline"]["stdout_sha256"],
+                m["pipeline"]["stderr_sha256"],
+                m["pipeline"]["wall_seconds"],
+            )
+            for m in data.values()
+        ),
+        "cold pipelines charged more than once",
+    )
+    if any("pipeline_binding" in m or "standalone_binding" in m for m in data.values()):
+        for field in ("pipeline_binding", "standalone_binding"):
+            unique((m[field]["receipt_sha256"] for m in data.values()), field + " original receipt IDs")
+        for key, m in data.items():
+            build = m["pipeline_binding"]
+            test = m["standalone_binding"]
+            equal((build["group"], build["case"]), key, f"{key}: built input")
+            for side in (build, test):
+                equal(side["subject_sha256"], m["source_sha256"], f"{key}: phase input bytes")
+            equal(
+                (build["generated_sha256"], build["elf_sha256"]),
+                (m["generated_sha256"], m["elf_sha256"]),
+                f"{key}: cold build product",
+            )
+            origin_key = test["built_group"], test["built_case"]
+            origin = data[origin_key]
+            expected_binding = origin["pipeline_binding"]
+            for field in ("subject_sha256", "elf_sha256", "generated_sha256"):
+                equal(test[field], expected_binding[field], f"{key}: standalone {field}")
+            previous = m.get("previous_source_only_pipeline_attribution")
+            equal(previous is not None, origin_key != key, f"{key}: distinct ELF attribution")
+            if previous:
+                equal(
+                    (previous["source_group"], previous["source_case"]),
+                    origin_key,
+                    f"{key}: former attribution",
+                )
+                equal(previous["previous_metric"], origin["pipeline"], f"{key}: former cold charge")
+                equal(
+                    previous["previous_receipt_sha256"],
+                    expected_binding["receipt_sha256"],
+                    f"{key}: former receipt",
+                )
+    totals = {
+        "scopes": dict(Counter(r["comparison_scope"] for r in rows)),
+        "fulminate": dict(Counter(r["fulminate"]["status"] for r in rows)),
+    }
+    equal(boundary["counts"], totals, "boundary status totals")
+    equal(published["counts"], totals, "paired summary of client boundaries")
+    equal(published["costs"], boundary["costs"], "published client costs")
+    for stage in ("pipeline", "test"):
+        check_aggregate(
+            [r["fulminate"][stage] for r in rows], boundary["costs"][stage], "measurements", stage
+        )
+    for field, stage in (("superseded_builds", "pipeline"), ("development_cost_rechecks", "recheck")):
+        check_aggregate([r[stage] for r in boundary[field]], boundary["costs"][field], "measurements", field)
+
+    def original_stage(r):
+        return tuple(
+            r[k] for k in ("group", "case", "source_sha256", "stage", "stdout_sha256", "stderr_sha256")
+        )
+
+    rechecks = boundary["development_cost_rechecks"]
+    equal(
+        Counter(original_stage(r["original"]) for r in rechecks),
+        Counter(
+            original_stage(r) for r in parent["earlier_attempts"]["measurements"] if r["wall_seconds"] is None
+        ),
+        "same missing development stages with matched remeasurement",
+    )
+    for rec in rechecks:
+        equal(rec["original_wall_seconds"], None, "original missing clock")
+        equal(rec["recheck"]["exit_code"], 0, "comparable development recheck")
+
+
+def check_companions(companions, comparison, reviewed, finite_coverage):
+    from measure_fulminate_companions import make_subject, cause, phase
+
+    check_dependencies(companions, "contract companions")
+    lock = companions["cn_toolchain"]
+    check_refs({"path": lock["lock"], "sha256": lock["lock_sha256"]}, "locked toolchain")
+    equal(lock["cn_sha256"], read(ROOT / lock["lock"])["fingerprint"]["cn_sha256"], "CN binary identity")
+    keys = unique(map(comparison_key, companions["rows"]), "companion identities")
+    equal({r[0] for r in keys}, set(companions["groups"]), "companion group evidence")
+    row_counts = Counter()
+    diagnoses = Counter()
+    used = set()
+    old_bins = {s: Counter(comparison["paired"][s]) for s in STRATEGIES}
+    inferred = {s: Counter() for s in STRATEGIES}
+    profiles = Counter(r["profile"] for r in companions["rows"])
+    by_group = defaultdict(list)
+    for r in companions["rows"]:
+        by_group[r["group"]].append(r)
+    seen_new = set()
+    for group, metadata in companions["groups"].items():
+        files = metadata["sources"]
+        plan = read(ROOT / metadata["plan"]["path"])
+        cases = {
+            (p["cn_variant"], p["qcp_variant"], c["id"]): (p, c) for p in plan["pairings"] for c in p["cases"]
+        }
+        native_data = read(ROOT / metadata["teSpec_native"]["path"])["executions"]
+        native = {(r["variant"], r["case"], r["strategy"]): r for r in native_data}
+        refreshed = {}
+        if "teSpec_overlay" in metadata:
+            refreshed = {
+                (r["variant"], r["case"], r["strategy"]): r
+                for r in read(ROOT / metadata["teSpec_overlay"]["path"])["executions"]
+            }
+        source_raw = read(ROOT / metadata["fulminate_evidence"]["path"])
+        raw = {
+            (r["variant"], r.get("case", r.get("case_id"))): r
+            for r in source_raw.get("runs", source_raw.get("cases", []))
+        }
+        finite = read(RESULTS / group / "fulminate/results.json")
+        baseline = {
+            (r["variant"], r.get("case", r.get("case_id"))): r
+            for r in finite.get("cases", finite.get("runs", []))
+        }
+        missing = {
+            (s["variant"], c)
+            for s in finite_coverage["groups"][group]["scope_exceptions"]
+            if s["kind"] == "target_contract_na"
+            for c in s["cases"]
+        }
+        for r in by_group[group]:
+            ident = comparison_key(r)
+            _, cn, qcp, case = ident
+            member = (cn, qcp, case)
+            pair, c = cases[member]
+            raw_pair = (cn, case)
+            orig = baseline[raw_pair]
+            difference = any(native[qcp, case, s]["expected"] != orig["expected"] for s in STRATEGIES)
+            if raw_pair in missing:
+                category = "body_only"
+            elif pair.get("contract_comparison", {}).get("same_contract_comparison") is False:
+                category = "different_contract"
+            elif difference:
+                category = "different_expected"
+            else:
+                category = "previously_included_dll_contract"
+            equal(r["frozen_class"], category, f"{ident}: original comparison class")
+            equal(r["original_fulminate_expected"], orig["expected"], f"{ident}: frozen Fulminate oracle")
+            row_counts[category] += 1
+            for s in STRATEGIES:
+                source = native[qcp, case, s]
+                linked = r["strategies"][s]
+                final = refreshed.get((qcp, case, s), source)
+                equal(linked["auto"], final["effective_status"], f"{ident}/{s}: observed Auto")
+                equal(linked["matches_expected"], final["expected_match"], f"{ident}/{s}: expectation match")
+                for field in ("native_report_sha256", "expected"):
+                    equal(linked[field], source[field], f"{ident}/{s} {field}")
+            if category == "different_expected":
+                old = raw[raw_pair]
+                test = old.get("fulminate_test", old.get("runtime_test"))
+                for s in STRATEGIES:
+                    equal(cause(test, native[qcp, case, s]), r["diagnostic_class"], f"{ident}/{s} fault")
+                for stream in ("stdout", "stderr"):
+                    equal(
+                        r[stream + "_sha256"],
+                        test.get(stream + "_sha256", test.get(stream + "_omitted", {}).get("sha256")),
+                        f"{ident}: original {stream}",
+                    )
+                equal(
+                    r["fulminate_status"],
+                    "PASS" if test["exit_code"] == 0 else "FAIL",
+                    f"{ident}: finite exit",
+                )
+                diagnoses[r["diagnostic_class"]] += 1
+                continue
+            receipt_id = r["fulminate_receipt"]
+            used.add(receipt_id)
+            measurement = companions["measurements"][receipt_id]
+            equal(measurement["status"], r["fulminate_status"], f"{ident}: receipt")
+            if measurement.get("kind") == "archived_array_load2":
+                donor, donor_q, donor_case = measurement["archive_key"]
+                archive = raw[donor, donor_case]
+                _, prior = cases[donor, donor_q, donor_case]
+                for field in ("cn_body", "binds", "expected", "value"):
+                    equal(c[field], prior[field], f"{ident}: archived array input {field}")
+                equal(
+                    measurement["source"]["sha256"],
+                    archive["cn_source_sha256"],
+                    f"{ident}: archived CN source",
+                )
+                equal(measurement["source_sha256"], archive["harness_sha256"], f"{ident}: archived input")
+                equal(
+                    measurement["binary_sha256"],
+                    archive["instrumented_binary_sha256"],
+                    f"{ident}: archived ELF",
+                )
+                for st in ("pipeline", "test"):
+                    equal(measurement[st], phase(archive["fulminate_" + st]), f"{ident}: archive {st}")
+                equal(
+                    receipt_id, group + "/archive/" + archive["harness_sha256"], f"{ident}: archived cost ID"
+                )
+            else:
+                original_pair = pair
+                if r["profile"] in ("dll_add_strengthened", "dll_remove_strengthened"):
+                    original_pair = next(p for p in plan["pairings"] if "orig.broken" in p["cn_variant"])
+                if group == "array_load":
+                    # The helper donor is owned by the existing strong-array measurement.
+                    donor = next(
+                        m
+                        for m in companions["measurements"].values()
+                        if m.get("kind") == "archived_array_load2"
+                    )
+                    files = {**files, "cn_original:array_load2": {"cn": donor["source"]}}
+                generated, _ = make_subject(group, original_pair, c, files, plan)
+                digest = hashlib.sha256(generated.encode()).hexdigest()
+                equal(receipt_id, group + "/" + digest, f"{ident}: generated cost ID")
+                equal(measurement["source_sha256"], digest, f"{ident}: generated source")
+                check_refs(
+                    {"path": measurement["compiler"], "sha256": measurement["compiler_sha256"]},
+                    "actual compiler",
+                )
+            if category == "previously_included_dll_contract":
+                equal(
+                    r["profile"] in ("dll_add_strengthened", "dll_remove_strengthened"),
+                    True,
+                    f"{ident}: reviewed difference",
+                )
+                seen_new.add(ident)
+                finite_match = orig.get("matches_expected", orig.get("correct"))
+                if finite_match is None:
+                    finite_match = orig.get("actual", orig.get("status")) == orig["expected"]
+                for s in STRATEGIES:
+                    t = r["strategies"][s]["matches_expected"]
+                    old_class = {
+                        (True, True): "both_match",
+                        (True, False): "tespec_only",
+                        (False, True): "fulminate_only",
+                        (False, False): "neither_match",
+                    }[t, finite_match]
+                    inferred[s][old_class] += 1
+        augmented_qcp = {
+            r["qcp_variant"]
+            for r in by_group[group]
+            if r["profile"] in {"dll_add_strengthened", "dll_remove_strengthened"}
+        }
+        expected_new = {
+            (group, cn, qcp, case)
+            for (cn, qcp, case), (pair, c) in cases.items()
+            if qcp in augmented_qcp
+            and (cn, case) not in missing
+            and pair.get("contract_comparison", {}).get("same_contract_comparison") is not False
+            and all(
+                native[qcp, case, mode]["expected"] == baseline[cn, case]["expected"] for mode in STRATEGIES
+            )
+        }
+        equal(
+            {k for k in seen_new if k[0] == group},
+            expected_new,
+            f"{group}: all formerly eligible DLL pairings",
+        )
+    equal(used, set(companions["measurements"]), "uniquely referenced companion cost IDs")
+    # Coverage of all three frozen exclusion classes; successful or failed new outcomes never select this sample.
+    for s in STRATEGIES:
+        for k in ("body_only", "different_contract", "different_expected"):
+            equal(row_counts[k], old_bins[s][k], f"{s}: complete {k} cohort")
+        corrected = old_bins[s].copy()
+        corrected.subtract(inferred[s])
+        corrected["different_contract"] += len(seen_new)
+        equal(Counter(reviewed["paired"][s]), corrected, f"{s}: corrected comparison")
+        fair = ("both_match", "tespec_only", "fulminate_only", "neither_match")
+        equal(
+            sum(corrected[k] for k in fair),
+            comparison["input_pairs"] - sum(row_counts.values()),
+            f"{s}: corrected strict denominator",
+        )
+    equal({k: dict(v) for k, v in old_bins.items()}, reviewed["original_plan_paired"], "original comparison")
+    equal(len(seen_new), reviewed["newly_excluded_pairs"], "new contract differences")
+    equal(dict(row_counts), companions["counts"], "companion coverage")
+    equal(dict(diagnoses), companions["diagnostic_classes"], "replayed historical diagnostic classes")
+    equal(dict(diagnoses), reviewed["safety_observations"], "global diagnostic classes")
+    equal(dict(profiles), reviewed["supplemental_profiles"], "global supplementary profiles")
+    equal(companions["costs"], reviewed["supplemental_unique_costs"], "global supplementary costs")
+    for kind, stats in companions["costs"].items():
+        metrics = [
+            m for m in companions["measurements"].values() if m.get("kind", "measured_companion") == kind
+        ]
+        equal(len(metrics), stats["unique_executions"], kind + " unique measured inputs")
+        equal(Counter(m["status"] for m in metrics), Counter(stats["statuses"]), kind + " outcomes")
+        for st in ("pipeline", "test", "fault_probe"):
+            values = [m[st]["cost"] if st == "fault_probe" else m[st] for m in metrics if st in m]
+            check_aggregate(values, stats[st], "invocations", kind + " " + st)
+
+
+def mutually_matched_costs(auto, receipt):
+    if receipt["needs_model"] or not (auto["expected_match"] and receipt["expected_match"]):
+        return {}
+    phases = [receipt.get(s) for s in ("itp_model", "itp_coq", "itp_kernel")]
+    if receipt.get("itp_binding") is not None:
+        phases.append(receipt["itp_binding"])
+    if receipt.get("cumulative_costs_complete") is False or any(
+        p is None
+        or p.get("tokens") is None
+        or p.get("wall_seconds") is None
+        or (p.get("invoked") and p.get("max_process_rss_kib") is None)
+        for p in phases
+    ):
+        return {}
+    a = auto.get("auto")
+    if not a or any(a.get(k) is None for k in ("tokens", "wall_seconds", "max_process_rss_kib")):
+        return {}
+    return {
+        "count": 1,
+        "auto_seconds": a["wall_seconds"],
+        "itp_seconds": sum(p["wall_seconds"] for p in phases),
+        "itp_tokens": sum(p["tokens"] for p in phases),
+    }
+
+
 def audit(require_complete):
     comparison = read(RESULTS / "paired-tool-comparison.json")
     index = read(RESULTS / "group-result-cost-index.json")
@@ -348,6 +731,15 @@ def audit(require_complete):
     for k, v in comparison["native_costs"]["totals"].items():
         equal(v, native["totals"][k], f"paired native costs: {k}")
     fulminate = read(ROOT / comparison["contract_scope_evidence"]["path"])
+    supplemental_file = RESULTS / "fulminate-contract-companions.json"
+    boundary_file = RESULTS / "fulminate-client-boundaries.json"
+    equal(supplemental_file.is_file(), "audited_contract_comparison" in comparison, "companion publication")
+    equal(boundary_file.is_file(), "client_boundaries" in comparison, "boundary publication")
+    if supplemental_file.is_file():
+        data = read(supplemental_file)
+        check_companions(data, comparison, comparison["audited_contract_comparison"], fulminate)
+        if boundary_file.is_file():
+            check_client_boundaries(read(boundary_file), data, comparison["client_boundaries"])
     equal(
         fulminate["counts"]["executed_inputs"],
         comparison["input_pairs"],
@@ -380,6 +772,7 @@ def audit(require_complete):
     )
     anomalies = read(ROOT / latest["unexpected_evidence"]["path"])["groups"]
     group_primary = defaultdict(Counter)
+    both_checked = Counter()
     costs = defaultdict(list)
     directs, shared, all_reports, queue_shas, deltas = set(), set(), set(), set(), set()
     complete_groups = 0
@@ -430,6 +823,7 @@ def audit(require_complete):
         )
         for h, a in auto.items():
             check_input(h, a, receipts[h], directs, shared)
+            both_checked.update(mutually_matched_costs(a, receipts[h]))
             if a["batch_auto_status"] != a["effective_status"]:
                 deltas.add((h, a["batch_auto_status"], a["effective_status"]))
             diagnostic = a.get("additional_budget_diagnostic")
@@ -486,10 +880,14 @@ def audit(require_complete):
         {(d["native_report_sha256"], d["batch"], d["one_input"]) for d in latest["auto_batch_vs_single"]},
         "published primary batch/single differences",
     )
+    if "both_checked_costs" in latest:
+        equal(set(both_checked), set(latest["both_checked_costs"]), "mutually matched cost fields")
+        for field, value in both_checked.items():
+            equal(latest["both_checked_costs"][field], value, "mutually matched " + field)
     reported_costs = latest["paired_postprocessing_costs"]
     equal(
         set(reported_costs),
-        {k for k, v in costs.items() if v},
+        {k for k, v in costs.items() if v and not k.startswith("both_checked_")},
         "paired phase cost fields",
     )
     for key, value in reported_costs.items():
@@ -530,6 +928,18 @@ def audit(require_complete):
         f"{stage_counts['paired_cost_records']} paired costs; {len(shared)} unique shared cold checks; "
         f"{native['totals']['branch_missing']} executions without branch counters."
     )
+    if "audited_contract_comparison" in comparison:
+        corrected = comparison["audited_contract_comparison"]["paired"]
+        fair = ("both_match", "tespec_only", "fulminate_only", "neither_match")
+        denominators = ", ".join(f"{s} {sum(corrected[s].get(k, 0) for k in fair)}" for s in STRATEGIES)
+        boundary_count = sum(
+            comparison.get("client_boundaries", {}).get("counts", {}).get("fulminate", {}).values()
+        )
+        print(
+            f"Companions: {len(data['rows'])} mappings, {len(data['measurements'])} distinct cost receipts; "
+            f"{boundary_count} client executions; corrected pairs: {denominators}; "
+            f"both routes matched with complete costs: {both_checked['count']}."
+        )
     if require_complete:
         equal(
             stage_counts["paired_cost_records"],

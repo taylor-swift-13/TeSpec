@@ -20,8 +20,8 @@
 
 | 最新 ITP | 共用原生执行 | 需 ITP | 已测 ITP | 待测 | 全部执行中符合预期 |
 |---|---:|---:|---:|---:|---:|
-| inline | 8 | 86 | 8 | 78 | 6 |
-| modular | 10 | 84 | 6 | 78 | 6 |
+| inline | 8 | 86 | 86 | 0 | 18 |
+| modular | 10 | 84 | 84 | 0 | 18 |
 
 以下为旧冻结双路线批次。
 
@@ -90,9 +90,9 @@
 | tespec | inline | batch_auto | latest_native_matrix | 69/69 · MEASURED | 194.3876 | 573396 | 0 | — |
 | tespec | inline | native | latest_native_matrix | 94/94 · MEASURED | 229.2476 | 569364 | 0 | 92/94 |
 | tespec | inline | auto | latest_same_input_and_vc | 86/86 · MEASURED | 277.3045 | 571860 | 0 | — |
-| tespec | inline | itp_model | latest_same_input_and_vc | 8/86 · PARTIAL | 1021.4220 | 334032.0000 | 574485 | — |
-| tespec | inline | itp_coq | latest_same_input_and_vc | 8/86 · PARTIAL | 232.9901 | 602000 | 0 | — |
-| tespec | inline | itp_kernel | latest_same_input_and_vc | 8/86 · PARTIAL | 0 | — | 0 | — |
+| tespec | inline | itp_model | latest_same_input_and_vc | 86/86 · MEASURED | 9844.7460 | 334032.0000 | 5940258 | — |
+| tespec | inline | itp_coq | latest_same_input_and_vc | 86/86 · MEASURED | 1679.8751 | 1001856 | 0 | — |
+| tespec | inline | itp_kernel | latest_same_input_and_vc | 86/86 · MEASURED | 1767.7410 | 2050740 | 0 | — |
 | tespec | inline | auto | same_input_profile_recheck_a21f363a | 86/86 · MEASURED | 204.1518 | 573296 | 0 | — |
 | tespec | inline | auto | same_budget_diagnostic | 1/1 · MEASURED | 53.1394 | 569432 | 0 | — |
 | tespec | inline | auto | additional_budget_diagnostic | 3/3 · MEASURED | 215.4773 | 590340 | 0 | — |
@@ -101,9 +101,9 @@
 | tespec | modular | batch_auto | latest_native_matrix | 64/64 · MEASURED | 53.2495 | 419116 | 0 | — |
 | tespec | modular | native | latest_native_matrix | 94/94 · MEASURED | 155.7496 | 569440 | 0 | 94/94 |
 | tespec | modular | auto | latest_same_input_and_vc | 84/84 · MEASURED | 78.0320 | 419020 | 0 | — |
-| tespec | modular | itp_model | latest_same_input_and_vc | 6/84 · PARTIAL | 680.3730 | 328232.0000 | 334038 | — |
-| tespec | modular | itp_coq | latest_same_input_and_vc | 6/84 · PARTIAL | 169.0966 | 569348 | 0 | — |
-| tespec | modular | itp_kernel | latest_same_input_and_vc | 6/84 · PARTIAL | 0 | — | 0 | — |
+| tespec | modular | itp_model | latest_same_input_and_vc | 84/84 · MEASURED | 8985.4580 | 334228.0000 | 4078394 | — |
+| tespec | modular | itp_coq | latest_same_input_and_vc | 84/84 · MEASURED | 1495.1073 | 572164 | 0 | — |
+| tespec | modular | itp_kernel | latest_same_input_and_vc | 84/84 · MEASURED | 1740.9029 | 2051048 | 0 | — |
 | tespec | modular | auto | same_input_profile_recheck_a21f363a | 84/84 · MEASURED | 64.6985 | 418916 | 0 | — |
 | tespec | modular | auto | same_budget_diagnostic | 1/1 · MEASURED | 8.2876 | 419076 | 0 | — |
 | tespec | modular | auto | additional_budget_diagnostic | 2/2 · MEASURED | 17.9785 | 418728 | 0 | — |

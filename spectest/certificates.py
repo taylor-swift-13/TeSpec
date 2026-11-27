@@ -355,11 +355,110 @@ def _uncompiled_runtime_modules(manifest, runtime, directory):
     return units
 
 
+def _reserved_job_memory_kib(root):
+    """Count resident anonymous pages already consuming the kernel and compiler reserves."""
+    proc = Path("/proc")
+    budget = {}
+    for name, command, limit in (("kernel", "coqchk", 3 * 1024**2),
+                                 ("compiler", "coqc", 1536 * 1024)):
+        try:
+            st = (root / (name + "-0.lock")).stat()
+            budget[(os.major(st.st_dev), os.minor(st.st_dev), st.st_ino)] = (command, limit)
+        except OSError:
+            continue
+    used = 0
+    for record in (proc / "locks").read_text().splitlines():
+        fields = record.split()
+        if len(fields) < 7 or fields[1:4] != ["FLOCK", "ADVISORY", "WRITE"]:
+            continue
+        major, minor, inode = fields[5].split(":")
+        key = (int(major, 16), int(minor, 16), int(inode))
+        if key not in budget:
+            continue
+        command, limit = budget.pop(key)
+        pids = [int(fields[4])]
+        anonymous = 0
+        for pid in pids:
+            task = proc / str(pid)
+            try:
+                pids.extend(int(c) for c in (task / "task" / str(pid) / "children").read_text().split())
+                if (task / "comm").read_text().strip() == command:
+                    pages = int(next(v.split()[1] for v in (task / "status").read_text().splitlines()
+                                     if v.startswith("RssAnon:")))
+                    # Forked workers can temporarily share anonymous pages.
+                    anonymous = max(anonymous, pages)
+            except (OSError, ValueError, StopIteration):
+                continue
+        used += min(anonymous, limit)
+    return used
+
+
+def _second_candidate_has_headroom(root, candidate_bytes, *, kernel_reserved=True):
+    """Reserve two capped candidates, a kernel, a compiler and explicit host headroom."""
+    try:
+        meminfo = {line.partition(":")[0]: int(line.partition(":")[2].split()[0])
+                   for line in Path("/proc/meminfo").read_text().splitlines()}
+        if meminfo["SwapFree"] < 2 * 1024**2:
+            return False
+        first = int((root / "candidate-0.lock").read_text())
+        children = [first]
+        first_rss = 0
+        for pid in children:
+            proc = Path("/proc") / str(pid)
+            children.extend(int(v) for v in (proc / "task" / str(pid) / "children").read_text().split())
+            if (proc / "comm").read_text().strip() != "coqc":
+                continue
+            cmd = (proc / "cmdline").read_bytes().split(b"\0")
+            if not any(arg.endswith(b"/Candidate.v") for arg in cmd):
+                continue
+            bound = next(line.split()[3] for line in (proc / "limits").read_text().splitlines()
+                         if line.startswith("Max address space"))
+            if bound == "unlimited" or int(bound) > candidate_bytes:
+                return False
+            first_rss = int(next(line.split()[1] for line in (proc / "status").read_text().splitlines()
+                                 if line.startswith("RssAnon:")))
+        # KiB. Reserve 3 GiB for one kernel, 1.5 GiB for other compilation,
+        # and another 1.5 GiB for the OS and background work.
+        required = 2 * (candidate_bytes // 1024) + (6 if kernel_reserved else 3) * 1024**2
+        if first_rss <= 0:
+            return False
+        available = meminfo["MemAvailable"] + first_rss
+        # Only live FLOCK owners can consume these reserves. Foreign jobs, page
+        # cache and shared mappings do not contribute to the added headroom.
+        return available >= required or available + _reserved_job_memory_kib(root) >= required
+    except (OSError, ValueError, KeyError, StopIteration):
+        return False
+
+
+def _idle_kernel_lease(root):
+    """Temporarily reserve the idle kernel lane without overtaking its queue."""
+    import fcntl
+
+    lease = []
+    with (root / "kernel-admission.lock").open("a") as admission:
+        try:
+            fcntl.flock(admission, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            # Older controllers used two kernel lanes. Lock both for the lease.
+            for name in ("kernel-0.lock", "kernel-1.lock"):
+                handle = (root / name).open("a")
+                lease.append(handle)
+                fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BaseException as exc:
+            for handle in lease:
+                handle.close()
+            if isinstance(exc, BlockingIOError):
+                return []
+            raise
+    return lease
+
+
 @contextmanager
-def _benchmark_checker_slot(stage):
-    """Bound costly ITP processes across workers while measuring each command separately."""
+def _benchmark_resource_slot(stage, allocation=None, job_fds=None):
+    """Bound ITP subprocesses across workers while measuring each invocation separately."""
     directory = os.environ.get("TESPEC_ITP_RESOURCE_DIR")
-    if stage.startswith("kernel_replay"):
+    if stage == "model_generation":
+        kind = "model"
+    elif stage.startswith("kernel_replay"):
         kind = "kernel"
     elif stage == "compile_Candidate.v":
         kind = "candidate"
@@ -373,12 +472,13 @@ def _benchmark_checker_slot(stage):
     root = Path(directory)
     if not root.is_dir():
         raise JobError("ITP resource-slot directory is unavailable")
-    defaults = {"kernel": "2", "candidate": "1", "compiler": "3"}
+    defaults = {"model": "8", "kernel": "1", "candidate": "2", "compiler": "1"}
     count = int(os.environ.get("TESPEC_ITP_" + kind.upper() + "_SLOTS", defaults[kind]))
-    if not 1 <= count <= 32:
+    if not 1 <= count <= int(defaults[kind]):
         raise JobError("invalid ITP resource-slot count")
     started = time.monotonic()
     handles = []
+    lease = []
     try:
         for index in range(count):
             handles.append((root / (kind + "-" + str(index) + ".lock")).open("a"))
@@ -388,18 +488,45 @@ def _benchmark_checker_slot(stage):
             fcntl.flock(admission, fcntl.LOCK_EX)
             acquired = False
             while not acquired:
-                for handle in handles:
+                for index, handle in enumerate(handles):
+                    if kind == "candidate" and index:
+                        bound = int(os.environ.get("TESPEC_ITP_CANDIDATE_ADDRESS_SPACE_BYTES", 4 * 1024**3))
+                        if not _second_candidate_has_headroom(root, bound):
+                            if not _second_candidate_has_headroom(root, bound, kernel_reserved=False):
+                                continue
+                            lease = _idle_kernel_lease(root)
+                            if not lease:
+                                continue
+                            if not _second_candidate_has_headroom(root, bound, kernel_reserved=False):
+                                for reserved in lease:
+                                    reserved.close()
+                                lease.clear()
+                                continue
                     try:
                         fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
                     except BlockingIOError:
+                        for reserved in lease:
+                            reserved.close()
+                        lease.clear()
                         continue
+                    if kind == "candidate":
+                        handle.seek(0)
+                        handle.truncate()
+                        handle.write(str(os.getpid()))
+                        handle.flush()
                     acquired = True
                     break
                 if not acquired:
                     time.sleep(0.1)
+        if kind == "candidate" and allocation is not None:
+            allocation["borrowed_idle_kernel_slot"] = bool(lease)
+        if job_fds is not None:
+            # A surviving GNU time wrapper retains the flock on the same open
+            # file description until its bounded job exits, even if this checker dies.
+            job_fds.extend(item.fileno() for item in [handle, *lease])
         yield time.monotonic() - started
     finally:
-        for handle in handles:
+        for handle in handles + lease:
             handle.close()
 
 
@@ -507,7 +634,9 @@ def check_certificate(
             # the command and write maximum RSS when the compiler times out.
             "/usr/bin/timeout", "--kill-after=3s", f"{timeout}s", *checked_command,
         ]
-        with _benchmark_checker_slot(label) as queue_seconds:
+        allocation = {}
+        job_fds = []
+        with _benchmark_resource_slot(label, allocation, job_fds) as queue_seconds:
             start = time.monotonic()
             with log.open("w") as stream:
                 process = subprocess.Popen(
@@ -516,6 +645,7 @@ def check_certificate(
                     stdout=stream,
                     stderr=subprocess.STDOUT,
                     start_new_session=True,
+                    **({"pass_fds": tuple(job_fds)} if job_fds else {}),
                 )
                 try:
                     code = process.wait(timeout=timeout + 10)
@@ -535,7 +665,8 @@ def check_certificate(
             {
                 "stage": label,
                 "command": command,
-                **({"address_space_limit_bytes": limit, "measured_command": measured} if limit else {}),
+                **({"address_space_limit_bytes": limit, "measured_command": measured,
+                    **allocation, "resource_slot_policy": "two capped candidates; reserve 3 GiB kernel unless its idle lane is locked, 1.5 GiB compiler and 1.5 GiB host; credit reserved jobs anonymous RSS; min 2 GiB swap free"} if limit else {}),
                 **({"resource_failure": "candidate_allocation_failed"} if limit and code != 0 and
                    re.search(r"out of memory|cannot allocate memory|memory allocation failed",
                              log.read_text(errors="replace"), re.IGNORECASE) else {}),

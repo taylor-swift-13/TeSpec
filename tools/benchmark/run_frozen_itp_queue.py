@@ -82,6 +82,8 @@ def replay_negative(folder, row, proposal):
                            itp_replay_only=True, proof_cache=cache)
     cmd = itp_command(args, native, out / "itp", {case["id"]})
     cmd += ["--refute-precondition", case["id"]] if entry else ["--refute-vc", case["id"] + "=" + target]
+    save(out / "peer-selection.json", {"source": str(proposal["source"].resolve()),
+         "candidate_sha256": proposal["sha"], "recipient_proof_key": key})
     stats = measure(cmd, out / "measurements/itp")
     final = read(out / "itp/proof/report.json")
     evidence = final["proof_completion"]["agent"]
@@ -196,6 +198,18 @@ def reconsider_completed(group, args):
 
 
 def run_group(group, args):
+    source_key, _ = group
+    claim_dir = args.scratch / "proof-source-claims"
+    claim_dir.mkdir(exist_ok=True)
+    with (claim_dir / (source_key + ".lock")).open("a") as claim:
+        try:
+            fcntl.flock(claim, fcntl.LOCK_EX | (fcntl.LOCK_NB if args.backfill else 0))
+        except BlockingIOError:
+            return
+        _run_claimed_group(group, args)
+
+
+def _run_claimed_group(group, args):
     _, rows = group
     store = {}
     # Existing proof attempts (including candidates replayed from the older benchmark)
@@ -267,6 +281,9 @@ def main():
                         help="Only check already generated positive sources on equivalent earlier inconclusive executions")
     parser.add_argument("--refresh-evidence-only", action="store_true",
                         help="Only refresh already collected inputs from original local stage receipts")
+    parser.add_argument("--assist-family", help="Process only one family with per-source claims shared by other updated workers")
+    parser.add_argument("--backfill", action="store_true",
+                        help="Process unclaimed original sources while regular workers await cold checks")
     parser.add_argument("--ready-list", type=Path, help="Use a publisher-verified ready subset of native SHA-256 keys")
     parser.add_argument("--cohort", choices=("all","new","historical"), default="all",
                         help="Separate original targets present in the prior experiment from new targets")
@@ -285,6 +302,14 @@ def main():
         parser.error("A valid Windows model CLI host and a positive worker count are required")
     guards = []
     lock_names = ("recheck",) if args.recheck_completed_peers else ("new", "historical") if args.cohort == "all" else (args.cohort,)
+    if args.assist_family:
+        if Path(args.assist_family).name != args.assist_family:
+            parser.error("invalid benchmark family")
+        lock_names = ("assist-" + args.assist_family,)
+    if args.backfill:
+        if args.cohort != "new":
+            parser.error("Backfill is limited to the distinct new-target cohort")
+        lock_names = tuple("backfill-" + name for name in lock_names)
     for cname in lock_names:
         guard = (args.scratch / ("frozen-model-" + cname + ".lock")).open("a")
         fcntl.flock(guard, fcntl.LOCK_EX if args.wait_lock else fcntl.LOCK_EX | fcntl.LOCK_NB)
@@ -303,6 +328,8 @@ def main():
     waiting = 0
     ready = set(read(args.ready_list)["native_report_sha256"]) if args.ready_list else None
     for row in queue["executions"]:
+        if args.assist_family and row["group"] != args.assist_family:
+            continue
         if ready is not None and row["native_report_sha256"] not in ready:
             continue
         old = row["goal_sha256"] in archived_goals

@@ -10,9 +10,13 @@
 
 全量 Auto 符合预期：inline 67/67，modular 66/67。[同一输入的跨工具比较](../paired-tool-comparison.md)。
 
+7 个客户端输入另有内部断言的实际运行记录。[覆盖范围与结果](../fulminate-client-boundaries.json)
+
+另有 43 个变体输入配对进行了合同或故障诊断对照，共享输入按实际调用计费。[补充证据](../fulminate-contract-companions.json)
+
 | 最新 ITP | 共用原生执行 | 需 ITP | 已测 ITP | 待测 | 全部执行中符合预期 |
 |---|---:|---:|---:|---:|---:|
-| inline | 65 | 2 | 0 | 2 | 65 |
+| inline | 65 | 2 | 2 | 0 | 65 |
 | modular | 65 | 2 | 2 | 0 | 66 |
 
 以下为旧冻结双路线批次。
@@ -52,13 +56,19 @@
 | tespec | modular | auto | fresh_auto_remaining | 1/1 · MEASURED | 0.3425 | 57892 | 0 | — |
 | tespec | inline | auto | auto_on_itp_roots | 2/2 · MEASURED | 0.2308 | 56064 | 0 | — |
 | tespec | modular | auto | auto_on_itp_roots | 2/2 · MEASURED | 0.4044 | 57920 | 0 | — |
+| fulminate | — | pipeline | supplemental_archived_array_load2 | 6/6 · distinct supplemental inputs | 1.5912 | 45080 | 0 | — |
+| fulminate | — | test | supplemental_archived_array_load2 | 6/6 · distinct supplemental inputs | 0.0169 | 1136 | 0 | — |
+| fulminate | — | pipeline | supplemental_measured_companion | 3/3 · distinct supplemental inputs | 1.0306 | 45100 | 0 | — |
+| fulminate | — | test | supplemental_measured_companion | 3/3 · distinct supplemental inputs | 0.0122 | 1920 | 0 | — |
+| fulminate | — | pipeline | supplemental_client_boundaries | 7/7 · explicit internal checks | 2.5427 | 50664 | 0 | — |
+| fulminate | — | test | supplemental_client_boundaries | 7/7 · explicit internal checks | 0.0296 | 1920 | 0 | — |
 | tespec | inline | layout_prepare | latest_native_matrix | 17/17 · MEASURED | 1.0849 | 18180 | 0 | — |
 | tespec | inline | batch_auto | latest_native_matrix | 2/2 · MEASURED | 0.2301 | 55828 | 0 | — |
 | tespec | inline | native | latest_native_matrix | 67/67 · MEASURED | 3.9209 | 21172 | 0 | 67/67 |
 | tespec | inline | auto | latest_same_input_and_vc | 2/2 · MEASURED | 0.3697 | 55768 | 0 | — |
-| tespec | inline | itp_model | latest_same_input_and_vc | 0/2 · PENDING | — | — | — | — |
-| tespec | inline | itp_coq | latest_same_input_and_vc | 0/2 · PENDING | — | — | — | — |
-| tespec | inline | itp_kernel | latest_same_input_and_vc | 0/2 · PENDING | — | — | — | — |
+| tespec | inline | itp_model | latest_same_input_and_vc | 2/2 · MEASURED | 254.1550 | 166328.0000 | 97083 | — |
+| tespec | inline | itp_coq | latest_same_input_and_vc | 2/2 · MEASURED | 31.0167 | 570472 | 0 | — |
+| tespec | inline | itp_kernel | latest_same_input_and_vc | 2/2 · MEASURED | 0 | — | 0 | — |
 | tespec | inline | auto | same_input_profile_recheck_a21f363a | 2/2 · MEASURED | 0.2477 | 56080 | 0 | — |
 | tespec | modular | layout_prepare | latest_native_matrix | 17/17 · MEASURED | 1.0538 | 18156 | 0 | — |
 | tespec | modular | batch_auto | latest_native_matrix | 2/2 · MEASURED | 0.4521 | 57892 | 0 | — |

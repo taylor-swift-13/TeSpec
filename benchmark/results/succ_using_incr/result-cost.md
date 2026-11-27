@@ -8,10 +8,12 @@
 
 全量 Auto 符合预期：inline 19/19，modular 19/19。[同一输入的跨工具比较](../paired-tool-comparison.md)。
 
+另有 1 个变体输入配对进行了合同或故障诊断对照，共享输入按实际调用计费。[补充证据](../fulminate-contract-companions.json)
+
 | 最新 ITP | 共用原生执行 | 需 ITP | 已测 ITP | 待测 | 全部执行中符合预期 |
 |---|---:|---:|---:|---:|---:|
-| inline | 13 | 6 | 5 | 1 | 13 |
-| modular | 13 | 6 | 0 | 6 | 13 |
+| inline | 13 | 6 | 6 | 0 | 13 |
+| modular | 13 | 6 | 6 | 0 | 13 |
 
 以下为旧冻结双路线批次。
 
@@ -46,21 +48,23 @@
 | tespec | modular | itp_kernel | current_execution | 0/6 · PENDING | — | — | — | — |
 | tespec | inline | auto | auto_on_itp_roots | 6/6 · MEASURED | 0.8749 | 55820 | 0 | — |
 | tespec | modular | auto | auto_on_itp_roots | 6/6 · MEASURED | 0.9886 | 55384 | 0 | — |
+| fulminate | — | pipeline | supplemental_measured_companion | 1/1 · distinct supplemental inputs | 0.2985 | 44516 | 0 | — |
+| fulminate | — | test | supplemental_measured_companion | 1/1 · distinct supplemental inputs | 0.0038 | 1920 | 0 | — |
 | tespec | inline | layout_prepare | latest_native_matrix | 4/4 · MEASURED | 0.2607 | 18124 | 0 | — |
 | tespec | inline | batch_auto | latest_native_matrix | 1/1 · MEASURED | 0.1959 | 56392 | 0 | — |
 | tespec | inline | native | latest_native_matrix | 19/19 · MEASURED | 0.9835 | 21380 | 0 | 19/19 |
 | tespec | inline | auto | latest_same_input_and_vc | 6/6 · MEASURED | 1.1392 | 55716 | 0 | — |
-| tespec | inline | itp_model | latest_same_input_and_vc | 5/6 · PARTIAL | 1125.4380 | 333892.0000 | 449165 | — |
-| tespec | inline | itp_coq | latest_same_input_and_vc | 5/6 · PARTIAL | 80.4899 | 563760 | 0 | — |
-| tespec | inline | itp_kernel | latest_same_input_and_vc | 5/6 · PARTIAL | 0 | — | 0 | — |
+| tespec | inline | itp_model | latest_same_input_and_vc | 6/6 · MEASURED | 1343.9690 | 333892.0000 | 539392 | — |
+| tespec | inline | itp_coq | latest_same_input_and_vc | 6/6 · MEASURED | 93.4734 | 563760 | 0 | — |
+| tespec | inline | itp_kernel | latest_same_input_and_vc | 6/6 · MEASURED | 0 | — | 0 | — |
 | tespec | inline | auto | same_input_profile_recheck_a21f363a | 6/6 · MEASURED | 0.6915 | 55764 | 0 | — |
 | tespec | modular | layout_prepare | latest_native_matrix | 4/4 · MEASURED | 0.2219 | 18212 | 0 | — |
 | tespec | modular | batch_auto | latest_native_matrix | 1/1 · MEASURED | 0.2955 | 55964 | 0 | — |
 | tespec | modular | native | latest_native_matrix | 19/19 · MEASURED | 0.8782 | 20968 | 0 | 19/19 |
 | tespec | modular | auto | latest_same_input_and_vc | 6/6 · MEASURED | 1.3493 | 55464 | 0 | — |
-| tespec | modular | itp_model | latest_same_input_and_vc | 0/6 · PENDING | — | — | — | — |
-| tespec | modular | itp_coq | latest_same_input_and_vc | 0/6 · PENDING | — | — | — | — |
-| tespec | modular | itp_kernel | latest_same_input_and_vc | 0/6 · PENDING | — | — | — | — |
+| tespec | modular | itp_model | latest_same_input_and_vc | 6/6 · MEASURED | 1333.4830 | 332404.0000 | 491776 | — |
+| tespec | modular | itp_coq | latest_same_input_and_vc | 6/6 · MEASURED | 75.8376 | 563432 | 0 | — |
+| tespec | modular | itp_kernel | latest_same_input_and_vc | 6/6 · MEASURED | 0 | — | 0 | — |
 | tespec | modular | auto | same_input_profile_recheck_a21f363a | 6/6 · MEASURED | 0.7956 | 55476 | 0 | — |
 
 ¹ 历史成本保留原始单位口径，包括执行峰值的均值。当前阶段显示已测部分的合计耗时及最大单进程峰值。

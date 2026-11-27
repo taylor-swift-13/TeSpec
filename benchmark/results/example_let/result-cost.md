@@ -8,6 +8,8 @@
 
 全量 Auto 符合预期：inline 136/136，modular 136/136。[同一输入的跨工具比较](../paired-tool-comparison.md)。
 
+另有 4 个变体输入配对进行了合同或故障诊断对照，共享输入按实际调用计费。[补充证据](../fulminate-contract-companions.json)
+
 | 最新 ITP | 共用原生执行 | 需 ITP | 已测 ITP | 待测 | 全部执行中符合预期 |
 |---|---:|---:|---:|---:|---:|
 | inline | 136 | 0 | 0 | 0 | 136 |

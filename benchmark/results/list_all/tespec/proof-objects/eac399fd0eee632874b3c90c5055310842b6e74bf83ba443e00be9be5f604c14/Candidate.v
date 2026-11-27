@@ -1,0 +1,17 @@
+From SimpleC.Verification Require Import VCPrelude.
+Import naive_C_Rules.
+Require Import Goal.
+Local Open Scope Z_scope.
+
+Module Proofs.
+
+Lemma proof_of_IntList_append_precondition_wit_1 : Goal.IntList_append_precondition_wit_1.
+Proof.
+  unfold Goal.IntList_append_precondition_wit_1.
+  exists (cons 1 (@nil Z)), (@nil Z), 0, 16384.
+  (* Unresolved: construct a concrete model containing the integer 1 at
+     address 16384 and the null pointer at address 16388, and prove
+     that this model satisfies the instantiated separating assertion. *)
+Abort.
+
+End Proofs.

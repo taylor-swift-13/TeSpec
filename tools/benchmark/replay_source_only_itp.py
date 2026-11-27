@@ -7,7 +7,7 @@ import subprocess
 import sys
 
 from collect_current_itp import checkpoint
-from organize_tespec_routes import RESULTS, ROOT, read, fingerprint
+from organize_tespec_routes import RESULTS, ROOT, read, fingerprint, save
 from spectest.proof_reuse import proof_key
 
 
@@ -25,6 +25,9 @@ def run_replay(folder, native, candidate, key, output_name):
                               cwd=ROOT, capture_output=True, text=True)
         if not (out / "routes.json").is_file():
             raise RuntimeError(proc.stderr[-800:])
+        if output_name.startswith("peer-positive-replay-"):
+            save(out / "peer-selection.json", {"source": str(candidate.resolve()),
+                 "candidate_sha256": fingerprint(candidate), "recipient_proof_key": key})
     data = read(out / "routes.json")
     if data["routes"]["itp"].get("model_calls") != 0 or data["native_report_sha256"] != folder.name:
         raise ValueError("Invalid frozen source replay")

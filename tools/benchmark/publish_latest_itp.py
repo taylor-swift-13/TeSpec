@@ -75,11 +75,20 @@ def collect(row, scratch, base):
         # the new evidence does not change the verdict.
         failure_file = folder / "resource-failures.json"
         failure_events = read(failure_file)["events"] if failure_file.exists() else []
+        peer_sources = {
+            fingerprint(path): read(path.with_name("peer-source.json"))
+            for path in after if path.with_name("peer-source.json").is_file()
+        }
+        recorded_peers = {attempt["report_sha256"]: attempt.get("replayed_peer")
+                          for attempt in completed["attempts"]}
         refreshed = (
             any(fingerprint(p) not in captured for p in after)
+            or any(recorded_peers.get(report_sha) != source
+                   for report_sha, source in peer_sources.items())
             or any(step["stage"] == "compile_Candidate.v" and "candidate_resource_policy" not in step
                    for check in completed["checks"] for step in check["stages"])
             or len(list(folder.glob("model-receipts/*.json"))) != len(completed.get("model_attempts", []))
+            or any("receipt_sha256" not in model for model in completed.get("model_attempts", []))
             or failure_events != completed.get("resource_failures", [])
             or [read(p) for p in sorted(folder.glob("memory-limit-replay-*/receipt.json"))]
                 != completed.get("resource_protection_replays", [])
@@ -173,6 +182,7 @@ def publish(scratch):
         value={"schema":"tespec-latest-itp/v1","group":g,
              "cost_scope":{
                  "itp_model":"All metered model CLI attempts for this execution.",
+                 "queue_and_elapsed":"Stage wall_seconds starts after resource-slot admission. Waiting is reported in queue_seconds. The outer attempts[].wall_seconds is end-to-end elapsed time, including waits and orchestration; it is separate from phase costs.",
                  "itp_coq_and_itp_kernel":"Sum of checks[].stages and resource_protection_replays[].stages in locally completed proof rounds, partitioned by stage. Separately referenced shared checks and resource_replays are outside these totals.",
                  "resource_protection_replays":"All measured stages of these additional identical-input replays are already included once in itp_coq and itp_kernel. Each links to its prior attempt by original_attempt_sha256.",
                  "resource_replays":"If an interrupted original lost its RSS, its additional replay is recorded here. itp_coq_comparable substitutes the matched replay; itp_coq_total_observed_wall_seconds adds both attempts.",
