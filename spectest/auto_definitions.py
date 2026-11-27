@@ -1265,6 +1265,18 @@ def solve_path(record, case, *, timeout_ms, ground_cache=None):
         if result is None:
             from .auto_frame_evidence import check_auto_heap
             result = check_auto_heap(ir, timeout_ms=timeout_ms, include_smt=True, match_pre_witnesses=True)
+            if (result.get("reason") == "solver_unknown:timeout" and result["status"] == "UNKNOWN"
+                    and not (red.list_splits or relation_instances)
+                    and any(part["exists"] and part["spatial"] for part in ir["post"])):
+                # A quantified heap query can time out even when the typed cells determine
+                # every post witness. Check the entire body with those values substituted.
+                try:
+                    witnessed = check_cell_witnesses(ir, min(timeout_ms, 1000))
+                except (Unsupported, RecursionError, z3.Z3Exception):
+                    witnessed = None
+                if witnessed and witnessed["status"] == "VALID":
+                    witnessed["prior_heap_query"] = {k:result.get(k) for k in ("status","reason","wall_seconds")}
+                    result = witnessed
         result.update(
             normalized_vc=ir,
             expanded_definitions=sorted(red.used | {f.name for f, _ in used}),

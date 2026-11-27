@@ -4,6 +4,12 @@
 
 ## 当前版本
 
+本轮重跑上轮仍为 UNKNOWN 的 50 次执行，预期均为 PASS。独立 Auto 首跑 47 PASS、3 UNKNOWN。其中一次 modular 的闭项求值超时，相同预算串行重试后 PASS，两次成本均已计入。最终 48 PASS、2 UNKNOWN。此前符合预期的 2,793 次覆盖全部 45 组，全数重新执行并保持预期。另有 213 次此前不符的执行在本轮范围以外。[本轮结果与回归](../benchmark/results/group-result-cost-index.json) · [剩余 UNKNOWN](../benchmark/results/tespec-unexpected/auto-guards.json)
+
+重点检查的 8 次都在最终 VC 导入环境复核了投影，6 次整次 PASS。两组中的 `IntList_split_2` 在 modular 模式下，都从实际堆单元取得了返回值见证并检查了完整后条件。两组中的 `IntList_mergesort_2` 在 inline 模式下仍各有两个断言义务，局部名 `xs` 和 `p` 分别对应多个栈地址。入口、执行、安全和返回后条件均已通过。
+
+### 上一轮布局绑定
+
 默认 Auto 在生成 VC 前按实际 C 布局绑定导入谓词。重新测量 4 组的 384 次执行，其中原先字段地址未绑定的 163 次入口全部 SAT，113 次整次 PASS，50 次仍有后续 VC。另有 2 次队列辅助函数测试从 UNKNOWN 转为 PASS。全量 2,793/3,056 符合预期；最终版本重新执行了此前符合预期的全部 2,678 次，零退化。 [默认 Auto 结果](../benchmark/results/group-result-cost-index.json) · [50 次逐输入诊断](../benchmark/results/tespec-unexpected/auto-layout.json)
 
 ### 原始 VC 的双路线对照

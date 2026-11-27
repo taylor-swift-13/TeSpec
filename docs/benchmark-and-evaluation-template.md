@@ -4,7 +4,11 @@
 
 以作业启动 `python3 -m spectest routes JOB --output-dir OUT` 时，默认 Auto 在生成 VC 前发现使用抽象 C 字段地址的导入谓词，按该作业的目标布局重新编译相关库。布局绑定记录在 `routes.json#/auto_layout`，包括目标布局、原始和实际模块哈希、时间、最大进程 RSS、模型调用数与 token。布局准备可由同一源码、函数、架构和执行策略的一批输入共享，成本按批计一次。已有布局作业继续验证原绑定。新作业的 `--route both` 共用绑定后的 VC，回放 `--native-report` 始终使用报告原有的定义。
 
+独立 Auto 作业可以使用已由 Coq 证明的谓词投影。最终 VC 新增生成模块时，Auto 按本次实际字段布局检查对齐引理，并在最终导入环境中重新编译投影及其名字绑定证明。复核失败会重新执行无投影的布局作业。复核成本包含在原生执行中，单列时不能再加一次。双路线共用的原生作业继续采用无投影的布局，以保持同一套原始 VC 可比。对旧原生报告的回放沿用该报告的上下文。
+
 本次默认 Auto 布局批次见全局索引的 `default_auto_measurement`，变更组的 `tespec/auto-layout.json` 保存旧新 VC 标识、逐输入结果、分支及成本。相应的组成本表用 `default_auto_layout` 区分这批阶段。原 VC 的双路线对照和 ITP 证书继续按原哈希引用。
+
+带投影的独立 Auto 专项归档在全局索引的 `auto_guard_measurement`。每组 `tespec/auto-guards.json` 保留逐输入旧新 VC、投影复核、原生分支和成本。使用 `python3 tools/benchmark/regress_auto_guards.py --scratch NEW_DIR` 重现目标集和此前匹配集。用同一目录执行 `--retry-timeouts` 可按相同预算串行重试一次超时目标；`--publish` 同时保留首跑和重试证据。残余 VC 的量化堆查询超时时，Auto 可从已有的带类型堆单元构造存在见证，代回完整后条件并检查反例查询是否不可满足。
 
 当前批次可以分两次执行双路线，先测原生与 Auto，并保留同一份不可变原生报告，再用 `--route itp --native-report` 做独立 ITP。复用执行键和原始报告哈希必须一致。
 

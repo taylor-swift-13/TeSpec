@@ -207,32 +207,51 @@ def compare(args):
         job = args.job.resolve()
         if args.route in ("auto", "both"):
             layout_cost = measure([sys.executable, "-m", "spectest.routes", "--prepare-auto-layout",
-                                   str(job), str(output / "layout")], output / "measurements/layout")
+                                   str(job), str(output / "layout"), *(["--no-guards"] if args.route == "both" else [])], output / "measurements/layout")
             if layout_cost["exit_code"]:
                 raise JobError(f"Auto layout preparation failed; see {output / 'measurements/layout/stderr.log'}")
             layout_cost.update(read(output / "measurements/layout/stdout.log"), tokens=0, model_calls=0)
             if layout_cost["status"] == "bound":
                 job = Path(layout_cost["job"])
-        native_cost = measure(
-            [
-                sys.executable,
-                "-m",
-                "spectest",
-                "check",
-                str(job),
-                "--no-spatial-smt",
-                "--output-dir",
-                str(native_dir),
-                "--compact",
-            ],
-            output / "measurements/native",
-        )
+        context = read(job).get("field_layout_context", {})
+        guarded = args.route == "auto" and context.get("auto_final_guard_check") is True
+
+        def execute(active_job, dest, measurements):
+            cost = measure([sys.executable, "-m", "spectest", "check", str(active_job),
+                            "--no-spatial-smt", "--output-dir", str(dest), "--compact"], measurements)
+            if cost["exit_code"] not in (0, 1) or not (dest / "report.json").is_file():
+                raise JobError(f"native run failed; see {measurements / 'stderr.log'}")
+            cost.update(measured_this_run=True, tokens=0)
+            return cost
+
+        destination = output / "guarded/native" if guarded else native_dir
+        native_cost = execute(job, destination, output / "measurements/native")
+        if guarded:
+            failed = [c["id"] for c in read(destination / "report.json")["results"]
+                      if c.get("reason") == "field_layout_context_mismatch"]
+            if failed:
+                # The guarded attempt never supplies a verdict after its context check fails.
+                # Re-execute with the same bound libraries and no projected rules.
+                plain = read(job)
+                for k in ("guard_projection", "auto_final_guard_check"):
+                    plain["field_layout_context"].pop(k, None)
+                # Prepared jobs can have relative source/spec paths. Keep resolution
+                # relative to the original job when staging the fallback.
+                for k in ("source", "spec_file"):
+                    if k in plain:
+                        plain[k] = str((job.parent / plain[k]).resolve())
+                fallback = output / "unguarded/job.json"
+                fallback.parent.mkdir()
+                write(fallback, plain)
+                previous = native_cost
+                destination = fallback.parent / "native"
+                native_cost = execute(fallback, destination, output / "measurements/unguarded-native")
+                native_cost["guard_fallback"] = {"cases": failed, "previous":previous,
+                                                 "unguarded":dict(native_cost)}
+                native_cost["wall_seconds"] += previous["wall_seconds"]
+                native_cost["max_process_rss_kib"] = max(previous["max_process_rss_kib"], native_cost["max_process_rss_kib"])
+            native_dir.symlink_to(destination, target_is_directory=True)
         native = native_dir / "report.json"
-        if native_cost["exit_code"] not in (0, 1) or not native.is_file():
-            raise JobError(
-                f"native run failed; see {output / 'measurements/native/stderr.log'}"
-            )
-        native_cost.update(measured_this_run=True, tokens=0)
     original = native.read_bytes()
     report = json.loads(original)
     cases = native_cases(report)
@@ -391,7 +410,7 @@ def routes_cli(argv):
 if __name__ == "__main__":
     if sys.argv[1:2] == ["--prepare-auto-layout"]:
         from .layout_job import prepare_auto_layout
-        print(json.dumps(prepare_auto_layout(Path(sys.argv[2]), Path(sys.argv[3]))))
+        print(json.dumps(prepare_auto_layout(Path(sys.argv[2]), Path(sys.argv[3]), project_guards="--no-guards" not in sys.argv[4:])))
         sys.exit(0)
     from .auto_route import run_auto
 

@@ -206,7 +206,7 @@ def guard_activation(context, binary_sha256):
     ]
 
 
-def check_guard_header(context, goal):
+def guard_header(goal):
     # A rejected entry can emit only the precondition definition. No executed
     # function banner is printed in that case.
     marker = re.search(
@@ -214,7 +214,11 @@ def check_guard_header(context, goal):
         r"Definition [A-Za-z_]\w*_precondition_wit_\d+ :=$|Module Type VC_Correct\.$)",
         goal,
     )
-    if not marker or hashlib.sha256(
-        goal[: marker.start()].encode()
-    ).hexdigest() != context.get("header_sha256"):
+    if not marker:
+        raise FieldLayoutMismatch("cannot identify original goal header")
+    return goal[:marker.start()]
+
+
+def check_guard_header(context, goal):
+    if hashlib.sha256(guard_header(goal).encode()).hexdigest() != context.get("header_sha256"):
         raise FieldLayoutMismatch("goal header differs from the checked guard bindings")

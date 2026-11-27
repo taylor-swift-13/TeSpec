@@ -311,11 +311,7 @@ def auto_layout_modules(job_path):
                        if _uses_field_addresses(Path(d["source"]).read_text())})
 
 
-def prepare_auto_layout(job_path, output):
-    job = json.loads(Path(job_path).read_text())
-    modules = auto_layout_modules(job_path)
-    if not modules:
-        return {"status": "prebound" if "field_layout_context" in job else "not_required"}
+def auto_compiler():
     compiler = os.environ.get("COQC")
     if compiler:
         command = [compiler]
@@ -323,7 +319,20 @@ def prepare_auto_layout(job_path, output):
         command = ["opam", "exec", "--switch=qcp-8.20", "--", "coqc"]
     else:
         command = _default_coqc_command()
-    receipt = prepare_layout_job(job_path, modules, output, coqc_command=command, project_guards=False)
+    return command
+
+
+def prepare_auto_layout(job_path, output, *, project_guards=True):
+    job = json.loads(Path(job_path).read_text())
+    modules = auto_layout_modules(job_path)
+    if not modules:
+        return {"status": "prebound" if "field_layout_context" in job else "not_required"}
+    receipt = prepare_layout_job(job_path, modules, output, coqc_command=auto_compiler(), project_guards=project_guards)
+    derived = Path(receipt["job"])
+    prepared = json.loads(derived.read_bytes())
+    if project_guards and "guard_projection" in prepared["field_layout_context"]:
+        prepared["field_layout_context"]["auto_final_guard_check"] = True
+        derived.write_text(json.dumps(prepared, indent=2) + "\n")
     return {"status": "bound", "modules": modules, "job": receipt["job"],
             "original_job_sha256": receipt["original_job_sha256"],
             "layout_sha256": receipt["target_layout_sha256"],
@@ -519,16 +528,17 @@ def validate_layout_context(expected, manifest, runtime_digest, *, incomplete_wi
         )
     }
     goal_source = Path(goal).read_text()
+    guard_check = None
     if "guard_projection" in expected:
-        generated = {
-            d["module"]: d["sha256"]
-            for d in manifest.get("generated_coq_dependencies", [])
-        }
-        if generated != expected["guard_projection"].get("generated_modules"):
-            raise FieldLayoutMismatch(
-                "goal dependencies differ from the checked guard bindings"
-            )
-        check_guard_header(expected["guard_projection"], goal_source)
+        guard = expected["guard_projection"]
+        generated = {d["module"]: d["sha256"] for d in manifest.get("generated_coq_dependencies", [])}
+        if generated == guard.get("generated_modules"):
+            check_guard_header(guard, goal_source)
+        elif expected.get("auto_final_guard_check") is True:
+            from .auto_guard_recheck import recheck
+            guard_check = recheck(guard, manifest, auto_compiler())
+        else:
+            raise FieldLayoutMismatch("goal dependencies differ from the checked guard bindings")
     reject_old_qualifiers(goal_source, selected)
     pending = _coq_required_modules(goal_source)
     reachable = set()
@@ -544,6 +554,7 @@ def validate_layout_context(expected, manifest, runtime_digest, *, incomplete_wi
         raise FieldLayoutMismatch(
             "generated goal imports a different field layout interpretation"
         )
+    return guard_check
 
 
 def layout_job_cli(args):

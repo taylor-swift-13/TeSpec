@@ -2061,9 +2061,11 @@ def run_job(
             if "field_layout_context" in job:
                 from .layout_job import validate_layout_context
 
-                validate_layout_context(job["field_layout_context"], vc, provenance["runtime_source_sha256"],
+                guard_check = validate_layout_context(job["field_layout_context"], vc, provenance["runtime_source_sha256"],
                                         incomplete_without_goal=(not guard_args and verdict.get("status") == "UNKNOWN"
                                                                  and verdict.get("execution_completed") is False))
+                if guard_check:
+                    case_result["auto_guard_recheck"] = guard_check
                 if guard_args:
                     prepared_guard_activation(job, provenance["binary_sha256"])
             case_result.update(

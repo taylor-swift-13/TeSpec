@@ -518,6 +518,20 @@ Fixpoint add_each (n : Z) (xs : list Z) : list Z :=
             self.assertEqual(result["status"], "UNKNOWN", result)
             self.assertNotIn("list_splits", result)
 
+    def test_quantified_heap_timeout_rechecks_whole_post(self):
+        from unittest.mock import patch
+        left = "PROP[]LOCAL[]SEP[store(60,80,PTR);wrapper(80,cons{Z_1}(7,nil{Z_1}))]"
+        timeout = dict(status="UNKNOWN", reason="solver_unknown:timeout", wall_seconds=0.001)
+        with patch("spectest.auto_frame_evidence.check_auto_heap", return_value=timeout):
+            for value, expected in [(7, "VALID"), (8, "UNKNOWN")]:
+                with self.subTest(value=value):
+                    post = (f"EX out val \nPROP[val == {value}]LOCAL[]"
+                            "SEP[store(60,out,PTR);store(out,val,signed int)]")
+                    result = self.entail(left, post)
+                    self.assertEqual(result["status"], expected, result)
+                    if expected == "VALID":
+                        self.assertEqual(result["prior_heap_query"]["reason"], timeout["reason"])
+
     def test_heap_witnesses_follow_pointers_in_original_scopes(self):
         from spectest.auto_heap_witnesses import check_cell_witnesses
         from tools.finite_spatial_smt import qcp_import

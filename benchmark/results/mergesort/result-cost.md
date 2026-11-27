@@ -10,6 +10,8 @@
 
 下表的双路线对照保留原 VC；默认 Auto 的成本在阶段表中标记为 default_auto_layout。
 
+本次 Auto 投影复核覆盖此前仍为 UNKNOWN 的输入，PASS 7、UNKNOWN 1。[逐输入 VC、分支和成本](tespec/auto-guards.json)。最终环境复核耗时已包含在 native 阶段。
+
 | 策略 | 执行数 | Auto 符合预期 | ITP 符合预期（含原生） | 需要 ITP | 已有本轮回执 |
 |---|---:|---:|---:|---:|---:|
 | inline | 17 | 4 | 1 | 12 | 0 |
@@ -44,6 +46,14 @@
 | tespec | modular | native | 17/17 · MEASURED | 3.5382 | 21640 | 0 | 17/17 |
 | tespec | modular | auto | 12/12 · MEASURED | 19.1659 | 418824 | 0 | — |
 | tespec | modular | prior_native_attempt | 4/4 · MEASURED | 0.9284 | 21460 | 0 | — |
+| tespec | inline | guard_prepare | 4/4 · MEASURED | 85.6923 | 569448 | 0 | — |
+| tespec | inline | native_including_guard_check | 4/4 · MEASURED | 47.4584 | 569408 | 0 | 4/4 |
+| tespec | inline | final_guard_check_subset | 2/2 · MEASURED | 45.7791 | 569408 | 0 | — |
+| tespec | inline | auto | 4/4 · MEASURED | 25.7971 | 418880 | 0 | — |
+| tespec | modular | guard_prepare | 5/5 · MEASURED | 96.3053 | 569464 | 0 | — |
+| tespec | modular | native_including_guard_check | 5/5 · MEASURED | 61.2864 | 569436 | 0 | 5/5 |
+| tespec | modular | final_guard_check_subset | 3/3 · MEASURED | 59.5637 | 569436 | 0 | — |
+| tespec | modular | auto | 5/5 · MEASURED | 18.4120 | 418912 | 0 | — |
 
 ¹ 历史成本保留原始单位口径，包括执行峰值的均值。当前阶段显示已测部分的合计耗时及最大单进程峰值。
 

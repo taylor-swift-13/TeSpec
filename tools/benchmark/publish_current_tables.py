@@ -206,6 +206,30 @@ def publish(group):
                                  unit="shared preparation per batch" if stage=="layout_prepare" else "executions",
                                  wall_seconds=aggregate(data,"wall_seconds"),max_process_rss_kib=aggregate(data,"max_process_rss_kib",max),
                                  tokens=0,input_tokens=0,output_tokens=0,evidence=str(layout_path.relative_to(ROOT)),**counts))
+    guard_path = base / "tespec/auto-guards.json"
+    if guard_path.is_file():
+        guards = read(guard_path)
+        if guards["baseline"] != reference(layout_path):
+            raise ValueError("Guard results have a different layout baseline")
+        current_view["guarded_auto"] = reference(guard_path)
+        for strategy in ("inline", "modular"):
+            cases = [r for r in guards["executions"] if r["strategy"] == strategy]
+            for key, stage in (("layout_cost","guard_prepare"), ("native_cost","native_including_guard_check"),
+                               ("recheck","final_guard_check_subset"), ("auto_cost","auto")):
+                measurements = [r[key] for r in cases if r[key] is not None]
+                initial = [r["initial_attempt"] for r in cases if r.get("initial_attempt")]
+                measurements.extend(r[key] for r in initial if r[key] is not None)
+                if not measurements:
+                    continue
+                branches = [r["branch_counts"] for r in cases + initial if r["branch_counts"] is not None]
+                counts = ({"branch_records": len(branches), **{k: sum(v[k] for v in branches) for k in BRANCHES}}
+                          if key == "native_cost" else {})
+                rows.append(line(tool="tespec", strategy=strategy, stage=stage, basis="auto_checked_guards",
+                                 result="MEASURED", measured=len(measurements), required=len(measurements),
+                                 unit="subset of native" if key == "recheck" else "executions",
+                                 wall_seconds=aggregate(measurements,"wall_seconds"),
+                                 max_process_rss_kib=aggregate(measurements,"max_process_rss_kib",max),
+                                 tokens=0, input_tokens=0, output_tokens=0, evidence=str(guard_path.relative_to(ROOT)), **counts))
     table["current_evaluation"] = current_view
     table_file.write_text(json.dumps(table, ensure_ascii=False, indent=2)+"\n")
     stream = io.StringIO()
@@ -236,6 +260,10 @@ def publish(group):
                    f"原字段地址未绑定的 {counts['target']} 次中，{counts['target_entry_sat']} 次入口 SAT，"
                    f"{counts['target_expected_matches']} 次整次符合预期。[逐执行结果与成本](tespec/auto-layout.json)",
                    "", "下表的双路线对照保留原 VC；默认 Auto 的成本在阶段表中标记为 default_auto_layout。"])
+    if guard_path.is_file():
+        md.extend(["", "本次 Auto 投影复核覆盖此前仍为 UNKNOWN 的输入，"
+                   + "、".join(f"{k} {v}" for k,v in guards["statuses"].items())
+                   + "。[逐输入 VC、分支和成本](tespec/auto-guards.json)。最终环境复核耗时已包含在 native 阶段。"])
     md += ["", "| 策略 | 执行数 | Auto 符合预期 | ITP 符合预期（含原生） | 需要 ITP | 已有本轮回执 |", "|---|---:|---:|---:|---:|---:|"]
     for s in summaries:
         md.append("| "+" | ".join(str(s[k]) for k in ("strategy","executions","auto_matches","itp_matches","residual_executions","itp_receipts"))+" |")
