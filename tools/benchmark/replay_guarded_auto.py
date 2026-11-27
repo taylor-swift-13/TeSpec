@@ -235,6 +235,16 @@ def replay(job, out, publish):
     return group, len(cases), routes["eligible_executions"], stage, targets, bad
 
 
+def implementation_hash():
+    files = [
+        p
+        for directory in (ROOT / "spectest", ROOT / "tools/finite_spatial_smt")
+        for p in directory.rglob("*.py")
+        if not p.name.startswith("test_")
+    ]
+    return digest({str(p.relative_to(ROOT)): fingerprint(p) for p in files})
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--frozen", required=True, type=Path)
@@ -251,18 +261,8 @@ def main():
         help="Re-run batches whose proof-certificate metadata changed after a writer-only fix",
     )
     args = parser.parse_args()
-    files = [
-        p
-        for directory in (ROOT / "spectest", ROOT / "tools/finite_spatial_smt")
-        for p in directory.rglob("*.py")
-        if not p.name.startswith("test_")
-    ]
-
-    def implementation():
-        return digest({str(p.relative_to(ROOT)): fingerprint(p) for p in files})
-
     marker = args.output / "implementation.json"
-    before = implementation()
+    before = implementation_hash()
     refresh = args.output / "certificate-refresh"
     metadata = refresh / "implementation.json"
     jobs = inventory(args.frozen)
@@ -290,7 +290,7 @@ def main():
             ):
                 replay(job, refresh, False)
                 changed.append([group, batch])
-        if implementation() != before:
+        if implementation_hash() != before:
             raise ValueError("implementation changed during certificate refresh")
         save(
             metadata,
@@ -373,7 +373,7 @@ def main():
             if selected:
                 targets[group].extend(selected)
             bad.extend(unexpected)
-    if before != implementation():
+    if before != implementation_hash():
         raise ValueError("Auto implementation changed during replay")
     counts = {
         k: sum(row[k] for row in result.values())
