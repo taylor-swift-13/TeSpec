@@ -37,4 +37,4 @@
 
 [逐输入结果、分支、实际源与 VC 哈希、所有成本](tespec/contract-revision.json)
 
-此前四工具成本与 ITP 结果保存在 result-cost.json 的 previous_evaluation，适用于之前的源哈希。
+旧规约的 teSpec 目录及成本表中的重复旧记录已删除。当前 teSpec 结果取自 contract-revision.json。跨目录历史实验及共享证据的清理待确认。
