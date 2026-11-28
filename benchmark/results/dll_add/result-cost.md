@@ -37,4 +37,4 @@
 
 [逐输入结果、分支、实际源与 VC 哈希、所有成本](tespec/contract-revision.json)
 
-旧规约的 teSpec 目录及成本表中的重复旧记录已删除。当前 teSpec 结果取自 contract-revision.json。跨目录历史实验及共享证据的清理待确认。
+旧规约的 teSpec 目录及成本表中的重复旧记录已删除。当前 teSpec 结果取自 contract-revision.json。跨目录旧 teSpec 实验已清理，仍被正式 QCP 证明引用的共享文件保留。

@@ -5,9 +5,7 @@ These are implementation regression runs; they do not replace four-tool universa
 
 ## Final evidence
 
-- [Target parameter matrix](20261018-contract-modular-final/summary.md): singleton and dll_add, 168 executions completed, 168 remaining UNKNOWN Dll return obligations.
 - [Singleton result/cost](20261018-contract-modular-final/Dbl_Linked_List__singleton/result-cost.md).
-- [dll_add result/cost](20261018-contract-modular-final/dll_add/result-cost.md).
 - [219 focused tests](20261018-unit-regression-final/receipt.json): 3 skipped, no failures.
 - [Modular positive representatives](../spatial-smt-regressions/20261018-modular-positive-final/summary.md): 21 groups, 42 PASS; not exhaustive modular coverage.
 - [Full default-strategy regression](../spatial-smt-regressions/20261018-execution-strategies-final/summary.md).
@@ -23,3 +21,5 @@ Development-smoke directories preserve initial diagnostics. contract-modular-v1 
 ## 2026-10-19 singleton malloc retest
 
 [Fresh 56-run matrix](20261019-singleton-malloc-retest/retest-summary.md): all native executions complete after contract sampling; all retain one UNKNOWN Dll return VC. Same current binary and all Goal hashes as the 20261018 final run. [Cost table](20261019-singleton-malloc-retest/Dbl_Linked_List__singleton/result-cost.md).
+
+dll_add 的旧规约 teSpec 实验已删除，当前结果见 ../../dll_add/result-cost.md。
