@@ -4,6 +4,8 @@
 
 ## 当前版本
 
+dll_add 的 QCP 合同已按 CN 后置条件修订，12 个输入在 inline/modular Auto 下共 24 PASS。ITP 按用户要求暂缓，新源的 QCP 全称证明待重核。三轮尝试和两个控制的全部成本见[本组当前表](../benchmark/results/dll_add/result-cost.md)。以下 45 组汇总对应 d9e2e15b32 的冻结批次。
+
 45/45 组已完成当前版本的四工具评测。CN 的 45 个主程序中，28 组验证通过，8 组带有信任限定，9 组被拒绝。QCP 有 35 组通过独立内核检查（其中 12 组使用运行库假设），3 组的原始必要义务被正式反证，7 组由独立生成器拒绝。Fulminate 实跑 1,561 个变体输入配对，1,548 个命中各自预期。342 个输入在原始构建被拒后，还实跑了兼容语法版本。每组均有 Markdown、JSON 和 CSV 结果成本表。[总索引](../benchmark/results/group-result-cost-index.json)
 
 teSpec 的 inline 和 modular 共 3,056 次执行。主矩阵 Auto 命中 2,925 次，其中 2,444 次来自原生阶段，481 次来自 Auto 后处理。ITP 路线含共用原生结果共命中 2,524 次。489 份残余执行均已在相同输入和原始目标上取得两条路线的逐项成本。Auto 独立逐输入计量命中 477 次，ITP 命中 80 次。ITP 使用 gpt-6.1-sol（medium）实际调用 772 次，共 21,823,174 个 token，含失败及修复。58 次父 VC 获得内核反证，缺少当前输入可到达反例的证明，其执行判定保留 UNKNOWN。[四工具对照、阶段成本与可比范围](../benchmark/results/paired-tool-comparison.md) · [teSpec 异常台账](../benchmark/results/tespec-unexpected/README.md)

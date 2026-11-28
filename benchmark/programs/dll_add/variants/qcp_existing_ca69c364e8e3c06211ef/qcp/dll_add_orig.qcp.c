@@ -1,7 +1,20 @@
 #include "verification_stdlib.h"
 #include "dll_def.h"
 struct node *add(int element, struct node *n)
-/*@ With e h p q (ll: list Z) (lr: list Z) Require element == e && ((n == 0 && ll == nil && lr == nil && emp) || (n != 0 && data_at(&n->data,int,h) * data_at(&n->prev,struct node*,p) * data_at(&n->next,struct node*,q) * DLLLeft(p,n,ll) * DLLRight(q,n,lr))) Ensure (n == 0 && Dll(__return,nil,e,nil)) || (n != 0 && Dll(__return,cons(h,ll),e,lr)) */
+/*@ With h p q (ll: list Z) (lr: list Z)
+    Require (
+      (n == 0 && ll == nil && lr == nil && emp) ||
+      (n != 0 &&
+       data_at(&n->data,int,h) *
+       data_at(&n->prev,struct node*,p) *
+       data_at(&n->next,struct node*,q) *
+       DLLLeft(p,n,ll) *
+       DLLRight(q,n,lr)))
+    Ensure __return != 0 &&
+      (exists v,
+        (n == 0 && Dll(__return,nil,v,nil)) ||
+        (n != 0 && Dll(__return,cons(h,ll),v,lr)))
+*/
 {
     struct node *new_node = malloc_node();
     new_node->data = element;

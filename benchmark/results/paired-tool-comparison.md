@@ -1,5 +1,7 @@
 # 四工具配对评测
 
+本表为 d9e2e15b32 的冻结四工具批次。dll_add 后续修订了 QCP 规约，当前 Auto 为 24/24 PASS，ITP 按用户要求暂缓，QCP 全称证明待重核。其最新结果见 [dll_add 当前表](dll_add/result-cost.md)。下文旧证明、成本与合同差异适用于冻结源哈希。
+
 45 个程序组按组去重后有 153 个 CN 变体、180 个 QCP 变体，形成 289 个变体配对和 1,561 个变体与输入配对。teSpec 合并映射到同一 QCP 变体与输入的重复记录，inline 和 modular 合计 3,056 次独立执行，2,925 次符合预期。
 
 ## teSpec Auto 与 Fulminate
